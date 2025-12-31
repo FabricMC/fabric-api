@@ -72,7 +72,7 @@ public final class ClientReceiveMessageEvents {
 
 	/// An event triggered when the client receives a game message,
 	/// which is any message sent by the server. Is not called when
-	/// {@linkplain #ALLOW_GAME game messages are blocked}.
+	/// [game messages are blocked][#ALLOW_GAME].
 	/// Mods can use this to modify the message.
 	/// Use [#GAME] if not modifying the message.
 	///
@@ -88,7 +88,7 @@ public final class ClientReceiveMessageEvents {
 
 	/// An event triggered when the client receives a chat message,
 	/// which is any message sent by a player. Is not called when
-	/// {@linkplain #ALLOW_CHAT chat messages are blocked}.
+	/// [chat messages are blocked][#ALLOW_CHAT].
 	/// Mods can use this to listen to the message.
 	///
 	/// If mods want to modify the message, they should use [#ALLOW_CHAT]
@@ -101,7 +101,7 @@ public final class ClientReceiveMessageEvents {
 
 	/// An event triggered when the client receives a game message,
 	/// which is any message sent by the server. Is not called when
-	/// {@linkplain #ALLOW_GAME game messages are blocked}.
+	/// [game messages are blocked][#ALLOW_GAME].
 	/// Mods can use this to listen to the message.
 	///
 	/// Overlay is whether the message will be displayed in the action bar.
@@ -165,7 +165,7 @@ public final class ClientReceiveMessageEvents {
 	public interface ModifyGame {
 		/// Called when the client receives a game message,
 		/// which is any message sent by the server. Is not called when
-		/// {@linkplain #ALLOW_GAME game messages are blocked}.
+		/// [game messages are blocked][#ALLOW_GAME].
 		/// Use [#GAME] if not modifying the message.
 		///
 		/// Overlay is whether the message will be displayed in the action bar.
@@ -181,7 +181,7 @@ public final class ClientReceiveMessageEvents {
 	public interface Chat {
 		/// Called when the client receives a chat message,
 		/// which is any message sent by a player. Is not called when
-		/// {@linkplain #ALLOW_CHAT chat messages are blocked}.
+		/// [chat messages are blocked][#ALLOW_CHAT].
 		///
 		/// @param message             the message received from the server
 		/// @param playerChatMessage   the player chat message received from the server (nullable)
@@ -195,7 +195,7 @@ public final class ClientReceiveMessageEvents {
 	public interface Game {
 		/// Called when the client receives a game message,
 		/// which is any message sent by the server. Is not called when
-		/// {@linkplain #ALLOW_GAME game messages are blocked}.
+		/// [game messages are blocked][#ALLOW_GAME].
 		///
 		/// Overlay is whether the message will be displayed in the action bar.
 		/// Use [#ALLOW_GAME] to toggle overlay.

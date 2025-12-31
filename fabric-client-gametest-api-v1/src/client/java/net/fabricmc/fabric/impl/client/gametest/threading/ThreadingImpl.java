@@ -35,19 +35,19 @@ import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 /// When a client test is running, ticks are run in a much more controlled way than in vanilla. A tick is split into 4
 /// phases:
 ///
-/// 1. {@linkplain #PHASE_TICK} - The client and server threads run a single tick in parallel, if they exist. The test thread waits.
-/// 2. {@linkplain #PHASE_SERVER_TASKS} - The server runs its task queue, if the server exists. The other threads wait.
-/// 3. {@linkplain #PHASE_CLIENT_TASKS} - The client runs its task queue, if the client exists. The other threads wait.
-/// 4. {@linkplain #PHASE_TEST} - The test thread runs test code while the client and server threads wait for tasks to be handed off.
+/// 1. [#PHASE_TICK] - The client and server threads run a single tick in parallel, if they exist. The test thread waits.
+/// 2. [#PHASE_SERVER_TASKS] - The server runs its task queue, if the server exists. The other threads wait.
+/// 3. [#PHASE_CLIENT_TASKS] - The client runs its task queue, if the client exists. The other threads wait.
+/// 4. [#PHASE_TEST] - The test thread runs test code while the client and server threads wait for tasks to be handed off.
 ///
 /// In `PHASE_TEST`, the client and server threads (if they exist) are blocked on semaphores waiting for tasks
 /// to be handed to them from the test thread. When the test thread wants to send one of the other threads a task to run,
-/// it sets {@linkplain #taskToRun} to the task runnable and releases the semaphore of the thread that should run the
+/// it sets [#taskToRun] to the task runnable and releases the semaphore of the thread that should run the
 /// task. It then blocks on its own semaphore until the task is complete, at which point the thread which completed the
 /// task will release the test thread semaphore and re-block on its own semaphore again and the cycle continues. When the
 /// test phase is over (i.e. when the test thread wants to wait a tick), the client and server semaphores will be
-/// released while leaving {@linkplain #taskToRun} as `null`, which they will interpret to mean they are to
-/// continue into {@linkplain #PHASE_TICK}.
+/// released while leaving [#taskToRun] as `null`, which they will interpret to mean they are to
+/// continue into [#PHASE_TICK].
 ///
 /// The reason these phases were chosen are to make client-server communication as consistent as possible. The task
 /// queues are when most packets are handled, and without them being run in sequence it would be unspecified whether a
@@ -55,12 +55,12 @@ import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 /// changes on the server appear on the client more readily. The test phase is run after the task queues rather than at
 /// the end of the physical tick (i.e. `Minecraft`'s and `MinecraftServer`'s `tick` methods), for
 /// no particular reason other than to avoid needing a 5th phase, and having a power of 2 number of phases is convenient
-/// when using {@linkplain Phaser}, as it doesn't break when the phase counter overflows.
+/// when using [Phaser], as it doesn't break when the phase counter overflows.
 ///
-/// Other challenges include that a client or server can be started during {@linkplain #PHASE_TEST} but haven't
+/// Other challenges include that a client or server can be started during [#PHASE_TEST] but haven't
 /// reached their semaphore code yet meaning they are unable to accept tasks. This is solved by setting a flag to true
 /// when the client/server is ready to accept tasks. Also the client will block on the integrated server starting and
-/// stopping. This is solved by first deferring those operations until {@linkplain #PHASE_TICK} if they are being run
+/// stopping. This is solved by first deferring those operations until [#PHASE_TICK] if they are being run
 /// inside a test phase task (which is a minor difference from vanilla), and then ensuring the client is still running
 /// the phase logic and is able to accept tasks while it is waiting for the server.
 public final class ThreadingImpl {

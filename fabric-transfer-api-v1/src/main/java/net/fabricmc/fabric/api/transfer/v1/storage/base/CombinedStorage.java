@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /// A [Storage] wrapping multiple storages.
 ///
-/// The storages passed to {@linkplain CombinedStorage#CombinedStorage the constructor} will be iterated in order.
+/// The storages passed to [the constructor][CombinedStorage#CombinedStorage] will be iterated in order.
 ///
 /// @param <T> The type of the stored resources.
 /// @param <S> The class of every part. `? extends Storage<T>` can be used if the parts are of different types.

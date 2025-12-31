@@ -29,7 +29,7 @@ public interface ItemRenderTypeGetter {
 	/// matching property values will be rendered using the returned render type.
 	///
 	/// A return value of `null` means that the current item layer's
-	/// {@linkplain net.minecraft.client.renderer.item.ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type} will be used.
+	/// [default render type][net.minecraft.client.renderer.item.ItemStackRenderState.LayerRenderState#setRenderType(RenderType)] will be used.
 	@Nullable
 	RenderType renderType(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer sectionLayer);
 }

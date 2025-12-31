@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 ///
 /// @param <T> the type of the custom ingredient
 public interface CustomIngredientSerializer<T extends CustomIngredient> {
-	/// Registers a custom ingredient serializer, using the {@linkplain CustomIngredientSerializer#getIdentifier() serializer's identifier}.
+	/// Registers a custom ingredient serializer, using the [serializer's identifier][CustomIngredientSerializer#getIdentifier()].
 	///
 	/// @throws IllegalArgumentException if the serializer is already registered
 	static void register(CustomIngredientSerializer<?> serializer) {

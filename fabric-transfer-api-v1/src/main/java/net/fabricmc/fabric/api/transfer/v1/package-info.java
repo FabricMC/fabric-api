@@ -45,7 +45,7 @@
 /// The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
 /// [FluidConstants][net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants] contains a few helpful constants to work with droplets.
 ///
-/// Client-side {@linkplain net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering fluid variant rendering} will use regular fluid rendering by default,
+/// Client-side [fluid variant rendering][net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering] will use regular fluid rendering by default,
 /// ignoring the additional components.
 /// `Fluid`s that wish to render differently depending on the stored components can register a
 /// [FluidVariantRenderHandler][net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler].

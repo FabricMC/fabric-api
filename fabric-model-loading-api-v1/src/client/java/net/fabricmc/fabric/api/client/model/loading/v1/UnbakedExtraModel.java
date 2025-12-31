@@ -22,7 +22,7 @@ import net.minecraft.client.resources.model.ResolvableModel;
 /// An unbaked extra model.
 ///
 /// Similar to [net.minecraft.client.renderer.item.ItemModel.Unbaked] and other [ResolvableModel], this model can
-/// {@linkplain ResolvableModel.Resolver#resolveDependencies(Resolver) depend} on one or more model files, and then combine them into
+/// [depend][ResolvableModel#resolveDependencies(Resolver)] on one or more model files, and then combine them into
 /// a single baked model.
 ///
 /// @param <T> The type of the baked model.

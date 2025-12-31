@@ -70,7 +70,7 @@ public final class EnchantmentEvents {
 	/// for more information.
 	///
 	/// Note: If you wish to modify the exclusive set of the enchantment, consider extending the
-	/// {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
+	/// [relevant tag][net.minecraft.tags.EnchantmentTags] through your mod's data pack instead.
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
 			Modify.class,
 			callbacks -> (key, builder, source) -> {

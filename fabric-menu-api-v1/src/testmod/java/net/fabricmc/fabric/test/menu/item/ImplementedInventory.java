@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 /// A simple `WorldlyContainer` implementation with only default methods + an item list getter.
 /// ## Reading and writing to tags
 /// Use [ContainerHelper#writeNbt(net.minecraft.nbt.CompoundTag, NonNullList)] and [ContainerHelper#readNbt(net.minecraft.nbt.CompoundTag, NonNullList)]
-/// on {@linkplain #getItems() the item list}.
+/// on [the item list][#getItems()].
 ///
 /// @author Juuz
 @FunctionalInterface
@@ -181,7 +181,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 		}
 	}
 
-	/// Clears {@linkplain #getItems() the item list}}.
+	/// Clears [the item list][#getItems()]}.
 	@Override
 	default void clearContent() {
 		getItems().clear();

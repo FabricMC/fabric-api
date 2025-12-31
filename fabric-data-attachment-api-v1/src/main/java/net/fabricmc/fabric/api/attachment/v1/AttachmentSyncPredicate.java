@@ -23,7 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.server.level.ServerPlayer;
 
 /// A predicate that determines, for a specific attachment type, whether the data should be synchronized with a
-/// player's client, given the player's [ServerPlayer] and the {@linkplain AttachmentTarget} the data is linked to.
+/// player's client, given the player's [ServerPlayer] and the [AttachmentTarget] the data is linked to.
 ///
 /// The class extends [BiPredicate] to allow for custom predicates, outside the ones provided by methods.
 @ApiStatus.NonExtendable

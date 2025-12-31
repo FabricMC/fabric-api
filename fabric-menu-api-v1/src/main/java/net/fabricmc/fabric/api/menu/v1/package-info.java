@@ -16,7 +16,7 @@
 
 /// The Fabric menu API for creating menu and menu types.
 ///
-/// Menu types are used to synchronize {@linkplain net.minecraft.world.inventory.AbstractContainerMenu menus}
+/// Menu types are used to synchronize [menus][net.minecraft.world.inventory.AbstractContainerMenu]
 /// between the server and the client. Their main job is to create menu instances on the client.
 /// Menus manage the items and integer properties that are
 /// needed to show on screens, such as the items in a chest or the progress of a furnace.

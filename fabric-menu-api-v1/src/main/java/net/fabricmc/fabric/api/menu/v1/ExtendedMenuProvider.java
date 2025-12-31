@@ -20,7 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 
 /// An extension of `MenuProvider` that can write additional data to a screen opening packet.
-/// This is used for {@linkplain ExtendedMenuType extended menus}.
+/// This is used for [extended menus][ExtendedMenuType].
 ///
 /// @see ExtendedMenuType usage examples
 public interface ExtendedMenuProvider<D> extends MenuProvider {

@@ -145,8 +145,7 @@ public final class DefaultCustomIngredients {
 	}
 
 	/// Creates an ingredient that wraps another ingredient to also check for stack's
-	/// {@linkplain
-	///  net.minecraft.core.component.DataComponents#CUSTOM_DATA custom data}.
+	/// [net.minecraft.core.component.DataComponents#CUSTOM_DATA custom data][///].
 	/// This check is non-strict; the ingredient custom data must be a subset of the stack custom data.
 	/// This is useful for mods that still rely on NBT-based custom data instead of custom components,
 	/// such as those requiring vanilla compatibility or interacting with another data packs.

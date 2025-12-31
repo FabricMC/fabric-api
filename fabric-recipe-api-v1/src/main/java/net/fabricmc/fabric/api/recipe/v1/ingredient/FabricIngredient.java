@@ -27,12 +27,12 @@ public interface FabricIngredient {
 		return null;
 	}
 
-	/// Returns whether this ingredient always requires {@linkplain net.minecraft.world.item.crafting.Ingredient#test direct stack testing}.
+	/// Returns whether this ingredient always requires [direct stack testing][net.minecraft.world.item.crafting.Ingredient#test].
 	/// Vanilla ingredients will always return `false`,
-	/// and custom ingredients need to {@linkplain CustomIngredient#requiresTesting() provide this information}.
+	/// and custom ingredients need to [provide this information][CustomIngredient#requiresTesting()].
 	///
-	/// If `false`, {@linkplain net.minecraft.world.item.crafting.Ingredient#test testing this ingredient} with an item stack must be equivalent to checking whether
-	/// the item stack's item is included in the ingredient's {@linkplain net.minecraft.world.item.crafting.Ingredient#items() list of matching stacks}.
+	/// If `false`, [testing this ingredient][net.minecraft.world.item.crafting.Ingredient#test] with an item stack must be equivalent to checking whether
+	/// the item stack's item is included in the ingredient's [list of matching stacks][net.minecraft.world.item.crafting.Ingredient#items()].
 	/// In that case, optimized matching logic can be used.
 	///
 	/// If `true`, the ingredient must always be tested using [net.minecraft.world.item.crafting.Ingredient#test(net.minecraft.world.item.ItemStack)].

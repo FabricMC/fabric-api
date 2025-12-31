@@ -47,7 +47,7 @@ import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 /// Access to [Storage&lt;FluidVariant&gt;][Storage] instances.
 public final class FluidStorage {
 	/// Sided block access to fluid variant storages.
-	/// Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
+	/// Fluid amounts are always expressed in [droplets][FluidConstants].
 	/// The `Direction` parameter may be null, meaning that the full storage (ignoring side restrictions) should be queried.
 	/// Refer to [BlockApiLookup] for documentation on how to use this field.
 	///
@@ -66,7 +66,7 @@ public final class FluidStorage {
 	/// Item access to fluid variant storages.
 	/// Querying should happen through [ContainerItemContext#find].
 	///
-	/// Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
+	/// Fluid amounts are always expressed in [droplets][FluidConstants].
 	/// By default, Fabric API only registers storage support for buckets that have a 1:1 mapping to their fluid, and for water potions.
 	///
 	/// [#combinedItemApiProvider] and [#GENERAL_COMBINED_PROVIDER] should be used for API provider registration
@@ -107,7 +107,7 @@ public final class FluidStorage {
 	@FunctionalInterface
 	public interface CombinedItemApiProvider {
 		/// Return a `Storage<FluidVariant>` if available in the given context, or `null` otherwise.
-		/// The current item variant can be {@linkplain ContainerItemContext#getItemVariant() retrieved from the context}.
+		/// The current item variant can be [retrieved from the context][ContainerItemContext#getItemVariant()].
 		@Nullable
 		Storage<FluidVariant> find(ContainerItemContext context);
 	}

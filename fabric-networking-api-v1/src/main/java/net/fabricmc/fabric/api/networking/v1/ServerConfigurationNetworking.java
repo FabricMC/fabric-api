@@ -57,7 +57,7 @@ public final class ServerConfigurationNetworking {
 	/// @param type the packet type
 	/// @param handler the handler
 	/// @return `false` if a handler is already registered to the channel
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#serverboundConfiguration() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been [registered][PayloadTypeRegistry#serverboundConfiguration()] yet
 	/// @see ServerConfigurationNetworking#unregisterGlobalReceiver(Identifier)
 	/// @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationPacketListenerImpl, CustomPacketPayload.Type, ConfigurationPacketHandler)
 	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, ConfigurationPacketHandler<T> handler) {
@@ -97,7 +97,7 @@ public final class ServerConfigurationNetworking {
 	/// @param type the packet type
 	/// @param handler the handler
 	/// @return `false` if a handler is already registered to the channel name
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#serverboundConfiguration() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been [registered][PayloadTypeRegistry#serverboundConfiguration()] yet
 	/// @see ServerPlayConnectionEvents#INIT
 	public static <T extends CustomPacketPayload> boolean registerReceiver(ServerConfigurationPacketListenerImpl packetListener, CustomPacketPayload.Type<T> type, ConfigurationPacketHandler<T> handler) {
 		return ServerNetworkingImpl.getAddon(packetListener).registerChannel(type.id(), handler);
@@ -181,7 +181,7 @@ public final class ServerConfigurationNetworking {
 
 	/// Sends a packet to a configuring player.
 	///
-	/// Any packets sent must be {@linkplain PayloadTypeRegistry#clientboundConfiguration() registered}.
+	/// Any packets sent must be [registered][PayloadTypeRegistry#clientboundConfiguration()].
 	///
 	/// @param listener the packet listener to send the packet to
 	/// @param payload to be sent
@@ -223,8 +223,8 @@ public final class ServerConfigurationNetworking {
 	public interface ConfigurationPacketHandler<T extends CustomPacketPayload> {
 		/// Handles an incoming packet.
 		///
-		/// Unlike [ServerPlayNetworking.PlayPayloadHandler] this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		/// Modification to the game should be {@linkplain net.minecraft.util.thread.BlockableEventLoop#submit(Runnable) scheduled} using the Minecraft server instance from [ServerConfigurationNetworking#getServer(ServerConfigurationPacketListenerImpl)].
+		/// Unlike [ServerPlayNetworking.PlayPayloadHandler] this method is executed on [netty's event loops][io.netty.channel.EventLoop].
+		/// Modification to the game should be [scheduled][net.minecraft.util.thread.BlockableEventLoop#submit(Runnable)] using the Minecraft server instance from [ServerConfigurationNetworking#getServer(ServerConfigurationPacketListenerImpl)].
 		///
 		/// An example usage of this:
 		///

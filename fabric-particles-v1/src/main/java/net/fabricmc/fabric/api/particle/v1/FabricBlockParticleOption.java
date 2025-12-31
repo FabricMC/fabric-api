@@ -44,7 +44,7 @@ public interface FabricBlockParticleOption {
 		return BlockParticleOptionFactoryImpl.create(type, blockState, blockPos);
 	}
 
-	/// @return the block pos from which {@linkplain BlockParticleOption#getState() the block state} was
+	/// @return the block pos from which [the block state][BlockParticleOption#getState()] was
 	/// retrieved, or `null` if not applicable or this instance was synced from a remote server that does not have
 	/// this Fabric API module installed
 	@Nullable

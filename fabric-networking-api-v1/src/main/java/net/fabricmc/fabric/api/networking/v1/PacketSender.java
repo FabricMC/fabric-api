@@ -25,7 +25,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 /// Represents something that supports sending packets to channels.
-/// Any packets sent must be {@linkplain PayloadTypeRegistry registered} in the appropriate registry.
+/// Any packets sent must be [registered][PayloadTypeRegistry] in the appropriate registry.
 @ApiStatus.NonExtendable
 public interface PacketSender {
 	/// Creates a packet from a packet payload.

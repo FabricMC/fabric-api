@@ -27,10 +27,10 @@ public interface FabricLayerRenderState {
 	/// Retrieves the [QuadEmitter] used to append quads to this layer. Calling this method a second time
 	/// invalidates any prior result. Geometry added to this emitter will not be visible in
 	/// [ItemStackRenderState.LayerRenderState#prepareQuadList()] and will be rendered after any
-	/// {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} when this layer is rendered. Vertex
+	/// [vanilla quads][ItemStackRenderState.LayerRenderState#prepareQuadList()] when this layer is rendered. Vertex
 	/// positions of geometry added to this emitter will automatically be output on
 	/// [ItemStackRenderState#visitExtents(java.util.function.Consumer)] ([ItemStackRenderState.LayerRenderState#setExtents(java.util.function.Supplier)] must still
-	/// be used to add positions of {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads}). Adding quads
+	/// be used to add positions of [vanilla quads][ItemStackRenderState.LayerRenderState#prepareQuadList()]). Adding quads
 	/// that use animated sprites to this emitter will not automatically call [ItemStackRenderState#setAnimated()]. Any
 	/// quads added to this emitter will be cleared on [ItemStackRenderState.LayerRenderState#clear()].
 	///
@@ -41,9 +41,9 @@ public interface FabricLayerRenderState {
 
 	/// Sets the function that chooses the [net.minecraft.client.renderer.rendertype.RenderType] for quads added to this layer through [#emitter()]
 	/// based on certain quad properties. This method has no effect on how
-	/// {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} are rendered. If this function
+	/// [vanilla quads][ItemStackRenderState.LayerRenderState#prepareQuadList()] are rendered. If this function
 	/// is not set, all non-vanilla quads in this layer will be rendered using this layer's
-	/// {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(net.minecraft.client.renderer.rendertype.RenderType) default render type}. If the
+	/// [default render type][ItemStackRenderState.LayerRenderState#setRenderType(net.minecraft.client.renderer.rendertype.RenderType)]. If the
 	/// function returns `null` for a certain combination of quad properties, then all non-vanilla quads with
 	/// matching property values will use this layer's default render type. This layer's function will be unset on
 	/// [ItemStackRenderState.LayerRenderState#clear()].

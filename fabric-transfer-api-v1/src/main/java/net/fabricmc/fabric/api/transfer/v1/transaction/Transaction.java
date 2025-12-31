@@ -26,11 +26,11 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 ///
 /// One can imagine that transactions are like video game checkpoints.
 ///
-///   - {@linkplain #openOuter Opening a transaction} with a try-with-resources block creates a checkpoint.
+///   - [Opening a transaction][#openOuter] with a try-with-resources block creates a checkpoint.
 ///   - Modifications to game state can then happen.
 ///   - Calling [#commit] validates the modifications that happened during the transaction,
 ///     essentially discarding the checkpoint.
-///   - Calling [#abort] or doing nothing and letting the transaction be {@linkplain #close closed} at the end
+///   - Calling [#abort] or doing nothing and letting the transaction be [closed][#close] at the end
 ///     of the try-with-resources block cancels any modification that happened during the transaction,
 ///     reverting to the checkpoint.
 ///   - Calling [#openNested] on a transaction creates a new nested transaction, i.e. a new checkpoint with the current state.
@@ -60,7 +60,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 /// Participants are responsible for upholding this contract themselves, by using [#addCloseCallback]
 /// to react to transaction close events and properly validate or revert changes.
 /// Any action that modifies state outside of the transaction, such as calls to `setChanged()` or neighbor updates,
-/// should be deferred until {@linkplain #addOuterCloseCallback after the outer transaction is closed}
+/// should be deferred until [after the outer transaction is closed][#addOuterCloseCallback]
 /// to give every participant a chance to react to transaction close events.
 ///
 /// This is very low-level for most applications, and most participants should subclass [net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant]

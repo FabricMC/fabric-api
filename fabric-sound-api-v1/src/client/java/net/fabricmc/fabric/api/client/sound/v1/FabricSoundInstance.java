@@ -72,8 +72,8 @@ public interface FabricSoundInstance {
 	/// @param library         The default buffer library, capable of loading `.ogg` files.
 	/// @param id              The resolved sound ID, equal to [net.minecraft.client.resources.sounds.SoundInstance#getSound()]'s location.
 	/// @param repeatInstantly Whether this sound should loop. This is true when the sound
-	///                        {@linkplain net.minecraft.client.resources.sounds.SoundInstance#isLooping() is repeatable} and has
-	///                        {@linkplain net.minecraft.client.resources.sounds.SoundInstance#getDelay() no delay}.
+	///                        [is repeatable][net.minecraft.client.resources.sounds.SoundInstance#isLooping()] and has
+	///                        [no delay][net.minecraft.client.resources.sounds.SoundInstance#getDelay()].
 	/// @return the loaded audio stream
 	default CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
 		return library.getStream(id, repeatInstantly);

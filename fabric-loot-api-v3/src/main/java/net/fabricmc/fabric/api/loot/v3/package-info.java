@@ -24,8 +24,8 @@
 /// loot tables from mods or vanilla, but not user-created data packs.
 /// ## Extended loot table and pool builders
 /// This API has injected interfaces to add useful methods to
-/// {@linkplain net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder loot table} and
-/// {@linkplain net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder loot pool} builders.
+/// [loot table][net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder] and
+/// [loot pool][net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder] builders.
 /// They let you add pre-built objects instead of builders, and collections of objects to the builder
 /// with one method call.
 @NullMarked

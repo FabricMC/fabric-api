@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 import java.util.function.Consumer;
 
-/// A bundle of {@linkplain MutableQuadView mutable quads} encoded by the renderer that can have more quads added to it.
+/// A bundle of [mutable quads][MutableQuadView] encoded by the renderer that can have more quads added to it.
 /// Typically used to build optimized, thread-safe, immutable [Mesh]es via [#emitter()],
 /// [#immutableCopy()], and [#clear()]. Encoded quads can also be inspected, modified, and output directly to
 /// allow for advanced use cases where creating an immutable [Mesh] is not desirable.

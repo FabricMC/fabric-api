@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
-/// Defines how {@linkplain FluidVariant fluid variants} of a given Fluid should be displayed to clients.
+/// Defines how [fluid variants][FluidVariant] of a given Fluid should be displayed to clients.
 /// Register with [FluidVariantRendering#register].
 public interface FluidVariantRenderHandler {
 	/// Append additional tooltips to the passed list if additional information is contained in the fluid variant.
@@ -58,7 +58,7 @@ public interface FluidVariantRenderHandler {
 		}
 	}
 
-	/// Return the color to use when rendering {@linkplain #getSprites the sprites} of this fluid variant.
+	/// Return the color to use when rendering [the sprites][#getSprites] of this fluid variant.
 	/// Transparency (alpha) will generally be taken into account and should be specified as well.
 	///
 	/// The level and position are optional context parameters and may be `null`.

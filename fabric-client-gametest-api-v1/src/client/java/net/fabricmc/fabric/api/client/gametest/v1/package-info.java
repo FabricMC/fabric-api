@@ -28,7 +28,7 @@
 /// documentation for details. Another pseudo-example is effects on the server need a tick to propagate to the client and
 /// vice versa, although this is related to packets more than the fact the game is suspended (see the network
 /// synchronization section below). A good strategy for debugging these issues is by
-/// {@linkplain net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#takeScreenshot(String) taking screenshots},
+/// [taking screenshots][net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#takeScreenshot(String)],
 /// which capture the immediate state of the game.
 ///
 /// A few changes have been made to how the vanilla game threads run, to make tests more reproducible. Notably, there
@@ -50,24 +50,24 @@
 ///
 /// | Setting name | Gametest default | Vanilla default | Reason |
 /// |--------------|------------------|-----------------|--------|
-/// | {@linkplain net.minecraft.client.Options#tutorialStep Tutorial step} | [NONE][net.minecraft.client.tutorial.TutorialSteps#NONE] | [MOVEMENT][net.minecraft.client.tutorial.TutorialSteps#MOVEMENT] | Consistency of tests |
-/// | {@linkplain net.minecraft.client.Options#cloudStatus() Cloud status} | [OFF][net.minecraft.client.CloudStatus#OFF] | [FANCY][net.minecraft.client.CloudStatus#FANCY] | Consistency of tests |
-/// | {@linkplain net.minecraft.client.Options#onboardAccessibility Onboard accessibility} | `false` | `true` | Would cause the game test runner to have to click through the onboard accessibility prompt |
-/// | {@linkplain net.minecraft.client.Options#renderDistance() Render distance} | `5` | `10` | Speeds up loading of chunks, especially for functions such as [TestClientLevelContext.waitForChunksRender()][net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext#waitForChunksRender()] |
-/// | {@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource) Music volume} | `0.0` | `1.0` | The game music is annoying while running gametests |
+/// | [Tutorial step][net.minecraft.client.Options#tutorialStep] | [NONE][net.minecraft.client.tutorial.TutorialSteps#NONE] | [MOVEMENT][net.minecraft.client.tutorial.TutorialSteps#MOVEMENT] | Consistency of tests |
+/// | [Cloud status][net.minecraft.client.Options#cloudStatus()] | [OFF][net.minecraft.client.CloudStatus#OFF] | [FANCY][net.minecraft.client.CloudStatus#FANCY] | Consistency of tests |
+/// | [Onboard accessibility][net.minecraft.client.Options#onboardAccessibility] | `false` | `true` | Would cause the game test runner to have to click through the onboard accessibility prompt |
+/// | [Render distance][net.minecraft.client.Options#renderDistance()] | `5` | `10` | Speeds up loading of chunks, especially for functions such as [TestClientLevelContext.waitForChunksRender()][net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext#waitForChunksRender()] |
+/// | [Music volume][net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource)] | `0.0` | `1.0` | The game music is annoying while running gametests |
 /// ## World creation options
 /// These adjusted defaults only apply if the world builder's
-/// {@linkplain net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder#setUseConsistentSettings(boolean) consistent settings}
+/// [consistent settings][net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder#setUseConsistentSettings(boolean)]
 /// have not been set to `false`.
 ///
 /// | Setting name | Gametest default | Vanilla default | Reason |
 /// |--------------|------------------|-----------------|--------|
-/// | {@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setWorldType(net.minecraft.client.gui.screens.worldselection.WorldCreationUiState.WorldTypeEntry) World type} | [FLAT][net.minecraft.world.level.levelgen.presets.WorldPresets#FLAT] | [DEFAULT][net.minecraft.world.level.levelgen.presets.WorldPresets#NORMAL] | Creates cleaner test cases |
-/// | {@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setSeed(String) Seed} | `1` | Random value | Consistency of tests |
-/// | {@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setGenerateStructures(boolean) Generate structures} | `false` | `true` | Consistency of tests and creates cleaner tests |
-/// | {@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Do daylight cycle} | `false` | `true` | Consistency of tests |
-/// | {@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Do weather cycle} | `false` | `true` | Consistency of tests |
-/// | {@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Do mob spawning} | `false` | `true` | Consistency of tests |
+/// | [World type][net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setWorldType(net.minecraft.client.gui.screens.worldselection.WorldCreationUiState.WorldTypeEntry)] | [FLAT][net.minecraft.world.level.levelgen.presets.WorldPresets#FLAT] | [DEFAULT][net.minecraft.world.level.levelgen.presets.WorldPresets#NORMAL] | Creates cleaner test cases |
+/// | [Seed][net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setSeed(String)] | `1` | Random value | Consistency of tests |
+/// | [Generate structures][net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setGenerateStructures(boolean)] | `false` | `true` | Consistency of tests and creates cleaner tests |
+/// | [Do daylight cycle][net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME] | `false` | `true` | Consistency of tests |
+/// | [Do weather cycle][net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER] | `false` | `true` | Consistency of tests |
+/// | [Do mob spawning][net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS] | `false` | `true` | Consistency of tests |
 /// ## Dedicated server properties
 ///
 /// | Setting name | Gametest default | Vanilla default | Reason |

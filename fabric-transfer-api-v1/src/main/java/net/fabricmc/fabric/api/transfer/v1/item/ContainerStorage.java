@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.transfer.item.ContainerStorageImpl;
 ///
 /// [Container] is often nicer to implement than `Storage<ItemVariant>`, but harder to use for item transfer.
 /// This wrapper allows one to have the best of both worlds, for example by storing a subclass of [net.minecraft.world.SimpleContainer] in a block entity class,
-/// while exposing it as a `Storage<ItemVariant>` to {@linkplain ItemStorage#SIDED the item transfer API}.
+/// while exposing it as a `Storage<ItemVariant>` to [the item transfer API][ItemStorage#SIDED].
 ///
 /// In particular, note that [#getSlots] can be combined with [net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage] to retrieve a wrapper around a specific range of slots.
 ///

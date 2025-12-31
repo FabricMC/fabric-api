@@ -66,7 +66,7 @@ public final class FluidVariantRendering {
 	/// Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	/// and the id of the fluid if advanced tooltips are enabled.
 	///
-	/// Compared to {@linkplain #getTooltip(FluidVariant, TooltipFlag) the other overload}, the current tooltip context is automatically used.
+	/// Compared to [TooltipFlag) the other overload][#getTooltip(FluidVariant,], the current tooltip context is automatically used.
 	public static List<Component> getTooltip(FluidVariant fluidVariant) {
 		return getTooltip(fluidVariant, Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 	}
@@ -109,12 +109,12 @@ public final class FluidVariantRendering {
 		return sprites != null ? Objects.requireNonNull(sprites[0]) : null;
 	}
 
-	/// Return the position-independent color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid variant.
+	/// Return the position-independent color that should be used to render [the sprite][#getSprite] of the passed fluid variant.
 	public static int getColor(FluidVariant fluidVariant) {
 		return getColor(fluidVariant, null, null);
 	}
 
-	/// Return the color that should be used when rendering {@linkplain #getSprite the sprite} of the passed fluid variant.
+	/// Return the color that should be used when rendering [the sprite][#getSprite] of the passed fluid variant.
 	///
 	/// If the level and the position parameters are null, a position-independent color is returned.
 	/// If the level and position parameters are not null, the color may depend on the position.

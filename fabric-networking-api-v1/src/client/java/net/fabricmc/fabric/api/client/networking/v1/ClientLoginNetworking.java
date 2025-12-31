@@ -127,8 +127,8 @@ public final class ClientLoginNetworking {
 	public interface LoginQueryRequestHandler {
 		/// Handles an incoming query request from a server.
 		///
-		/// This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		/// Modification to the game should be {@linkplain net.minecraft.util.thread.BlockableEventLoop#submit(Runnable) scheduled} using the provided Minecraft instance.
+		/// This method is executed on [netty's event loops][io.netty.channel.EventLoop].
+		/// Modification to the game should be [scheduled][net.minecraft.util.thread.BlockableEventLoop#submit(Runnable)] using the provided Minecraft instance.
 		///
 		/// The return value of this method is a completable future that may be used to delay the login process to the server until a task [is done][CompletableFuture#isDone()].
 		/// The future should complete in reasonably time to prevent disconnection by the server.

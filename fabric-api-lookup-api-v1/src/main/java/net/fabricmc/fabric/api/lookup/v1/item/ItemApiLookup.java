@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 /// When trying to [#find] an API for an item stack, the provider registered for the item of the stack will be queried if it exists.
 /// If it doesn't exist, or if it returns `null`, the fallback providers will be queried in order.
 /// ### Usage Example
-/// Let us reuse `FluidContainer` from {@linkplain net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup the net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup example}.
+/// Let us reuse `FluidContainer` from [the net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup example][net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup].
 /// We will query `FluidContainer` instances from the stack directly.
 /// We need no context, so we will use `Void`.
 ///

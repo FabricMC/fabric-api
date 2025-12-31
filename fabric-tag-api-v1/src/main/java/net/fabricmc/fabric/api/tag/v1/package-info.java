@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/// The Fabric Tag API for working with {@linkplain net.minecraft.tags.TagKey tags}.
+/// The Fabric Tag API for working with [tags][net.minecraft.tags.TagKey].
 /// # Aliasing tags
 /// **Tag alias groups** are lists of tags that refer to the same set of registry entries.
 /// The contained tags will be linked together and get the combined set of entries

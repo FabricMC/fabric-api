@@ -48,10 +48,10 @@ public interface FabricBlockStateModel {
 	/// Like [BlockStateModel#collectParts(RandomSource, List)], this method may be called outside of chunk rebuilds. For
 	/// example, some entities and block entities render blocks. In some such cases, the provided position may be the
 	/// _nearest_ position and not actual position. In others, the provided level may be
-	/// {@linkplain net.minecraft.world.level.EmptyBlockAndTintGetter#INSTANCE empty}.
+	/// [empty][net.minecraft.world.level.EmptyBlockAndTintGetter#INSTANCE].
 	///
 	/// If multiple independent subtasks use the provided random, it is recommended that implementations
-	/// {@linkplain RandomSource#setSeed(long) reseed} the random using a predetermined value before invoking each subtask, so
+	/// [reseed][RandomSource#setSeed(long)] the random using a predetermined value before invoking each subtask, so
 	/// that one subtask's operations do not affect the next subtask. For example, if a model collects geometry from
 	/// multiple submodels, each submodel is considered a subtask and thus the random should be reseeded before
 	/// collecting geometry from each submodel. See [net.minecraft.client.renderer.block.model.multipart.MultiPartModel#collectParts(RandomSource, List)] for an

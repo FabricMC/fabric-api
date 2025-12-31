@@ -114,9 +114,9 @@ public final class ModelModifier {
 			BlockState state();
 
 			/// The baker being used to bake this model. It can be used to
-			/// {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
+			/// [get resolved models][ModelBaker#getModel] and [get sprites][ModelBaker#sprites]. Note
 			/// that retrieving a model which was not previously
-			/// {@linkplain net.minecraft.client.resources.model.ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
+			/// [discovered][net.minecraft.client.resources.model.ResolvableModel.Resolver#markDependency] will log a warning and return the missing
 			/// model.
 			ModelBaker baker();
 		}
@@ -142,9 +142,9 @@ public final class ModelModifier {
 			BlockStateModel.UnbakedRoot sourceModel();
 
 			/// The baker being used to bake this model. It can be used to
-			/// {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
+			/// [get resolved models][ModelBaker#getModel] and [get sprites][ModelBaker#sprites]. Note
 			/// that retrieving a model which was not previously
-			/// {@linkplain net.minecraft.client.resources.model.ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
+			/// [discovered][net.minecraft.client.resources.model.ResolvableModel.Resolver#markDependency] will log a warning and return the missing
 			/// model.
 			ModelBaker baker();
 		}

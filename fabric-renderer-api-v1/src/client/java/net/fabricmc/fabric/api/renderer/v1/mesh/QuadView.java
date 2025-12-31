@@ -31,11 +31,11 @@ import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.util.TriState;
 
-/// Interface for reading quad data encoded in {@linkplain Mesh Meshes}.
+/// Interface for reading quad data encoded in [Meshes][Mesh].
 /// Enables models to do analysis, re-texturing or translation without knowing the
 /// renderer's vertex formats and without retaining redundant information.
 ///
-/// Unless otherwise stated, assume all properties persist through serialization into {@linkplain Mesh Meshes} and have an
+/// Unless otherwise stated, assume all properties persist through serialization into [Meshes][Mesh] and have an
 /// effect in both block and item contexts. If a property is described as transient, then its value will not persist
 /// through serialization into a [Mesh].
 ///
@@ -74,23 +74,23 @@ public interface QuadView {
 	int lightmap(int vertexIndex);
 
 	/// Returns whether a normal vector is present for the given vertex. If not, the vertex implicitly uses the
-	/// {@linkplain #faceNormal() face normal}.
+	/// [face normal][#faceNormal()].
 	boolean hasNormal(int vertexIndex);
 
 	/// Gets the X coordinate of the normal vector of the given vertex. Returns [Float#NaN] if the
-	/// {@linkplain #hasNormal(int) normal is not present}.
+	/// [normal is not present][#hasNormal(int)].
 	float normalX(int vertexIndex);
 
 	/// Gets the Y coordinate of the normal vector of the given vertex. Returns [Float#NaN] if the
-	/// {@linkplain #hasNormal(int) normal is not present}.
+	/// [normal is not present][#hasNormal(int)].
 	float normalY(int vertexIndex);
 
 	/// Gets the Z coordinate of the normal vector of the given vertex. Returns [Float#NaN] if the
-	/// {@linkplain #hasNormal(int) normal is not present}.
+	/// [normal is not present][#hasNormal(int)].
 	float normalZ(int vertexIndex);
 
 	/// Copies the normal vector of the given vertex to the given target, if the vertex
-	/// {@linkplain #hasNormal(int) has a normal}. Otherwise, returns `null`. If the target is `null` and a
+	/// [has a normal][#hasNormal(int)]. Otherwise, returns `null`. If the target is `null` and a
 	/// normal exists, a new [Vector3f] will be allocated and returned.
 	@Nullable
 	Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target);
@@ -99,7 +99,7 @@ public interface QuadView {
 	/// not co-planar.
 	Vector3fc faceNormal();
 
-	/// Gets the light face of this quad as implied by its {@linkplain #faceNormal() face normal}. It is equal to the
+	/// Gets the light face of this quad as implied by its [face normal][#faceNormal()]. It is equal to the
 	/// axis-aligned direction closest to the face normal, and is never `null`.
 	///
 	/// This method is equivalent to [BakedQuad#direction()].

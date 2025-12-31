@@ -44,7 +44,7 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 /// on extraction.
 /// Such items that contain resources are often referred to as "container items".
 ///
-/// When an {@linkplain ItemApiLookup item API} requires a `ContainerItemContext` as context,
+/// When an [item API][ItemApiLookup] requires a `ContainerItemContext` as context,
 /// it will generally be suitable to obtain a context instance with [#ofPlayerHand] or [#ofPlayerCursor],
 /// and then use [#find] to query an API instance.
 ///
@@ -61,9 +61,9 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 ///
 /// A `ContainerItemContext` allows these operations to be performed, thanks to the following parts:
 ///
-///   - {@linkplain #getMainSlot The main slot} or current slot of the context, containing the item the API was queried for initially.
+///   - [The main slot][#getMainSlot] or current slot of the context, containing the item the API was queried for initially.
 ///     In the example above, this is the slot containing the water bucket, used for steps 1 and 2.
-///   - {@linkplain #insertOverflow An overflow insertion function}, that can be used to insert items into the context's inventory
+///   - [An overflow insertion function][#insertOverflow], that can be used to insert items into the context's inventory
 ///     when insertion into a specific slot fails. In our example above, this is the function used for step 3.
 ///   - The context may also contain additional slots, accessible through [#getAdditionalSlots].
 ///
@@ -158,7 +158,7 @@ public interface ContainerItemContext {
 
 	/// Return the current amount of [#getItemVariant()] in the slot of the context.
 	///
-	/// @throws IllegalStateException If {@linkplain #getItemVariant() the current variant} is blank.
+	/// @throws IllegalStateException If [the current variant][#getItemVariant()] is blank.
 	default long getAmount() {
 		if (getItemVariant().isBlank()) {
 			throw new IllegalStateException("Amount may not be queried when the current item variant is blank.");
@@ -186,7 +186,7 @@ public interface ContainerItemContext {
 		return getMainSlot().extract(itemVariant, maxAmount, transaction);
 	}
 
-	/// Try to exchange as many items as possible of {@linkplain #getItemVariant() the current variant} with another variant.
+	/// Try to exchange as many items as possible of [the current variant][#getItemVariant()] with another variant.
 	/// That is, extract the old variant, and insert the same amount of the new variant instead.
 	///
 	/// @param newVariant The variant of the items after the conversion. May not be blank.

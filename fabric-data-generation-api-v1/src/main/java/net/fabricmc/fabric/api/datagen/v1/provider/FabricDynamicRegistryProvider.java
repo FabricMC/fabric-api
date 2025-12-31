@@ -139,7 +139,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		/// Adds a new object to be data generated.
 		///
 		/// @param object The object to generate. This holder must have both a
-		///               {@linkplain Holder#isBound() key and value}.
+		///               [key and value][Holder#isBound()].
 		public <T> void add(Holder.Reference<T> object) {
 			add(object.key(), object.value());
 		}
@@ -147,7 +147,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		/// Adds a new object to be data generated with several resource conditions.
 		///
 		/// @param object     The object to generate. This holder must have both a
-		///                   {@linkplain Holder#isBound() key and value}.
+		///                   [key and value][Holder#isBound()].
 		/// @param conditions Conditions that must be satisfied to load this object.
 		public <T> void add(Holder.Reference<T> object, ResourceCondition... conditions) {
 			add(object.key(), object.value(), conditions);

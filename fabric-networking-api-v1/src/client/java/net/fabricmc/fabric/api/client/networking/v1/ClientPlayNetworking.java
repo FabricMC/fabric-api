@@ -59,7 +59,7 @@ public final class ClientPlayNetworking {
 	/// @param type the payload type
 	/// @param handler the handler
 	/// @return false if a handler is already registered to the channel
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundPlay() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been [registered][net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundPlay()] yet
 	/// @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
 	/// @see ClientPlayNetworking#registerReceiver(CustomPacketPayload.Type, PlayPayloadHandler)
 	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
@@ -93,13 +93,13 @@ public final class ClientPlayNetworking {
 	/// If a handler is already registered for the `type`, this method will return `false`, and no change will be made.
 	/// Use [#unregisterReceiver(Identifier)] to unregister the existing handler.
 	///
-	/// For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
+	/// For example, if you only register a receiver using this method when a [ClientLoginNetworking.LoginQueryRequestHandler)][ClientLoginNetworking#registerGlobalReceiver(Identifier,]
 	/// login query has been received, you should use [ClientPlayConnectionEvents#INIT] to register the channel handler.
 	///
 	/// @param type the payload type
 	/// @param handler the handler
 	/// @return `false` if a handler is already registered for the type
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundPlay() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been [registered][net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundPlay()] yet
 	/// @throws IllegalStateException if the client is not connected to a server
 	/// @see ClientPlayConnectionEvents#INIT
 	public static <T extends CustomPacketPayload> boolean registerReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
@@ -204,7 +204,7 @@ public final class ClientPlayNetworking {
 
 	/// Sends a payload to the connected server.
 	///
-	/// Any packets sent must be {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#serverboundPlay() registered}.
+	/// Any packets sent must be [registered][net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#serverboundPlay()].
 	///
 	/// @param payload the payload
 	/// @throws IllegalStateException if the client is not connected to a server

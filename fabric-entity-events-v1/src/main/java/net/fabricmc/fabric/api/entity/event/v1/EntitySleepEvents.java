@@ -29,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/// Events about the sleep of {@linkplain LivingEntity living entities}.
+/// Events about the sleep of [living entities][LivingEntity].
 ///
 /// These events can be categorized into three groups:
 ///
@@ -90,7 +90,7 @@ public final class EntitySleepEvents {
 	/// If `false`, the player wakes up.
 	///
 	/// This event is only checked _during_ sleeping, so an entity can
-	/// {@linkplain LivingEntity#startSleeping(BlockPos) start sleeping} on any block, but will immediately
+	/// [start sleeping][LivingEntity#startSleeping(BlockPos)] on any block, but will immediately
 	/// wake up if this check fails.
 	///
 	/// @see LivingEntity#checkBedExists()
@@ -193,7 +193,7 @@ public final class EntitySleepEvents {
 		/// Checks whether a player can start sleeping in a bed-like block.
 		///
 		/// @param player      the sleeping player
-		/// @param sleepingPos the future {@linkplain LivingEntity#getSleepingPos() sleeping position} of the entity
+		/// @param sleepingPos the future [sleeping position][LivingEntity#getSleepingPos()] of the entity
 		/// @return `null` if the player can sleep, or a failure reason if they cannot
 		/// @see Player#startSleepInBed(BlockPos)
 		Player.@Nullable BedSleepingProblem allowSleep(Player player, BlockPos sleepingPos);
@@ -204,7 +204,7 @@ public final class EntitySleepEvents {
 		/// Called when an entity starts to sleep.
 		///
 		/// @param entity      the sleeping entity
-		/// @param sleepingPos the {@linkplain LivingEntity#getSleepingPos() sleeping position} of the entity
+		/// @param sleepingPos the [sleeping position][LivingEntity#getSleepingPos()] of the entity
 		void onStartSleeping(LivingEntity entity, BlockPos sleepingPos);
 	}
 
@@ -213,7 +213,7 @@ public final class EntitySleepEvents {
 		/// Called when an entity stops sleeping and wakes up.
 		///
 		/// @param entity      the sleeping entity
-		/// @param sleepingPos the {@linkplain LivingEntity#getSleepingPos() sleeping position} of the entity
+		/// @param sleepingPos the [sleeping position][LivingEntity#getSleepingPos()] of the entity
 		void onStopSleeping(LivingEntity entity, BlockPos sleepingPos);
 	}
 
@@ -221,7 +221,7 @@ public final class EntitySleepEvents {
 	public interface AllowBed {
 		/// Checks whether a block is a valid bed for the entity.
 		///
-		/// Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
+		/// Non-[passing][InteractionResult#PASS] return values cancel further callbacks.
 		///
 		/// @param entity        the sleeping entity
 		/// @param sleepingPos   the position of the block
@@ -236,10 +236,10 @@ public final class EntitySleepEvents {
 	public interface AllowSleepTime {
 		/// Checks whether the current time of day is valid for sleeping.
 		///
-		/// Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
+		/// Non-[passing][InteractionResult#PASS] return values cancel further callbacks.
 		///
 		/// @param player        the sleeping player
-		/// @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPos() sleeping position} of the player
+		/// @param sleepingPos   the (possibly still unset) [sleeping position][LivingEntity#getSleepingPos()] of the player
 		/// @param vanillaResult `true` if vanilla allows the time, `false` otherwise
 		/// @return [InteractionResult#SUCCESS] if the time is valid, [InteractionResult#FAIL] if it's not,
 		///         [InteractionResult#PASS] to fall back to other callbacks
@@ -250,10 +250,10 @@ public final class EntitySleepEvents {
 	public interface AllowNearbyMonsters {
 		/// Checks whether a player can sleep when monsters are nearby.
 		///
-		/// Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
+		/// Non-[passing][InteractionResult#PASS] return values cancel further callbacks.
 		///
 		/// @param player        the sleeping player
-		/// @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPos() sleeping position} of the player
+		/// @param sleepingPos   the (possibly still unset) [sleeping position][LivingEntity#getSleepingPos()] of the player
 		/// @param vanillaResult `true` if vanilla's monster check succeeded (there were no monsters), `false` otherwise
 		/// @return [InteractionResult#SUCCESS] to allow sleeping, [InteractionResult#FAIL] to prevent sleeping,
 		///         [InteractionResult#PASS] to fall back to other callbacks

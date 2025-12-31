@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Range;
 
-/// A bundle of {@linkplain QuadView quads} encoded by the renderer. It may be {@linkplain MutableMesh mutable} or
-/// {@linkplain Mesh immutable}.
+/// A bundle of [quads][QuadView] encoded by the renderer. It may be [mutable][MutableMesh] or
+/// [immutable][Mesh].
 ///
 /// Meshes are similar in purpose to `List<BakedQuad>` instances passed around in vanilla pipelines, but allow
 /// the renderer to optimize their format for performance and memory allocation.

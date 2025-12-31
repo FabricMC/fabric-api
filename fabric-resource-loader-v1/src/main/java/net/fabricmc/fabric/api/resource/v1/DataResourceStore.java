@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.resource.v1;
 
 /// Represents a resource store for data.
 ///
-/// Such resource store can be filled in the application phase of data {@linkplain net.minecraft.server.packs.resources.PreparableReloadListener reload listeners}.
+/// Such resource store can be filled in the application phase of data [reload listeners][net.minecraft.server.packs.resources.PreparableReloadListener].
 /// And queried through an instance of [net.minecraft.server.MinecraftServer].
 public interface DataResourceStore {
-	/// Represents a typed key for {@linkplain DataResourceStore the data resource store}.
+	/// Represents a typed key for [the data resource store][DataResourceStore].
 	///
 	/// @param <T> the type of this key
 	final class Key<T> {

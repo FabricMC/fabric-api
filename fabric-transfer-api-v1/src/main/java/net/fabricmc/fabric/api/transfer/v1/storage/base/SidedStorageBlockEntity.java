@@ -25,8 +25,8 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
-/// **Optional** helper class that can be implemented on block entities that wish to provide a {@linkplain net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage#SIDED sided fluid storage}
-/// and/or a {@linkplain net.fabricmc.fabric.api.transfer.v1.item.ItemStorage#SIDED sided item storage} without having to register a provider for each block entity type.
+/// **Optional** helper class that can be implemented on block entities that wish to provide a [sided fluid storage][net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage#SIDED]
+/// and/or a [sided item storage][net.fabricmc.fabric.api.transfer.v1.item.ItemStorage#SIDED] without having to register a provider for each block entity type.
 ///
 /// How it works is that fabric registers fallback providers for instances of this interface.
 /// This can be used for convenient Storage registration, but please always use the SIDED lookups for queries:

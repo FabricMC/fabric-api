@@ -197,7 +197,7 @@ public final class ConventionalItemTags {
 
 	// Drinks
 	/// Drinks are defined as (1) consumable items that (2) use the
-	/// {@linkplain net.minecraft.world.item.ItemUseAnimation#DRINK drink use animation}, (3) can be consumed regardless of the
+	/// [drink use animation][net.minecraft.world.item.ItemUseAnimation#DRINK], (3) can be consumed regardless of the
 	/// player's current hunger.
 	///
 	/// Drinks may provide nutrition and saturation, but are not required to do so.
@@ -214,7 +214,7 @@ public final class ConventionalItemTags {
 	/// For consumable drinks that are magic in nature and usually grant at least one
 	/// [net.minecraft.world.effect.MobEffect] when consumed.
 	public static final TagKey<Item> MAGIC_DRINKS = register("drinks/magic");
-	/// For drinks that always grant the {@linkplain net.minecraft.world.effect.MobEffects#BAD_OMEN Bad Omen} effect.
+	/// For drinks that always grant the [Bad Omen][net.minecraft.world.effect.MobEffects#BAD_OMEN] effect.
 	public static final TagKey<Item> OMINOUS_DRINKS = register("drinks/ominous");
 	/// Non-alcoholic, plant based fruit and vegetable juices belong in this tag, for example apple juice and carrot juice.
 	///
@@ -223,9 +223,9 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> JUICE_DRINKS = register("drinks/juice");
 
 	// Drink containing items
-	/// For non-empty buckets that are {@linkplain #DRINKS drinkable}.
+	/// For non-empty buckets that are [drinkable][#DRINKS].
 	public static final TagKey<Item> DRINK_CONTAINING_BUCKET = register("drink_containing/bucket");
-	/// For non-empty bottles that are {@linkplain #DRINKS drinkable}.
+	/// For non-empty bottles that are [drinkable][#DRINKS].
 	public static final TagKey<Item> DRINK_CONTAINING_BOTTLE = register("drink_containing/bottle");
 
 	// Buckets

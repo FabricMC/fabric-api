@@ -61,8 +61,7 @@ public final class ClientSendMessageEvents {
 
 	/// An event triggered when the client sends a chat message,
 	/// typically from a client GUI. Is not called when
-	/// {@linkplain
-	///  #ALLOW_CHAT chat messages are blocked}.
+	/// [#ALLOW_CHAT chat messages are blocked][///].
 	/// Mods can use this to modify the message.
 	/// Use [#CHAT] if not modifying the message.
 	public static final Event<ModifyChat> MODIFY_CHAT = EventFactory.createArrayBacked(ModifyChat.class, listeners -> (message) -> {
@@ -76,7 +75,7 @@ public final class ClientSendMessageEvents {
 	/// An event triggered when the client sends a command,
 	/// which is whenever the player executes a command
 	/// including client commands registered with `fabric-command-api`.
-	/// Is not called when {@linkplain #ALLOW_COMMAND command messages are blocked}.
+	/// Is not called when [command messages are blocked][#ALLOW_COMMAND].
 	/// The command string does not include a slash at the beginning.
 	/// Mods can use this to modify the command.
 	/// Use [#COMMAND] if not modifying the command.
@@ -90,8 +89,7 @@ public final class ClientSendMessageEvents {
 
 	/// An event triggered when the client sends a chat message,
 	/// typically from a client GUI. Is not called when
-	/// {@linkplain
-	///  #ALLOW_CHAT chat messages are blocked}.
+	/// [#ALLOW_CHAT chat messages are blocked][///].
 	/// Mods can use this to listen to the message.
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message) -> {
 		for (Chat listener : listeners) {
@@ -102,7 +100,7 @@ public final class ClientSendMessageEvents {
 	/// An event triggered when the client sends a command,
 	/// which is whenever the player executes a command
 	/// including client commands registered with `fabric-command-api`.
-	/// Is not called when {@linkplain #ALLOW_COMMAND command messages are blocked}.
+	/// Is not called when [command messages are blocked][#ALLOW_COMMAND].
 	/// The command string does not include a slash at the beginning.
 	/// Mods can use this to listen to the command.
 	public static final Event<Command> COMMAND = EventFactory.createArrayBacked(Command.class, listeners -> (command) -> {
@@ -156,8 +154,7 @@ public final class ClientSendMessageEvents {
 	public interface ModifyChat {
 		/// Called when the client sends a chat message,
 		/// typically from a client GUI. Is not called when
-		/// {@linkplain
-		///  #ALLOW_CHAT chat messages are blocked}.
+		/// [#ALLOW_CHAT chat messages are blocked][///].
 		/// Use [#CHAT] if not modifying the message.
 		///
 		/// @param message the message that will be sent to the server
@@ -170,7 +167,7 @@ public final class ClientSendMessageEvents {
 		/// Called when the client sends a command,
 		/// which is whenever the player executes a command
 		/// including client commands registered with `fabric-command-api`.
-		/// Is not called when {@linkplain #ALLOW_COMMAND command messages are blocked}.
+		/// Is not called when [command messages are blocked][#ALLOW_COMMAND].
 		/// The command string does not include a slash at the beginning.
 		/// Use [#COMMAND] if not modifying the command.
 		///
@@ -183,8 +180,7 @@ public final class ClientSendMessageEvents {
 	public interface Chat {
 		/// Called when the client sends a chat message,
 		/// typically from a client GUI. Is not called when
-		/// {@linkplain
-		///  #ALLOW_CHAT chat messages are blocked}.
+		/// [#ALLOW_CHAT chat messages are blocked][///].
 		///
 		/// @param message the message that will be sent to the server
 		void onSendChatMessage(String message);
@@ -195,7 +191,7 @@ public final class ClientSendMessageEvents {
 		/// Called when the client sends a command,
 		/// which is whenever the player executes a command
 		/// including client commands registered with `fabric-command-api`.
-		/// Is not called when {@linkplain #ALLOW_COMMAND command messages are blocked}.
+		/// Is not called when [command messages are blocked][#ALLOW_COMMAND].
 		/// The command string does not include a slash at the beginning.
 		///
 		/// @param command the command that will be sent to the server, without a slash at the beginning.

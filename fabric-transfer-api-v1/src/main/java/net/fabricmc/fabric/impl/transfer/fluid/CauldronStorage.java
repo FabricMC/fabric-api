@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
 ///
 ///   - To make sure multiple access to the same cauldron return the same wrapper, we maintain a `(Level, BlockPos) -> Wrapper` cache.
 ///   - The wrapper mutates the level directly with setBlockState, but updates are suppressed.
-///     On final commit, a block update is sent by reverting to {@linkplain #lastReleasedSnapshot the initial block state} with updates suppressed,
+///     On final commit, a block update is sent by reverting to [the initial block state][#lastReleasedSnapshot] with updates suppressed,
 ///     then setting the final block state again, without suppressing updates.
 ///
 public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {

@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ServerConfigurationConnectionEvents {
 	/// Event fired before any vanilla configuration has taken place.
 	///
-	/// This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
+	/// This event is executed on [netty's event loops][io.netty.channel.EventLoop].
 	///
 	/// Task queued during this event will complete before vanilla configuration starts.
 	public static final Event<Configure> BEFORE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (listener, server) -> {
@@ -37,7 +37,7 @@ public final class ServerConfigurationConnectionEvents {
 
 	/// Event fired during vanilla configuration.
 	///
-	/// This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
+	/// This event is executed on [netty's event loops][io.netty.channel.EventLoop].
 	///
 	/// An example usage of this:
 	///

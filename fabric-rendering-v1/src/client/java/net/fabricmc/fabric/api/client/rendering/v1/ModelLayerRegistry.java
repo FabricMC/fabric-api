@@ -27,7 +27,7 @@ import net.fabricmc.fabric.mixin.client.rendering.ModelLayersAccessor;
 
 /// A helpers for registering model layers and providers for the layer's definition.
 public final class ModelLayerRegistry {
-	/// Registers a model layer and registers a provider for a {@linkplain LayerDefinition}.
+	/// Registers a model layer and registers a provider for a [LayerDefinition].
 	///
 	/// @param modelLayer the model layer location
 	/// @param provider the provider for the layer definition

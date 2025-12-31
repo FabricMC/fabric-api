@@ -128,8 +128,8 @@ public final class ServerLoginNetworking {
 	public interface LoginQueryResponseHandler {
 		/// Handles an incoming query response from a client.
 		///
-		/// This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		/// Modification to the game should be {@linkplain net.minecraft.util.thread.BlockableEventLoop#submit(Runnable) scheduled} using the provided Minecraft instance.
+		/// This method is executed on [netty's event loops][io.netty.channel.EventLoop].
+		/// Modification to the game should be [scheduled][net.minecraft.util.thread.BlockableEventLoop#submit(Runnable)] using the provided Minecraft instance.
 		///
 		/// **Whether the client understood the query should be checked before reading from the payload of the packet.**
 		/// @param server the server

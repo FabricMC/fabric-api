@@ -61,11 +61,11 @@ public interface MutableQuadView extends QuadView {
 	int BAKE_ROTATE_270 = 3;
 
 	/// When enabled, texture coordinates are assigned based on vertex positions and the
-	/// {@linkplain #nominalFace() nominal face}.
+	/// [nominal face][#nominalFace()].
 	/// Any existing UV coordinates will be replaced and the [#BAKE_NORMALIZED] flag will be ignored.
 	/// Pass in bakeFlags parameter to [#spriteBake(TextureAtlasSprite, int)].
 	///
-	/// UV lock derives texture coordinates based on {@linkplain #nominalFace() nominal face} by projecting the quad
+	/// UV lock derives texture coordinates based on [nominal face][#nominalFace()] by projecting the quad
 	/// onto it, even when the quad is not co-planar with it. This flag is ignored if the normal face is `null`.
 	int BAKE_LOCK_UV = 4;
 
@@ -178,7 +178,7 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
-	/// Sets the normal vector for the given vertex. The {@linkplain #faceNormal() face normal} is used when no vertex
+	/// Sets the normal vector for the given vertex. The [face normal][#faceNormal()] is used when no vertex
 	/// normal is provided. Models that have per-vertex normals should include them to get correct lighting when it
 	/// matters.
 	MutableQuadView normal(int vertexIndex, float x, float y, float z);
@@ -224,7 +224,7 @@ public interface MutableQuadView extends QuadView {
 	/// Controls how this quad's pixels should be blended with the scene.
 	///
 	/// If set to `null`, [net.minecraft.client.renderer.ItemBlockRenderTypes#getChunkRenderType(net.minecraft.world.level.block.state.BlockState)] will be used to retrieve
-	/// the {@linkplain ChunkSectionLayer chunk layer} in block contexts. Set to another value to override this behavior.
+	/// the [chunk layer][ChunkSectionLayer] in block contexts. Set to another value to override this behavior.
 	///
 	/// In block contexts, a non-null value will be used directly. In item contexts, any value will be converted to a
 	/// [net.minecraft.client.renderer.rendertype.RenderType] using [net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState#setRenderTypeGetter(net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter)].
@@ -255,9 +255,9 @@ public interface MutableQuadView extends QuadView {
 	/// Controls whether vertex colors should be modified for ambient occlusion.
 	///
 	/// If set to [TriState#DEFAULT], ambient occlusion will be used if the block state has
-	/// {@linkplain net.minecraft.world.level.block.state.BlockState#getLightEmission() a luminance} of 0. Set to [TriState#TRUE] or [TriState#FALSE]
+	/// [a luminance][net.minecraft.world.level.block.state.BlockState#getLightEmission()] of 0. Set to [TriState#TRUE] or [TriState#FALSE]
 	/// to override this behavior. [TriState#TRUE] will not have an effect if
-	/// {@linkplain net.minecraft.client.Minecraft#useAmbientOcclusion() ambient occlusion is disabled globally}.
+	/// [ambient occlusion is disabled globally][net.minecraft.client.Minecraft#useAmbientOcclusion()].
 	///
 	/// The default value is [TriState#DEFAULT].
 	///
@@ -267,7 +267,7 @@ public interface MutableQuadView extends QuadView {
 	/// Controls how foil (also known as glint) should be applied.
 	///
 	/// If set to `null`, foil will be applied in item contexts based on
-	/// {@linkplain ItemStackRenderState.LayerRenderState#setFoilType(ItemStackRenderState.FoilType) the foil type of the layer}. Set
+	/// [the foil type of the layer][ItemStackRenderState.LayerRenderState#setFoilType(ItemStackRenderState.FoilType)]. Set
 	/// to another value to override this behavior.
 	///
 	/// The default value is `null`.
@@ -286,7 +286,7 @@ public interface MutableQuadView extends QuadView {
 	/// @see ShadeMode
 	MutableQuadView shadeMode(ShadeMode mode);
 
-	/// Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
+	/// Sets the [atlas texture][QuadAtlas] used by this quad.
 	///
 	/// In block contexts, this property must be [QuadAtlas#BLOCK]. In item contexts, this property will be
 	/// converted to a [net.minecraft.client.renderer.rendertype.RenderType] using [net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState#setRenderTypeGetter(net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter)].

@@ -66,8 +66,8 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	/// @param stillTexture The texture for still fluid.
 	/// @param flowingTexture The texture for flowing/falling fluid.
 	/// @param overlayTexture The texture behind glass, leaves and other
-	/// {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
-	///  transparent blocks}.
+	/// [registered
+	///  transparent blocks][FluidRenderHandlerRegistry#setBlockTransparency].
 	/// @param tint The fluid color RGB. Alpha is ignored.
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint) {
 		this.stillTexture = Objects.requireNonNull(stillTexture, "stillTexture");
@@ -82,8 +82,8 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	/// @param stillTexture The texture for still fluid.
 	/// @param flowingTexture The texture for flowing/falling fluid.
 	/// @param overlayTexture The texture behind glass, leaves and other
-	/// {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
-	///  transparent blocks}.
+	/// [registered
+	///  transparent blocks][FluidRenderHandlerRegistry#setBlockTransparency].
 	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, Identifier overlayTexture) {
 		this(stillTexture, flowingTexture, overlayTexture, -1);
 	}

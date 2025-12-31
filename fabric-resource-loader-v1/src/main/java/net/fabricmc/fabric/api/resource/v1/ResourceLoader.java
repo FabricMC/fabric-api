@@ -34,11 +34,11 @@ import net.fabricmc.loader.api.ModContainer;
 public interface ResourceLoader {
 	/// The resource listener state key for the registry lookup [HolderLookup.Provider].
 	///
-	/// @apiNote The holder lookup is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	/// @apiNote The holder lookup is only available in [server data][PackType#SERVER_DATA] reload listeners.
 	PreparableReloadListener.StateKey<HolderLookup.Provider> REGISTRY_LOOKUP_KEY = new PreparableReloadListener.StateKey<>();
 	/// The resource listener state key for the currently enabled feature flag set.
 	///
-	/// @apiNote The feature flag set is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	/// @apiNote The feature flag set is only available in [server data][PackType#SERVER_DATA] reload listeners.
 	PreparableReloadListener.StateKey<FeatureFlagSet> FEATURE_FLAG_SET_KEY = new PreparableReloadListener.StateKey<>();
 
 	static ResourceLoader get(PackType type) {

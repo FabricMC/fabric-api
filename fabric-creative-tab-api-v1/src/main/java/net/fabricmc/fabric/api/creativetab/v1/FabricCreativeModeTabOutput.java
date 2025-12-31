@@ -29,7 +29,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-/// This class allows the output of {@linkplain CreativeModeTab creative mode tabs} to be modified by the events in [CreativeModeTabEvents].
+/// This class allows the output of [creative mode tabs][CreativeModeTab] to be modified by the events in [CreativeModeTabEvents].
 public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	private final CreativeModeTab.ItemDisplayParameters context;
 	private final List<ItemStack> displayStacks;
@@ -157,7 +157,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	/// Adds stacks after an existing item in the tab, or at the end, if the item isn't in the tab.
 	///
 	/// @param afterLast  Add `newStacks` after the last entry of this item in the tab.
-	/// @param newStacks  The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
+	/// @param newStacks  The stacks to add. Only [enabled][#isEnabled(ItemStack)] stacks will be added.
 	/// @param visibility Determines whether the stack will be shown in the tab itself, returned
 	///                   for searches, or both.
 	public void insertAfter(ItemLike afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
@@ -180,7 +180,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	/// Adds stacks after an existing stack in the tab, or at the end, if the stack isn't in the tab.
 	///
 	/// @param afterLast  Add `newStacks` after the last creative mode tab output matching this stack (compared using [ItemStack#isSameItemSameComponents]).
-	/// @param newStacks  The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
+	/// @param newStacks  The stacks to add. Only [enabled][#isEnabled(ItemStack)] stacks will be added.
 	/// @param visibility Determines whether the stack will be shown in the tab itself, returned
 	///                   for searches, or both.
 	public void insertAfter(ItemStack afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
@@ -203,7 +203,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	/// Adds stacks after the last creative mode tab output matching a predicate, or at the end, if no outputs match.
 	///
 	/// @param afterLast  Add `newStacks` after the last creative mode tab output matching this predicate.
-	/// @param newStacks  The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
+	/// @param newStacks  The stacks to add. Only [enabled][#isEnabled(ItemStack)] stacks will be added.
 	/// @param visibility Determines whether the stack will be shown in the tab itself, returned
 	///                   for searches, or both.
 	public void insertAfter(Predicate<ItemStack> afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
@@ -256,7 +256,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	/// Adds stacks before an existing item in the tab, or at the end, if the item isn't in the tab.
 	///
 	/// @param beforeFirst Add `newStacks` before the first entry of this item in the tab.
-	/// @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
+	/// @param newStacks   The stacks to add. Only [enabled][#isEnabled(ItemStack)] stacks will be added.
 	/// @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	///                    for searches, or both.
 	public void insertBefore(ItemLike beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
@@ -279,7 +279,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	/// Adds stacks before an existing stack to the creative mode tab, or at the end, if the stack isn't in the creative mode tab.
 	///
 	/// @param beforeFirst Add `newStacks` before the first creative mode tab output matching this stack (compared using [ItemStack#isSameItemSameComponents]).
-	/// @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
+	/// @param newStacks   The stacks to add. Only [enabled][#isEnabled(ItemStack)] stacks will be added.
 	/// @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	///                    for searches, or both.
 	public void insertBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
@@ -302,7 +302,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	/// Adds stacks before the first tab output matching a predicate, or at the end, if no output match.
 	///
 	/// @param beforeFirst Add `newStacks` before the first tab output matching this predicate.
-	/// @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
+	/// @param newStacks   The stacks to add. Only [enabled][#isEnabled(ItemStack)] stacks will be added.
 	/// @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	///                    for searches, or both.
 	public void insertBefore(Predicate<ItemStack> beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {

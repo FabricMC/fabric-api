@@ -130,7 +130,7 @@ public final class ServerLifecycleEvents {
 	public interface SyncDataPackContents {
 		/// Called right before tags and recipes are sent to a player,
 		/// either because the player joined, or because the server reloaded resources.
-		/// The {@linkplain MinecraftServer#getResourceManager() server resource manager} is up-to-date when this is called.
+		/// The [server resource manager][MinecraftServer#getResourceManager()] is up-to-date when this is called.
 		///
 		/// For example, this event can be used to sync data loaded with custom resource reloaders.
 		///

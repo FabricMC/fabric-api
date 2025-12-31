@@ -56,7 +56,7 @@ public interface PlayerInventoryStorage extends ContainerStorage {
 	}
 
 	/// Insert items into this player inventory. Behaves the same as [#offer].
-	/// More fine-tuned insertion, for example over a specific range of slots, is possible with {@linkplain #getSlots() the slot list}.
+	/// More fine-tuned insertion, for example over a specific range of slots, is possible with [the slot list][#getSlots()].
 	///
 	/// @see #offer
 	@Override

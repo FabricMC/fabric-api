@@ -28,8 +28,8 @@ public final class ParticleRenderEvents {
 	private ParticleRenderEvents() {
 	}
 
-	/// An event that checks if a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle}
-	/// can be tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color}.
+	/// An event that checks if a [terrain particle][net.minecraft.client.particle.TerrainParticle]
+	/// can be tinted using the corresponding block's [color][net.minecraft.client.color.block.BlockColor].
 	///
 	/// The default return value of this event is `true`. If any callback returns `false` for a given call,
 	/// further iteration will be canceled and the event invoker will return `false`.
@@ -46,8 +46,8 @@ public final class ParticleRenderEvents {
 
 	@FunctionalInterface
 	public interface AllowTerrainParticleTint {
-		/// Checks whether a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle} can be
-		/// tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor block color}.
+		/// Checks whether a [terrain particle][net.minecraft.client.particle.TerrainParticle] can be
+		/// tinted using the corresponding block's [block color][net.minecraft.client.color.block.BlockColor].
 		///
 		/// @param state the block state that the particle represents
 		/// @param level the level the particle is created in

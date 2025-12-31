@@ -36,7 +36,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	/// [BlockAndTintGetter] and [BlockPos] to pass to
 	/// [BlockStateModel#emitQuads(net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, net.minecraft.util.RandomSource, java.util.function.Predicate)] when
 	/// necessary. **Prefer using this method over the vanilla alternative to correctly render models that have geometry
-	/// on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.**
+	/// on multiple [chunk layers][ChunkSectionLayer] and to provide the model with additional context.**
 	///
 	/// This method allows rendering a block model with minimal transformations to the model geometry. Also invokes
 	/// the [net.minecraft.client.renderer.special.SpecialModelRenderer]. Usually used by entity renderers.
@@ -62,7 +62,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	/// [BlockAndTintGetter], [BlockPos], and [BlockState] to pass to
 	/// [BlockStateModel#emitQuads(net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, net.minecraft.util.RandomSource, java.util.function.Predicate)] when
 	/// necessary. **Prefer using this method over the vanilla alternative to correctly render models that have geometry
-	/// on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.**
+	/// on multiple [chunk layers][ChunkSectionLayer] and to provide the model with additional context.**
 	///
 	/// This method allows rendering a block model with minimal transformations to the model geometry. Usually used by
 	/// entity renderers.

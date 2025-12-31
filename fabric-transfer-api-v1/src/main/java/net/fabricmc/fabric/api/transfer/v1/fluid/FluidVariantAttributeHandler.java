@@ -28,7 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-/// Defines the common attributes of {@linkplain FluidVariant fluid variants} of a given net.minecraft.world.level.material.Fluid.
+/// Defines the common attributes of [fluid variants][FluidVariant] of a given net.minecraft.world.level.material.Fluid.
 /// Register with [FluidVariantAttributes#register].
 public interface FluidVariantAttributeHandler {
 	/// Return the name that should be used for the passed fluid variant.

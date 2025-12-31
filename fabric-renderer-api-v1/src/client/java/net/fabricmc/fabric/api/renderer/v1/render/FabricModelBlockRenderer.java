@@ -37,7 +37,7 @@ public interface FabricModelBlockRenderer {
 	/// using this method over the vanilla alternative to correctly retrieve geometry from models that implement
 	/// [BlockStateModel#emitQuads(net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, net.minecraft.util.RandomSource, java.util.function.Predicate)] and to
 	/// correctly buffer models that have geometry on multiple
-	/// {@linkplain net.minecraft.client.renderer.chunk.ChunkSectionLayer chunk layers}.**
+	/// [chunk layers][net.minecraft.client.renderer.chunk.ChunkSectionLayer].**
 	///
 	/// This method allows buffering a block model in a terrain-like context, which usually includes stages like
 	/// culling, dynamic tinting, shading, and flat/smooth lighting.

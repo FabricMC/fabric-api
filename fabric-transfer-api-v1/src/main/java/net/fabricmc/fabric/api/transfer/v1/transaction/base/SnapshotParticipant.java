@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 /// This will save the state of this participant using [#createSnapshot] if no state was already saved for that transaction.
 /// When the transaction is aborted and changes need to be rolled back, [#readSnapshot] will be called
 /// to signal that the current state should revert to that of the snapshot.
-/// The snapshot object is then {@linkplain #releaseSnapshot released}, and can be cached for subsequent use, or discarded.
+/// The snapshot object is then [released][#releaseSnapshot], and can be cached for subsequent use, or discarded.
 ///
 /// When an outer transaction is committed, [#readSnapshot] will not be called so that the current state of this participant
 /// is retained. [#releaseSnapshot] will be called because the snapshot is not necessary anymore,

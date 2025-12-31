@@ -66,7 +66,7 @@ public final class ServerPlayNetworking {
 	/// @param type the packet type
 	/// @param handler the handler
 	/// @return `false` if a handler is already registered to the channel
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#serverboundPlay() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been [registered][PayloadTypeRegistry#serverboundPlay()] yet
 	/// @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
 	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
 		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), handler);
@@ -98,7 +98,7 @@ public final class ServerPlayNetworking {
 	/// This method differs from [ServerPlayNetworking#registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)] since
 	/// the channel handler will only be applied to the player represented by the [ServerGamePacketListenerImpl].
 	///
-	/// For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
+	/// For example, if you only register a receiver using this method when a [ServerLoginNetworking.LoginQueryResponseHandler)][ServerLoginNetworking#registerGlobalReceiver(Identifier,]
 	/// login response has been received, you should use [ServerPlayConnectionEvents#INIT] to register the channel handler.
 	///
 	/// If a handler is already registered for the `type`, this method will return `false`, and no change will be made.
@@ -108,7 +108,7 @@ public final class ServerPlayNetworking {
 	/// @param type the packet type
 	/// @param handler the handler
 	/// @return `false` if a handler is already registered to the channel name
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#serverboundPlay() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been [registered][PayloadTypeRegistry#serverboundPlay()] yet
 	/// @see ServerPlayConnectionEvents#INIT
 	public static <T extends CustomPacketPayload> boolean registerReceiver(ServerGamePacketListenerImpl packetListener, CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
 		return ServerNetworkingImpl.getAddon(packetListener).registerChannel(type.id(), handler);
@@ -241,7 +241,7 @@ public final class ServerPlayNetworking {
 
 	/// Sends a packet to a player.
 	///
-	/// Any packets sent must be {@linkplain PayloadTypeRegistry#clientboundPlay() registered}.
+	/// Any packets sent must be [registered][PayloadTypeRegistry#clientboundPlay()].
 	///
 	/// @param player the player to send the packet to
 	/// @param payload the payload to send

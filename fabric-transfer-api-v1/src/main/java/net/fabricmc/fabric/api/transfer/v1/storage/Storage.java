@@ -96,7 +96,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	/// Iterate through the contents of this storage.
 	/// Every visited [StorageView] represents a stored resource and an amount.
 	/// The iterator doesn't guarantee that a single resource only occurs once during an iteration.
-	/// Calling {@linkplain Iterator#remove remove} on the iterator is not allowed.
+	/// Calling [remove][Iterator#remove] on the iterator is not allowed.
 	///
 	/// [#insert] and [#extract] may be called safely during iteration.
 	/// Extractions should be visible to an open iterator, but insertions are not required to.
@@ -112,7 +112,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	Iterator<StorageView<T>> iterator();
 
 	/// Same as [#iterator()], but the iterator is guaranteed to skip over empty views,
-	/// i.e. views that {@linkplain StorageView#isResourceBlank() contain blank resources} or have a zero {@linkplain StorageView#getAmount() amount}.
+	/// i.e. views that [contain blank resources][StorageView#isResourceBlank()] or have a zero [amount][StorageView#getAmount()].
 	///
 	/// This can provide a large performance benefit over [#iterator()] if the caller is only interested in non-empty views,
 	/// for example because it is trying to extract resources from the storage.
@@ -129,7 +129,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 		return Iterators.filter(iterator(), view -> view.getAmount() > 0 && !view.isResourceBlank());
 	}
 
-	/// Convenient helper to get an [Iterable] over the {@linkplain #nonEmptyIterator() non-empty views} of this storage, for use in for-each loops.
+	/// Convenient helper to get an [Iterable] over the [non-empty views][#nonEmptyIterator()] of this storage, for use in for-each loops.
 	///
 	/// ```java
 	/// for (StorageView<T> view : storage.nonEmptyViews()) {

@@ -44,7 +44,7 @@ public final class AttachmentRegistry {
 	private AttachmentRegistry() {
 	}
 
-	/// Creates _and registers_ an attachment using a {@linkplain Builder builder}.
+	/// Creates _and registers_ an attachment using a [builder][Builder].
 	///
 	/// @param id  the identifier of this attachment
 	/// @param consumer a lambda that configures a [Builder] for this attachment type

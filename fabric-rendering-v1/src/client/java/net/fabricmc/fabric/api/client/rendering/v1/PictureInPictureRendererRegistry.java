@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 
 import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererRegistryImpl;
 
-/// Allows registering {@linkplain PictureInPictureRenderer picture-in-picture renderers},
+/// Allows registering [picture-in-picture renderers][PictureInPictureRenderer],
 /// used to render custom gui elements beyond the methods available in [GuiGraphics][net.minecraft.client.gui.GuiGraphics].
 ///
 /// To render a custom gui element, first implement and register a [PictureInPictureRenderer].

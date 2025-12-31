@@ -63,7 +63,7 @@ public interface CustomIngredient {
 	/// The following guidelines should be followed for good compatibility:
 	///
 	///   - These stacks are generally used for display purposes, and need not be exhaustive or perfectly accurate.
-	///   - An exception is ingredients that {@linkplain #requiresTesting() don't require testing},
+	///   - An exception is ingredients that [don't require testing][#requiresTesting()],
 	///     for which it is important that the returned stacks correspond exactly to all the accepted [Item]s.
 	///   - The ingredient should try to return at least one stack with each accepted [Item].
 	///     This allows mods that inspect the ingredient to figure out which stacks it might accept.
@@ -72,7 +72,7 @@ public interface CustomIngredient {
 	/// Note: no caching needs to be done by the implementation, this is already handled by the ingredient itself.
 	Stream<Holder<Item>> items();
 
-	/// Returns whether this ingredient always requires {@linkplain #test direct stack testing}.
+	/// Returns whether this ingredient always requires [direct stack testing][#test].
 	///
 	/// @return `false` if this ingredient ignores NBT data when matching stacks, `true` otherwise
 	/// @see FabricIngredient#requiresTesting()

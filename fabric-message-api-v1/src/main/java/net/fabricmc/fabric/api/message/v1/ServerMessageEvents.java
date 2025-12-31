@@ -83,8 +83,7 @@ public final class ServerMessageEvents {
 
 	/// An event triggered when the server broadcasts a chat message sent by a player, typically
 	/// from a client GUI or a player-executed command. Is not called when
-	/// {@linkplain
-	///  #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+	/// [#ALLOW_CHAT_MESSAGE chat messages are blocked][///].
 	///
 	/// If the message is from a player-executed command, this will be called
 	/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,
@@ -97,7 +96,7 @@ public final class ServerMessageEvents {
 
 	/// An event triggered when the server broadcasts a game message to all players. Game messages
 	/// include death messages, join/leave messages, and advancement messages. Is not called
-	/// when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
+	/// when [game messages are blocked][#ALLOW_GAME_MESSAGE].
 	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (server, message, overlay) -> {
 		for (GameMessage handler : handlers) {
 			handler.onGameMessage(server, message, overlay);
@@ -106,8 +105,8 @@ public final class ServerMessageEvents {
 
 	/// An event triggered when the server broadcasts a command message to all players, such as one
 	/// from `/me` and `/say` (but not ones that specify the recipients like
-	/// `/msg`). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
-	///  are blocked}.
+	/// `/msg`). Is not called when [command messages
+	///  are blocked][#ALLOW_COMMAND_MESSAGE].
 	///
 	/// If the command is executed by a player, [#ALLOW_CHAT_MESSAGE] and
 	/// [#CHAT_MESSAGE] events will also be triggered after this event.
@@ -174,8 +173,7 @@ public final class ServerMessageEvents {
 	public interface ChatMessage {
 		/// Called when the server broadcasts a chat message sent by a player, typically
 		/// from a client GUI or a player-executed command. Is not called when
-		/// {@linkplain
-		///  #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+		/// [#ALLOW_CHAT_MESSAGE chat messages are blocked][///].
 		///
 		/// If the message is from a player-executed command, this will be called
 		/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,
@@ -191,7 +189,7 @@ public final class ServerMessageEvents {
 	public interface GameMessage {
 		/// Called when the server broadcasts a game message to all players. Game messages
 		/// include death messages, join/leave messages, and advancement messages. Is not called
-		/// when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
+		/// when [game messages are blocked][#ALLOW_GAME_MESSAGE].
 		///
 		/// @param server the server that sent the message
 		/// @param message the broadcast message
@@ -203,8 +201,8 @@ public final class ServerMessageEvents {
 	public interface CommandMessage {
 		/// Called when the server broadcasts a command message to all players, such as one
 		/// from `/me` and `/say` (but not ones that specify the recipients like
-		/// `/msg`). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
-		///  are blocked}.
+		/// `/msg`). Is not called when [command messages
+		///  are blocked][#ALLOW_COMMAND_MESSAGE].
 		///
 		/// If the command is executed by a player, [#ALLOW_CHAT_MESSAGE] and
 		/// [#CHAT_MESSAGE] events will also be triggered after this event.
