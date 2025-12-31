@@ -30,7 +30,7 @@ public final class LifecycleEventsImpl implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Part of impl for block entity events
-		ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+		ServerChunkEvents.CHUNK_LOAD.register((level, chunk, generated) -> {
 			((LoadedChunksCache) level).fabric_markLoaded(chunk);
 		});
 

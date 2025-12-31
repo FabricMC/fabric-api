@@ -42,10 +42,12 @@ abstract class ChunkStatusTasksMixin {
 	private static void onChunkLoad(ChunkAccess chunk, WorldGenContext worldGenContext, GenerationChunkHolder chunkHolder, CallbackInfoReturnable<ChunkAccess> callbackInfoReturnable) {
 		LevelChunk levelChunk = (LevelChunk) callbackInfoReturnable.getReturnValue();
 
-		// We fire the event at TAIL since the chunk is guaranteed to be a LevelChunk then.
-		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(worldGenContext.level(), levelChunk);
+		boolean generated = !(chunk instanceof ImposterProtoChunk);
 
-		if (!(chunk instanceof ImposterProtoChunk)) {
+		// We fire the event at TAIL since the chunk is guaranteed to be a LevelChunk then.
+		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(worldGenContext.level(), levelChunk, generated);
+
+		if (generated) {
 			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(worldGenContext.level(), levelChunk);
 		}
 
