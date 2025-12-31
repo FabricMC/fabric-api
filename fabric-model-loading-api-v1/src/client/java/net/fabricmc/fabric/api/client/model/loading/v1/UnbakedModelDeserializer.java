@@ -23,11 +23,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockElement;
-import net.minecraft.client.renderer.block.model.BlockElementFace;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
 
@@ -63,7 +58,7 @@ public interface UnbakedModelDeserializer {
 	}
 
 	/// Deserializes an [UnbakedModel] from a [Reader], respecting custom deserializers. Prefer using this
-	/// method to [BlockModel#fromStream(Reader)].
+	/// method to [net.minecraft.client.renderer.block.model.BlockModel#fromStream(Reader)].
 	static UnbakedModel deserialize(Reader reader) throws JsonParseException {
 		return UnbakedModelDeserializerRegistry.deserialize(reader);
 	}
@@ -73,10 +68,10 @@ public interface UnbakedModelDeserializer {
 	/// The provided deserialization context is able to deserialize objects of the following types:
 	///
 	///   - [UnbakedModel]
-	///   - [BlockElement]
-	///   - [BlockElementFace]
-	///   - [ItemTransform]
-	///   - [ItemTransforms]
+	///   - [net.minecraft.client.renderer.block.model.BlockElement]
+	///   - [net.minecraft.client.renderer.block.model.BlockElementFace]
+	///   - [net.minecraft.client.renderer.block.model.ItemTransform]
+	///   - [net.minecraft.client.renderer.block.model.ItemTransforms]
 	///
 	///
 	/// For example, to deserialize a nested [UnbakedModel], use

@@ -20,9 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-
-import net.fabricmc.fabric.api.resource.v1.reloader.SimpleReloadListener;
 
 /// A simplified version of the "resource reload listener" interface, hiding the
 /// peculiarities of the API.
@@ -36,11 +33,11 @@ import net.fabricmc.fabric.api.resource.v1.reloader.SimpleReloadListener;
 /// the apply stage is guaranteed to run on the game thread.
 ///
 /// For a fully synchronous alternative, consider using
-/// [ResourceManagerReloadListener] in conjunction with
+/// [net.minecraft.server.packs.resources.ResourceManagerReloadListener] in conjunction with
 /// [IdentifiableResourceReloadListener].
 ///
 /// @param <T> The data object.
-/// @deprecated Use [SimpleReloadListener] instead.
+/// @deprecated Use [net.fabricmc.fabric.api.resource.v1.reloader.SimpleReloadListener] instead.
 @Deprecated
 public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
 	@Override

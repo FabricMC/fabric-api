@@ -38,12 +38,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /// Extend this class and implement [FabricCodecDataProvider#configure(BiConsumer, HolderLookup.Provider)].
 ///
-/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Register an instance of the class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final PackOutput.PathProvider pathProvider;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;

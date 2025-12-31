@@ -16,19 +16,16 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-
 /// An enum that describes the contexts in which the game checks whether an enchantment can be applied to an item.
 public enum EnchantingContext {
 	/// When checking if an item is _acceptable_ for a given enchantment, i.e if the item should be able to bear
 	/// that enchantment. This includes anvils, the `enchant_randomly` loot function, and the `/enchant` command.
 	///
-	/// @see Enchantment#canEnchant(ItemStack)
+	/// @see net.minecraft.world.item.enchantment.Enchantment#canEnchant(net.minecraft.world.item.ItemStack)
 	ACCEPTABLE,
 	/// When checking for an enchantment's _primary_ items. This includes enchanting in an enchanting table, random
 	/// mob equipment, and the `enchant_with_levels` loot function.
 	///
-	/// @see Enchantment#isPrimaryItem(ItemStack)
+	/// @see net.minecraft.world.item.enchantment.Enchantment#isPrimaryItem(net.minecraft.world.item.ItemStack)
 	PRIMARY
 }

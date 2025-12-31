@@ -22,12 +22,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.item.CompositeModel;
 
 import net.fabricmc.fabric.impl.client.model.loading.CompositeBlockStateModelImpl;
 
 /// A custom block state model that is made of one or more other block state models. Analogous to
-/// [CompositeModel]. Uses the first submodel to determine the particle sprite.
+/// [net.minecraft.client.renderer.item.CompositeModel]. Uses the first submodel to determine the particle sprite.
 @ApiStatus.NonExtendable
 public interface CompositeBlockStateModel extends BlockStateModel {
 	/// Creates a new composite model from the given non-empty list of submodels.

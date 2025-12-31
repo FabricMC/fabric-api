@@ -22,7 +22,6 @@ import java.util.function.UnaryOperator;
 
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -127,7 +126,7 @@ public final class DefaultCustomIngredients {
 	/// <pre>
 	/// `components(base, builder -> builder.add(DataComponents.CUSTOM_DATA, CustomData.of(nbt)));// or, to check for absence of custom data:components(base, builder -> builder.remove(DataComponents.CUSTOM_DATA));`</pre>
 	///
-	/// See [NbtUtils#compareNbt] for how matching works.
+	/// See [net.minecraft.nbt.NbtUtils#compareNbt] for how matching works.
 	///
 	/// The JSON format is as follows:
 	/// <pre>

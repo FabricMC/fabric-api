@@ -27,11 +27,10 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 /// Automatically uses the correct bucket emptying sound for
-/// fluid attributes handlers overriding [FluidVariantAttributeHandler#getEmptySound].
+/// fluid attributes handlers overriding [net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler#getEmptySound].
 @Mixin(BucketItem.class)
 public class BucketItemMixin {
 	@Shadow

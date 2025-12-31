@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.UnmodifiableView;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
@@ -43,7 +42,7 @@ public interface SlottedStorage<T> extends Storage<T> {
 	/// Retrieve a list containing all the slots of this storage. **The list must not be modified.**
 	///
 	/// This function can be used to interface with code that requires a slot list,
-	/// for example [StorageUtil#insertStacking] or [ContainerItemContext#getAdditionalSlots()].
+	/// for example [StorageUtil#insertStacking] or [net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext#getAdditionalSlots()].
 	///
 	/// It is guaranteed that calling this function is fast.
 	/// The default implementation returns a view over the storage that delegates to [#getSlotCount] and [#getSlot].

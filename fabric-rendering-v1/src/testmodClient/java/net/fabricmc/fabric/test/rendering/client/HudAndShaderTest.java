@@ -17,9 +17,8 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
-/// Tests [HudRenderCallback] and custom shaders by drawing a green rectangle
+/// Tests [net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback] and custom shaders by drawing a green rectangle
 /// in the lower-right corner of the screen.
 public class HudAndShaderTest implements ClientModInitializer {
 	/* TODO 1.21.5

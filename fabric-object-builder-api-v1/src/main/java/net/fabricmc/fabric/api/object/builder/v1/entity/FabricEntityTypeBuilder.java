@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 
 import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableSet;
 import org.jspecify.annotations.Nullable;
@@ -106,7 +105,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/// @param <T> the type of entity
 	///
 	/// @return a new living entity type builder
-	/// @deprecated use [FabricEntityType.Builder#createLiving(EntityType.EntityFactory, MobCategory, UnaryOperator)]
+	/// @deprecated use [FabricEntityType.Builder#createLiving(EntityType.EntityFactory, MobCategory, java.util.function.UnaryOperator)]
 	@Deprecated
 	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving() {
 		return new FabricEntityTypeBuilder.Living<>(MobCategory.MISC, FabricEntityTypeBuilder::emptyFactory);
@@ -117,7 +116,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/// @param <T> the type of entity
 	///
 	/// @return a new mob entity type builder
-	/// @deprecated use [FabricEntityType.Builder#createMob(EntityType.EntityFactory, MobCategory, UnaryOperator)]
+	/// @deprecated use [FabricEntityType.Builder#createMob(EntityType.EntityFactory, MobCategory, java.util.function.UnaryOperator)]
 	public static <T extends net.minecraft.world.entity.Mob> FabricEntityTypeBuilder.Mob<T> createMob() {
 		return new FabricEntityTypeBuilder.Mob<>(MobCategory.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
@@ -306,7 +305,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/// An extended version of [FabricEntityTypeBuilder] with support for features on present on [living entities][LivingEntity], such as default attributes.
 	///
 	/// @param <T> Entity class.
-	/// @deprecated use [EntityType.Builder#createLiving(EntityType.EntityFactory, MobCategory, UnaryOperator)]
+	/// @deprecated use [EntityType.Builder#createLiving(EntityType.EntityFactory, MobCategory, java.util.function.UnaryOperator)]
 	@Deprecated
 	public static class Living<T extends LivingEntity> extends FabricEntityTypeBuilder<T> {
 		@Nullable

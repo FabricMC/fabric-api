@@ -18,11 +18,9 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.resources.model.ModelManager;
-
-/// Fabric-provided helper methods for [ModelManager].
+/// Fabric-provided helper methods for [net.minecraft.client.resources.model.ModelManager].
 ///
-/// Note: This interface is automatically implemented on the [ModelManager] via Mixin and interface injection.
+/// Note: This interface is automatically implemented on the [net.minecraft.client.resources.model.ModelManager] via Mixin and interface injection.
 public interface FabricModelManager {
 	/// Get an extra model from the model manager.
 	///
@@ -30,7 +28,7 @@ public interface FabricModelManager {
 	/// [ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)].
 	///
 	/// **This method, as well as its vanilla counterpart, should only be used after the
-	/// [ModelManager] has completed reloading.** Otherwise, the result will be
+	/// [net.minecraft.client.resources.model.ModelManager] has completed reloading.** Otherwise, the result will be
 	/// outdated or an exception will be thrown.
 	///
 	/// @param key the key of the model

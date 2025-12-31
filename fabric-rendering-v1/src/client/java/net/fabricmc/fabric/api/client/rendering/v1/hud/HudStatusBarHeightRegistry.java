@@ -17,11 +17,8 @@
 package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
 import java.util.Objects;
-import java.util.function.Function;
 
-import net.minecraft.client.gui.Gui;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Player;
 
 import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryImpl;
 
@@ -61,14 +58,14 @@ public final class HudStatusBarHeightRegistry {
 	/// [HudStatusBarHeightRegistryImpl#ARMOR_BAR]
 	///
 	/// Existing height providers (like vanilla) can be replaced to coincide with
-	/// [HudElementRegistry#replaceElement(Identifier, Function)].
+	/// [HudElementRegistry#replaceElement(Identifier, java.util.function.Function)].
 	///
 	/// Registration is frozen once the client has fully started.
 	///
 	/// @param id             the [Identifier]; must be registered with a corresponding [HudElement] in
 	///                       [HudElementRegistry].
-	/// @param heightProvider a [StatusBarHeightProvider] that takes a [Player] from
-	///                       [Gui#getCameraPlayer()] and returns the height.
+	/// @param heightProvider a [StatusBarHeightProvider] that takes a [net.minecraft.world.entity.player.Player] from
+	///                       [net.minecraft.client.gui.Gui#getCameraPlayer()] and returns the height.
 	public static void addLeft(Identifier id, StatusBarHeightProvider heightProvider) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");
@@ -87,14 +84,14 @@ public final class HudStatusBarHeightRegistry {
 	/// [HudStatusBarHeightRegistryImpl#FOOD_BAR], [HudStatusBarHeightRegistryImpl#AIR_BAR]
 	///
 	/// Existing height providers (like vanilla) can be replaced to coincide with
-	/// [HudElementRegistry#replaceElement(Identifier, Function)].
+	/// [HudElementRegistry#replaceElement(Identifier, java.util.function.Function)].
 	///
 	/// Registration is frozen once the client has fully started.
 	///
 	/// @param id             the [Identifier]; must be registered with a corresponding [HudElement] in
 	///                       [HudElementRegistry].
-	/// @param heightProvider a [StatusBarHeightProvider] that takes a [Player] from
-	///                       [Gui#getCameraPlayer()] and returns the height.
+	/// @param heightProvider a [StatusBarHeightProvider] that takes a [net.minecraft.world.entity.player.Player] from
+	///                       [net.minecraft.client.gui.Gui#getCameraPlayer()] and returns the height.
 	public static void addRight(Identifier id, StatusBarHeightProvider heightProvider) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");

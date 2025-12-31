@@ -16,16 +16,14 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.renderer.SpecialBlockModelRenderer;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.impl.client.rendering.SpecialBlockRendererRegistryImpl;
 
 /// Allows registering special renderers for certain blocks, such that they are used when
-/// [SpecialBlockModelRenderer#renderByBlock] is invoked. The most common use of this method is through
-/// [BlockRenderDispatcher#renderSingleBlock], which is used for rendering blocks in minecarts, blocks held by
+/// [net.minecraft.client.renderer.SpecialBlockModelRenderer#renderByBlock] is invoked. The most common use of this method is through
+/// [net.minecraft.client.renderer.block.BlockRenderDispatcher#renderSingleBlock], which is used for rendering blocks in minecarts, blocks held by
 /// endermen, and other cases.
 public final class SpecialBlockRendererRegistry {
 	private SpecialBlockRendererRegistry() {

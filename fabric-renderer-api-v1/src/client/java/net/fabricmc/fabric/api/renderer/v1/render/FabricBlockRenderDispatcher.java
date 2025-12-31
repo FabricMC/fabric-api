@@ -16,28 +16,22 @@
 
 package net.fabricmc.fabric.api.renderer.v1.render;
 
-import java.util.function.Predicate;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /// Note: This interface is automatically implemented on [BlockRenderDispatcher] via Mixin and interface injection.
 public interface FabricBlockRenderDispatcher {
 	/// Alternative for
 	/// [BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)] that
 	/// additionally accepts the [BlockAndTintGetter] and [BlockPos] to pass to
-	/// [BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)] when
+	/// [net.minecraft.client.renderer.block.model.BlockStateModel#emitQuads(net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, net.minecraft.util.RandomSource, java.util.function.Predicate)] when
 	/// necessary. **Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
 	/// on multiple chunk layers and to provide the model with additional context.**
 	///
@@ -49,7 +43,7 @@ public interface FabricBlockRenderDispatcher {
 	/// @param bufferSource The buffer source.
 	/// @param light The minimum light value.
 	/// @param overlay The overlay value.
-	/// @param level The level in which to render the model. **Can be empty (i.e. [EmptyBlockAndTintGetter]).**
+	/// @param level The level in which to render the model. **Can be empty (i.e. [net.minecraft.world.level.EmptyBlockAndTintGetter]).**
 	/// @param pos The position of the block in the level. **Should be [BlockPos#ZERO] if the level is empty.
 	///            **
 	///

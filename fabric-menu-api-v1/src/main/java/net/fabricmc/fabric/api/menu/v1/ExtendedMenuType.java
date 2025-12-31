@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -31,7 +30,7 @@ import net.minecraft.world.inventory.MenuType;
 /// synchronizes additional data to the client when it is opened.
 ///
 /// Extended menus can be opened using
-/// [Player.openMenu][net.minecraft.world.entity.player.Player#openMenu(MenuProvider)] with an
+/// [Player.openMenu][net.minecraft.world.entity.player.Player#openMenu(net.minecraft.world.MenuProvider)] with an
 /// [ExtendedMenuProvider].
 /// ## Example
 /// <pre>

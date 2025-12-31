@@ -18,17 +18,13 @@ package net.fabricmc.fabric.api.blockview.v2;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
-
-/// Extensions that allow [BlockEntity] subclasses to provide render data.
+/// Extensions that allow [net.minecraft.world.level.block.entity.BlockEntity] subclasses to provide render data.
 ///
 /// Block entity render data is arbitrary data that captures some useful state of the
-/// [BlockEntity] and is safe to use in a multithreaded environment. In these environments,
-/// accessing and using a [BlockEntity] directly via [BlockGetter#getBlockEntity(BlockPos)]
-/// may not be thread-safe since the [BlockEntity] may be modified on a different thread, and it
-/// may not be consistent since accessing the internal state of the [BlockEntity] could modify it
+/// [net.minecraft.world.level.block.entity.BlockEntity] and is safe to use in a multithreaded environment. In these environments,
+/// accessing and using a [net.minecraft.world.level.block.entity.BlockEntity] directly via [net.minecraft.world.level.BlockGetter#getBlockEntity(net.minecraft.core.BlockPos)]
+/// may not be thread-safe since the [net.minecraft.world.level.block.entity.BlockEntity] may be modified on a different thread, and it
+/// may not be consistent since accessing the internal state of the [net.minecraft.world.level.block.entity.BlockEntity] could modify it
 /// in a non-atomic way (such as through lazy computation). Using render data avoids these issues.
 /// ### Implementation Tips
 ///
@@ -39,18 +35,18 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 /// such as a record. It is also possible to make render data a mutable object, but it must be ensured
 /// that changes to the internal state of this object are atomic and safe.
 ///
-/// Note: This interface is automatically implemented on all [BlockEntity] instances via Mixin and interface injection.
+/// Note: This interface is automatically implemented on all [net.minecraft.world.level.block.entity.BlockEntity] instances via Mixin and interface injection.
 public interface RenderDataBlockEntity {
 	/// Gets the render data provided by this block entity. The returned object must be safe to
 	/// use in a multithreaded environment.
 	///
 	/// Note: **This method should not be called directly**; use
-	/// [FabricBlockView#getBlockEntityRenderData(BlockPos)] instead. Only call this
+	/// [FabricBlockView#getBlockEntityRenderData(net.minecraft.core.BlockPos)] instead. Only call this
 	/// method when the result is used to implement
-	/// [FabricBlockView#getBlockEntityRenderData(BlockPos)].
+	/// [FabricBlockView#getBlockEntityRenderData(net.minecraft.core.BlockPos)].
 	///
 	/// @return the render data
-	/// @see FabricBlockView#getBlockEntityRenderData(BlockPos)
+	/// @see FabricBlockView#getBlockEntityRenderData(net.minecraft.core.BlockPos)
 	@Nullable
 	default Object getRenderData() {
 		return null;

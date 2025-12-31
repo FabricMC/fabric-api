@@ -29,7 +29,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantCache;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
@@ -37,7 +36,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 ///
 ///   - Cache the FluidVariant with a null tag inside each Fluid directly.
 ///   - Automatically uses the correct bucket filling sound for
-///     fluid attributes handlers overriding [FluidVariantAttributeHandler#getEmptySound].
+///     fluid attributes handlers overriding [net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler#getEmptySound].
 ///
 @Mixin(Fluid.class)
 @SuppressWarnings("unused")

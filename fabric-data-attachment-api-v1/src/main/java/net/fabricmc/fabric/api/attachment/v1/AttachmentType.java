@@ -22,17 +22,7 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.ProtoChunk;
-
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 /// An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, levels and chunks at the moment).
 /// Use the methods provided in [AttachmentRegistry] to create and register attachments. Attachments can
@@ -42,20 +32,20 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 /// immutable types. More generally, different attachments _must not_ share mutable state, and it is _strongly advised_
 /// for attachments not to hold internal references to their target. See the following note on entity targets.
 ///
-/// Note on [Entity] and [ChunkAccess] targets: in several instances, the game needs to copy data from one instance to another.
-/// These are player respawning, mob conversion, return from the End, cross-level entity teleportation, and conversion of a [ProtoChunk] to
-/// [LevelChunk]. By default, attachments are simply copied wholesale, up to [#copyOnDeath()]. Since one instance is discarded,
-/// an attachment that keeps a reference to an [Entity] or [ProtoChunk] instance can and will break unexpectedly. If,
+/// Note on [net.minecraft.world.entity.Entity] and [net.minecraft.world.level.chunk.ChunkAccess] targets: in several instances, the game needs to copy data from one instance to another.
+/// These are player respawning, mob conversion, return from the End, cross-level entity teleportation, and conversion of a [net.minecraft.world.level.chunk.ProtoChunk] to
+/// [net.minecraft.world.level.chunk.LevelChunk]. By default, attachments are simply copied wholesale, up to [#copyOnDeath()]. Since one instance is discarded,
+/// an attachment that keeps a reference to an [net.minecraft.world.entity.Entity] or [net.minecraft.world.level.chunk.ProtoChunk] instance can and will break unexpectedly. If,
 /// for whatever reason, keeping a reference to the target is absolutely necessary, be sure to implement custom copying logic.
-/// For [Entity] targets, use [ServerPlayerEvents#COPY_FROM], [ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL],
-/// and [ServerLivingEntityEvents#MOB_CONVERSION]. For [ChunkAccess] targets, mixin into
-/// [LevelChunk#LevelChunk(ServerLevel, ProtoChunk, LevelChunk.PostLoadProcessor)].
+/// For [net.minecraft.world.entity.Entity] targets, use [net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents#COPY_FROM], [net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL],
+/// and [net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents#MOB_CONVERSION]. For [net.minecraft.world.level.chunk.ChunkAccess] targets, mixin into
+/// [net.minecraft.world.level.chunk.LevelChunk#net.minecraft.world.level.chunk.LevelChunk(net.minecraft.server.level.ServerLevel, net.minecraft.world.level.chunk.ProtoChunk, net.minecraft.world.level.chunk.LevelChunk.PostLoadProcessor)].
 ///
 ///
 /// @param <A> type of the attached data. It is encouraged for this to be an immutable type.
 /// @see AttachmentRegistry
 /// @see AttachmentRegistry.Builder#persistent(Codec)
-/// @see AttachmentRegistry.Builder#syncWith(StreamCodec, AttachmentSyncPredicate)
+/// @see AttachmentRegistry.Builder#syncWith(net.minecraft.network.codec.StreamCodec, AttachmentSyncPredicate)
 @ApiStatus.NonExtendable
 @ApiStatus.Experimental
 public interface AttachmentType<A> {

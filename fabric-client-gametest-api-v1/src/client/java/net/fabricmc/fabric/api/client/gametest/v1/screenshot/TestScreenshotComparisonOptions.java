@@ -20,7 +20,6 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.NativeImage;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotComparisonOptionsImpl;
 
 /// Options for comparing screenshots.
@@ -64,7 +63,7 @@ public interface TestScreenshotComparisonOptions extends TestScreenshotCommonOpt
 
 	/// Additionally save the screenshot which was compared against with the template image name.
 	/// This method only works when a template image name instead of a [NativeImage] is used.
-	/// This method works as if by calling [ClientGameTestContext#takeScreenshot(TestScreenshotOptions)]
+	/// This method works as if by calling [net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#takeScreenshot(TestScreenshotOptions)]
 	/// with these screenshot options, except that the screenshot saved is from the same render of the game
 	/// as the one that is compared against in this screenshot comparison.
 	///
@@ -73,7 +72,7 @@ public interface TestScreenshotComparisonOptions extends TestScreenshotCommonOpt
 	TestScreenshotComparisonOptions save();
 
 	/// Additionally save the screenshot which was compared against. This method works as if by calling
-	/// [ClientGameTestContext#takeScreenshot(TestScreenshotOptions)] with these screenshot options, except that
+	/// [net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#takeScreenshot(TestScreenshotOptions)] with these screenshot options, except that
 	/// the screenshot saved is from the same render of the game as the one that is compared against in this screenshot
 	/// comparison.
 	///
@@ -95,9 +94,9 @@ public interface TestScreenshotComparisonOptions extends TestScreenshotCommonOpt
 	TestScreenshotComparisonOptions withGrayscale();
 
 	/// Only considers a certain region of the screenshot for comparison. When used with
-	/// [assertScreenshotEquals][ClientGameTestContext#assertScreenshotEquals(TestScreenshotComparisonOptions)],
+	/// [assertScreenshotEquals][net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#assertScreenshotEquals(TestScreenshotComparisonOptions)],
 	/// asserts that the template image is equal to the given region of the screenshot. When used with
-	/// [assertScreenshotContains][ClientGameTestContext#assertScreenshotContains(TestScreenshotComparisonOptions)],
+	/// [assertScreenshotContains][net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#assertScreenshotContains(TestScreenshotComparisonOptions)],
 	/// asserts that the template image is contained within the given region of the screenshot.
 	///
 	/// @param x The minimum X position in the region

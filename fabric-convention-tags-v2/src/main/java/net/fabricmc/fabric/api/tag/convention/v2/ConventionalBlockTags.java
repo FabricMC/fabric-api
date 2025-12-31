@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
@@ -49,23 +47,23 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> ORES = register("ores");
 
 	// Ores - vanilla instances (All ores consolidated here for consistency)
-	/// Aliased with [BlockTags#COAL_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#COAL_ORES].
 	public static final TagKey<Block> COAL_ORES = register("ores/coal");
-	/// Aliased with [BlockTags#COPPER_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#COPPER_ORES].
 	public static final TagKey<Block> COPPER_ORES = register("ores/copper");
-	/// Aliased with [BlockTags#DIAMOND_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#DIAMOND_ORES].
 	public static final TagKey<Block> DIAMOND_ORES = register("ores/diamond");
-	/// Aliased with [BlockTags#EMERALD_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#EMERALD_ORES].
 	public static final TagKey<Block> EMERALD_ORES = register("ores/emerald");
-	/// Aliased with [BlockTags#GOLD_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#GOLD_ORES].
 	public static final TagKey<Block> GOLD_ORES = register("ores/gold");
-	/// Aliased with [BlockTags#IRON_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#IRON_ORES].
 	public static final TagKey<Block> IRON_ORES = register("ores/iron");
-	/// Aliased with [BlockTags#LAPIS_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#LAPIS_ORES].
 	public static final TagKey<Block> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Block> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 	public static final TagKey<Block> QUARTZ_ORES = register("ores/quartz");
-	/// Aliased with [BlockTags#REDSTONE_ORES].
+	/// Aliased with [net.minecraft.tags.BlockTags#REDSTONE_ORES].
 	public static final TagKey<Block> REDSTONE_ORES = register("ores/redstone");
 
 	public static final TagKey<Block> BARRELS = register("barrels");
@@ -103,14 +101,14 @@ public final class ConventionalBlockTags {
 	// Flower
 	/// Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
 	/// Equivalent to the "minecraft:small_flowers" block tag.
-	/// This is NOT aliased with [BlockTags#SMALL_FLOWERS] because the vanilla tag is used to make the block weak to swords.
+	/// This is NOT aliased with [net.minecraft.tags.BlockTags#SMALL_FLOWERS] because the vanilla tag is used to make the block weak to swords.
 	public static final TagKey<Block> SMALL_FLOWERS = register("flowers/small");
 	/// Contains living ground-based flowers that are 2 block tall such as Rose Bush or Peony.
 	/// Equivalent to the "minecraft:tall_flowers" block tag in past Minecraft version.
 	public static final TagKey<Block> TALL_FLOWERS = register("flowers/tall");
 	/// Contains any living plant block that contains flowers or is a flower itself.
 	/// Equivalent to the "minecraft:flowers" block tag.
-	/// Aliased with [BlockTags#FLOWERS].
+	/// Aliased with [net.minecraft.tags.BlockTags#FLOWERS].
 	public static final TagKey<Block> FLOWERS = register("flowers");
 
 	// Sandstone
@@ -125,12 +123,12 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
 
 	// Fences and Fence Gates
-	/// Aliased with [BlockTags#FENCES].
+	/// Aliased with [net.minecraft.tags.BlockTags#FENCES].
 	public static final TagKey<Block> FENCES = register("fences");
-	/// Aliased with [BlockTags#WOODEN_FENCES].
+	/// Aliased with [net.minecraft.tags.BlockTags#WOODEN_FENCES].
 	public static final TagKey<Block> WOODEN_FENCES = register("fences/wooden");
 	public static final TagKey<Block> NETHER_BRICK_FENCES = register("fences/nether_brick");
-	/// Aliased with [BlockTags#FENCE_GATES].
+	/// Aliased with [net.minecraft.tags.BlockTags#FENCE_GATES].
 	public static final TagKey<Block> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Block> WOODEN_FENCE_GATES = register("fence_gates/wooden");
 
@@ -192,7 +190,7 @@ public final class ConventionalBlockTags {
 
 	// Logs
 	/// For logs found naturally in the Overworld, does not include Stripped Logs.
-	/// Aliased with [BlockTags#OVERWORLD_NATURAL_LOGS] for consistency.
+	/// Aliased with [net.minecraft.tags.BlockTags#OVERWORLD_NATURAL_LOGS] for consistency.
 	public static final TagKey<Block> OVERWORLD_NATURAL_LOGS = register("natural_logs/overworld");
 	/// For logs, including Stems, found naturally in the Nether, does not include Stripped Logs.
 	public static final TagKey<Block> NETHER_NATURAL_LOGS = register("natural_logs/nether");
@@ -211,7 +209,7 @@ public final class ConventionalBlockTags {
 	/// Blocks should be included in this tag if their movement/relocation can cause serious issues such
 	/// as world corruption upon being moved or for balance reason where the block should not be able to be relocated.
 	/// Example: Chunk loaders or pipes where other mods that move blocks do not respect
-	/// [BlockBehaviour.BlockStateBase#getPistonPushReaction].
+	/// [net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase#getPistonPushReaction].
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 	/// Tag that holds all head based blocks such as Skeleton Skull or Player Head. (Named skulls to match minecraft:skulls item tag)
 	public static final TagKey<Block> SKULLS = register("skulls");

@@ -27,11 +27,10 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.codecs.BaseMapCodec;
-import com.mojang.serialization.codecs.UnboundedMapCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/// Has the same functionality as [UnboundedMapCodec].
+/// Has the same functionality as [com.mojang.serialization.codecs.UnboundedMapCodec].
 /// But it will fail-soft when an entry cannot be deserialized.
 public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) implements BaseMapCodec<K, V>, Codec<Map<K, V>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger("FailSoftMapCodec");

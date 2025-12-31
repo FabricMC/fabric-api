@@ -18,10 +18,9 @@ package net.fabricmc.fabric.api.event.registry;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 
-/// General-purpose Fabric-provided extensions for [Registry] objects.
+/// General-purpose Fabric-provided extensions for [net.minecraft.core.Registry] objects.
 ///
 /// Note: This interface is automatically implemented on all registries via Mixin and interface injection.
 @ApiStatus.NonExtendable

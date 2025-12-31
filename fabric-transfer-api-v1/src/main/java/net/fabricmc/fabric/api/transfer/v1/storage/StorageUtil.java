@@ -25,8 +25,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -337,7 +335,7 @@ public final class StorageUtil {
 		return null;
 	}
 
-	/// Compute the redstone signal for a storage, similar to [AbstractContainerMenu#getRedstoneSignalFromContainer(Container)].
+	/// Compute the redstone signal for a storage, similar to [net.minecraft.world.inventory.AbstractContainerMenu#getRedstoneSignalFromContainer(net.minecraft.world.Container)].
 	///
 	/// @param storage The storage for which the comparator level should be computed.
 	/// @param <T> The type of the stored resources.

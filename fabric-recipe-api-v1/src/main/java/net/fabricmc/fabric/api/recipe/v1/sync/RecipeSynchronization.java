@@ -21,8 +21,6 @@ import java.util.Objects;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
 
 /// Since Minecraft 1.21.2, vanilla no longer syncs all recipes to the client automatically,
@@ -32,8 +30,8 @@ import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
 /// which will synchronize recipes to the client.
 /// See [SynchronizedRecipes]
 public final class RecipeSynchronization {
-	/// Event phase used for sending recipes to the client. It runs after the default event phase [Event#DEFAULT_PHASE].
-	/// It's defined for [ServerLifecycleEvents#SYNC_DATA_PACK_CONTENTS] event.
+	/// net.fabricmc.fabric.api.event.Event phase used for sending recipes to the client. It runs after the default event phase [net.fabricmc.fabric.api.event.Event#DEFAULT_PHASE].
+	/// It's defined for [net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents#SYNC_DATA_PACK_CONTENTS] event.
 	public static final Identifier RECIPE_SYNC_EVENT_PHASE = RecipeSyncImpl.RECIPE_SYNC_EVENT_PHASE;
 
 	private RecipeSynchronization() {

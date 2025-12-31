@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.impl.object.builder.client;
 
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.world.level.block.state.properties.WoodType;
-
 public final class SignTypeTextureHelper {
-	/// Set to true after [Sheets] has been classloaded. If any new [WoodType]s are registered
+	/// Set to true after [net.minecraft.client.renderer.Sheets] has been classloaded. If any new [net.minecraft.world.level.block.state.properties.WoodType]s are registered
 	/// after this point, they need to be added to the texture maps manually. Always adding textures manually classloads
-	/// [Sheets] too early, which causes issues such as decorated pot pattern textures not being
+	/// [net.minecraft.client.renderer.Sheets] too early, which causes issues such as decorated pot pattern textures not being
 	/// initialized correctly.
 	public static boolean shouldAddTextures = false;
 }

@@ -20,12 +20,11 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /// Extend this class and implement [FabricModelProvider#generateBlockStateModels] and [FabricModelProvider#generateItemModels].
 ///
-/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Register an instance of the class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricModelProvider extends ModelProvider {
 	public FabricModelProvider(FabricPackOutput output) {
 		super(output);

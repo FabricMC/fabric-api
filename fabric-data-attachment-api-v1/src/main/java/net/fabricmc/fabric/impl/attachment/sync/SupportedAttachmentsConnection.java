@@ -18,10 +18,9 @@ package net.fabricmc.fabric.impl.attachment.sync;
 
 import java.util.Set;
 
-import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 
-/// Implemented on [Connection] to store which attachments the client supports.
+/// Implemented on [net.minecraft.network.Connection] to store which attachments the client supports.
 public interface SupportedAttachmentsConnection {
 	void fabric_setSupportedAttachments(Set<Identifier> supportedAttachments);
 

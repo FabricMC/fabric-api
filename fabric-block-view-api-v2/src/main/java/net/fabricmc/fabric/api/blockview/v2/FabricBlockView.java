@@ -22,7 +22,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -80,8 +79,8 @@ public interface FabricBlockView {
 	/// [Holder] whose [value][Holder#value()] is non-null. If
 	/// [#hasBiomes()] returns `false`, this method will always return `null`.
 	///
-	/// Prefer using [LevelReader#getBiome(BlockPos)] instead of this method if this instance
-	/// is known to implement [LevelReader].
+	/// Prefer using [net.minecraft.world.level.LevelReader#getBiome(BlockPos)] instead of this method if this instance
+	/// is known to implement [net.minecraft.world.level.LevelReader].
 	///
 	/// @implNote Implementations which do not return null are encouraged to use the plains biome as
 	/// the default value, for example when the biome at the given position is unknown.

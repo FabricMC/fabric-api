@@ -20,17 +20,16 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /// Allows registering a mapping from [TooltipComponent] to [ClientTooltipComponent].
-/// This allows custom tooltips for items: first, override [Item#getTooltipImage] and return a custom [TooltipComponent].
+/// This allows custom tooltips for items: first, override [net.minecraft.world.item.Item#getTooltipImage] and return a custom [TooltipComponent].
 /// Second, register a listener to this event and convert the component to your client component implementation if it's an instance of your component class.
 ///
 /// Note that failure to map some components to a client component will throw an exception,
-/// so make sure that any components you return in [Item#getTooltipImage] will be handled by one of the callbacks.
+/// so make sure that any components you return in [net.minecraft.world.item.Item#getTooltipImage] will be handled by one of the callbacks.
 public interface ClientTooltipComponentCallback {
 	Event<ClientTooltipComponentCallback> EVENT = EventFactory.createArrayBacked(
 			ClientTooltipComponentCallback.class, listeners -> data -> {

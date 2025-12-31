@@ -22,18 +22,12 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.renderer.QuadSpriteBaker;
 
@@ -87,14 +81,14 @@ public interface MutableQuadView extends QuadView {
 	int BAKE_FLIP_V = 16;
 
 	/// UV coordinates by default are assumed to be 0-16 scale for consistency
-	/// with conventional Minecraft model format. This is scaled to 0-1 during
+	/// with conventional net.minecraft.client.Minecraft model format. This is scaled to 0-1 during
 	/// baking before interpolation. Model loaders that already have 0-1 coordinates
 	/// can avoid wasteful multiplication/division by passing 0-1 coordinates directly.
 	/// Pass in bakeFlags parameter to [#spriteBake(TextureAtlasSprite, int)].
 	int BAKE_NORMALIZED = 32;
 
 	/// Sets the geometric vertex position for the given vertex,
-	/// relative to block origin, (0,0,0). Minecraft rendering is designed
+	/// relative to block origin, (0,0,0). net.minecraft.client.Minecraft rendering is designed
 	/// for models that fit within a single block space and is recommended
 	/// that coordinates remain in the 0-1 range, with multi-block meshes
 	/// split into multiple per-block models.
@@ -229,11 +223,11 @@ public interface MutableQuadView extends QuadView {
 
 	/// Controls how this quad's pixels should be blended with the scene.
 	///
-	/// If set to `null`, [ItemBlockRenderTypes#getChunkRenderType(BlockState)] will be used to retrieve
+	/// If set to `null`, [net.minecraft.client.renderer.ItemBlockRenderTypes#getChunkRenderType(net.minecraft.world.level.block.state.BlockState)] will be used to retrieve
 	/// the {@linkplain ChunkSectionLayer chunk layer} in block contexts. Set to another value to override this behavior.
 	///
 	/// In block contexts, a non-null value will be used directly. In item contexts, any value will be converted to a
-	/// [RenderType] using [FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)].
+	/// [net.minecraft.client.renderer.rendertype.RenderType] using [net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState#setRenderTypeGetter(net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter)].
 	///
 	/// The default value is `null`.
 	MutableQuadView chunkLayer(@Nullable ChunkSectionLayer layer);
@@ -261,9 +255,9 @@ public interface MutableQuadView extends QuadView {
 	/// Controls whether vertex colors should be modified for ambient occlusion.
 	///
 	/// If set to [TriState#DEFAULT], ambient occlusion will be used if the block state has
-	/// {@linkplain BlockState#getLightEmission() a luminance} of 0. Set to [TriState#TRUE] or [TriState#FALSE]
+	/// {@linkplain net.minecraft.world.level.block.state.BlockState#getLightEmission() a luminance} of 0. Set to [TriState#TRUE] or [TriState#FALSE]
 	/// to override this behavior. [TriState#TRUE] will not have an effect if
-	/// {@linkplain Minecraft#useAmbientOcclusion() ambient occlusion is disabled globally}.
+	/// {@linkplain net.minecraft.client.Minecraft#useAmbientOcclusion() ambient occlusion is disabled globally}.
 	///
 	/// The default value is [TriState#DEFAULT].
 	///
@@ -295,7 +289,7 @@ public interface MutableQuadView extends QuadView {
 	/// Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
 	///
 	/// In block contexts, this property must be [QuadAtlas#BLOCK]. In item contexts, this property will be
-	/// converted to a [RenderType] using [FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)].
+	/// converted to a [net.minecraft.client.renderer.rendertype.RenderType] using [net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState#setRenderTypeGetter(net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter)].
 	///
 	/// The default value is [QuadAtlas#BLOCK].
 	///

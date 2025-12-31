@@ -31,7 +31,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -103,7 +102,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	private static class WaterRenderHandler implements FluidRenderHandler {
 		public static final WaterRenderHandler INSTANCE = new WaterRenderHandler();
 
-		/// The water color of [Biomes#OCEAN].
+		/// The water color of [net.minecraft.world.level.biome.Biomes#OCEAN].
 		private static final int DEFAULT_WATER_COLOR = 0x3f76e4;
 
 		private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];

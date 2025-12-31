@@ -29,7 +29,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 
 /// Interface for reading quad data encoded in {@linkplain Mesh Meshes}.
@@ -149,7 +148,7 @@ public interface QuadView {
 	/// Creates a new [BakedQuad] with an appearance as close as possible to this quad, as permitted by vanilla.
 	///
 	/// @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
-	/// [SpriteFinder#find(QuadView)] if it is not already known.
+	/// [net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder#find(QuadView)] if it is not already known.
 	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
 		Vector3f position0 = copyPos(0, null);
 		Vector3f position1 = copyPos(1, null);

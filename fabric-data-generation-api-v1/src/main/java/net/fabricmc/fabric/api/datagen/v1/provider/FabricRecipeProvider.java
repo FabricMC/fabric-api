@@ -38,21 +38,18 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /// Extend this class and implement [FabricRecipeProvider#createRecipeProvider(HolderLookup.Provider, RecipeOutput)].
 ///
-/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Register an instance of the class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 	protected final FabricPackOutput output;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
@@ -63,7 +60,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 		this.registriesFuture = registriesFuture;
 	}
 
-	/// Implement this method and then use the range of methods in [RecipeProvider] or from one of the recipe json factories such as [ShapedRecipeBuilder] or [ShapelessRecipeBuilder].
+	/// Implement this method and then use the range of methods in [RecipeProvider] or from one of the recipe json factories such as [net.minecraft.data.recipes.ShapedRecipeBuilder] or [net.minecraft.data.recipes.ShapelessRecipeBuilder].
 	@Override
 	protected abstract RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output);
 

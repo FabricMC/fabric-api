@@ -19,8 +19,6 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LeavesBlock;
-import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
@@ -74,8 +72,8 @@ public interface FluidRenderHandlerRegistry {
 	/// Registers whether a block is transparent or not. When a block is
 	/// transparent, the flowing fluid texture to the sides of that block is
 	/// replaced by a special overlay texture. This happens by default with glass
-	/// and leaves, and hence blocks inheriting [TransparentBlock] and
-	/// [LeavesBlock] are by default transparent. Use this method to
+	/// and leaves, and hence blocks inheriting [net.minecraft.world.level.block.TransparentBlock] and
+	/// [net.minecraft.world.level.block.LeavesBlock] are by default transparent. Use this method to
 	/// override the default behavior for a block.
 	///
 	/// @param block The block to register transparency for.
@@ -87,7 +85,7 @@ public interface FluidRenderHandlerRegistry {
 	/// instead of a falling fluid texture. If transparency is registered for a
 	/// block (via [#setBlockTransparency]), this method returns that
 	/// registered transparency. Otherwise, this method returns whether the block
-	/// is a subclass of [TransparentBlock] or [LeavesBlock].
+	/// is a subclass of [net.minecraft.world.level.block.TransparentBlock] or [net.minecraft.world.level.block.LeavesBlock].
 	///
 	/// @param block The block to get transparency for.
 	/// @return Whether the block is transparent (e.g. gets the overlay textures)

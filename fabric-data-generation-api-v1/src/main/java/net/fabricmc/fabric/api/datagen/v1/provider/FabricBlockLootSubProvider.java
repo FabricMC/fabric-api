@@ -37,13 +37,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
 /// Extend this class and implement [FabricBlockLootSubProvider#generate].
 ///
-/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Register an instance of the class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricBlockLootSubProvider extends BlockLootSubProvider implements FabricLootTableSubProvider {
 	private final FabricPackOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();

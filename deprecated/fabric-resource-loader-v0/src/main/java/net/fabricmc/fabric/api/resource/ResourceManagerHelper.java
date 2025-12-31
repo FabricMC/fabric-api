@@ -24,8 +24,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
@@ -33,14 +31,14 @@ import net.fabricmc.fabric.impl.resource.ResourceLoaderImpl;
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.fabricmc.loader.api.ModContainer;
 
-/// Helper for working with [ResourceManager] instances, and other resource loader generalities.
+/// Helper for working with [net.minecraft.server.packs.resources.ResourceManager] instances, and other resource loader generalities.
 @Deprecated
 @ApiStatus.NonExtendable
 public interface ResourceManagerHelper {
 	/// Add a resource reload listener for a given registry.
 	///
 	/// @param listener The resource reload listener.
-	/// @deprecated Use [net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(Identifier, PreparableReloadListener)] instead.
+	/// @deprecated Use [net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(Identifier, net.minecraft.server.packs.resources.PreparableReloadListener)] instead.
 	@Deprecated
 	default void addReloadListener(IdentifiableResourceReloadListener listener) {
 		registerReloadListener(listener);
@@ -49,7 +47,7 @@ public interface ResourceManagerHelper {
 	/// Register a resource reload listener for a given resource manager type.
 	///
 	/// @param listener The resource reload listener.
-	/// @deprecated Use [net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(Identifier, PreparableReloadListener)] instead.
+	/// @deprecated Use [net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(Identifier, net.minecraft.server.packs.resources.PreparableReloadListener)] instead.
 	@Deprecated
 	void registerReloadListener(IdentifiableResourceReloadListener listener);
 

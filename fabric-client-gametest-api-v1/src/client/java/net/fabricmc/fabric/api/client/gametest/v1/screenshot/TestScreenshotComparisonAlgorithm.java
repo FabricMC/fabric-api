@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.gametest.v1.screenshot;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.platform.NativeImage;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
@@ -82,7 +81,7 @@ public interface TestScreenshotComparisonAlgorithm {
 	}
 
 	/// A thin wrapper around a raw image data array, so that algorithms can directly access the array which may be more
-	/// efficient than going through a [NativeImage] each time.
+	/// efficient than going through a [com.mojang.blaze3d.platform.NativeImage] each time.
 	///
 	/// @param <DATA> The type of the image data array
 	@ApiStatus.NonExtendable

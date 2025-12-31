@@ -16,12 +16,8 @@
 
 package net.fabricmc.fabric.test.menu.item;
 
-import java.util.List;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 
 /// A simple `WorldlyContainer` implementation with only default methods + an item list getter.
 /// ## Reading and writing to tags
-/// Use [ContainerHelper#writeNbt(CompoundTag, NonNullList)] and [ContainerHelper#readNbt(CompoundTag, NonNullList)]
+/// Use [ContainerHelper#writeNbt(net.minecraft.nbt.CompoundTag, NonNullList)] and [ContainerHelper#readNbt(net.minecraft.nbt.CompoundTag, NonNullList)]
 /// on {@linkplain #getItems() the item list}.
 ///
 /// @author Juuz
@@ -160,7 +156,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 
 	/// Removes the current stack in the `slot` and returns it.
 	///
-	/// The default implementation uses [ContainerHelper#removeStack(List, int)]
+	/// The default implementation uses [ContainerHelper#removeStack(java.util.List, int)]
 	///
 	/// @param slot the slot
 	/// @return the removed stack
@@ -171,7 +167,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 
 	/// Replaces the current stack in the `slot` with the provided stack.
 	///
-	/// If the stack is too big for this inventory ([Container#getMaxCountPerStack()] ()}),
+	/// If the stack is too big for this inventory ([net.minecraft.world.Container#getMaxCountPerStack()] ()}),
 	/// it gets resized to this inventory's maximum amount.
 	///
 	/// @param slot  the slot

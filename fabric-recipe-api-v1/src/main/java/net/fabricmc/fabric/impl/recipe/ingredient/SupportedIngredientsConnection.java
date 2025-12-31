@@ -18,10 +18,9 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import java.util.Set;
 
-import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 
-/// Implemented on [Connection] to store which custom ingredients the client supports.
+/// Implemented on [net.minecraft.network.Connection] to store which custom ingredients the client supports.
 public interface SupportedIngredientsConnection {
 	void fabric_setSupportedCustomIngredients(Set<Identifier> supportedCustomIngredients);
 

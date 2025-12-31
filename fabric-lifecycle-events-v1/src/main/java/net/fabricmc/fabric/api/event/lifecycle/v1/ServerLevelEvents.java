@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.saveddata.SavedData;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -26,7 +25,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ServerLevelEvents {
 	/// Called just after a level is loaded by a Minecraft server.
 	///
-	/// This can be used to load level specific metadata or initialize a [SavedData] on a server level.
+	/// This can be used to load level specific metadata or initialize a [net.minecraft.world.level.saveddata.SavedData] on a server level.
 	public static final Event<Load> LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (server, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLevelLoad(server, level);

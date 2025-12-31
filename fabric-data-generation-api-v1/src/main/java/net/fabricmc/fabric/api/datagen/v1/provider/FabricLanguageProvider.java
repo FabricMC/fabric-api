@@ -51,13 +51,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /// Extend this class and implement [FabricLanguageProvider#generateTranslations].
 /// Make sure to use [FabricLanguageProvider][FabricLanguageProvider#FabricLanguageProvider(FabricPackOutput, String, CompletableFuture)] to declare what language code is being generated if it isn't `en_us`.
 ///
-/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Register an instance of the class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricLanguageProvider implements DataProvider {
 	protected final FabricPackOutput packOutput;
 	private final String languageCode;

@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,7 +47,7 @@ public final class FluidRendering {
 
 	public interface DefaultRenderer {
 		/// Render the default geometry when it is requested by [FluidRenderHandler#renderFluid]. The default
-		/// implementation invokes the vanilla renderer. Calling [LiquidBlockRenderer#tesselate] directly is not supported
+		/// implementation invokes the vanilla renderer. Calling [net.minecraft.client.renderer.block.LiquidBlockRenderer#tesselate] directly is not supported
 		/// but using `DefaultRenderer.super.render` is supported. Note that the parameter values passed to this
 		/// call are provided by the render handler, meaning they are not necessarily the same as those provided to the
 		/// initial rendering call. As per the documentation of [FluidRenderHandler#renderFluid], a new handler

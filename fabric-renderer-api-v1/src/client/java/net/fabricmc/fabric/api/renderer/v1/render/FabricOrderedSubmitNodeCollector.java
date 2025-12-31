@@ -17,48 +17,41 @@
 package net.fabricmc.fabric.api.renderer.v1.render;
 
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /// Note: This interface is automatically implemented on [OrderedSubmitNodeCollector] via Mixin and interface injection.
 public interface FabricOrderedSubmitNodeCollector {
 	/// Alternative for
 	/// [OrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int)] that additionally accepts the
 	/// [BlockAndTintGetter] and [BlockPos] to pass to
-	/// [BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)] when
+	/// [BlockStateModel#emitQuads(net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, net.minecraft.util.RandomSource, java.util.function.Predicate)] when
 	/// necessary. **Prefer using this method over the vanilla alternative to correctly render models that have geometry
 	/// on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.**
 	///
 	/// This method allows rendering a block model with minimal transformations to the model geometry. Also invokes
-	/// the [SpecialModelRenderer]. Usually used by entity renderers.
+	/// the [net.minecraft.client.renderer.special.SpecialModelRenderer]. Usually used by entity renderers.
 	///
 	/// @param poseStack The pose stack.
 	/// @param state The block state.
 	/// @param light The minimum light value.
 	/// @param overlay The overlay value.
 	/// @param outlineColor The outline color.
-	/// @param level The level in which to render the model. **Can be empty (i.e. [EmptyBlockAndTintGetter]).**
+	/// @param level The level in which to render the model. **Can be empty (i.e. [net.minecraft.world.level.EmptyBlockAndTintGetter]).**
 	///                  **Must not be mutated after calling this method.**
 	/// @param pos The position of the block in the level. **Should be [BlockPos#ZERO] if the level is empty.
 	///            ** **Must not be mutated after calling this method.**
 	///
-	/// @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
+	/// @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, net.minecraft.client.renderer.MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	default void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
 		((OrderedSubmitNodeCollector) this).submitBlock(poseStack, state, light, overlay, outlineColor);
 	}
@@ -67,7 +60,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	/// [OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, BlockStateModel, float, float, float, int, int, int)]
 	/// that accepts a `Function<ChunkSectionLayer, RenderType>` instead of a [RenderType]. Also accepts the
 	/// [BlockAndTintGetter], [BlockPos], and [BlockState] to pass to
-	/// [BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)] when
+	/// [BlockStateModel#emitQuads(net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, net.minecraft.util.RandomSource, java.util.function.Predicate)] when
 	/// necessary. **Prefer using this method over the vanilla alternative to correctly render models that have geometry
 	/// on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.**
 	///
@@ -84,7 +77,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	/// @param light The minimum light value.
 	/// @param overlay The overlay value.
 	/// @param outlineColor The outline color.
-	/// @param level The level in which to render the model. **Can be empty (i.e. [EmptyBlockAndTintGetter]).**
+	/// @param level The level in which to render the model. **Can be empty (i.e. [net.minecraft.world.level.EmptyBlockAndTintGetter]).**
 	///                  **Must not be mutated after calling this method.**
 	/// @param pos The position of the block in the level. **Should be [BlockPos#ZERO] if the level is empty.
 	///            ** **Must not be mutated after calling this method.**

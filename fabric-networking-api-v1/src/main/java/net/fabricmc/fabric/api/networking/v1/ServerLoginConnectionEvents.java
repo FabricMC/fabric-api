@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
@@ -27,7 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ServerLoginConnectionEvents {
 	/// Event indicating a connection entered the LOGIN state, ready for registering query response handlers.
 	///
-	/// @see ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
+	/// @see ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, net.minecraft.resources.Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
 	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, server) -> {
 		for (Init callback : callbacks) {
 			callback.onLoginInit(listener, server);
@@ -36,7 +35,7 @@ public final class ServerLoginConnectionEvents {
 
 	/// An event for the start of login queries of the server login packet listener.
 	/// This event may be used to register [login query response handlers][ServerLoginNetworking.LoginQueryResponseHandler]
-	/// using [ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)]
+	/// using [ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, net.minecraft.resources.Identifier, ServerLoginNetworking.LoginQueryResponseHandler)]
 	/// since this event is fired just before the first login query response is processed.
 	///
 	/// You may send login queries to the connected client using the provided [LoginPacketSender].

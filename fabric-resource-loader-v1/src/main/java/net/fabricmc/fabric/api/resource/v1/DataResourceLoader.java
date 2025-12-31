@@ -23,7 +23,6 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.crafting.RecipeManager;
 
@@ -34,21 +33,21 @@ import net.fabricmc.fabric.impl.resource.DataResourceLoaderImpl;
 public interface DataResourceLoader extends ResourceLoader {
 	/// The reload listener state key for the recipe manager.
 	///
-	/// @apiNote The recipe manager is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	/// @apiNote The recipe manager is only available in {@linkplain net.minecraft.server.packs.PackType#SERVER_DATA server data} reload listeners.
 	///
 	/// It should **only** be accessed in the application phase of the reload listeners,
 	/// and you should depend on [net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#RECIPES].
 	PreparableReloadListener.StateKey<RecipeManager> RECIPE_MANAGER_KEY = new PreparableReloadListener.StateKey<>();
 	/// The reload listener state key for the advancement loader.
 	///
-	/// @apiNote The advancement loader is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	/// @apiNote The advancement loader is only available in {@linkplain net.minecraft.server.packs.PackType#SERVER_DATA server data} reload listeners.
 	///
 	/// It should **only** be accessed in the application phase of the reload listeners,
 	/// and you should depend on [net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#ADVANCEMENTS].
 	PreparableReloadListener.StateKey<ServerAdvancementManager> ADVANCEMENT_LOADER_KEY = new PreparableReloadListener.StateKey<>();
 	/// The reload listener state key for the data resource store.
 	///
-	/// @apiNote The data resource store is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	/// @apiNote The data resource store is only available in {@linkplain net.minecraft.server.packs.PackType#SERVER_DATA server data} reload listeners.
 	///
 	/// It should **only** be mutated in the application phase of the reload listeners.
 	PreparableReloadListener.StateKey<DataResourceStore.Mutable> DATA_RESOURCE_STORE_KEY = new PreparableReloadListener.StateKey<>();

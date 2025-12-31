@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityDataRegistryImpl;
@@ -30,11 +29,11 @@ public final class FabricEntityDataRegistry {
 	}
 
 	/// Registers a [EntityDataSerializer] using the given ID. Use this instead of
-	/// [EntityDataSerializers#registerSerializer(EntityDataSerializer)] as the vanilla method exclusively uses integer
+	/// [net.minecraft.network.syncher.EntityDataSerializers#registerSerializer(EntityDataSerializer)] as the vanilla method exclusively uses integer
 	/// IDs, which can result in desyncs and errors with custom handlers. This method is guaranteed to work reliably.
 	///
 	/// Handlers registered with this method will have an associated integer ID as well, which can be used with
-	/// [EntityDataSerializers#getSerializer(int)] and [EntityDataSerializers#getSerializedId(EntityDataSerializer)].
+	/// [net.minecraft.network.syncher.EntityDataSerializers#getSerializer(int)] and [net.minecraft.network.syncher.EntityDataSerializers#getSerializedId(EntityDataSerializer)].
 	/// However, the integer ID of a given custom handler registered through this method may change on registry sync.
 	/// The integer IDs of vanilla handlers are guaranteed to remain constant.
 	public static void register(Identifier id, EntityDataSerializer<?> handler) {

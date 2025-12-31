@@ -18,11 +18,9 @@ package net.fabricmc.fabric.api.client.particle.v1;
 
 import java.util.List;
 
-import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.particles.ParticleType;
 
 /// It does the same thing as vanilla's [SpriteSet],
 /// but in a way that's accessible to mods, and that exposes the atlas as well.
@@ -32,7 +30,7 @@ import net.minecraft.core.particles.ParticleType;
 /// interface containing the sprites set loaded for their particle from the
 /// active resource packs.
 ///
-/// @see ParticleProviderRegistry#register(ParticleType, ParticleProvider)
+/// @see ParticleProviderRegistry#register(net.minecraft.core.particles.ParticleType, net.minecraft.client.particle.ParticleProvider)
 /// @see ParticleProviderRegistry.PendingParticleProvider
 public interface FabricSpriteSet extends SpriteSet {
 	/// Returns the entire particles texture atlas.

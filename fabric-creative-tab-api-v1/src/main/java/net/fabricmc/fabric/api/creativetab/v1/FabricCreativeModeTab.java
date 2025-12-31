@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.creativetab.v1;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 
 import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabBuilderImpl;
@@ -30,13 +28,13 @@ public final class FabricCreativeModeTab {
 	/// Creates a new builder for [CreativeModeTab]. Creative Mode Tab are used to group items in the creative
 	/// inventory.
 	///
-	/// You must register the newly created [CreativeModeTab] to the [BuiltInRegistries#CREATIVE_MODE_TAB] registry.
+	/// You must register the newly created [CreativeModeTab] to the [net.minecraft.core.registries.BuiltInRegistries#CREATIVE_MODE_TAB] registry.
 	///
-	/// You must also set a display name by calling [CreativeModeTab.Builder#title(Component)]
+	/// You must also set a display name by calling [CreativeModeTab.Builder#title(net.minecraft.network.chat.Component)]
 	///
 	/// Example:
 	/// <pre>
-	/// `private static final ResourceKey<CreativeModeTab> CREATIVE_MODE_TAB = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath("modid", "custom_group"));void onInitialize(){Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_MODE_TAB, FabricCreativeModeTab.builder().title(Component.translatable("modid.test_group")).icon(() -> new ItemStack(Items.DIAMOND)).displayItems((context, output) ->{output.accept(TEST_ITEM);}).build());}`</pre>
+	/// `private static final ResourceKey<CreativeModeTab> CREATIVE_MODE_TAB = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath("modid", "custom_group"));void onInitialize(){Registry.register(net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_MODE_TAB, FabricCreativeModeTab.builder().title(net.minecraft.network.chat.Component.translatable("modid.test_group")).icon(() -> new ItemStack(Items.DIAMOND)).displayItems((context, output) ->{output.accept(TEST_ITEM);}).build());}`</pre>
 	///
 	/// @return a new [CreativeModeTab.Builder] instance
 	public static CreativeModeTab.Builder builder() {

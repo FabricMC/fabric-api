@@ -16,13 +16,9 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
-import net.minecraft.server.level.ChunkHolder;
-import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.FullChunkStatus;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -57,7 +53,7 @@ public final class ServerChunkEvents {
 	///
 	/// When this event is called, the chunk is still present in the level.
 	///
-	/// Note that the server typically unloads chunks when the chunk's load level goes above [ChunkLevel#MAX_LEVEL]
+	/// Note that the server typically unloads chunks when the chunk's load level goes above [net.minecraft.server.level.ChunkLevel#MAX_LEVEL]
 	/// (and not immediately when the chunk becomes inaccessible). To know when a chunk first becomes inaccessible, see
 	/// [ServerChunkEvents#FULL_CHUNK_STATUS_CHANGE].
 	public static final Event<ServerChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ServerChunkEvents.Unload.class, callbacks -> (serverLevel, chunk) -> {
@@ -72,8 +68,8 @@ public final class ServerChunkEvents {
 	///
 	///   - The chunk's [LevelChunk#getFullStatus()] has already changed.
 	///   - Entities within the chunk are not guaranteed to be accessible.
-	///   - The chunk's corresponding full chunk status future in [ChunkHolder] is not guaranteed to be done.
-	///   - When transitioning from [FullChunkStatus#INACCESSIBLE] to [FullChunkStatus#FULL], calling [ServerChunkCache#getChunkFuture(int, int, ChunkStatus, boolean)] to fetch the current chunk at [ChunkStatus#FULL] status results in undefined behavior.
+	///   - The chunk's corresponding full chunk status future in [net.minecraft.server.level.ChunkHolder] is not guaranteed to be done.
+	///   - When transitioning from [FullChunkStatus#INACCESSIBLE] to [FullChunkStatus#FULL], calling [net.minecraft.server.level.ServerChunkCache#getChunkFuture(int, int, net.minecraft.world.level.chunk.status.ChunkStatus, boolean)] to fetch the current chunk at [net.minecraft.world.level.chunk.status.ChunkStatus#FULL] status results in undefined behavior.
 	///
 	public static final Event<FullChunkStatusChange> FULL_CHUNK_STATUS_CHANGE = EventFactory.createArrayBacked(FullChunkStatusChange.class, (level, chunk, oldChunkStatus, newChunkStatus) -> { }, callbacks -> (serverLevel, chunk, oldChunkStatus, newChunkStatus) -> {
 		for (FullChunkStatusChange callback : callbacks) {

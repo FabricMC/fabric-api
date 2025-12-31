@@ -22,16 +22,13 @@ import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -41,9 +38,9 @@ import net.fabricmc.fabric.impl.transfer.context.CreativeInteractionContainerIte
 import net.fabricmc.fabric.impl.transfer.context.PlayerContainerItemContext;
 import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 
-/// A context that allows an item-queried [Storage] implementation to interact with its containing inventory,
+/// A context that allows an item-queried [net.fabricmc.fabric.api.transfer.v1.storage.Storage] implementation to interact with its containing inventory,
 /// such as a player inventory or an emptying or filling machine.
-/// For example, it is what allows the `Storage<FluidVariant>` of a water bucket to replace the full bucket by an empty bucket
+/// For example, it is what allows the `net.fabricmc.fabric.api.transfer.v1.storage.Storage<FluidVariant>` of a water bucket to replace the full bucket by an empty bucket
 /// on extraction.
 /// Such items that contain resources are often referred to as "container items".
 ///
@@ -51,7 +48,7 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 /// it will generally be suitable to obtain a context instance with [#ofPlayerHand] or [#ofPlayerCursor],
 /// and then use [#find] to query an API instance.
 ///
-/// When water is extracted from the `Storage` of a water bucket, this is how it interacts with the context:
+/// When water is extracted from the `net.fabricmc.fabric.api.transfer.v1.storage.Storage` of a water bucket, this is how it interacts with the context:
 ///
 ///   - The first step is to remove one water bucket item from the current slot,
 ///     that is the slot that contains the water bucket.
@@ -59,7 +56,7 @@ import net.fabricmc.fabric.impl.transfer.context.SingleSlotContainerItemContext;
 ///   - If that fails, the third step is to add the empty bucket item somewhere else in the inventory.
 ///   - The water extraction can only proceed if both step 1, and step 2 or 3, succeed.
 ///
-/// Before attempting to change the current item, the `Storage` implementation must of course check that
+/// Before attempting to change the current item, the `net.fabricmc.fabric.api.transfer.v1.storage.Storage` implementation must of course check that
 /// the item in the current slot is still a water bucket.
 ///
 /// A `ContainerItemContext` allows these operations to be performed, thanks to the following parts:
@@ -87,7 +84,7 @@ public interface ContainerItemContext {
 	///
 	/// In creative mode, [#forCreativeInteraction] is used with the hand stack.
 	/// Otherwise, [#ofPlayerHand] is used.
-	/// This matches the behavior of [ItemUtils#createFilledResult].
+	/// This matches the behavior of [net.minecraft.world.item.ItemUtils#createFilledResult].
 	static ContainerItemContext forPlayerInteraction(Player player, InteractionHand hand) {
 		if (player.hasInfiniteMaterials()) {
 			return forCreativeInteraction(player, player.getItemInHand(hand));
@@ -100,7 +97,7 @@ public interface ContainerItemContext {
 	///
 	/// The stack will never be modified, and any updated stack will only be added to the player's inventory
 	/// if the player's inventory doesn't already contain it.
-	/// This matches the creative behavior of [ItemUtils#createFilledResult].
+	/// This matches the creative behavior of [net.minecraft.world.item.ItemUtils#createFilledResult].
 	static ContainerItemContext forCreativeInteraction(Player player, ItemStack interactingStack) {
 		return new CreativeInteractionContainerItemContext(ItemVariant.of(interactingStack), interactingStack.getCount(), player);
 	}
@@ -172,7 +169,7 @@ public interface ContainerItemContext {
 
 	/// Try to insert some items into this context, prioritizing the main slot over the rest of the inventory.
 	///
-	/// @see Storage#insert
+	/// @see net.fabricmc.fabric.api.transfer.v1.storage.Storage#insert
 	default long insert(ItemVariant itemVariant, long maxAmount, TransactionContext transaction) {
 		// Main slot first
 		long mainInserted = getMainSlot().insert(itemVariant, maxAmount, transaction);
@@ -184,7 +181,7 @@ public interface ContainerItemContext {
 
 	/// Try to extract some items from this context's main slot.
 	///
-	/// @see Storage#extract
+	/// @see net.fabricmc.fabric.api.transfer.v1.storage.Storage#extract
 	default long extract(ItemVariant itemVariant, long maxAmount, TransactionContext transaction) {
 		return getMainSlot().extract(itemVariant, maxAmount, transaction);
 	}
@@ -214,11 +211,11 @@ public interface ContainerItemContext {
 	/// Return the main slot of this context.
 	SingleSlotStorage<ItemVariant> getMainSlot();
 
-	/// Try to insert items into this context, without prioritizing a specific slot, similar to [Inventory#placeItemBackInInventory].
+	/// Try to insert items into this context, without prioritizing a specific slot, similar to [net.minecraft.world.entity.player.Inventory#placeItemBackInInventory].
 	/// This should be used for insertion after insertion into the main slot failed.
 	/// [#insert] can be used to insert into the main slot first, then send any overflow through this function.
 	///
-	/// @see Storage#insert
+	/// @see net.fabricmc.fabric.api.transfer.v1.storage.Storage#insert
 	long insertOverflow(ItemVariant itemVariant, long maxAmount, TransactionContext transactionContext);
 
 	/// Get additional slots that may be available in this context.

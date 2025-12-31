@@ -28,7 +28,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -115,7 +114,7 @@ public final class FluidVariantAttributes {
 	/// Return a positive integer, representing the viscosity of this fluid variant.
 	/// Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	///
-	/// More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * [FlowingFluid#getTickDelay] for flowing fluids.
+	/// More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * [net.minecraft.world.level.material.FlowingFluid#getTickDelay] for flowing fluids.
 	/// The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
 	/// {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	/// and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.

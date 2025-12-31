@@ -24,7 +24,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.ai.village.poi.PoiRecord;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.block.Block;
@@ -43,7 +42,7 @@ public final class PoiHelper {
 	/// @param id The id of this [PoiType].
 	/// @param ticketCount the amount of tickets.
 	/// @param searchDistance the search distance.
-	/// @param blocks all the blocks where a [PoiRecord] of this type will be present.
+	/// @param blocks all the blocks where a [net.minecraft.world.entity.ai.village.poi.PoiRecord] of this type will be present.
 	/// @return a new [PoiType].
 	public static PoiType register(Identifier id, int ticketCount, int searchDistance, Block... blocks) {
 		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
@@ -60,7 +59,7 @@ public final class PoiHelper {
 	/// @param id the id of this [PoiType].
 	/// @param ticketCount the amount of tickets.
 	/// @param searchDistance the search distance.
-	/// @param blocks all [block states][BlockState] where a [PoiRecord] of this type will be present
+	/// @param blocks all [block states][BlockState] where a [net.minecraft.world.entity.ai.village.poi.PoiRecord] of this type will be present
 	/// @return a new [PoiType].
 	public static PoiType register(Identifier id, int ticketCount, int searchDistance, Iterable<BlockState> blocks) {
 		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();

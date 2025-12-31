@@ -18,11 +18,9 @@ package net.fabricmc.fabric.api.renderer.v1.render;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
 
-/// Like [MultiBufferSource], but takes [ChunkSectionLayer] instead of [RenderType]. Primarily
+/// Like [net.minecraft.client.renderer.MultiBufferSource], but takes [ChunkSectionLayer] instead of [net.minecraft.client.renderer.rendertype.RenderType]. Primarily
 /// used to correctly render block models which have geometry on more than one layer.
 ///
 /// @see FabricModelBlockRenderer

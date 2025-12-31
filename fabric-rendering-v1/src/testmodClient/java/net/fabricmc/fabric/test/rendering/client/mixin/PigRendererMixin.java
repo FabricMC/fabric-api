@@ -32,10 +32,9 @@ import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
-/// Tests [RenderStateDataKey] and [FabricRenderState]. Pigs will render the block they're standing on at their location.
+/// Tests [RenderStateDataKey] and [net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState]. Pigs will render the block they're standing on at their location.
 @Mixin(PigRenderer.class)
 public class PigRendererMixin {
 	@Unique

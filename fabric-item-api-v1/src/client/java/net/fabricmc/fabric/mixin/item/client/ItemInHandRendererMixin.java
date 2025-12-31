@@ -28,9 +28,7 @@ import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-
-/// Allow canceling the held item update animation if [FabricItem#allowComponentsUpdateAnimation] returns false.
+/// Allow canceling the held item update animation if [net.fabricmc.fabric.api.item.v1.FabricItem#allowComponentsUpdateAnimation] returns false.
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {
 	@Shadow

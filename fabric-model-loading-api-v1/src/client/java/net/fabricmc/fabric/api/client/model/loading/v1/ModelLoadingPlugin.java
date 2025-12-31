@@ -21,7 +21,6 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -30,7 +29,7 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 /// A model loading plugin is used to extend the model loading process through the passed [Context] object.
 ///
 /// [PreparableModelLoadingPlugin] can be used if some resources need to be loaded from the
-/// [ResourceManager].
+/// [net.minecraft.server.packs.resources.ResourceManager].
 @FunctionalInterface
 public interface ModelLoadingPlugin {
 	/// Registers a model loading plugin.

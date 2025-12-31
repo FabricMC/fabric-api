@@ -28,7 +28,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
-import net.minecraft.util.thread.BlockableEventLoop;
 
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
@@ -225,7 +224,7 @@ public final class ServerConfigurationNetworking {
 		/// Handles an incoming packet.
 		///
 		/// Unlike [ServerPlayNetworking.PlayPayloadHandler] this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		/// Modification to the game should be {@linkplain BlockableEventLoop#submit(Runnable) scheduled} using the Minecraft server instance from [ServerConfigurationNetworking#getServer(ServerConfigurationPacketListenerImpl)].
+		/// Modification to the game should be {@linkplain net.minecraft.util.thread.BlockableEventLoop#submit(Runnable) scheduled} using the Minecraft server instance from [ServerConfigurationNetworking#getServer(ServerConfigurationPacketListenerImpl)].
 		///
 		/// An example usage of this:
 		/// <pre>

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import net.minecraft.world.level.material.FlowingFluid;
-
 /// Constants for fluid transfer. In general, 1 bucket = 81000 droplets = 1 block.
 ///
 /// If you don't know how many droplets you should pick for a specific resource that has a block form,
@@ -61,7 +59,7 @@ public final class FluidConstants {
 	public static final int WATER_VISCOSITY = 1000;
 	public static final int LAVA_VISCOSITY = 6000;
 	public static final int LAVA_VISCOSITY_NETHER = 2000;
-	/// For flowing fluids, the viscosity should match `VISCOSITY_RATIO` * [FlowingFluid#getTickDelay].
+	/// For flowing fluids, the viscosity should match `VISCOSITY_RATIO` * [net.minecraft.world.level.material.FlowingFluid#getTickDelay].
 	public static final int VISCOSITY_RATIO = 200;
 
 	private FluidConstants() {

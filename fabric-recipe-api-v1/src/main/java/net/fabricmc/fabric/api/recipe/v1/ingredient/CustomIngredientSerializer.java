@@ -22,7 +22,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
@@ -52,11 +51,11 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	///
 	/// Codecs are used to read the ingredient from the recipe JSON files.
 	///
-	/// @see Ingredient#CODEC
+	/// @see net.minecraft.world.item.crafting.Ingredient#CODEC
 	MapCodec<T> getCodec();
 
 	/// {@return the stream codec for serializing this ingredient}.
 	///
-	/// @see Ingredient#CONTENTS_STREAM_CODEC
+	/// @see net.minecraft.world.item.crafting.Ingredient#CONTENTS_STREAM_CODEC
 	StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();
 }

@@ -27,9 +27,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
-import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
-
-/// Accesses loot pool fields for [FabricLootPoolBuilder#copyOf(LootPool)].
+/// Accesses loot pool fields for [net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder#copyOf(LootPool)].
 /// These are normally available in the transitive access widener module.
 @Mixin(LootPool.class)
 public interface LootPoolAccessor {

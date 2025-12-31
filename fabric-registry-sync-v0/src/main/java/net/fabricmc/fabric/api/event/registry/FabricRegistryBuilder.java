@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.core.DefaultedMappedRegistry;
-import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
@@ -65,7 +64,7 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 		return from(new MappedRegistry<>(key, Lifecycle.stable(), false));
 	}
 
-	/// Create a new [FabricRegistryBuilder] using a [DefaultedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
+	/// Create a new [FabricRegistryBuilder] using a [net.minecraft.core.DefaultedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
 	///
 	/// @param key The registry's [ResourceKey]
 	/// @param defaultId The default registry id
@@ -86,7 +85,7 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 		return create(ResourceKey.createRegistryKey(registryId));
 	}
 
-	/// Create a new [FabricRegistryBuilder] using a [DefaultedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
+	/// Create a new [FabricRegistryBuilder] using a [net.minecraft.core.DefaultedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
 	///
 	/// @param registryId The registry [Identifier] used as the registry id
 	/// @param defaultId The default registry id

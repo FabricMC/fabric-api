@@ -38,13 +38,12 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
 
-/// Used during item buffering to support geometry added through [FabricLayerRenderState#emitter()].
+/// Used during item buffering to support geometry added through [net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState#emitter()].
 public class ItemRenderContext extends AbstractRenderContext {
 	private static final int FOIL_TYPE_COUNT = ItemStackRenderState.FoilType.values().length;
 

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.datagen.v1;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.resources.ResourceKey;
 
 /// An entry point for data generation.
 ///
@@ -44,7 +43,7 @@ public interface DataGeneratorEntrypoint {
 	}
 
 	/// Builds a registry containing dynamic registry entries to be generated.
-	/// Users should call [RegistrySetBuilder#add(ResourceKey, RegistrySetBuilder.RegistryBootstrap)]
+	/// Users should call [RegistrySetBuilder#add(net.minecraft.resources.ResourceKey, RegistrySetBuilder.RegistryBootstrap)]
 	/// to register a bootstrap function, which adds registry entries to be generated.
 	///
 	/// This is invoked asynchronously.

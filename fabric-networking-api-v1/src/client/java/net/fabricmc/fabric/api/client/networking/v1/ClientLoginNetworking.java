@@ -30,7 +30,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 /// Offers access to login stage client-side networking functionalities.
@@ -38,7 +37,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 /// The Minecraft login protocol only allows the client to respond to a server's request, but not initiate one of its own.
 ///
 /// @see ClientPlayNetworking
-/// @see ServerLoginNetworking
+/// @see net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking
 public final class ClientLoginNetworking {
 	/// Registers a handler to a query request channel.
 	/// A global receiver is registered to all connections, in the present and future.

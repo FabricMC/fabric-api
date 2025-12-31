@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.minecraft.network.PacketEncoder;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ConfigurationTask;
@@ -29,15 +28,14 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
-import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
 
 /// To reasonably support server-side only custom ingredients, we only send custom ingredients to clients that support them.
 /// If a specific client doesn't support a custom ingredient, we send the matching stacks as a regular ingredient.
 /// This is fine since all recipe computation happens server-side anyway.
 ///
 ///   - Each client sends a packet with the set of custom ingredients it supports.
-///   - We store that set inside the [PacketEncoder] using [PacketEncoderMixin].
-///   - When serializing a custom ingredient, we get access to the current [PacketEncoder],
+///   - We store that set inside the [net.minecraft.network.PacketEncoder] using [net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin].
+///   - When serializing a custom ingredient, we get access to the current [net.minecraft.network.PacketEncoder],
 ///     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.
 ///
 public class CustomIngredientSync implements ModInitializer {

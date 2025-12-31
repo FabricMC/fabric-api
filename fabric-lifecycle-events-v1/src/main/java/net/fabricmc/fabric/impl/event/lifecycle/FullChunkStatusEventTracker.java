@@ -18,9 +18,7 @@ package net.fabricmc.fabric.impl.event.lifecycle;
 
 import net.minecraft.server.level.FullChunkStatus;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-
-/// A marker interface that tracks the current [ServerChunkEvents#FULL_CHUNK_STATUS_CHANGE] full chunk status for a given chunk.
+/// A marker interface that tracks the current [net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents#FULL_CHUNK_STATUS_CHANGE] full chunk status for a given chunk.
 public interface FullChunkStatusEventTracker {
 	void fabric_setCurrentEventFullChunkStatus(FullChunkStatus chunkStatus);
 

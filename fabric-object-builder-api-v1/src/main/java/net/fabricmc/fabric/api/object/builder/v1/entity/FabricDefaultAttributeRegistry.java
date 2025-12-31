@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
-import java.util.function.Supplier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +66,7 @@ public final class FabricDefaultAttributeRegistry {
 	///
 	/// @param type      the entity type
 	/// @param container the container for the default attribute
-	/// @see	FabricEntityType.Builder.Living#defaultAttributes(Supplier)
+	/// @see	FabricEntityType.Builder.Living#defaultAttributes(java.util.function.Supplier)
 	public static void register(EntityType<? extends LivingEntity> type, AttributeSupplier container) {
 		if (DefaultAttributesAccessor.getRegistry().put(type, container) != null) {
 			LOGGER.debug("Overriding existing registration for entity type {}", BuiltInRegistries.ENTITY_TYPE.getKey(type));

@@ -16,11 +16,9 @@
 
 package net.fabricmc.fabric.api.renderer.v1.sprite;
 
-import net.minecraft.client.renderer.texture.SpriteLoader;
-
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
-/// Note: This interface is automatically implemented on [SpriteLoader.Preparations] via Mixin and interface injection.
+/// Note: This interface is automatically implemented on [net.minecraft.client.renderer.texture.SpriteLoader.Preparations] via Mixin and interface injection.
 public interface FabricPreparations {
 	/// {@return the sprite finder for this sprite loader preparation}
 	default SpriteFinder spriteFinder() {

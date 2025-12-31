@@ -20,13 +20,12 @@ import java.util.List;
 import java.util.StringJoiner;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
-/// A [Storage] wrapping multiple slotted storages.
+/// A [net.fabricmc.fabric.api.transfer.v1.storage.Storage] wrapping multiple slotted storages.
 /// Same as [CombinedStorage], but for [SlottedStorage]s.
 ///
 /// @param <T> The type of the stored resources.
-/// @param <S> The class of every part. `? extends Storage<T>` can be used if the parts are of different types.
+/// @param <S> The class of every part. `? extends net.fabricmc.fabric.api.transfer.v1.storage.Storage<T>` can be used if the parts are of different types.
 public class CombinedSlottedStorage<T, S extends SlottedStorage<T>> extends CombinedStorage<T, S> implements SlottedStorage<T> {
 	public CombinedSlottedStorage(List<S> parts) {
 		super(parts);

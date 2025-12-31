@@ -18,18 +18,12 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.UnbakedGeometry;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
-/// A special [QuadCollection] which hides a [Mesh] instead of using [BakedQuad]s. Useful for custom
-/// implementations of [UnbakedGeometry#bake(TextureSlots, ModelBaker, ModelState, ModelDebugName)] that want to return a
+/// A special [QuadCollection] which hides a [Mesh] instead of using [net.minecraft.client.renderer.block.model.BakedQuad]s. Useful for custom
+/// implementations of [net.minecraft.client.resources.model.UnbakedGeometry#bake(net.minecraft.client.renderer.block.model.TextureSlots, net.minecraft.client.resources.model.ModelBaker, net.minecraft.client.resources.model.ModelState, net.minecraft.client.resources.model.ModelDebugName)] that want to return a
 /// mesh. Instances of this class always return empty lists from inherited methods.
 ///
 /// Any code that interacts with [QuadCollection] should first check `instanceof MeshBakedGeometry` and use

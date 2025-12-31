@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -31,11 +29,11 @@ import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 /// @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
 @Deprecated
 public final class EntityRendererRegistry {
-	/// Register an [EntityRenderer] for an [EntityType]. Can be called clientside before the level is rendered.
+	/// Register an [net.minecraft.client.renderer.entity.EntityRenderer] for an [EntityType]. Can be called clientside before the level is rendered.
 	///
 	/// @param entityType            the [EntityType] to register a renderer for
-	/// @param entityRendererProvider a [EntityRendererProvider] that creates a [EntityRenderer], called
-	///                              when [EntityRenderDispatcher] is initialized or immediately if the dispatcher
+	/// @param entityRendererProvider a [EntityRendererProvider] that creates a [net.minecraft.client.renderer.entity.EntityRenderer], called
+	///                              when [net.minecraft.client.renderer.entity.EntityRenderDispatcher] is initialized or immediately if the dispatcher
 	///                              class is already loaded
 	/// @param <E>                   the [Entity]
 	public static <E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererProvider<E> entityRendererProvider) {

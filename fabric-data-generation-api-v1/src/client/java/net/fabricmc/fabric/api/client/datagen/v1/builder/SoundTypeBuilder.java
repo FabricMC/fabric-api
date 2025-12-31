@@ -29,12 +29,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Util;
 
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 /// Provides functionality for building entries that go into a `sounds.json` file.
 ///
-/// Use in conjunction with [FabricSoundsProvider] to generate sound definitions.
+/// Use in conjunction with [net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider] to generate sound definitions.
 ///
 /// @see net.minecraft.client.resources.sounds.SoundEventRegistration
 @ApiStatus.NonExtendable

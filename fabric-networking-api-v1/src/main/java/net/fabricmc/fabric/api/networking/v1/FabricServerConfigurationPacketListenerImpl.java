@@ -16,16 +16,14 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ConfigurationTask;
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
-/// Fabric-provided extensions for [ServerConfigurationPacketListenerImpl].
+/// Fabric-provided extensions for [net.minecraft.server.network.ServerConfigurationPacketListenerImpl].
 /// This interface is automatically implemented via Mixin and interface injection.
 public interface FabricServerConfigurationPacketListenerImpl {
 	/// Enqueues a [ConfigurationTask] to be processed.
 	///
-	/// Before adding a task use [ServerConfigurationNetworking#canSend(ServerConfigurationPacketListenerImpl, Identifier)]
+	/// Before adding a task use [ServerConfigurationNetworking#canSend(net.minecraft.server.network.ServerConfigurationPacketListenerImpl, net.minecraft.resources.Identifier)]
 	/// to ensure that the client can process this task.
 	///
 	/// Once the client has handled the task a packet should be sent to the server.

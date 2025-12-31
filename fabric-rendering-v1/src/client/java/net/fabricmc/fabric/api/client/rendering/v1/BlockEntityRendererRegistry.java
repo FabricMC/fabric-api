@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,11 +30,11 @@ import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl
 /// @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
 @Deprecated
 public final class BlockEntityRendererRegistry {
-	/// Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the level is rendered.
+	/// Register a net.minecraft.client.renderer.blockentity.BlockEntityRenderer for a BlockEntityType. Can be called clientside before the level is rendered.
 	///
 	/// @param blockEntityType the [BlockEntityType] to register a renderer for
-	/// @param blockEntityRendererProvider a [BlockEntityRendererProvider] that creates a [BlockEntityRenderer], called
-	///                            when [BlockEntityRenderDispatcher] is initialized or immediately if the dispatcher
+	/// @param blockEntityRendererProvider a [BlockEntityRendererProvider] that creates a [net.minecraft.client.renderer.blockentity.BlockEntityRenderer], called
+	///                            when [net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher] is initialized or immediately if the dispatcher
 	///                            class is already loaded
 	/// @param <E> the [BlockEntity]
 	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererProvider<? super E, ? super S> blockEntityRendererProvider) {

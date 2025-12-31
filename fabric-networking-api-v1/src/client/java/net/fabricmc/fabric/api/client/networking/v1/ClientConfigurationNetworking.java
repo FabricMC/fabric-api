@@ -26,12 +26,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.thread.BlockableEventLoop;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
@@ -40,17 +36,17 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 /// Client-side networking functionalities include receiving clientbound packets,
 /// sending serverbound packets, and events related to client-side packet listeners.
 /// Packets **received** by this class must be registered to
-/// [PayloadTypeRegistry#clientboundConfiguration()] on both ends.
+/// [net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundConfiguration()] on both ends.
 /// Packets **sent** by this class must be registered to
-/// [PayloadTypeRegistry#serverboundConfiguration()] on both ends.
+/// [net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#serverboundConfiguration()] on both ends.
 /// Packets must be registered before registering any receivers.
 ///
 /// This class should be only used on the physical client and for the logical client.
 ///
-/// See [ServerPlayNetworking] for information on how to use the packet
+/// See [net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking] for information on how to use the packet
 /// object-based API.
 ///
-/// @see ServerConfigurationNetworking
+/// @see net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking
 public final class ClientConfigurationNetworking {
 	/// Registers a handler for a packet type.
 	/// A global receiver is registered to all connections, in the present and future.
@@ -61,7 +57,7 @@ public final class ClientConfigurationNetworking {
 	/// @param type the packet type
 	/// @param handler the handler
 	/// @return false if a handler is already registered to the channel
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#clientboundConfiguration() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundConfiguration() registered} yet
 	/// @see ClientConfigurationNetworking#unregisterGlobalReceiver(CustomPacketPayload.Type)
 	/// @see ClientConfigurationNetworking#registerReceiver(CustomPacketPayload.Type, ConfigurationPayloadHandler)
 	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, ConfigurationPayloadHandler<T> handler) {
@@ -101,7 +97,7 @@ public final class ClientConfigurationNetworking {
 	/// @param type the payload type
 	/// @param handler the handler
 	/// @return `false` if a handler is already registered for the type
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#clientboundConfiguration() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundConfiguration() registered} yet
 	/// @throws IllegalStateException if the client is not connected to a server
 	/// @see ClientPlayConnectionEvents#INIT
 	public static <T extends CustomPacketPayload> boolean registerReceiver(CustomPacketPayload.Type<T> type, ConfigurationPayloadHandler<T> handler) {
@@ -200,7 +196,7 @@ public final class ClientConfigurationNetworking {
 
 	/// Sends a packet to the connected server.
 	///
-	/// Any packets sent must be {@linkplain PayloadTypeRegistry#serverboundConfiguration() registered}.
+	/// Any packets sent must be {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#serverboundConfiguration() registered}.
 	///
 	/// @param payload to be sent
 	/// @throws IllegalStateException if the client is not connected to a server
@@ -228,11 +224,11 @@ public final class ClientConfigurationNetworking {
 		/// Handles the incoming packet.
 		///
 		/// Unlike [ClientPlayNetworking.PlayPayloadHandler] this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		/// Modification to the game should be {@linkplain BlockableEventLoop#submit(Runnable) scheduled}.
+		/// Modification to the game should be {@linkplain net.minecraft.util.thread.BlockableEventLoop#submit(Runnable) scheduled}.
 		///
 		/// An example usage of this:
 		/// <pre>
-		/// `// use PayloadTypeRegistry for registering the payloadClientConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) ->{});`</pre>
+		/// `// use net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry for registering the payloadClientConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) ->{});`</pre>
 		///
 		/// @param payload the packet payload
 		/// @param context the configuration networking context

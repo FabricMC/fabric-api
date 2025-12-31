@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.CloseableResourceManager;
-import net.minecraft.server.players.PlayerList;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -30,7 +29,7 @@ public final class ServerLifecycleEvents {
 
 	/// Called when a Minecraft server is starting.
 	///
-	/// This occurs before the [player list][PlayerList] and any levels are loaded.
+	/// This occurs before the [player list][net.minecraft.server.players.PlayerList] and any levels are loaded.
 	public static final Event<ServerStarting> SERVER_STARTING = EventFactory.createArrayBacked(ServerStarting.class, callbacks -> server -> {
 		for (ServerStarting callback : callbacks) {
 			callback.onServerStarting(server);

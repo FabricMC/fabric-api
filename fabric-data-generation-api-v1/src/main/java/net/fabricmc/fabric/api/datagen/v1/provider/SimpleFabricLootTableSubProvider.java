@@ -24,11 +24,10 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
-/// Extend this class and implement [#generate]. Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Extend this class and implement [#generate]. Register an instance of the class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class SimpleFabricLootTableSubProvider implements FabricLootTableSubProvider {
 	protected final FabricPackOutput output;
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;

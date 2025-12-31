@@ -20,8 +20,6 @@ import static net.minecraft.util.Mth.equal;
 
 import org.joml.Vector3fc;
 
-import net.minecraft.client.renderer.FaceInfo;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
@@ -162,7 +160,7 @@ public final class GeometryHelper {
 	}
 
 	/// Identifies the face to which the quad is most closely aligned.
-	/// This mimics the value that [BakedQuad#direction()] returns, and is
+	/// This mimics the value that [net.minecraft.client.renderer.block.model.BakedQuad#direction()] returns, and is
 	/// used in the vanilla renderer for all diffuse lighting.
 	///
 	/// Derived from the quad face normal and expects convex quads with all points co-planar.
@@ -205,7 +203,7 @@ public final class GeometryHelper {
 	}
 
 	/// Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
-	/// the directions specified in [FaceInfo]. Assumes that the given quad is
+	/// the directions specified in [net.minecraft.client.renderer.FaceInfo]. Assumes that the given quad is
 	/// {@linkplain #isQuadCubic(Direction, QuadView) cubic}. Used to make smooth lighting for cubic quads work correctly
 	/// regardless of vertex order.
 	///

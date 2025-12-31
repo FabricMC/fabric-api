@@ -23,7 +23,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.item.Items;
@@ -34,11 +33,9 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.impl.transfer.item.BundleContentsStorage;
 import net.fabricmc.fabric.impl.transfer.item.ComposterWrapper;
@@ -68,8 +65,8 @@ public final class ItemStorage {
 	///
 	///   - Directly implementing [Container] or [WorldlyContainer] on a block entity - it will be wrapped automatically.
 	///   - Storing a container inside a block entity field, and converting it manually with [ContainerStorage#of].
-	///     [SimpleContainer] can be used for easy implementation.
-	///   - [SingleStackStorage] can also be used for more flexibility. Multiple of them can be combined with [CombinedStorage].
+	///     [net.minecraft.world.SimpleContainer] can be used for easy implementation.
+	///   - [net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage] can also be used for more flexibility. Multiple of them can be combined with [net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage].
 	///   - Directly providing a custom implementation of `Storage<ItemVariant>` is also possible.
 	///
 	///

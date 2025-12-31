@@ -22,7 +22,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 
 /// The client gametest input handler used to simulate inputs to the client.
@@ -81,19 +80,19 @@ public interface TestInput {
 	void holdMouse(int button);
 
 	/// Starts holding down left control, or left super on macOS. Suitable for triggering
-	/// [Minecraft#hasControlDown()]. The key will be held until it is released. Does nothing if the key is already
+	/// [net.minecraft.client.Minecraft#hasControlDown()]. The key will be held until it is released. Does nothing if the key is already
 	/// being held.
 	///
 	/// @see #releaseControl()
 	void holdControl();
 
-	/// Starts holding down left shift. Suitable for triggering [Minecraft#hasShiftDown()]. The key will be held until
+	/// Starts holding down left shift. Suitable for triggering [net.minecraft.client.Minecraft#hasShiftDown()]. The key will be held until
 	/// it is released. Does nothing if the key is already being held.
 	///
 	/// @see #releaseShift()
 	void holdShift();
 
-	/// Starts holding down left alt. Suitable for triggering [Minecraft#hasAltDown()]. The key will be held until it
+	/// Starts holding down left alt. Suitable for triggering [net.minecraft.client.Minecraft#hasAltDown()]. The key will be held until it
 	/// is released. Does nothing if the key is already being held.
 	///
 	/// @see #releaseAlt()
@@ -141,19 +140,19 @@ public interface TestInput {
 	/// @see #holdMouse(int)
 	void releaseMouse(int button);
 
-	/// Releases left control, or left super on macOS. Suitable for un-triggering [Minecraft#hasControlDown()]. Does
+	/// Releases left control, or left super on macOS. Suitable for un-triggering [net.minecraft.client.Minecraft#hasControlDown()]. Does
 	/// nothing if the key is not being held.
 	///
 	/// @see #holdControl()
 	void releaseControl();
 
-	/// Releases left shift. Suitable for un-triggering [Minecraft#hasShiftDown()]. Does nothing if the key is not
+	/// Releases left shift. Suitable for un-triggering [net.minecraft.client.Minecraft#hasShiftDown()]. Does nothing if the key is not
 	/// being held.
 	///
 	/// @see #holdShift()
 	void releaseShift();
 
-	/// Releases left alt. Suitable for un-triggering [Minecraft#hasAltDown()]. Does nothing if the key is not being
+	/// Releases left alt. Suitable for un-triggering [net.minecraft.client.Minecraft#hasAltDown()]. Does nothing if the key is not being
 	/// held.
 	///
 	/// @see #holdAlt()

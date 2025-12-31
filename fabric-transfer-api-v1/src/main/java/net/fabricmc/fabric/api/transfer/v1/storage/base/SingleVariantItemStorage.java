@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.transfer.v1.storage.base;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -73,8 +72,8 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 	///
 	/// When the new amount is 0, it is recommended that the components corresponding to the resource and amount
 	/// be removed, so that newly-crafted containers can stack with emptied containers.
-	/// If a custom item is used, this means {@linkplain ItemStack#set setting} it to the default as specified in [Item.Properties#component];
-	/// if a vanilla item is used, this means {@linkplain ItemStack#remove removing} the said component.
+	/// If a custom item is used, this means {@linkplain net.minecraft.world.item.ItemStack#set setting} it to the default as specified in [Item.Properties#component];
+	/// if a vanilla item is used, this means {@linkplain net.minecraft.world.item.ItemStack#remove removing} the said component.
 	///
 	/// @param currentVariant Variant to which the modification should be applied.
 	/// @param newResource Resource that should be contained in the returned variant.

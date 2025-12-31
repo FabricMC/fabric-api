@@ -22,11 +22,10 @@ import java.util.stream.Stream;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-/// General-purpose Fabric-provided extensions for [RecipeManager] class.
+/// General-purpose Fabric-provided extensions for [net.minecraft.world.item.crafting.RecipeManager] class.
 public interface FabricRecipeManager extends FabricRecipeAccess {
 	/// Creates a stream of all recipe entries of the given `type` that match the
 	/// given `input` and `level`.

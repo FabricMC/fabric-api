@@ -30,7 +30,6 @@ import org.joml.Vector4f;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
 
@@ -169,7 +168,7 @@ public final class ModelStateHelper {
 	/// Creates a new [QuadTransform] that applies the given transformation. The sprite finder is used to look up
 	/// the current sprite to correctly apply UV lock, if present in the transformation.
 	///
-	/// This method is most useful when creating custom implementations of [UnbakedGeometry], which receive a
+	/// This method is most useful when creating custom implementations of [net.minecraft.client.resources.model.UnbakedGeometry], which receive a
 	/// [ModelState].
 	public static QuadTransform asQuadTransform(ModelState state, SpriteFinderGetter spriteFinderGetter) {
 		Matrix4fc matrix = state.transformation().getMatrix();

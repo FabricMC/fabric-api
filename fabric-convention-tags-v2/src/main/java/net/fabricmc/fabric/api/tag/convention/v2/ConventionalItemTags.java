@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -117,23 +115,23 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> NETHERITE_INGOTS = register("ingots/netherite");
 
 	// Ores - vanilla instances (All ores consolidated here for consistency)
-	/// Aliased with [ItemTags#COAL_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#COAL_ORES].
 	public static final TagKey<Item> COAL_ORES = register("ores/coal");
-	/// Aliased with [ItemTags#COPPER_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#COPPER_ORES].
 	public static final TagKey<Item> COPPER_ORES = register("ores/copper");
-	/// Aliased with [ItemTags#DIAMOND_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#DIAMOND_ORES].
 	public static final TagKey<Item> DIAMOND_ORES = register("ores/diamond");
-	/// Aliased with [ItemTags#EMERALD_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#EMERALD_ORES].
 	public static final TagKey<Item> EMERALD_ORES = register("ores/emerald");
-	/// Aliased with [ItemTags#GOLD_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#GOLD_ORES].
 	public static final TagKey<Item> GOLD_ORES = register("ores/gold");
-	/// Aliased with [ItemTags#IRON_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#IRON_ORES].
 	public static final TagKey<Item> IRON_ORES = register("ores/iron");
-	/// Aliased with [ItemTags#LAPIS_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#LAPIS_ORES].
 	public static final TagKey<Item> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Item> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 	public static final TagKey<Item> QUARTZ_ORES = register("ores/quartz");
-	/// Aliased with [ItemTags#REDSTONE_ORES].
+	/// Aliased with [net.minecraft.tags.ItemTags#REDSTONE_ORES].
 	public static final TagKey<Item> REDSTONE_ORES = register("ores/redstone");
 
 	// Gems - vanilla instances
@@ -167,7 +165,7 @@ public final class ConventionalItemTags {
 
 	// Foods
 	public static final TagKey<Item> FOODS = register("foods");
-	/// All foods edible by animals excluding poisonous foods. (Does not include [ItemTags#PARROT_POISONOUS_FOOD])
+	/// All foods edible by animals excluding poisonous foods. (Does not include [net.minecraft.tags.ItemTags#PARROT_POISONOUS_FOOD])
 	public static final TagKey<Item> ANIMAL_FOODS = register("animal_foods");
 	/// Apples and other foods that are considered fruits in the culinary field belong in this tag.
 	/// Cherries would go here as they are considered a "stone fruit" within culinary fields.
@@ -254,11 +252,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> GLASS_BLOCKS_TINTED = register("glass_blocks/tinted");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 	public static final TagKey<Item> GLASS_PANES_COLORLESS = register("glass_panes/colorless");
-	/// Block tag equivalent is [BlockTags#SHULKER_BOXES].
+	/// Block tag equivalent is [net.minecraft.tags.BlockTags#SHULKER_BOXES].
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 	public static final TagKey<Item> GLAZED_TERRACOTTAS = register("glazed_terracottas");
 	public static final TagKey<Item> CONCRETES = register("concretes");
-	/// Block tag equivalent is [BlockTags#CONCRETE_POWDER].
+	/// Block tag equivalent is [net.minecraft.tags.BlockTags#CONCRETE_POWDER].
 	public static final TagKey<Item> CONCRETE_POWDERS = register("concrete_powders");
 
 	// Related to budding mechanics
@@ -287,7 +285,7 @@ public final class ConventionalItemTags {
 	// Flower
 	/// Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
 	/// Equivalent to the `minecraft:small_flowers` item tag.
-	/// Aliased with [ItemTags#SMALL_FLOWERS].
+	/// Aliased with [net.minecraft.tags.ItemTags#SMALL_FLOWERS].
 	public static final TagKey<Item> SMALL_FLOWERS = register("flowers/small");
 	/// Contains living ground-based flowers that are 2 block tall such as Rose Bush or Peony.
 	/// Equivalent to the `minecraft:tall_flowers` item tag in past Minecraft versions.
@@ -297,12 +295,12 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> FLOWERS = register("flowers");
 
 	// Fences and Fence Gates
-	/// Aliased with [ItemTags#FENCES].
+	/// Aliased with [net.minecraft.tags.ItemTags#FENCES].
 	public static final TagKey<Item> FENCES = register("fences");
-	/// Aliased with [ItemTags#WOODEN_FENCES].
+	/// Aliased with [net.minecraft.tags.ItemTags#WOODEN_FENCES].
 	public static final TagKey<Item> WOODEN_FENCES = register("fences/wooden");
 	public static final TagKey<Item> NETHER_BRICK_FENCES = register("fences/nether_brick");
-	/// Aliased with [ItemTags#FENCE_GATES].
+	/// Aliased with [net.minecraft.tags.ItemTags#FENCE_GATES].
 	public static final TagKey<Item> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Item> WOODEN_FENCE_GATES = register("fence_gates/wooden");
 

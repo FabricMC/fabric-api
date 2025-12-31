@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
@@ -34,12 +33,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 /// Extend this class and implement [FabricSoundsProvider#configure(HolderLookup.Provider, SoundExporter)].
 ///
-/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Register an instance of the class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 ///
 /// Registered sound types will be appended to their own `sounds.json` in a namespace corresponding to
 /// the id of the sound event they are assigned to.
@@ -70,7 +68,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		});
 	}
 
-	/// Implement this method and then use [BiConsumer#accept] to register sound events to be data-generated.
+	/// Implement this method and then use [java.util.function.BiConsumer#accept] to register sound events to be data-generated.
 	///
 	/// Registered sound types will be appended to their own `sounds.json` in a namespace corresponding to
 	/// the id of the sound event they are assigned to.

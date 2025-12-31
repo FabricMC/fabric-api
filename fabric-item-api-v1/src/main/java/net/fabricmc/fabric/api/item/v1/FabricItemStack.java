@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -30,7 +29,7 @@ public interface FabricItemStack {
 	///
 	/// See [FabricItem#getCraftingRemainder(ItemStack)] for a more in depth description.
 	///
-	/// Stack-aware version of [Item#getCraftingRemainder()].
+	/// Stack-aware version of [net.minecraft.world.item.Item#getCraftingRemainder()].
 	///
 	/// @return the leftover item
 	default ItemStack getCraftingRemainder() {

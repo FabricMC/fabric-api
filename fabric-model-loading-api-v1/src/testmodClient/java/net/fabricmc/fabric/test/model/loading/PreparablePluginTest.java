@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.AtlasManager;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
@@ -66,7 +65,7 @@ public class PreparablePluginTest implements ClientModInitializer {
 		});
 	}
 
-	/// Adaptation of the [ModelManager] method.
+	/// Adaptation of the [net.minecraft.client.resources.model.ModelManager] method.
 	private static CompletableFuture<Map<Identifier, BlockModel>> loadModelReplacements(PreparableReloadListener.SharedState resourceReloaderStore, Executor executor) {
 		Objects.requireNonNull(resourceReloaderStore.get(AtlasManager.PENDING_STITCH));
 

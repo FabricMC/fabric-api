@@ -20,15 +20,13 @@ import java.util.Set;
 
 import org.jetbrains.annotations.UnmodifiableView;
 
-import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorResolverRegistryImpl;
 
 /// The registry for custom [ColorResolver]s. Custom resolvers must be registered during client initialization for
-/// them to be usable in [BlockAndTintGetter#getBlockTint]. Calling this method may throw an exception if the passed
-/// resolver is not registered with this class. Vanilla resolvers found in [BiomeColors] are automatically
+/// them to be usable in [net.minecraft.world.level.BlockAndTintGetter#getBlockTint]. Calling this method may throw an exception if the passed
+/// resolver is not registered with this class. Vanilla resolvers found in [net.minecraft.client.renderer.BiomeColors] are automatically
 /// registered.
 ///
 /// Other mods may also require custom resolvers to be registered if they provide additional functionality related to
@@ -37,7 +35,7 @@ public final class ColorResolverRegistry {
 	private ColorResolverRegistry() {
 	}
 
-	/// Registers a custom [ColorResolver] for use in [BlockAndTintGetter#getBlockTint]. This method should be
+	/// Registers a custom [ColorResolver] for use in [net.minecraft.world.level.BlockAndTintGetter#getBlockTint]. This method should be
 	/// called during client initialization.
 	///
 	/// @param resolver the resolver to register

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.transfer.v1.transaction;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 
 /// A global operation where participants guarantee atomicity: either the whole operation succeeds,
@@ -51,7 +50,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 /// should be deferred until {@linkplain #addOuterCloseCallback after the outer transaction is closed}
 /// to give every participant a chance to react to transaction close events.
 ///
-/// This is very low-level for most applications, and most participants should subclass [SnapshotParticipant]
+/// This is very low-level for most applications, and most participants should subclass [net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant]
 /// that will take care of properly maintaining their state.
 ///
 /// Participants should generally be passed a [TransactionContext] parameter instead of the full `Transaction`,

@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
-import java.util.List;
 import java.util.Map;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,7 +39,6 @@ import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -95,8 +92,8 @@ abstract class SectionCompilerMixin {
 	/// This is the hook that actually implements the rendering API for terrain rendering.
 	///
 	/// It's unusual to have a @Redirect in a Fabric library, but in this case it is our explicit intention that
-	/// [BlockStateModel#collectParts(RandomSource, List)] and
-	/// [BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)]
+	/// [BlockStateModel#collectParts(RandomSource, java.util.List)] and
+	/// [BlockRenderDispatcher#renderBatched(BlockState, BlockPos, net.minecraft.world.level.BlockAndTintGetter, PoseStack, com.mojang.blaze3d.vertex.VertexConsumer, boolean, java.util.List)]
 	/// do not execute for models that will be rendered by our renderer. For performance and convenience, just skip the
 	/// entire if block.
 	///

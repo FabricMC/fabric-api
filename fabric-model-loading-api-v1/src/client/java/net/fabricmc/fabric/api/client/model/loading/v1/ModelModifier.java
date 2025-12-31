@@ -21,7 +21,6 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
@@ -117,7 +116,7 @@ public final class ModelModifier {
 			/// The baker being used to bake this model. It can be used to
 			/// {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
 			/// that retrieving a model which was not previously
-			/// {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
+			/// {@linkplain net.minecraft.client.resources.model.ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			/// model.
 			ModelBaker baker();
 		}
@@ -145,7 +144,7 @@ public final class ModelModifier {
 			/// The baker being used to bake this model. It can be used to
 			/// {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
 			/// that retrieving a model which was not previously
-			/// {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
+			/// {@linkplain net.minecraft.client.resources.model.ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			/// model.
 			ModelBaker baker();
 		}

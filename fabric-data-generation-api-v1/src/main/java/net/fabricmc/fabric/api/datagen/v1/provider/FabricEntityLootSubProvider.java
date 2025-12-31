@@ -28,7 +28,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.loot.EntityLootSubProvider;
-import net.minecraft.data.loot.packs.VanillaEntityLoot;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
@@ -36,15 +35,13 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
 /// Extend this class and implement [FabricEntityLootSubProvider#generate()].
 ///
-/// Register an instance of this class with [FabricDataGenerator.Pack#addProvider] in a
-/// [DataGeneratorEntrypoint].
+/// Register an instance of this class with [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a
+/// [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider implements FabricLootTableSubProvider {
 	private final FabricPackOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
@@ -61,7 +58,7 @@ public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider 
 	///
 	/// Use the [EntityLootSubProvider#add] methods to generate entity drops.
 	///
-	/// See [VanillaEntityLoot#generate()] for examples of vanilla entity loot tables.
+	/// See [net.minecraft.data.loot.packs.VanillaEntityLoot#generate()] for examples of vanilla entity loot tables.
 	@Override
 	public abstract void generate();
 

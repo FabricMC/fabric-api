@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.renderer.v1.render;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
@@ -30,7 +29,7 @@ public interface ItemRenderTypeGetter {
 	/// matching property values will be rendered using the returned render type.
 	///
 	/// A return value of `null` means that the current item layer's
-	/// {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type} will be used.
+	/// {@linkplain net.minecraft.client.renderer.item.ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type} will be used.
 	@Nullable
 	RenderType renderType(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer sectionLayer);
 }

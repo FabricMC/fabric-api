@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 /// Note: This interface is automatically implemented on [BlockModelShaper] via Mixin and interface injection.
@@ -33,7 +32,7 @@ public interface FabricBlockModelShaper {
 	///
 	/// @param state The block state whose model to retrieve the particle sprite from.
 	/// @param level The level in which the block exists. **Should not be empty (i.e. not
-	/// 	                [EmptyBlockAndTintGetter]).**
+	/// 	                [net.minecraft.world.level.EmptyBlockAndTintGetter]).**
 	/// @param pos The position of the block in the level.
 	/// @return the particle sprite
 	default TextureAtlasSprite getParticleIcon(BlockState state, BlockAndTintGetter level, BlockPos pos) {

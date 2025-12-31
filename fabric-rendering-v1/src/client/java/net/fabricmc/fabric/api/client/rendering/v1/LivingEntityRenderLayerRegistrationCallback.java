@@ -21,7 +21,6 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.Deadmau5EarsLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.EntityType;
@@ -32,7 +31,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /// Called when [render layers][RenderLayer] for a [living entity renderer][LivingEntityRenderer] are registered.
 ///
-/// Render layers are typically used for rendering additional objects on an entity, such as armor, an elytra or [Deadmau5's ears][Deadmau5EarsLayer].
+/// Render layers are typically used for rendering additional objects on an entity, such as armor, an elytra or [Deadmau5's ears][net.minecraft.client.renderer.entity.layers.Deadmau5EarsLayer].
 /// This callback lets developers add additional render layers for use in entity rendering.
 /// Listeners should filter out the specific entity renderer they want to hook into, usually through `instanceof` checks or filtering by entity type.
 /// Once listeners find a suitable entity renderer, they should register their render layer via the registration helper.

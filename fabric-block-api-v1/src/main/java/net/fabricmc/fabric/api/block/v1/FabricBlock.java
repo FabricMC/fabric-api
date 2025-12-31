@@ -21,11 +21,9 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-/// General-purpose Fabric-provided extensions for [Block] subclasses.
+/// General-purpose Fabric-provided extensions for [net.minecraft.world.level.block.Block] subclasses.
 ///
 /// Note: This interface is automatically implemented on all blocks via Mixin and interface injection.
 // Note to maintainers: Functions should only be added to this interface if they are general-purpose enough,
@@ -43,7 +41,7 @@ public interface FabricBlock {
 	/// identified by the optional `sourcePos` and `sourceState` parameters.
 	///
 	/// When a block changes appearance, it should trigger a chunk remesh for itself and the adjacent blocks,
-	/// for example by calling [Level#sendBlockUpdated].
+	/// for example by calling [net.minecraft.world.level.Level#sendBlockUpdated].
 	///
 	/// Note: Overriding this method for a block does **not** change how it renders.
 	/// It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.

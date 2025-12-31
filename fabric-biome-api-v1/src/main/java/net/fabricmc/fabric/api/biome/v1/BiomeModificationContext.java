@@ -27,7 +27,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.attribute.modifier.AttributeModifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -90,7 +89,7 @@ public interface BiomeModificationContext {
 	interface EffectsContext {
 		/// @deprecated Set the fog color using environment attributes instead
 		/// @see BiomeModificationContext#getAttributes()
-		/// @see EnvironmentAttributes#FOG_COLOR
+		/// @see net.minecraft.world.attribute.EnvironmentAttributes#FOG_COLOR
 		@Deprecated
 		void setFogColor(int color);
 
@@ -100,13 +99,13 @@ public interface BiomeModificationContext {
 
 		/// @deprecated Set the water fog color using environment attributes instead
 		/// @see BiomeModificationContext#getAttributes()
-		/// @see EnvironmentAttributes#WATER_FOG_COLOR
+		/// @see net.minecraft.world.attribute.EnvironmentAttributes#WATER_FOG_COLOR
 		@Deprecated
 		void setWaterFogColor(int color);
 
 		/// @deprecated Set the sky color using environment attributes instead
 		/// @see BiomeModificationContext#getAttributes()
-		/// @see EnvironmentAttributes#SKY_COLOR
+		/// @see net.minecraft.world.attribute.EnvironmentAttributes#SKY_COLOR
 		@Deprecated
 		void setSkyColor(int color);
 
@@ -182,7 +181,7 @@ public interface BiomeModificationContext {
 
 		/// @deprecated Set the music volume using environment attributes instead
 		/// @see BiomeModificationContext#getAttributes()
-		/// @see EnvironmentAttributes#MUSIC_VOLUME
+		/// @see net.minecraft.world.attribute.EnvironmentAttributes#MUSIC_VOLUME
 		@Deprecated
 		void setMusicVolume(float volume);
 	}

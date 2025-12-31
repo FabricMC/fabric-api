@@ -21,7 +21,6 @@ import java.time.Instant;
 import com.mojang.authlib.GameProfile;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
@@ -93,7 +92,7 @@ public final class ClientReceiveMessageEvents {
 	/// Mods can use this to listen to the message.
 	///
 	/// If mods want to modify the message, they should use [#ALLOW_CHAT]
-	/// and manually add the new message to the chat hud using [ChatComponent#addMessage(Component)]
+	/// and manually add the new message to the chat hud using [net.minecraft.client.gui.components.ChatComponent#addMessage(Component)]
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
 		for (Chat listener : listeners) {
 			listener.onReceiveChatMessage(message, playerChatMessage, sender, boundChatType, timeStamp);

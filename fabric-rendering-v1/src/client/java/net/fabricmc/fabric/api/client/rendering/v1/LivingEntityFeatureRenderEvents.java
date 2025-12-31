@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/// Events related to living entity [RenderLayer]s.
+/// Events related to living entity [net.minecraft.client.renderer.entity.layers.RenderLayer]s.
 /// To register a renderer, see [LivingEntityRenderLayerRegistrationCallback] instead.
 public final class LivingEntityFeatureRenderEvents {
 	/// An event that can prevent capes from rendering.

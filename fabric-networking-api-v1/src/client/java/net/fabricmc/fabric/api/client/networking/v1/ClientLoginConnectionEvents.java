@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.networking.v1;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
-import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -29,7 +28,7 @@ public final class ClientLoginConnectionEvents {
 	/// This event may be used by mods to prepare their client side state.
 	/// This event does not guarantee that a login attempt will be successful.
 	///
-	/// @see ClientLoginNetworking#registerReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
+	/// @see ClientLoginNetworking#registerReceiver(net.minecraft.resources.Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
 	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, client) -> {
 		for (Init callback : callbacks) {
 			callback.onLoginStart(listener, client);

@@ -20,11 +20,10 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 
 /// A storage that can store a single item variant at any given time.
-/// Implementors should at least override [getCapacity(ItemVariant)][#getCapacity(TransferVariant)],
+/// Implementors should at least override [getCapacity(ItemVariant)][#getCapacity(net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant)],
 /// and probably [#onFinalCommit] as well for `setChanged()` and similar calls.
 ///
 /// This is a convenient specialization of [SingleVariantStorage] for items that additionally offers methods

@@ -23,16 +23,13 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.multipart.MultiPartModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /// Interface for baked block state models that output geometry with enhanced rendering features.
@@ -51,13 +48,13 @@ public interface FabricBlockStateModel {
 	/// Like [BlockStateModel#collectParts(RandomSource, List)], this method may be called outside of chunk rebuilds. For
 	/// example, some entities and block entities render blocks. In some such cases, the provided position may be the
 	/// _nearest_ position and not actual position. In others, the provided level may be
-	/// {@linkplain EmptyBlockAndTintGetter#INSTANCE empty}.
+	/// {@linkplain net.minecraft.world.level.EmptyBlockAndTintGetter#INSTANCE empty}.
 	///
 	/// If multiple independent subtasks use the provided random, it is recommended that implementations
 	/// {@linkplain RandomSource#setSeed(long) reseed} the random using a predetermined value before invoking each subtask, so
 	/// that one subtask's operations do not affect the next subtask. For example, if a model collects geometry from
 	/// multiple submodels, each submodel is considered a subtask and thus the random should be reseeded before
-	/// collecting geometry from each submodel. See [MultiPartModel#collectParts(RandomSource, List)] for an
+	/// collecting geometry from each submodel. See [net.minecraft.client.renderer.block.model.multipart.MultiPartModel#collectParts(RandomSource, List)] for an
 	/// example implementation of this.
 	///
 	/// Implementations should rely on pre-baked meshes as much as possible and keep dynamic transformations to a
@@ -75,7 +72,7 @@ public interface FabricBlockStateModel {
 	///                 may or may not be culled. Meant to be used to cull groups of quads or expensive dynamic quads
 	///                 early for performance. Early culled quads will likely not be added the emitter, so callers of
 	///                 this method must account for this. In general, prefer using
-	///                 [MutableQuadView#cullFace(Direction)] instead of this test.
+	///                 [net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView#cullFace(Direction)] instead of this test.
 	///
 	/// @see #createGeometryKey(BlockAndTintGetter, BlockPos, BlockState, RandomSource)
 	default void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {

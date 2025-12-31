@@ -24,7 +24,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 
 /// An object that allows retrieving APIs from item stacks.
@@ -33,7 +32,7 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 /// When trying to [#find] an API for an item stack, the provider registered for the item of the stack will be queried if it exists.
 /// If it doesn't exist, or if it returns `null`, the fallback providers will be queried in order.
 /// ### Usage Example
-/// Let us reuse `FluidContainer` from {@linkplain BlockApiLookup the BlockApiLookup example}.
+/// Let us reuse `FluidContainer` from {@linkplain net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup the net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup example}.
 /// We will query `FluidContainer` instances from the stack directly.
 /// We need no context, so we will use `Void`.
 /// <pre>

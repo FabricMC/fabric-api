@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.networking.v1;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -29,7 +28,7 @@ public final class ClientConfigurationConnectionEvents {
 	///
 	/// No packets should be sent when this event is invoked.
 	///
-	/// @see ClientConfigurationNetworking#registerReceiver(CustomPacketPayload.Type, ClientConfigurationNetworking.ConfigurationPayloadHandler)
+	/// @see ClientConfigurationNetworking#registerReceiver(net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type, ClientConfigurationNetworking.ConfigurationPayloadHandler)
 	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Init callback : callbacks) {
 			callback.onConfigurationInit(listener, client);

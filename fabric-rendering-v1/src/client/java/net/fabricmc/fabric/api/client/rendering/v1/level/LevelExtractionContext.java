@@ -22,12 +22,11 @@ import org.joml.Matrix4fc;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 
 @ApiStatus.NonExtendable
 public interface LevelExtractionContext extends AbstractLevelRenderContext {
-	/// Convenient access to [LevelRenderer#level].
+	/// Convenient access to [net.minecraft.client.renderer.LevelRenderer#level].
 	///
 	/// @return the level renderer's client level instance
 	@SuppressWarnings("JavadocReference")

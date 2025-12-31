@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -65,7 +64,7 @@ public interface FluidRenderHandler {
 	/// fluid renderer. Call `FluidRenderHandler.super.renderFluid` if
 	/// you want to render over the default fluid renderer. This is the
 	/// intended way to render default geometry; calling
-	/// [LiquidBlockRenderer#tesselate] is not supported. When rendering default
+	/// [net.minecraft.client.renderer.block.LiquidBlockRenderer#tesselate] is not supported. When rendering default
 	/// geometry, the current handler will be used instead of looking up
 	/// a new one for the passed fluid state.
 	///

@@ -16,29 +16,21 @@
 
 package net.fabricmc.fabric.api.renderer.v1;
 
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderDispatcher;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.renderer.RendererManager;
 
@@ -47,17 +39,17 @@ import net.fabricmc.fabric.impl.renderer.RendererManager;
 /// enhanced model rendering interfaces specified by the Fabric API.
 ///
 /// Renderers must ensure that terrain buffering supports [BlockStateModel#emitQuads], which happens in
-/// [SectionCompiler] in vanilla; this code is not patched automatically. Renderers must also ensure that the
+/// [net.minecraft.client.renderer.chunk.SectionCompiler] in vanilla; this code is not patched automatically. Renderers must also ensure that the
 /// following vanilla methods support [BlockStateModel#emitQuads]; these methods are not patched automatically.
-///   - [ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)]
-///   - [BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)]
+///   - [ModelBlockRenderer#renderModel(PoseStack.Pose, com.mojang.blaze3d.vertex.VertexConsumer, BlockStateModel, float, float, float, int, int)]
+///   - [BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, com.mojang.blaze3d.vertex.VertexConsumer)]
 ///   - [BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)]
 ///
-/// All other places in vanilla code that invoke [BlockStateModel#collectParts(RandomSource, List)],
-/// [BlockStateModel#collectParts(RandomSource)], or
-/// [ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)]
+/// All other places in vanilla code that invoke [BlockStateModel#collectParts(net.minecraft.util.RandomSource, java.util.List)],
+/// [BlockStateModel#collectParts(net.minecraft.util.RandomSource)], or
+/// [ModelBlockRenderer#renderModel(PoseStack.Pose, com.mojang.blaze3d.vertex.VertexConsumer, BlockStateModel, float, float, float, int, int)]
 /// are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
-/// [FabricModelBlockRenderer] or [FabricBlockRenderDispatcher].
+/// [net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer] or [net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderDispatcher].
 public interface Renderer {
 	/// Access to the current [Renderer] for creating and retrieving mesh builders
 	/// and materials.
@@ -81,23 +73,23 @@ public interface Renderer {
 	/// when possible to avoid memory allocation overhead.
 	MutableMesh mutableMesh();
 
-	/// @see FabricModelBlockRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, boolean, long, int)
+	/// @see net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, boolean, long, int)
 	@ApiStatus.OverrideOnly
 	void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay);
 
-	/// @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	/// @see net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	@ApiStatus.OverrideOnly
 	void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
-	/// @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
+	/// @see net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	@ApiStatus.OverrideOnly
 	void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
 
-	/// @see FabricLayerRenderState#emitter()
+	/// @see net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState#emitter()
 	@ApiStatus.OverrideOnly
 	QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer);
 
-	/// @see FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)
+	/// @see net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)
 	@ApiStatus.OverrideOnly
 	void setLayerRenderTypeGetter(ItemStackRenderState.LayerRenderState layer, ItemRenderTypeGetter renderTypeGetter);
 }

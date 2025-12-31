@@ -19,13 +19,11 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
@@ -34,7 +32,7 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 ///
 /// This version of [ModelLoadingPlugin] allows loading ("preparing") some data off-thread in parallel before
 /// the model loading process starts. Usually, this means loading some resources from the provided
-/// [ResourceManager].
+/// [net.minecraft.server.packs.resources.ResourceManager].
 @FunctionalInterface
 public interface PreparableModelLoadingPlugin<T> {
 	/// Registers a preparable model loading plugin.
@@ -59,7 +57,7 @@ public interface PreparableModelLoadingPlugin<T> {
 	interface DataLoader<T> {
 		/// Returns a [CompletableFuture] that will load the data.
 		/// Do not block the thread when this function is called, rather use
-		/// [CompletableFuture#supplyAsync(Supplier, Executor)] to compute the data.
+		/// [CompletableFuture#supplyAsync(java.util.function.Supplier, Executor)] to compute the data.
 		/// The completable future should be scheduled to run using the passed executor.
 		///
 		/// @param resourceReloaderStore The [PreparableReloadListener.SharedState] instance. Use [PreparableReloadListener.SharedState#resourceManager()] to retrieve resources.

@@ -21,14 +21,12 @@ import java.util.WeakHashMap;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.PackSource;
 
-import net.fabricmc.fabric.api.resource.v1.FabricResource;
-
 /// Tracks the sources of resource packs in a global weak hash map.
 /// [PackResources] doesn't hold a reference to its [PackSource]
 /// so we store the source in the map when the resource packs are created.
 /// See [PackMixin][net.fabricmc.fabric.mixin.resource.v1.PackMixin].
 ///
-/// The sources are later read for use in [FabricResource].
+/// The sources are later read for use in [net.fabricmc.fabric.api.resource.v1.FabricResource].
 public final class PackSourceTracker {
 	// Use a weak hash map so that if resource packs would be deleted, this won't keep them alive.
 	private static final WeakHashMap<PackResources, PackSource> SOURCES = new WeakHashMap<>();

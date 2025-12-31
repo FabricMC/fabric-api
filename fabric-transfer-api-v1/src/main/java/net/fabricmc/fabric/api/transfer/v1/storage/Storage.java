@@ -20,10 +20,6 @@ import java.util.Iterator;
 
 import com.google.common.collect.Iterators;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
@@ -42,10 +38,10 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 ///
 /// Users that wish to implement this interface can use the helpers in the `base` package:
 ///
-///   - [CombinedStorage] can be used to combine multiple instances, for example to combine multiple "slots" in one big storage.
-///   - [ExtractionOnlyStorage] and [InsertionOnlyStorage] can be used when only extraction or insertion is needed.
+///   - [net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage] can be used to combine multiple instances, for example to combine multiple "slots" in one big storage.
+///   - [net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage] and [net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage] can be used when only extraction or insertion is needed.
 ///   - Resource-specific base implementations may also be available.
-///     For example, Fabric API provides [SingleVariantStorage] to accelerate implementations of transfer variant storages.
+///     For example, Fabric API provides [net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage] to accelerate implementations of transfer variant storages.
 ///
 ///
 /// **Important note:** Unless otherwise specified, all transfer functions take a non-blank resource

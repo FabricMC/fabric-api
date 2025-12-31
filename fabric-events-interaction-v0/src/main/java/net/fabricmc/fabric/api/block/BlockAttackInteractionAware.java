@@ -23,11 +23,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-
 /// Convenience interface for blocks which listen to "break interactions" (left-click).
 ///
-/// @deprecated Use [AttackBlockCallback] instead and check for the block.
+/// @deprecated Use [net.fabricmc.fabric.api.event.player.AttackBlockCallback] instead and check for the block.
 /// This gives more control over the different cancellation outcomes.
 @Deprecated
 public interface BlockAttackInteractionAware {

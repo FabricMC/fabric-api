@@ -29,7 +29,6 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
@@ -43,15 +42,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /// Implement this class (or one of the inner classes) to generate a tag list.
 ///
-/// Register your implementation using [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+/// Register your implementation using [net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 ///
 /// When generating tags for modded dynamic registry entries (such as biomes), either the entry
-/// must be added to the registry using [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder)]
+/// must be added to the registry using [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint#buildRegistry(net.minecraft.core.RegistrySetBuilder)]
 /// or [TagBuilder#addOptionalElement(Identifier)] must be used. Otherwise, the data generator cannot
 /// find the entry and crashes.
 ///

@@ -21,7 +21,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.particle.BlockParticleOptionFactoryImpl;
@@ -30,7 +29,7 @@ import net.fabricmc.fabric.impl.particle.BlockParticleOptionFactoryImpl;
 public interface FabricBlockParticleOption {
 	/// Alternative for [BlockParticleOption#BlockParticleOption(ParticleType, BlockState)] that also
 	/// accepts a [BlockPos]. This method should be used instead of the vanilla constructor when the block state
-	/// is retrieved using a block pos, most commonly through [BlockGetter#getBlockState(BlockPos)]. This ensures
+	/// is retrieved using a block pos, most commonly through [net.minecraft.world.level.BlockGetter#getBlockState(BlockPos)]. This ensures
 	/// that any particles created from this option use an accurate pos for any client-side logic.
 	///
 	/// If an instance with a non-null block pos needs to be synced to the client, the block pos will only be synced

@@ -18,14 +18,13 @@ package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.world.phys.HitResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/// Mods should use these events to introduce custom rendering during [LevelRenderer#renderLevel]
+/// Mods should use these events to introduce custom rendering during [net.minecraft.client.renderer.LevelRenderer#renderLevel]
 /// without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
 /// that make large-scale rendering changes to maintain compatibility by calling any broken event invokers directly.
 ///

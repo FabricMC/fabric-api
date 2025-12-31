@@ -16,10 +16,9 @@
 
 package net.fabricmc.fabric.api.datagen.v1.recipe;
 
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
 
-/// Injected to all [RecipeOutput] instances.
+/// Injected to all [net.minecraft.data.recipes.RecipeOutput] instances.
 public interface FabricRecipeOutput {
 	/// Override this method to change the recipe identifier.
 	///

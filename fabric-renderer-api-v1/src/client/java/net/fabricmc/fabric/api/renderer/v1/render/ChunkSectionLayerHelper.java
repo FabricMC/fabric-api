@@ -21,14 +21,13 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.world.level.block.state.BlockState;
 
 public final class ChunkSectionLayerHelper {
 	private ChunkSectionLayerHelper() {
 	}
 
 	/// Same logic as [net.minecraft.client.renderer.ItemBlockRenderTypes#getMovingBlockRenderType], but accepts a [ChunkSectionLayer] instead of a
-	/// [BlockState].
+	/// [net.minecraft.world.level.block.state.BlockState].
 	public static RenderType getMovingBlockLayer(ChunkSectionLayer layer) {
 		return switch (layer) {
 		case SOLID -> RenderTypes.solidMovingBlock();
@@ -39,7 +38,7 @@ public final class ChunkSectionLayerHelper {
 	}
 
 	/// Same logic as [net.minecraft.client.renderer.ItemBlockRenderTypes#getRenderType], but accepts a [ChunkSectionLayer] instead of a
-	/// [BlockState].
+	/// [net.minecraft.world.level.block.state.BlockState].
 	public static RenderType getEntityBlockLayer(ChunkSectionLayer layer) {
 		return layer == ChunkSectionLayer.TRANSLUCENT ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockSheet();
 	}

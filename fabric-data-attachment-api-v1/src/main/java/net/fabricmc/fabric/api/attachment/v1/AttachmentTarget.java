@@ -24,35 +24,29 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
-
 import net.fabricmc.fabric.api.event.Event;
 
 /// Marks all objects on which data can be attached using [AttachmentType]s.
 ///
-/// Fabric implements this on [Entity], [BlockEntity], [ServerLevel] and [ChunkAccess] via mixin.
+/// Fabric implements this on [net.minecraft.world.entity.Entity], [net.minecraft.world.level.block.entity.BlockEntity], [net.minecraft.server.level.ServerLevel] and [net.minecraft.world.level.chunk.ChunkAccess] via mixin.
 ///
-/// Note about [BlockEntity] and [ChunkAccess] targets: these objects need to be notified of changes to their
-/// state (using [BlockEntity#setChanged()] and [ChunkAccess#markUnsaved()] respectively), otherwise the modifications will not take effect properly.
+/// Note about [net.minecraft.world.level.block.entity.BlockEntity] and [net.minecraft.world.level.chunk.ChunkAccess] targets: these objects need to be notified of changes to their
+/// state (using [net.minecraft.world.level.block.entity.BlockEntity#setChanged()] and [net.minecraft.world.level.chunk.ChunkAccess#markUnsaved()] respectively), otherwise the modifications will not take effect properly.
 /// The [#setAttached(AttachmentType, Object)] method handles this automatically, but this needs to be done manually
 /// when attached data is mutable, for example:
 /// <pre>
-/// `AttachmentType<MutableType> MUTABLE_ATTACHMENT_TYPE = ...;BlockEntity be = ...;MutableType data = be.getAttachedOrCreate(MUTABLE_ATTACHMENT_TYPE);data.mutate();be.setChanged(); // Required because we are not using setAttached`</pre>
+/// `AttachmentType<MutableType> MUTABLE_ATTACHMENT_TYPE = ...;net.minecraft.world.level.block.entity.BlockEntity be = ...;MutableType data = be.getAttachedOrCreate(MUTABLE_ATTACHMENT_TYPE);data.mutate();be.setChanged(); // Required because we are not using setAttached`</pre>
 ///
 ///
-/// Note about [BlockEntity] targets: by default, many block entities use their NBT to synchronize with the client.
+/// Note about [net.minecraft.world.level.block.entity.BlockEntity] targets: by default, many block entities use their NBT to synchronize with the client.
 /// That would mean persistent attachments are automatically synced with the client for those block entities. As this is
-/// undesirable behavior, the API completely removes attachments from the result of [BlockEntity#getUpdateTag],
+/// undesirable behavior, the API completely removes attachments from the result of [net.minecraft.world.level.block.entity.BlockEntity#getUpdateTag],
 /// which takes care of all vanilla types. However, modded block entities may be coded differently, so be wary of this
 /// when attaching data to modded block entities.
 ///
 ///
-/// Note about [ChunkAccess] targets with [ChunkStatus#EMPTY]: These chunks are not saved unless the generation
-/// progresses to at least [ChunkStatus#STRUCTURE_STARTS]. Therefore, persistent attachments to those chunks may not
+/// Note about [net.minecraft.world.level.chunk.ChunkAccess] targets with [net.minecraft.world.level.chunk.status.ChunkStatus#EMPTY]: These chunks are not saved unless the generation
+/// progresses to at least [net.minecraft.world.level.chunk.status.ChunkStatus#STRUCTURE_STARTS]. Therefore, persistent attachments to those chunks may not
 /// be saved. The [#setAttached(AttachmentType, Object)] method will log a warning when this is attempted.
 ///
 @ApiStatus.Experimental

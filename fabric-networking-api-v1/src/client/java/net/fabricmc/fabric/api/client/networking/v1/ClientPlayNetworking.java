@@ -30,8 +30,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
@@ -39,18 +37,18 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 ///
 /// Client-side networking functionalities include receiving clientbound packets,
 /// sending serverbound packets, and events related to client-side packet listeners.
-/// Packets **received** by this class must be registered to [PayloadTypeRegistry#clientboundPlay()] on both ends.
-/// Packets **sent** by this class must be registered to [PayloadTypeRegistry#serverboundPlay()] on both ends.
+/// Packets **received** by this class must be registered to [net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundPlay()] on both ends.
+/// Packets **sent** by this class must be registered to [net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#serverboundPlay()] on both ends.
 /// Packets must be registered before registering any receivers.
 ///
 /// This class should be only used on the physical client and for the logical client.
 ///
-/// See [ServerPlayNetworking] for information on how to use the payload
+/// See [net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking] for information on how to use the payload
 /// object-based API.
 ///
 /// @see ClientLoginNetworking
 /// @see ClientConfigurationNetworking
-/// @see ServerPlayNetworking
+/// @see net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 public final class ClientPlayNetworking {
 	/// Registers a handler for a payload type.
 	/// A global receiver is registered to all connections, in the present and future.
@@ -61,7 +59,7 @@ public final class ClientPlayNetworking {
 	/// @param type the payload type
 	/// @param handler the handler
 	/// @return false if a handler is already registered to the channel
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#clientboundPlay() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundPlay() registered} yet
 	/// @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
 	/// @see ClientPlayNetworking#registerReceiver(CustomPacketPayload.Type, PlayPayloadHandler)
 	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
@@ -101,7 +99,7 @@ public final class ClientPlayNetworking {
 	/// @param type the payload type
 	/// @param handler the handler
 	/// @return `false` if a handler is already registered for the type
-	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain PayloadTypeRegistry#clientboundPlay() registered} yet
+	/// @throws IllegalArgumentException if the codec for `type` has not been {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#clientboundPlay() registered} yet
 	/// @throws IllegalStateException if the client is not connected to a server
 	/// @see ClientPlayConnectionEvents#INIT
 	public static <T extends CustomPacketPayload> boolean registerReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
@@ -206,7 +204,7 @@ public final class ClientPlayNetworking {
 
 	/// Sends a payload to the connected server.
 	///
-	/// Any packets sent must be {@linkplain PayloadTypeRegistry#serverboundPlay() registered}.
+	/// Any packets sent must be {@linkplain net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry#serverboundPlay() registered}.
 	///
 	/// @param payload the payload
 	/// @throws IllegalStateException if the client is not connected to a server
@@ -235,7 +233,7 @@ public final class ClientPlayNetworking {
 		///
 		/// An example usage of this is to display an overlay message:
 		/// <pre>
-		/// `// use PayloadTypeRegistry for registering the payloadClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) ->{context.client().gui.setOverlayMessage(payload.message(), true);});`</pre>
+		/// `// use net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry for registering the payloadClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) ->{context.client().gui.setOverlayMessage(payload.message(), true);});`</pre>
 		///
 		/// The packet listener can be accessed via [LocalPlayer#connection].
 		///
