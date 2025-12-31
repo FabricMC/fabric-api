@@ -58,7 +58,7 @@ public interface CustomIngredient {
 	/// @return `true` if the stack matches this ingredient, `false` otherwise
 	boolean test(ItemStack stack);
 
-	/// @return the list of stacks that match this ingredient.
+	/// {@return the list of stacks that match this ingredient.}
 	///
 	/// The following guidelines should be followed for good compatibility:
 	///
@@ -78,7 +78,7 @@ public interface CustomIngredient {
 	/// @see FabricIngredient#requiresTesting()
 	boolean requiresTesting();
 
-	/// @return the serializer for this ingredient
+	/// {@return the serializer for this ingredient}
 	///
 	/// The serializer must have been registered using [CustomIngredientSerializer#register].
 	CustomIngredientSerializer<?> getSerializer();
@@ -91,7 +91,7 @@ public interface CustomIngredient {
 		return new SlotDisplay.Composite(items().map(Ingredient::displayForSingleItem).toList());
 	}
 
-	/// @return a new [Ingredient] behaving as defined by this custom ingredient.
+	/// {@return a new [Ingredient] behaving as defined by this custom ingredient}.
 	@ApiStatus.NonExtendable
 	default Ingredient toVanilla() {
 		return new CustomIngredientImpl(this);

@@ -38,23 +38,23 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 		CustomIngredientImpl.registerSerializer(serializer);
 	}
 
-	/// @return the custom ingredient serializer registered with the given identifier, or `null` if there is no such serializer.
+	/// {@return the custom ingredient serializer registered with the given identifier, or `null` if there is no such serializer}.
 	@Nullable
 	static CustomIngredientSerializer<?> get(Identifier identifier) {
 		return CustomIngredientImpl.getSerializer(identifier);
 	}
 
-	/// @return the identifier of this serializer.
+	/// {@return the identifier of this serializer}.
 	Identifier getIdentifier();
 
-	/// @return the codec.
+	/// {@return the codec}.
 	///
 	/// Codecs are used to read the ingredient from the recipe JSON files.
 	///
 	/// @see net.minecraft.world.item.crafting.Ingredient#CODEC
 	MapCodec<T> getCodec();
 
-	/// @return the stream codec for serializing this ingredient.
+	/// {@return the stream codec for serializing this ingredient}.
 	///
 	/// @see net.minecraft.world.item.crafting.Ingredient#CONTENTS_STREAM_CODEC
 	StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();

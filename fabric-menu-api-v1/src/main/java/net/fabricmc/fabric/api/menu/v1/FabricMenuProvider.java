@@ -20,8 +20,8 @@ package net.fabricmc.fabric.api.menu.v1;
 /// Unlike [ExtendedMenuProvider], this can be used by any menus,
 /// and is implemented via interface injection.
 public interface FabricMenuProvider {
-	/// @return whether the server should send [net.minecraft.network.protocol.game.ClientboundContainerClosePacket]
-	///  when opening the screen
+	/// {@return whether the server should send [net.minecraft.network.protocol.game.ClientboundContainerClosePacket]
+	///  when opening the screen}
 	///
 	/// In vanilla, opening a new screen will always send the close screen packet.
 	/// This, among other things, causes the mouse cursor to move to the center of the screen,
