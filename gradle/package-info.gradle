@@ -88,9 +88,7 @@ abstract class GeneratePackageInfos extends DefaultTask {
 			target.resolve('package-info.java').withWriter {
 				if (isImpl) {
 					it.write("""$headerText
-						|/**
-						| * Implementation code for ${projectName.get()}.
-						| */
+						|/// Implementation code for ${projectName.get()}
 						|@ApiStatus.Internal
 						|@NullMarked
 						|package $packageName;
@@ -100,9 +98,7 @@ abstract class GeneratePackageInfos extends DefaultTask {
 						|""".stripMargin())
 				} else {
 					it.write("""$headerText
-						|/**
-						| * API code for ${projectName.get()}.
-						| */
+						|/// API code for ${projectName.get()}
 						|@NullMarked
 						|package $packageName;
 						|
