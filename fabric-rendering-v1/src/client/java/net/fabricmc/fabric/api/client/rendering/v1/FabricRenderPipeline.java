@@ -27,7 +27,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
  */
 public interface FabricRenderPipeline {
 	/**
-	 * Returns whether the pipeline draw mode should be used for GUI rendering.
+	 * {@return whether the pipeline draw mode should be used for GUI rendering}
 	 *
 	 * @return {@code true} if the pipeline draw mode should be used for GUI rendering, {@code false} otherwise.
 	 */

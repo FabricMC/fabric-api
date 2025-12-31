@@ -31,7 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 
 /**
- * Allow canceling the held item update animation if {@link FabricItem#allowComponentsUpdateAnimation} returns false.
+ * Allow canceling the held item update animation if {@link FabricItem#allowComponentsUpdateAnimation} returns {@code false}.
  */
 @Mixin(ItemInHandRenderer.class)
 public class ItemInHandRendererMixin {

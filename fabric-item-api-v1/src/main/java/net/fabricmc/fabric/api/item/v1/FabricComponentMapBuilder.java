@@ -38,7 +38,7 @@ public interface FabricComponentMapBuilder {
 	 * @param fallback The supplier for the default data value if the type is not in this map yet. The value given by this supplier
 	 *                 may not be null.
 	 * @param <T>      The type of the component data
-	 * @return Returns the current value in the map builder, or the default value provided by the fallback if not present
+	 * @return the current value in the map builder, or the default value provided by the fallback if not present
 	 * @see #getOrEmpty(DataComponentType)
 	 */
 	default <T> T getOrCreate(DataComponentType<T> type, Supplier<T> fallback) {
@@ -51,7 +51,7 @@ public interface FabricComponentMapBuilder {
 	 * @param type         The component type
 	 * @param defaultValue The default data value if the type is not in this map yet
 	 * @param <T>          The type of the component data
-	 * @return Returns the current value in the map builder, or the default value if not present
+	 * @return the current value in the map builder, or the default value if not present
 	 */
 	default <T> T getOrDefault(DataComponentType<T> type, T defaultValue) {
 		Objects.requireNonNull(defaultValue, "Cannot insert null values to component map builder");
@@ -65,7 +65,7 @@ public interface FabricComponentMapBuilder {
 	 *
 	 * @param type The component type. The component must be a list-type.
 	 * @param <T>  The type of the component entry data
-	 * @return Returns a mutable list of values for the type.
+	 * @return a mutable list of values for the type.
 	 */
 	default <T> List<T> getOrEmpty(DataComponentType<List<T>> type) {
 		throw new AssertionError("Implemented in Mixin");
@@ -75,7 +75,7 @@ public interface FabricComponentMapBuilder {
 	 * Checks if a component type has been registered to this builder.
 	 *
 	 * @param type The component type to check
-	 * @return Returns {@code true} if the type has been registered to this builder, {@code false} otherwise
+	 * @return {@code true} if the type has been registered to this builder, {@code false} otherwise
 	 */
 	default boolean contains(DataComponentType<?> type) {
 		throw new AssertionError("Implemented in Mixin");
