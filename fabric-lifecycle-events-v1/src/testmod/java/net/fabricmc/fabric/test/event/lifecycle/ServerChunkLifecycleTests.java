@@ -49,18 +49,31 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	 * Moving to an unexplored area will start logging again.
 	 */
 	private static void setupChunkGenerateTest() {
+		final Object2IntMap<Identifier> generatedDeprecated = new Object2IntOpenHashMap<>();
 		final Object2IntMap<Identifier> generated = new Object2IntOpenHashMap<>();
 
 		ServerTickEvents.END_LEVEL_TICK.register(level -> {
-			final int count = generated.removeInt(level.dimension().identifier());
+			Identifier dimensionId = level.dimension().identifier();
+			final int countDeprecated = generatedDeprecated.removeInt(dimensionId);
+			final int count = generated.removeInt(dimensionId);
+
+			if (count != countDeprecated) {
+				throw new AssertionError("count (" + count + ") != countDeprecated (" + countDeprecated + ") in setupChunkGenerateTest for " + dimensionId);
+			}
 
 			if (count > 0) {
-				LOGGER.info("Loaded {} freshly generated chunks in {} during tick #{}", count, level.dimension().identifier(), level.getServer().getTickCount());
+				LOGGER.info("Loaded {} freshly generated chunks in {} during tick #{}", count, dimensionId, level.getServer().getTickCount());
 			}
 		});
 
 		ServerChunkEvents.CHUNK_GENERATE.register((level, chunk) -> {
-			generated.mergeInt(level.dimension().identifier(), 1, Integer::sum);
+			generatedDeprecated.mergeInt(level.dimension().identifier(), 1, Integer::sum);
+		});
+
+		ServerChunkEvents.CHUNK_LOAD.register((level, chunk, generated1) -> {
+			if (generated1) {
+				generated.mergeInt(level.dimension().identifier(), 1, Integer::sum);
+			}
 		});
 	}
 
