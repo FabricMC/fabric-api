@@ -83,7 +83,7 @@ public final class ServerMessageEvents {
 
 	/// An event triggered when the server broadcasts a chat message sent by a player, typically
 	/// from a client GUI or a player-executed command. Is not called when
-	/// [#ALLOW_CHAT_MESSAGE chat messages are blocked][///].
+	/// [chat messages are blocked][#ALLOW_CHAT_MESSAGE].
 	///
 	/// If the message is from a player-executed command, this will be called
 	/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,
@@ -172,8 +172,7 @@ public final class ServerMessageEvents {
 	@FunctionalInterface
 	public interface ChatMessage {
 		/// Called when the server broadcasts a chat message sent by a player, typically
-		/// from a client GUI or a player-executed command. Is not called when
-		/// [#ALLOW_CHAT_MESSAGE chat messages are blocked][///].
+		/// from a client GUI or a player-executed command. Is not called when [chat messages are blocked][#ALLOW_CHAT_MESSAGE].
 		///
 		/// If the message is from a player-executed command, this will be called
 		/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,

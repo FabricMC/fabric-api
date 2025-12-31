@@ -38,7 +38,7 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 		CustomIngredientImpl.registerSerializer(serializer);
 	}
 
-	/// {@return the custom ingredient serializer registered with the given identifier, or {@code null} if there is no such serializer}.
+	/// {@return the custom ingredient serializer registered with the given identifier, or `null` if there is no such serializer}.
 	@Nullable
 	static CustomIngredientSerializer<?> get(Identifier identifier) {
 		return CustomIngredientImpl.getSerializer(identifier);

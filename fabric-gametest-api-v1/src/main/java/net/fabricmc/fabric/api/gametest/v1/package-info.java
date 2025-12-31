@@ -44,6 +44,7 @@
 ///
 /// ```java
 /// public class MyTest {
+/// 	@GameTest
 /// 	void testSomething(GameTestHelper helper) {
 /// 		helper.assertTrue(MyMod.getSomeValue(helper.getLevel()) > 0, "SomeValue should be positive.");
 /// 		helper.succeed(); // do not forget!

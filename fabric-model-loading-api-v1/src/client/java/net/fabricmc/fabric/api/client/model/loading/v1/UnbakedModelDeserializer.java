@@ -55,7 +55,7 @@ public interface UnbakedModelDeserializer {
 		UnbakedModelDeserializerRegistry.register(id, deserializer);
 	}
 
-	/// {@return the custom model deserializer registered with the given identifier, or {@code null} if there is no such
+	/// {@return the custom model deserializer registered with the given identifier, or `null` if there is no such
 	///  deserializer}
 	@Nullable
 	static UnbakedModelDeserializer get(Identifier id) {

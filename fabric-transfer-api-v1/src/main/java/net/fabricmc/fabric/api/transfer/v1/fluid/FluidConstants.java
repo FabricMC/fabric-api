@@ -21,9 +21,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 /// If you don't know how many droplets you should pick for a specific resource that has a block form,
 /// the convention is to use 81000 droplets for what is worth one block of that resource.
 public final class FluidConstants {
-	///////////////////////////
-	// ==== FLUID UNITS ==== //
-	///////////////////////////
+	/// # FLUID UNITS
 	public static final long BUCKET = 81000;
 	public static final long BOTTLE = 27000;
 	public static final long BOWL = 27000;

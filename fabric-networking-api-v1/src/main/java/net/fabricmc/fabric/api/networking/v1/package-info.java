@@ -39,8 +39,8 @@
 ///   [net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking].
 ///
 /// In addition, this API includes helpers for
-/// [net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry registering custom packet payloads][///] and
-/// [net.fabricmc.fabric.api.networking.v1.PlayerLookup player lookups][///].
+/// [registering custom packet payloads][net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry] and
+/// [player lookups][net.fabricmc.fabric.api.networking.v1.PlayerLookup].
 @NullMarked
 package net.fabricmc.fabric.api.networking.v1;
 

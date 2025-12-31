@@ -222,7 +222,7 @@ public final class BlockSetTypeBuilder {
 	///
 	/// Alternatively, you can use [#build(Identifier)] to build without registering.
 	///
-	///Then [BlockSetType#register(BlockSetType)] can be used to register it later.
+	/// Then [BlockSetType#register(BlockSetType)] can be used to register it later.
 	///
 	/// @param id the id for the built [BlockSetType]
 	///
@@ -235,7 +235,7 @@ public final class BlockSetTypeBuilder {
 	///
 	/// Use [BlockSetType#register(BlockSetType)] to register it later.
 	///
-	///Alternatively, you can use [#register(Identifier)] to build and register it now.
+	/// Alternatively, you can use [#register(Identifier)] to build and register it now.
 	///
 	/// @param id the id for the built [BlockSetType]
 	///

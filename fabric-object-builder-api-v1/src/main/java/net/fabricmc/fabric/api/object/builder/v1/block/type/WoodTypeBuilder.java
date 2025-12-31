@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 ///
 /// Regular sign textures are stored at `[namespace]/textures/entity/signs/[path].png`.
 ///
-///Hanging sign textures are stored at `[namespace]/textures/entity/signs/hanging/[path].png`.
+/// Hanging sign textures are stored at `[namespace]/textures/entity/signs/hanging/[path].png`.
 ///
 /// @see BlockSetTypeBuilder
 public final class WoodTypeBuilder {
@@ -110,7 +110,7 @@ public final class WoodTypeBuilder {
 	///
 	/// Alternatively, you can use [#build(Identifier, BlockSetType)] to build without registering.
 	///
-	///Then [WoodType#register(WoodType)] can be used to register it later.
+	/// Then [WoodType#register(WoodType)] can be used to register it later.
 	///
 	/// @param id the id for the built [WoodType]
 	/// @param setType the [BlockSetType] for the built [WoodType]
@@ -124,7 +124,7 @@ public final class WoodTypeBuilder {
 	///
 	/// Use [WoodType#register(WoodType)] to register it later.
 	///
-	///Alternatively, you can use [#register(Identifier, BlockSetType)] to build and register it now.
+	/// Alternatively, you can use [#register(Identifier, BlockSetType)] to build and register it now.
 	///
 	/// @param id the id for the built [WoodType]
 	/// @param setType the [BlockSetType] for the built [WoodType]

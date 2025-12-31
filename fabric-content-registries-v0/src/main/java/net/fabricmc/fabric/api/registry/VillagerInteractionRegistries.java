@@ -41,7 +41,7 @@ public final class VillagerInteractionRegistries {
 	/// by any profession villagers.
 	///
 	/// @param item the item to register
-	/// @deprecated Add items to the [{@code minecraft:villager_picks_up][net.minecraft.tags.ItemTags#VILLAGER_PICKS_UP] item tag} instead.
+	/// @deprecated Add items to the [`minecraft:villager_picks_up][net.minecraft.tags.ItemTags#VILLAGER_PICKS_UP] item tag` instead.
 	@Deprecated
 	public static void registerGatherableItem(ItemLike item) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");

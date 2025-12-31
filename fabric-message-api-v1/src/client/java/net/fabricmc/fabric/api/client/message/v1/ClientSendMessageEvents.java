@@ -60,8 +60,8 @@ public final class ClientSendMessageEvents {
 	});
 
 	/// An event triggered when the client sends a chat message,
-	/// typically from a client GUI. Is not called when
-	/// [#ALLOW_CHAT chat messages are blocked][///].
+	/// typically from a client GUI. Is not called when [chat messages are blocked][#ALLOW_CHAT].
+	///
 	/// Mods can use this to modify the message.
 	/// Use [#CHAT] if not modifying the message.
 	public static final Event<ModifyChat> MODIFY_CHAT = EventFactory.createArrayBacked(ModifyChat.class, listeners -> (message) -> {
@@ -89,7 +89,7 @@ public final class ClientSendMessageEvents {
 
 	/// An event triggered when the client sends a chat message,
 	/// typically from a client GUI. Is not called when
-	/// [#ALLOW_CHAT chat messages are blocked][///].
+	/// [chat messages are blocked][#ALLOW_CHAT].
 	/// Mods can use this to listen to the message.
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message) -> {
 		for (Chat listener : listeners) {
@@ -154,7 +154,7 @@ public final class ClientSendMessageEvents {
 	public interface ModifyChat {
 		/// Called when the client sends a chat message,
 		/// typically from a client GUI. Is not called when
-		/// [#ALLOW_CHAT chat messages are blocked][///].
+		/// [chat messages are blocked][#ALLOW_CHAT].
 		/// Use [#CHAT] if not modifying the message.
 		///
 		/// @param message the message that will be sent to the server
@@ -180,7 +180,7 @@ public final class ClientSendMessageEvents {
 	public interface Chat {
 		/// Called when the client sends a chat message,
 		/// typically from a client GUI. Is not called when
-		/// [#ALLOW_CHAT chat messages are blocked][///].
+		/// [chat messages are blocked][#ALLOW_CHAT].
 		///
 		/// @param message the message that will be sent to the server
 		void onSendChatMessage(String message);

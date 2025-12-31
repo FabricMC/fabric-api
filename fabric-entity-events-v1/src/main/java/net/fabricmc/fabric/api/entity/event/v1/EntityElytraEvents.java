@@ -62,7 +62,18 @@ public final class EntityElytraEvents {
 		/// Listeners should follow the following pattern:
 		///
 		/// ```java
-		/// EntityElytraEvents.CUSTOM.register((entity, tickElytra) ->{if (check if condition for custom elytra is met){if (tickElytra){// Optionally consume some resources that are being used up in order to fly, for example damaging an item.// Optionally perform other side effects of elytra flight, for example playing a sound.}// Allow entering/continuing elytra flight with this custom elytrareturn true;}// Condition for the custom elytra is not met: don't let players enter or continue elytra flight (unless another elytra is available).return false;});
+		/// EntityElytraEvents.CUSTOM.register((entity, tickElytra) -> {
+		/// 	if (check if condition for custom elytra is met) {
+		/// 		if (tickElytra) {
+		/// 			// Optionally consume some resources that are being used up in order to fly, for example damaging an item.
+		/// 			// Optionally perform other side effects of elytra flight, for example playing a sound.
+		/// 		}
+		/// 		// Allow entering/continuing elytra flight with this custom elytra
+		/// 		return true;
+		/// 	}
+		/// 	// Condition for the custom elytra is not met: don't let players enter or continue elytra flight (unless another elytra is available).
+		/// 	return false;
+		/// });
 		/// ```
 		///
 		/// @param entity     the entity

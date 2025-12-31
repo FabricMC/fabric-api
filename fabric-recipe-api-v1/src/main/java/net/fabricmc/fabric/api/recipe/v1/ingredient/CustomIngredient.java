@@ -91,7 +91,7 @@ public interface CustomIngredient {
 		return new SlotDisplay.Composite(items().map(Ingredient::displayForSingleItem).toList());
 	}
 
-	/// {@return a new {@link Ingredient } behaving as defined by this custom ingredient}.
+	/// {@return a new [Ingredient] behaving as defined by this custom ingredient}.
 	@ApiStatus.NonExtendable
 	default Ingredient toVanilla() {
 		return new CustomIngredientImpl(this);

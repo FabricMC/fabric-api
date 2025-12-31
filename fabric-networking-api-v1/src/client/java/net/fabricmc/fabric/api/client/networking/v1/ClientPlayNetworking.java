@@ -93,7 +93,7 @@ public final class ClientPlayNetworking {
 	/// If a handler is already registered for the `type`, this method will return `false`, and no change will be made.
 	/// Use [#unregisterReceiver(Identifier)] to unregister the existing handler.
 	///
-	/// For example, if you only register a receiver using this method when a [ClientLoginNetworking.LoginQueryRequestHandler)][ClientLoginNetworking#registerGlobalReceiver(Identifier,]
+	/// For example, if you only register a receiver using this method when a [ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)]
 	/// login query has been received, you should use [ClientPlayConnectionEvents#INIT] to register the channel handler.
 	///
 	/// @param type the payload type

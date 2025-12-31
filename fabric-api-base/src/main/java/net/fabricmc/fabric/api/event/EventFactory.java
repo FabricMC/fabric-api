@@ -29,7 +29,7 @@ public final class EventFactory {
 	/// Create an "array-backed" Event instance.
 	///
 	/// If your factory simply delegates to the listeners without adding custom behavior,
-	/// consider using [Object, Function) the other overload][#createArrayBacked(Class,]
+	/// consider using [the other overload][#createArrayBacked(Class,Object, Function)]
 	/// if performance of this event is critical.
 	///
 	/// @param type           The listener class type.

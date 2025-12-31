@@ -98,7 +98,7 @@ public final class ServerPlayNetworking {
 	/// This method differs from [ServerPlayNetworking#registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)] since
 	/// the channel handler will only be applied to the player represented by the [ServerGamePacketListenerImpl].
 	///
-	/// For example, if you only register a receiver using this method when a [ServerLoginNetworking.LoginQueryResponseHandler)][ServerLoginNetworking#registerGlobalReceiver(Identifier,]
+	/// For example, if you only register a receiver using this method when a [ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)]
 	/// login response has been received, you should use [ServerPlayConnectionEvents#INIT] to register the channel handler.
 	///
 	/// If a handler is already registered for the `type`, this method will return `false`, and no change will be made.

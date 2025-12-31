@@ -66,7 +66,7 @@ public final class FluidVariantRendering {
 	/// Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	/// and the id of the fluid if advanced tooltips are enabled.
 	///
-	/// Compared to [TooltipFlag) the other overload][#getTooltip(FluidVariant,], the current tooltip context is automatically used.
+	/// Compared to [the other overload][#getTooltip(FluidVariant, TooltipFlag)], the current tooltip context is automatically used.
 	public static List<Component> getTooltip(FluidVariant fluidVariant) {
 		return getTooltip(fluidVariant, Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 	}

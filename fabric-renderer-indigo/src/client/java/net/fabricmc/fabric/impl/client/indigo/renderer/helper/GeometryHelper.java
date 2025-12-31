@@ -204,7 +204,7 @@ public final class GeometryHelper {
 
 	/// Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
 	/// the directions specified in [net.minecraft.client.renderer.FaceInfo]. Assumes that the given quad is
-	/// [QuadView) cubic][#isQuadCubic(Direction,]. Used to make smooth lighting for cubic quads work correctly
+	/// [cubic][#isQuadCubic(Direction,QuadView)]. Used to make smooth lighting for cubic quads work correctly
 	/// regardless of vertex order.
 	///
 	/// Because cubic quads have all vertices in different corners, the implementation only has to find which corner

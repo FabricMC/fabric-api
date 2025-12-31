@@ -115,7 +115,7 @@ public interface ItemApiLookup<A, C> {
 	/// API authors are strongly encouraged to document this behavior so that implementors can refer
 	/// to the API documentation.
 	///
-	///While providers may capture a reference to the stack, it is expected that they do not modify it directly.
+	/// While providers may capture a reference to the stack, it is expected that they do not modify it directly.
 	///
 	/// @param itemStack The item stack.
 	/// @param context Additional context for the query, defined by type parameter C.
@@ -163,7 +163,7 @@ public interface ItemApiLookup<A, C> {
 		/// API authors are strongly encouraged to document this behavior so that implementors can refer
 		/// to the API documentation.
 		///
-		///While providers may capture a reference to the stack, it is expected that they do not modify it directly.
+		/// While providers may capture a reference to the stack, it is expected that they do not modify it directly.
 		///
 		/// @param itemStack The item stack.
 		/// @param context Additional context passed to the query.

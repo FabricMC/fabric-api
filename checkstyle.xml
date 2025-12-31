@@ -73,6 +73,12 @@
 		<property name="message" value="regular javadoc comments are not allowed, use markdown javadoc (///) instead"/>
 	</module>
 
+	<!-- require space after /// when line has content -->
+	<module name="RegexpSingleline">
+		<property name="format" value="///[^ \t\r\n]"/>
+		<property name="message" value="space required after /// when line has content"/>
+	</module>
+
 	<module name="TreeWalker">
         <!-- Allow "//CHECKSTYLE.OFF: <InspectionName>" and "//CHECKSTYLE.ON: <InspectionName>" pairs to toggle some inspections -->
         <module name="SuppressionCommentFilter">

@@ -46,7 +46,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 ///
 ///
 /// Note that on the server, the [EntityHitResult] may be `null` if the client successfully interacted using
-/// the [InteractionHand) position-less overload][Player#interactOn(Entity,].
+/// the [position-less overload][Player#interactOn(Entity, InteractionHand)].
 /// On the client, the [EntityHitResult] will never be null.
 public interface UseEntityCallback {
 	Event<UseEntityCallback> EVENT = EventFactory.createArrayBacked(UseEntityCallback.class,
