@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * <p>Note: If you are going to query APIs a lot, consider using {@link BlockApiCache}, it may drastically improve performance.
  *
- * <h3>Usage Example</h3>
+ * <h2>Usage Example</h2>
  * Let us pretend we have the following interface that we would like to attach to some blocks depending on the direction.
  *
  * <pre>{@code

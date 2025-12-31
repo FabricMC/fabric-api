@@ -14,11 +14,11 @@
  *     }
  * </pre>
  *
- * <h1>Lifecycle</h1>
+ * <h2>Lifecycle</h2>
  * Client gametests are run sequentially. When a gametest ends, the game will be
  * returned to the title screen. When all gametests have been run, the game will be closed.
  *
- * <h1>Threading</h1>
+ * <h2>Threading</h2>
  *
  * <p>Client gametests run on the client gametest thread. Use the functions inside
  * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext ClientGameTestContext} and other test
@@ -41,7 +41,7 @@
  * is exactly one server tick per client tick while a server is running (singleplayer or multiplayer). There is also a
  * limit of one client tick per frame.
  *
- * <h1>Network synchronization</h1>
+ * <h2>Network synchronization</h2>
  *
  * <p>Network packets are internally tracked and managed so that they are always handled at a consistent time, always
  * before the next tick. Calling {@code waitTick()} is always enough for a server packet to be handled on the client or
@@ -51,12 +51,13 @@
  * send or handle packets, you may need to disable network synchronization. You can do this by setting the
  * {@code fabric.client.gametest.disableNetworkSynchronizer} system property.
  *
- * <h1>Default settings</h1>
+ * <h2>Default settings</h2>
  * The client gametest API adjusts some default settings, usually for consistency of tests. These settings can always be
  * changed back to the default value or a different value inside a gametest.
  *
- * <h2>Game options</h2>
+ * <h3>Game options</h3>
  * <table>
+ *     <caption>Game options adjusted for client gametests</caption>
  *     <tr>
  *         <th>Setting name</th>
  *         <th>Gametest default</th>
@@ -96,12 +97,13 @@
  *     </tr>
  * </table>
  *
- * <h2>World creation options</h2>
+ * <h3>World creation options</h3>
  * These adjusted defaults only apply if the world builder's
  * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder#setUseConsistentSettings(boolean) consistent settings}
  * have not been set to {@code false}.
  *
  * <table>
+ *     <caption>World creation options adjusted for client gametests</caption>
  *     <tr>
  *         <th>Setting name</th>
  *         <th>Gametest default</th>
@@ -146,8 +148,9 @@
  *     </tr>
  * </table>
  *
- * <h2>Dedicated server properties</h2>
+ * <h3>Dedicated server properties</h3>
  * <table>
+ *     <caption>Dedicated server properties adjusted for client gametests</caption>
  *     <tr>
  *         <th>Setting name</th>
  *         <th>Gametest default</th>

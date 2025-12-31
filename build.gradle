@@ -345,8 +345,8 @@ javadoc {
 		encoding = "UTF-8"
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
-		// Disable the crazy super-strict doclint tool in Java 8
-		addStringOption("Xdoclint:none", "-quiet")
+		addStringOption("Xdoclint:all,-missing", "-quiet")
+		addBooleanOption("-syntax-highlight", true)
 
 		tags(
 				'apiNote:a:API Note:',

@@ -40,6 +40,7 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
  *
  * <p>Common places to add layers (as of 1.21.6):
  * <table>
+ *     <caption>Common injection points for HUD layers</caption>
  *     <tr>
  *         <th>Injection Point</th>
  *         <th>Use Case</th>

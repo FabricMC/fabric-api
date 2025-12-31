@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  * may not be consistent since accessing the internal state of the {@link BlockEntity} could modify it
  * in a non-atomic way (such as through lazy computation). Using render data avoids these issues.
  *
- * <h3>Implementation Tips</h3>
+ * <h2>Implementation Tips</h2>
  *
  * <p>The simplest form of render data is a value or object that is immutable. If only one such value
  * must serve as render data, then it can be returned directly. An example of this would be returning

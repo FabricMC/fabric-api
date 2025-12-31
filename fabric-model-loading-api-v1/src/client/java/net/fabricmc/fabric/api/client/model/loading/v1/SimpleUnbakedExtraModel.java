@@ -49,7 +49,7 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	/**
 	 * Create a {@link SimpleUnbakedExtraModel} for a {@link BlockStateModel}.
 	 *
-	 * <h2>Example</h2>
+	 * <p><strong>Example</strong>
 	 * {@snippet :
 	 * public static final Identifier MODEL_ID = Identifier.fromNamespaceAndPath("modid", "model_path");
 	 * public static final ExtraModelKey<BlockStateModel> MODEL_KEY = ExtraModelKey.create(MODEL_ID::toString);
