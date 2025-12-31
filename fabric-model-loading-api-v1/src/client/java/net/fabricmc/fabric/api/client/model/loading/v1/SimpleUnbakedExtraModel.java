@@ -44,7 +44,7 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 
 	/// Create a [SimpleUnbakedExtraModel] for a [BlockStateModel].
 	/// ## Example
-	/// {@snippet :
+	/// ```java
 	///  public static final Identifier MODEL_ID = Identifier.fromNamespaceAndPath("modid", "model_path");
 	///  public static final ExtraModelKey<BlockStateModel> MODEL_KEY = ExtraModelKey.create(MODEL_ID::toString);
 	///
@@ -52,6 +52,7 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	///  		ModelLoadingPlugin.register(pluginContext -> pluginContext.addModel(MODEL_KEY, SimpleUnbakedExtraModel.blockStateModel(MODEL_ID)));
 	///  }
 	///  }
+	/// ```
 	///
 	/// @param model The location of the model to load.
 	/// @return The unbaked extra model.

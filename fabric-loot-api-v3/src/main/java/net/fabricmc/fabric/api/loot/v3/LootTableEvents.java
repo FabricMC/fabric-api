@@ -63,7 +63,7 @@ public final class LootTableEvents {
 	/// If you want only one of the items to drop, you can use
 	/// [FabricLootTableBuilder#modifyPools(java.util.function.Consumer)] to add the new item to
 	/// the original loot pool instead.
-	/// {@snippet :
+	/// ```java
 	///  LootTableEvents.MODIFY.register((key, tableBuilder, source, holder) -> {
 	///      // If the loot table is for the cobblestone block and it is not overridden by a user:
 	///      if (Blocks.COBBLESTONE.getLootTable() == key && source.isBuiltin()) {
@@ -79,6 +79,7 @@ public final class LootTableEvents {
 	///      }
 	///  });
 	///  }
+	/// ```
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source, holder) -> {
 		for (Modify listener : listeners) {
 			listener.modifyLootTable(key, tableBuilder, source, holder);

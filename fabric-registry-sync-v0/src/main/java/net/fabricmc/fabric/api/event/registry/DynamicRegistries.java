@@ -50,7 +50,7 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 /// This is useful for compatibility with clients that might not have your dynamic registry.
 /// This behavior can be enabled by passing the [SyncOption#SKIP_WHEN_EMPTY] flag to `registerSynced`.
 /// ## Examples
-/// {@snippet :
+/// ```java
 ///  // @link region substring=ResourceKey target=ResourceKey
 ///  // @link region substring=create target="ResourceKey#create"
 ///  // @link region substring=Identifier target="net.minecraft.resources.Identifier#Identifier(String, String)"
@@ -69,6 +69,7 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 ///  // @link substring=registerSynced target="#registerSynced(ResourceKey, Codec, Codec, SyncOption...)":
 ///  DynamicRegistries.registerSynced(MY_DATA_KEY, MyData.CODEC, MyData.NETWORK_CODEC);
 ///  }
+/// ```
 public final class DynamicRegistries {
 	private DynamicRegistries() {
 	}

@@ -99,10 +99,11 @@ public final class HudStatusBarHeightRegistry {
 	}
 
 	/// Gets the total calculated height offset for a given HUD element ID. Usage:
-	/// {@snippet :
+	/// ```java
 	///  - net.minecraft.client.gui.GuiGraphics.guiHeight() - (39 + renderHeight)
 	///  + net.minecraft.client.gui.GuiGraphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id)
 	///  }
+	/// ```
 	///
 	/// This method is typically used by the rendering system to determine how much
 	/// to shift a HUD element. It returns the default HUD height which is `39` plus the sum of all registered

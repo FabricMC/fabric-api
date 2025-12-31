@@ -168,7 +168,7 @@ public interface SoundTypeBuilder {
 		///
 		/// Must be a value between `0` and `1` (inclusive).
 		///
-		/// The default volume is {@value RegistrationBuilder#DEFAULT_VOLUME}.
+		/// The default volume is [RegistrationBuilder#DEFAULT_VOLUME].
 		///
 		/// @see net.minecraft.client.sounds.SoundEngine#VOLUME_MIN
 		/// @see net.minecraft.client.sounds.SoundEngine#VOLUME_MAX
