@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.util;
 
 /// NBT type ID constants. Useful for filtering by value type in a few cases.
 ///
-/// For the current list of types, check with [Tag].
+/// For the current list of types, check with [net.minecraft.nbt.Tag].
 ///
 /// @see net.minecraft.nbt.TagTypes#getType(int)
-/// @deprecated Use the constants in [Tag] instead.
+/// @deprecated Use the constants in [net.minecraft.nbt.Tag] instead.
 @Deprecated
 public final class NbtType {
 	public static final int END = 0;
