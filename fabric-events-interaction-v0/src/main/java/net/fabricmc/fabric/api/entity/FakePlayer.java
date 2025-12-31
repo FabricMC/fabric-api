@@ -51,7 +51,9 @@ import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
 /// For example:
 ///
 /// ```java
-/// UUID humanPlayerUuid = ...;String humanPlayerName = ...;GameProfile fakeProfile = new GameProfile(humanPlayerUuid, "[Block Breaker of " + humanPlayerName + "]");
+/// UUID humanPlayerUuid = ...;
+/// String humanPlayerName = ...;
+/// GameProfile fakeProfile = new GameProfile(humanPlayerUuid, "[Block Breaker of " + humanPlayerName + "]");
 /// ```
 ///
 /// If a fake player does not belong to a specific player, the [default UUID][#DEFAULT_UUID] should be used.

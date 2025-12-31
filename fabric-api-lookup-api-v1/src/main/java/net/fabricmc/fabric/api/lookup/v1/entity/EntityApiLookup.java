@@ -48,13 +48,32 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
 /// Now we can query instances of `Leveled`.
 ///
 /// ```java
-/// Leveled leveled = MyApi.LEVELED_ENTITY.find(entity, null);if (leveled != null){// Do something with the API.System.out.println("Entity " + entity.getScoreboardName() + " is level " + leveled.getLevel());}
+/// Leveled leveled = MyApi.LEVELED_ENTITY.find(entity, null);
+/// if (leveled != null) {
+///     // Do something with the API.
+///     System.out.println("Entity " + entity.getScoreboardName() + " is level " + leveled.getLevel());
+/// }
 /// ```
 ///
 /// For query to return useful result, we must expose the API.
 ///
 /// ```java
-/// // If the entity directly implements the interface, registerSelf can be used.public class LeveledPig extends Pig implements Leveled{...}MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);// Otherwise, registerForType can be used.MyApi.LEVELED_ENTITY.registerForType((zombie, ignored) ->{// Return a Leveled instance for your entity here, or null if there's none.// The context is Void in this case, so it can be ignored.}, EntityType.ZOMBIE);// Generic fallback, to interface with anything, for example if we want to all other entity level defaults to 1.MyApi.LEVELED_ENTITY.registerFallback((entity, ignored) ->{// Return something if available, or null otherwise.});
+/// // If the entity directly implements the interface, registerSelf can be used.
+/// public class LeveledPig extends Pig implements Leveled {
+///     ...
+/// }
+/// MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);
+///
+/// // Otherwise, registerForType can be used.
+/// MyApi.LEVELED_ENTITY.registerForType((zombie, ignored) -> {
+///     // Return a Leveled instance for your entity here, or null if there's none.
+///     // The context is Void in this case, so it can be ignored.
+/// }, EntityType.ZOMBIE);
+///
+/// // Generic fallback, to interface with anything, for example if we want to all other entity level defaults to 1.
+/// MyApi.LEVELED_ENTITY.registerFallback((entity, ignored) -> {
+///     // Return something if available, or null otherwise.
+/// });
 /// ```
 ///
 /// @param <A> the type of the API we want to query.
