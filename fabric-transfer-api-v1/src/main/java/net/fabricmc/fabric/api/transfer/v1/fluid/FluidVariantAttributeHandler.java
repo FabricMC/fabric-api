@@ -92,7 +92,7 @@ public interface FluidVariantAttributeHandler {
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
-	 * @param world Level if available, otherwise {@code null}.
+	 * @param world World if available, otherwise {@code null}.
 	 */
 	default int getViscosity(FluidVariant variant, @Nullable Level world) {
 		return FluidConstants.WATER_VISCOSITY;

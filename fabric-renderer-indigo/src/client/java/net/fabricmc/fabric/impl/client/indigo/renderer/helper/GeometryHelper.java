@@ -77,7 +77,7 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * Returns: {@code true} if quad is parallel to the given face.
+	 * Returns true if quad is parallel to the given face.
 	 * Does not validate quad winding order.
 	 * Expects convex quads with all points co-planar.
 	 */
@@ -100,7 +100,7 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * Returns: {@code true} if quad is truly a quad (not a triangle) and fills a full block cross-section.
+	 * Returns {@code true} if quad is truly a quad (not a triangle) and fills a full block cross-section.
 	 * If known to be true, allows use of a simpler/faster AO lighting algorithm.
 	 *
 	 * <p>Does not check if quad is actually coplanar with the light face, nor does it check that all
