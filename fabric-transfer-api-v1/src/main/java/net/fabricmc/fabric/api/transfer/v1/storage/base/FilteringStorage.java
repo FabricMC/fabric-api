@@ -59,12 +59,12 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 	}
 
 	/**
-	 * @return  a wrapper over the passed storage that may prevent insertion or extraction, depending on the boolean parameters.
-	 * For more fine-grained control, a custom subclass of {@link FilteringStorage} should be used.
-	 *
 	 * @param backingStorage Storage to wrap.
 	 * @param allowInsert {@code true} to allow insertion, {@code false} to block insertion.
 	 * @param allowExtract {@code true} to allow extraction, {@code false} to block extraction.
+	 * @return  a wrapper over the passed storage that may prevent insertion or extraction, depending on the boolean parameters.
+	 * <br>
+	 * For more fine-grained control, a custom subclass of {@link FilteringStorage} should be used.
 	 */
 	public static <T> Storage<T> of(Storage<T> backingStorage, boolean allowInsert, boolean allowExtract) {
 		if (allowInsert && allowExtract) {

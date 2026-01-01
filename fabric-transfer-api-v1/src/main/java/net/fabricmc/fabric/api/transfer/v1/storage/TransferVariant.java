@@ -62,8 +62,8 @@ public interface TransferVariant<O> {
 
 	/**
 	 * @return {@code true} if the tag of this variant matches the passed tag, and {@code false} otherwise.
-	 *
-	 * <p>Note: {@code true} is returned if both tags are {@code null}.
+	 * <br>
+	 * Note: {@code true} is returned if both tags are {@code null}.
 	 */
 	default boolean componentsMatch(DataComponentPatch other) {
 		return Objects.equals(getComponents(), other);

@@ -79,7 +79,9 @@ public interface FabricItem {
 	 * <br>
 	 *
 	 * <p>For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
-	 * <p>Here is an example for a recipe remainder that increments the item's damage.
+	 *
+	 * <p>
+	 * Here is an example for a recipe remainder that increments the item's damage.
 	 *
 	 * <pre>{@code
 	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {

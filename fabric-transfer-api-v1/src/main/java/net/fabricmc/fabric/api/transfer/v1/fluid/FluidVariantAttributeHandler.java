@@ -52,8 +52,8 @@ public interface FluidVariantAttributeHandler {
 
 	/**
 	 * @return the sound corresponding to this fluid being filled, or none if no sound is available.
-	 *
-	 * <p>If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound.
+	 * <br>
+	 * If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound.
 	 */
 	default Optional<SoundEvent> getFillSound(FluidVariant variant) {
 		return Optional.empty();
@@ -61,8 +61,8 @@ public interface FluidVariantAttributeHandler {
 
 	/**
 	 * @return the sound corresponding to this fluid being emptied, or none if no sound is available.
-	 *
-	 * <p>If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound.
+	 * <br>
+	 * If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound.
 	 */
 	default Optional<SoundEvent> getEmptySound(FluidVariant variant) {
 		return Optional.empty();
