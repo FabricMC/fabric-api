@@ -38,21 +38,21 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  */
 public abstract class FilteringStorage<T> implements Storage<T> {
 	/**
-	 * @return a wrapper over the passed storage that prevents extraction.
+	 * Return a wrapper over the passed storage that prevents extraction.
 	 */
 	public static <T> Storage<T> insertOnlyOf(Storage<T> backingStorage) {
 		return of(backingStorage, true, false);
 	}
 
 	/**
-	 * @return a wrapper over the passed storage that prevents insertion.
+	 * Return a wrapper over the passed storage that prevents insertion.
 	 */
 	public static <T> Storage<T> extractOnlyOf(Storage<T> backingStorage) {
 		return of(backingStorage, false, true);
 	}
 
 	/**
-	 * @return a wrapper over the passed storage that prevents insertion and extraction.
+	 * Return a wrapper over the passed storage that prevents insertion and extraction.
 	 */
 	public static <T> Storage<T> readOnlyOf(Storage<T> backingStorage) {
 		return of(backingStorage, false, false);

@@ -63,7 +63,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  */
 public interface Storage<T> extends Iterable<StorageView<T>> {
 	/**
-	 * @return  an empty storage.
+	 * Return an empty storage.
 	 */
 	@SuppressWarnings("unchecked")
 	static <T> Storage<T> empty() {
@@ -72,8 +72,8 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 
 	/**
 	 * @return {@code false} if calling {@link #insert} will absolutely always return 0, or {@code true} otherwise or in doubt.
-	 * <br>
-	 * Note: This function is meant to be used by pipes or other devices that can transfer resources to know if
+	 *
+	 * <p>Note: This function is meant to be used by pipes or other devices that can transfer resources to know if
 	 * they should interact with this storage at all.
 	 */
 	default boolean supportsInsertion() {

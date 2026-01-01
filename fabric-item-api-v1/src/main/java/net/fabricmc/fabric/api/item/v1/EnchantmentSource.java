@@ -43,7 +43,7 @@ public enum EnchantmentSource {
 	}
 
 	/**
-	 * {@return whether this enchantment source is builtin and bundled in the vanilla or mod resources}.
+	 * Returns whether this enchantment source is builtin and bundled in the vanilla or mod resources.
 	 *
 	 * <p>{@link #VANILLA} and {@link #MOD} are builtin.
 	 *

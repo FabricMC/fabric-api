@@ -223,12 +223,12 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * @return the index of the vertex which is in the first cubic corner for the given quad's light face, according to
+	 * Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
 	 * the directions specified in {@link FaceInfo}. Assumes that the given quad is
 	 * {@linkplain #isQuadCubic(Direction, QuadView) cubic}. Used to make smooth lighting for cubic quads work correctly
 	 * regardless of vertex order.
-	 * <br>
-	 * Because cubic quads have all vertices in different corners, the implementation only has to find which corner
+	 *
+	 * <p>Because cubic quads have all vertices in different corners, the implementation only has to find which corner
 	 * the first vertex is in based on the same criteria as {@link #isQuadCubic(Direction, QuadView)}. Then, since
 	 * the vertex winding order is always counterclockwise, it can know which vertex is in the first corner.
 	 */

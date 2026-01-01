@@ -36,7 +36,7 @@ public abstract class Event<T> {
 	protected volatile T invoker;
 
 	/**
-	 * {@return the invoker instance}
+	 * Return the invoker instance.
 	 *
 	 * <p>An "invoker" is an object which hides multiple registered
 	 * listeners of type {@code T} under one instance of type {@code T}, executing

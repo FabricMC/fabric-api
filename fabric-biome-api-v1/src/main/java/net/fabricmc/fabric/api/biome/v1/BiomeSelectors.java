@@ -48,7 +48,7 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * @return a biome selector that will match all biomes from the minecraft namespace.
+	 * Returns a biome selector that will match all biomes from the minecraft namespace.
 	 */
 	public static Predicate<BiomeSelectionContext> vanilla() {
 		return context -> {
@@ -59,7 +59,7 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * @return a biome selector that will match all biomes that would normally spawn in the Overworld,
+	 * Returns a biome selector that will match all biomes that would normally spawn in the Overworld,
 	 * assuming Vanilla's default biome source is used.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInOverworld() {
@@ -67,17 +67,17 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * @return a biome selector that will match all biomes that would normally spawn in the Nether,
+	 * Returns a biome selector that will match all biomes that would normally spawn in the Nether,
 	 * assuming Vanilla's default multi noise biome source with the nether preset is used.
-	 * <br>
-	 * This selector will also match modded biomes that have been added to the nether using {@link NetherBiomes}.
+	 *
+	 * <p>This selector will also match modded biomes that have been added to the nether using {@link NetherBiomes}.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInTheNether() {
 		return context -> context.canGenerateIn(LevelStem.NETHER);
 	}
 
 	/**
-	 * @return a biome selector that will match all biomes that would normally spawn in the End,
+	 * Returns a biome selector that will match all biomes that would normally spawn in the End,
 	 * assuming Vanilla's default End biome source is used.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInTheEnd() {
@@ -85,7 +85,7 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * @return a biome selector that will match all biomes in the given tag.
+	 * Returns a biome selector that will match all biomes in the given tag.
 	 *
 	 * @see net.minecraft.tags.BiomeTags
 	 */
@@ -102,9 +102,8 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * @return a selector that will reject any biome whose key is in the given collection of keys.
-	 * <br>
-	 * This is useful for allowing a list of biomes to be defined in the config file, where
+	 * Returns a selector that will reject any biome whose key is in the given collection of keys.
+	 * <p>This is useful for allowing a list of biomes to be defined in the config file, where
 	 * a certain feature should not spawn.
 	 */
 	public static Predicate<BiomeSelectionContext> excludeByKey(Collection<ResourceKey<Biome>> keys) {
@@ -120,9 +119,8 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * @return a selector that will accept only biomes whose keys are in the given collection of keys.
-	 * <br>
-	 * This is useful for allowing a list of biomes to be defined in the config file, where
+	 * Returns a selector that will accept only biomes whose keys are in the given collection of keys.
+	 * <p>This is useful for allowing a list of biomes to be defined in the config file, where
 	 * a certain feature should spawn exclusively.
 	 */
 	public static Predicate<BiomeSelectionContext> includeByKey(Collection<ResourceKey<Biome>> keys) {
@@ -130,18 +128,16 @@ public final class BiomeSelectors {
 	}
 
 	/**
-	 * @return a biome selector that will match biomes in which one of the given entity types can spawn.
-	 * <br>
-	 * Matches spawns in all {@link MobCategory spawn groups}.
+	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
+	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(EntityType<?>... entityTypes) {
 		return spawnsOneOf(ImmutableSet.copyOf(entityTypes));
 	}
 
 	/**
-	 * @return a biome selector that will match biomes in which one of the given entity types can spawn.
-	 * <br>
-	 * Matches spawns in all {@link MobCategory spawn groups}.
+	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
+	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(Set<EntityType<?>> entityTypes) {
 		return context -> {

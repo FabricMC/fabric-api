@@ -37,7 +37,7 @@ import net.minecraft.world.level.material.Fluid;
  */
 public interface FluidVariantAttributeHandler {
 	/**
-	 * {@return the name that should be used for the passed fluid variant.}
+	 * Return the name that should be used for the passed fluid variant.
 	 */
 	default Component getName(FluidVariant fluidVariant) {
 		Block fluidBlock = fluidVariant.getFluid().defaultFluidState().createLegacyBlock().getBlock();
@@ -51,16 +51,18 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * {@return the sound corresponding to this fluid being filled, or none if no sound is available.
-	 * If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound}
+	 * Return the sound corresponding to this fluid being filled, or none if no sound is available.
+	 *
+	 * <p>If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound.
 	 */
 	default Optional<SoundEvent> getFillSound(FluidVariant variant) {
 		return Optional.empty();
 	}
 
 	/**
-	 * {@return the sound corresponding to this fluid being emptied, or none if no sound is available.
-	 * If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound}
+	 * Return the sound corresponding to this fluid being emptied, or none if no sound is available.
+	 *
+	 * <p>If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound.
 	 */
 	default Optional<SoundEvent> getEmptySound(FluidVariant variant) {
 		return Optional.empty();
@@ -74,7 +76,7 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * {@return a non-negative integer, representing the temperature of this fluid in Kelvin}.
+	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
 	 * The reference values are {@value FluidConstants#WATER_TEMPERATURE} for water, and {@value FluidConstants#LAVA_TEMPERATURE} for lava.
 	 */
 	default int getTemperature(FluidVariant variant) {
@@ -82,8 +84,8 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * {@return a positive integer, representing the viscosity of this fluid.
-	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity}
+	 * Return a positive integer, representing the viscosity of this fluid.
+	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
 	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getTickDelay} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
@@ -97,7 +99,7 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * @return {@code true} if this fluid is lighter than air.
+	 * Return true if this fluid is lighter than air.
 	 * Fluids that are lighter than air generally flow upwards.
 	 */
 	default boolean isLighterThanAir(FluidVariant variant) {

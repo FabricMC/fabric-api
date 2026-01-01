@@ -35,7 +35,7 @@ public enum QuadAtlas {
 	}
 
 	/**
-	 * @return the quad atlas for the given atlas texture ID or null if no corresponding quad atlas exists.
+	 * {@return the quad atlas for the given atlas texture ID or null if no corresponding quad atlas exists}
 	 */
 	@Nullable
 	public static QuadAtlas of(Identifier atlasTextureId) {
@@ -49,7 +49,7 @@ public enum QuadAtlas {
 	}
 
 	/**
-	 * @return the atlas texture ID.
+	 * {@return the atlas texture ID}
 	 */
 	public Identifier getTextureId() {
 		return textureId;

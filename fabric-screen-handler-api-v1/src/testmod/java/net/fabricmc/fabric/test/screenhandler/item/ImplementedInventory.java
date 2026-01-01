@@ -90,14 +90,14 @@ public interface ImplementedInventory extends WorldlyContainer {
 	}
 
 	/**
-	 * Returns true if the stack can be extracted from the slot at the side.
+	 * Returns {@code true} if the stack can be inserted in the slot at the side.
 	 *
 	 * <p>The default implementation returns true.
 	 *
 	 * @param slot  the slot
 	 * @param stack the stack
 	 * @param side  the side
-	 * @return true if the stack can be extracted
+	 * @return {@code true} if the stack can be inserted
 	 */
 	@Override
 	default boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
@@ -105,11 +105,15 @@ public interface ImplementedInventory extends WorldlyContainer {
 	}
 
 	/**
-	 * The default implementation returns {@code true}.
+	 * Returns {@code true} if the stack can be inserted in the slot at the side.
+	 *
+	 * <p>The default implementation returns true.
+	 *
+	 *
 	 * @param slot  the slot
 	 * @param stack the stack
 	 * @param side  the side
-	 * @return {@code true} if the stack can be extracted from the slot at the side.
+	 * @return true if the stack can be extracted
 	 */
 	@Override
 	default boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {

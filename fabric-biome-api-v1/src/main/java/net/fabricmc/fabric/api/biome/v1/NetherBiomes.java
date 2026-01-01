@@ -60,7 +60,7 @@ public final class NetherBiomes {
 	}
 
 	/**
-	 * @return {@code true} if the given biome can generate in the nether, considering the Vanilla nether biomes,
+	 * Returns {@code true} if the given biome can generate in the nether, considering the Vanilla nether biomes,
 	 * and any biomes added to the Nether by mods.
 	 */
 	public static boolean canGenerateInNether(ResourceKey<Biome> biome) {
