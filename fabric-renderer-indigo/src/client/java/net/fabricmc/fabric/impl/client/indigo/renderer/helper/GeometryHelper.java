@@ -77,7 +77,7 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * @return {@code true} if quad is parallel to the given face.
+	 * Returns: {@code true} if quad is parallel to the given face.
 	 * Does not validate quad winding order.
 	 * Expects convex quads with all points co-planar.
 	 */

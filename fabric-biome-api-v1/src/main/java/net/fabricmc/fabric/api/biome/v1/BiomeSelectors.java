@@ -103,6 +103,7 @@ public final class BiomeSelectors {
 
 	/**
 	 * Returns a selector that will reject any biome whose key is in the given collection of keys.
+	 *
 	 * <p>This is useful for allowing a list of biomes to be defined in the config file, where
 	 * a certain feature should not spawn.
 	 */
@@ -120,6 +121,7 @@ public final class BiomeSelectors {
 
 	/**
 	 * Returns a selector that will accept only biomes whose keys are in the given collection of keys.
+	 *
 	 * <p>This is useful for allowing a list of biomes to be defined in the config file, where
 	 * a certain feature should spawn exclusively.
 	 */
@@ -129,6 +131,7 @@ public final class BiomeSelectors {
 
 	/**
 	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
+	 *
 	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(EntityType<?>... entityTypes) {
@@ -137,6 +140,7 @@ public final class BiomeSelectors {
 
 	/**
 	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
+	 *
 	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(Set<EntityType<?>> entityTypes) {

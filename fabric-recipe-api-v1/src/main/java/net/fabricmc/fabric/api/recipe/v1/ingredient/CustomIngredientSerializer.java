@@ -44,7 +44,7 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	}
 
 	/**
-	 * {@return the custom ingredient serializer registered with the given identifier, or {@code null} if there is no such serializer}
+	 * {@return the custom ingredient serializer registered with the given identifier, or {@code null} if there is no such serializer}.
 	 */
 	@Nullable
 	static CustomIngredientSerializer<?> get(Identifier identifier) {
@@ -52,12 +52,12 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	}
 
 	/**
-	 * {@return the identifier of this serializer}
+	 * {@return the identifier of this serializer}.
 	 */
 	Identifier getIdentifier();
 
 	/**
-	 * {@return the codec}
+	 * {@return the codec}.
 	 *
 	 * <p>Codecs are used to read the ingredient from the recipe JSON files.
 	 *

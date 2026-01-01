@@ -68,7 +68,7 @@ public interface FabricRenderPipeline {
 	 */
 	interface Snippet {
 		/**
-		 * {@return whether the pipeline draw mode should be used for GUI rendering}
+		 * Returns whether the pipeline draw mode should be used for GUI rendering.
 		 *
 		 * @return an Optional containing {@code true} if the pipeline draw mode should be used for GUI rendering, {@code false} otherwise.
 		 */

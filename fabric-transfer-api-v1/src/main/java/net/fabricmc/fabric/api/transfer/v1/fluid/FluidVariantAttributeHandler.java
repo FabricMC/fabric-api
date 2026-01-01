@@ -69,7 +69,7 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * {@return an integer in the range of 0 to 15: the light level emitted by this fluid, or 0 if it doesn't naturally emit light}
+	 * Return an integer in [0, 15]: the light level emitted by this fluid, or 0 if it doesn't naturally emit light.
 	 */
 	default int getLuminance(FluidVariant variant) {
 		return variant.getFluid().defaultFluidState().createLegacyBlock().getLightEmission();
@@ -92,7 +92,7 @@ public interface FluidVariantAttributeHandler {
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
-	 * @param world World if available, otherwise {@code null}.
+	 * @param world Level if available, otherwise {@code null}.
 	 */
 	default int getViscosity(FluidVariant variant, @Nullable Level world) {
 		return FluidConstants.WATER_VISCOSITY;

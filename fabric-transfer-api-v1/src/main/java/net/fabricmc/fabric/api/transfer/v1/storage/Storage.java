@@ -71,7 +71,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	}
 
 	/**
-	 * @return {@code false} if calling {@link #insert} will absolutely always return 0, or {@code true} otherwise or in doubt.
+	 * Return {@code false} if calling {@link #insert} will absolutely always return 0, or {@code true} otherwise or in doubt.
 	 *
 	 * <p>Note: This function is meant to be used by pipes or other devices that can transfer resources to know if
 	 * they should interact with this storage at all.

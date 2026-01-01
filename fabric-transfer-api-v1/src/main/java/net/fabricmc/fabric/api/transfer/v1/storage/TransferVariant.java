@@ -34,12 +34,12 @@ import net.minecraft.core.component.DataComponentPatch;
  */
 public interface TransferVariant<O> {
 	/**
-	 * Returns {@code true} if this variant is blank, and {@code false} otherwise.
+	 * Return {@code true} if this variant is blank, and {@code false} otherwise.
 	 */
 	boolean isBlank();
 
 	/**
-	 * Returns the immutable object instance of this variant.
+	 * Return the immutable object instance of this variant.
 	 */
 	O getObject();
 
@@ -61,7 +61,7 @@ public interface TransferVariant<O> {
 	}
 
 	/**
-	 * Returns {@code true} if the tag of this variant matches the passed tag, and {@code false} otherwise.
+	 * Return {@code true} if the tag of this variant matches the passed tag, and {@code false} otherwise.
 	 *
 	 * <p>Note: {@code true} is returned if both tags are {@code null}.
 	 */

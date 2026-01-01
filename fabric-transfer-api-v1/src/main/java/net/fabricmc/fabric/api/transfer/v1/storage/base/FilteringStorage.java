@@ -59,12 +59,12 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 	}
 
 	/**
-	 * @param backingStorage Storage to wrap.
-	 * @param allowInsert {@code true} to allow insertion, {@code false} to block insertion.
-	 * @param allowExtract {@code true} to allow extraction, {@code false} to block extraction.
-	 * @return  a wrapper over the passed storage that may prevent insertion or extraction, depending on the boolean parameters.
-	 * <br>
+	 * Return a wrapper over the passed storage that may prevent insertion or extraction, depending on the boolean parameters.
 	 * For more fine-grained control, a custom subclass of {@link FilteringStorage} should be used.
+	 *
+	 * @param backingStorage Storage to wrap.
+	 * @param allowInsert True to allow insertion, false to block insertion.
+	 * @param allowExtract True to allow extraction, false to block extraction.
 	 */
 	public static <T> Storage<T> of(Storage<T> backingStorage, boolean allowInsert, boolean allowExtract) {
 		if (allowInsert && allowExtract) {
@@ -113,14 +113,14 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 	}
 
 	/**
-	 * @return {@code true} if insertion of the passed resource should be forwarded to the backing storage, or {@code false} if it should fail.
+	 * Return {@code true} if insertion of the passed resource should be forwarded to the backing storage, or {@code false} if it should fail.
 	 */
 	protected boolean canInsert(T resource) {
 		return true;
 	}
 
 	/**
-	 * @return {@code true} if extraction of the passed resource should be forwarded to the backing storage, or {@code false} if it should fail.
+	 * Return  {@code true} if extraction of the passed resource should be forwarded to the backing storage, or {@code false} if it should fail.
 	 */
 	protected boolean canExtract(T resource) {
 		return true;

@@ -43,7 +43,7 @@ public interface BiomeSelectionContext {
 	Holder<Biome> getBiomeRegistryEntry();
 
 	/**
-	 * Returns {@code true} if this biome contains a placed feature referencing a configured feature with the given key}
+	 * Returns {@code true} if this biome contains a placed feature referencing a configured feature with the given key
 	 */
 	default boolean hasFeature(ResourceKey<ConfiguredFeature<?, ?>> key) {
 		List<HolderSet<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().features();
@@ -112,7 +112,7 @@ public interface BiomeSelectionContext {
 	boolean canGenerateIn(ResourceKey<LevelStem> dimensionKey);
 
 	/**
-	 * Returns {@code true} if this biome is in the given {@link TagKey}
+	 * {@return true if this biome is in the given {@link TagKey }}.
 	 */
 	boolean hasTag(TagKey<Biome> tag);
 }
