@@ -37,7 +37,7 @@ import net.minecraft.world.level.material.Fluid;
  */
 public interface FluidVariantAttributeHandler {
 	/**
-	 * @return the name that should be used for the passed fluid variant.
+	 * {@return the name that should be used for the passed fluid variant.}
 	 */
 	default Component getName(FluidVariant fluidVariant) {
 		Block fluidBlock = fluidVariant.getFluid().defaultFluidState().createLegacyBlock().getBlock();
@@ -51,23 +51,23 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * @return the sound corresponding to this fluid being filled, or none if no sound is available.
-	 * If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound.
+	 * {@return the sound corresponding to this fluid being filled, or none if no sound is available.
+	 * If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound}
 	 */
 	default Optional<SoundEvent> getFillSound(FluidVariant variant) {
 		return Optional.empty();
 	}
 
 	/**
-	 * @return the sound corresponding to this fluid being emptied, or none if no sound is available.
-	 * If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound.
+	 * {@return the sound corresponding to this fluid being emptied, or none if no sound is available.
+	 * If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound}
 	 */
 	default Optional<SoundEvent> getEmptySound(FluidVariant variant) {
 		return Optional.empty();
 	}
 
 	/**
-	 * @return an integer in the range of 0 to 15: the light level emitted by this fluid, or 0 if it doesn't naturally emit light.
+	 * {@return an integer in the range of 0 to 15: the light level emitted by this fluid, or 0 if it doesn't naturally emit light}
 	 */
 	default int getLuminance(FluidVariant variant) {
 		return variant.getFluid().defaultFluidState().createLegacyBlock().getLightEmission();
@@ -84,7 +84,6 @@ public interface FluidVariantAttributeHandler {
 	/**
 	 * {@return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity}
-	 * <br><br>
 	 *
 	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getTickDelay} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,

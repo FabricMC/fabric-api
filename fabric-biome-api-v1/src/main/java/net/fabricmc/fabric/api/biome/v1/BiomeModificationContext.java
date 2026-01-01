@@ -43,27 +43,27 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
  */
 public interface BiomeModificationContext {
 	/**
-	 * @return the modification context for the biomes weather properties.
+	 * {@return the modification context for the biomes weather properties.}
 	 */
 	WeatherContext getWeather();
 
 	/**
-	 * @return the modification context for the biomes environment attributes.
+	 * {@return the modification context for the biomes environment attributes.}
 	 */
 	AttributesContext getAttributes();
 
 	/**
-	 * @return the modification context for the biomes effects.
+	 * {@return the modification context for the biomes effects.}
 	 */
 	EffectsContext getEffects();
 
 	/**
-	 * @return the modification context for the biomes generation settings.
+	 * {@return the modification context for the biomes generation settings.}
 	 */
 	GenerationSettingsContext getGenerationSettings();
 
 	/**
-	 * @return the modification context for the biomes spawn settings.
+	 * {@return the modification context for the biomes spawn settings.}
 	 */
 	SpawnSettingsContext getSpawnSettings();
 
