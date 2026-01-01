@@ -62,7 +62,6 @@ public enum TriState implements StringRepresentable {
 	 *
 	 * @param bool the boolean value
 	 * @return {@link TriState#DEFAULT} if {@code null}.
-	 * <br>
 	 * Otherwise {@link TriState#TRUE} or {@link TriState#FALSE} depending on the value of the boolean.
 	 */
 	public static TriState of(@Nullable Boolean bool) {
@@ -83,7 +82,6 @@ public enum TriState implements StringRepresentable {
 	 * Gets the value of the tri-state as a boxed, nullable boolean.
 	 *
 	 * @return {@code null} if {@link TriState#DEFAULT}.
-	 * <br>
 	 * Otherwise {@code true} if {@link TriState#TRUE} or {@code false} if {@link TriState#FALSE}.
 	 */
 	@Nullable
