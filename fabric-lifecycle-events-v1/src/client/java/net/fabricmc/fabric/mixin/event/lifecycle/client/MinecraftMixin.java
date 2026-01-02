@@ -51,8 +51,8 @@ public abstract class MinecraftMixin {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((Minecraft) (Object) this);
 	}
 
-	@Inject(method = "updateLevelInEngines", at = @At("TAIL"))
-	private void afterClientLevelChange(ClientLevel level, CallbackInfo ci) {
+	@Inject(method = "updateLevelInEngines(Lnet/minecraft/client/multiplayer/ClientLevel;Z)V", at = @At("TAIL"))
+	private void afterClientLevelChange(ClientLevel level, boolean stopSound, CallbackInfo ci) {
 		if (level != null) {
 			Minecraft client = (Minecraft) (Object) this;
 			ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.invoker().afterLevelChange(client, level);
