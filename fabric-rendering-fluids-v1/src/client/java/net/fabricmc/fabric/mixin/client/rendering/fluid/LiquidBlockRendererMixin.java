@@ -108,7 +108,7 @@ public class LiquidBlockRendererMixin {
 	@ModifyVariable(
 			method = "tesselate",
 			at = @At("STORE"),
-			ordinal = 0
+			name = "stillSprite"
 	)
 	public TextureAtlasSprite modStill(TextureAtlasSprite original) {
 		return getOrDefault(0, original);
@@ -117,7 +117,7 @@ public class LiquidBlockRendererMixin {
 	@ModifyVariable(
 			method = "tesselate",
 			at = @At("STORE"),
-			ordinal = 1
+			name = "flowingSprite"
 	)
 	public TextureAtlasSprite modFlowing(TextureAtlasSprite original) {
 		return getOrDefault(1, original);
@@ -147,9 +147,9 @@ public class LiquidBlockRendererMixin {
 	private TextureAtlasSprite modifyOverlaySprite(
 			TextureAtlasSprite waterOverlay,
 			BlockAndTintGetter level,
-			@Local(ordinal = 1) BlockPos neighborPos,
-			@Local(ordinal = 0) boolean isLava,
-			@Local(ordinal = 1) TextureAtlasSprite flowingSprite,
+			@Local(name = "tPos") BlockPos neighborPos,
+			@Local(name = "isLava") boolean isLava,
+			@Local(name = "flowingSprite") TextureAtlasSprite flowingSprite,
 			@Share("useOverlay") LocalBooleanRef useOverlay
 	) {
 		final FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();

@@ -44,7 +44,7 @@ abstract class ClientPacketListenerMixin {
 					from = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;startWaitingForNewLevel(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/gui/screens/LevelLoadingScreen$Reason;)V")
 			)
 	)
-	private void copyAttachmentsOnClientRespawn(Minecraft client, LocalPlayer newPlayer, Operation<Void> init, ClientboundRespawnPacket packet, @Local(ordinal = 0) LocalPlayer oldPlayer) {
+	private void copyAttachmentsOnClientRespawn(Minecraft client, LocalPlayer newPlayer, Operation<Void> init, ClientboundRespawnPacket packet, @Local(name = "oldPlayer") LocalPlayer oldPlayer) {
 		/*
 		 * The KEEP_ATTRIBUTES flag is not set on a death respawn, and set in all other cases
 		 */

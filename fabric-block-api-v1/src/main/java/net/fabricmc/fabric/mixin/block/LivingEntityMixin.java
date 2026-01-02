@@ -38,7 +38,7 @@ abstract class LivingEntityMixin {
 			allow = 1,
 			cancellable = true
 	)
-	private void allowTaggedBlocksForTrapdoorClimbing(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> info, @Local(ordinal = 1) BlockState belowState) {
+	private void allowTaggedBlocksForTrapdoorClimbing(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> info, @Local(name = "belowState") BlockState belowState) {
 		if (belowState.is(BlockFunctionalityTags.CAN_CLIMB_TRAPDOOR_ABOVE)) {
 			if (belowState.getBlock() instanceof LadderBlock) {
 				// Check that the ladder and trapdoor are placed in the same direction.

@@ -84,19 +84,19 @@ public abstract class PackRepositoryMixin {
 	}
 
 	@Inject(method = "rebuildSelected", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;copyOf(Ljava/util/Collection;)Lcom/google/common/collect/ImmutableList;"))
-	private void handleAutoEnableDisable(Collection<String> enabledNames, CallbackInfoReturnable<List<Pack>> cir, @Local List<Pack> enabledAfterFirstRun) {
+	private void handleAutoEnableDisable(Collection<String> enabledNames, CallbackInfoReturnable<List<Pack>> cir, @Local(name = "selectedAndPresent") List<Pack> enabledAfterFirstRun) {
 		ModPackResourcesUtil.refreshAutoEnabledPacks(enabledAfterFirstRun, this.available);
 	}
 
 	@Inject(method = "addPack", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER))
-	private void handleAutoEnable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<Pack> newlyEnabled) {
+	private void handleAutoEnable(String profile, CallbackInfoReturnable<Boolean> cir, @Local(name = "selectedCopy") List<Pack> newlyEnabled) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
 			ModPackResourcesUtil.refreshAutoEnabledPacks(newlyEnabled, this.available);
 		}
 	}
 
 	@Inject(method = "removePack", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"))
-	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<Pack> enabled) {
+	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local(name = "selectedCopy") List<Pack> enabled) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
 			Set<String> currentlyEnabled = enabled.stream().map(Pack::getId).collect(Collectors.toSet());
 			enabled.removeIf(p -> !((FabricPack) p).fabric$parentsEnabled(currentlyEnabled));

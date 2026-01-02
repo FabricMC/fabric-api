@@ -100,7 +100,7 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 	}
 
 	@WrapOperation(method = "build", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;fetchChoiceType(Lcom/mojang/datafixers/DSL$TypeReference;Ljava/lang/String;)Lcom/mojang/datafixers/types/Type;"))
-	private @Nullable Type<?> allowNoModdedDatafixers(DSL.TypeReference typeReference, String id, Operation<Type<?>> original, @Local(argsOnly = true) ResourceKey<EntityType<?>> resourceKey) {
+	private @Nullable Type<?> allowNoModdedDatafixers(DSL.TypeReference typeReference, String id, Operation<Type<?>> original, @Local(argsOnly = true, name = "name") ResourceKey<EntityType<?>> resourceKey) {
 		if (!resourceKey.identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 			// Don't try to resolve the choice type for modded entities.
 			return null;

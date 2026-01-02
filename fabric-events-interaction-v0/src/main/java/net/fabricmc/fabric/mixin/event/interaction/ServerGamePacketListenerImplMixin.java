@@ -53,7 +53,7 @@ public abstract class ServerGamePacketListenerImplMixin {
 	}
 
 	@WrapOperation(method = "handlePickItemFromBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getCloneItemStack(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;Z)Lnet/minecraft/world/item/ItemStack;"))
-	public ItemStack onPickItemFromBlock(BlockState state, LevelReader level, BlockPos pos, boolean includeData, Operation<ItemStack> operation, @Local(argsOnly = true) ServerboundPickItemFromBlockPacket packet) {
+	public ItemStack onPickItemFromBlock(BlockState state, LevelReader level, BlockPos pos, boolean includeData, Operation<ItemStack> operation, @Local(argsOnly = true, name = "packet") ServerboundPickItemFromBlockPacket packet) {
 		ItemStack stack = PlayerPickItemEvents.BLOCK.invoker().onPickItemFromBlock(player, pos, state, packet.includeData());
 
 		if (stack == null) {
@@ -67,7 +67,7 @@ public abstract class ServerGamePacketListenerImplMixin {
 	}
 
 	@WrapOperation(method = "handlePickItemFromEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getPickResult()Lnet/minecraft/world/item/ItemStack;"))
-	public ItemStack onPickItemFromEntity(Entity entity, Operation<ItemStack> operation, @Local(argsOnly = true) ServerboundPickItemFromEntityPacket packet) {
+	public ItemStack onPickItemFromEntity(Entity entity, Operation<ItemStack> operation, @Local(argsOnly = true, name = "packet") ServerboundPickItemFromEntityPacket packet) {
 		ItemStack stack = PlayerPickItemEvents.ENTITY.invoker().onPickItemFromEntity(player, entity, packet.includeData());
 
 		if (stack == null) {

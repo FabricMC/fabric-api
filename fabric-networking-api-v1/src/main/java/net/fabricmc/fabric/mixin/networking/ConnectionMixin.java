@@ -94,7 +94,7 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@ModifyArg(method = "setupInboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
+	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true, name = "protocol") ProtocolInfo<?> protocolInfo) {
 		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
 
 		if (payloadTypeRegistry == null) {
@@ -108,7 +108,7 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@ModifyArg(method = "setupOutboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
+	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true, name = "protocol") ProtocolInfo<?> protocolInfo) {
 		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
 
 		if (payloadTypeRegistry == null) {

@@ -57,7 +57,7 @@ public class RecipeMapMixin implements SyncedSerializerAwarePreparedRecipe {
 	}
 
 	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;"))
-	private static void fillSerializerMap(Iterable<RecipeHolder<?>> recipes, CallbackInfoReturnable<RecipeMap> cir, @Local RecipeHolder<?> entry,
+	private static void fillSerializerMap(Iterable<RecipeHolder<?>> recipes, CallbackInfoReturnable<RecipeMap> cir, @Local(name = "recipe") RecipeHolder<?> entry,
 										@Share("bySerializer") LocalRef<IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>> bySerializer) {
 		List<RecipeHolder<?>> list = bySerializer.get().get(entry.value().getSerializer());
 

@@ -29,7 +29,7 @@ import net.minecraft.network.protocol.Packet;
 
 @Mixin(BundlePacket.class)
 public class BundlePacketMixin {
-	@ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true)
+	@ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true, name = "packets")
 	private static Iterable<? extends Packet<?>> flattenBundlePackets(Iterable<? extends Packet<?>> value) {
 		var packets = new ArrayList<Packet<?>>();
 		iterateBundle(value, packets);
