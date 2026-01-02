@@ -78,7 +78,7 @@ public class IngredientMixin implements FabricIngredient {
 		return new OptionalCustomIngredientStreamCodec(original);
 	}
 
-	@Inject(method = "<clinit>", at = @At("TAIL"), cancellable = true)
+	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void injectCodec(CallbackInfo ci) {
 		Codec<CustomIngredient> customIngredientCodec = CustomIngredientImpl.CODEC.dispatch(
 				CustomIngredientImpl.TYPE_KEY,
