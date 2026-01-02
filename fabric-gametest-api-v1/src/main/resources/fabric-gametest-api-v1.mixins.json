@@ -11,8 +11,10 @@
     "server.MainMixin"
   ],
   "injectors": {
-    "defaultRequire": 1,
-    "maxShiftBy": 2
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   },
   "mixinextras": {
     "minVersion": "0.5.0"
