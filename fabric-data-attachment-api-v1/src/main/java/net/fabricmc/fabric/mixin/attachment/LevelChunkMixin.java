@@ -47,7 +47,7 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 abstract class LevelChunkMixin extends AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Shadow
 	@Final
-	Level level;
+	private Level level;
 
 	@Shadow
 	public abstract Map<BlockPos, BlockEntity> getBlockEntities();

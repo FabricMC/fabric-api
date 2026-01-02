@@ -49,7 +49,7 @@ public abstract class MinecraftMixin {
 	private boolean attackCancelled;
 
 	@Shadow
-	private LocalPlayer player;
+	public LocalPlayer player;
 
 	@Shadow
 	public abstract ClientPacketListener getConnection();
