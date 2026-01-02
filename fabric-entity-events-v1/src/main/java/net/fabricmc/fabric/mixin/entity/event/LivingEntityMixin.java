@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.entity.event;
 
 import java.util.Optional;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -125,8 +127,10 @@ abstract class LivingEntityMixin {
 
 	// This is needed 1) so that the vanilla logic in wakeUp runs for modded beds and 2) for the injector below.
 	// The injector is shared because lambda$stopSleeping$23 and sleep share much of the structure here.
+	@Definition(id = "getBlockState", method = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;")
+	@Expression("? = ?.getBlockState(?)")
 	@Dynamic("lambda$stopSleeping$0: Synthetic lambda body for Optional.ifPresent in stopSleeping")
-	@ModifyVariable(method = {"lambda$stopSleeping$0", "startSleeping"}, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
+	@ModifyVariable(method = {"lambda$stopSleeping$0", "startSleeping"}, at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER))
 	private BlockState modifyBedForOccupiedState(BlockState state, BlockPos sleepingPos) {
 		InteractionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, state, state.getBlock() instanceof BedBlock);
 

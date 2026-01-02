@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,11 +46,10 @@ public class HopperBlockEntityMixin {
 	@Shadow
 	private Direction facing;
 
+	@Definition(id = "getAttachedContainer", method = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getAttachedContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/HopperBlockEntity;)Lnet/minecraft/world/Container;")
+	@Expression("? = getAttachedContainer(?, ?, ?)")
 	@Inject(
-			at = @At(
-					value = "INVOKE_ASSIGN",
-					target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getAttachedContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/HopperBlockEntity;)Lnet/minecraft/world/Container;"
-			),
+			at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
 			method = "ejectItems",
 			cancellable = true
 	)
@@ -73,11 +74,10 @@ public class HopperBlockEntityMixin {
 		}
 	}
 
+	@Definition(id = "getSourceContainer", method = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getSourceContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/Container;")
+	@Expression("? = getSourceContainer(?, ?, ?, ?)")
 	@Inject(
-			at = @At(
-					value = "INVOKE_ASSIGN",
-					target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getSourceContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/Container;"
-			),
+			at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
 			method = "suckInItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;)Z",
 			cancellable = true
 	)

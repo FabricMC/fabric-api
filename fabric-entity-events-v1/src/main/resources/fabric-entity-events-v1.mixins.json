@@ -14,5 +14,8 @@
   "injectors": {
     "defaultRequire": 1,
     "maxShiftBy": 3
+  },
+  "mixinextras": {
+    "minVersion": "0.5.0"
   }
 }
