@@ -56,7 +56,7 @@ abstract class SerializableChunkDataMixin {
 	private CompoundTag attachmentNbtData;
 
 	@Inject(method = "parse", at = @At("RETURN"))
-	private static void storeAttachmentNbtData(LevelHeightAccessor heightLimitView, PalettedContainerFactory arg, CompoundTag chunkData, CallbackInfoReturnable<SerializableChunkData> cir, @Share("attachmentDataNbt") LocalRef<CompoundTag> attachmentDataNbt) {
+	private static void storeAttachmentNbtData(LevelHeightAccessor levelHeight, PalettedContainerFactory containerFactory, CompoundTag chunkData, CallbackInfoReturnable<SerializableChunkData> cir, @Share("attachmentDataNbt") LocalRef<CompoundTag> attachmentDataNbt) {
 		final SerializableChunkData serializer = cir.getReturnValue();
 
 		if (serializer == null) {
@@ -72,7 +72,7 @@ abstract class SerializableChunkDataMixin {
 	}
 
 	@Inject(method = "read", at = @At("RETURN"))
-	private void setAttachmentDataInChunk(ServerLevel serverLevel, PoiManager pointOfInterestStorage, RegionStorageInfo storageKey, ChunkPos chunkPos, CallbackInfoReturnable<ProtoChunk> cir) {
+	private void setAttachmentDataInChunk(ServerLevel level, PoiManager poiManager, RegionStorageInfo regionInfo, ChunkPos pos, CallbackInfoReturnable<ProtoChunk> cir) {
 		ProtoChunk chunk = cir.getReturnValue();
 
 		if (chunk != null && attachmentNbtData != null) {
@@ -80,7 +80,7 @@ abstract class SerializableChunkDataMixin {
 			attachmentNbtData.put(AttachmentTarget.NBT_ATTACHMENT_KEY, this.attachmentNbtData);
 
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
-				ValueInput input = TagValueInput.create(reporter, serverLevel.registryAccess(), attachmentNbtData);
+				ValueInput input = TagValueInput.create(reporter, level.registryAccess(), attachmentNbtData);
 				((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(input);
 			}
 		}

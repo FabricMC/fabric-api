@@ -68,7 +68,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	 * Handles INACCESSIBLE -> FULL for chunks that are immediately loaded and available. {@link ChunkStatusTasksMixin} handles the rest.
 	 */
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 0))
-	private void updateFutures$inaccessibleToFull(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
+	private void updateFutures$inaccessibleToFull(ChunkMap scheduler, Executor mainThreadExecutor, CallbackInfo ci) {
 		if (this.getChunkIfPresentUnchecked(ChunkStatus.FULL) instanceof LevelChunk && this.fabric_currentEventFullChunkStatus == INACCESSIBLE) { // prevent duplicate events with ChunkStatusTasksMixin
 			ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.invoker().onFullChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), INACCESSIBLE, FULL);
 			this.fabric_currentEventFullChunkStatus = FULL;
@@ -79,7 +79,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	 * Handles FULL -> BLOCK_TICKING.
 	 */
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 1))
-	private void updateFutures$fullToBlockTicking(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
+	private void updateFutures$fullToBlockTicking(ChunkMap scheduler, Executor mainThreadExecutor, CallbackInfo ci) {
 		if (fabric_currentEventFullChunkStatus == FULL) { // if INACCESSIBLE->FULL did not fire immediately, then ChunkStatusTasksMixin will handle this later.
 			ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.invoker().onFullChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), FULL, BLOCK_TICKING);
 			this.fabric_currentEventFullChunkStatus = BLOCK_TICKING;
@@ -90,7 +90,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	 * Handles BLOCK_TICKING -> ENTITY_TICKING.
 	 */
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 2))
-	private void updateFutures$blockTickingToEntityTicking(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
+	private void updateFutures$blockTickingToEntityTicking(ChunkMap scheduler, Executor mainThreadExecutor, CallbackInfo ci) {
 		if (fabric_currentEventFullChunkStatus == BLOCK_TICKING) { // if INACCESSIBLE->FULL->BLOCK_TICKING did not fire immediately, then ChunkStatusTasksMixin will handle this later.
 			ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.invoker().onFullChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), BLOCK_TICKING, ENTITY_TICKING);
 			this.fabric_currentEventFullChunkStatus = ENTITY_TICKING;
@@ -101,11 +101,11 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	 * Fire right before onFullChunkStatusChange() is called.
 	 */
 	@Inject(method = "demoteFullChunk", at = @At("HEAD"))
-	private void decreaseLevel(ChunkMap chunkMap, FullChunkStatus target, CallbackInfo ci) {
+	private void decreaseLevel(ChunkMap scheduler, FullChunkStatus status, CallbackInfo ci) {
 		FullChunkStatus previous = ChunkLevel.fullStatus(this.oldTicketLevel);
 		ServerLevel serverLevel = (ServerLevel) levelHeightAccessor;
 
-		for (int i = previous.ordinal(); i > target.ordinal(); i--) {
+		for (int i = previous.ordinal(); i > status.ordinal(); i--) {
 			FullChunkStatus oldStatus = fabric_FULL_CHUNK_STATUSES[i];
 			FullChunkStatus newStatus = fabric_FULL_CHUNK_STATUSES[i-1];
 			if (this.fabric_currentEventFullChunkStatus.isOrAfter(oldStatus)) { // if a promotion event got cancelled or never finished, then do _not_ fire an equivalent demotion event

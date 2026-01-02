@@ -39,12 +39,12 @@ public class FireBlockMixin implements FireBlockHooks {
 	private FlammableBlockRegistryImpl registry;
 
 	@Shadow
-	private int getBurnOdds(BlockState block_1) {
+	private int getBurnOdds(BlockState state) {
 		return 0;
 	}
 
 	@Shadow
-	private int getIgniteOdds(BlockState block_1) {
+	private int getIgniteOdds(BlockState state) {
 		return 0;
 	}
 
@@ -53,13 +53,13 @@ public class FireBlockMixin implements FireBlockHooks {
 		registry = FlammableBlockRegistryImpl.getInstance((Block) (Object) this);
 	}
 
-	@Inject(at = @At("HEAD"), method = "getIgniteOdds", cancellable = true)
-	private void getFabricBurnChance(BlockState block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = registry.getFabric(block.getBlock());
+	@Inject(at = @At("HEAD"), method = "getIgniteOdds(Lnet/minecraft/world/level/block/state/BlockState;)I", cancellable = true)
+	private void getFabricBurnChance(BlockState state, CallbackInfoReturnable info) {
+		FlammableBlockRegistry.Entry entry = registry.getFabric(state.getBlock());
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl
-			if (block.hasProperty(BlockStateProperties.WATERLOGGED) && block.getValue(BlockStateProperties.WATERLOGGED)) {
+			if (state.hasProperty(BlockStateProperties.WATERLOGGED) && state.getValue(BlockStateProperties.WATERLOGGED)) {
 				info.setReturnValue(0);
 			} else {
 				info.setReturnValue(entry.getIgniteOdds());
@@ -68,12 +68,12 @@ public class FireBlockMixin implements FireBlockHooks {
 	}
 
 	@Inject(at = @At("HEAD"), method = "getBurnOdds", cancellable = true)
-	private void getFabricSpreadChance(BlockState block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = registry.getFabric(block.getBlock());
+	private void getFabricSpreadChance(BlockState state, CallbackInfoReturnable info) {
+		FlammableBlockRegistry.Entry entry = registry.getFabric(state.getBlock());
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl
-			if (block.hasProperty(BlockStateProperties.WATERLOGGED) && block.getValue(BlockStateProperties.WATERLOGGED)) {
+			if (state.hasProperty(BlockStateProperties.WATERLOGGED) && state.getValue(BlockStateProperties.WATERLOGGED)) {
 				info.setReturnValue(0);
 			} else {
 				info.setReturnValue(entry.getBurnOdds());

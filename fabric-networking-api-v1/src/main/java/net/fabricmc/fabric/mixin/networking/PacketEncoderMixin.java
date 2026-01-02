@@ -32,9 +32,9 @@ import net.fabricmc.fabric.impl.networking.splitter.PassthroughPacket;
 @Mixin(value = PacketEncoder.class, priority = 500)
 public class PacketEncoderMixin {
 	@Inject(method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;Lio/netty/buffer/ByteBuf;)V", at = @At("HEAD"), cancellable = true)
-	private void handlePassthroughPacket(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo ci) {
+	private void handlePassthroughPacket(ChannelHandlerContext ctx, Packet<?> packet, ByteBuf output, CallbackInfo ci) {
 		if (packet instanceof PassthroughPacket passthroughPacket) {
-			byteBuf.writeBytes(passthroughPacket.buf());
+			output.writeBytes(passthroughPacket.buf());
 			ci.cancel();
 		}
 	}

@@ -32,11 +32,11 @@ import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 @Mixin(BuiltInPackSource.class)
 public class BuiltInPackSourceMixin {
 	@Inject(method = "loadPacks", at = @At("RETURN"))
-	private void addBuiltinResourcePacks(Consumer<Pack> consumer, CallbackInfo ci) {
+	private void addBuiltinResourcePacks(Consumer<Pack> result, CallbackInfo ci) {
 		// Register mod and built-in resource packs after the vanilla built-in resource packs are registered.
 		// noinspection ConstantConditions
 		if ((Object) this instanceof ClientPackSource) {
-			ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.loadPacks(consumer);
+			ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.loadPacks(result);
 		}
 	}
 }

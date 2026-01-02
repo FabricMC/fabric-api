@@ -30,23 +30,23 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 @Mixin(KeyboardHandler.class)
 abstract class KeyboardHandlerMixin {
 	@WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z"))
-	private boolean invokeKeyPressedEvents(Screen screen, KeyEvent ctx, Operation<Boolean> operation) {
+	private boolean invokeKeyPressedEvents(Screen screen, KeyEvent event, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenKeyboardEvents.allowKeyPress(screen).invoker().allowKeyPress(screen, ctx)) {
+			if (!ScreenKeyboardEvents.allowKeyPress(screen).invoker().allowKeyPress(screen, event)) {
 				// Set this press action as handled
 				return true;
 			}
 
-			ScreenKeyboardEvents.beforeKeyPress(screen).invoker().beforeKeyPress(screen, ctx);
+			ScreenKeyboardEvents.beforeKeyPress(screen).invoker().beforeKeyPress(screen, event);
 		}
 
-		boolean result = operation.call(screen, ctx);
+		boolean result = operation.call(screen, event);
 
 		if (screen != null) {
-			ScreenKeyboardEvents.afterKeyPress(screen).invoker().afterKeyPress(screen, ctx);
+			ScreenKeyboardEvents.afterKeyPress(screen).invoker().afterKeyPress(screen, event);
 		}
 
 		return result;

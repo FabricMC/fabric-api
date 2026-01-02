@@ -42,9 +42,9 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlock
 	@Shadow
 	protected NonNullList<ItemStack> items;
 	@Shadow
-	int cookingTimer;
+	private int cookingTimer;
 	@Shadow
-	int cookingTotalTime;
+	private int cookingTotalTime;
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
 
@@ -54,9 +54,9 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlock
 	}
 
 	@Inject(at = @At("HEAD"), method = "setItem", cancellable = true)
-	public void setStackSuppressUpdate(int slot, ItemStack stack, CallbackInfo ci) {
+	public void setStackSuppressUpdate(int slot, ItemStack itemStack, CallbackInfo ci) {
 		if (fabric_suppressSpecialLogic) {
-			items.set(slot, stack);
+			items.set(slot, itemStack);
 			ci.cancel();
 		}
 	}
@@ -83,7 +83,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlock
 	}
 
 	@Shadow
-	private static int getTotalCookTime(ServerLevel level, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
+	private static int getTotalCookTime(ServerLevel level, AbstractFurnaceBlockEntity entity) {
 		throw new AssertionError();
 	}
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.block;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,13 +34,15 @@ import net.fabricmc.fabric.api.block.v1.BlockFunctionalityTags;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
+	@Definition(id = "getBlockState", method = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;")
+	@Expression("? = ?.getBlockState(?)")
 	@Inject(
 			method = "trapdoorUsableAsLadder",
-			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),
+			at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
 			allow = 1,
 			cancellable = true
 	)
-	private void allowTaggedBlocksForTrapdoorClimbing(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> info, @Local(ordinal = 1) BlockState belowState) {
+	private void allowTaggedBlocksForTrapdoorClimbing(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> info, @Local(name = "belowState") BlockState belowState) {
 		if (belowState.is(BlockFunctionalityTags.CAN_CLIMB_TRAPDOOR_ABOVE)) {
 			if (belowState.getBlock() instanceof LadderBlock) {
 				// Check that the ladder and trapdoor are placed in the same direction.

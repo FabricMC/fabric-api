@@ -30,10 +30,10 @@ import net.fabricmc.fabric.impl.client.gametest.threading.NetworkSynchronizer;
 @Mixin(BlockableEventLoop.class)
 public class BlockableEventLoopMixin {
 	@Inject(method = "schedule", at = @At("HEAD"))
-	private void onPacketHandlerSchedule(Runnable task, CallbackInfo ci) {
+	private void onPacketHandlerSchedule(Runnable r, CallbackInfo ci) {
 		switch ((Object) this) {
-		case Minecraft $ -> NetworkSynchronizer.CLIENTBOUND.preTaskAdded(task);
-		case MinecraftServer $ -> NetworkSynchronizer.SERVERBOUND.preTaskAdded(task);
+		case Minecraft $ -> NetworkSynchronizer.CLIENTBOUND.preTaskAdded(r);
+		case MinecraftServer $ -> NetworkSynchronizer.SERVERBOUND.preTaskAdded(r);
 		default -> {
 		}
 		}

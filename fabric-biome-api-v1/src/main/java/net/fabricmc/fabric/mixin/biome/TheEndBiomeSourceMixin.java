@@ -49,7 +49,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Shadow
 	@Mutable
 	@Final
-	static MapCodec<TheEndBiomeSource> CODEC;
+	public static MapCodec<TheEndBiomeSource> CODEC;
 
 	@Unique
 	private Supplier<TheEndBiomeData.Overrides> overrides;
@@ -92,7 +92,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	 * Uses the captured biome registry to set up the modded end biomes.
 	 */
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void init(Holder<Biome> centerBiome, Holder<Biome> highlandsBiome, Holder<Biome> midlandsBiome, Holder<Biome> smallIslandsBiome, Holder<Biome> barrensBiome, CallbackInfo ci) {
+	private void init(Holder<Biome> end, Holder<Biome> highlands, Holder<Biome> midlands, Holder<Biome> islands, Holder<Biome> barrens, CallbackInfo ci) {
 		HolderGetter<Biome> biomes = TheEndBiomeData.biomeRegistry.get();
 
 		if (biomes == null) {
@@ -105,8 +105,8 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	}
 
 	@Inject(method = "getNoiseBiome", at = @At("RETURN"), cancellable = true)
-	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler noise, CallbackInfoReturnable<Holder<Biome>> cir) {
-		cir.setReturnValue(overrides.get().pick(biomeX, biomeY, biomeZ, noise, cir.getReturnValue()));
+	private void getWeightedEndBiome(int quartX, int quartY, int quartZ, Climate.Sampler sampler, CallbackInfoReturnable<Holder<Biome>> cir) {
+		cir.setReturnValue(overrides.get().pick(quartX, quartY, quartZ, sampler, cir.getReturnValue()));
 	}
 
 	@Override

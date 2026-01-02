@@ -72,25 +72,25 @@ abstract class SectionCompilerMixin {
 
 	@Shadow
 	protected abstract BufferBuilder getOrBeginLayer(
-			Map<ChunkSectionLayer, BufferBuilder> builders,
+			Map<ChunkSectionLayer, BufferBuilder> startedLayers,
 			SectionBufferBuilderPack buffers,
-			ChunkSectionLayer layer
+			ChunkSectionLayer renderType
 	);
 
 	@Inject(method = "compile",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;betweenClosed(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Ljava/lang/Iterable;"))
-	private void hookBuild(SectionPos sectionPos, RenderSectionRegion region, VertexSorting sorter,
-						SectionBufferBuilderPack buffers,
+	private void hookBuild(SectionPos sectionPos, RenderSectionRegion region, VertexSorting vertexSorting,
+						SectionBufferBuilderPack builders,
 						CallbackInfoReturnable<SectionCompiler.Results> cir,
-						@Local(ordinal = 0) BlockPos sectionOrigin,
-						@Local(ordinal = 0) PoseStack poseStack,
-						@Local(ordinal = 0) Map<ChunkSectionLayer, BufferBuilder> builderMap,
-						@Local(ordinal = 0) RandomSource random) {
+						@Local(name = "minPos") BlockPos minPos,
+						@Local(name = "poseStack") PoseStack poseStack,
+						@Local(name = "startedLayers") Map<ChunkSectionLayer, BufferBuilder> startedLayers,
+						@Local(name = "random") RandomSource random) {
 		// hook just before iterating over the render chunk's blocks to capture the buffer builder map
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-		renderer.prepare(region, sectionOrigin,
-				poseStack, random, layer -> getOrBeginLayer(builderMap,
-						buffers, layer));
+		renderer.prepare(region, minPos,
+				poseStack, random, layer -> getOrBeginLayer(startedLayers,
+						builders, layer));
 		((AccessRenderSectionRegion) region).fabric_setRenderer(renderer);
 	}
 
@@ -108,12 +108,12 @@ abstract class SectionCompilerMixin {
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 */
 	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
-	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(ordinal = 2) BlockPos blockPos) {
+	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion region, VertexSorting vertexSorting, SectionBufferBuilderPack builders, @Local(name = "pos") BlockPos pos) {
 		RenderShape renderShape = blockState.getRenderShape();
 
 		if (renderShape == RenderShape.MODEL) {
 			BlockStateModel model = blockRenderer.getBlockModel(blockState);
-			((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
+			((AccessRenderSectionRegion) region).fabric_getRenderer().bufferModel(model, blockState, pos);
 			return RenderShape.INVISIBLE; // Cancel the vanilla logic
 		}
 
@@ -124,8 +124,8 @@ abstract class SectionCompilerMixin {
 	 * Release all references. Probably not necessary but would be $#%! to debug if it is.
 	 */
 	@Inject(method = "compile", at = @At(value = "RETURN"))
-	private void hookBuildReturn(SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, CallbackInfoReturnable<SectionCompiler.Results> cir) {
-		((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().release();
-		((AccessRenderSectionRegion) renderRegion).fabric_setRenderer(null);
+	private void hookBuildReturn(SectionPos sectionPos, RenderSectionRegion region, VertexSorting vertexSorting, SectionBufferBuilderPack builders, CallbackInfoReturnable<SectionCompiler.Results> cir) {
+		((AccessRenderSectionRegion) region).fabric_getRenderer().release();
+		((AccessRenderSectionRegion) region).fabric_setRenderer(null);
 	}
 }

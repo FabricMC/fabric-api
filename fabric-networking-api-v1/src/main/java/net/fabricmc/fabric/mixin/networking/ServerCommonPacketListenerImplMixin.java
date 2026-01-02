@@ -63,9 +63,9 @@ public abstract class ServerCommonPacketListenerImplMixin implements PacketListe
 	}
 
 	@Inject(method = "handlePong", at = @At("HEAD"))
-	private void onPlayPong(ServerboundPongPacket packet, CallbackInfo ci) {
+	private void onPlayPong(ServerboundPongPacket serverboundPongPacket, CallbackInfo ci) {
 		if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
-			addon.onPong(packet.getId());
+			addon.onPong(serverboundPongPacket.getId());
 		}
 	}
 }

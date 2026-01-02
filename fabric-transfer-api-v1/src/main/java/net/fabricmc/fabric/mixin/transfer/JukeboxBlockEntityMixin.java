@@ -34,7 +34,7 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicContainer {
 	private ItemStack item;
 
 	@Shadow
-	public abstract void setTheItem(ItemStack stack);
+	public abstract void setTheItem(ItemStack itemStack);
 
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
@@ -45,9 +45,9 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicContainer {
 	}
 
 	@Inject(method = "setTheItem", at = @At("HEAD"), cancellable = true)
-	private void setStackBypass(ItemStack stack, CallbackInfo ci) {
+	private void setStackBypass(ItemStack itemStack, CallbackInfo ci) {
 		if (fabric_suppressSpecialLogic) {
-			item = stack;
+			item = itemStack;
 			ci.cancel();
 		}
 	}

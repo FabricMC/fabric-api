@@ -48,8 +48,8 @@ public abstract class RecipeManagerMixin implements FabricRecipeManager {
 	private SynchronizedRecipes synchronizedRecipes = SynchronizedRecipesImpl.EMPTY;
 
 	@Inject(method = "apply(Lnet/minecraft/world/item/crafting/RecipeMap;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
-	private void updateSynchronizedRecipes(RecipeMap preparedRecipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
-		this.synchronizedRecipes = new SynchronizedRecipesImpl(preparedRecipes);
+	private void updateSynchronizedRecipes(RecipeMap recipes, ResourceManager manager, ProfilerFiller profiler, CallbackInfo ci) {
+		this.synchronizedRecipes = new SynchronizedRecipesImpl(recipes);
 	}
 
 	@Override

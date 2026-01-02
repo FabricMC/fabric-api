@@ -43,9 +43,9 @@ public class BucketItemMixin {
 	@ModifyVariable(
 			method = "playEmptySound",
 			at = @At("STORE"),
-			index = 4
+			name = "soundEvent"
 	)
-	private SoundEvent hookEmptyingSound(SoundEvent previous) {
-		return FluidVariantAttributes.getHandlerOrDefault(content).getEmptySound(FluidVariant.of(content)).orElse(previous);
+	private SoundEvent hookEmptyingSound(SoundEvent soundEvent) {
+		return FluidVariantAttributes.getHandlerOrDefault(content).getEmptySound(FluidVariant.of(content)).orElse(soundEvent);
 	}
 }

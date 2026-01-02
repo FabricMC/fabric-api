@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.gametest.server;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,10 +39,12 @@ public class MainMixin {
 	}
 
 	// Inject after packRepository is stored
-	@Inject(method = "main", cancellable = true, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createPackRepository(Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;)Lnet/minecraft/server/packs/repository/PackRepository;"))
-	private static void main(String[] args, CallbackInfo info, @Local LevelStorageSource.LevelStorageAccess storageAccess, @Local PackRepository packRepository) {
+	@Definition(id = "createPackRepository", method = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createPackRepository(Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;)Lnet/minecraft/server/packs/repository/PackRepository;")
+	@Expression("? = createPackRepository(?)")
+	@Inject(method = "main", cancellable = true, at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER))
+	private static void main(String[] args, CallbackInfo info, @Local(name = "access") LevelStorageSource.LevelStorageAccess access, @Local(name = "packRepository") PackRepository packRepository) {
 		if (FabricGameTestRunner.ENABLED) {
-			FabricGameTestRunner.runHeadlessServer(storageAccess, packRepository);
+			FabricGameTestRunner.runHeadlessServer(access, packRepository);
 			info.cancel();  // Do not progress in starting the normal dedicated server
 		}
 	}

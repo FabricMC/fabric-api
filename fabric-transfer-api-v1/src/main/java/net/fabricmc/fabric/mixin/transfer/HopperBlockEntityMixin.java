@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,26 +46,25 @@ public class HopperBlockEntityMixin {
 	@Shadow
 	private Direction facing;
 
+	@Definition(id = "getAttachedContainer", method = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getAttachedContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/HopperBlockEntity;)Lnet/minecraft/world/Container;")
+	@Expression("? = getAttachedContainer(?, ?, ?)")
 	@Inject(
-			at = @At(
-					value = "INVOKE_ASSIGN",
-					target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getAttachedContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/HopperBlockEntity;)Lnet/minecraft/world/Container;"
-			),
+			at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
 			method = "ejectItems",
 			cancellable = true
 	)
-	private static void hookInsert(Level level, BlockPos pos, HopperBlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir, @Local Container targetInventory) {
+	private static void hookInsert(Level level, BlockPos blockPos, HopperBlockEntity self, CallbackInfoReturnable<Boolean> cir, @Local(name = "container") Container container) {
 		// Let vanilla handle the transfer if it found an inventory.
-		if (targetInventory != null) return;
+		if (container != null) return;
 
 		// Otherwise inject our transfer logic.
-		Direction direction = ((HopperBlockEntityMixin) (Object) blockEntity).facing;
-		BlockPos targetPos = pos.relative(direction);
+		Direction direction = ((HopperBlockEntityMixin) (Object) self).facing;
+		BlockPos targetPos = blockPos.relative(direction);
 		Storage<ItemVariant> target = ItemStorage.SIDED.find(level, targetPos, direction.getOpposite());
 
 		if (target != null) {
 			long moved = StorageUtil.move(
-					ContainerStorage.of(blockEntity, direction),
+					ContainerStorage.of(self, direction),
 					target,
 					iv -> true,
 					1,
@@ -73,17 +74,16 @@ public class HopperBlockEntityMixin {
 		}
 	}
 
+	@Definition(id = "getSourceContainer", method = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getSourceContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/Container;")
+	@Expression("? = getSourceContainer(?, ?, ?, ?)")
 	@Inject(
-			at = @At(
-					value = "INVOKE_ASSIGN",
-					target = "Lnet/minecraft/world/level/block/entity/HopperBlockEntity;getSourceContainer(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/Container;"
-			),
+			at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER),
 			method = "suckInItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;)Z",
 			cancellable = true
 	)
-	private static void hookExtract(Level level, Hopper hopper, CallbackInfoReturnable<Boolean> cir, @Local Container inputInventory) {
+	private static void hookExtract(Level level, Hopper hopper, CallbackInfoReturnable<Boolean> cir, @Local(name = "container") Container container) {
 		// Let vanilla handle the transfer if it found an inventory.
-		if (inputInventory != null) return;
+		if (container != null) return;
 
 		// Otherwise inject our transfer logic.
 		BlockPos sourcePos = BlockPos.containing(hopper.getLevelX(), hopper.getLevelY() + 1.0D, hopper.getLevelZ());

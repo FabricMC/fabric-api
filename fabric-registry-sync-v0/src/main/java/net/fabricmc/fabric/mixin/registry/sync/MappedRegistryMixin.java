@@ -91,10 +91,10 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 	private Map<ResourceKey<T>, Holder.Reference<T>> byKey;
 
 	@Shadow
-	public abstract Optional<ResourceKey<T>> getResourceKey(T entry);
+	public abstract Optional<ResourceKey<T>> getResourceKey(T thing);
 
 	@Shadow
-	public abstract @Nullable T getValue(@Nullable Identifier id);
+	public abstract @Nullable T getValue(@Nullable Identifier key);
 
 	@Shadow
 	public abstract ResourceKey<? extends Registry<T>> key();
@@ -117,7 +117,7 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 	private Map<Identifier, Identifier> aliases = new HashMap<>();
 
 	@Shadow
-	public abstract boolean containsKey(Identifier id);
+	public abstract boolean containsKey(Identifier key);
 
 	@Shadow
 	public abstract String toString();
@@ -140,7 +140,7 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 	}
 
 	@Inject(method = "<init>(Lnet/minecraft/resources/ResourceKey;Lcom/mojang/serialization/Lifecycle;Z)V", at = @At("RETURN"))
-	private void init(ResourceKey<?> key, Lifecycle lifecycle, boolean intrusive, CallbackInfo ci) {
+	private void init(ResourceKey<?> key, Lifecycle initialLifecycle, boolean intrusiveHolders, CallbackInfo ci) {
 		fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
 			(callbacks) -> (rawId, id, object) -> {
 				for (RegistryEntryAddedCallback<T> callback : callbacks) {
@@ -183,13 +183,13 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 	}
 
 	@Inject(method = "register", at = @At("RETURN"))
-	private void set(ResourceKey<T> key, T entry, RegistrationInfo arg, CallbackInfoReturnable<Holder.Reference<T>> info) {
+	private void set(ResourceKey<T> key, T value, RegistrationInfo registrationInfo, CallbackInfoReturnable<Holder.Reference<T>> info) {
 		// We need to restore the 1.19 behavior of binding the value to references immediately.
 		// Unfrozen registries cannot be interacted with otherwise, because the references would throw when
 		// trying to access their values.
-		info.getReturnValue().bindValue(entry);
+		info.getReturnValue().bindValue(value);
 
-		fabric_addObjectEvent.invoker().onEntryAdded(toId.getInt(entry), key.identifier(), entry);
+		fabric_addObjectEvent.invoker().onEntryAdded(toId.getInt(value), key.identifier(), value);
 		onChange(key);
 	}
 
@@ -456,7 +456,7 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 			method = {
 					"get(Lnet/minecraft/resources/Identifier;)Ljava/util/Optional;",
 					"getValue(Lnet/minecraft/resources/Identifier;)Ljava/lang/Object;",
-					"containsKey"
+					"containsKey(Lnet/minecraft/resources/Identifier;)Z"
 			},
 			at = @At("HEAD"),
 			argsOnly = true

@@ -42,8 +42,8 @@ public class RegistryDataLoaderMixin {
 	private static final AtomicBoolean LOADING_DYNAMIC_REGISTRIES = new AtomicBoolean(false);
 
 	@Inject(method = "load(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"))
-	private static void loadFromResources(ResourceManager resourceManager, List<HolderLookup.RegistryLookup<?>> registries, List<RegistryDataLoader.RegistryData<?>> entries, Executor executor, CallbackInfoReturnable<RegistryAccess.Frozen> cir) {
-		LOADING_DYNAMIC_REGISTRIES.set(entries.stream().anyMatch(entry -> entry.key() == Registries.TEST_INSTANCE));
+	private static void loadFromResources(ResourceManager resourceManager, List<HolderLookup.RegistryLookup<?>> contextRegistries, List<RegistryDataLoader.RegistryData<?>> registriesToLoad, Executor executor, CallbackInfoReturnable<RegistryAccess.Frozen> cir) {
+		LOADING_DYNAMIC_REGISTRIES.set(registriesToLoad.stream().anyMatch(entry -> entry.key() == Registries.TEST_INSTANCE));
 	}
 
 	@Inject(

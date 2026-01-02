@@ -72,7 +72,7 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 	private SubmitNodeCollector submitNodeStorage = null;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void mutableSpecialElementRenderers(GuiRenderState state, MultiBufferSource.BufferSource bufferSource, SubmitNodeCollector submitNodeCollector, FeatureRenderDispatcher renderDispatcher, List list, CallbackInfo ci) {
+	private void mutableSpecialElementRenderers(GuiRenderState renderState, MultiBufferSource.BufferSource bufferSource, SubmitNodeCollector submitNodeCollector, FeatureRenderDispatcher featureRenderDispatcher, List pictureInPictureRenderers, CallbackInfo ci) {
 		this.pictureInPictureRenderers = new IdentityHashMap<>(this.pictureInPictureRenderers);
 	}
 
@@ -93,14 +93,14 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 		pipRendererPools.values().forEach(PictureInPictureRendererPool::cleanUpUnusedRenderers);
 	}
 
-	@ModifyVariable(method = "preparePictureInPictureState", at = @At("STORE"))
-	private <T extends PictureInPictureRenderState> PictureInPictureRenderer<T> substituteSpecialElementRenderer(PictureInPictureRenderer<T> original, T elementState) {
-		if (original == null || !hasFabricInitialized) {
-			return original;
+	@ModifyVariable(method = "preparePictureInPictureState", at = @At("STORE"), name = "renderer")
+	private <T extends PictureInPictureRenderState> PictureInPictureRenderer<T> substituteSpecialElementRenderer(PictureInPictureRenderer<T> renderer, T picturesInPictureState) {
+		if (renderer == null || !hasFabricInitialized) {
+			return renderer;
 		}
 
-		PictureInPictureRendererPool<T> rendererPool = (PictureInPictureRendererPool<T>) pipRendererPools.computeIfAbsent(original.getRenderStateClass(), k -> new PictureInPictureRendererPool<>());
-		return rendererPool.substitute(original, elementState, Minecraft.getInstance(), bufferSource, Objects.requireNonNull(submitNodeStorage, "renderDispatcher"));
+		PictureInPictureRendererPool<T> rendererPool = (PictureInPictureRendererPool<T>) pipRendererPools.computeIfAbsent(renderer.getRenderStateClass(), k -> new PictureInPictureRendererPool<>());
+		return rendererPool.substitute(renderer, picturesInPictureState, Minecraft.getInstance(), bufferSource, Objects.requireNonNull(submitNodeStorage, "renderDispatcher"));
 	}
 
 	@Inject(method = "close", at = @At("RETURN"))

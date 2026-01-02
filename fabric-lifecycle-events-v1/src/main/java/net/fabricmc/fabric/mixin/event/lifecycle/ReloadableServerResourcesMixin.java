@@ -41,8 +41,8 @@ public class ReloadableServerResourcesMixin {
 	private RegistryAccess layeredRegistries;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(LayeredRegistryAccess<RegistryLayer> layeredRegistries, HolderLookup.Provider registries, FeatureFlagSet enabledFeatures, Commands.CommandSelection environment, List pendingTagLoads, PermissionSet permissionPredicate, CallbackInfo ci) {
-		this.layeredRegistries = layeredRegistries.compositeAccess();
+	private void init(LayeredRegistryAccess<RegistryLayer> fullLayers, HolderLookup.Provider loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, CallbackInfo ci) {
+		this.layeredRegistries = fullLayers.compositeAccess();
 	}
 
 	@Inject(method = "updateStaticRegistryTags", at = @At("TAIL"))

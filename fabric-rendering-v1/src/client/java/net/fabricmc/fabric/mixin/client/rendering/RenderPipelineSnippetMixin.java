@@ -55,9 +55,9 @@ class RenderPipelineSnippetMixin implements FabricRenderPipeline.Snippet {
 			method = "equals",
 			at = @At("RETURN")
 	)
-	private boolean modifyEqualsToIncludeFabricExtraData(boolean original, Object other) {
+	private boolean modifyEqualsToIncludeFabricExtraData(boolean original, Object o) {
 		return original
-				&& other instanceof FabricRenderPipeline.Snippet otherSnippet
+				&& o instanceof FabricRenderPipeline.Snippet otherSnippet
 				&& usePipelineDrawModeForGui().equals(otherSnippet.usePipelineDrawModeForGui());
 	}
 

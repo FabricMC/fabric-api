@@ -37,12 +37,12 @@ abstract class SheetsMixin {
 	}
 
 	@Redirect(method = "createSignMaterial", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MaterialMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/Material;"))
-	private static Material redirectSignVanillaId(MaterialMapper instance, String name) {
-		return instance.apply(Identifier.parse(name));
+	private static Material redirectSignVanillaId(MaterialMapper instance, String path) {
+		return instance.apply(Identifier.parse(path));
 	}
 
 	@Redirect(method = "createHangingSignMaterial", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MaterialMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/Material;"))
-	private static Material redirectHangingVanillaId(MaterialMapper instance, String name) {
-		return instance.apply(Identifier.parse(name));
+	private static Material redirectHangingVanillaId(MaterialMapper instance, String path) {
+		return instance.apply(Identifier.parse(path));
 	}
 }

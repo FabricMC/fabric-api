@@ -35,9 +35,9 @@ abstract class EntityDataSerializersMixin {
 	}
 
 	@Inject(method = "registerSerializer(Lnet/minecraft/network/syncher/EntityDataSerializer;)V", at = @At("HEAD"))
-	private static void onHeadRegister(EntityDataSerializer<?> handler, CallbackInfo ci) {
+	private static void onHeadRegister(EntityDataSerializer<?> serializer, CallbackInfo ci) {
 		if (FabricEntityDataRegistryImpl.hasStoredVanillaHandlers() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			throw new IllegalStateException("Tried to register entity data serializer " + handler + " using registerSerializer.registerSerializer. This is not allowed as it can lead to desynchronization issues; use FabricEntityDataRegistry.register instead.");
+			throw new IllegalStateException("Tried to register entity data serializer " + serializer + " using registerSerializer.registerSerializer. This is not allowed as it can lead to desynchronization issues; use FabricEntityDataRegistry.register instead.");
 		}
 	}
 }

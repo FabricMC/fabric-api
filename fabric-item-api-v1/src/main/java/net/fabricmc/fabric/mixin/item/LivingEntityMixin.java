@@ -31,11 +31,11 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
 	@Inject(method = "getEquipmentSlotForItem", at = @At(value = "HEAD"), cancellable = true)
-	private void onGetPreferredEquipmentSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info) {
-		EquipmentSlotProvider equipmentSlotProvider = ((ItemExtensions) stack.getItem()).fabric_getEquipmentSlotProvider();
+	private void onGetPreferredEquipmentSlot(ItemStack itemStack, CallbackInfoReturnable<EquipmentSlot> info) {
+		EquipmentSlotProvider equipmentSlotProvider = ((ItemExtensions) itemStack.getItem()).fabric_getEquipmentSlotProvider();
 
 		if (equipmentSlotProvider != null) {
-			info.setReturnValue(equipmentSlotProvider.getEquipmentSlotForItem((LivingEntity) (Object) this, stack));
+			info.setReturnValue(equipmentSlotProvider.getEquipmentSlotForItem((LivingEntity) (Object) this, itemStack));
 		}
 	}
 }

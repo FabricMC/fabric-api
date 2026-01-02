@@ -57,8 +57,8 @@ public class ServerPlayerGameModeMixin {
 	protected ServerLevel level;
 
 	@Inject(at = @At("HEAD"), method = "handleBlockBreakAction", cancellable = true)
-	public void startBlockBreak(BlockPos pos, ServerboundPlayerActionPacket.Action playerAction, Direction direction, int worldHeight, int i, CallbackInfo info) {
-		if (playerAction != ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK) return;
+	public void startBlockBreak(BlockPos pos, ServerboundPlayerActionPacket.Action action, Direction direction, int maxY, int sequence, CallbackInfo info) {
+		if (action != ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK) return;
 		InteractionResult result = AttackBlockCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND, pos, direction);
 
 		if (result != InteractionResult.PASS) {
@@ -82,8 +82,8 @@ public class ServerPlayerGameModeMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "useItemOn", cancellable = true)
-	public void interactBlock(ServerPlayer player, Level level, ItemStack stack, InteractionHand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> info) {
-		InteractionResult result = UseBlockCallback.EVENT.invoker().interact(player, level, hand, blockHitResult);
+	public void interactBlock(ServerPlayer player, Level level, ItemStack itemStack, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> info) {
+		InteractionResult result = UseBlockCallback.EVENT.invoker().interact(player, level, hand, hitResult);
 
 		if (result != InteractionResult.PASS) {
 			info.setReturnValue(result);
@@ -93,7 +93,7 @@ public class ServerPlayerGameModeMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "useItem", cancellable = true)
-	public void interactItem(ServerPlayer player, Level level, ItemStack stack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
+	public void interactItem(ServerPlayer player, Level level, ItemStack itemStack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
 		InteractionResult result = UseItemCallback.EVENT.invoker().interact(player, level, hand);
 
 		if (result != InteractionResult.PASS) {
@@ -104,18 +104,18 @@ public class ServerPlayerGameModeMixin {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "destroyBlock", cancellable = true)
-	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity entity, @Local BlockState state) {
-		boolean result = PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.level, this.player, pos, state, entity);
+	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockEntity") BlockEntity blockEntity, @Local(name = "state") BlockState state) {
+		boolean result = PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.level, this.player, pos, state, blockEntity);
 
 		if (!result) {
-			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCanceled(this.level, this.player, pos, state, entity);
+			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCanceled(this.level, this.player, pos, state, blockEntity);
 
 			cir.setReturnValue(false);
 		}
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"), method = "destroyBlock")
-	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity entity, @Local BlockState state) {
-		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.level, this.player, pos, state, entity);
+	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockEntity") BlockEntity blockEntity, @Local(name = "adjustedState") BlockState adjustedState) {
+		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.level, this.player, pos, adjustedState, blockEntity);
 	}
 }

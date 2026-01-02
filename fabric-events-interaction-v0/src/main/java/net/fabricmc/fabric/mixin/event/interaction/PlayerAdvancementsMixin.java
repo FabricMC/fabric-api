@@ -35,15 +35,15 @@ public class PlayerAdvancementsMixin {
 	private ServerPlayer player;
 
 	@Inject(method = "setPlayer", at = @At("HEAD"), cancellable = true)
-	void preventOwnerOverride(ServerPlayer newOwner, CallbackInfo ci) {
-		if (newOwner instanceof FakePlayer) {
+	void preventOwnerOverride(ServerPlayer player, CallbackInfo ci) {
+		if (player instanceof FakePlayer) {
 			// Prevent fake players with the same UUID as a real player from stealing the real player's advancement tracker.
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "award", at = @At("HEAD"), cancellable = true)
-	void preventGrantCriterion(AdvancementHolder advancement, String criterionName, CallbackInfoReturnable<Boolean> ci) {
+	void preventGrantCriterion(AdvancementHolder holder, String criterion, CallbackInfoReturnable<Boolean> ci) {
 		if (player instanceof FakePlayer) {
 			// Prevent granting advancements to fake players.
 			ci.setReturnValue(false);

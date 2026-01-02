@@ -53,8 +53,8 @@ public class GameOptionsWriteVisitorMixin {
 
 	@SuppressWarnings("unchecked")
 	@ModifyArg(method = "process(Ljava/lang/String;Ljava/lang/Object;Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/lang/Object;", at = @At(value = "INVOKE", target = "Ljava/util/function/Function;apply(Ljava/lang/Object;)Ljava/lang/Object;"))
-	private <T> T skipHiddenPacks(T value, @Local String key) {
-		if ("resourcePacks".equals(key) && value instanceof List) {
+	private <T> T skipHiddenPacks(T value, @Local(argsOnly = true, name = "name") String name) {
+		if ("resourcePacks".equals(name) && value instanceof List) {
 			return (T) toPackListString((List<String>) value);
 		}
 

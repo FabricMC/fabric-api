@@ -37,18 +37,18 @@ import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 public class PackSelectionModelMixin {
 	@Shadow
 	@Final
-	List<Pack> selected;
+	private List<Pack> selected;
 
 	@Shadow
 	@Final
-	List<Pack> unselected;
+	private List<Pack> unselected;
 
 	/**
 	 * Do not list hidden packs in either enabledPacks or disabledPacks.
 	 * They are managed entirely by PackRepository on save, and are invisible to client.
 	 */
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void removeHiddenPacksInit(Consumer<PackSelectionModel.EntryBase> updateCallback, Function iconIdSupplier, PackRepository packRepository, Consumer applier, CallbackInfo ci) {
+	private void removeHiddenPacksInit(Consumer<PackSelectionModel.EntryBase> onListChanged, Function iconGetter, PackRepository repository, Consumer output, CallbackInfo ci) {
 		this.selected.removeIf(profile -> ((FabricPack) profile).fabric$isHidden());
 		this.unselected.removeIf(profile -> ((FabricPack) profile).fabric$isHidden());
 	}

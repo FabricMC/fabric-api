@@ -39,12 +39,12 @@ public class ConnectionMixin {
 	private PacketFlow receiving;
 
 	@WrapMethod(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V")
-	private void onNettyReceivePacket(ChannelHandlerContext context, Packet<?> packet, Operation<Void> original) {
+	private void onNettyReceivePacket(ChannelHandlerContext ctx, Packet<?> packet, Operation<Void> original) {
 		NetworkSynchronizer synchronizer = receiving == PacketFlow.CLIENTBOUND ? NetworkSynchronizer.CLIENTBOUND : NetworkSynchronizer.SERVERBOUND;
 		synchronizer.preNettyHandlePacket();
 
 		try {
-			original.call(context, packet);
+			original.call(ctx, packet);
 		} finally {
 			synchronizer.postNettyHandlePacket();
 		}

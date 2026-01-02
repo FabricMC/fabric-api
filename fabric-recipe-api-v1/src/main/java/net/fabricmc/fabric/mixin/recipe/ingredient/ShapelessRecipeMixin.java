@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
 public class ShapelessRecipeMixin {
 	@Final
 	@Shadow
-	List<Ingredient> ingredients;
+	private List<Ingredient> ingredients;
 	@Unique
 	private boolean fabric_requiresTesting = false;
 
@@ -56,12 +56,12 @@ public class ShapelessRecipeMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "matches(Lnet/minecraft/world/item/crafting/CraftingInput;Lnet/minecraft/world/level/Level;)Z", cancellable = true)
-	public void customIngredientMatch(CraftingInput recipeInput, Level level, CallbackInfoReturnable<Boolean> cir) {
+	public void customIngredientMatch(CraftingInput input, Level level, CallbackInfoReturnable<Boolean> cir) {
 		if (fabric_requiresTesting) {
-			List<ItemStack> nonEmptyStacks = new ArrayList<>(recipeInput.ingredientCount());
+			List<ItemStack> nonEmptyStacks = new ArrayList<>(input.ingredientCount());
 
-			for (int i = 0; i < recipeInput.size(); ++i) {
-				ItemStack stack = recipeInput.getItem(i);
+			for (int i = 0; i < input.size(); ++i) {
+				ItemStack stack = input.getItem(i);
 
 				if (!stack.isEmpty()) {
 					nonEmptyStacks.add(stack);

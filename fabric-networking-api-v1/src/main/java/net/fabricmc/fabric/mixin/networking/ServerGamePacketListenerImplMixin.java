@@ -73,8 +73,8 @@ abstract class ServerGamePacketListenerImplMixin extends ServerCommonPacketListe
 	}
 
 	@WrapOperation(method = "handleConfigurationAcknowledged", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
-	private <T extends PacketListener> void onAcknowledgeReconfiguration(Connection instance, ProtocolInfo<T> protocolInfo, T packetListener, Operation<Void> original) {
-		original.call(instance, protocolInfo, packetListener);
+	private <T extends PacketListener> void onAcknowledgeReconfiguration(Connection instance, ProtocolInfo<T> protocol, T packetListener, Operation<Void> original) {
+		original.call(instance, protocol, packetListener);
 
 		ServerConfigurationPacketListenerImpl configPacketListener = (ServerConfigurationPacketListenerImpl) packetListener;
 		ServerNetworkingImpl.getAddon(configPacketListener).setReconfiguring();

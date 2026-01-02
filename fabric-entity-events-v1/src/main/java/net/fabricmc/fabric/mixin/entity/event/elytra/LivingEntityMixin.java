@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.entity.event.elytra;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -61,7 +62,7 @@ abstract class LivingEntityMixin extends Entity {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/EquipmentSlot;VALUES:Ljava/util/List;"), method = "canGlide", allow = 1, cancellable = true)
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/EquipmentSlot;VALUES:Ljava/util/List;", opcode = Opcodes.GETSTATIC), method = "canGlide", allow = 1, cancellable = true)
 	void injectElytraCheck(CallbackInfoReturnable<Boolean> cir) {
 		LivingEntity self = (LivingEntity) (Object) this;
 

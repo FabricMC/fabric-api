@@ -37,8 +37,8 @@ import net.minecraft.world.item.crafting.Recipe;
 		TransmuteRecipeBuilder.class,
 })
 abstract class AllCraftingRecipeJsonBuildersMixin {
-	@ModifyVariable(method = "save(Lnet/minecraft/data/recipes/RecipeOutput;Lnet/minecraft/resources/ResourceKey;)V", at = @At("HEAD"), argsOnly = true)
-	private ResourceKey<Recipe<?>> modifyRecipeKey(ResourceKey<Recipe<?>> recipeKey, RecipeOutput output) {
-		return ResourceKey.create(recipeKey.registryKey(), output.getRecipeIdentifier(recipeKey.identifier()));
+	@ModifyVariable(method = "save(Lnet/minecraft/data/recipes/RecipeOutput;Lnet/minecraft/resources/ResourceKey;)V", at = @At("HEAD"), argsOnly = true, name = "id")
+	private ResourceKey<Recipe<?>> modifyRecipeKey(ResourceKey<Recipe<?>> id, RecipeOutput output) {
+		return ResourceKey.create(id.registryKey(), output.getRecipeIdentifier(id.identifier()));
 	}
 }

@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 @Mixin(ServerLoginPacketListenerImpl.class)
 abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExtensions, PacketCallbackListener {
 	@Shadow
-	protected abstract void verifyLoginAndFinishConnectionSetup(GameProfile gameProfile);
+	protected abstract void verifyLoginAndFinishConnectionSetup(GameProfile profile);
 
 	@Unique
 	private ServerLoginNetworkAddon addon;

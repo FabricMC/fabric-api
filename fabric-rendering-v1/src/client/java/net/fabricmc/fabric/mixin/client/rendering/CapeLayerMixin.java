@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,7 +31,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRenderEven
 @Mixin(CapeLayer.class)
 public class CapeLayerMixin {
 	@Inject(at = @At(value = "HEAD"), method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", cancellable = true)
-	public void injectCapeRenderCheck(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, AvatarRenderState avatarRenderState, float f, float g, CallbackInfo ci, @Local(argsOnly = true) AvatarRenderState state) {
+	public void injectCapeRenderCheck(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, AvatarRenderState state, float yRot, float xRot, CallbackInfo ci) {
 		if (!LivingEntityFeatureRenderEvents.ALLOW_CAPE_RENDER.invoker().allowCapeRender(state)) {
 			ci.cancel();
 		}

@@ -108,10 +108,10 @@ public class MinecraftMixin {
 	}
 
 	@Inject(method = "doWorldLoad", at = @At("HEAD"), cancellable = true)
-	private void deferStartIntegratedServer(LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, boolean newWorld, CallbackInfo ci) {
+	private void deferStartIntegratedServer(LevelStorageSource.LevelStorageAccess levelSourceAccess, PackRepository packRepository, WorldStem worldStem, boolean newWorld, CallbackInfo ci) {
 		if (ThreadingImpl.taskToRun != null) {
 			// don't start the integrated server (which busywaits) inside a task
-			deferredTask = () -> Minecraft.getInstance().doWorldLoad(storageAccess, dataPackManager, worldStem, newWorld);
+			deferredTask = () -> Minecraft.getInstance().doWorldLoad(levelSourceAccess, packRepository, worldStem, newWorld);
 			ci.cancel();
 		}
 	}
@@ -124,10 +124,10 @@ public class MinecraftMixin {
 	}
 
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At("HEAD"), cancellable = true)
-	private void deferDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo ci) {
+	private void deferDisconnect(Screen screen, boolean keepResourcePacks, CallbackInfo ci) {
 		if (Minecraft.getInstance().getSingleplayerServer() != null && ThreadingImpl.taskToRun != null) {
 			// don't disconnect (which busywaits) inside a task
-			deferredTask = () -> Minecraft.getInstance().disconnect(disconnectionScreen, transferring);
+			deferredTask = () -> Minecraft.getInstance().disconnect(screen, keepResourcePacks);
 			ci.cancel();
 		}
 	}

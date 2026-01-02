@@ -38,7 +38,7 @@ public class RandomStateMixin {
 	private Climate.Sampler sampler;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(NoiseGeneratorSettings chunkGeneratorSettings, HolderGetter<NormalNoise.NoiseParameters> arg, long seed, CallbackInfo ci) {
+	private void init(NoiseGeneratorSettings settings, HolderGetter<NormalNoise.NoiseParameters> noises, long seed, CallbackInfo ci) {
 		((MultiNoiseSamplerHooks) (Object) sampler).fabric_setSeed(seed);
 	}
 }

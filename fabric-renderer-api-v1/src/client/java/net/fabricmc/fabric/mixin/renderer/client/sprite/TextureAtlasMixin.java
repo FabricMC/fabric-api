@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.renderer.client.sprite;
 import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -40,10 +39,8 @@ import net.fabricmc.fabric.impl.renderer.SpriteLoaderPreparationsExtension;
 @Mixin(TextureAtlas.class)
 abstract class TextureAtlasMixin implements FabricTextureAtlas {
 	@Shadow
-	@Final
 	private Map<Identifier, TextureAtlasSprite> texturesByName;
 	@Shadow
-	@Final
 	@Nullable
 	private TextureAtlasSprite missingSprite;
 
@@ -52,10 +49,10 @@ abstract class TextureAtlasMixin implements FabricTextureAtlas {
 	private volatile SpriteFinder spriteFinder;
 
 	@Inject(at = @At("RETURN"), method = "upload")
-	private void uploadHook(SpriteLoader.Preparations stitchResult, CallbackInfo ci) {
+	private void uploadHook(SpriteLoader.Preparations preparations, CallbackInfo ci) {
 		// Clear this atlas' old finder. If the finder was already initialized in the stitch result, reuse it for this
 		// atlas.
-		spriteFinder = ((SpriteLoaderPreparationsExtension) (Object) stitchResult).fabric_spriteFinderNullable();
+		spriteFinder = ((SpriteLoaderPreparationsExtension) (Object) preparations).fabric_spriteFinderNullable();
 	}
 
 	@Override

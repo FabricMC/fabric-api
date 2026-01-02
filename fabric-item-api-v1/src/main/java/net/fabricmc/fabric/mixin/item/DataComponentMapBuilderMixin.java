@@ -40,7 +40,7 @@ abstract class DataComponentMapBuilderMixin implements FabricComponentMapBuilder
 	private Reference2ObjectMap<DataComponentType<?>, Object> map;
 
 	@Shadow
-	public abstract <T> DataComponentMap.Builder set(DataComponentType<T> dataComponentType, @Nullable T object);
+	public abstract <T> DataComponentMap.Builder set(DataComponentType<T> type, @Nullable T value);
 
 	@Override
 	@SuppressWarnings("unchecked")

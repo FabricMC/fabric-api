@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicR
 @Mixin(DetectorRailBlock.class)
 public abstract class DetectorRailBlockMixin {
 	@Shadow
-	protected abstract <T extends AbstractMinecart> List<T> getInteractingMinecartOfType(Level level, BlockPos blockPos, Class<T> class_, Predicate<Entity> predicate);
+	protected abstract <T extends AbstractMinecart> List<T> getInteractingMinecartOfType(Level level, BlockPos pos, Class<T> type, Predicate<Entity> containerEntitySelector);
 
 	@Inject(at = @At("HEAD"), method = "getAnalogOutputSignal", cancellable = true)
 	private void getCustomComparatorOutput(BlockState state, Level level, BlockPos pos, Direction direction, CallbackInfoReturnable<Integer> cir) {

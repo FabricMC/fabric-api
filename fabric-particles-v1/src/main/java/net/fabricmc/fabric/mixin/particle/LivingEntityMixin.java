@@ -30,8 +30,8 @@ import net.fabricmc.fabric.impl.particle.BlockParticleOptionExtension;
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
 	@ModifyExpressionValue(method = "checkFallDamage", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
-	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original, double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition) {
-		((BlockParticleOptionExtension) original).fabric_setBlockPos(landedPosition);
+	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original, double ya, boolean onGround, BlockState onState, BlockPos pos) {
+		((BlockParticleOptionExtension) original).fabric_setBlockPos(pos);
 		return original;
 	}
 }

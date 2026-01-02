@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @Mixin(TerrainParticle.class)
 abstract class TerrainParticleMixin {
 	@Redirect(method = "<init>(Lnet/minecraft/client/multiplayer/ClientLevel;DDDDDDLnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getParticleIcon(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
-	private static TextureAtlasSprite getParticleIconProxy(BlockModelShaper models, BlockState state, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state1, BlockPos blockPos) {
-		return models.getParticleIcon(state, level, blockPos);
+	private static TextureAtlasSprite getParticleIconProxy(BlockModelShaper models, BlockState blockState, ClientLevel level, double x, double y, double z, double xa, double ya, double za, BlockState blockState1, BlockPos pos) {
+		return models.getParticleIcon(blockState, level, pos);
 	}
 }

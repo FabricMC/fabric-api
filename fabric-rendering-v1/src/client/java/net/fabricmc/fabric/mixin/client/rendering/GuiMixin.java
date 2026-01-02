@@ -65,7 +65,7 @@ abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;renderHotbar(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapSpectatorMenu(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapSpectatorMenu(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true, name = "deltaTracker") DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SPECTATOR_MENU).render(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
@@ -79,31 +79,31 @@ abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderArmor(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;IIII)V"))
-	private void wrapArmorBar(GuiGraphics graphics, Player player, int i, int j, int k, int x, Operation<Void> renderVanilla) {
+	private void wrapArmorBar(GuiGraphics graphics, Player player, int yLineBase, int numHealthRows, int healthRowHeight, int xLeft, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.ARMOR_BAR).render(
-				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(ctx, player, i, j, k, x));
+				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(ctx, player, yLineBase, numHealthRows, healthRowHeight, xLeft));
 	}
 
 	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHearts(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"))
-	private void wrapHealthBar(Gui instance, GuiGraphics graphics, Player player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, Operation<Void> renderVanilla) {
+	private void wrapHealthBar(Gui instance, GuiGraphics graphics, Player player, int xLeft, int yLineBase, int healthRowHeight, int heartOffsetIndex, float maxHealth, int currentHealth, int oldHealth, int absorption, boolean blink, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.HEALTH_BAR).render(
-				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, x, y, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking));
+				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, xLeft, yLineBase, healthRowHeight, heartOffsetIndex, maxHealth, currentHealth, oldHealth, absorption, blink));
 	}
 
 	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderFood(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;II)V"))
-	private void wrapFoodBar(Gui instance, GuiGraphics graphics, Player player, int top, int right, Operation<Void> renderVanilla) {
+	private void wrapFoodBar(Gui instance, GuiGraphics graphics, Player player, int yLineBase, int xRight, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.FOOD_BAR).render(
-				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, top, right));
+				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, yLineBase, xRight));
 	}
 
 	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderAirBubbles(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;III)V"))
-	private void wrapAirBar(Gui instance, GuiGraphics graphics, Player player, int heartCount, int top, int left, Operation<Void> renderVanilla) {
+	private void wrapAirBar(Gui instance, GuiGraphics graphics, Player player, int vehicleHearts, int yLineAir, int xRight, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.AIR_BAR).render(
-				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, heartCount, top, left));
+				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, vehicleHearts, yLineAir, xRight));
 	}
 
 	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderVehicleHealth(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapMountHealth(Gui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapMountHealth(Gui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true, name = "deltaTracker") DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.MOUNT_HEALTH).render(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
@@ -117,21 +117,21 @@ abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderExperienceLevel(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;I)V"))
-	private void wrapExperienceLevel(GuiGraphics graphics, Font font, int level, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapExperienceLevel(GuiGraphics graphics, Font font, int experienceLevel, Operation<Void> renderVanilla, @Local(argsOnly = true, name = "deltaTracker") DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.EXPERIENCE_LEVEL).render(
 				graphics,
-				deltaTracker, (ctx, _) -> renderVanilla.call(ctx, font, level));
+				deltaTracker, (ctx, _) -> renderVanilla.call(ctx, font, experienceLevel));
 	}
 
 	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSelectedItemName(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapHeldItemTooltip(Gui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapHeldItemTooltip(Gui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true, name = "deltaTracker") DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.HELD_ITEM_TOOLTIP).render(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
 	}
 
 	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;renderAction(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapRenderSpectatorGui(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapRenderSpectatorGui(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true, name = "deltaTracker") DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SPECTATOR_TOOLTIP).render(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
@@ -204,7 +204,7 @@ abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSubtitleOverlay(Lnet/minecraft/client/gui/GuiGraphics;Z)V"))
-	private void wrapSubtitleOverlay(Gui instance, GuiGraphics graphics, boolean deferRendering, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapSubtitleOverlay(Gui instance, GuiGraphics graphics, boolean deferRendering, Operation<Void> renderVanilla, @Local(argsOnly = true, name = "deltaTracker") DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx,

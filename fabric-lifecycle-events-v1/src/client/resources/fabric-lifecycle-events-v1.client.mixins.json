@@ -12,7 +12,9 @@
     "LevelChunkMixin"
   ],
   "injectors": {
-    "defaultRequire": 1,
-    "maxShiftBy": 3
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

@@ -29,8 +29,8 @@ import net.fabricmc.fabric.impl.client.gametest.TestInputImpl;
 @Mixin(InputConstants.class)
 public class InputConstantsMixin {
 	@Inject(method = "isKeyDown", at = @At("HEAD"), cancellable = true)
-	private static void useGameTestInputForKeyDown(Window window, int keyCode, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(TestInputImpl.isKeyDown(keyCode));
+	private static void useGameTestInputForKeyDown(Window window, int key, CallbackInfoReturnable<Boolean> cir) {
+		cir.setReturnValue(TestInputImpl.isKeyDown(key));
 	}
 
 	@Inject(method = {"setupKeyboardCallbacks", "setupMouseCallbacks"}, at = @At("HEAD"), cancellable = true)

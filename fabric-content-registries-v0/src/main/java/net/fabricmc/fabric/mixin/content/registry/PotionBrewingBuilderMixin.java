@@ -42,7 +42,7 @@ public abstract class PotionBrewingBuilderMixin implements FabricPotionBrewingBu
 	private FeatureFlagSet enabledFeatures;
 
 	@Shadow
-	private static void expectPotion(Item potionType) {
+	private static void expectPotion(Item from) {
 	}
 
 	@Shadow

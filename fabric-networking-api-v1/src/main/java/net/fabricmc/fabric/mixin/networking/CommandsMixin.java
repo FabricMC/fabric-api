@@ -39,7 +39,7 @@ public class CommandsMixin {
 	private CommandDispatcher<CommandSourceStack> dispatcher;
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/commands/BanIpCommands;register(Lcom/mojang/brigadier/CommandDispatcher;)V"))
-	private void init(Commands.CommandSelection environment, CommandBuildContext context, CallbackInfo ci) {
+	private void init(Commands.CommandSelection commandSelection, CommandBuildContext context, CallbackInfo ci) {
 		if (SharedConstants.IS_RUNNING_IN_IDE) {
 			// Command is registered when isDevelopment is set.
 			return;

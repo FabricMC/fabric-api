@@ -50,8 +50,8 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/world/level/storage/ValueInput;)V"),
 			method = "load"
 	)
-	private void readEntityAttachments(ValueInput data, CallbackInfo ci) {
-		this.fabric_readAttachmentsFromNbt(data);
+	private void readEntityAttachments(ValueInput input, CallbackInfo ci) {
+		this.fabric_readAttachmentsFromNbt(input);
 	}
 
 	@Inject(

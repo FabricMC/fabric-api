@@ -61,8 +61,8 @@ public class DataPackCommandMixin {
 		return original.call(instance, predicate).filter(profile -> !((FabricPack) profile).fabric$isHidden());
 	}
 
-	@Inject(method = "getPack", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z", shift = At.Shift.BEFORE))
-	private static void errorOnInternalPack(CommandContext<CommandSourceStack> context, String name, boolean enable, CallbackInfoReturnable<Pack> cir, @Local Pack profile) throws CommandSyntaxException {
-		if (((FabricPack) profile).fabric$isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getId());
+	@Inject(method = "getPack", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z"))
+	private static void errorOnInternalPack(CommandContext<CommandSourceStack> context, String name, boolean enabling, CallbackInfoReturnable<Pack> cir, @Local(name = "pack") Pack pack) throws CommandSyntaxException {
+		if (((FabricPack) pack).fabric$isHidden()) throw INTERNAL_PACK_EXCEPTION.create(pack.getId());
 	}
 }

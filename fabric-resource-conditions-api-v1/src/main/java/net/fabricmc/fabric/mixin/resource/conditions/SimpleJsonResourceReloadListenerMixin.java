@@ -48,8 +48,8 @@ public class SimpleJsonResourceReloadListenerMixin {
 
 	@WrapOperation(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;"))
 	private static DataResult<?> applyResourceConditions(Codec<?> instance, DynamicOps<JsonElement> dynamicOps, Object object, Operation<DataResult<?>> original,
-														@Local(argsOnly = true) FileToIdConverter resourceFinder,
-														@Local Map.Entry<Identifier, Resource> entry) {
+														@Local(argsOnly = true, name = "lister") FileToIdConverter lister,
+														@Local(name = "entry") Map.Entry<Identifier, Resource> entry) {
 		final JsonElement resourceData = (JsonElement) object;
 		RegistryOps.@Nullable RegistryInfoLookup registryInfo = null;
 
@@ -60,7 +60,7 @@ public class SimpleJsonResourceReloadListenerMixin {
 		if (resourceData.isJsonObject()) {
 			JsonObject obj = resourceData.getAsJsonObject();
 
-			final String dataType = ((FileToIdConverterAccessor) resourceFinder).getDirectoryName();
+			final String dataType = ((FileToIdConverterAccessor) lister).getDirectoryName();
 
 			if (!ResourceConditionsImpl.applyResourceConditions(obj, dataType, entry.getKey(), registryInfo)) {
 				return DataResult.success(SKIP_DATA_MARKER);
@@ -72,8 +72,8 @@ public class SimpleJsonResourceReloadListenerMixin {
 
 	// parse.ifSuccess
 	@Inject(method = "lambda$scanDirectory$0", at = @At("HEAD"), cancellable = true)
-	private static void skipData(Map<?, ?> map, Identifier identifier, Object object, CallbackInfo ci) {
-		if (object == SKIP_DATA_MARKER) {
+	private static void skipData(Map<?, ?> result, Identifier id, Object parsed, CallbackInfo ci) {
+		if (parsed == SKIP_DATA_MARKER) {
 			ci.cancel();
 		}
 	}

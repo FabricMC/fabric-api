@@ -61,12 +61,12 @@ public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKn
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services apiServices, LevelLoadListener chunkLoadProgress, CallbackInfo ci) {
+	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess storageSource, PackRepository packRepository, WorldStem worldStem, Proxy proxy, DataFixer fixerUpper, Services services, LevelLoadListener levelLoadListener, CallbackInfo ci) {
 		this.originalKnownPacks = worldStem.resourceManager().listPacks().flatMap(pack -> pack.location().knownPackInfo().stream()).toList();
 	}
 
 	@Redirect(method = "configurePackRepository(Lnet/minecraft/server/packs/repository/PackRepository;Lnet/minecraft/world/level/WorldDataConfiguration;ZZ)Lnet/minecraft/world/level/WorldDataConfiguration;", at = @At(value = "INVOKE", target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"))
-	private static boolean onCheckDisabled(List<String> list, Object o, PackRepository resourcePackManager) {
+	private static boolean onCheckDisabled(List<String> list, Object o, PackRepository packRepository) {
 		String profileId = (String) o;
 		boolean contains = list.contains(profileId);
 
@@ -74,7 +74,7 @@ public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKn
 			return true;
 		}
 
-		Pack profile = resourcePackManager.getPack(profileId);
+		Pack profile = packRepository.getPack(profileId);
 
 		if (profile.getPackSource() instanceof BuiltinModPackSource) {
 			try (PackResources pack = profile.open()) {

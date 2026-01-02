@@ -53,11 +53,11 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher
 abstract class ModelBakeryMixin {
 	@Shadow
 	@Final
-	static Logger LOGGER;
+	private static Logger LOGGER;
 
 	@Shadow
 	@Final
-	Map<Identifier, ResolvedModel> resolvedModels;
+	private Map<Identifier, ResolvedModel> resolvedModels;
 
 	@Unique
 	@Nullable
@@ -83,7 +83,7 @@ abstract class ModelBakeryMixin {
 	}
 
 	@ModifyReturnValue(method = "bakeModels", at = @At("RETURN"))
-	private CompletableFuture<ModelBakery.BakingResult> withExtraModels(CompletableFuture<ModelBakery.BakingResult> models, @Local Executor executor, @Local ModelBakery.ModelBakerImpl baker) {
+	private CompletableFuture<ModelBakery.BakingResult> withExtraModels(CompletableFuture<ModelBakery.BakingResult> models, @Local(argsOnly = true, name = "taskExecutor") Executor taskExecutor, @Local(name = "baker") ModelBakery.ModelBakerImpl baker) {
 		if (fabric_eventDispatcher == null) return models;
 
 		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = ParallelMapTransform.schedule(fabric_eventDispatcher.getExtraModels(), (key, model) -> {
@@ -93,7 +93,7 @@ abstract class ModelBakeryMixin {
 				LOGGER.warn("Unable to bake extra model: '{}'", key, e);
 				return null;
 			}
-		}, executor);
+		}, taskExecutor);
 		return models.thenCombine(extraModels, (res, extra) -> {
 			((BakedModelsHooks) (Object) res).fabric_setExtraModels(extra);
 			return res;
@@ -112,11 +112,11 @@ abstract class ModelBakeryMixin {
 	}
 
 	@WrapOperation(method = "lambda$bakeModels$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemModel$Unbaked;bake(Lnet/minecraft/client/renderer/item/ItemModel$BakingContext;)Lnet/minecraft/client/renderer/item/ItemModel;"))
-	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Operation<ItemModel> operation, @Local Identifier itemId) {
+	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Operation<ItemModel> operation, @Local(argsOnly = true, name = "location") Identifier location) {
 		if (fabric_eventDispatcher == null) {
 			return operation.call(unbakedModel, bakeContext);
 		}
 
-		return fabric_eventDispatcher.modifyItemModel(unbakedModel, itemId, bakeContext, operation);
+		return fabric_eventDispatcher.modifyItemModel(unbakedModel, location, bakeContext, operation);
 	}
 }

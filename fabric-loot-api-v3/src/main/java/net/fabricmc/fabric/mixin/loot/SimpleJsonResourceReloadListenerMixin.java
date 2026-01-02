@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.loot;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
@@ -38,9 +40,11 @@ import net.fabricmc.fabric.impl.loot.LootUtil;
 
 @Mixin(SimpleJsonResourceReloadListener.class)
 public class SimpleJsonResourceReloadListenerMixin {
-	@Inject(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/resources/FileToIdConverter;fileToId(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;", shift = At.Shift.AFTER))
-	private static <T> void fillSourceMap(ResourceManager manager, FileToIdConverter fileToIdConverter, DynamicOps<JsonElement> ops, Codec<T> codec, Map<Identifier, T> result, CallbackInfo ci, @Local Map.Entry<Identifier, Resource> entry, @Local(ordinal = 1) Identifier id) {
-		final String dirName = ((FileToIdConverterAccessor) fileToIdConverter).getPrefix();
+	@Definition(id = "fileToId", method = "Lnet/minecraft/resources/FileToIdConverter;fileToId(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;")
+	@Expression("? = ?.fileToId(?)")
+	@Inject(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER))
+	private static <T> void fillSourceMap(ResourceManager manager, FileToIdConverter lister, DynamicOps<JsonElement> ops, Codec<T> codec, Map<Identifier, T> result, CallbackInfo ci, @Local(name = "entry") Map.Entry<Identifier, Resource> entry, @Local(name = "id") Identifier id) {
+		final String dirName = ((FileToIdConverterAccessor) lister).getPrefix();
 		if (!LootDataType.TABLE.registryKey().identifier().getPath().equals(dirName)) return;
 
 		LootUtil.SOURCES.get().put(id, LootUtil.determineSource(entry.getValue()));

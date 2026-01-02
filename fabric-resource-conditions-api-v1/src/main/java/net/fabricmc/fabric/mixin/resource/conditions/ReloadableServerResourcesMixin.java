@@ -42,7 +42,7 @@ public class ReloadableServerResourcesMixin {
 			method = "loadResources",
 			at = @At("HEAD")
 	)
-	private static void hookReload(ResourceManager resourceManager, LayeredRegistryAccess<RegistryLayer> dynamicRegistries, List<Registry.PendingTags<?>> pendingTagLoads, FeatureFlagSet enabledFeatures, Commands.CommandSelection environment, PermissionSet permissionPredicate, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
+	private static void hookReload(ResourceManager resourceManager, LayeredRegistryAccess<RegistryLayer> contextLayers, List<Registry.PendingTags<?>> updatedContextTags, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, PermissionSet functionCompilationPermissions, Executor backgroundExecutor, Executor mainThreadExecutor, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
 	}
 }

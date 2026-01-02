@@ -46,11 +46,11 @@ public abstract class ServerGamePacketListenerInteractEntityHandlerMixin impleme
 	Entity val$target;
 
 	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "HEAD"), cancellable = true)
-	public void onPlayerInteractEntity(InteractionHand hand, Vec3 hitPosition, CallbackInfo info) {
+	public void onPlayerInteractEntity(InteractionHand hand, Vec3 location, CallbackInfo info) {
 		Player player = this.this$0.player;
 		Level level = player.level();
 
-		EntityHitResult hitResult = new EntityHitResult(val$target, hitPosition.add(val$target.getX(), val$target.getY(), val$target.getZ()));
+		EntityHitResult hitResult = new EntityHitResult(val$target, location.add(val$target.getX(), val$target.getY(), val$target.getZ()));
 		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, level, hand, val$target, hitResult);
 
 		if (result != InteractionResult.PASS) {

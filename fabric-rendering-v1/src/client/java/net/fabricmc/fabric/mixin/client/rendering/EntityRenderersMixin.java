@@ -56,12 +56,12 @@ public abstract class EntityRenderersMixin {
 	// synthetic lambda in reloadEntityRenderers
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Redirect(method = "lambda$createEntityRenderers$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRendererProvider;create(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;)Lnet/minecraft/client/renderer/entity/EntityRenderer;"))
-	private static EntityRenderer<?, ?> createEntityRenderer(EntityRendererProvider<?> entityRendererProvider, EntityRendererProvider.Context context, ImmutableMap.Builder builder, EntityRendererProvider.Context context2, EntityType<?> entityType) {
+	private static EntityRenderer<?, ?> createEntityRenderer(EntityRendererProvider<?> entityRendererProvider, EntityRendererProvider.Context context, ImmutableMap.Builder result, EntityRendererProvider.Context context2, EntityType<?> type) {
 		EntityRenderer<?, ?> entityRenderer = entityRendererProvider.create(context);
 
 		if (entityRenderer instanceof LivingEntityRenderer) { // Must be living for features
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;
-			LivingEntityRenderLayerRegistrationCallback.EVENT.invoker().registerLayers((EntityType<? extends LivingEntity>) entityType, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddLayer), context);
+			LivingEntityRenderLayerRegistrationCallback.EVENT.invoker().registerLayers((EntityType<? extends LivingEntity>) type, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddLayer), context);
 		}
 
 		return entityRenderer;
@@ -69,8 +69,8 @@ public abstract class EntityRenderersMixin {
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@WrapOperation(method = "createAvatarRenderers", at = @At(value = "NEW", target = "(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;Z)Lnet/minecraft/client/renderer/entity/player/AvatarRenderer;"))
-	private static AvatarRenderer createAvatarRenderer(EntityRendererProvider.Context context, boolean slim, Operation<AvatarRenderer> original) {
-		AvatarRenderer entityRenderer = original.call(context, slim);
+	private static AvatarRenderer createAvatarRenderer(EntityRendererProvider.Context context, boolean slimSteve, Operation<AvatarRenderer> original) {
+		AvatarRenderer entityRenderer = original.call(context, slimSteve);
 
 		LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;
 		LivingEntityRenderLayerRegistrationCallback.EVENT.invoker().registerLayers(EntityType.PLAYER, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddLayer), context);

@@ -46,11 +46,12 @@ public abstract class CreateWorldScreenMixin extends Screen {
 	}
 
 	@ModifyVariable(method = "openCreateWorldScreen(Lnet/minecraft/client/Minecraft;Ljava/lang/Runnable;Ljava/util/function/Function;Lnet/minecraft/client/gui/screens/worldselection/WorldCreationContextMapper;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldCallback;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;createDefaultLoadConfig(Lnet/minecraft/server/packs/repository/PackRepository;Lnet/minecraft/world/level/WorldDataConfiguration;)Lnet/minecraft/server/WorldLoader$InitConfig;"))
-	private static PackRepository onCreateResManagerInit(PackRepository manager) {
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;createDefaultLoadConfig(Lnet/minecraft/server/packs/repository/PackRepository;Lnet/minecraft/world/level/WorldDataConfiguration;)Lnet/minecraft/server/WorldLoader$InitConfig;"),
+			name = "vanillaOnlyPackRepository")
+	private static PackRepository onCreateResManagerInit(PackRepository vanillaOnlyPackRepository) {
 		// Add mod data packs to the initial res pack manager so they are active even if the user doesn't use custom data packs
-		manager.sources.add(new ModResourcePackCreator(PackType.SERVER_DATA));
-		return manager;
+		vanillaOnlyPackRepository.sources.add(new ModResourcePackCreator(PackType.SERVER_DATA));
+		return vanillaOnlyPackRepository;
 	}
 
 	@Redirect(method = "openCreateWorldScreen(Lnet/minecraft/client/Minecraft;Ljava/lang/Runnable;Ljava/util/function/Function;Lnet/minecraft/client/gui/screens/worldselection/WorldCreationContextMapper;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldCallback;)V",
@@ -60,7 +61,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 	}
 
 	@Inject(method = "getDataPackSelectionSettings",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;reload()V", shift = At.Shift.BEFORE))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;reload()V"))
 	private void onScanPacks(CallbackInfoReturnable<Pair<File, PackRepository>> cir) {
 		// Allow to display built-in data packs in the data pack selection screen at world creation.
 		this.tempDataPackRepository.sources.add(new ModResourcePackCreator(PackType.SERVER_DATA));

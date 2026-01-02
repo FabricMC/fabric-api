@@ -49,8 +49,8 @@ public class MultiPlayerGameModeMixin {
 			),
 			method = "sameDestroyTarget"
 	)
-	private boolean fabricItemContinueBlockBreakingInject(ItemStack stack, ItemStack otherStack) {
-		boolean stackUnchanged = ItemStack.isSameItemSameComponents(stack, this.destroyingItem);
+	private boolean fabricItemContinueBlockBreakingInject(ItemStack a, ItemStack b) {
+		boolean stackUnchanged = ItemStack.isSameItemSameComponents(a, this.destroyingItem);
 
 		if (!stackUnchanged) {
 			// The stack changed and vanilla is about to cancel block breaking progress. Check if the item wants to continue block breaking instead.

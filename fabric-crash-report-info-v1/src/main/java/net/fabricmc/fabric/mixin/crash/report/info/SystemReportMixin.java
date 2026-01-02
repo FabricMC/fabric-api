@@ -35,7 +35,7 @@ import net.fabricmc.loader.api.ModContainer;
 @Mixin(SystemReport.class)
 public abstract class SystemReportMixin {
 	@Shadow
-	public abstract void setDetail(String string, Supplier<String> supplier);
+	public abstract void setDetail(String key, Supplier<String> valueSupplier);
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void fillSystemDetails(CallbackInfo info) {

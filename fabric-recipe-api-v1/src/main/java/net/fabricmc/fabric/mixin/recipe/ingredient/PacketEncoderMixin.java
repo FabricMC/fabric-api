@@ -39,8 +39,8 @@ public class PacketEncoderMixin {
 			),
 			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
-	private void capturePacketEncoder(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo ci) {
-		ChannelHandler channelHandler = channelHandlerContext.pipeline().get("packet_handler");
+	private void capturePacketEncoder(ChannelHandlerContext ctx, Packet<?> packet, ByteBuf output, CallbackInfo ci) {
+		ChannelHandler channelHandler = ctx.pipeline().get("packet_handler");
 
 		if (channelHandler instanceof SupportedIngredientsConnection) {
 			CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.set(((SupportedIngredientsConnection) channelHandler).fabric_getSupportedCustomIngredients());
@@ -64,7 +64,7 @@ public class PacketEncoderMixin {
 			},
 			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;Lio/netty/buffer/ByteBuf;)V"
 	)
-	private void releasePacketEncoder(ChannelHandlerContext channelHandlerContext, Packet<?> packet, ByteBuf byteBuf, CallbackInfo ci) {
+	private void releasePacketEncoder(ChannelHandlerContext ctx, Packet<?> packet, ByteBuf output, CallbackInfo ci) {
 		CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.set(null);
 	}
 }

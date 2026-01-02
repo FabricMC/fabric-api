@@ -80,13 +80,13 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	 * This is called by {@code teleportTo}.
 	 */
 	@Inject(method = "triggerDimensionChangeTriggers(Lnet/minecraft/server/level/ServerLevel;)V", at = @At("TAIL"))
-	private void afterLevelChanged(ServerLevel origin, CallbackInfo ci) {
-		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel((ServerPlayer) (Object) this, origin, this.level());
+	private void afterLevelChanged(ServerLevel oldLevel, CallbackInfo ci) {
+		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel((ServerPlayer) (Object) this, oldLevel, this.level());
 	}
 
 	@Inject(method = "restoreFrom", at = @At("TAIL"))
-	private void onCopyFrom(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
-		ServerPlayerEvents.COPY_FROM.invoker().copyFromPlayer(oldPlayer, (ServerPlayer) (Object) this, alive);
+	private void onCopyFrom(ServerPlayer oldPlayer, boolean restoreAll, CallbackInfo ci) {
+		ServerPlayerEvents.COPY_FROM.invoker().copyFromPlayer(oldPlayer, (ServerPlayer) (Object) this, restoreAll);
 	}
 
 	@WrapOperation(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
@@ -102,9 +102,9 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	}
 
 	@WrapOperation(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;setRespawnPosition(Lnet/minecraft/server/level/ServerPlayer$RespawnConfig;Z)V"))
-	private void onSetSpawnPoint(ServerPlayer player, ServerPlayer.RespawnConfig spawnPoint, boolean sendMessage, Operation<Void> original) {
-		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, spawnPoint.respawnData().pos())) {
-			original.call(player, spawnPoint, sendMessage);
+	private void onSetSpawnPoint(ServerPlayer player, ServerPlayer.RespawnConfig respawnConfig, boolean showMessage, Operation<Void> original) {
+		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, respawnConfig.respawnData().pos())) {
+			original.call(player, respawnConfig, showMessage);
 		}
 	}
 

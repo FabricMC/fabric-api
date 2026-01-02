@@ -31,8 +31,8 @@ import net.minecraft.resources.ResourceKey;
 @Mixin(Registries.class)
 public class RegistriesMixin {
 	@ModifyReturnValue(method = "elementsDirPath", at = @At("RETURN"))
-	private static String prependDirectoryWithNamespace(String original, @Local(argsOnly = true) ResourceKey<? extends Registry<?>> registryRef) {
-		Identifier id = registryRef.identifier();
+	private static String prependDirectoryWithNamespace(String original, @Local(argsOnly = true, name = "registryKey") ResourceKey<? extends Registry<?>> registryKey) {
+		Identifier id = registryKey.identifier();
 
 		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 			return id.getNamespace() + "/" + id.getPath();
@@ -42,8 +42,8 @@ public class RegistriesMixin {
 	}
 
 	@ModifyReturnValue(method = "tagsDirPath", at = @At("RETURN"))
-	private static String prependTagDirectoryWithNamespace(String original, @Local(argsOnly = true) ResourceKey<? extends Registry<?>> registryRef) {
-		Identifier id = registryRef.identifier();
+	private static String prependTagDirectoryWithNamespace(String original, @Local(argsOnly = true, name = "registryKey") ResourceKey<? extends Registry<?>> registryKey) {
+		Identifier id = registryKey.identifier();
 
 		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 			return "tags/" + id.getNamespace() + "/" + id.getPath();

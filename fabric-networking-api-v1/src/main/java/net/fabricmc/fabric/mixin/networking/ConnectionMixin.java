@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -60,26 +61,26 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	private Map<ConnectionProtocol, Collection<Identifier>> playChannels;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void initAddedFields(PacketFlow flow, CallbackInfo ci) {
+	private void initAddedFields(PacketFlow receiving, CallbackInfo ci) {
 		this.playChannels = new ConcurrentHashMap<>();
 	}
 
-	@Inject(method = "sendPacket", at = @At(value = "FIELD", target = "Lnet/minecraft/network/Connection;sentPackets:I"))
-	private void checkPacket(Packet<?> packet, ChannelFutureListener callback, boolean flush, CallbackInfo ci) {
+	@Inject(method = "sendPacket", at = @At(value = "FIELD", target = "Lnet/minecraft/network/Connection;sentPackets:I", opcode = Opcodes.GETFIELD))
+	private void checkPacket(Packet<?> packet, ChannelFutureListener listener, boolean flush, CallbackInfo ci) {
 		if (this.packetListener instanceof PacketCallbackListener) {
 			((PacketCallbackListener) this.packetListener).sent(packet);
 		}
 	}
 
 	@Inject(method = "validateListener", at = @At("HEAD"))
-	private void unwatchAddon(ProtocolInfo<?> protocolInfo, PacketListener listener, CallbackInfo ci) {
+	private void unwatchAddon(ProtocolInfo<?> protocol, PacketListener packetListener, CallbackInfo ci) {
 		if (this.packetListener instanceof PacketListenerExtensions oldListener) {
 			oldListener.getAddon().endSession();
 		}
 	}
 
 	@Inject(method = "channelInactive", at = @At("HEAD"))
-	private void disconnectAddon(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
+	private void disconnectAddon(ChannelHandlerContext ctx, CallbackInfo ci) {
 		if (packetListener instanceof PacketListenerExtensions extension) {
 			extension.getAddon().handleDisconnect();
 		}
@@ -93,22 +94,22 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@ModifyArg(method = "setupInboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
-		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
+	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true, name = "protocol") ProtocolInfo<?> protocol) {
+		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocol);
 
 		if (payloadTypeRegistry == null) {
 			return transitioner;
 		}
 
 		return ((UnconfiguredPipelineHandler.InboundConfigurationTask) transitioner).andThen((context) -> {
-			FabricPacketMerger merger = new FabricPacketMerger(context.pipeline().get(PacketDecoder.class), payloadTypeRegistry, VanillaPacketTypes.get(protocolInfo));
+			FabricPacketMerger merger = new FabricPacketMerger(context.pipeline().get(PacketDecoder.class), payloadTypeRegistry, VanillaPacketTypes.get(protocol));
 			context.pipeline().addAfter("decoder", "fabric:merger", merger);
 		});
 	}
 
 	@ModifyArg(method = "setupOutboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
-		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
+	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true, name = "protocol") ProtocolInfo<?> protocol) {
+		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocol);
 
 		if (payloadTypeRegistry == null) {
 			return transitioner;
