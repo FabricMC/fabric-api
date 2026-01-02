@@ -53,7 +53,7 @@ public class FireBlockMixin implements FireBlockHooks {
 		registry = FlammableBlockRegistryImpl.getInstance((Block) (Object) this);
 	}
 
-	@Inject(at = @At("HEAD"), method = "getIgniteOdds", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "getIgniteOdds(Lnet/minecraft/world/level/block/state/BlockState;)I", cancellable = true)
 	private void getFabricBurnChance(BlockState block, CallbackInfoReturnable info) {
 		FlammableBlockRegistry.Entry entry = registry.getFabric(block.getBlock());
 

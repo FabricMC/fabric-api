@@ -456,7 +456,7 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 			method = {
 					"get(Lnet/minecraft/resources/Identifier;)Ljava/util/Optional;",
 					"getValue(Lnet/minecraft/resources/Identifier;)Ljava/lang/Object;",
-					"containsKey"
+					"containsKey(Lnet/minecraft/resources/Identifier;)Z"
 			},
 			at = @At("HEAD"),
 			argsOnly = true

@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper
 
 @Mixin(SnowGolemHeadLayer.class)
 abstract class SnowGolemHeadLayerMixin {
-	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
+	@Redirect(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/SnowGolemRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
 	private void renderProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, RenderType renderType, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local SnowGolemRenderState renderState, @Local BlockState blockState) {
 		// If true, the chunk layer is an outline chunk layer, and we want all geometry to use this chunk layer.
 		if (renderState.appearsGlowing() && renderState.isInvisible) {
