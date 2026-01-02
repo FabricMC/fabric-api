@@ -66,7 +66,7 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 
 	@Override
 	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec) {
-		Objects.requireNonNull(type, "id");
+		Objects.requireNonNull(type, "type");
 		Objects.requireNonNull(codec, "codec");
 
 		final CustomPacketPayload.TypeAndCodec<B, T> payloadType = new CustomPacketPayload.TypeAndCodec<>(type, codec.cast());
@@ -86,8 +86,33 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 		}
 
 		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
+		setMaxPacketSize(type.id(), maxPayloadSize);
+		return typeAndCodec;
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> void modifyLargePayloadMaxSize(CustomPacketPayload.Type<T> type, int maxPayloadSize) {
+		Identifier id = type.id();
+
+		if (!this.maxPacketSize.containsKey(id)) {
+			throw new IllegalArgumentException("Packet type " + id + " is not registered as a large payload!");
+		}
+
+		if (maxPayloadSize < 0) {
+			throw new IllegalArgumentException("Provided maxPayloadSize needs to be positive!");
+		}
+
+		setMaxPacketSize(id, maxPayloadSize);
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> int getPayloadMaxSize(CustomPacketPayload.Type<T> type) {
+		return this.maxPacketSize.getOrDefault(type.id(), this.minimalSplittableSize);
+	}
+
+	private void setMaxPacketSize(Identifier id, int maxPayloadSize) {
 		// Defines max packet size, increased by length of packet's Identifier to cover full size of CustomPayloadX2YPackets.
-		int identifierSize = ByteBufUtil.utf8MaxBytes(type.id().toString());
+		int identifierSize = ByteBufUtil.utf8MaxBytes(id.toString());
 		int maxPacketSize = maxPayloadSize + VarInt.getByteSize(identifierSize) + identifierSize + 5 * 2;
 
 		// Prevent overflow
@@ -97,19 +122,19 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 
 		// No need to enable splitting, if packet's max size is smaller than chunk
 		if (maxPacketSize > this.minimalSplittableSize) {
-			this.maxPacketSize.put(type.id(), maxPacketSize);
+			this.maxPacketSize.put(id, maxPacketSize);
+		} else {
+			this.maxPacketSize.put(id, -1); // To indicate packet was registered as large, but currently does not require splitting
 		}
-
-		return typeAndCodec;
 	}
 
 	public CustomPacketPayload.@Nullable TypeAndCodec<B, ? extends CustomPacketPayload> get(Identifier id) {
 		return packetTypes.get(id);
 	}
 
-	public <T extends CustomPacketPayload> CustomPacketPayload.@Nullable TypeAndCodec<B, T> get(CustomPacketPayload.Type<T> id) {
+	public <T extends CustomPacketPayload> CustomPacketPayload.@Nullable TypeAndCodec<B, T> get(CustomPacketPayload.Type<T> type) {
 		//noinspection unchecked
-		return (CustomPacketPayload.TypeAndCodec<B, T>) packetTypes.get(id.id());
+		return (CustomPacketPayload.TypeAndCodec<B, T>) packetTypes.get(type.id());
 	}
 
 	public int getMaxPacketSize(Identifier id) {

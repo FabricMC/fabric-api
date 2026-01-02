@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.networking.splitter;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,19 +38,21 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 public class NetworkingSplitterTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingSplitterTest.class);
 
-	private static final int DATA_SIZE = 20 * 1024 * 1024;
+	private static final int DATA_SIZE_1 = 20 * 1024 * 1024;
+	private static final int DATA_SIZE_2 = 50 * 1024 * 1024;
 
 	// 20 MB of random data source
 	private static final int[][] RANDOM_DATA = {
 			IntStream.generate(RandomSource.create(24534)::nextInt).limit(20).toArray(),
-			IntStream.generate(RandomSource.create(24533)::nextInt).limit(DATA_SIZE / 4).toArray()
+			IntStream.generate(RandomSource.create(24533)::nextInt).limit(DATA_SIZE_1 / 4).toArray(),
+			IntStream.generate(RandomSource.create(24532)::nextInt).limit(DATA_SIZE_2 / 4).toArray()
 	};
 
 	@Override
 	public void onInitialize() {
 		// Register the payload on both sides for play and configuration
-		PayloadTypeRegistry.clientboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE + 14);
-		PayloadTypeRegistry.serverboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE + 14);
+		PayloadTypeRegistry.clientboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE_1 + 14);
+		PayloadTypeRegistry.serverboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE_1 + 14);
 
 		// When the client joins, send a packet expecting it to be validated and echoed back
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> sender.sendPacket(new LargePayload(0, RANDOM_DATA[0])));
@@ -56,13 +60,21 @@ public class NetworkingSplitterTest implements ModInitializer {
 
 		// Validate received packet
 		ServerPlayNetworking.registerGlobalReceiver(LargePayload.TYPE, (payload, context) -> {
-			validateLargePacketData(payload.index(), payload.data(), "server");
+			validateLargePacketData(payload.index(), payload.data(), "server", context.responseSender());
 		});
 	}
 
-	public static void validateLargePacketData(int index, int[] data, String side) {
+	public static void validateLargePacketData(int index, int[] data, String side, PacketSender sender) {
 		if (Arrays.equals(RANDOM_DATA[index], data)) {
-			NetworkingTestmods.LOGGER.info("Successfully received large packet [" + index + "] on " + side);
+			LOGGER.info("Successfully received large packet [" + index + "] on " + side);
+
+			if (side.equals("server") && index == 1) {
+				LOGGER.info("Increasing max large packet size to 50MB");
+				PayloadTypeRegistry.clientboundPlay().modifyLargePayloadMaxSize(LargePayload.TYPE, DATA_SIZE_2 + 14);
+				PayloadTypeRegistry.serverboundPlay().modifyLargePayloadMaxSize(LargePayload.TYPE, DATA_SIZE_2 + 14);
+				sender.sendPacket(new LargePayload(2, RANDOM_DATA[2]));
+			}
+
 			return;
 		}
 
