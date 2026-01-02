@@ -50,7 +50,7 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 	}
 
 	@Shadow
-	protected abstract void selectTab(CreativeModeTab creativeModeTab_1);
+	protected abstract void selectTab(CreativeModeTab tab);
 
 	@Shadow
 	private static CreativeModeTab selectedTab;
@@ -83,40 +83,40 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 	}
 
 	@Inject(method = "selectTab", at = @At("HEAD"), cancellable = true)
-	private void setSelectedTab(CreativeModeTab creativeModeTab, CallbackInfo info) {
-		if (!isTabVisible(creativeModeTab)) {
+	private void setSelectedTab(CreativeModeTab tab, CallbackInfo info) {
+		if (!isTabVisible(tab)) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "checkTabHovering", at = @At("HEAD"), cancellable = true)
-	private void renderTabTooltipIfHovered(GuiGraphics graphics, CreativeModeTab creativeModeTab, int mx, int my, CallbackInfoReturnable<Boolean> info) {
-		if (!isTabVisible(creativeModeTab)) {
+	private void renderTabTooltipIfHovered(GuiGraphics graphics, CreativeModeTab tab, int xm, int ym, CallbackInfoReturnable<Boolean> info) {
+		if (!isTabVisible(tab)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "checkTabClicked", at = @At("HEAD"), cancellable = true)
-	private void isClickInTab(CreativeModeTab creativeModeTab, double mx, double my, CallbackInfoReturnable<Boolean> info) {
-		if (!isTabVisible(creativeModeTab)) {
+	private void isClickInTab(CreativeModeTab tab, double xm, double ym, CallbackInfoReturnable<Boolean> info) {
+		if (!isTabVisible(tab)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "renderTabButton", at = @At("HEAD"), cancellable = true)
-	private void renderTabIcon(GuiGraphics guiGraphics, int i, int j, CreativeModeTab creativeModeTab, CallbackInfo info) {
-		if (!isTabVisible(creativeModeTab)) {
+	private void renderTabIcon(GuiGraphics graphics, int mouseX, int mouseY, CreativeModeTab tab, CallbackInfo info) {
+		if (!isTabVisible(tab)) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-	private void keyPressed(KeyEvent context, CallbackInfoReturnable<Boolean> cir) {
-		if (context.key() == GLFW.GLFW_KEY_PAGE_UP) {
+	private void keyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+		if (event.key() == GLFW.GLFW_KEY_PAGE_UP) {
 			if (switchToPreviousPage()) {
 				cir.setReturnValue(true);
 			}
-		} else if (context.key() == GLFW.GLFW_KEY_PAGE_DOWN) {
+		} else if (event.key() == GLFW.GLFW_KEY_PAGE_DOWN) {
 			if (switchToNextPage()) {
 				cir.setReturnValue(true);
 			}

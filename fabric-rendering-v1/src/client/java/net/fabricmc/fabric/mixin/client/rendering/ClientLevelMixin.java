@@ -45,9 +45,9 @@ public abstract class ClientLevelMixin {
 	public abstract int calculateBlockTint(BlockPos pos, ColorResolver colorResolver);
 
 	@Inject(method = "onChunkLoaded(Lnet/minecraft/world/level/ChunkPos;)V", at = @At("RETURN"))
-	private void onResetChunkColor(ChunkPos chunkPos, CallbackInfo ci) {
+	private void onResetChunkColor(ChunkPos pos, CallbackInfo ci) {
 		for (BlockTintCache cache : customColorCache.values()) {
-			cache.invalidateForChunk(chunkPos.x, chunkPos.z);
+			cache.invalidateForChunk(pos.x, pos.z);
 		}
 	}
 

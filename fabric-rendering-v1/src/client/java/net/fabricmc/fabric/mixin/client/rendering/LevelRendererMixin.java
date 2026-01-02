@@ -81,9 +81,9 @@ public abstract class LevelRendererMixin {
 	private final LevelExtractionContextImpl extractionContext = new LevelExtractionContextImpl();
 
 	@Inject(method = "renderLevel", at = @At("HEAD"))
-	private void beforeRender(GraphicsResourceAllocator allocator, DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, Matrix4f viewMatrix, Matrix4f projectionMatrix, Matrix4f cullProjectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
+	private void beforeRender(GraphicsResourceAllocator resourceAllocator, DeltaTracker deltaTracker, boolean renderOutline, Camera camera, Matrix4f modelViewMatrix, Matrix4f projectionMatrix, Matrix4f projectionMatrixForCulling, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, CallbackInfo ci) {
 		extractionContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, level,
-				deltaTracker, renderBlockOutline, camera, viewMatrix, cullProjectionMatrix);
+				deltaTracker, renderOutline, camera, modelViewMatrix, projectionMatrixForCulling);
 	}
 
 	@ModifyExpressionValue(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareCullFrustum(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/client/renderer/culling/Frustum;"))
@@ -93,13 +93,13 @@ public abstract class LevelRendererMixin {
 	}
 
 	@Inject(method = "extractBlockOutline", at = @At("RETURN"))
-	private void afterBlockOutlineExtraction(Camera camera, LevelRenderState renderStates, CallbackInfo ci) {
+	private void afterBlockOutlineExtraction(Camera camera, LevelRenderState levelRenderState, CallbackInfo ci) {
 		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, minecraft.hitResult);
 	}
 
 	@WrapOperation(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldBorderRenderer;extract(Lnet/minecraft/world/level/border/WorldBorder;FLnet/minecraft/world/phys/Vec3;DLnet/minecraft/client/renderer/state/WorldBorderRenderState;)V"))
-	private void onWorldBorderExtraction(WorldBorderRenderer instance, WorldBorder worldBorder, float tickProgress, Vec3 vec3d, double viewDistanceBlocks, WorldBorderRenderState worldBorderRenderState, Operation<Void> original) {
-		original.call(instance, worldBorder, tickProgress, vec3d, viewDistanceBlocks, worldBorderRenderState);
+	private void onWorldBorderExtraction(WorldBorderRenderer instance, WorldBorder border, float deltaPartialTick, Vec3 cameraPos, double renderDistance, WorldBorderRenderState state, Operation<Void> original) {
+		original.call(instance, border, deltaPartialTick, cameraPos, renderDistance, state);
 		LevelRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
 	}
 
@@ -148,9 +148,9 @@ public abstract class LevelRendererMixin {
 	}
 
 	@Inject(method = "renderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/CameraRenderState;pos:Lnet/minecraft/world/phys/Vec3;", opcode = Opcodes.GETFIELD), cancellable = true)
-	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource consumers, PoseStack poseStack, boolean bl, LevelRenderState worldRenderState, CallbackInfo ci) {
+	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean onlyTranslucentBlocks, LevelRenderState levelRenderState, CallbackInfo ci) {
 		if (!LevelRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.levelState().blockOutlineRenderState)) {
-			consumers.endLastBatch();
+			bufferSource.endLastBatch();
 			ci.cancel();
 		}
 	}

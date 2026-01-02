@@ -37,7 +37,7 @@ abstract class EnchantCommandMixin {
 			method = "enchant",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/Enchantment;canEnchant(Lnet/minecraft/world/item/ItemStack;)Z")
 	)
-	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack, CommandSourceStack source, Collection<? extends Entity> targets, Holder<Enchantment> enchantment) {
-		return stack.canBeEnchantedWith(enchantment, EnchantingContext.ACCEPTABLE);
+	private static boolean callAllowEnchantingEvent(Enchantment instance, ItemStack itemStack, CommandSourceStack source, Collection<? extends Entity> targets, Holder<Enchantment> enchantmentHolder) {
+		return itemStack.canBeEnchantedWith(enchantmentHolder, EnchantingContext.ACCEPTABLE);
 	}
 }

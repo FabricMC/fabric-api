@@ -38,11 +38,11 @@ public abstract class GameRuleCommandVisitorMixin {
 	LiteralArgumentBuilder<CommandSourceStack> val$base;
 
 	@Inject(at = @At("HEAD"), method = "visit", cancellable = true)
-	private <T> void onRegisterCommand(GameRule<T> rule, CallbackInfo ci) {
+	private <T> void onRegisterCommand(GameRule<T> gameRule, CallbackInfo ci) {
 		// Check if our type is a EnumRuleType
-		if (((RuleTypeExtensions) (Object) rule).fabric_getType() == FabricGameRuleType.ENUM) {
+		if (((RuleTypeExtensions) (Object) gameRule).fabric_getType() == FabricGameRuleType.ENUM) {
 			//noinspection rawtypes,unchecked
-			EnumRuleCommand.register(this.val$base, (GameRule<? extends Enum>) rule);
+			EnumRuleCommand.register(this.val$base, (GameRule<? extends Enum>) gameRule);
 			ci.cancel();
 		}
 	}

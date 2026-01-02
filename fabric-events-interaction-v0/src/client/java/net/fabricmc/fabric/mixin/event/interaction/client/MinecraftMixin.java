@@ -74,12 +74,12 @@ public abstract class MinecraftMixin {
 			method = "startUseItem",
 			cancellable = true
 	)
-	private void injectUseEntityCallback(CallbackInfo ci, @Local(name = "hand") InteractionHand hand, @Local(name = "entityHit") EntityHitResult hitResult, @Local(name = "entity") Entity entity) {
-		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.level(), hand, entity, hitResult);
+	private void injectUseEntityCallback(CallbackInfo ci, @Local(name = "hand") InteractionHand hand, @Local(name = "entityHit") EntityHitResult entityHit, @Local(name = "entity") Entity entity) {
+		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.level(), hand, entity, entityHit);
 
 		if (result != InteractionResult.PASS) {
 			if (result.consumesAction()) {
-				Vec3 hitVec = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
+				Vec3 hitVec = entityHit.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
 				getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity, player.isShiftKeyDown(), hand, hitVec));
 			}
 
@@ -121,7 +121,7 @@ public abstract class MinecraftMixin {
 	}
 
 	@Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
-	private void injectHandleBlockBreakingForCancelling(boolean breaking, CallbackInfo ci) {
+	private void injectHandleBlockBreakingForCancelling(boolean down, CallbackInfo ci) {
 		if (attackCancelled) {
 			if (gameMode != null) {
 				gameMode.stopDestroyBlock();

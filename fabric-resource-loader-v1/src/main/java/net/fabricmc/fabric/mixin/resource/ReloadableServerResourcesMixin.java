@@ -50,16 +50,16 @@ public class ReloadableServerResourcesMixin implements FabricDataResourceStoreHo
 	)
 	private static List<PreparableReloadListener> onSetupDataReloaders(
 			List<PreparableReloadListener> reloaders,
-			@Local(argsOnly = true, name = "fullRegistries") ReloadableServerRegistries.LoadResult loadResult,
-			@Local(argsOnly = true, name = "enabledFeatures") FeatureFlagSet featureSet,
-			@Local(name = "result") ReloadableServerResources dataPackContents
+			@Local(argsOnly = true, name = "fullRegistries") ReloadableServerRegistries.LoadResult fullRegistries,
+			@Local(argsOnly = true, name = "enabledFeatures") FeatureFlagSet enabledFeatures,
+			@Local(name = "result") ReloadableServerResources result
 	) {
 		var list = new ArrayList<>(reloaders);
 		list.addFirst(
 				new SetupMarkerResourceReloader(
-						dataPackContents,
-						loadResult.lookupWithUpdatedTags(),
-						featureSet
+						result,
+						fullRegistries.lookupWithUpdatedTags(),
+						enabledFeatures
 				)
 		);
 		return Collections.unmodifiableList(list);

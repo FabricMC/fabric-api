@@ -44,7 +44,7 @@ public class PigRendererMixin {
 	private static final RenderStateDataKey<MovingBlockRenderState> MOVING_BLOCK = RenderStateDataKey.create(() -> "Moving block");
 
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/animal/pig/Pig;Lnet/minecraft/client/renderer/entity/state/PigRenderState;F)V", at = @At("TAIL"))
-	private void updateRenderStateData(Pig entity, PigRenderState state, float tickProgress, CallbackInfo ci) {
+	private void updateRenderStateData(Pig entity, PigRenderState state, float partialTicks, CallbackInfo ci) {
 		BlockState blockState = entity.getBlockStateOn();
 
 		if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
@@ -59,11 +59,11 @@ public class PigRendererMixin {
 	}
 
 	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/PigRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/MobRenderer;submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V"))
-	private void renderUsingRenderStateData(PigRenderState state, PoseStack poseStack, SubmitNodeCollector queue, CameraRenderState cameraRenderState, CallbackInfo ci) {
+	private void renderUsingRenderStateData(PigRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera, CallbackInfo ci) {
 		MovingBlockRenderState movingBlockRenderState = state.getData(MOVING_BLOCK);
 
 		if (movingBlockRenderState != null) {
-			queue.submitMovingBlock(poseStack, movingBlockRenderState);
+			submitNodeCollector.submitMovingBlock(poseStack, movingBlockRenderState);
 		}
 	}
 }

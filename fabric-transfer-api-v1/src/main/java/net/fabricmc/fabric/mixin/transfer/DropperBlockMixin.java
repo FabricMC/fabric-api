@@ -50,7 +50,7 @@ public class DropperBlockMixin {
 			cancellable = true,
 			allow = 1
 	)
-	public void hookDispense(ServerLevel level, BlockState blockState, BlockPos pos, CallbackInfo ci) {
+	public void hookDispense(ServerLevel level, BlockState state, BlockPos pos, CallbackInfo ci) {
 		DispenserBlockEntity dispenser = (DispenserBlockEntity) level.getBlockEntity(pos);
 		Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
 

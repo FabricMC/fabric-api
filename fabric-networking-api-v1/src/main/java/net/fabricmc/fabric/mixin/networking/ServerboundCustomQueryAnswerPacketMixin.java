@@ -37,14 +37,14 @@ public class ServerboundCustomQueryAnswerPacketMixin {
 	private static int MAX_PAYLOAD_SIZE;
 
 	@Inject(method = "readPayload", at = @At("HEAD"), cancellable = true)
-	private static void readResponse(int queryId, FriendlyByteBuf buf, CallbackInfoReturnable<CustomQueryAnswerPayload> cir) {
-		boolean hasPayload = buf.readBoolean();
+	private static void readResponse(int transactionId, FriendlyByteBuf input, CallbackInfoReturnable<CustomQueryAnswerPayload> cir) {
+		boolean hasPayload = input.readBoolean();
 
 		if (!hasPayload) {
 			cir.setReturnValue(null);
 			return;
 		}
 
-		cir.setReturnValue(new FriendlyByteBufLoginQueryResponse(PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
+		cir.setReturnValue(new FriendlyByteBufLoginQueryResponse(PayloadHelper.read(input, MAX_PAYLOAD_SIZE)));
 	}
 }

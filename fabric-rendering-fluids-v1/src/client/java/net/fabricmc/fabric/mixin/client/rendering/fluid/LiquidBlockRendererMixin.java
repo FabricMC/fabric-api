@@ -77,14 +77,14 @@ public class LiquidBlockRendererMixin {
 	}
 
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
-	public void onHeadRender(BlockAndTintGetter view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
+	public void onHeadRender(BlockAndTintGetter level, BlockPos pos, VertexConsumer builder, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
 		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 
 		if (info.handler == null) {
 			FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getType());
 
 			if (handler != null) {
-				handler.renderFluid(pos, view, vertexConsumer, blockState, fluidState);
+				handler.renderFluid(pos, level, builder, blockState, fluidState);
 				ci.cancel();
 			}
 		}
@@ -110,8 +110,8 @@ public class LiquidBlockRendererMixin {
 			at = @At("STORE"),
 			name = "stillSprite"
 	)
-	public TextureAtlasSprite modStill(TextureAtlasSprite original) {
-		return getOrDefault(0, original);
+	public TextureAtlasSprite modStill(TextureAtlasSprite stillSprite) {
+		return getOrDefault(0, stillSprite);
 	}
 
 	@ModifyVariable(
@@ -119,8 +119,8 @@ public class LiquidBlockRendererMixin {
 			at = @At("STORE"),
 			name = "flowingSprite"
 	)
-	public TextureAtlasSprite modFlowing(TextureAtlasSprite original) {
-		return getOrDefault(1, original);
+	public TextureAtlasSprite modFlowing(TextureAtlasSprite flowingSprite) {
+		return getOrDefault(1, flowingSprite);
 	}
 
 	@ModifyExpressionValue(
@@ -130,7 +130,7 @@ public class LiquidBlockRendererMixin {
 					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/BiomeColors;getAverageWaterColor(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I")
 			}
 	)
-	public int modTintColor(int original, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public int modTintColor(int original, BlockAndTintGetter level, BlockPos pos, VertexConsumer builder, BlockState blockState, FluidState fluidState) {
 		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 		return info.handler != null ? info.handler.getFluidColor(level, pos, fluidState) : original;
 	}
@@ -142,12 +142,12 @@ public class LiquidBlockRendererMixin {
 			method = "tesselate",
 			at = @At(value = "MIXINEXTRAS:EXPRESSION", ordinal = 0),
 			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", opcode = Opcodes.GETFIELD)),
-			ordinal = 2
+			name = "sprite"
 	)
 	private TextureAtlasSprite modifyOverlaySprite(
-			TextureAtlasSprite waterOverlay,
+			TextureAtlasSprite sprite,
 			BlockAndTintGetter level,
-			@Local(name = "tPos") BlockPos neighborPos,
+			@Local(name = "tPos") BlockPos tPos,
 			@Local(name = "isLava") boolean isLava,
 			@Local(name = "flowingSprite") TextureAtlasSprite flowingSprite,
 			@Share("useOverlay") LocalBooleanRef useOverlay
@@ -155,7 +155,7 @@ public class LiquidBlockRendererMixin {
 		final FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 		boolean hasOverlay = info.handler != null ? info.hasOverlay : !isLava;
 
-		Block neighborBlock = level.getBlockState(neighborPos).getBlock();
+		Block neighborBlock = level.getBlockState(tPos).getBlock();
 		useOverlay.set(hasOverlay && FluidRenderHandlerRegistry.INSTANCE.isBlockTransparent(neighborBlock));
 
 		if (useOverlay.get()) {

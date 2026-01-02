@@ -53,13 +53,13 @@ public class TagsProviderMixin<T> {
 	private PackOutput.PathProvider tagAliasPathResolver;
 
 	@Inject(method = "<init>(Lnet/minecraft/data/PackOutput;Lnet/minecraft/resources/ResourceKey;Ljava/util/concurrent/CompletableFuture;Ljava/util/concurrent/CompletableFuture;)V", at = @At("RETURN"))
-	private void initPathResolver(PackOutput output, ResourceKey<? extends Registry<T>> registryRef, CompletableFuture<?> registriesFuture, CompletableFuture<?> parentTagLookupFuture, CallbackInfo info) {
-		tagAliasPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, TagAliasGenerator.getDirectory(registryRef));
+	private void initPathResolver(PackOutput output, ResourceKey<? extends Registry<T>> registryKey, CompletableFuture<?> lookupProvider, CompletableFuture<?> parentProvider, CallbackInfo info) {
+		tagAliasPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, TagAliasGenerator.getDirectory(registryKey));
 	}
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
-	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder tagBuilder) {
-		if (tagBuilder instanceof FabricTagBuilder fabricTagBuilder) {
+	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder builder) {
+		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
 			return fabricTagBuilder.fabric_isReplaced();
 		}
 
@@ -68,20 +68,20 @@ public class TagsProviderMixin<T> {
 
 	@SuppressWarnings("unchecked")
 	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true, name = "cache") CachedOutput writer) {
+	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] cfs, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true, name = "cache") CachedOutput cache) {
 		if ((Object) this instanceof FabricTagsProvider<?>) {
 			// Note: no pattern matching instanceof so that we can cast directly to FabricTagsProvider<T> instead of a wildcard
 			Map<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> builders = ((FabricTagsProvider<T>) (Object) this).getAliasGroupBuilders();
-			CompletableFuture<?>[] newFutures = Arrays.copyOf(futures, futures.length + builders.size());
-			int index = futures.length;
+			CompletableFuture<?>[] newFutures = Arrays.copyOf(cfs, cfs.length + builders.size());
+			int index = cfs.length;
 
 			for (Map.Entry<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> entry : builders.entrySet()) {
-				newFutures[index++] = TagAliasGenerator.writeTagAlias(writer, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
+				newFutures[index++] = TagAliasGenerator.writeTagAlias(cache, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
 			}
 
 			return original.call((Object) newFutures);
 		} else {
-			return original.call((Object) futures);
+			return original.call((Object) cfs);
 		}
 	}
 }

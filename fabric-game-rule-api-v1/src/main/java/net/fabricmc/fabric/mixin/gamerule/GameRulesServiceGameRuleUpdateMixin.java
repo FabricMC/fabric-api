@@ -57,8 +57,8 @@ public abstract class GameRulesServiceGameRuleUpdateMixin implements FabricTyped
 	}
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private <T> void updateFabricType(GameRule<T> rule, Object value, CallbackInfo ci) {
-		FabricGameRuleType type = ((RuleTypeExtensions) (Object) rule).fabric_getType();
+	private <T> void updateFabricType(GameRule<T> gameRule, Object value, CallbackInfo ci) {
+		FabricGameRuleType type = ((RuleTypeExtensions) (Object) gameRule).fabric_getType();
 
 		if (type == null) {
 			return;

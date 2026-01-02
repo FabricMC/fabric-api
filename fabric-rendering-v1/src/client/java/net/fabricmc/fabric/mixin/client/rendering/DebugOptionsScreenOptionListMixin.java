@@ -33,14 +33,14 @@ import net.fabricmc.fabric.impl.client.rendering.DebugOptionsComparator;
 @Mixin(targets = "net.minecraft.client.gui.screens.debug.DebugOptionsScreen$OptionList")
 public class DebugOptionsScreenOptionListMixin {
 	@Redirect(method = "lambda$static$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/Identifier;compareTo(Lnet/minecraft/resources/Identifier;)I"))
-	private static int sort(Identifier o1, Identifier o2) {
-		return DebugOptionsComparator.INSTANCE.compare(o1, o2);
+	private static int sort(Identifier t, Identifier o) {
+		return DebugOptionsComparator.INSTANCE.compare(t, o);
 	}
 
 	@WrapOperation(method = "updateSearch", at = @At(value = "INVOKE", target = "Ljava/lang/String;contains(Ljava/lang/CharSequence;)Z"))
-	private boolean searchPath(String instance, CharSequence searchStrings, Operation<Boolean> original, @Local(name = "entry") Map.Entry<Identifier, DebugScreenEntry> entry) {
+	private boolean searchPath(String instance, CharSequence s, Operation<Boolean> original, @Local(name = "entry") Map.Entry<Identifier, DebugScreenEntry> entry) {
 		final String namespace = entry.getKey().getNamespace();
-		return original.call(instance, searchStrings)
-				|| (!Identifier.DEFAULT_NAMESPACE.equals(namespace) && namespace.contains(searchStrings));
+		return original.call(instance, s)
+				|| (!Identifier.DEFAULT_NAMESPACE.equals(namespace) && namespace.contains(s));
 	}
 }

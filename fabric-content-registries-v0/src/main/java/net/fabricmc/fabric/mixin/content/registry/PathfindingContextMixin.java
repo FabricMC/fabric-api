@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 @Mixin(PathfindingContext.class)
 public abstract class PathfindingContextMixin {
 	@Shadow
-	public abstract BlockState getBlockState(BlockPos blockPos);
+	public abstract BlockState getBlockState(BlockPos pos);
 
 	@Shadow
 	public abstract CollisionGetter level();

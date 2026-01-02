@@ -89,9 +89,9 @@ public abstract class WindowMixin implements WindowHooks {
 	private int realFramebufferHeight;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void onInit(WindowEventHandler eventHandler, DisplayData settings, String fullscreenVideoModeString, String title, GpuBackend[] backends, ShaderSource defaultShaderSource, GpuDebugOptions debugOptions, CallbackInfo ci) {
-		this.defaultWidth = settings.width();
-		this.defaultHeight = settings.height();
+	private void onInit(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, String title, GpuBackend[] backends, ShaderSource defaultShaderSource, GpuDebugOptions debugOptions, CallbackInfo ci) {
+		this.defaultWidth = displayData.width();
+		this.defaultHeight = displayData.height();
 		this.realWidth = this.width;
 		this.realHeight = this.height;
 		this.realFramebufferWidth = this.framebufferWidth;
@@ -107,16 +107,16 @@ public abstract class WindowMixin implements WindowHooks {
 	}
 
 	@Inject(method = "onResize", at = @At("HEAD"), cancellable = true)
-	private void cancelResize(long window, int width, int height, CallbackInfo ci) {
-		realWidth = width;
-		realHeight = height;
+	private void cancelResize(long handle, int newWidth, int newHeight, CallbackInfo ci) {
+		realWidth = newWidth;
+		realHeight = newHeight;
 		ci.cancel();
 	}
 
 	@Inject(method = "onFramebufferResize", at = @At("HEAD"), cancellable = true)
-	private void cancelFramebufferResize(long window, int width, int height, CallbackInfo ci) {
-		realFramebufferWidth = width;
-		realFramebufferHeight = height;
+	private void cancelFramebufferResize(long handle, int newWidth, int newHeight, CallbackInfo ci) {
+		realFramebufferWidth = newWidth;
+		realFramebufferHeight = newHeight;
 		ci.cancel();
 	}
 

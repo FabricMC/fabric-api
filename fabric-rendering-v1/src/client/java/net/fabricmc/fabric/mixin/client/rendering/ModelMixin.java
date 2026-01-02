@@ -44,7 +44,7 @@ abstract class ModelMixin<S> implements FabricModel<S> {
 	private final Map<String, ModelPart> childPartMap = new Object2ObjectOpenHashMap<>();
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void fillChildPartMap(ModelPart root, Function<Identifier, RenderType> layerFactory, CallbackInfo ci) {
+	private void fillChildPartMap(ModelPart root, Function<Identifier, RenderType> renderType, CallbackInfo ci) {
 		((ModelPartAccessor) (Object) root).fabric$callForEachChild(childPartMap::putIfAbsent);
 	}
 

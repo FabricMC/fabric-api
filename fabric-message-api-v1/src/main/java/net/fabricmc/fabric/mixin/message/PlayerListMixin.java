@@ -42,17 +42,17 @@ public abstract class PlayerListMixin {
 	private MinecraftServer server;
 
 	@Inject(method = "broadcastChatMessage(Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/network/chat/ChatType$Bound;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound boundChatType, CallbackInfo ci) {
-		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, boundChatType)) {
+	private void onSendChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound chatType, CallbackInfo ci) {
+		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, chatType)) {
 			ci.cancel();
 			return;
 		}
 
-		ServerMessageEvents.CHAT_MESSAGE.invoker().onChatMessage(message, sender, boundChatType);
+		ServerMessageEvents.CHAT_MESSAGE.invoker().onChatMessage(message, sender, chatType);
 	}
 
 	@Inject(method = "broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Ljava/util/function/Function;Z)V", at = @At("HEAD"), cancellable = true)
-	private void onSendGameMessage(Component message, Function<ServerPlayer, Component> playerMessageFactory, boolean overlay, CallbackInfo ci) {
+	private void onSendGameMessage(Component message, Function<ServerPlayer, Component> playerMessages, boolean overlay, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_GAME_MESSAGE.invoker().allowGameMessage(this.server, message, overlay)) {
 			ci.cancel();
 			return;
@@ -62,12 +62,12 @@ public abstract class PlayerListMixin {
 	}
 
 	@Inject(method = "broadcastChatMessage(Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/commands/CommandSourceStack;Lnet/minecraft/network/chat/ChatType$Bound;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound boundChatType, CallbackInfo ci) {
-		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, boundChatType)) {
+	private void onSendCommandMessage(PlayerChatMessage message, CommandSourceStack sender, ChatType.Bound chatType, CallbackInfo ci) {
+		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, sender, chatType)) {
 			ci.cancel();
 			return;
 		}
 
-		ServerMessageEvents.COMMAND_MESSAGE.invoker().onCommandMessage(message, source, boundChatType);
+		ServerMessageEvents.COMMAND_MESSAGE.invoker().onCommandMessage(message, sender, chatType);
 	}
 }

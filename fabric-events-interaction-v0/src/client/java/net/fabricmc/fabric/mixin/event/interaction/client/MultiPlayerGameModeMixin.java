@@ -61,7 +61,7 @@ public abstract class MultiPlayerGameModeMixin {
 	private ClientPacketListener connection;
 
 	@Shadow
-	protected abstract void startPrediction(ClientLevel clientLevel, PredictiveAction predictiveAction);
+	protected abstract void startPrediction(ClientLevel level, PredictiveAction predictiveAction);
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAbilities()Lnet/minecraft/world/entity/player/Abilities;", ordinal = 0), method = "startDestroyBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
@@ -91,23 +91,23 @@ public abstract class MultiPlayerGameModeMixin {
 	}
 
 	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
-	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "oldState") BlockState blockState) {
-		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(minecraft.level, minecraft.player, pos, blockState);
+	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "oldState") BlockState oldState) {
+		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(minecraft.level, minecraft.player, pos, oldState);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V"), method = "useItemOn", cancellable = true)
-	public void interactBlock(LocalPlayer player, InteractionHand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> info) {
+	public void interactBlock(LocalPlayer player, InteractionHand hand, BlockHitResult blockHit, CallbackInfoReturnable<InteractionResult> info) {
 		// hook interactBlock between the world border check and the actual block interaction to invoke the use block event first
 		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
 
 		if (player.isSpectator()) return; // vanilla spectator check happens later, repeat it before the event to avoid false invocations
 
-		InteractionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.level(), hand, blockHitResult);
+		InteractionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.level(), hand, blockHit);
 
 		if (result != InteractionResult.PASS) {
 			if (result.consumesAction()) {
 				// send interaction packet to the server with a new sequentially assigned id
-				startPrediction((ClientLevel) player.level(), id -> new ServerboundUseItemOnPacket(hand, blockHitResult, id));
+				startPrediction((ClientLevel) player.level(), id -> new ServerboundUseItemOnPacket(hand, blockHit, id));
 			}
 
 			info.setReturnValue(result);

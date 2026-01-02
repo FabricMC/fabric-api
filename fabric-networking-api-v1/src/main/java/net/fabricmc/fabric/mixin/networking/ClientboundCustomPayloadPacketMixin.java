@@ -55,8 +55,8 @@ public class ClientboundCustomPayloadPacketMixin implements SplittablePacket, Ge
 					ordinal = 0
 			)
 	)
-	private static StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload> wrapPlayCodec(CustomPacketPayload.FallbackProvider<RegistryFriendlyByteBuf> unknownCodecFactory, List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ?>> types, Operation<StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload>> original) {
-		StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload> codec = original.call(unknownCodecFactory, types);
+	private static StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload> wrapPlayCodec(CustomPacketPayload.FallbackProvider<RegistryFriendlyByteBuf> fallback, List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ?>> types, Operation<StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload>> original) {
+		StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload> codec = original.call(fallback, types);
 		FabricCustomPayloadStreamCodec<RegistryFriendlyByteBuf> fabricCodec = (FabricCustomPayloadStreamCodec<RegistryFriendlyByteBuf>) codec;
 		fabricCodec.fabric_setCustomPayloadTypeProvider((buf, identifier) -> PayloadTypeRegistryImpl.CLIENTBOUND_PLAY.get(identifier));
 		return codec;
@@ -70,8 +70,8 @@ public class ClientboundCustomPayloadPacketMixin implements SplittablePacket, Ge
 					ordinal = 1
 			)
 	)
-	private static StreamCodec<FriendlyByteBuf, CustomPacketPayload> wrapConfigCodec(CustomPacketPayload.FallbackProvider<FriendlyByteBuf> unknownCodecFactory, List<CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ?>> types, Operation<StreamCodec<FriendlyByteBuf, CustomPacketPayload>> original) {
-		StreamCodec<FriendlyByteBuf, CustomPacketPayload> codec = original.call(unknownCodecFactory, types);
+	private static StreamCodec<FriendlyByteBuf, CustomPacketPayload> wrapConfigCodec(CustomPacketPayload.FallbackProvider<FriendlyByteBuf> fallback, List<CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ?>> types, Operation<StreamCodec<FriendlyByteBuf, CustomPacketPayload>> original) {
+		StreamCodec<FriendlyByteBuf, CustomPacketPayload> codec = original.call(fallback, types);
 		FabricCustomPayloadStreamCodec<FriendlyByteBuf> fabricCodec = (FabricCustomPayloadStreamCodec<FriendlyByteBuf>) codec;
 		fabricCodec.fabric_setCustomPayloadTypeProvider((buf, identifier) -> PayloadTypeRegistryImpl.CLIENTBOUND_CONFIGURATION.get(identifier));
 		return codec;

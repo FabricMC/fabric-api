@@ -53,7 +53,7 @@ abstract class LevelChunkMixin extends AttachmentTargetsMixin implements Attachm
 	public abstract Map<BlockPos, BlockEntity> getBlockEntities();
 
 	@Inject(method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ProtoChunk;Lnet/minecraft/world/level/chunk/LevelChunk$PostLoadProcessor;)V", at = @At("TAIL"))
-	private void transferProtoChunkAttachment(ServerLevel level, ProtoChunk protoChunk, LevelChunk.PostLoadProcessor entityLoader, CallbackInfo ci) {
+	private void transferProtoChunkAttachment(ServerLevel level, ProtoChunk protoChunk, LevelChunk.PostLoadProcessor postLoad, CallbackInfo ci) {
 		AttachmentTargetImpl.transfer(protoChunk, this, false);
 	}
 

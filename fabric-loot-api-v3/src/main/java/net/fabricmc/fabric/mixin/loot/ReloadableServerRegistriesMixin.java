@@ -67,8 +67,8 @@ abstract class ReloadableServerRegistriesMixin {
 	private static final WeakHashMap<RegistryOps<JsonElement>, HolderLookup.Provider> WRAPPERS = new WeakHashMap<>();
 
 	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/HolderLookup$Provider;createSerializationContext(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/resources/RegistryOps;"))
-	private static RegistryOps<JsonElement> storeOps(HolderLookup.Provider holder, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
-		RegistryOps<JsonElement> created = original.call(holder, ops);
+	private static RegistryOps<JsonElement> storeOps(HolderLookup.Provider holder, DynamicOps<JsonElement> parent, Operation<RegistryOps<JsonElement>> original) {
+		RegistryOps<JsonElement> created = original.call(holder, parent);
 		WRAPPERS.put(created, holder);
 		return created;
 	}
@@ -82,8 +82,8 @@ abstract class ReloadableServerRegistriesMixin {
 	}
 
 	@Inject(method = "lambda$scheduleRegistryLoad$0", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
-	private static <T extends Validatable> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local(name = "elements") Map<Identifier, T> map) {
-		map.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
+	private static <T extends Validatable> void modifyLootTable(LootDataType<T> type, ResourceManager manager, RegistryOps<JsonElement> ops, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local(name = "elements") Map<Identifier, T> elements) {
+		elements.replaceAll((identifier, t) -> modifyLootTable(t, identifier, ops));
 	}
 
 	@Unique
@@ -114,12 +114,12 @@ abstract class ReloadableServerRegistriesMixin {
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "lambda$scheduleRegistryLoad$0", at = @At("RETURN"))
-	private static <T extends Validatable> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir) {
-		if (lootDataType != LootDataType.TABLE) return;
+	private static <T extends Validatable> void onLootTablesLoaded(LootDataType<T> type, ResourceManager manager, RegistryOps<JsonElement> ops, CallbackInfoReturnable<WritableRegistry<?>> cir) {
+		if (type != LootDataType.TABLE) return;
 
 		Registry<LootTable> lootTableRegistry = (Registry<LootTable>) cir.getReturnValue();
 
-		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, lootTableRegistry);
+		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(manager, lootTableRegistry);
 		LootUtil.SOURCES.remove();
 		lootTableRegistry.listElements().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setHolder(reference));
 	}

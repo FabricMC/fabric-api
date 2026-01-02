@@ -49,8 +49,8 @@ public abstract class FuelValuesMixin {
 			),
 			allow = 1
 	)
-	private static FuelValues.Builder build(FuelValues.Builder builder, TagKey<Item> tag, Operation<FuelValues.Builder> operation, @Local(argsOnly = true, name = "registries") HolderLookup.Provider registries, @Local(argsOnly = true, name = "enabledFeatures") FeatureFlagSet features, @Local(argsOnly = true, name = "baseUnit") int baseSmeltTime) {
-		final var context = new FuelRegistryEventsContextImpl(registries, features, baseSmeltTime);
+	private static FuelValues.Builder build(FuelValues.Builder builder, TagKey<Item> tag, Operation<FuelValues.Builder> operation, @Local(argsOnly = true, name = "registries") HolderLookup.Provider registries, @Local(argsOnly = true, name = "enabledFeatures") FeatureFlagSet enabledFeatures, @Local(argsOnly = true, name = "baseUnit") int baseUnit) {
+		final var context = new FuelRegistryEventsContextImpl(registries, enabledFeatures, baseUnit);
 
 		FuelValueEvents.BUILD.invoker().build(builder, context);
 

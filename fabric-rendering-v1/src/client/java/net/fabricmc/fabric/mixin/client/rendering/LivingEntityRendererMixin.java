@@ -36,10 +36,10 @@ abstract class LivingEntityRendererMixin {
 			method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;shouldRender(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EquipmentSlot;)Z")
 	)
-	private boolean toggleDefaultHeadItem(ItemStack headStack, EquipmentSlot slot, Operation<Boolean> original, @Local(argsOnly = true, name = "entity") LivingEntity entity) {
+	private boolean toggleDefaultHeadItem(ItemStack itemStack, EquipmentSlot slot, Operation<Boolean> original, @Local(argsOnly = true, name = "entity") LivingEntity entity) {
 		// Return value: true if the item isn't rendered
-		if (original.call(headStack, slot)) return true;
-		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(headStack.getItem());
-		return renderer != null && !renderer.shouldRenderDefaultHeadItem(entity, headStack);
+		if (original.call(itemStack, slot)) return true;
+		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(itemStack.getItem());
+		return renderer != null && !renderer.shouldRenderDefaultHeadItem(entity, itemStack);
 	}
 }

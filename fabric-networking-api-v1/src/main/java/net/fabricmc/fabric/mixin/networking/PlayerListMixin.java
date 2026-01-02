@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 @Mixin(PlayerList.class)
 abstract class PlayerListMixin {
 	@Inject(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/game/ClientboundPlayerAbilitiesPacket;<init>(Lnet/minecraft/world/entity/player/Abilities;)V"))
-	private void handlePlayerConnection(Connection connection, ServerPlayer player, CommonListenerCookie arg, CallbackInfo ci) {
+	private void handlePlayerConnection(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
 		ServerNetworkingImpl.getAddon(player.connection).onClientReady();
 	}
 }

@@ -38,7 +38,7 @@ public class ClientboundCustomQueryPacketMixin {
 	private static int MAX_PAYLOAD_SIZE;
 
 	@Inject(method = "readPayload", at = @At("HEAD"), cancellable = true)
-	private static void readPayload(Identifier id, FriendlyByteBuf buf, CallbackInfoReturnable<CustomQueryPayload> cir) {
-		cir.setReturnValue(new FriendlyByteBufLoginQueryRequestPayload(id, PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
+	private static void readPayload(Identifier id, FriendlyByteBuf input, CallbackInfoReturnable<CustomQueryPayload> cir) {
+		cir.setReturnValue(new FriendlyByteBufLoginQueryRequestPayload(id, PayloadHelper.read(input, MAX_PAYLOAD_SIZE)));
 	}
 }

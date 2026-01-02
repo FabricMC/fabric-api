@@ -45,16 +45,16 @@ public abstract class HumanoidArmorLayerMixin<S extends HumanoidRenderState, M e
 	}
 
 	@Inject(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/HumanoidRenderState;FF)V", at = @At("HEAD"))
-	private void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, S bipedEntityRenderState, float f, float g, CallbackInfo ci) {
-		this.humanoidRenderState = bipedEntityRenderState;
+	private void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, S state, float yRot, float xRot, CallbackInfo ci) {
+		this.humanoidRenderState = state;
 	}
 
 	@Inject(method = "renderArmorPiece", at = @At("HEAD"), cancellable = true)
-	private void renderArmor(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack stack, EquipmentSlot armorSlot, int light, S bipedEntityRenderState, CallbackInfo ci) {
-		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
+	private void renderArmor(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack itemStack, EquipmentSlot slot, int lightCoords, S state, CallbackInfo ci) {
+		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(itemStack.getItem());
 
 		if (renderer != null) {
-			renderer.render(poseStack, submitNodeCollector, stack, humanoidRenderState, armorSlot, light, (HumanoidModel<HumanoidRenderState>) getParentModel());
+			renderer.render(poseStack, submitNodeCollector, itemStack, humanoidRenderState, slot, lightCoords, (HumanoidModel<HumanoidRenderState>) getParentModel());
 			ci.cancel();
 		}
 	}

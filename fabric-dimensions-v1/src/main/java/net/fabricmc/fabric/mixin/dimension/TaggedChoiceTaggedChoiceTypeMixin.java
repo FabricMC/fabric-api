@@ -54,10 +54,10 @@ public class TaggedChoiceTaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExt
 	@Inject(
 			method = "getMapCodec", at = @At("HEAD"), cancellable = true
 	)
-	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends MapCodec<?>>> cir) {
+	private void onGetCodec(K key, CallbackInfoReturnable<DataResult<? extends MapCodec<?>>> cir) {
 		if (failSoft) {
-			if (!types.containsKey(k)) {
-				LOGGER.warn("Not recognizing key {}. Using pass-through codec. {}", k, this);
+			if (!types.containsKey(key)) {
+				LOGGER.warn("Not recognizing key {}. Using pass-through codec. {}", key, this);
 				cir.setReturnValue(DataResult.success(MapCodec.assumeMapUnsafe(Codec.PASSTHROUGH)));
 			}
 		}

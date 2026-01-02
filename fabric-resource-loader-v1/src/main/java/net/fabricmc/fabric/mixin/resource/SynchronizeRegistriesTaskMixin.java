@@ -47,26 +47,26 @@ public abstract class SynchronizeRegistriesTaskMixin {
 	private List<KnownPack> requestedPacks;
 
 	@Shadow
-	protected abstract void sendRegistries(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks);
+	protected abstract void sendRegistries(Consumer<Packet<?>> connection, Set<KnownPack> negotiatedPacks);
 
 	@Inject(method = "handleResponse", at = @At("HEAD"), cancellable = true)
-	public void onSelectKnownPacks(List<KnownPack> clientKnownPacks, Consumer<Packet<?>> sender, CallbackInfo ci) {
-		if (new HashSet<>(this.requestedPacks).containsAll(clientKnownPacks)) {
-			this.sendRegistries(sender, Set.copyOf(clientKnownPacks));
+	public void onSelectKnownPacks(List<KnownPack> acceptedPacks, Consumer<Packet<?>> connection, CallbackInfo ci) {
+		if (new HashSet<>(this.requestedPacks).containsAll(acceptedPacks)) {
+			this.sendRegistries(connection, Set.copyOf(acceptedPacks));
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "sendRegistries", at = @At("HEAD"))
-	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks, CallbackInfo ci) {
-		LOGGER.debug("Synchronizing registries with common known packs: {}", commonKnownPacks);
+	public void syncRegistryAndTags(Consumer<Packet<?>> connection, Set<KnownPack> negotiatedPacks, CallbackInfo ci) {
+		LOGGER.debug("Synchronizing registries with common known packs: {}", negotiatedPacks);
 	}
 
 	@Inject(method = "start", at = @At("HEAD"), cancellable = true)
-	private void sendPacket(Consumer<Packet<?>> sender, CallbackInfo ci) {
+	private void sendPacket(Consumer<Packet<?>> connection, CallbackInfo ci) {
 		if (this.requestedPacks.size() > ModResourcePackCreator.MAX_KNOWN_PACKS) {
 			LOGGER.warn("Too many knownPacks: Found {}; max {}", this.requestedPacks.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
-			sender.accept(new ClientboundSelectKnownPacks(this.requestedPacks.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS)));
+			connection.accept(new ClientboundSelectKnownPacks(this.requestedPacks.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS)));
 			ci.cancel();
 		}
 	}

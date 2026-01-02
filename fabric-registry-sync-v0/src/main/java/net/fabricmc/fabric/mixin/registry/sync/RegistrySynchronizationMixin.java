@@ -42,10 +42,10 @@ abstract class RegistrySynchronizationMixin {
 	 */
 	@Dynamic("lambda$ownedNetworkableRegistries$0: Stream.filter in ownedNetworkableRegistries")
 	@Inject(method = "lambda$ownedNetworkableRegistries$0", at = @At("HEAD"), cancellable = true)
-	private static void filterNonSyncedEntries(RegistryAccess.RegistryEntry<?> entry, CallbackInfoReturnable<Boolean> cir) {
-		boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key());
+	private static void filterNonSyncedEntries(RegistryAccess.RegistryEntry<?> e, CallbackInfoReturnable<Boolean> cir) {
+		boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(e.key());
 
-		if (canSkip && entry.value().size() == 0) {
+		if (canSkip && e.value().size() == 0) {
 			cir.setReturnValue(false);
 		}
 	}
@@ -55,7 +55,7 @@ abstract class RegistrySynchronizationMixin {
 	 */
 	@Dynamic("lambda$packRegistry$0: Optional.ifPresent in packRegistry")
 	@Inject(method = "lambda$packRegistry$0", at = @At("HEAD"), cancellable = true)
-	private static void filterNonSyncedEntriesAgain(Set set, RegistryDataLoader.RegistryData entry, DynamicOps dynamicOps, BiConsumer biConsumer, Registry registry, CallbackInfo ci) {
+	private static void filterNonSyncedEntriesAgain(Set clientKnownPacks, RegistryDataLoader.RegistryData registryData, DynamicOps ops, BiConsumer output, Registry registry, CallbackInfo ci) {
 		boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(registry.key());
 
 		if (canSkip && registry.size() == 0) {

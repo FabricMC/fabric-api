@@ -53,9 +53,9 @@ public class ChiseledBookShelfBlockEntityMixin implements SpecialLogicContainer 
 	}
 
 	@Inject(at = @At("HEAD"), method = "setItem", cancellable = true)
-	public void setStackBypass(int slot, ItemStack stack, CallbackInfo ci) {
+	public void setStackBypass(int slot, ItemStack itemStack, CallbackInfo ci) {
 		if (fabric_suppressSpecialLogic) {
-			items.set(slot, stack);
+			items.set(slot, itemStack);
 			ci.cancel();
 		}
 	}

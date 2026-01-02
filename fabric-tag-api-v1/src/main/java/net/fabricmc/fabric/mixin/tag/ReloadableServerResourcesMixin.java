@@ -44,8 +44,8 @@ abstract class ReloadableServerResourcesMixin {
 	private LayeredRegistryAccess<RegistryLayer> dynamicRegistriesByType;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void storeDynamicRegistries(LayeredRegistryAccess<RegistryLayer> dynamicRegistries, HolderLookup.Provider registries, FeatureFlagSet enabledFeatures, Commands.CommandSelection environment, List<?> pendingTagLoads, PermissionSet permissionPredicate, CallbackInfo ci) {
-		dynamicRegistriesByType = dynamicRegistries;
+	private void storeDynamicRegistries(LayeredRegistryAccess<RegistryLayer> fullLayers, HolderLookup.Provider loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List<?> postponedTags, PermissionSet functionCompilationPermissions, CallbackInfo ci) {
+		dynamicRegistriesByType = fullLayers;
 	}
 
 	@Inject(method = "updateStaticRegistryTags", at = @At("RETURN"))

@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 @Mixin(HumanoidMobRenderer.class)
 abstract class HumanoidMobRendererMixin {
 	@WrapOperation(method = "getEquipmentIfRenderable", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;shouldRender(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EquipmentSlot;)Z"))
-	private static boolean permitArmorWithCustomRenderers(ItemStack stack, EquipmentSlot slot, Operation<Boolean> original) {
-		return original.call(stack, slot) || ArmorRendererRegistryImpl.get(stack.getItem()) != null;
+	private static boolean permitArmorWithCustomRenderers(ItemStack itemStack, EquipmentSlot slot, Operation<Boolean> original) {
+		return original.call(itemStack, slot) || ArmorRendererRegistryImpl.get(itemStack.getItem()) != null;
 	}
 }

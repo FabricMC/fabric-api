@@ -54,7 +54,7 @@ public abstract class ServerConfigurationPacketListenerImplMixin extends ServerC
 	private ConfigurationTask currentTask;
 
 	@Shadow
-	protected abstract void finishCurrentTask(ConfigurationTask.Type key);
+	protected abstract void finishCurrentTask(ConfigurationTask.Type taskTypeToFinish);
 
 	@Shadow
 	@Final
@@ -177,8 +177,8 @@ public abstract class ServerConfigurationPacketListenerImplMixin extends ServerC
 	}
 
 	@WrapOperation(method = "handleConfigurationFinished", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/RegistryFriendlyByteBuf;decorator(Lnet/minecraft/core/RegistryAccess;)Ljava/util/function/Function;"))
-	private Function<ByteBuf, RegistryFriendlyByteBuf> bindChannelInfo(RegistryAccess registryManager, Operation<Function<ByteBuf, RegistryFriendlyByteBuf>> original) {
-		return original.call(registryManager).andThen(registryByteBuf -> {
+	private Function<ByteBuf, RegistryFriendlyByteBuf> bindChannelInfo(RegistryAccess registryAccess, Operation<Function<ByteBuf, RegistryFriendlyByteBuf>> original) {
+		return original.call(registryAccess).andThen(registryByteBuf -> {
 			FabricRegistryFriendlyByteBuf fabricRegistryFriendlyByteBuf = (FabricRegistryFriendlyByteBuf) registryByteBuf;
 			fabricRegistryFriendlyByteBuf.fabric_setSendableConfigurationChannels(Set.copyOf(addon.getSendableChannels()));
 			return registryByteBuf;

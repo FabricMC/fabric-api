@@ -53,7 +53,7 @@ abstract class CreativeModeTabMixin implements FabricCreativeModeTabImpl {
 
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "buildContents", at = @At("TAIL"))
-	public void getStacks(CreativeModeTab.ItemDisplayParameters context, CallbackInfo ci) {
+	public void getStacks(CreativeModeTab.ItemDisplayParameters parameters, CallbackInfo ci) {
 		final CreativeModeTab self = (CreativeModeTab) (Object) this;
 		final ResourceKey<CreativeModeTab> resourceKey = BuiltInRegistries.CREATIVE_MODE_TAB.getResourceKey(self).orElseThrow(() -> new IllegalStateException("Unregistered creative mode tab : " + self));
 
@@ -69,10 +69,10 @@ abstract class CreativeModeTabMixin implements FabricCreativeModeTabImpl {
 		// Convert the entries to lists
 		var mutableDisplayStacks = new LinkedList<>(displayItems);
 		var mutableSearchTabStacks = new LinkedList<>(displayItemsSearchTab);
-		var entries = new FabricCreativeModeTabOutput(context, mutableDisplayStacks, mutableSearchTabStacks);
+		var entries = new FabricCreativeModeTabOutput(parameters, mutableDisplayStacks, mutableSearchTabStacks);
 
 		// Now trigger the events
-		if (resourceKey != CreativeModeTabs.OP_BLOCKS || context.hasPermissions()) {
+		if (resourceKey != CreativeModeTabs.OP_BLOCKS || parameters.hasPermissions()) {
 			final Event<CreativeModeTabEvents.ModifyOutput> modifyEntriesEvent = CreativeModeTabEventsImpl.getModifyOutputEvent(resourceKey);
 
 			if (modifyEntriesEvent != null) {

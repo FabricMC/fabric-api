@@ -36,7 +36,7 @@ public class MultiPackResourceManagerMixin implements FabricMultiPackResourceMan
 	private PackType packType;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(PackType type, List<PackResources> list, CallbackInfo ci) {
+	private void init(PackType type, List<PackResources> packs, CallbackInfo ci) {
 		this.packType = type;
 	}
 

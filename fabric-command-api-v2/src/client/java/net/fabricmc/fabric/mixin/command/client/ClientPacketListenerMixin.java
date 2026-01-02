@@ -83,7 +83,7 @@ abstract class ClientPacketListenerMixin implements ClientCommandInternals.LastR
 	}
 
 	@Inject(method = "sendUnattendedCommand", at = @At("HEAD"), cancellable = true)
-	private void onSendCommand(String command, Screen screen, CallbackInfo info) {
+	private void onSendCommand(String command, Screen screenAfterCommand, CallbackInfo info) {
 		if (ClientCommandInternals.executeCommand(command)) {
 			info.cancel();
 		}

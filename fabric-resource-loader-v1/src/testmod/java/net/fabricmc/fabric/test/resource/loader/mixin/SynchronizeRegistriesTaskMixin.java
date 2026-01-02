@@ -40,11 +40,11 @@ public class SynchronizeRegistriesTaskMixin {
 	private List<KnownPack> requestedPacks;
 
 	@Inject(method = "sendRegistries", at = @At("HEAD"))
-	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks, CallbackInfo ci) {
-		BuiltinPackTestMod.LOGGER.info("Synchronizing registries with common known packs: {}", commonKnownPacks);
+	public void syncRegistryAndTags(Consumer<Packet<?>> connection, Set<KnownPack> negotiatedPacks, CallbackInfo ci) {
+		BuiltinPackTestMod.LOGGER.info("Synchronizing registries with common known packs: {}", negotiatedPacks);
 
-		if (!commonKnownPacks.containsAll(this.requestedPacks)) {
-			BuiltinPackTestMod.LOGGER.error("(Ignore when not local client) Not all server mod data packs known to client. Missing: {}", this.requestedPacks.stream().filter(knownPack -> !commonKnownPacks.contains(knownPack)).toList());
+		if (!negotiatedPacks.containsAll(this.requestedPacks)) {
+			BuiltinPackTestMod.LOGGER.error("(Ignore when not local client) Not all server mod data packs known to client. Missing: {}", this.requestedPacks.stream().filter(knownPack -> !negotiatedPacks.contains(knownPack)).toList());
 		}
 	}
 }

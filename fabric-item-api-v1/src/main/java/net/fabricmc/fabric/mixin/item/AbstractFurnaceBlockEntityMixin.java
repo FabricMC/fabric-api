@@ -36,8 +36,8 @@ public abstract class AbstractFurnaceBlockEntityMixin {
 	private static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
 
 	@Inject(method = "serverTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;"), allow = 1)
-	private static void getStackRemainder(ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci, @Local(name = "fuel") ItemStack itemStack) {
-		REMAINDER_STACK.set(itemStack.getCraftingRemainder());
+	private static void getStackRemainder(ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity entity, CallbackInfo ci, @Local(name = "fuel") ItemStack fuel) {
+		REMAINDER_STACK.set(fuel.getCraftingRemainder());
 	}
 
 	@ModifyArg(method = "serverTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/NonNullList;set(ILjava/lang/Object;)Ljava/lang/Object;"), index = 1, allow = 1)

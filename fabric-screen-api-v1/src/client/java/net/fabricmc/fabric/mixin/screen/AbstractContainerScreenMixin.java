@@ -33,15 +33,15 @@ public abstract class AbstractContainerScreenMixin extends Screen {
 	}
 
 	@Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
-	private void callSuperMouseReleased(MouseButtonEvent ctx, CallbackInfoReturnable<Boolean> cir) {
-		if (super.mouseReleased(ctx)) {
+	private void callSuperMouseReleased(MouseButtonEvent event, CallbackInfoReturnable<Boolean> cir) {
+		if (super.mouseReleased(event)) {
 			cir.setReturnValue(true);
 		}
 	}
 
 	@Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
-	private void callSuperMouseReleased(MouseButtonEvent ctx, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
-		if (super.mouseDragged(ctx, deltaX, deltaY)) {
+	private void callSuperMouseReleased(MouseButtonEvent event, double dx, double dy, CallbackInfoReturnable<Boolean> cir) {
+		if (super.mouseDragged(event, dx, dy)) {
 			cir.setReturnValue(true);
 		}
 	}

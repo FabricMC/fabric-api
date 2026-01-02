@@ -30,8 +30,8 @@ import net.fabricmc.fabric.impl.resource.client.PackTooltipComponent;
 @Mixin(ClientTooltipComponent.class)
 public interface ClientTooltipComponentMixin {
 	@Inject(method = "create(Lnet/minecraft/world/inventory/tooltip/TooltipComponent;)Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipComponent;", at = @At("HEAD"), cancellable = true)
-	private static void onCreate(TooltipComponent tooltipComponent, CallbackInfoReturnable<ClientTooltipComponent> cir) {
-		if (tooltipComponent instanceof PackTooltipComponent packTooltipComponent) {
+	private static void onCreate(TooltipComponent component, CallbackInfoReturnable<ClientTooltipComponent> cir) {
+		if (component instanceof PackTooltipComponent packTooltipComponent) {
 			cir.setReturnValue(packTooltipComponent);
 		}
 	}

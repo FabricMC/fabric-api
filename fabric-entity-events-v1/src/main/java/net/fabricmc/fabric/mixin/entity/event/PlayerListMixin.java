@@ -34,17 +34,17 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 @Mixin(PlayerList.class)
 abstract class PlayerListMixin {
 	@Inject(method = "respawn", at = @At("TAIL"))
-	private void afterRespawn(ServerPlayer oldPlayer, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
+	private void afterRespawn(ServerPlayer serverPlayer, boolean keepAllPlayerData, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir) {
 		ServerPlayer newPlayer = cir.getReturnValue();
-		ServerPlayerEvents.AFTER_RESPAWN.invoker().afterRespawn(oldPlayer, newPlayer, alive);
+		ServerPlayerEvents.AFTER_RESPAWN.invoker().afterRespawn(serverPlayer, newPlayer, keepAllPlayerData);
 
-		if (oldPlayer.level() != newPlayer.level()) {
-			ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel(newPlayer, oldPlayer.level(), newPlayer.level());
+		if (serverPlayer.level() != newPlayer.level()) {
+			ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel(newPlayer, serverPlayer.level(), newPlayer.level());
 		}
 	}
 
 	@Inject(method = "placeNewPlayer", at = @At("RETURN"))
-	private void firePlayerJoinEvent(Connection connection, ServerPlayer player, CommonListenerCookie clientData, CallbackInfo ci) {
+	private void firePlayerJoinEvent(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
 		ServerPlayerEvents.JOIN.invoker().onJoin(player);
 	}
 

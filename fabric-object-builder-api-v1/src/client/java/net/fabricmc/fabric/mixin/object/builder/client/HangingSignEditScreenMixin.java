@@ -33,12 +33,12 @@ public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen 
 	}
 
 	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/Identifier;withDefaultNamespace(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;"))
-	private Identifier init(String id, Operation<Identifier> original) {
+	private Identifier init(String path, Operation<Identifier> original) {
 		if (woodType.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.parse(woodType.name());
-			return identifier.withPath(path -> "textures/gui/hanging_signs/" + path + ".png");
+			return identifier.withPath(p -> "textures/gui/hanging_signs/" + p + ".png");
 		}
 
-		return original.call(id);
+		return original.call(path);
 	}
 }

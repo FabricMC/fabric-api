@@ -44,7 +44,7 @@ public class GameRendererMixin {
 	private SubmitNodeStorage submitNodeStorage;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void guiRendererReady(Minecraft client, ItemInHandRenderer firstPersonHeldItemRenderer, RenderBuffers buffers, BlockRenderDispatcher blockRenderManager, CallbackInfo ci) {
+	private void guiRendererReady(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, RenderBuffers renderBuffers, BlockRenderDispatcher blockRenderer, CallbackInfo ci) {
 		GuiRendererExtensions guiRenderer = (GuiRendererExtensions) this.guiRenderer;
 		guiRenderer.fabric_onReady(this.submitNodeStorage);
 	}

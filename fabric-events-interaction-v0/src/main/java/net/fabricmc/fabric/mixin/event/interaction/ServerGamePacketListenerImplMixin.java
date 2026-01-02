@@ -41,7 +41,7 @@ public abstract class ServerGamePacketListenerImplMixin {
 	public ServerPlayer player;
 
 	@Shadow
-	private void tryPickItem(ItemStack stack) {
+	private void tryPickItem(ItemStack itemStack) {
 		throw new AssertionError();
 	}
 

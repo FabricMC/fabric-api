@@ -39,20 +39,20 @@ abstract class ScreenEffectRendererMixin {
 	private static BlockPos pos;
 
 	@Redirect(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getParticleIcon(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
-	private static TextureAtlasSprite getParticleIconProxy(BlockModelShaper models, BlockState state, @Local(name = "player") Player player) {
+	private static TextureAtlasSprite getParticleIconProxy(BlockModelShaper models, BlockState blockState, @Local(name = "player") Player player) {
 		if (pos != null) {
-			TextureAtlasSprite sprite = models.getParticleIcon(state, player.level(), pos);
+			TextureAtlasSprite sprite = models.getParticleIcon(blockState, player.level(), pos);
 			pos = null;
 			return sprite;
 		}
 
-		return models.getParticleIcon(state);
+		return models.getParticleIcon(blockState);
 	}
 
 	@Inject(method = "getViewBlockingState", at = @At("RETURN"))
-	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos mutable) {
+	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos testPos) {
 		if (cir.getReturnValue() != null) {
-			pos = mutable.immutable();
+			pos = testPos.immutable();
 		} else {
 			pos = null;
 		}

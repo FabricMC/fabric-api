@@ -33,11 +33,11 @@ public interface ClientTooltipComponentMixin {
 			at = @At("HEAD"),
 			cancellable = true
 	)
-	private static void convertCustomTooltipComponent(TooltipComponent data, CallbackInfoReturnable<ClientTooltipComponent> cir) {
-		ClientTooltipComponent component = ClientTooltipComponentCallback.EVENT.invoker().getClientComponent(data);
+	private static void convertCustomTooltipComponent(TooltipComponent component, CallbackInfoReturnable<ClientTooltipComponent> cir) {
+		ClientTooltipComponent clientComponent = ClientTooltipComponentCallback.EVENT.invoker().getClientComponent(component);
 
-		if (component != null) {
-			cir.setReturnValue(component);
+		if (clientComponent != null) {
+			cir.setReturnValue(clientComponent);
 		}
 	}
 }

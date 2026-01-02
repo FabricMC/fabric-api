@@ -69,8 +69,8 @@ abstract class ModelManagerMixin implements FabricModelManager {
 	}
 
 	@Inject(method = "reload", at = @At("HEAD"))
-	private void onHeadReload(PreparableReloadListener.SharedState sharedState, Executor prepareExecutor, PreparableReloadListener.PreparationBarrier synchronizer, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(sharedState, prepareExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new, prepareExecutor);
+	private void onHeadReload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(currentReload, taskExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new, taskExecutor);
 	}
 
 	@ModifyReturnValue(method = "reload", at = @At("RETURN"))
@@ -118,12 +118,12 @@ abstract class ModelManagerMixin implements FabricModelManager {
 
 	@Inject(method = "discoverModelDependencies", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelDiscovery;resolve()Ljava/util/Map;"))
 	private static void resolveExtraModels(
-			Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos result, CallbackInfoReturnable<?> cir,
-			@Local(name = "result") ModelDiscovery collector
+			Map<Identifier, UnbakedModel> allModels, BlockStateModelLoader.LoadedModels blockStateModels, ClientItemInfoLoader.LoadedClientInfos itemInfos, CallbackInfoReturnable<?> cir,
+			@Local(name = "result") ModelDiscovery result
 	) {
 		// We know eventDispatcherFuture is available, as it is required by the item and block models (hookModels).
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
-		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(collector::addRoot);
+		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(result::addRoot);
 	}
 
 	@Inject(method = "apply", at = @At(value = "RETURN"))

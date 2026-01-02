@@ -34,9 +34,9 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin {
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
-	public void onPlayerInteractEntity(Entity target, CallbackInfo info) {
+	public void onPlayerInteractEntity(Entity entity, CallbackInfo info) {
 		ServerPlayer player = (ServerPlayer) (Object) this;
-		InteractionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.level(), InteractionHand.MAIN_HAND, target, null);
+		InteractionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.level(), InteractionHand.MAIN_HAND, entity, null);
 
 		if (result != InteractionResult.PASS) {
 			info.cancel();
@@ -44,7 +44,7 @@ public class ServerPlayerMixin {
 	}
 
 	@Inject(method = "calculateGameModeForNewPlayer", at = @At("HEAD"), cancellable = true)
-	public void fakePlayerGameMode(GameType backupGameMode, CallbackInfoReturnable<GameType> cir) {
+	public void fakePlayerGameMode(GameType loadedGameType, CallbackInfoReturnable<GameType> cir) {
 		// Set the default game mode of the fake player to survival, regardless of the servers forced game mode.
 		if ((Object) this instanceof FakePlayer) {
 			cir.setReturnValue(GameType.SURVIVAL);

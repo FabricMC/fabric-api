@@ -55,12 +55,12 @@ class LanguageMixin {
 	}
 
 	@Redirect(method = "parseTranslations(Ljava/util/function/BiConsumer;Ljava/lang/String;)V", at = @At(value = "INVOKE", target = "Ljava/lang/Class;getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;"))
-	private static InputStream readCorrectVanillaResource(Class instance, String path) throws IOException {
+	private static InputStream readCorrectVanillaResource(Class instance, String name) throws IOException {
 		ModContainer mod = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow();
-		Path langPath = mod.findPath(path).orElse(null);
+		Path langPath = mod.findPath(name).orElse(null);
 
 		if (langPath == null) {
-			throw new IOException("Could not read %s from minecraft ModContainer".formatted(path));
+			throw new IOException("Could not read %s from minecraft ModContainer".formatted(name));
 		} else {
 			return Files.newInputStream(langPath);
 		}
@@ -77,6 +77,6 @@ class LanguageMixin {
 	}
 
 	@Shadow
-	public static void loadFromJson(InputStream inputStream, BiConsumer<String, String> entryConsumer) {
+	public static void loadFromJson(InputStream stream, BiConsumer<String, String> output) {
 	}
 }

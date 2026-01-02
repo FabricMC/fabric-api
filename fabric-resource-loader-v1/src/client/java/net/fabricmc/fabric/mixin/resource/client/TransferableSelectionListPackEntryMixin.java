@@ -60,7 +60,7 @@ class TransferableSelectionListPackEntryMixin {
 
 	@Inject(method = "renderContent", at = @At("RETURN"))
 	private void onRenderContent(
-			GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci
+			GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float a, CallbackInfo ci
 	) {
 		if (hovered) {
 			Component name = null;

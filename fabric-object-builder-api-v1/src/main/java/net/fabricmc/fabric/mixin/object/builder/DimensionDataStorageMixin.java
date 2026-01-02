@@ -32,11 +32,11 @@ class DimensionDataStorageMixin {
 	 * Handle mods passing a null DataFixTypes to a PersistentState.Type.
 	 */
 	@WrapOperation(method = "readTagFromDisk", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/datafix/DataFixTypes;update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;"))
-	private CompoundTag handleNullDataFixType(DataFixTypes dataFixTypes, DataFixer dataFixer, CompoundTag nbt, int oldVersion, int newVersion, Operation<CompoundTag> original) {
+	private CompoundTag handleNullDataFixType(DataFixTypes dataFixTypes, DataFixer fixer, CompoundTag tag, int fromVersion, int toVersion, Operation<CompoundTag> original) {
 		if (dataFixTypes == null) {
-			return nbt;
+			return tag;
 		}
 
-		return original.call(dataFixTypes, dataFixer, nbt, oldVersion, newVersion);
+		return original.call(dataFixTypes, fixer, tag, fromVersion, toVersion);
 	}
 }

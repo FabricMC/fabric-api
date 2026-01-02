@@ -69,7 +69,7 @@ public class SimpleReloadInstanceMixin {
 			argsOnly = true,
 			name = "enableProfiling"
 	)
-	private static boolean adjustProfiledCheck(boolean profiled) {
-		return profiled || ResourceLoaderImpl.DEBUG_PROFILE_RESOURCE_RELOADERS;
+	private static boolean adjustProfiledCheck(boolean enableProfiling) {
+		return enableProfiling || ResourceLoaderImpl.DEBUG_PROFILE_RESOURCE_RELOADERS;
 	}
 }

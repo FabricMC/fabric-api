@@ -43,12 +43,12 @@ public class NoiseChunkMixin {
 	private long seed;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(int horizontalSize, RandomState randomState, int i, int j, NoiseSettings generationShapeConfig, DensityFunctions.BeardifierOrMarker arg, NoiseGeneratorSettings chunkGeneratorSettings, Aquifer.FluidPicker fluidLevelSampler, Blender blender, CallbackInfo ci) {
+	private void init(int cellCountXZ, RandomState randomState, int chunkMinBlockX, int chunkMinBlockZ, NoiseSettings noiseSettings, DensityFunctions.BeardifierOrMarker beardifier, NoiseGeneratorSettings settings, Aquifer.FluidPicker globalFluidPicker, Blender blender, CallbackInfo ci) {
 		seed = ((MultiNoiseSamplerHooks) (Object) randomState.sampler()).fabric_getSeed();
 	}
 
 	@Inject(method = "cachedClimateSampler", at = @At("RETURN"))
-	private void createMultiNoiseSampler(NoiseRouter noiseRouter, List<Climate.ParameterPoint> list, CallbackInfoReturnable<Climate.Sampler> cir) {
+	private void createMultiNoiseSampler(NoiseRouter noises, List<Climate.ParameterPoint> spawnTarget, CallbackInfoReturnable<Climate.Sampler> cir) {
 		((MultiNoiseSamplerHooks) (Object) cir.getReturnValue()).fabric_setSeed(seed);
 	}
 }
