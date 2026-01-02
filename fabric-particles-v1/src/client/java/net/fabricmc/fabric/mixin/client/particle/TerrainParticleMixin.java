@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.particle;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -51,7 +52,7 @@ abstract class TerrainParticleMixin extends SingleQuadParticle {
 			at = @At("LOAD"),
 			argsOnly = true,
 			slice = @Slice(
-					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/TerrainParticle;bCol:F", ordinal = 0),
+					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/TerrainParticle;bCol:F", ordinal = 0, opcode = Opcodes.PUTFIELD),
 					to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z")
 			),
 			allow = 1
