@@ -82,10 +82,10 @@ abstract class SectionCompilerMixin {
 	private void hookBuild(SectionPos sectionPos, RenderSectionRegion region, VertexSorting sorter,
 						SectionBufferBuilderPack buffers,
 						CallbackInfoReturnable<SectionCompiler.Results> cir,
-						@Local(ordinal = 0) BlockPos sectionOrigin,
-						@Local(ordinal = 0) PoseStack poseStack,
-						@Local(ordinal = 0) Map<ChunkSectionLayer, BufferBuilder> builderMap,
-						@Local(ordinal = 0) RandomSource random) {
+						@Local(name = "minPos") BlockPos sectionOrigin,
+						@Local(name = "poseStack") PoseStack poseStack,
+						@Local(name = "startedLayers") Map<ChunkSectionLayer, BufferBuilder> builderMap,
+						@Local(name = "random") RandomSource random) {
 		// hook just before iterating over the render chunk's blocks to capture the buffer builder map
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 		renderer.prepare(region, sectionOrigin,

@@ -47,7 +47,7 @@ public abstract class PathfindingContextMixin {
 	@Definition(id = "set", method = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;")
 	@Expression("? = ?.set(?, ?, ?)")
 	@Inject(method = "getPathTypeFromState", at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER), cancellable = true)
-	private void onGetNodeType(int x, int y, int z, CallbackInfoReturnable<PathType> cir, @Local BlockPos pos) {
+	private void onGetNodeType(int x, int y, int z, CallbackInfoReturnable<PathType> cir, @Local(name = "pos") BlockPos pos) {
 		final PathType neighborPathType = LandPathTypeRegistry.getPathType(getBlockState(pos), level(), pos, true);
 
 		if (neighborPathType != null) {

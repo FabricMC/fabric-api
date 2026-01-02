@@ -56,7 +56,7 @@ abstract class BlockModelWrapperMixin implements ItemModel, BlockModelWrapperExt
 	private Mesh mesh;
 
 	@Inject(method = "update", at = @At("RETURN"))
-	private void onReturnUpdate(final ItemStackRenderState output, final ItemStack item, final ItemModelResolver resolver, final ItemDisplayContext displayContext, final @Nullable ClientLevel level, final @Nullable ItemOwner owner, final int seed, CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
+	private void onReturnUpdate(final ItemStackRenderState output, final ItemStack item, final ItemModelResolver resolver, final ItemDisplayContext displayContext, final @Nullable ClientLevel level, final @Nullable ItemOwner owner, final int seed, CallbackInfo ci, @Local(name = "layer") ItemStackRenderState.LayerRenderState layer) {
 		if (mesh != null) {
 			// This logic matches that of ITEM_RENDER_TYPE_GETTER and BLOCK_RENDER_TYPE_GETTER
 			ChunkSectionLayer defaultSectionLayer;

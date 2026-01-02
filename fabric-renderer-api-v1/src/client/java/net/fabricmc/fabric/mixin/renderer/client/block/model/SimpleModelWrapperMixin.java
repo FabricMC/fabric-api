@@ -54,7 +54,7 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 	private boolean useAmbientOcclusion;
 
 	@Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/renderer/block/model/BlockModelPart;", at = @At(value = "INVOKE", target = "net/minecraft/client/resources/model/QuadCollection.getAll()Ljava/util/List;"))
-	private static void validateMeshAtlas(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockModelPart> cir, @Local QuadCollection geometry, @Local LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
+	private static void validateMeshAtlas(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockModelPart> cir, @Local(name = "geometry") QuadCollection geometry, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
 		if (geometry instanceof MeshQuadCollection meshGeometry) {
 			meshGeometry.getMesh().forEach(quad -> {
 				if (quad.atlas() != QuadAtlas.BLOCK) {

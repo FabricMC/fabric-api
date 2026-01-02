@@ -53,7 +53,7 @@ public class HopperBlockEntityMixin {
 			method = "ejectItems",
 			cancellable = true
 	)
-	private static void hookInsert(Level level, BlockPos pos, HopperBlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir, @Local Container targetInventory) {
+	private static void hookInsert(Level level, BlockPos pos, HopperBlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir, @Local(name = "container") Container targetInventory) {
 		// Let vanilla handle the transfer if it found an inventory.
 		if (targetInventory != null) return;
 
@@ -81,7 +81,7 @@ public class HopperBlockEntityMixin {
 			method = "suckInItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;)Z",
 			cancellable = true
 	)
-	private static void hookExtract(Level level, Hopper hopper, CallbackInfoReturnable<Boolean> cir, @Local Container inputInventory) {
+	private static void hookExtract(Level level, Hopper hopper, CallbackInfoReturnable<Boolean> cir, @Local(name = "container") Container inputInventory) {
 		// Let vanilla handle the transfer if it found an inventory.
 		if (inputInventory != null) return;
 

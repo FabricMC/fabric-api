@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
 	@Inject(method = "collectEquipmentChanges", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
-	private void getEquipmentChanges(CallbackInfoReturnable<@Nullable Map<EquipmentSlot, ItemStack>> cir, @Local EquipmentSlot equipmentSlot, @Local(ordinal = 0) ItemStack previousStack, @Local(ordinal = 1) ItemStack currentStack) {
+	private void getEquipmentChanges(CallbackInfoReturnable<@Nullable Map<EquipmentSlot, ItemStack>> cir, @Local(name = "slot") EquipmentSlot equipmentSlot, @Local(name = "previous") ItemStack previousStack, @Local(name = "current") ItemStack currentStack) {
 		ServerEntityEvents.EQUIPMENT_CHANGE.invoker().onChange((LivingEntity) (Object) this, equipmentSlot, previousStack, currentStack);
 	}
 }

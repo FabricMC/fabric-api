@@ -50,7 +50,7 @@ public abstract class RenderRegionCacheMixin {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RenderRegionCacheMixin.class);
 
 	@Inject(method = "createRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderRegionCache;getSectionDataCopy(Lnet/minecraft/world/level/Level;III)Lnet/minecraft/client/renderer/chunk/SectionCopy;"))
-	private void copyDataForChunk(Level level, long packedChunkPos, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef, @Local(ordinal = 11) int x, @Local(ordinal = 10) int y, @Local(ordinal = 9) int z) {
+	private void copyDataForChunk(Level level, long packedChunkPos, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef, @Local(name = "regionSectionX") int x, @Local(name = "regionSectionY") int y, @Local(name = "regionSectionZ") int z) {
 		// Hash maps in chunks should generally not be modified outside of client thread
 		// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing
 		// CMEs when we iterate the map. (Vanilla does not iterate these maps when it builds

@@ -51,7 +51,7 @@ abstract class BlockRenderDispatcherMixin {
 	@Definition(id = "getBlockModel", method = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getBlockModel(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/block/model/BlockStateModel;")
 	@Expression("? = ?.getBlockModel(?)")
 	@Inject(method = "renderBreakingTexture(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/BlockAndTintGetter;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;)V", at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER), cancellable = true)
-	private void afterGetModel(BlockState blockState, BlockPos blockPos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer, CallbackInfo ci, @Local BlockStateModel model) {
+	private void afterGetModel(BlockState blockState, BlockPos blockPos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer, CallbackInfo ci, @Local(name = "model") BlockStateModel model) {
 		modelRenderer.render(level, model, blockState, blockPos,
 				poseStack, layer -> vertexConsumer, true, blockState.getSeed(blockPos), OverlayTexture.NO_OVERLAY);
 		ci.cancel();

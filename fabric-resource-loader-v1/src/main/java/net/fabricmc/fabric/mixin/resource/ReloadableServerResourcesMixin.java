@@ -50,9 +50,9 @@ public class ReloadableServerResourcesMixin implements FabricDataResourceStoreHo
 	)
 	private static List<PreparableReloadListener> onSetupDataReloaders(
 			List<PreparableReloadListener> reloaders,
-			@Local(argsOnly = true) ReloadableServerRegistries.LoadResult loadResult,
-			@Local(argsOnly = true) FeatureFlagSet featureSet,
-			@Local ReloadableServerResources dataPackContents
+			@Local(argsOnly = true, name = "fullRegistries") ReloadableServerRegistries.LoadResult loadResult,
+			@Local(argsOnly = true, name = "enabledFeatures") FeatureFlagSet featureSet,
+			@Local(name = "result") ReloadableServerResources dataPackContents
 	) {
 		var list = new ArrayList<>(reloaders);
 		list.addFirst(

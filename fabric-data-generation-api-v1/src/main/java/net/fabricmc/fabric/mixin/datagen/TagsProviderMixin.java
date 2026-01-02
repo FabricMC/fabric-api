@@ -58,7 +58,7 @@ public class TagsProviderMixin<T> {
 	}
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
-	private boolean addReplaced(boolean replaced, @Local TagBuilder tagBuilder) {
+	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder tagBuilder) {
 		if (tagBuilder instanceof FabricTagBuilder fabricTagBuilder) {
 			return fabricTagBuilder.fabric_isReplaced();
 		}
@@ -68,7 +68,7 @@ public class TagsProviderMixin<T> {
 
 	@SuppressWarnings("unchecked")
 	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput writer) {
+	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true, name = "cache") CachedOutput writer) {
 		if ((Object) this instanceof FabricTagsProvider<?>) {
 			// Note: no pattern matching instanceof so that we can cast directly to FabricTagsProvider<T> instead of a wildcard
 			Map<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> builders = ((FabricTagsProvider<T>) (Object) this).getAliasGroupBuilders();

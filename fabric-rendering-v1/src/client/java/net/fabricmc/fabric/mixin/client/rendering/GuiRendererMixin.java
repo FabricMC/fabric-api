@@ -93,7 +93,7 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 		pipRendererPools.values().forEach(PictureInPictureRendererPool::cleanUpUnusedRenderers);
 	}
 
-	@ModifyVariable(method = "preparePictureInPictureState", at = @At("STORE"))
+	@ModifyVariable(method = "preparePictureInPictureState", at = @At("STORE"), name = "renderer")
 	private <T extends PictureInPictureRenderState> PictureInPictureRenderer<T> substituteSpecialElementRenderer(PictureInPictureRenderer<T> original, T elementState) {
 		if (original == null || !hasFabricInitialized) {
 			return original;

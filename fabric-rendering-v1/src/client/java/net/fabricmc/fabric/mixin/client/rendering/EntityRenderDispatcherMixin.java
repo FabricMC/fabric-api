@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 @Mixin(EntityRenderDispatcher.class)
 class EntityRenderDispatcherMixin {
 	@Inject(method = "onResourceManagerReload", at = @At("TAIL"))
-	private void createArmorRenderers(ResourceManager manager, CallbackInfo ci, @Local EntityRendererProvider.Context context) {
+	private void createArmorRenderers(ResourceManager manager, CallbackInfo ci, @Local(name = "context") EntityRendererProvider.Context context) {
 		ArmorRendererRegistryImpl.createArmorRenderers(context);
 	}
 }

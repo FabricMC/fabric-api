@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 @Mixin(AxeItem.class)
 public class AxeItemMixin {
 	@ModifyArg(method = "getStripped", at = @At(value = "INVOKE", target = "Ljava/util/Optional;map(Ljava/util/function/Function;)Ljava/util/Optional;"))
-	private Function<Block, BlockState> handleCustomStrippingBehavior(Function<Block, BlockState> mapper, @Local(argsOnly = true) BlockState state) {
+	private Function<Block, BlockState> handleCustomStrippingBehavior(Function<Block, BlockState> mapper, @Local(argsOnly = true, name = "state") BlockState state) {
 		StrippableBlockRegistry.StrippingTransformer transformer = StrippableBlockRegistryImpl.getTransformer(state.getBlock());
 
 		if (transformer != null) {

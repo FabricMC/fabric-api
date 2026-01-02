@@ -42,7 +42,7 @@ public class MainMixin {
 	@Definition(id = "createPackRepository", method = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createPackRepository(Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;)Lnet/minecraft/server/packs/repository/PackRepository;")
 	@Expression("? = createPackRepository(?)")
 	@Inject(method = "main", cancellable = true, at = @At(value = "MIXINEXTRAS:EXPRESSION", shift = At.Shift.AFTER))
-	private static void main(String[] args, CallbackInfo info, @Local LevelStorageSource.LevelStorageAccess storageAccess, @Local PackRepository packRepository) {
+	private static void main(String[] args, CallbackInfo info, @Local(name = "access") LevelStorageSource.LevelStorageAccess storageAccess, @Local(name = "packRepository") PackRepository packRepository) {
 		if (FabricGameTestRunner.ENABLED) {
 			FabricGameTestRunner.runHeadlessServer(storageAccess, packRepository);
 			info.cancel();  // Do not progress in starting the normal dedicated server

@@ -83,7 +83,7 @@ abstract class ModelBakeryMixin {
 	}
 
 	@ModifyReturnValue(method = "bakeModels", at = @At("RETURN"))
-	private CompletableFuture<ModelBakery.BakingResult> withExtraModels(CompletableFuture<ModelBakery.BakingResult> models, @Local(argsOnly = true) Executor executor, @Local ModelBakery.ModelBakerImpl baker) {
+	private CompletableFuture<ModelBakery.BakingResult> withExtraModels(CompletableFuture<ModelBakery.BakingResult> models, @Local(argsOnly = true, name = "taskExecutor") Executor executor, @Local(name = "baker") ModelBakery.ModelBakerImpl baker) {
 		if (fabric_eventDispatcher == null) return models;
 
 		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = ParallelMapTransform.schedule(fabric_eventDispatcher.getExtraModels(), (key, model) -> {
@@ -112,7 +112,7 @@ abstract class ModelBakeryMixin {
 	}
 
 	@WrapOperation(method = "lambda$bakeModels$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemModel$Unbaked;bake(Lnet/minecraft/client/renderer/item/ItemModel$BakingContext;)Lnet/minecraft/client/renderer/item/ItemModel;"))
-	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Operation<ItemModel> operation, @Local(argsOnly = true) Identifier itemId) {
+	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Operation<ItemModel> operation, @Local(argsOnly = true, name = "location") Identifier itemId) {
 		if (fabric_eventDispatcher == null) {
 			return operation.call(unbakedModel, bakeContext);
 		}

@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 @Mixin(RegistryDataLoader.ResourceManagerRegistryLoadTask.class)
 public class RegistryDataLoaderResourceManagerRegistryLoadTaskMixin {
 	@WrapOperation(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryDataLoader$PendingRegistration"))
-	private <T> RegistryDataLoader.PendingRegistration<?> modify(ResourceKey<T> key, Either<T, Exception> value, RegistrationInfo registrationInfo, Operation<RegistryDataLoader.PendingRegistration<T>> original, @Local(argsOnly = true) Resource resource) {
+	private <T> RegistryDataLoader.PendingRegistration<?> modify(ResourceKey<T> key, Either<T, Exception> value, RegistrationInfo registrationInfo, Operation<RegistryDataLoader.PendingRegistration<T>> original, @Local(argsOnly = true, name = "thunk") Resource resource) {
 		if (value.left().isPresent()) {
 			if (value.left().get() instanceof Enchantment enchantment) {
 				Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) key, enchantment, EnchantmentUtil.determineSource(resource));

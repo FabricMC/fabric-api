@@ -32,8 +32,8 @@ import net.fabricmc.fabric.impl.resource.conditions.OverlayConditionsMetadata;
 
 @Mixin(Pack.class)
 public class PackMixin {
-	@ModifyVariable(method = "readPackMetadata", at = @At("STORE"))
-	private static List<String> applyOverlayConditions(List<String> overlays, @Local PackResources resourcePack) throws IOException {
+	@ModifyVariable(method = "readPackMetadata", at = @At("STORE"), name = "overlaySet")
+	private static List<String> applyOverlayConditions(List<String> overlays, @Local(name = "pack") PackResources resourcePack) throws IOException {
 		List<String> appliedOverlays = new ArrayList<>(overlays);
 		OverlayConditionsMetadata overlayMetadata = resourcePack.getMetadataSection(OverlayConditionsMetadata.SERIALIZER);
 
