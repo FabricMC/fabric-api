@@ -17,7 +17,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.18.3"
+    "fabricloader": ">=0.18.4"
   },
   "description": "Asset and data resource loading.",
   "accessWidener": "fabric-resource-loader-v1.accesswidener",
