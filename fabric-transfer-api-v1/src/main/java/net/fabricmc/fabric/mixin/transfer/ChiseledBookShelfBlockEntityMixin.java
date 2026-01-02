@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -39,6 +40,7 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 @Mixin(ChiseledBookShelfBlockEntity.class)
 public class ChiseledBookShelfBlockEntityMixin implements SpecialLogicContainer {
 	@Shadow
+	@Final
 	private NonNullList<ItemStack> items;
 	@Shadow
 	private int lastInteractedSlot; // last interacted slot

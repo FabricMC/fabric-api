@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.client.renderer.sprite;
 import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -40,10 +39,8 @@ import net.fabricmc.fabric.impl.client.renderer.SpriteLoaderPreparationsExtensio
 @Mixin(TextureAtlas.class)
 abstract class TextureAtlasMixin implements FabricTextureAtlas {
 	@Shadow
-	@Final
 	private Map<Identifier, TextureAtlasSprite> texturesByName;
 	@Shadow
-	@Final
 	@Nullable
 	private TextureAtlasSprite missingSprite;
 

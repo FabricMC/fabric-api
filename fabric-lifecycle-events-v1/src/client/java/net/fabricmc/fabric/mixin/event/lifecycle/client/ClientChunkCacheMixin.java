@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 public abstract class ClientChunkCacheMixin {
 	@Final
 	@Shadow
-	ClientLevel level;
+	private ClientLevel level;
 
 	@Inject(method = "replaceWithPacketData", at = @At("TAIL"))
 	private void onChunkLoad(int x, int z, FriendlyByteBuf friendlyByteBuf, Map<Heightmap.Types, long[]> highmap, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> consumer, CallbackInfoReturnable<LevelChunk> info) {

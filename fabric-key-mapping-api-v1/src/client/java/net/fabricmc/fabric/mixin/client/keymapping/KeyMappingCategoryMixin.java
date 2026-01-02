@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.client.keymapping.CategoryComparator;
 abstract class KeyMappingCategoryMixin {
 	@Shadow
 	@Final
-	static List<KeyMapping.Category> SORT_ORDER;
+	private static List<KeyMapping.Category> SORT_ORDER;
 
 	@Inject(method = "register(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/client/KeyMapping$Category;", at = @At("RETURN"))
 	private static void onReturnRegister(Identifier id, CallbackInfoReturnable<KeyMapping.Category> cir) {

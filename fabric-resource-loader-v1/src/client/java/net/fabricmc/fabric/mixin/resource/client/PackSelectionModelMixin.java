@@ -37,11 +37,11 @@ import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 public class PackSelectionModelMixin {
 	@Shadow
 	@Final
-	List<Pack> selected;
+	private List<Pack> selected;
 
 	@Shadow
 	@Final
-	List<Pack> unselected;
+	private List<Pack> unselected;
 
 	/**
 	 * Do not list hidden packs in either enabledPacks or disabledPacks.
