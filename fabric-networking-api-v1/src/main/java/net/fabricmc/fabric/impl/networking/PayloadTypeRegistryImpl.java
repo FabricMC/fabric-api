@@ -123,7 +123,7 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 
 		// No need to enable splitting, if packet's max size is smaller than chunk
 		// If requested maxPacketSize <= previous max without padding, then ignore it.
-		if (maxPacketSize > Math.max(this.minimalSplittableSize, this.maxPacketSizes.getOrDefault(id, -1) - paddingSize)) {
+		if (maxPacketSize > Math.max(this.minimalSplittableSize, this.maxPacketSizes.getOrDefault(id, -1))) {
 			this.maxPacketSizes.put(id, maxPacketSize);
 		}
 	}
