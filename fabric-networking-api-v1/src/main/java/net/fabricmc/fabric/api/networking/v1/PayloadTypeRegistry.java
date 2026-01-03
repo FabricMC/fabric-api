@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.minecraft.resources.Identifier;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -52,7 +50,7 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * and <strong>before registering a packet handler</strong>.
 	 *
 	 * <p>Payload types registered with this method will be split into multiple packets,
-	 * allowing to send packets larger than vanilla limited size.
+	 * allowing to send packets larger than the vanilla limited size.
 	 *
 	 * @param type          the payload type
 	 * @param codec         the codec for the payload type
@@ -63,22 +61,24 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize);
 
 	/**
-	 * Modifies the maximum size of an <strong>already registered</strong> large payload type via {@link PayloadTypeRegistry#registerLarge(CustomPacketPayload.Type, StreamCodec, int)}.
+	 * Sets the maximum size of an <strong>already registered</strong> payload type.
+	 *
+	 * <p>Larger payloads will be split into multiple packets, allowing to send packets larger than the vanilla limited size.
 	 *
 	 * @param type		    the payload type
 	 * @param maxPacketSize the maximum size of payload packet
 	 * @param <T>           the payload type
 	 */
-	<T extends CustomPacketPayload> void modifyLargePayloadMaxSize(CustomPacketPayload.Type<T> type, int maxPacketSize);
+	<T extends CustomPacketPayload> void setMaxPacketSize(CustomPacketPayload.Type<T> type, int maxPacketSize);
 
 	/**
 	 * Returns the maximum size of an <strong>already registered</strong> payload type.
 	 *
 	 * @param type		    the payload type
-	 * @param <T>           the payload type
+	 * @param <T>           the payload class
 	 * @return the maximum size of payload packet
 	 */
-	<T extends CustomPacketPayload> int getPayloadMaxSize(CustomPacketPayload.Type<T> type);
+	<T extends CustomPacketPayload> int getMaxPacketSize(CustomPacketPayload.Type<T> type);
 
 	/**
 	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) configuration channel.

@@ -82,7 +82,7 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 			Identifier payloadId = Identifier.STREAM_CODEC.decode(payload.byteBuf());
 
 			buf.readerIndex(readerIndex);
-			int maxSize = payloadTypeRegistry.getMaxPacketSize(payloadId);
+			int maxSize = payloadTypeRegistry.getMaxPacketSizeForSplitting(payloadId);
 
 			if (maxSize == -1) {
 				throw new DecoderException("Received '" + payloadId + "' packet doesn't support splitting, but received split data!");
