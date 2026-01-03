@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.networking.client.splitter;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.test.networking.splitter.NetworkingSplitterTest;
 
 public class NetworkingSplitterClientTest implements ClientModInitializer {
@@ -26,6 +27,13 @@ public class NetworkingSplitterClientTest implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(NetworkingSplitterTest.LargePayload.TYPE, (payload, context) -> {
 			NetworkingSplitterTest.validateLargePacketData(payload.index(), payload.data(), "client");
 			context.responseSender().sendPacket(payload);
+
+			// After validating 20 MB packet, try 50 MB.
+			if (payload.index() == 1) {
+				NetworkingSplitterTest.LOGGER.info("Increasing max size of LargePayload to 50MB on client");
+				PayloadTypeRegistry.clientboundPlay().setMaxPacketSize(NetworkingSplitterTest.LargePayload.TYPE, NetworkingSplitterTest.DATA_SIZE_2 + 14);
+				PayloadTypeRegistry.serverboundPlay().setMaxPacketSize(NetworkingSplitterTest.LargePayload.TYPE, NetworkingSplitterTest.DATA_SIZE_2 + 14);
+			}
 		});
 	}
 }

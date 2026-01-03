@@ -34,10 +34,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public class NetworkingSplitterTest implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingSplitterTest.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(NetworkingSplitterTest.class);
 
-	private static final int DATA_SIZE_1 = 20 * 1024 * 1024;
-	private static final int DATA_SIZE_2 = 50 * 1024 * 1024;
+	public static final int DATA_SIZE_1 = 20 * 1024 * 1024;
+	public static final int DATA_SIZE_2 = 50 * 1024 * 1024;
 
 	// 20 and 50 MB of random data source
 	private static final int[][] RANDOM_DATA = {
@@ -62,7 +62,7 @@ public class NetworkingSplitterTest implements ModInitializer {
 
 			// After validating 20 MB packet, try 50 MB.
 			if (payload.index() == 1) {
-				LOGGER.info("Increasing max size of LargePayload to 50MB");
+				LOGGER.info("Increasing max size of LargePayload to 50MB on server");
 				PayloadTypeRegistry.clientboundPlay().setMaxPacketSize(LargePayload.TYPE, DATA_SIZE_2 + 14);
 				PayloadTypeRegistry.serverboundPlay().setMaxPacketSize(LargePayload.TYPE, DATA_SIZE_2 + 14);
 				context.responseSender().sendPacket(new LargePayload(2, RANDOM_DATA[2]));
