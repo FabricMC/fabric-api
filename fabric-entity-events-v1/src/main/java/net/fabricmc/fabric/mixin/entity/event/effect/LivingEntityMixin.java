@@ -137,7 +137,12 @@ public abstract class LivingEntityMixin extends Entity {
 			return original.call(holder);
 		}
 
-		MobEffectInstance effectInstance = (this.self()).getEffect(holder);
+		MobEffectInstance effectInstance = this.self().getEffect(holder);
+
+		if (effectInstance == null) {
+			return original.call(holder);
+		}
+
 		boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
 				.allowEarlyRemove(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 
@@ -157,8 +162,14 @@ public abstract class LivingEntityMixin extends Entity {
 			return;
 		}
 
+		MobEffectInstance effectInstance = this.self().getEffect(holder);
+
+		if (effectInstance == null) {
+			return;
+		}
+
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-				.beforeRemove((this.self()).getEffect(holder), (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+				.beforeRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
 	}
 
 	@Inject(

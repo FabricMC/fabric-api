@@ -128,6 +128,26 @@ public class ServerMobEffectsGameTest {
 		obj.contextRef = null;
 	}
 
+	// Regression test for https://github.com/FabricMC/fabric-api/issues/5121
+	@GameTest
+	public void removeNoneExistentEffect(GameTestHelper context) {
+		var obj = new Object() { // Scoped events at home
+			GameTestHelper contextRef = context;
+		};
+		ServerMobEffectEvents.BEFORE_REMOVE.register((effectInstance, entity, ctx) -> {
+			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
+			obj.contextRef.fail("The BEFORE_REMOVE event must not be called when removing a non-existent effect");
+		});
+		ServerMobEffectEvents.AFTER_REMOVE.register((effectInstance, entity, ctx) -> {
+			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
+			obj.contextRef.fail("The AFTER_REMOVE event must not be called when removing a non-existent effect");
+		});
+		Salmon theSalmon = summonTheSalmon(context);
+		theSalmon.removeEffect(MobEffects.SATURATION);
+		context.succeed();
+		obj.contextRef = null;
+	}
+
 	private static Salmon summonTheSalmon(GameTestHelper context) {
 		Salmon theSalmon = context.spawnWithNoFreeWill(EntityType.SALMON, context.relativeVec(new Vec3(0.0, 1.0, 0.0)));
 		theSalmon.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.POTATO));
