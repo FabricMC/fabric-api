@@ -50,11 +50,7 @@ public class Indigo implements ClientModInitializer {
 	private static final boolean GENERATE_CONFIG_FILE = System.getProperty("fabric.indigo.generateConfigFile") != null;
 
 	private static boolean asBoolean(@Nullable String property, boolean defValue) {
-		return switch (asTriState(property)) {
-		case TRUE -> true;
-		case FALSE -> false;
-		default -> defValue;
-		};
+		return asTriState(property).orElse(defValue);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
