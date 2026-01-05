@@ -7,8 +7,7 @@
     "V2832Mixin",
     "TaggedChoiceMixin",
     "TaggedChoiceTaggedChoiceTypeMixin",
-    "modification.RegistryAccessImmutableRegistryAccessMixin",
-    "modification.MinecraftServerMixin"
+    "modification.RegistryAccessImmutableRegistryAccessMixin"
   ],
   "injectors": {
     "defaultRequire": 1

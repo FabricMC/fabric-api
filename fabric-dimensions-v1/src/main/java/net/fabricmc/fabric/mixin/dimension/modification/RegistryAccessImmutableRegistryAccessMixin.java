@@ -35,7 +35,7 @@ public class RegistryAccessImmutableRegistryAccessMixin implements DimensionModi
 	@Override
 	public void fabric_markDimensionsModified() {
 		if (dimensionsModified) {
-			throw new IllegalStateException("This dynamic registries instance has already been modified");
+			throw new IllegalStateException("Dimensions in this dynamic registries instance have already been modified");
 		}
 
 		dimensionsModified = true;

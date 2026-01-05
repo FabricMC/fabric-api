@@ -1,6 +1,6 @@
-accessWidener	v1	named
+accessWidener	v1	official
 
-# Top-Level Biome Fields Access
+# Top-Level Dimension Fields Access
 
 accessible	field	net/minecraft/world/level/dimension/DimensionType	attributes	Lnet/minecraft/world/attribute/EnvironmentAttributeMap;
 mutable	field	net/minecraft/world/level/dimension/DimensionType	attributes	Lnet/minecraft/world/attribute/EnvironmentAttributeMap;

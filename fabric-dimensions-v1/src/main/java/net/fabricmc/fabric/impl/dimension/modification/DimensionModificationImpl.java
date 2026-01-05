@@ -16,95 +16,35 @@
 
 package net.fabricmc.fabric.impl.dimension.modification;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import com.google.common.base.Stopwatch;
-import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.level.dimension.DimensionType;
 
-import net.fabricmc.fabric.api.dimension.v1.DimensionModificationContext;
-import net.fabricmc.fabric.api.dimension.v1.DimensionSelectionContext;
-import net.fabricmc.fabric.api.dimension.v1.ModificationPhase;
+import net.fabricmc.fabric.api.dimension.v1.DimensionEvents;
 
-public class DimensionModificationImpl {
+public final class DimensionModificationImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(DimensionModificationImpl.class);
-
-	private static final Comparator<ModifierRecord> MODIFIER_ORDER_COMPARATOR = Comparator.<ModifierRecord>comparingInt(r -> r.phase.ordinal()).thenComparingInt(r -> r.order).thenComparing(r -> r.id);
-
-	public static final DimensionModificationImpl INSTANCE = new DimensionModificationImpl();
-
-	private final List<ModifierRecord> modifiers = new ArrayList<>();
-
-	private boolean modifiersUnsorted = true;
 
 	private DimensionModificationImpl() {
 	}
 
-	public void addModifier(Identifier id, ModificationPhase phase, Predicate<DimensionSelectionContext> selector, BiConsumer<DimensionSelectionContext, DimensionModificationContext> modifier) {
-		Objects.requireNonNull(selector);
-		Objects.requireNonNull(modifier);
-
-		modifiers.add(new ModifierRecord(phase, id, selector, modifier));
-		modifiersUnsorted = true;
-	}
-
-	public void addModifier(Identifier id, ModificationPhase phase, Predicate<DimensionSelectionContext> selector, Consumer<DimensionModificationContext> modifier) {
-		Objects.requireNonNull(selector);
-		Objects.requireNonNull(modifier);
-
-		modifiers.add(new ModifierRecord(phase, id, selector, modifier));
-		modifiersUnsorted = true;
-	}
-
-	/**
-	 * This is currently not publicly exposed but likely useful for modpack support mods.
-	 */
-	void changeOrder(Identifier id, int order) {
-		modifiersUnsorted = true;
-
-		for (ModifierRecord modifierRecord : modifiers) {
-			if (id.equals(modifierRecord.id)) {
-				modifierRecord.setOrder(order);
-			}
-		}
-	}
-
-	@TestOnly
-	void clearModifiers() {
-		modifiers.clear();
-		modifiersUnsorted = true;
-	}
-
-	private List<ModifierRecord> getSortedModifiers() {
-		if (modifiersUnsorted) {
-			// Resort modifiers
-			modifiers.sort(MODIFIER_ORDER_COMPARATOR);
-			modifiersUnsorted = false;
-		}
-
-		return modifiers;
-	}
-
-	public void finalizeWorldGen(RegistryAccess impl) {
-		Stopwatch sw = Stopwatch.createStarted();
+	public static void finalizeWorldGen(RegistryAccess impl) {
+		Stopwatch stopwatch = Stopwatch.createStarted();
 
 		// Now that we apply dimension modifications inside the MinecraftServer constructor, we should only ever do
 		// this once for a dynamic registry manager. Marking the dynamic registry manager as modified ensures a crash
@@ -121,39 +61,18 @@ public class DimensionModificationImpl {
 				.sorted(Comparator.comparingInt(key -> dimensions.getId(dimensions.getValueOrThrow(key))))
 				.toList();
 
-		List<ModifierRecord> sortedModifiers = getSortedModifiers();
-
 		int dimensionsChanged = 0;
 		int dimensionsProcessed = 0;
-		int modifiersApplied = 0;
 
 		for (ResourceKey<DimensionType> key : keys) {
-			DimensionType dimension = dimensions.getValueOrThrow(key);
+			Holder.Reference<DimensionType> reference = dimensions.getOrThrow(key);
 
 			dimensionsProcessed++;
 
-			// Make a copy of the dimension to allow selection contexts to see it unmodified,
-			// But do so only once it's known anything wants to modify the dimension at all
-			DimensionSelectionContext context = new DimensionSelectionContextImpl(impl, key, dimension);
-			DimensionModificationContextImpl modificationContext = null;
+			if (applyChanges(reference, impl)) {
+				dimensionsChanged++;
 
-			for (ModifierRecord modifier : sortedModifiers) {
-				if (modifier.selector.test(context)) {
-					LOGGER.trace("Applying modifier {} to {}", modifier, key.identifier());
-
-					// Create the copy only if at least one modifier applies, since it's pretty costly
-					if (modificationContext == null) {
-						dimensionsChanged++;
-						modificationContext = new DimensionModificationContextImpl(dimension);
-					}
-
-					modifier.apply(context, modificationContext);
-					modifiersApplied++;
-				}
-			}
-
-			// Re-freeze and apply certain cleanup actions
-			if (modificationContext != null) {
+				// Re-freeze and apply certain cleanup actions
 				if (dimensions instanceof MappedRegistry<DimensionType> registry) {
 					RegistrationInfo info = registry.registrationInfos.get(key);
 					RegistrationInfo newInfo = new RegistrationInfo(Optional.empty(), info.lifecycle());
@@ -162,61 +81,33 @@ public class DimensionModificationImpl {
 			}
 		}
 
+		stopwatch.stop();
+
 		if (dimensionsProcessed > 0) {
-			LOGGER.info("Applied {} dimensions modifications to {} of {} new dimensions in {}", modifiersApplied, dimensionsChanged,
-					dimensionsProcessed, sw);
+			LOGGER.info("Applied modifications to {} of {} dimensions in {}", dimensionsChanged, dimensionsProcessed, stopwatch);
 		}
 	}
 
-	private static class ModifierRecord {
-		private final ModificationPhase phase;
+	/**
+	 * Applies the changes from the events of {@link DimensionEvents} to a dimension.
+	 *
+	 * @return true if the dimension was changed
+	 */
+	private static boolean applyChanges(Holder<DimensionType> dimension, RegistryAccess registries) {
+		EnvironmentAttributeMap oldAttributes = dimension.value().attributes();
 
-		private final Identifier id;
+		EnvironmentAttributeMap.Builder attributeBuilder = EnvironmentAttributeMap.builder().putAll(oldAttributes);
 
-		private final Predicate<DimensionSelectionContext> selector;
+		DimensionEvents.MODIFY_ATTRIBUTES.invoker().modifyDimensionAttributes(dimension, attributeBuilder, registries);
 
-		private final BiConsumer<DimensionSelectionContext, DimensionModificationContext> contextSensitiveModifier;
+		EnvironmentAttributeMap newAttributes = attributeBuilder.build();
 
-		private final Consumer<DimensionModificationContext> modifier;
+		boolean changed = !oldAttributes.equals(newAttributes);
 
-		// Whenever this is modified, the modifiers need to be resorted
-		private int order;
-
-		ModifierRecord(ModificationPhase phase, Identifier id, Predicate<DimensionSelectionContext> selector, Consumer<DimensionModificationContext> modifier) {
-			this.phase = phase;
-			this.id = id;
-			this.selector = selector;
-			this.modifier = modifier;
-			this.contextSensitiveModifier = null;
+		if (changed) {
+			dimension.value().attributes = newAttributes;
 		}
 
-		ModifierRecord(ModificationPhase phase, Identifier id, Predicate<DimensionSelectionContext> selector, BiConsumer<DimensionSelectionContext, DimensionModificationContext> modifier) {
-			this.phase = phase;
-			this.id = id;
-			this.selector = selector;
-			this.contextSensitiveModifier = modifier;
-			this.modifier = null;
-		}
-
-		@Override
-		public String toString() {
-			if (modifier != null) {
-				return modifier.toString();
-			} else {
-				return contextSensitiveModifier.toString();
-			}
-		}
-
-		public void apply(DimensionSelectionContext context, DimensionModificationContextImpl modificationContext) {
-			if (contextSensitiveModifier != null) {
-				contextSensitiveModifier.accept(context, modificationContext);
-			} else {
-				modifier.accept(modificationContext);
-			}
-		}
-
-		public void setOrder(int order) {
-			this.order = order;
-		}
+		return changed;
 	}
 }
