@@ -23,6 +23,9 @@
     "fabric-entity-events-v1.mixins.json"
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_1291": ["net/fabricmc/fabric/api/entity/event/v1/effect/FabricMobEffect"]
+    }
   }
 }

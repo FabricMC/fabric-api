@@ -159,9 +159,4 @@ abstract class GuiMixin {
 	private void wrapPlayerList(Gui instance, GuiGraphics context, DeltaTracker tickCounter, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.PLAYER_LIST).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, tc));
 	}
-
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSubtitleOverlay(Lnet/minecraft/client/gui/GuiGraphics;Z)V"))
-	private void wrapSubtitlesHud(Gui instance, GuiGraphics context, boolean bl, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker tickCounter) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, bl));
-	}
 }
