@@ -169,7 +169,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 	 *
 	 * @param slot  the slot
 	 * @param count the item count
-	 * @return the removed stack with count {@code count} or {@link ItemStack#EMPTY} if query is invalid
+	 * @return the removed stack with count {@code count} or {@link ItemStack#EMPTY} if no item is present at that slot, the count is 0, or the slot is not in the inventory.
 	 */
 	@Override
 	default ItemStack removeItem(int slot, int count) {
