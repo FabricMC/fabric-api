@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.dimension.modification;
+package net.fabricmc.fabric.mixin.dimension;
 
-/**
- * Prevents double-modification of dimensions in the same dynamic registry manager from occurring and fails-fast
- * if it does occur.
- */
-public interface DimensionModificationMarker {
-	void fabric_markDimensionsModified();
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.level.dimension.DimensionType;
+
+@Mixin(DimensionType.class)
+public interface DimensionTypeAccessor {
+	@Accessor("attributes")
+	@Mutable
+	void fabric_setAttributes(EnvironmentAttributeMap attributes);
 }

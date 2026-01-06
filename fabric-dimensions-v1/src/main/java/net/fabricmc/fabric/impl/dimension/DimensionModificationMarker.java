@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.impl.dimension.modification.DimensionModificationImpl;
-
-public class FabricDimensionsImpl implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> DimensionModificationImpl.finalizeWorldGen(server.registryAccess()));
-	}
+/**
+ * Prevents double-modification of dimensions in the same dynamic registry manager from occurring and fails-fast
+ * if it does occur.
+ */
+public interface DimensionModificationMarker {
+	void fabric_markDimensionsModified();
 }

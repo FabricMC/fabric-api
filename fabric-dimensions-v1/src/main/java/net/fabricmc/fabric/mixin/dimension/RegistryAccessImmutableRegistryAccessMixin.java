@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.dimension.modification;
+package net.fabricmc.fabric.mixin.dimension;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.core.RegistryAccess;
 
-import net.fabricmc.fabric.impl.dimension.modification.DimensionModificationMarker;
+import net.fabricmc.fabric.impl.dimension.DimensionModificationImpl;
+import net.fabricmc.fabric.impl.dimension.DimensionModificationMarker;
 
 /**
- * This Mixin allows us to keep backup copies of dimensions for
- * {@link net.fabricmc.fabric.impl.dimension.modification.DimensionModificationImpl} on a per-DynamicRegistryManager basis.
+ * This Mixin allows us to prevent double-modifications of dimensions via
+ * {@link DimensionModificationImpl} on a per-DynamicRegistryManager basis.
  */
 @Mixin(RegistryAccess.ImmutableRegistryAccess.class)
 public class RegistryAccessImmutableRegistryAccessMixin implements DimensionModificationMarker {

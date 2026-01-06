@@ -1,9 +1,5 @@
 version = getSubprojectVersion(project)
 
-loom {
-	accessWidenerPath = file("src/main/resources/fabric-dimensions-v1.accesswidener")
-}
-
 moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-lifecycle-events-v1'

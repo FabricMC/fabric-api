@@ -16,7 +16,7 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.dimension.FabricDimensionsImpl"
+      "net.fabricmc.fabric.impl.dimension.DimensionModificationImpl"
     ]
   },
   "depends": {
@@ -28,7 +28,6 @@
   "mixins": [
     "fabric-dimensions-v1.mixins.json"
   ],
-  "accessWidener" : "fabric-dimensions-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }
