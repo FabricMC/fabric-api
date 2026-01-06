@@ -107,7 +107,13 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 
 	@Override
 	public <T extends CustomPacketPayload> int getMaxPacketSize(CustomPacketPayload.Type<T> type) {
-		return this.maxPacketSizes.getOrDefault(type.id(), this.minimalSplittableSize);
+		Identifier id = type.id();
+
+		if (!this.packetTypes.containsKey(id)) {
+			throw new IllegalArgumentException("Packet type " + id + " has not been registered yet!");
+		}
+
+		return this.maxPacketSizes.getOrDefault(id, this.minimalSplittableSize);
 	}
 
 	private void padAndSetMaxPacketSize(Identifier id, int maxSize) {
@@ -122,7 +128,7 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 		}
 
 		// No need to enable splitting, if packet's max size is smaller than chunk
-		// If requested maxPacketSize <= previous max without padding, then ignore it.
+		// If maxPacketSize <= previous max, then ignore it.
 		if (maxPacketSize > Math.max(this.minimalSplittableSize, this.maxPacketSizes.getOrDefault(id, -1))) {
 			this.maxPacketSizes.put(id, maxPacketSize);
 		}
