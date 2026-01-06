@@ -60,7 +60,7 @@ public interface BiomeSelectionContext {
 	}
 
 	/**
-	 * Returns {@code true} if this biome contains a placed feature with the given {@link TagKey}.
+	 * Returns {@code true} if this biome contains a placed feature with the given {@linkplain ResourceKey key}.
 	 */
 	default boolean hasPlacedFeature(ResourceKey<PlacedFeature> key) {
 		List<HolderSet<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().features();

@@ -54,7 +54,7 @@ public interface TransferVariant<O> {
 	DataComponentMap getComponentMap();
 
 	/**
-	 * Returns {@code true} if this variant has a component changes.
+	 * Returns {@code true} if this variant has component changes.
 	 */
 	default boolean hasComponents() {
 		return !getComponents().isEmpty();
