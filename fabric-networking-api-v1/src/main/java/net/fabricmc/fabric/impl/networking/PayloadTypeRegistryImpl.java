@@ -19,10 +19,13 @@ package net.fabricmc.fabric.impl.networking;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.IntSupplier;
 
 import io.netty.buffer.ByteBufUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.ConnectionProtocol;
@@ -45,6 +48,7 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	public static final PayloadTypeRegistryImpl<RegistryFriendlyByteBuf> CLIENTBOUND_PLAY = new PayloadTypeRegistryImpl<>(ConnectionProtocol.PLAY, PacketFlow.CLIENTBOUND);
 	private final Map<Identifier, CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload>> packetTypes = new HashMap<>();
 	private final Object2IntMap<Identifier> maxPacketSizes = new Object2IntOpenHashMap<>();
+	private final Object2ObjectMap<Identifier, IntSupplier> pendingMaxPacketSizes = new Object2ObjectOpenHashMap<>();
 	private final ConnectionProtocol protocol;
 	private final PacketFlow flow;
 	private final int minimalSplittableSize;
@@ -91,29 +95,12 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	}
 
 	@Override
-	public <T extends CustomPacketPayload> void setMaxPacketSize(CustomPacketPayload.Type<T> type, int maxPacketSize) {
-		Identifier id = type.id();
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier) {
+		Objects.requireNonNull(maxPacketSizeSupplier, "maxPacketSizeSupplier");
 
-		if (!this.packetTypes.containsKey(id)) {
-			throw new IllegalArgumentException("Packet type " + id + " has not been registered yet!");
-		}
-
-		if (maxPacketSize < 0) {
-			throw new IllegalArgumentException("Provided maxPacketSize needs to be positive!");
-		}
-
-		padAndSetMaxPacketSize(id, maxPacketSize);
-	}
-
-	@Override
-	public <T extends CustomPacketPayload> int getMaxPacketSize(CustomPacketPayload.Type<T> type) {
-		Identifier id = type.id();
-
-		if (!this.packetTypes.containsKey(id)) {
-			throw new IllegalArgumentException("Packet type " + id + " has not been registered yet!");
-		}
-
-		return this.maxPacketSizes.getOrDefault(id, this.minimalSplittableSize);
+		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
+		pendingMaxPacketSizes.put(type.id(), maxPacketSizeSupplier);
+		return typeAndCodec;
 	}
 
 	private void padAndSetMaxPacketSize(Identifier id, int maxSize) {
@@ -128,8 +115,7 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 		}
 
 		// No need to enable splitting, if packet's max size is smaller than chunk
-		// If maxPacketSize <= previous max, then ignore it.
-		if (maxPacketSize > Math.max(this.minimalSplittableSize, this.maxPacketSizes.getOrDefault(id, -1))) {
+		if (maxPacketSize > this.minimalSplittableSize) {
 			this.maxPacketSizes.put(id, maxPacketSize);
 		}
 	}
@@ -147,6 +133,18 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	 * @return the max packet size, or -1 if the payload type does not need splitting.
 	 */
 	public int getMaxPacketSizeForSplitting(Identifier id) {
+		IntSupplier supplier = this.pendingMaxPacketSizes.remove(id);
+
+		if (supplier != null) {
+			int maxPacketSize = supplier.getAsInt();
+
+			if (maxPacketSize < 0) {
+				throw new IllegalArgumentException("maxPacketSize supplier for packet type " + id + ": must be positive!");
+			}
+
+			padAndSetMaxPacketSize(id, maxPacketSize);
+		}
+
 		return this.maxPacketSizes.getOrDefault(id, -1);
 	}
 
