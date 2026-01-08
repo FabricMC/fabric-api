@@ -235,6 +235,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BERRY_FOODS = register("foods/berry");
 	public static final TagKey<Item> BREAD_FOODS = register("foods/bread");
 	public static final TagKey<Item> COOKIE_FOODS = register("foods/cookie");
+	public static final TagKey<Item> DOUGH_FOODS = register("foods/dough");
 	public static final TagKey<Item> RAW_MEAT_FOODS = register("foods/raw_meat");
 	public static final TagKey<Item> COOKED_MEAT_FOODS = register("foods/cooked_meat");
 	public static final TagKey<Item> RAW_FISH_FOODS = register("foods/raw_fish");

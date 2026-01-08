@@ -256,6 +256,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		valueLookupBuilder(ConventionalItemTags.COOKIE_FOODS)
 				.add(Items.COOKIE);
 
+		valueLookupBuilder(ConventionalItemTags.DOUGH_FOODS);
+
 		valueLookupBuilder(ConventionalItemTags.RAW_MEAT_FOODS)
 				.add(Items.BEEF)
 				.add(Items.PORKCHOP)
@@ -343,6 +345,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.BERRY_FOODS)
 				.addOptionalTag(ConventionalItemTags.BREAD_FOODS)
 				.addOptionalTag(ConventionalItemTags.COOKIE_FOODS)
+				.addOptionalTag(ConventionalItemTags.DOUGH_FOODS)
 				.addOptionalTag(ConventionalItemTags.RAW_MEAT_FOODS)
 				.addOptionalTag(ConventionalItemTags.RAW_FISH_FOODS)
 				.addOptionalTag(ConventionalItemTags.COOKED_MEAT_FOODS)
