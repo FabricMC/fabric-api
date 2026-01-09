@@ -63,17 +63,10 @@ public class DimensionModificationImpl implements ModInitializer {
 				.sorted(Comparator.comparingInt(key -> dimensions.getId(dimensions.getValueOrThrow(key))))
 				.toList();
 
-		int dimensionsChanged = 0;
-		int dimensionsProcessed = 0;
-
 		for (ResourceKey<DimensionType> key : keys) {
 			Holder.Reference<DimensionType> reference = dimensions.getOrThrow(key);
 
-			dimensionsProcessed++;
-
 			if (applyChanges(reference, registries)) {
-				dimensionsChanged++;
-
 				// Re-freeze and apply certain cleanup actions
 				if (dimensions instanceof MappedRegistry<DimensionType> registry) {
 					Map<ResourceKey<DimensionType>, RegistrationInfo> registrationInfos = ((MappedRegistryAccessor<DimensionType>) registry).fabric_getRegistrationInfos();
@@ -82,10 +75,6 @@ public class DimensionModificationImpl implements ModInitializer {
 					registrationInfos.put(key, newInfo);
 				}
 			}
-		}
-
-		if (dimensionsProcessed > 0) {
-			LOGGER.info("Applied modifications to {} of {} dimensions", dimensionsChanged, dimensionsProcessed);
 		}
 	}
 
