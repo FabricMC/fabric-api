@@ -83,7 +83,7 @@ abstract class GeneratePackageInfos extends DefaultTask {
 			}
 
 			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
-			def isImpl = relativePath.toString() ==~ implPattern
+			def isImpl = relativePath.toString() =~ implPattern
 
 			target.resolve('package-info.java').withWriter {
 				if (isImpl) {
