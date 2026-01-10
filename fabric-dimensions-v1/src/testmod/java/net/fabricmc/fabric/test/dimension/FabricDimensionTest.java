@@ -16,46 +16,22 @@
 
 package net.fabricmc.fabric.test.dimension;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.attribute.EnvironmentAttributes;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.LevelStem;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.dimension.v1.DimensionEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class FabricDimensionTest implements ModInitializer {
 	// The level stem refers to the JSON-file in the dimension subfolder of the data pack,
 	// which will always share its ID with the level that is created from it
 	private static final ResourceKey<LevelStem> DIMENSION_KEY = ResourceKey.create(Registries.LEVEL_STEM, Identifier.fromNamespaceAndPath("fabric_dimension", "void"));
-	private static final int PURPLE = 0xFFE580FF;
 
 	@Override
 	public void onInitialize() {
 		Registry.register(BuiltInRegistries.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
-
-		DimensionEvents.MODIFY_ATTRIBUTES.register((dimension, attributes, _) -> {
-			if (dimension.is(BuiltinDimensionTypes.OVERWORLD)) {
-				attributes.set(EnvironmentAttributes.CLOUD_COLOR, PURPLE);
-			}
-		});
-
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-			overworld.setDayTime(6000);
-			int overworldCloudColor = overworld.environmentAttributes().getValue(EnvironmentAttributes.CLOUD_COLOR, BlockPos.ZERO);
-
-			if (overworldCloudColor != PURPLE) {
-				throw new AssertionError("Expected overworld cloud color to be (%d) but was (%d)".formatted(PURPLE, overworldCloudColor));
-			}
-		});
 	}
 }

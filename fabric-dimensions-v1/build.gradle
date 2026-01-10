@@ -6,5 +6,6 @@ moduleDependencies(project, [
 ])
 
 testDependencies(project, [
-	':fabric-resource-loader-v1'
+	':fabric-resource-loader-v1',
+	':fabric-client-gametest-api-v1'
 ])
