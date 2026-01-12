@@ -41,8 +41,6 @@ import net.fabricmc.fabric.mixin.dimension.DimensionTypeAccessor;
 import net.fabricmc.fabric.mixin.dimension.MappedRegistryAccessor;
 
 public class DimensionModificationImpl implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DimensionModificationImpl.class);
-
 	@Override
 	public void onInitialize() {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> DimensionModificationImpl.finalizeWorldGen(server.registryAccess()));
