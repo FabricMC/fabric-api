@@ -22,8 +22,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.client.gui.screens.advancements.AdvancementTabType;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderer;
 import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementIconRenderContextImpl;
