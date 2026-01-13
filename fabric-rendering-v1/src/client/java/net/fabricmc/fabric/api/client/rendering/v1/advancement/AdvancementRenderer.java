@@ -61,8 +61,19 @@ public final class AdvancementRenderer {
 		AdvancementRendererRegistryImpl.registerBackground(backgroundRenderer, advancementIds);
 	}
 
+	/**
+	 * Called after the icon (display item) of an advancement renders.
+	 *
+	 * <p>By default, the original icon does not render.
+	 * To have it render, override {@link #shouldRenderOriginalIcon()} and return {@code true}.
+	 */
 	@FunctionalInterface
 	public interface IconRenderer {
+		/**
+		 * @param context the context of the icon rendering, which has
+		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
+		 *                the {@link net.minecraft.advancements.Advancement advancement} instance, and the icon's coordinates.
+		 */
 		void renderAdvancementIcon(AdvancementRenderContext.Icon context);
 
 		/**
@@ -73,8 +84,22 @@ public final class AdvancementRenderer {
 		}
 	}
 
+	/**
+	 * Called after the frame of an advancement renders.
+	 *
+	 * <p>By default, the original frame does not render.
+	 * To have it render, override {@link #shouldRenderOriginalFrame()} and return {@code true}.
+	 *
+	 * <p>The tooltip which shows the advancement's name, description, and progress when hovered will render by default.
+	 * To cancel its rendering, override {@link #shouldRenderTooltip()} and return {@code false}.
+	 */
 	@FunctionalInterface
 	public interface FrameRenderer {
+		/**
+		 * @param context the context of the frame rendering, which has
+		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
+		 *                the {@link net.minecraft.advancements.Advancement advancement} instance, and the frame's coordinates.
+		 */
 		void renderAdvancementFrame(AdvancementRenderContext.Frame context);
 
 		/**
@@ -92,8 +117,20 @@ public final class AdvancementRenderer {
 		}
 	}
 
+	/**
+	 * Called after the background of an advancement tab renders.
+	 *
+	 * <p>By default, the original background does not render.
+	 * To have it render, override {@link #shouldRenderOriginalBackground()} and return {@code true}.
+	 */
 	@FunctionalInterface
 	public interface BackgroundRenderer {
+		/**
+		 * @param context the context of the frame rendering, which has
+		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
+		 *                the {@link net.minecraft.advancements.Advancement advancement} instance,
+		 *                and the background's {@link net.minecraft.client.gui.navigation.ScreenRectangle bounds}.
+		 */
 		void renderAdvancementBackground(AdvancementRenderContext.Background context);
 
 		/**
