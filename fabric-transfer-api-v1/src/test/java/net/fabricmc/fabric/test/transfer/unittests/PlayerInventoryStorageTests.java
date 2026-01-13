@@ -23,8 +23,11 @@ import java.util.function.Function;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -37,6 +40,10 @@ public class PlayerInventoryStorageTests extends AbstractTransferApiTest {
 	@BeforeAll
 	static void beforeAll() {
 		bootstrap();
+
+		for (Item item : BuiltInRegistries.ITEM) {
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
+		}
 	}
 
 	@Test

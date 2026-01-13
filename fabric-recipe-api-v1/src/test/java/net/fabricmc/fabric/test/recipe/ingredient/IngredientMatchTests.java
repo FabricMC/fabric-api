@@ -27,8 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.Bootstrap;
@@ -46,6 +48,10 @@ public class IngredientMatchTests {
 	static void beforeAll() {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
+
+		for (Item item : BuiltInRegistries.ITEM) {
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
+		}
 	}
 
 	@Test

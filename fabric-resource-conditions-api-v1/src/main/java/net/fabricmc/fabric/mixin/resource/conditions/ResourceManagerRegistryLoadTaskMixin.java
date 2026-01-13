@@ -26,7 +26,7 @@ import net.minecraft.resources.ResourceManagerRegistryLoadTask;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(ResourceManagerRegistryLoadTask.class)
-public class RegistryDataLoaderResourceManagerRegistryLoadTaskMixin {
+public class ResourceManagerRegistryLoadTaskMixin {
 	@ModifyExpressionValue(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryLoadTask$PendingRegistration"))
 	private RegistryLoadTask.PendingRegistration<?> load(RegistryLoadTask.PendingRegistration<?> original) {
 		if (original.value().right().isPresent() && original.value().right().get() == ResourceConditionsImpl.DISABLED_RESOURCE_EXCEPTION) {

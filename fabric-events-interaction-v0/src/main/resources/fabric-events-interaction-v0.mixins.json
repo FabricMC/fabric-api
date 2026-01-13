@@ -9,7 +9,6 @@
     "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerGameModeMixin",
-    "ServerGamePacketListenerInteractEntityHandlerMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin"
   ],

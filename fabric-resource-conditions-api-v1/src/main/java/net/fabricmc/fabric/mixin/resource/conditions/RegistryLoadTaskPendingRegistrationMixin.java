@@ -33,7 +33,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(RegistryLoadTask.PendingRegistration.class)
-public abstract class RegistryDataLoaderPendingRegistrationMixin {
+public abstract class RegistryLoadTaskPendingRegistrationMixin {
 	@Inject(method = "loadFromResource", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Decoder;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;"), cancellable = true)
 	private static <T> void loadFromResource(Decoder<T> elementDecoder, RegistryOps<JsonElement> ops, ResourceKey<T> elementKey, Resource thunk, CallbackInfoReturnable<Either<T, Exception>> cir, @Local JsonElement jsonElement) {
 		if (jsonElement.isJsonObject() && !ResourceConditionsImpl.applyResourceConditions(jsonElement.getAsJsonObject(), elementKey.registry().toString(), elementKey.identifier(), ops.lookupProvider)) {

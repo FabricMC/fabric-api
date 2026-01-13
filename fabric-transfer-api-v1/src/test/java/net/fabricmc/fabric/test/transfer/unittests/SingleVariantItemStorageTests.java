@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -40,6 +41,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
@@ -70,6 +72,10 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		FLUID = Registry.register(
 				BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TransferTestInitializer.MOD_ID, "fluid"),
 				DataComponentType.<FluidData>builder().persistent(FluidData.CODEC).networkSynchronized(FluidData.PACKET_CODEC).build());
+
+		for (Item item : BuiltInRegistries.ITEM) {
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
+		}
 	}
 
 	@Test

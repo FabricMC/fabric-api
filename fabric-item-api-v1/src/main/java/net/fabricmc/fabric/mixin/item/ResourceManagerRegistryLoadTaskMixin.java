@@ -35,7 +35,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
 @Mixin(ResourceManagerRegistryLoadTask.class)
-public class RegistryDataLoaderResourceManagerRegistryLoadTaskMixin {
+public class ResourceManagerRegistryLoadTaskMixin {
 	@WrapOperation(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryLoadTask$PendingRegistration"))
 	private <T> RegistryLoadTask.PendingRegistration<?> modify(ResourceKey<T> key, Either<T, Exception> value, RegistrationInfo registrationInfo, Operation<RegistryLoadTask.PendingRegistration<T>> original, @Local(argsOnly = true) Resource resource) {
 		if (value.left().isPresent()) {
