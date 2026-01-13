@@ -27,7 +27,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderer;
 
 public final class AdvancementRendererRegistryImpl {
-	public static final ScopedValue<AdvancementIconRenderContextImpl> TAB_ICON_RENDER_CONTEXT = ScopedValue.newInstance();
+	public static final ScopedValue<AdvancementRenderContextImpl.IconImpl> TAB_ICON_RENDER_CONTEXT = ScopedValue.newInstance();
 	private static final Map<Identifier, AdvancementRenderer.IconRenderer> ICONS = new HashMap<>();
 	private static final Map<Identifier, AdvancementRenderer.FrameRenderer> FRAMES = new HashMap<>();
 	private static final Map<Identifier, AdvancementRenderer.BackgroundRenderer> BACKGROUNDS = new HashMap<>();

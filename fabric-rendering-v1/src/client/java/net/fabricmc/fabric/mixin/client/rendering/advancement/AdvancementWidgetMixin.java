@@ -45,8 +45,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderer;
-import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementFrameRenderContextImpl;
-import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementIconRenderContextImpl;
+import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRenderContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRendererRegistryImpl;
 
 @Mixin(AdvancementWidget.class)
@@ -77,7 +76,7 @@ abstract class AdvancementWidgetMixin {
 		}
 
 		if (iconRenderer != null) {
-			iconRenderer.renderAdvancementIcon(new AdvancementIconRenderContextImpl(graphics, advancementNode.holder(), progress, x, y, hovered, false));
+			iconRenderer.renderAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancementNode.holder(), progress, x, y, hovered, false));
 		}
 	}
 
@@ -100,7 +99,7 @@ abstract class AdvancementWidgetMixin {
 		}
 
 		if (frameRenderer != null) {
-			frameRenderer.renderAdvancementFrame(new AdvancementFrameRenderContextImpl(graphics, advancementNode.holder(), progress, x, y, hovered));
+			frameRenderer.renderAdvancementFrame(new AdvancementRenderContextImpl.FrameImpl(graphics, advancementNode.holder(), progress, x, y, hovered));
 		}
 	}
 

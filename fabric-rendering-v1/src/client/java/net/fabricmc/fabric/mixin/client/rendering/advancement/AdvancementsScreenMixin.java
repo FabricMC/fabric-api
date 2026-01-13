@@ -30,7 +30,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 
-import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementIconRenderContextImpl;
+import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRenderContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRendererRegistryImpl;
 
 @Mixin(AdvancementsScreen.class)
@@ -48,7 +48,7 @@ abstract class AdvancementsScreenMixin {
 			AdvancementProgress progress = ((AdvancementWidgetAccessor) ((AdvancementTabAccessor) tab).fabric$root()).fabric$progress();
 			ScopedValue.where(
 					AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT,
-					new AdvancementIconRenderContextImpl(graphics, holder, progress, hovered, selected)
+					new AdvancementRenderContextImpl.IconImpl(graphics, holder, progress, hovered, selected)
 			).call(() -> original.call(tab, graphics, xo, yo));
 		} else {
 			original.call(tab, graphics, xo, yo);

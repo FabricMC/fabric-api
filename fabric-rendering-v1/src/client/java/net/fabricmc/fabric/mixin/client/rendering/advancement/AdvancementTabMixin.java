@@ -39,8 +39,7 @@ import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderer;
-import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementBackgroundRenderContextImpl;
-import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementIconRenderContextImpl;
+import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRenderContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRendererRegistryImpl;
 
 @Mixin(AdvancementTab.class)
@@ -62,7 +61,7 @@ abstract class AdvancementTabMixin {
 	@WrapOperation(method = "drawIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTabType;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;IIILnet/minecraft/world/item/ItemStack;)V"))
 	private void wrapDrawIcon(AdvancementTabType type, GuiGraphics graphics, int xo, int yo, int index, ItemStack icon, Operation<Void> original) {
 		if (AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.isBound()) {
-			final AdvancementIconRenderContextImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
+			final AdvancementRenderContextImpl.IconImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
 			ScopedValue.where(AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT, context)
 					.call(() -> original.call(type, graphics, xo, yo, index, icon));
 		} else {
@@ -88,7 +87,7 @@ abstract class AdvancementTabMixin {
 		if (backgroundRenderer.get() != null) {
 			AdvancementProgress progress = ((AdvancementWidgetAccessor) root).fabric$progress();
 			backgroundRenderer.get().renderAdvancementBackground(
-					new AdvancementBackgroundRenderContextImpl(graphics, rootNode.holder(), progress, bounds.get(), scrollX, scrollY)
+					new AdvancementRenderContextImpl.BackgroundImpl(graphics, rootNode.holder(), progress, bounds.get(), scrollX, scrollY)
 			);
 		}
 	}

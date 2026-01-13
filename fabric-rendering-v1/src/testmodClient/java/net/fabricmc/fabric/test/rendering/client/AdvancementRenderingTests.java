@@ -24,9 +24,7 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementBackgroundRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementFrameRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementIconRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderer;
 
 public class AdvancementRenderingTests implements ClientModInitializer {
@@ -39,7 +37,7 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 
 	static class StoryRootIconRenderer implements AdvancementRenderer.IconRenderer {
 		@Override
-		public void renderAdvancementIcon(AdvancementIconRenderContext context) {
+		public void renderAdvancementIcon(AdvancementRenderContext.Icon context) {
 			if (context.isHovered()) {
 				context.graphics().drawString(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
 			}
@@ -59,7 +57,7 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 		private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("textures/painting/unpacked.png");
 
 		@Override
-		public void renderAdvancementBackground(AdvancementBackgroundRenderContext context) {
+		public void renderAdvancementBackground(AdvancementRenderContext.Background context) {
 			ScreenRectangle bounds = context.bounds();
 			context.graphics().blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, bounds.left(), bounds.top(), 1 - Mth.floor(context.scrollX()), 3 - Mth.floor(context.scrollY()), bounds.width(), bounds.height(), 64, 64);
 		}
@@ -67,7 +65,7 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 
 	static class MineDiamondFrameRenderer implements AdvancementRenderer.FrameRenderer {
 		@Override
-		public void renderAdvancementFrame(AdvancementFrameRenderContext context) {
+		public void renderAdvancementFrame(AdvancementRenderContext.Frame context) {
 			int x = context.x();
 			int y = context.y();
 			context.graphics().fill(x, y, x + 26, y + 26, context.isObtained() ? CommonColors.GREEN : CommonColors.RED);

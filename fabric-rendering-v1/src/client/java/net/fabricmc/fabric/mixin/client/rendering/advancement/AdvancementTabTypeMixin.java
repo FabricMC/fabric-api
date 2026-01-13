@@ -26,7 +26,7 @@ import net.minecraft.client.gui.screens.advancements.AdvancementTabType;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderer;
-import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementIconRenderContextImpl;
+import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRenderContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRendererRegistryImpl;
 
 @Mixin(AdvancementTabType.class)
@@ -34,7 +34,7 @@ abstract class AdvancementTabTypeMixin {
 	@WrapOperation(method = "drawIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
 	private void renderAdvancementIcon(GuiGraphics graphics, ItemStack icon, int x, int y, Operation<Void> original) {
 		if (AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.isBound()) {
-			final AdvancementIconRenderContextImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
+			final AdvancementRenderContextImpl.IconImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
 			context.setPos(x, y);
 			AdvancementRenderer.IconRenderer iconRenderer = AdvancementRendererRegistryImpl.getIconRenderer(context.holder().id());
 

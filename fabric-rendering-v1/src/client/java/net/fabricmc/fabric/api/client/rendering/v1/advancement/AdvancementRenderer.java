@@ -63,7 +63,7 @@ public final class AdvancementRenderer {
 
 	@FunctionalInterface
 	public interface IconRenderer {
-		void renderAdvancementIcon(AdvancementIconRenderContext context);
+		void renderAdvancementIcon(AdvancementRenderContext.Icon context);
 
 		/**
 		 * @return {@code true} if the original advancement icon should render alongside this icon renderer.
@@ -75,7 +75,7 @@ public final class AdvancementRenderer {
 
 	@FunctionalInterface
 	public interface FrameRenderer {
-		void renderAdvancementFrame(AdvancementFrameRenderContext context);
+		void renderAdvancementFrame(AdvancementRenderContext.Frame context);
 
 		/**
 		 * @return {@code true} if the original advancement frame should render alongside this frame renderer.
@@ -94,7 +94,7 @@ public final class AdvancementRenderer {
 
 	@FunctionalInterface
 	public interface BackgroundRenderer {
-		void renderAdvancementBackground(AdvancementBackgroundRenderContext context);
+		void renderAdvancementBackground(AdvancementRenderContext.Background context);
 
 		/**
 		 * @return {@code true} if the original advancement background should render alongside this background renderer.

@@ -32,7 +32,7 @@ import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderer;
-import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementIconRenderContextImpl;
+import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRenderContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRendererRegistryImpl;
 
 @Mixin(AdvancementToast.class)
@@ -52,7 +52,7 @@ abstract class AdvancementToastMixin {
 		if (iconRenderer != null) {
 			ClientAdvancements advancements = Minecraft.getInstance().getConnection().getAdvancements();
 			AdvancementProgress progress = ((ClientAdvancementsAccessor) advancements).fabric$progress().get(advancement);
-			iconRenderer.renderAdvancementIcon(new AdvancementIconRenderContextImpl(graphics, advancement, progress, x, y, false, false));
+			iconRenderer.renderAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancement, progress, x, y, false, false));
 		}
 	}
 }
