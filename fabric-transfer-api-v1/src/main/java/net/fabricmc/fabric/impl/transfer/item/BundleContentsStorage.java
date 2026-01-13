@@ -152,7 +152,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 			ItemStackTemplate toSrink = stacksCopy.get(index);
 			int extracted = (int) Math.min(toSrink.count(), maxAmount);
 
-			if (toSrink.count() - extracted >= 1) {
+			if (toSrink.count() - extracted <= 1) {
 				stacksCopy.remove(index);
 			} else {
 				stacksCopy.set(index, new ItemStackTemplate(toSrink.item(), toSrink.count() - extracted, toSrink.components()));

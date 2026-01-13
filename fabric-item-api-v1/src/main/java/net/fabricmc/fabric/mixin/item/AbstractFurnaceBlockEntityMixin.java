@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -28,8 +31,15 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class AbstractFurnaceBlockEntityMixin {
+	// Copy the stack before the .shrink
+	@WrapOperation(method = "serverTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;"))
+	private static Item copyStack(ItemStack itemStack, Operation<Item> original, @Share("itemStack") LocalRef<ItemStack> copiedStack) {
+		copiedStack.set(itemStack.copy());
+		return original.call(itemStack);
+	}
+
 	@Redirect(method = "serverTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getCraftingRemainder()Lnet/minecraft/world/item/ItemStackTemplate;"))
-	private static ItemStackTemplate getCraftingRemainder(Item item, @Local(ordinal = 0) ItemStack stack) {
-		return stack.getCraftingRemainder();
+	private static ItemStackTemplate getCraftingRemainder(Item item, @Share("itemStack") LocalRef<ItemStack> stack) {
+		return stack.get().getCraftingRemainder();
 	}
 }

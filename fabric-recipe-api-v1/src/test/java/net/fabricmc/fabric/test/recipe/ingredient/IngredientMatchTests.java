@@ -49,8 +49,16 @@ public class IngredientMatchTests {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
 
+		// Massive hack to kinda get item components working in unit tests
 		for (Item item : BuiltInRegistries.ITEM) {
 			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
+		}
+
+		for (Item item : List.of(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE)) {
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.builder()
+					.set(DataComponents.DAMAGE, 0)
+					.set(DataComponents.MAX_DAMAGE, 100)
+					.build());
 		}
 	}
 
