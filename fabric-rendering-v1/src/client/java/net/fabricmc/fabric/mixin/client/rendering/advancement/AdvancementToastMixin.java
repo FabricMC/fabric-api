@@ -51,7 +51,7 @@ abstract class AdvancementToastMixin {
 
 		if (iconRenderer != null) {
 			ClientAdvancements advancements = Minecraft.getInstance().getConnection().getAdvancements();
-			AdvancementProgress progress = ((ClientAdvancementsAccessor) advancements).fabric$progress().get(advancement);
+			AdvancementProgress progress = ((ClientAdvancementsAccessor) advancements).fabric_getProgress().get(advancement);
 			iconRenderer.renderAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancement, progress, x, y, false, false));
 		}
 	}

@@ -45,7 +45,7 @@ abstract class AdvancementsScreenMixin {
 		if (AdvancementRendererRegistryImpl.getIconRenderer(holder.id()) != null) {
 			boolean hovered = tab.isMouseOver(xo, yo, mouseX, mouseY);
 			boolean selected = selectedTab == tab;
-			AdvancementProgress progress = ((AdvancementWidgetAccessor) ((AdvancementTabAccessor) tab).fabric$root()).fabric$progress();
+			AdvancementProgress progress = ((AdvancementWidgetAccessor) ((AdvancementTabAccessor) tab).fabric_getRoot()).fabric_getProgress();
 			ScopedValue.where(
 					AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT,
 					new AdvancementRenderContextImpl.IconImpl(graphics, holder, progress, hovered, selected)

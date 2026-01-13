@@ -28,5 +28,5 @@ import net.minecraft.client.multiplayer.ClientAdvancements;
 @Mixin(ClientAdvancements.class)
 public interface ClientAdvancementsAccessor {
 	@Accessor("progress")
-	Map<AdvancementHolder, AdvancementProgress> fabric$progress();
+	Map<AdvancementHolder, AdvancementProgress> fabric_getProgress();
 }

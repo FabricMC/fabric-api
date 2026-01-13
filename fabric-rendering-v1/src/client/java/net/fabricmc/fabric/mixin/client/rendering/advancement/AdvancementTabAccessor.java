@@ -25,5 +25,5 @@ import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 @Mixin(AdvancementTab.class)
 public interface AdvancementTabAccessor {
 	@Accessor("root")
-	AdvancementWidget fabric$root();
+	AdvancementWidget fabric_getRoot();
 }

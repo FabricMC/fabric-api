@@ -26,5 +26,5 @@ import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 @Mixin(AdvancementWidget.class)
 public interface AdvancementWidgetAccessor {
 	@Accessor("progress")
-	@Nullable AdvancementProgress fabric$progress();
+	@Nullable AdvancementProgress fabric_getProgress();
 }
