@@ -19,10 +19,13 @@ package net.fabricmc.fabric.impl.networking;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.IntSupplier;
 
 import io.netty.buffer.ByteBufUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.ConnectionProtocol;
@@ -44,7 +47,8 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	public static final PayloadTypeRegistryImpl<RegistryFriendlyByteBuf> SERVERBOUND_PLAY = new PayloadTypeRegistryImpl<>(ConnectionProtocol.PLAY, PacketFlow.SERVERBOUND);
 	public static final PayloadTypeRegistryImpl<RegistryFriendlyByteBuf> CLIENTBOUND_PLAY = new PayloadTypeRegistryImpl<>(ConnectionProtocol.PLAY, PacketFlow.CLIENTBOUND);
 	private final Map<Identifier, CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload>> packetTypes = new HashMap<>();
-	private final Object2IntMap<Identifier> maxPacketSize = new Object2IntOpenHashMap<>();
+	private final Object2IntMap<Identifier> maxPacketSizes = new Object2IntOpenHashMap<>();
+	private final Object2ObjectMap<Identifier, IntSupplier> pendingMaxPacketSizes = new Object2ObjectOpenHashMap<>();
 	private final ConnectionProtocol protocol;
 	private final PacketFlow flow;
 	private final int minimalSplittableSize;
@@ -66,7 +70,7 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 
 	@Override
 	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec) {
-		Objects.requireNonNull(type, "id");
+		Objects.requireNonNull(type, "type");
 		Objects.requireNonNull(codec, "codec");
 
 		final CustomPacketPayload.TypeAndCodec<B, T> payloadType = new CustomPacketPayload.TypeAndCodec<>(type, codec.cast());
@@ -80,15 +84,30 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	}
 
 	@Override
-	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPayloadSize) {
-		if (maxPayloadSize < 0) {
-			throw new IllegalArgumentException("Provided maxPayloadSize needs to be positive!");
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize) {
+		if (maxPacketSize < 0) {
+			throw new IllegalArgumentException("Provided maxPacketSize needs to be positive!");
 		}
 
 		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
+		padAndSetMaxPacketSize(type.id(), maxPacketSize);
+		return typeAndCodec;
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier) {
+		Objects.requireNonNull(maxPacketSizeSupplier, "maxPacketSizeSupplier");
+
+		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
+		pendingMaxPacketSizes.put(type.id(), maxPacketSizeSupplier);
+		return typeAndCodec;
+	}
+
+	private void padAndSetMaxPacketSize(Identifier id, int maxSize) {
 		// Defines max packet size, increased by length of packet's Identifier to cover full size of CustomPayloadX2YPackets.
-		int identifierSize = ByteBufUtil.utf8MaxBytes(type.id().toString());
-		int maxPacketSize = maxPayloadSize + VarInt.getByteSize(identifierSize) + identifierSize + 5 * 2;
+		int identifierSize = ByteBufUtil.utf8MaxBytes(id.toString());
+		int paddingSize = VarInt.getByteSize(identifierSize) + identifierSize + 5 * 2;
+		int maxPacketSize = maxSize + paddingSize;
 
 		// Prevent overflow
 		if (maxPacketSize < 0) {
@@ -97,23 +116,36 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 
 		// No need to enable splitting, if packet's max size is smaller than chunk
 		if (maxPacketSize > this.minimalSplittableSize) {
-			this.maxPacketSize.put(type.id(), maxPacketSize);
+			this.maxPacketSizes.put(id, maxPacketSize);
 		}
-
-		return typeAndCodec;
 	}
 
 	public CustomPacketPayload.@Nullable TypeAndCodec<B, ? extends CustomPacketPayload> get(Identifier id) {
 		return packetTypes.get(id);
 	}
 
-	public <T extends CustomPacketPayload> CustomPacketPayload.@Nullable TypeAndCodec<B, T> get(CustomPacketPayload.Type<T> id) {
+	public <T extends CustomPacketPayload> CustomPacketPayload.@Nullable TypeAndCodec<B, T> get(CustomPacketPayload.Type<T> type) {
 		//noinspection unchecked
-		return (CustomPacketPayload.TypeAndCodec<B, T>) packetTypes.get(id.id());
+		return (CustomPacketPayload.TypeAndCodec<B, T>) packetTypes.get(type.id());
 	}
 
-	public int getMaxPacketSize(Identifier id) {
-		return this.maxPacketSize.getOrDefault(id, -1);
+	/**
+	 * @return the max packet size, or -1 if the payload type does not need splitting.
+	 */
+	public int getMaxPacketSizeForSplitting(Identifier id) {
+		IntSupplier supplier = this.pendingMaxPacketSizes.remove(id);
+
+		if (supplier != null) {
+			int maxPacketSize = supplier.getAsInt();
+
+			if (maxPacketSize < 0) {
+				throw new IllegalArgumentException("maxPacketSize supplier for packet type " + id + ": must be positive!");
+			}
+
+			padAndSetMaxPacketSize(id, maxPacketSize);
+		}
+
+		return this.maxPacketSizes.getOrDefault(id, -1);
 	}
 
 	public ConnectionProtocol getProtocol() {

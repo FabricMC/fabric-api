@@ -34,11 +34,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public class NetworkingSplitterTest implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingSplitterTest.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(NetworkingSplitterTest.class);
 
-	private static final int DATA_SIZE = 20 * 1024 * 1024;
+	public static final int DATA_SIZE = 20 * 1024 * 1024;
 
-	// 20 MB of random data source
+	// 20 MiB of random data source
 	private static final int[][] RANDOM_DATA = {
 			IntStream.generate(RandomSource.create(24534)::nextInt).limit(20).toArray(),
 			IntStream.generate(RandomSource.create(24533)::nextInt).limit(DATA_SIZE / 4).toArray()
@@ -48,7 +48,7 @@ public class NetworkingSplitterTest implements ModInitializer {
 	public void onInitialize() {
 		// Register the payload on both sides for play and configuration
 		PayloadTypeRegistry.clientboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE + 14);
-		PayloadTypeRegistry.serverboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE + 14);
+		PayloadTypeRegistry.serverboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, () -> DATA_SIZE + 14);
 
 		// When the client joins, send a packet expecting it to be validated and echoed back
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> sender.sendPacket(new LargePayload(0, RANDOM_DATA[0])));
@@ -62,7 +62,7 @@ public class NetworkingSplitterTest implements ModInitializer {
 
 	public static void validateLargePacketData(int index, int[] data, String side) {
 		if (Arrays.equals(RANDOM_DATA[index], data)) {
-			NetworkingTestmods.LOGGER.info("Successfully received large packet [" + index + "] on " + side);
+			LOGGER.info("Successfully received large packet [{}] on {}", index, side);
 			return;
 		}
 

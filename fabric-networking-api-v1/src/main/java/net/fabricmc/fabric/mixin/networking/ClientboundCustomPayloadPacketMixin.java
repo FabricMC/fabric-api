@@ -79,7 +79,7 @@ public class ClientboundCustomPayloadPacketMixin implements SplittablePacket, Ge
 
 	@Override
 	public void fabric_split(PayloadTypeRegistryImpl<?> payloadTypeRegistry, ChannelHandlerContext channelHandlerContext, PacketEncoder<?> encoder, Packet<?> packet, Consumer<Packet<?>> consumer) throws Exception {
-		int size = payloadTypeRegistry.getMaxPacketSize(this.payload.type().id());
+		int size = payloadTypeRegistry.getMaxPacketSizeForSplitting(this.payload.type().id());
 
 		if (size == -1) {
 			consumer.accept((Packet<?>) this);
