@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -34,7 +35,6 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
-import net.minecraft.client.gui.screens.advancements.AdvancementTabType;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 import net.minecraft.world.item.ItemStack;
 
@@ -59,7 +59,7 @@ abstract class AdvancementTabMixin {
 	private AdvancementWidget root;
 
 	@WrapOperation(method = "drawIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTabType;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;IIILnet/minecraft/world/item/ItemStack;)V"))
-	private void wrapDrawIcon(AdvancementTabType type, GuiGraphics graphics, int xo, int yo, int index, ItemStack icon, Operation<Void> original) {
+	private void wrapDrawIcon(@Coerce Object type, GuiGraphics graphics, int xo, int yo, int index, ItemStack icon, Operation<Void> original) {
 		if (AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.isBound()) {
 			final AdvancementRenderContextImpl.IconImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
 			ScopedValue.where(AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT, context)

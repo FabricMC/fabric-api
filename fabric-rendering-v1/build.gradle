@@ -1,9 +1,5 @@
 version = getSubprojectVersion(project)
 
-loom {
-	accessWidenerPath = file("src/client/resources/fabric-rendering-v1.accesswidener")
-}
-
 moduleDependencies(project, [
 	':fabric-api-base',
 	':fabric-transitive-access-wideners-v1',
