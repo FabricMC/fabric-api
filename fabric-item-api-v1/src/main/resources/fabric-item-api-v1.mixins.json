@@ -13,7 +13,6 @@
     "EnchantmentBuilderMixin",
     "EnchantmentHelperMixin",
     "EnchantRandomlyFunctionMixin",
-    "ItemAccessor",
     "ItemMixin",
     "ItemPropertiesMixin",
     "ItemStackMixin",

@@ -19,12 +19,14 @@ package net.fabricmc.fabric.impl.transfer.item;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.ItemContainerContents;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -73,15 +75,15 @@ public class ItemContainerContentsStorage extends CombinedSlottedStorage<ItemVar
 		}
 
 		private ItemStack getStack() {
-			List<ItemStack> stacks = ItemContainerContentsStorage.this.containerAccessor().fabric_getItems();
+			List<Optional<ItemStackTemplate>> stacks = ItemContainerContentsStorage.this.containerAccessor().fabric_getItems();
 
 			if (stacks.size() <= slot) return ItemStack.EMPTY;
 
-			return stacks.get(slot);
+			return stacks.get(slot).map(ItemStackTemplate::create).orElse(ItemStack.EMPTY);
 		}
 
 		protected boolean setStack(ItemStack stack, TransactionContext transaction) {
-			List<ItemStack> stacks = ItemContainerContentsStorage.this.container().stream().collect(Collectors.toList());
+			List<ItemStack> stacks = ItemContainerContentsStorage.this.container().allItemsCopyStream().collect(Collectors.toList());
 
 			while (stacks.size() <= slot) stacks.add(ItemStack.EMPTY);
 

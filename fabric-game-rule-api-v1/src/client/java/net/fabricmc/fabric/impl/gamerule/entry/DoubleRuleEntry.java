@@ -23,20 +23,20 @@ import com.mojang.serialization.DataResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
+import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.gamerules.GameRule;
 
-import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
+import net.fabricmc.fabric.mixin.gamerule.client.AbstractGameRulesScreenAccessor;
 
-public final class DoubleRuleEntry extends EditGameRulesScreen.GameRuleEntry {
+public final class DoubleRuleEntry extends AbstractGameRulesScreen.GameRuleEntry {
 	private final EditBox input;
 
-	public DoubleRuleEntry(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, final GameRule<Double> doubleRule) {
+	public DoubleRuleEntry(AbstractGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, final GameRule<Double> doubleRule) {
 		gameRuleScreen.super(description, name);
-		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
+		AbstractGameRulesScreenAccessor accessor = (AbstractGameRulesScreenAccessor) gameRuleScreen;
 
 		this.input = new EditBox(Minecraft.getInstance().font, 10, 5, 42, 20,
 				name.copy()

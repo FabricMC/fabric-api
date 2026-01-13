@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.api.util.TriState;
@@ -37,7 +40,7 @@ public interface FabricItemStack {
 	 *
 	 * @return the leftover item
 	 */
-	default ItemStack getCraftingRemainder() {
+	default @Nullable ItemStackTemplate getCraftingRemainder() {
 		return ((ItemStack) this).getItem().getCraftingRemainder((ItemStack) this);
 	}
 

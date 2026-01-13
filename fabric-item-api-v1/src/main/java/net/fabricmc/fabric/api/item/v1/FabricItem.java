@@ -30,6 +30,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TippedArrowItem;
@@ -104,7 +105,7 @@ public interface FabricItem {
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
 	 */
-	default ItemStack getCraftingRemainder(ItemStack stack) {
+	default @Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
 		return ((Item) this).getCraftingRemainder();
 	}
 

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
-import org.spongepowered.asm.mixin.Final;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,46 +24,26 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
-@Mixin(targets = "net.minecraft.server.network.ServerGamePacketListenerImpl$1")
-public abstract class ServerGamePacketListenerInteractEntityHandlerMixin implements ServerboundInteractPacket.Handler {
+@Mixin(ServerGamePacketListenerImpl.class)
+public abstract class ServerGamePacketListenerInteractEntityHandlerMixin {
 	@Shadow
-	@Final
-	ServerGamePacketListenerImpl this$0;
+	public ServerPlayer player;
 
-	@Shadow
-	@Final
-	Entity val$target;
-
-	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "HEAD"), cancellable = true)
-	public void onPlayerInteractEntity(InteractionHand hand, Vec3 hitPosition, CallbackInfo info) {
-		Player player = this.this$0.player;
+	@Inject(method = "handleInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"))
+	public void handleInteract(ServerboundInteractPacket packet, CallbackInfo info, @Local Entity target) {
 		Level level = player.level();
 
-		EntityHitResult hitResult = new EntityHitResult(val$target, hitPosition.add(val$target.getX(), val$target.getY(), val$target.getZ()));
-		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, level, hand, val$target, hitResult);
-
-		if (result != InteractionResult.PASS) {
-			info.cancel();
-		}
-	}
-
-	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;)V", at = @At(value = "HEAD"), cancellable = true)
-	public void onPlayerInteractEntity(InteractionHand hand, CallbackInfo info) {
-		Player player = this.this$0.player;
-		Level level = player.level();
-
-		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, level, hand, val$target, null);
+		EntityHitResult hitResult = new EntityHitResult(target, packet.location().add(target.getX(), target.getY(), target.getZ()));
+		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, level, packet.hand(), target, hitResult);
 
 		if (result != InteractionResult.PASS) {
 			info.cancel();

@@ -91,7 +91,7 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 				if (blockEntity == null) {
 					throw new AssertionError("Missing block entity for betrayal block at " + pos);
 				} else if (!BLOCK_ENTITY_TYPE.equals(blockEntity.getType())) {
-					Identifier id = BlockEntityType.getKey(blockEntity.getType());
+					Identifier id = BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(blockEntity.getType());
 					throw new AssertionError("Incorrect block entity for betrayal block at " + pos + ": " + id);
 				}
 

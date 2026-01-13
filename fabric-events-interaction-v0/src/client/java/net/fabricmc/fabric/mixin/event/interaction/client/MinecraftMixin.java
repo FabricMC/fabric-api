@@ -69,7 +69,7 @@ public abstract class MinecraftMixin {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;interactAt(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
+					target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;interact(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
 			),
 			method = "startUseItem",
 			cancellable = true
@@ -80,7 +80,7 @@ public abstract class MinecraftMixin {
 		if (result != InteractionResult.PASS) {
 			if (result.consumesAction()) {
 				Vec3 hitVec = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
-				getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity, player.isShiftKeyDown(), hand, hitVec));
+				getConnection().send(new ServerboundInteractPacket(entity.getId(), hand, hitVec, player.isShiftKeyDown()));
 			}
 
 			if (result instanceof InteractionResult.Success success) {

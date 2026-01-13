@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.item;
+package net.fabricmc.fabric.mixin.gamerule.client;
 
-import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public class CraftingRemainderHandler {
-	public static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
+import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
+
+@Mixin(AbstractGameRulesScreen.RuleList.class)
+public interface AbstractGameRulesScreenRuleListAccessor {
+	@Accessor("this$0")
+	AbstractGameRulesScreen getThis();
 }

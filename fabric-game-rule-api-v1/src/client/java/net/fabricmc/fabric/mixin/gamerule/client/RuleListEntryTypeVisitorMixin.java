@@ -26,7 +26,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
+import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationGameRulesScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
@@ -37,13 +38,13 @@ import net.fabricmc.fabric.impl.gamerule.entry.DoubleRuleEntry;
 import net.fabricmc.fabric.impl.gamerule.entry.EnumRuleEntry;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
-@Mixin(targets = "net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen$RuleList$1")
+@Mixin(targets = "net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen$RuleList$1")
 public abstract class RuleListEntryTypeVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleTypeVisitor {
 	@Final
 	@Shadow
-	private EditGameRulesScreen.RuleList this$1;
+	private WorldCreationGameRulesScreen.RuleList this$1;
 	@Shadow
-	protected abstract <T> void addEntry(GameRule<T> gameRule, EditGameRulesScreen.EntryFactory<T> entryFactory);
+	protected abstract <T> void addEntry(GameRule<T> gameRule, AbstractGameRulesScreen.EntryFactory<T> entryFactory);
 
 	@Override
 	public void visitDouble(GameRule<Double> doubleRule) {
@@ -60,8 +61,8 @@ public abstract class RuleListEntryTypeVisitorMixin implements GameRuleTypeVisit
 	}
 
 	@Unique
-	EditGameRulesScreen getThis() {
-		return ((EditGameRulesScreenRuleListAccessor) this$1).getThis();
+	AbstractGameRulesScreen getThis() {
+		return ((AbstractGameRulesScreenRuleListAccessor) this$1).getThis();
 	}
 
 	/**
