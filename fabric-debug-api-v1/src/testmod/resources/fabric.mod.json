@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-debug-api-v1-testmod",
+  "name": "Fabric Debug API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.debug.DebugApiTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.debug.client.DebugApiTestClient"
+    ],
+    "fabric-client-gametest": [
+    ]
+  }
+}
