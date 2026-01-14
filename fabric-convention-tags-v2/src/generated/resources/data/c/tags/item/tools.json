@@ -17,6 +17,10 @@
       "required": false
     },
     {
+      "id": "#minecraft:spears",
+      "required": false
+    },
+    {
       "id": "#minecraft:swords",
       "required": false
     },
@@ -49,7 +53,7 @@
       "required": false
     },
     {
-      "id": "#c:tools/spear",
+      "id": "#c:tools/trident",
       "required": false
     },
     {

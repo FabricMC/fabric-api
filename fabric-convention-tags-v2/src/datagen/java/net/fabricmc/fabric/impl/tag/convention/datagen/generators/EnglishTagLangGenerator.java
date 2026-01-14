@@ -177,7 +177,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.CRYING_OBSIDIANS, "Crying Obsidians");
 		translationBuilder.add(ConventionalItemTags.TOOLS, "Tools");
 		translationBuilder.add(ConventionalItemTags.SHEAR_TOOLS, "Shears");
-		translationBuilder.add(ConventionalItemTags.SPEAR_TOOLS, "Spears");
+		translationBuilder.add(ConventionalItemTags.TRIDENT_TOOLS, "Tridents");
 		translationBuilder.add(ConventionalItemTags.BOW_TOOLS, "Bows");
 		translationBuilder.add(ConventionalItemTags.CROSSBOW_TOOLS, "Crossbows");
 		translationBuilder.add(ConventionalItemTags.SHIELD_TOOLS, "Shields");

@@ -533,6 +533,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ItemTags.HOES)
 				.addOptionalTag(ItemTags.PICKAXES)
 				.addOptionalTag(ItemTags.SHOVELS)
+				.addOptionalTag(ItemTags.SPEARS)
 				.addOptionalTag(ItemTags.SWORDS)
 				.addOptionalTag(ConventionalItemTags.BOW_TOOLS)
 				.addOptionalTag(ConventionalItemTags.BRUSH_TOOLS)
@@ -541,7 +542,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.IGNITER_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHEAR_TOOLS)
 				.addOptionalTag(ConventionalItemTags.SHIELD_TOOLS)
-				.addOptionalTag(ConventionalItemTags.SPEAR_TOOLS)
+				.addOptionalTag(ConventionalItemTags.TRIDENT_TOOLS)
 				.addOptionalTag(ConventionalItemTags.MACE_TOOLS)
 				.addOptionalTag(ConventionalItemTags.WRENCH_TOOLS)
 				.addOptionalTag(ConventionalItemTags.MINING_TOOL_TOOLS)
@@ -556,7 +557,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(Items.SHEARS);
 		valueLookupBuilder(ConventionalItemTags.SHIELD_TOOLS)
 				.add(Items.SHIELD);
-		valueLookupBuilder(ConventionalItemTags.SPEAR_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.TRIDENT_TOOLS)
 				.add(Items.TRIDENT);
 		valueLookupBuilder(ConventionalItemTags.FISHING_ROD_TOOLS)
 				.add(Items.FISHING_ROD);
@@ -593,7 +594,14 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(Items.GOLDEN_AXE)
 				.add(Items.IRON_AXE)
 				.add(Items.DIAMOND_AXE)
-				.add(Items.NETHERITE_AXE);
+				.add(Items.NETHERITE_AXE)
+				.add(Items.WOODEN_SPEAR)
+				.add(Items.STONE_SPEAR)
+				.add(Items.COPPER_SPEAR)
+				.add(Items.IRON_SPEAR)
+				.add(Items.GOLDEN_SPEAR)
+				.add(Items.DIAMOND_SPEAR)
+				.add(Items.NETHERITE_SPEAR);
 
 		valueLookupBuilder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
 				.add(Items.BOW)
