@@ -8,8 +8,8 @@ import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.fabric.impl.debug.EntityDebugSubscriptionRegistryImpl;
 
-/// A registry for [debug subscriptions][DebugSubscription] specific to entities
-/// or properties of entities.
+/// A server-side registry for [debug subscriptions][DebugSubscription] specific
+/// to entities or properties of entities.
 public final class EntityDebugSubscriptionRegistry {
 	/// Registers a [DebugSubscription] based on a given [Entity] and
 	/// [Predicate].
