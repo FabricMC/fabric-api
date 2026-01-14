@@ -29,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -46,7 +47,7 @@ public class ShapelessRecipeMixin {
 	private boolean fabric_requiresTesting = false;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void cacheRequiresTesting(String group, CraftingBookCategory category, ItemStack result, List<Ingredient> ingredients, CallbackInfo ci) {
+	private void cacheRequiresTesting(String group, CraftingBookCategory category, ItemStackTemplate result, List<Ingredient> ingredients, CallbackInfo ci) {
 		for (Ingredient ingredient : ingredients) {
 			if (ingredient.requiresTesting()) {
 				fabric_requiresTesting = true;

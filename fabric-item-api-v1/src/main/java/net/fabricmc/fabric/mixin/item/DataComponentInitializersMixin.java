@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.interaction;
+package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.GameType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 
-import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
 
-@Mixin(ServerPlayer.class)
-public class ServerPlayerMixin {
-	@Inject(method = "calculateGameModeForNewPlayer", at = @At("HEAD"), cancellable = true)
-	public void fakePlayerGameMode(GameType backupGameMode, CallbackInfoReturnable<GameType> cir) {
-		// Set the default game mode of the fake player to survival, regardless of the servers forced game mode.
-		if ((Object) this instanceof FakePlayer) {
-			cir.setReturnValue(GameType.SURVIVAL);
+@Mixin(targets = "net.minecraft.core.component.DataComponentInitializers$1")
+public abstract class DataComponentInitializersMixin {
+	@Shadow
+	public abstract ResourceKey<? extends Registry<?>> key();
+
+	@Inject(method = "apply", at = @At("RETURN"))
+	private void apply(CallbackInfo ci) {
+		if (Registries.ITEM.identifier().equals(key().identifier())) {
+			DefaultItemComponentImpl.modifyItemComponents();
 		}
 	}
 }

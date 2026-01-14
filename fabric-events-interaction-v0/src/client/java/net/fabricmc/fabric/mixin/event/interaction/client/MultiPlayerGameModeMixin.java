@@ -34,7 +34,7 @@ import net.minecraft.client.multiplayer.prediction.PredictiveAction;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundAttackPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
@@ -136,7 +136,7 @@ public abstract class MultiPlayerGameModeMixin {
 
 		if (result != InteractionResult.PASS) {
 			if (result == InteractionResult.SUCCESS) {
-				this.connection.send(ServerboundInteractPacket.createAttackPacket(entity, player.isShiftKeyDown()));
+				this.connection.send(new ServerboundAttackPacket(entity.getId()));
 			}
 
 			info.cancel();

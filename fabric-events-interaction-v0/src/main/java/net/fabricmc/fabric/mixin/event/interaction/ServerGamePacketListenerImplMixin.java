@@ -23,18 +23,25 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.network.protocol.game.ServerboundPickItemFromBlockPacket;
 import net.minecraft.network.protocol.game.ServerboundPickItemFromEntityPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.EntityHitResult;
 
 import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ServerGamePacketListenerImplMixin {
@@ -73,5 +80,17 @@ public abstract class ServerGamePacketListenerImplMixin {
 
 		// Prevent vanilla data-inclusion behavior
 		return ItemStack.EMPTY;
+	}
+
+	@Inject(method = "handleInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"))
+	public void handleInteract(ServerboundInteractPacket packet, CallbackInfo info, @Local Entity target) {
+		Level level = player.level();
+
+		EntityHitResult hitResult = new EntityHitResult(target, packet.location().add(target.getX(), target.getY(), target.getZ()));
+		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, level, packet.hand(), target, hitResult);
+
+		if (result != InteractionResult.PASS) {
+			info.cancel();
+		}
 	}
 }

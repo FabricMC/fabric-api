@@ -8,18 +8,18 @@
     "BrewingStandBlockEntityMixin",
     "DataComponentMapBuilderMixin",
     "CraftingRecipeMixin",
+    "DataComponentInitializersMixin",
     "EnchantCommandMixin",
     "EnchantmentBuilderAccessor",
     "EnchantmentBuilderMixin",
     "EnchantmentHelperMixin",
     "EnchantRandomlyFunctionMixin",
-    "ItemAccessor",
     "ItemMixin",
     "ItemPropertiesMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "BuiltInRegistriesMixin",
-    "RegistryDataLoaderResourceManagerRegistryLoadTaskMixin"
+    "ResourceManagerRegistryLoadTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1

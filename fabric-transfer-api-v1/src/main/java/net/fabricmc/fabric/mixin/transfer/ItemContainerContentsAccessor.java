@@ -16,15 +16,17 @@
 
 package net.fabricmc.fabric.mixin.transfer;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.ItemContainerContents;
 
 @Mixin(ItemContainerContents.class)
 public interface ItemContainerContentsAccessor {
 	@Accessor("items")
-	NonNullList<ItemStack> fabric_getItems();
+	List<Optional<ItemStackTemplate>> fabric_getItems();
 }

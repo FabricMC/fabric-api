@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.function.IntSupplier;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,7 +52,7 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * and <strong>before registering a packet handler</strong>.
 	 *
 	 * <p>Payload types registered with this method will be split into multiple packets,
-	 * allowing to send packets larger than vanilla limited size.
+	 * allowing to send packets larger than the vanilla limited size.
 	 *
 	 * @param type          the payload type
 	 * @param codec         the codec for the payload type
@@ -59,6 +61,27 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * @return the registered payload type
 	 */
 	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize);
+
+	/**
+	 * Registers a large custom payload type.
+	 *
+	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
+	 * and <strong>before registering a packet handler</strong>.
+	 *
+	 * <p>Payload types registered with this method will be split into multiple packets,
+	 * allowing to send packets larger than the vanilla limited size.
+	 *
+	 * <p>The {@code maxPacketSizeSupplier} will be called once, right before the first packet of this payload type
+	 * is sent/received on either side. This allows mods some leeway particularly during mod initialization to
+	 * dynamically determine a suitable max size.
+	 *
+	 * @param type		    the payload type
+	 * @param codec         the codec for the payload type
+	 * @param maxPacketSizeSupplier the function that returns the max size of payload packet
+	 * @param <T>           the payload type
+	 * @return the registered payload type
+	 */
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier);
 
 	/**
 	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) configuration channel.

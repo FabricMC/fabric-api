@@ -22,21 +22,21 @@ import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
+import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
-import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
+import net.fabricmc.fabric.mixin.gamerule.client.AbstractGameRulesScreenAccessor;
 
-public final class EnumRuleEntry<E extends Enum<E>> extends EditGameRulesScreen.GameRuleEntry {
+public final class EnumRuleEntry<E extends Enum<E>> extends AbstractGameRulesScreen.GameRuleEntry {
 	private final Button button;
 	private final String rootTranslationKey;
 
-	public EnumRuleEntry(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
+	public EnumRuleEntry(AbstractGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
 		gameRuleScreen.super(description, name);
-		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
+		AbstractGameRulesScreenAccessor accessor = (AbstractGameRulesScreenAccessor) gameRuleScreen;
 
 		// Overwrite line wrapping to account for button larger than vanilla's by 44 pixels.
 		this.label = Minecraft.getInstance().font.split(name, 175 - 44);

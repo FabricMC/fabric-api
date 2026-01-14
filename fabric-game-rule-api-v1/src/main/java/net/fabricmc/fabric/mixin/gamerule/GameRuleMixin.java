@@ -30,19 +30,13 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.world.level.gamerules.GameRule;
 
-import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
-import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 @Mixin(GameRule.class)
-public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTypeExtensions {
+public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 	@Shadow
 	public abstract Class<T> valueClass();
-
-	@Unique
-	@Nullable
-	private CustomGameRuleCategory fabricCategory;
 
 	@Unique
 	@Nullable
@@ -50,16 +44,6 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 
 	@Unique
 	private final List<T> enumSupportedValues = new ArrayList<>();
-
-	@Override
-	public CustomGameRuleCategory fabric_getCustomCategory() {
-		return this.fabricCategory;
-	}
-
-	@Override
-	public void fabric_setCustomCategory(CustomGameRuleCategory customCategory) {
-		this.fabricCategory = customCategory;
-	}
 
 	@Override
 	public @Nullable FabricGameRuleType fabric_getType() {

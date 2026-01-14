@@ -6,9 +6,9 @@
     "BlockBehaviourBlockStateBaseMixin",
     "ItemStackMixin",
     "PlayerAdvancementsMixin",
+    "PlayerMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerGameModeMixin",
-    "ServerGamePacketListenerInteractEntityHandlerMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin"
   ],
