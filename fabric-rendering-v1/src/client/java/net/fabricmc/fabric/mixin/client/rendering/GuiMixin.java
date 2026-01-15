@@ -202,13 +202,4 @@ abstract class GuiMixin {
 				dt
 		));
 	}
-
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSubtitleOverlay(Lnet/minecraft/client/gui/GuiGraphics;Z)V"))
-	private void wrapSubtitleOverlay(Gui instance, GuiGraphics graphics, boolean deferRendering, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(
-				graphics,
-				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx,
-						deferRendering
-				));
-	}
 }

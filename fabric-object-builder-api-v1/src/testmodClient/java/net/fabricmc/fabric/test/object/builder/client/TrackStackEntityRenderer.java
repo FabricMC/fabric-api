@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.object.builder.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.model.animal.chicken.AdultChickenModel;
 import net.minecraft.client.model.animal.chicken.ChickenModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -35,7 +36,7 @@ import net.fabricmc.fabric.test.object.builder.TrackStackEntity;
 
 public class TrackStackEntityRenderer extends MobRenderer<TrackStackEntity, TrackStackEntityRenderer.RenderState, ChickenModel> {
 	public TrackStackEntityRenderer(EntityRendererProvider.Context context) {
-		super(context, new ChickenModel(context.bakeLayer(ModelLayers.CHICKEN)), 0.3f);
+		super(context, new AdultChickenModel(context.bakeLayer(ModelLayers.CHICKEN)), 0.3f);
 	}
 
 	@Override

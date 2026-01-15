@@ -67,7 +67,7 @@ public class TrackStackEntity extends Mob {
 			return Component.literal("<empty>");
 		}).withStyle(ChatFormatting.BLACK));
 
-		lines.add(item.getName().copy().withStyle(ChatFormatting.DARK_PURPLE));
+		lines.add(item.getName(item.getDefaultInstance()).copy().withStyle(ChatFormatting.DARK_PURPLE));
 		lines.add(Component.literal(globalPos.dimension().identifier().toString()));
 		lines.add(Component.translatable("chat.coordinates", globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ()).withStyle(ChatFormatting.YELLOW));
 

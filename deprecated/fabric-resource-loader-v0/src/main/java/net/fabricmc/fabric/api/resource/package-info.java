@@ -17,7 +17,7 @@
 /**
  * The Resource Loader, version 0.
  *
- * <h3>Quick note about vocabulary in Minecraft:</h3>
+ * <h2>Quick note about vocabulary in Minecraft:</h2>
  * Resource Pack refers to both client-sided resource pack and data pack.
  *
  * <h3>Modded Resource Pack Handling</h3>

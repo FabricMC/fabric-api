@@ -55,7 +55,7 @@ public class DefaultItemComponentTest implements ModInitializer {
 			context.modify(Items.DIAMOND_PICKAXE, builder -> {
 				Component baseName = builder.getOrCreate(
 						DataComponents.ITEM_NAME,
-						Items.DIAMOND_PICKAXE::getName
+						() -> Items.DIAMOND_PICKAXE.getName(Items.DIAMOND_PICKAXE.getDefaultInstance())
 				);
 				builder.set(DataComponents.ITEM_NAME, prependModifiedLiteral(baseName));
 			});

@@ -29,7 +29,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.RegistryLoadTask;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.api.ModInitializer;
@@ -52,10 +52,10 @@ public final class FabricGameTestModInitializer implements ModInitializer {
 		}
 	}
 
-	public static void registerDynamicEntries(List<RegistryDataLoader.RegistryLoadTask<?>> loadTasks) {
+	public static void registerDynamicEntries(List<RegistryLoadTask<?>> loadTasks) {
 		Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(loadTasks.size());
 
-		for (RegistryDataLoader.RegistryLoadTask<?> entry : loadTasks) {
+		for (RegistryLoadTask<?> entry : loadTasks) {
 			registries.put(entry.registry.key(), entry.registry);
 		}
 

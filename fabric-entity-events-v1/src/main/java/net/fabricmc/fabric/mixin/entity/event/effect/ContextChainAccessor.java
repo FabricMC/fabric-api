@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.gamerule;
+package net.fabricmc.fabric.mixin.entity.event.effect;
 
-import org.jspecify.annotations.Nullable;
+import java.util.List;
 
-import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.context.ContextChain;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public interface RuleCategoryExtensions {
-	@Nullable
-	CustomGameRuleCategory fabric_getCustomCategory();
-
-	void fabric_setCustomCategory(CustomGameRuleCategory customCategory);
+@Mixin(ContextChain.class)
+public interface ContextChainAccessor<S> {
+	@Accessor
+	List<CommandContext<S>> getModifiers();
 }

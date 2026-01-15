@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.item;
+package net.fabricmc.fabric.mixin.block;
 
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
-@Mixin(Item.class)
-public interface ItemAccessor {
-	@Accessor
-	@Mutable
-	void setComponents(DataComponentMap components);
+import net.fabricmc.fabric.api.block.v1.FabricBlock;
+
+@Mixin(BlockBehaviour.Properties.class)
+public class BlockBehaviourPropertiesMixin implements FabricBlock.FabricProperties {
+	@Shadow
+	private @Nullable ResourceKey<Block> id;
+
+	@Override
+	public @Nullable ResourceKey<Block> getId() {
+		return this.id;
+	}
 }

@@ -86,4 +86,9 @@ public @interface GameTest {
 	 * Whether the test should have sky access. When {@code false} the test will be enclosed by barrier blocks.
 	 */
 	boolean skyAccess() default false;
+
+	/**
+	 * The number of empty block layers to place around the structure as padding.
+	 */
+	int padding() default 1;
 }

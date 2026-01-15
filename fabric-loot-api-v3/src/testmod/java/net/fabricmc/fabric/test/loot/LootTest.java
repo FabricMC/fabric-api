@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -149,12 +148,11 @@ public class LootTest implements ModInitializer {
 			}
 
 			ServerLevel level = context.getLevel();
-			HolderLookup.Provider lookup = level.registryAccess();
 
 			drops.replaceAll(drop -> {
 				SingleRecipeInput input = new SingleRecipeInput(drop);
 				return cachedCheck.getRecipeFor(input, level).map(RecipeHolder::value)
-						.map(recipe -> recipe.assemble(input, lookup))
+						.map(recipe -> recipe.assemble(input))
 						.orElse(drop);
 			});
 		});

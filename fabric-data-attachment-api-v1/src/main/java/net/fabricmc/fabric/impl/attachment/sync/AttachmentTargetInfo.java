@@ -137,7 +137,7 @@ public sealed interface AttachmentTargetInfo<T> {
 
 	record ChunkTarget(ChunkPos pos) implements AttachmentTargetInfo<ChunkAccess> {
 		static final StreamCodec<ByteBuf, ChunkTarget> PACKET_CODEC = ByteBufCodecs.VAR_LONG
-				.map(ChunkPos::new, ChunkPos::toLong)
+				.map(ChunkPos::unpack, ChunkPos::pack)
 				.map(ChunkTarget::new, ChunkTarget::pos);
 
 		@Override
@@ -147,7 +147,7 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public AttachmentTarget getTarget(Level level) {
-			return level.getChunk(pos.x, pos.z);
+			return level.getChunk(pos.x(), pos.z());
 		}
 
 		@Override
@@ -161,7 +161,7 @@ public sealed interface AttachmentTargetInfo<T> {
 			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.chunk-position",
-							Component.literal(pos.x + ", " + pos.z).withStyle(ChatFormatting.YELLOW)
+							Component.literal(pos.x() + ", " + pos.z()).withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
 		}

@@ -27,8 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.Bootstrap;
@@ -46,6 +48,18 @@ public class IngredientMatchTests {
 	static void beforeAll() {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
+
+		// Massive hack to kinda get item components working in unit tests
+		for (Item item : BuiltInRegistries.ITEM) {
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
+		}
+
+		for (Item item : List.of(Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE)) {
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.builder()
+					.set(DataComponents.DAMAGE, 0)
+					.set(DataComponents.MAX_DAMAGE, 100)
+					.build());
+		}
 	}
 
 	@Test

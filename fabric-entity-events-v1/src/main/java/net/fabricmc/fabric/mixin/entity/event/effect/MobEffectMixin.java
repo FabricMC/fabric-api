@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.item;
+package net.fabricmc.fabric.mixin.entity.event.effect;
 
-import net.minecraft.world.item.ItemStack;
+import org.spongepowered.asm.mixin.Mixin;
 
-public class CraftingRemainderHandler {
-	public static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
+import net.minecraft.world.effect.MobEffect;
+
+import net.fabricmc.fabric.api.entity.event.v1.effect.FabricMobEffect;
+
+@Mixin(MobEffect.class)
+public final class MobEffectMixin implements FabricMobEffect {
+	private MobEffectMixin() {
+	}
 }

@@ -69,7 +69,7 @@ public abstract class ClientChunkCacheMixin {
 			)
 	)
 	private void onUpdateLoadDistance(int loadDistance, CallbackInfo ci, @Local ClientChunkCache.Storage clientChunkCacheStorage, @Local LevelChunk oldChunk, @Local ChunkPos chunkPos) {
-		if (!clientChunkCacheStorage.inRange(chunkPos.x, chunkPos.z)) {
+		if (!clientChunkCacheStorage.inRange(chunkPos.x(), chunkPos.z())) {
 			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, oldChunk);
 		}
 	}

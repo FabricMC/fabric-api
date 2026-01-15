@@ -16,13 +16,17 @@
 
 package net.fabricmc.fabric.api.block.v1;
 
+import java.util.Objects;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -51,7 +55,7 @@ public interface FabricBlock {
 	 * <p>Note: Overriding this method for a block does <strong>not</strong> change how it renders.
 	 * It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.
 	 *
-	 * <h3>Implementation guidelines</h3>
+	 * <h4>Implementation guidelines</h4>
 	 *
 	 * <p>This can be called on the server, where block entity data can be safely accessed,
 	 * and on the client, possibly in a meshing thread, where block entity data is not safe to access!
@@ -100,5 +104,30 @@ public interface FabricBlock {
 	 */
 	default BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
+	}
+
+	/**
+	 * Fabric-provided extensions for {@link BlockBehaviour.Properties}.
+	 * This interface is automatically implemented on all block properties via Mixin and interface injection.
+	 */
+	interface FabricProperties {
+		/**
+		 * Return the id of block that was defined by {@link BlockBehaviour.Properties#setId}.
+		 *
+		 * @return currently stored block id or null, if not set
+		 */
+		default @Nullable ResourceKey<Block> getId() {
+			throw new AssertionError("Implemented in Mixin");
+		}
+
+		/**
+		 * Return the id of block that was defined by {@link BlockBehaviour.Properties#setId}.
+		 *
+		 * @return currently stored block id
+		 * @throws NullPointerException if id is not set
+		 */
+		default ResourceKey<Block> getIdOrThrow() {
+			return Objects.requireNonNull(this.getId(), "Block id not set");
+		}
 	}
 }

@@ -3,9 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.gamerule.client",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "EditGameRulesScreenAccessor",
-    "EditGameRulesScreenRuleListAccessor",
-    "EditGameRulesScreenRuleListMixin",
+    "AbstractGameRulesScreenAccessor",
+    "AbstractGameRulesScreenRuleListAccessor",
     "RuleListEntryTypeVisitorMixin"
   ],
   "injectors": {

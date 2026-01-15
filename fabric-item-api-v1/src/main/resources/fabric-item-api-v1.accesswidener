@@ -1,3 +1,3 @@
 accessWidener	v2	official
-accessible class net/minecraft/resources/RegistryDataLoader$ResourceManagerRegistryLoadTask
-accessible class net/minecraft/resources/RegistryDataLoader$PendingRegistration
+accessible class net/minecraft/resources/RegistryLoadTask$PendingRegistration
+accessible class net/minecraft/core/component/DataComponentInitializers$BakedEntry

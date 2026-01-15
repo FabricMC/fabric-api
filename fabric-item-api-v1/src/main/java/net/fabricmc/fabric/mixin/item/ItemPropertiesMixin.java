@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -23,6 +24,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.resources.DependantName;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.FabricItem;
@@ -34,9 +36,17 @@ public class ItemPropertiesMixin implements FabricItem.Properties {
 	@Mutable
 	private DependantName<Item, Identifier> model;
 
+	@Shadow
+	private @Nullable ResourceKey<Item> id;
+
 	@Override
 	public Item.Properties modelId(Identifier modelId) {
 		this.model = DependantName.fixed(modelId);
 		return FabricItem.Properties.super.modelId(modelId);
+	}
+
+	@Override
+	public @Nullable ResourceKey<Item> getId() {
+		return this.id;
 	}
 }

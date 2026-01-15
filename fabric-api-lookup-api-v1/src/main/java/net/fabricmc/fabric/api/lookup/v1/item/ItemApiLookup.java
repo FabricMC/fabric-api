@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
  * <p>When trying to {@link #find} an API for an item stack, the provider registered for the item of the stack will be queried if it exists.
  * If it doesn't exist, or if it returns {@code null}, the fallback providers will be queried in order.
  *
- * <h3>Usage Example</h3>
+ * <h2>Usage Example</h2>
  * Let us reuse {@code FluidContainer} from {@linkplain BlockApiLookup the BlockApiLookup example}.
  * We will query {@code FluidContainer} instances from the stack directly.
  * We need no context, so we will use {@code Void}.

@@ -17,17 +17,18 @@
 package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.mojang.serialization.DataResult;
 import org.apache.commons.lang3.math.Fraction;
 
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.BundleContents;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -136,7 +137,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		private ItemStack getStack() {
 			if (bundleContents().size() <= index) return ItemStack.EMPTY;
 
-			return ((List<ItemStack>) bundleContents().items()).get(index);
+			return bundleContents().items().get(index).create();
 		}
 
 		@Override
@@ -147,12 +148,15 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 			if (bundleContents().size() <= index) return 0;
 			if (!resource.matches(getStack())) return 0;
 
-			var stacksCopy = new ArrayList<>((Collection<ItemStack>) bundleContents().itemsCopy());
+			var stacksCopy = new ArrayList<>(bundleContents().items());
+			ItemStackTemplate toSrink = stacksCopy.get(index);
+			int extracted = (int) Math.min(toSrink.count(), maxAmount);
 
-			int extracted = (int) Math.min(stacksCopy.get(index).getCount(), maxAmount);
-
-			stacksCopy.get(index).shrink(extracted);
-			if (stacksCopy.get(index).isEmpty()) stacksCopy.remove(index);
+			if (toSrink.count() - extracted <= 1) {
+				stacksCopy.remove(index);
+			} else {
+				stacksCopy.set(index, new ItemStackTemplate(toSrink.item(), toSrink.count() - extracted, toSrink.components()));
+			}
 
 			DataComponentPatch changes = DataComponentPatch.builder()
 					.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(stacksCopy))
@@ -180,12 +184,19 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 
 		@Override
 		public long getCapacity() {
-			Fraction remainingSpace = Fraction.ONE.subtract(bundleContents().weight());
+			Fraction remainingSpace = Fraction.ONE.subtract(getWeight(bundleContents().weight()));
 			int extraAllowed = Math.max(
-					remainingSpace.divideBy(BundleContentsAccessor.getWeight(getStack())).intValue(),
+					remainingSpace.divideBy(getWeight(BundleContentsAccessor.getWeight(getStack()))).intValue(),
 					0
 			);
 			return getAmount() + extraAllowed;
+		}
+
+		private static Fraction getWeight(DataResult<Fraction> weight) {
+			return switch (weight) {
+			case DataResult.Success<Fraction> success -> success.value();
+			case DataResult.Error<Fraction> ignored -> Fraction.ONE;
+			};
 		}
 	}
 }

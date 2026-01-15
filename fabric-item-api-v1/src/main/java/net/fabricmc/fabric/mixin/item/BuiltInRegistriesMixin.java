@@ -23,12 +23,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 
-import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
-
 @Mixin(BuiltInRegistries.class)
 public abstract class BuiltInRegistriesMixin {
 	@Inject(method = "freeze", at = @At("HEAD"))
 	private static void modifyDefaultItemComponents(CallbackInfo ci) {
-		DefaultItemComponentImpl.modifyItemComponents();
+		// TODO 26.1 patch in DataComponentInitializers.BakedEntry
+		//DefaultItemComponentImpl.modifyItemComponents();
 	}
 }

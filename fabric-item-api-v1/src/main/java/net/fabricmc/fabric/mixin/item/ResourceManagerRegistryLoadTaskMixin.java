@@ -26,17 +26,18 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.core.RegistrationInfo;
-import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.RegistryLoadTask;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceManagerRegistryLoadTask;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
-@Mixin(RegistryDataLoader.ResourceManagerRegistryLoadTask.class)
-public class RegistryDataLoaderResourceManagerRegistryLoadTaskMixin {
-	@WrapOperation(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryDataLoader$PendingRegistration"))
-	private <T> RegistryDataLoader.PendingRegistration<?> modify(ResourceKey<T> key, Either<T, Exception> value, RegistrationInfo registrationInfo, Operation<RegistryDataLoader.PendingRegistration<T>> original, @Local(argsOnly = true) Resource resource) {
+@Mixin(ResourceManagerRegistryLoadTask.class)
+public class ResourceManagerRegistryLoadTaskMixin {
+	@WrapOperation(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryLoadTask$PendingRegistration"))
+	private <T> RegistryLoadTask.PendingRegistration<?> modify(ResourceKey<T> key, Either<T, Exception> value, RegistrationInfo registrationInfo, Operation<RegistryLoadTask.PendingRegistration<T>> original, @Local(argsOnly = true) Resource resource) {
 		if (value.left().isPresent()) {
 			if (value.left().get() instanceof Enchantment enchantment) {
 				Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) key, enchantment, EnchantmentUtil.determineSource(resource));

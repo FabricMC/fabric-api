@@ -38,6 +38,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.RegistryLoadTask;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
@@ -67,18 +68,14 @@ public class RegistryDataLoaderMixin {
 
 	@Inject(
 			method = "lambda$load$2(Ljava/util/List;Ljava/util/Map;Ljava/lang/Void;)Lnet/minecraft/core/RegistryAccess$Frozen;",
-			at = @At(
-					value = "INVOKE",
-					target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",
-					ordinal = 0
-			)
+			at = @At(value = "HEAD")
 	)
-	private static void beforeLoad(List<RegistryDataLoader.RegistryLoadTask<?>> loadTasks, Map<ResourceKey<?>, Exception> loadingErrors, Void ignored, CallbackInfoReturnable<RegistryAccess.Frozen> cir) {
+	private static void beforeLoad(List<RegistryLoadTask<?>> loadTasks, Map<ResourceKey<?>, Exception> loadingErrors, Void ignored, CallbackInfoReturnable<RegistryAccess.Frozen> cir) {
 		if (!IS_SERVER.get()) return;
 
 		Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(loadTasks.size());
 
-		for (RegistryDataLoader.RegistryLoadTask<?> entry : loadTasks) {
+		for (RegistryLoadTask<?> entry : loadTasks) {
 			registries.put(entry.registry.key(), entry.registry);
 		}
 

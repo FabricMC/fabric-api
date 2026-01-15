@@ -33,10 +33,10 @@ public final class CreativeModeTabEvents {
 
 	/**
 	 * This event allows the output of any creative mode tab to be modified.
-	 * <p/>
-	 * Use {@link #modifyOutputEvent(ResourceKey)} to get the event for a specific creative mode tab.
-	 * <p/>
-	 * This event is invoked after those two more specific events.
+	 *
+	 * <p>Use {@link #modifyOutputEvent(ResourceKey)} to get the event for a specific creative mode tab.
+	 *
+	 * <p>This event is invoked after those two more specific events.
 	 */
 	public static final Event<ModifyOutputAll> MODIFY_OUTPUT_ALL = EventFactory.createArrayBacked(ModifyOutputAll.class, callbacks -> (tab, output) -> {
 		for (ModifyOutputAll callback : callbacks) {

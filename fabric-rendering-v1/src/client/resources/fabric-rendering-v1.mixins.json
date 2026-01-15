@@ -23,6 +23,7 @@
     "GuiRendererMixin",
     "GuiAccessor",
     "GuiMixin",
+    "SubtitleOverlayMixin",
     "LivingEntityRendererAccessor",
     "LivingEntityRendererMixin",
     "ModelMixin",

@@ -11,7 +11,6 @@
       "translate": "advancements.test.root.description"
     },
     "icon": {
-      "count": 1,
       "id": "fabric-data-gen-api-v1-testmod:simple_block"
     },
     "show_toast": false,

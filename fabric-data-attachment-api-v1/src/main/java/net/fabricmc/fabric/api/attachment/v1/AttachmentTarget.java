@@ -48,7 +48,6 @@ import net.fabricmc.fabric.api.event.Event;
  * data.mutate();
  * be.setChanged(); // Required because we are not using setAttached
  * }</pre>
- * </p>
  *
  * <p>
  * Note about {@link BlockEntity} targets: by default, many block entities use their NBT to synchronize with the client.

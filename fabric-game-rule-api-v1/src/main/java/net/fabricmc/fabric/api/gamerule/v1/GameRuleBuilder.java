@@ -41,7 +41,6 @@ import net.minecraft.world.level.gamerules.GameRuleType;
 import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
 import net.minecraft.world.level.gamerules.GameRules;
 
-import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
@@ -55,7 +54,6 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
  * public static final GameRule&lt;Integer&gt; EXAMPLE_INT_RULE = GameRuleBuilder.forInteger(1).range(0, 10).buildAndRegister(Identifier.fromNamespaceAndPath("modid", "custom_int_gamerule"));
  * </pre></blockquote>
  *
- * <p>To register a game rule in a custom category, call {@link GameRuleBuilder#category(CustomGameRuleCategory)} on the builder.
  */
 @SuppressWarnings("UnusedReturnValue")
 @ApiStatus.NonExtendable
@@ -63,8 +61,6 @@ public class GameRuleBuilder<T> {
 	protected final T defaultValue;
 
 	protected GameRuleCategory category = GameRuleCategory.MISC;
-	@Nullable
-	protected CustomGameRuleCategory fabricCategory = null;
 
 	protected GameRuleType type = GameRuleType.INT;
 	@Nullable
@@ -100,12 +96,6 @@ public class GameRuleBuilder<T> {
 
 	public GameRuleBuilder<T> category(GameRuleCategory category) {
 		this.category = category;
-		return this;
-	}
-
-	public GameRuleBuilder<T> category(CustomGameRuleCategory category) {
-		category(GameRuleCategory.MISC);
-		this.fabricCategory = category;
 		return this;
 	}
 
@@ -151,10 +141,6 @@ public class GameRuleBuilder<T> {
 		this.codec.encodeStart(JavaOps.INSTANCE, this.defaultValue).getOrThrow(error -> new IllegalStateException("Failed to serialize default value: " + error));
 
 		GameRule<T> rule = new GameRule<>(this.category, this.type, this.argumentType, this.acceptor, this.codec, this.commandResultSupplier, this.defaultValue, this.requiredFeatures);
-
-		if (this.fabricCategory != null) {
-			((RuleCategoryExtensions) (Object) rule).fabric_setCustomCategory(this.fabricCategory);
-		}
 
 		if (this.fabricType != null) {
 			((RuleTypeExtensions) (Object) rule).fabric_setType(this.fabricType);
@@ -203,12 +189,6 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public BooleanRuleBuilder category(CustomGameRuleCategory category) {
-			super.category(category);
-			return this;
-		}
-
-		@Override
 		public BooleanRuleBuilder codec(Codec<Boolean> codec) {
 			super.codec(codec);
 			return this;
@@ -252,12 +232,6 @@ public class GameRuleBuilder<T> {
 
 		@Override
 		public IntegerRuleBuilder category(GameRuleCategory category) {
-			super.category(category);
-			return this;
-		}
-
-		@Override
-		public IntegerRuleBuilder category(CustomGameRuleCategory category) {
 			super.category(category);
 			return this;
 		}
@@ -313,12 +287,6 @@ public class GameRuleBuilder<T> {
 
 		@Override
 		public DoubleRuleBuilder category(GameRuleCategory category) {
-			super.category(category);
-			return this;
-		}
-
-		@Override
-		public DoubleRuleBuilder category(CustomGameRuleCategory category) {
 			super.category(category);
 			return this;
 		}
@@ -381,12 +349,6 @@ public class GameRuleBuilder<T> {
 
 		@Override
 		public EnumRuleBuilder<E> category(GameRuleCategory category) {
-			super.category(category);
-			return this;
-		}
-
-		@Override
-		public EnumRuleBuilder<E> category(CustomGameRuleCategory category) {
 			super.category(category);
 			return this;
 		}

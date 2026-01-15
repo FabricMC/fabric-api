@@ -66,7 +66,6 @@ public final class FabricDefaultAttributeRegistry {
 	 * <blockquote><pre>
 	 * FabricDefaultAttributeRegistry.register(type, LivingEntity.createLivingAttributes());
 	 * </pre></blockquote>
-	 * </p>
 	 *
 	 * <p>If a registration overrides another, a debug log message will be emitted. Existing registrations
 	 * can be checked at {@link net.minecraft.world.entity.ai.attributes.DefaultAttributes#hasSupplier(EntityType)}.</p>

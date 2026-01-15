@@ -20,11 +20,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
 import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.player.ItemEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
 public class UseItemTests implements ModInitializer {
@@ -55,6 +59,39 @@ public class UseItemTests implements ModInitializer {
 		UseItemCallback.EVENT.register((player, level, hand) -> {
 			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(level.isClientSide()));
 			return InteractionResult.PASS;
+		});
+
+		ItemEvents.USE_ON.register((useOnContext) -> {
+			LOGGER.info("ItemEvents.USE_ON: (client-side = %s)".formatted(useOnContext.getLevel().isClientSide()));
+			return null;
+		});
+
+		ItemEvents.USE.register((level, player, interactionHand) -> {
+			LOGGER.info("ItemEvents.USE: (client-side = %s)".formatted(level.isClientSide()));
+			return null;
+		});
+
+		ItemEvents.USE.register((level, player, interactionHand) -> {
+			ItemStack stack = player.getItemInHand(interactionHand);
+
+			if (stack.is(Items.FIRE_CHARGE)) {
+				Fireball fireball = new SmallFireball(level, player, player.getLookAngle());
+				level.addFreshEntity(fireball);
+				stack.consume(1, player);
+				return InteractionResult.SUCCESS;
+			}
+
+			return null;
+		});
+
+		ItemEvents.USE_ON.register((useOnContext) -> {
+			ItemStack stack = useOnContext.getItemInHand();
+
+			if (stack.is(Items.BLAZE_POWDER)) {
+				return Items.FLINT_AND_STEEL.useOn(useOnContext);
+			}
+
+			return null;
 		});
 	}
 }

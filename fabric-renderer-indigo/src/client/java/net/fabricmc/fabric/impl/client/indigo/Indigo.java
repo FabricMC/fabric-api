@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.indigo;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,68 +45,51 @@ public class Indigo implements ClientModInitializer {
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 	public static final boolean FIX_LUMINOUS_AO_SHADE;
 
-	public static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
+	/** If set the default config file will be generated on startup, restoring pre 26.1 behavior. */
+	private static final boolean GENERATE_CONFIG_FILE = System.getProperty("fabric.indigo.generateConfigFile") != null;
 
-	private static boolean asBoolean(String property, boolean defValue) {
-		switch (asTriState(property)) {
-		case TRUE:
-			return true;
-		case FALSE:
-			return false;
-		default:
-			return defValue;
-		}
+	private static boolean asBoolean(@Nullable String property, boolean defValue) {
+		return asTriState(property).orElse(defValue);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static <T extends Enum> T asEnum(String property, T defValue) {
-		if (property == null || property.isEmpty()) {
-			return defValue;
-		} else {
+	private static <T extends Enum> T asEnum(@Nullable String property, T defValue) {
+		if (property != null && !property.isEmpty()) {
 			for (Enum obj : defValue.getClass().getEnumConstants()) {
 				if (property.equalsIgnoreCase(obj.name())) {
 					//noinspection unchecked
 					return (T) obj;
 				}
 			}
-
-			return defValue;
 		}
+
+		return defValue;
 	}
 
-	private static TriState asTriState(String property) {
+	private static TriState asTriState(@Nullable String property) {
 		if (property == null || property.isEmpty()) {
 			return TriState.DEFAULT;
-		} else {
-			switch (property.toLowerCase(Locale.ROOT)) {
-			case "true":
-				return TriState.TRUE;
-			case "false":
-				return TriState.FALSE;
-			case "auto":
-			default:
-				return TriState.DEFAULT;
-			}
 		}
+
+		return switch (property.toLowerCase(Locale.ROOT)) {
+		case "true" -> TriState.TRUE;
+		case "false" -> TriState.FALSE;
+		default -> TriState.DEFAULT;
+		};
 	}
 
 	static {
-		File configDir = FabricLoader.getInstance().getConfigDir().resolve("fabric").toFile();
-
-		if (!configDir.exists()) {
-			if (!configDir.mkdir()) {
-				LOGGER.warn("[Indigo] Could not create configuration directory: " + configDir.getAbsolutePath());
-			}
-		}
-
-		File configFile = new File(configDir, "indigo-renderer.properties");
+		Path configDir = FabricLoader.getInstance().getConfigDir().resolve("fabric");
+		Path configFile = configDir.resolve("indigo-renderer.properties");
+		boolean configExists = Files.exists(configFile);
 		Properties properties = new Properties();
 
-		if (configFile.exists()) {
-			try (FileInputStream stream = new FileInputStream(configFile)) {
+		if (configExists) {
+			try (InputStream stream = Files.newInputStream(configFile)) {
 				properties.load(stream);
 			} catch (IOException e) {
-				LOGGER.warn("[Indigo] Could not read property file '" + configFile.getAbsolutePath() + "'", e);
+				LOGGER.warn("[Indigo] Could not read property file '{}'", configFile.toAbsolutePath(), e);
 			}
 		}
 
@@ -122,10 +107,20 @@ public class Indigo implements ClientModInitializer {
 
 		FIX_MEAN_LIGHT_CALCULATION = fixMeanLightCalculation;
 
-		try (FileOutputStream stream = new FileOutputStream(configFile)) {
-			properties.store(stream, "Indigo properties file");
-		} catch (IOException e) {
-			LOGGER.warn("[Indigo] Could not store property file '" + configFile.getAbsolutePath() + "'", e);
+		if (configExists || GENERATE_CONFIG_FILE) {
+			if (!Files.exists(configDir)) {
+				try {
+					Files.createDirectories(configDir);
+				} catch (IOException e) {
+					LOGGER.warn("[Indigo] Could not create configuration directory: {}", configDir.toAbsolutePath(), e);
+				}
+			}
+
+			try (OutputStream stream = Files.newOutputStream(configFile)) {
+				properties.store(stream, "Fabric API Indigo properties file");
+			} catch (IOException e) {
+				LOGGER.warn("[Indigo] Could not store property file '{}'", configFile.toAbsolutePath(), e);
+			}
 		}
 	}
 

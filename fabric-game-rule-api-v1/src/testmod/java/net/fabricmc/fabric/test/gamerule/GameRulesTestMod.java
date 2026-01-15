@@ -26,25 +26,23 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
 import net.minecraft.world.level.gamerules.GameRules;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
 
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameRulesTestMod.class);
 	public static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
-	public static final CustomGameRuleCategory GREEN_CATEGORY = new CustomGameRuleCategory(Identifier.fromNamespaceAndPath("fabric", "green"), Component.literal("This One is Green").withStyle(style -> style.withBold(true).withColor(ChatFormatting.DARK_GREEN)));
-	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(Identifier.fromNamespaceAndPath("fabric", "red"), Component.literal("This One is Red").withStyle(style -> style.withBold(true).withColor(ChatFormatting.DARK_RED)));
+	public static final GameRuleCategory GREEN_CATEGORY = GameRuleCategory.register(Identifier.fromNamespaceAndPath("fabric", "green"));
+	public static final GameRuleCategory RED_CATEGORY = GameRuleCategory.register(Identifier.fromNamespaceAndPath("fabric", "red"));
 
 	// Bounded, Integer, Double and Float rules
 	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = GameRuleBuilder.forInteger(2)

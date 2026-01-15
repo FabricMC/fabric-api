@@ -24,6 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -47,7 +48,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </ul>
  *
  * <p>Note that on the server, the {@link EntityHitResult} may be {@code null} if the client successfully interacted using
- * the {@linkplain Player#interactOn(Entity, InteractionHand) position-less overload}.
+ * the {@linkplain Player#interactOn(Entity, InteractionHand, Vec3)}  position-less overload}.
  * On the client, the {@link EntityHitResult} will never be null.
  */
 public interface UseEntityCallback {

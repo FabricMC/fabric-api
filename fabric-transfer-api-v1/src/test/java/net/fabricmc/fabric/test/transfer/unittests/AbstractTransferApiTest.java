@@ -18,13 +18,29 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.Bootstrap;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 public abstract class AbstractTransferApiTest {
 	protected static void bootstrap() {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
+
+		for (Item item : BuiltInRegistries.ITEM) {
+			int maxStackSize = 64;
+
+			if (item == Items.DIAMOND_PICKAXE) {
+				maxStackSize = 1;
+			}
+
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.builder()
+					.set(DataComponents.MAX_STACK_SIZE, maxStackSize)
+					.build());
+		}
 	}
 
 	protected static RegistryAccess staticDrm() {

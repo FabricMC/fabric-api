@@ -25,7 +25,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.util.Unit;
@@ -45,6 +47,11 @@ public class ItemComponentTooltipProviderRegistryTest {
 		Bootstrap.bootStrap();
 
 		new ComponentTooltipProviderTest().onInitialize();
+
+		for (Item item : BuiltInRegistries.ITEM) {
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
+		}
+
 		DefaultItemComponentImpl.modifyItemComponents();
 	}
 
@@ -54,25 +61,21 @@ public class ItemComponentTooltipProviderRegistryTest {
 		stack.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
 		assertEquals("""
-				Golden Sword
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
 
-				When in Main Hand:
-				+3 Attack Damage
-				-2.4 Attack Speed
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
 				Unbreakable
 				This Item is Sadder :'(""", getTooltip(stack));
 	}
@@ -83,7 +86,7 @@ public class ItemComponentTooltipProviderRegistryTest {
 		stack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("Hello"))));
 
 		assertEquals("""
-				Pig Spawn Egg
+
 				Hello
 				This Item is the Saddest :
 				This Item is Sad :(""", getTooltip(stack));

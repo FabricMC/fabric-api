@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  * A base participant implementation that modifies itself during transactions,
  * saving snapshots of its state in objects of type {@code T} in case it needs to revert to a previous state.
  *
- * <h3>How to use from subclasses</h3>
+ * <h2>How to use from subclasses</h2>
  * <ul>
  *     <li>Call {@link #updateSnapshots} right before the state of your subclass is modified in a transaction.</li>
  *     <li>Override {@link #createSnapshot}: it is called when necessary to create an object representing the state of your subclass.</li>

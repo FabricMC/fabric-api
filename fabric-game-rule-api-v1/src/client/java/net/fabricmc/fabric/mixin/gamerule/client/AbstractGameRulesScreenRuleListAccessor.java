@@ -18,19 +18,11 @@ package net.fabricmc.fabric.mixin.gamerule.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
 
-@Mixin(EditGameRulesScreen.class)
-public interface EditGameRulesScreenAccessor {
-	@Invoker("clearInvalid")
-	void callClearInvalid(EditGameRulesScreen.RuleEntry invalidEntry);
-
-	@Invoker("markInvalid")
-	void callMarkInvalid(EditGameRulesScreen.RuleEntry invalidEntry);
-
-	@Accessor("gameRules")
-	GameRules getGameRules();
+@Mixin(AbstractGameRulesScreen.RuleList.class)
+public interface AbstractGameRulesScreenRuleListAccessor {
+	@Accessor("this$0")
+	AbstractGameRulesScreen getThis();
 }

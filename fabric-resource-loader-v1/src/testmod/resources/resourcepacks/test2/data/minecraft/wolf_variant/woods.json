@@ -4,6 +4,11 @@
     "tame": "fabric-resource-loader-v1-testmod:entity/wolf/pink",
     "wild": "fabric-resource-loader-v1-testmod:entity/wolf/pink"
   },
+  "baby_assets": {
+    "angry": "fabric-resource-loader-v1-testmod:entity/wolf/pink",
+    "tame": "fabric-resource-loader-v1-testmod:entity/wolf/pink",
+    "wild": "fabric-resource-loader-v1-testmod:entity/wolf/pink"
+  },
   "spawn_conditions": [
     {
       "condition": {

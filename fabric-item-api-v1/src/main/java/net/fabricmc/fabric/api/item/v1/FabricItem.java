@@ -16,16 +16,21 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TippedArrowItem;
@@ -100,7 +105,7 @@ public interface FabricItem {
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
 	 */
-	default ItemStack getCraftingRemainder(ItemStack stack) {
+	default @Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
 		return ((Item) this).getCraftingRemainder();
 	}
 
@@ -194,6 +199,25 @@ public interface FabricItem {
 		 */
 		default Item.Properties modelId(Identifier modelId) {
 			return (Item.Properties) this;
+		}
+
+		/**
+		 * Return the id of item that was defined by {@link Item.Properties#setId}.
+		 *
+		 * @return currently stored item id or null, if not set
+		 */
+		default @Nullable ResourceKey<Item> getId() {
+			throw new AssertionError("Implemented in Mixin");
+		}
+
+		/**
+		 * Return the id of item that was defined by {@link Item.Properties#setId}.
+		 *
+		 * @return currently stored item id
+		 * @throws NullPointerException if id is not set
+		 */
+		default ResourceKey<Item> getIdOrThrow() {
+			return Objects.requireNonNull(this.getId(), "Item id not set");
 		}
 	}
 }

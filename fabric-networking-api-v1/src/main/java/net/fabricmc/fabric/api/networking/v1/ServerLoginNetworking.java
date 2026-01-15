@@ -197,7 +197,8 @@ public final class ServerLoginNetworking {
 		 * 	}));
 		 * });
 		 * }</pre>
-		 * Usually it is enough to pass the return value for {@link net.minecraft.util.thread.BlockableEventLoop#submit(Runnable)} for {@code future}.</p>
+		 *
+		 * <p>Usually it is enough to pass the return value for {@link net.minecraft.util.thread.BlockableEventLoop#submit(Runnable)} for {@code future}.
 		 *
 		 * @param future the future that must be done before the player can log in
 		 */

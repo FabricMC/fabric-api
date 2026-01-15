@@ -53,6 +53,16 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_DEMO_TIMER), HudTests::renderBeforeDemoTimer);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_CHAT), HudTests::renderBeforeChat);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.SUBTITLES, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_SUBTITLES), HudTests::renderAfterSubtitles);
+
+		// https://github.com/FabricMC/fabric/issues/4933#issuecomment-3552574307
+		HudElementRegistry.replaceElement(
+				VanillaHudElements.SUBTITLES, original -> (graphics, tracker) -> {
+					graphics.pose().pushMatrix();
+					graphics.pose().scale(0.25f);
+					original.render(graphics, tracker);
+					graphics.pose().popMatrix();
+				}
+		);
 	}
 
 	private static void renderBeforeMiscOverlay(GuiGraphics graphics, DeltaTracker deltaTracker) {

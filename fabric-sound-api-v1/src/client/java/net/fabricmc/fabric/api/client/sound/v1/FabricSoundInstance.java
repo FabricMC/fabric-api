@@ -44,7 +44,7 @@ public interface FabricSoundInstance {
 	 * custom {@link AudioStream} implementation which provides audio from another source, such as over the network or
 	 * driven from user input.
 	 *
-	 * <h3>Usage Example</h3>
+	 * <h4>Usage Example</h4>
 	 *
 	 * <p>Creating a sound with a custom audio stream requires the following:
 	 *

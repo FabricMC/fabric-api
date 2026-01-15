@@ -24,7 +24,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
-import net.fabricmc.fabric.mixin.item.ItemAccessor;
 
 public class DefaultItemComponentImpl {
 	public static void modifyItemComponents() {
@@ -43,7 +42,7 @@ public class DefaultItemComponentImpl {
 				if (itemPredicate.test(item)) {
 					DataComponentMap.Builder builder = DataComponentMap.builder().addAll(item.components());
 					builderConsumer.accept(builder, item);
-					((ItemAccessor) item).setComponents(builder.build());
+					item.builtInRegistryHolder().bindComponents(builder.build());
 				}
 			}
 		}

@@ -34,7 +34,7 @@ public interface TestInput {
 	 * Starts holding down a key mapping. The key mapping will be held until it is released. The key mapping must be
 	 * bound. Does nothing if the key mapping is already being held.
 	 *
-	 * <p><strong>Most key mappings will only start reacting to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only start reacting to this when a tick is waited.</h4>
 	 *
 	 * @param keyMapping The key mapping to hold
 	 * @see #releaseKey(KeyMapping)
@@ -47,7 +47,7 @@ public interface TestInput {
 	 * Starts holding down a key mapping. The key mapping will be held until it is released. The key mapping must be
 	 * bound. Does nothing if the key mapping is already being held.
 	 *
-	 * <p><strong>Most key mappings will only start reacting to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only start reacting to this when a tick is waited.</h4>
 	 *
 	 * @param keyMappingGetter The function to get the key mapping from the game options
 	 * @see #releaseKey(Function)
@@ -60,7 +60,7 @@ public interface TestInput {
 	 * Starts holding down a key or mouse button. The key will be held until it is released. Does nothing if the key or
 	 * mouse button is already being held.
 	 *
-	 * <p><strong>Most key mappings will only start reacting to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only start reacting to this when a tick is waited.</h4>
 	 *
 	 * @param key The key or mouse button to hold
 	 * @see #releaseKey(InputConstants.Key)
@@ -72,7 +72,7 @@ public interface TestInput {
 	 * Starts holding down a key. The key will be held until it is released. Does nothing if the key is already being
 	 * held.
 	 *
-	 * <p><strong>Most key mappings will only start reacting to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only start reacting to this when a tick is waited.</h4>
 	 *
 	 * @param keyCode The key code of the key to hold
 	 * @see #releaseKey(int)
@@ -84,7 +84,7 @@ public interface TestInput {
 	 * Starts holding down a mouse button. The mouse button will be held until it is released. Does nothing if the mouse
 	 * button is already being held.
 	 *
-	 * <p><strong>Most key mappings will only start reacting to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only start reacting to this when a tick is waited.</h4>
 	 *
 	 * @param button The mouse button to hold
 	 * @see #releaseMouse(int)
@@ -120,7 +120,7 @@ public interface TestInput {
 	/**
 	 * Releases a key mapping. The key mapping must be bound. Does nothing if the key mapping is not being held.
 	 *
-	 * <p><strong>Most key mappings will only react to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only react to this when a tick is waited.</h4>
 	 *
 	 * @param keyMapping The key mapping to release
 	 * @see #holdKey(KeyMapping)
@@ -131,7 +131,7 @@ public interface TestInput {
 	/**
 	 * Releases a key mapping. The key mapping must be bound. Does nothing if the key mapping is not being held.
 	 *
-	 * <p><strong>Most key mappings will only react to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only react to this when a tick is waited.</h4>
 	 *
 	 * @param keyMappingGetter The function to get the key mapping from the game options
 	 * @see #holdKey(Function)
@@ -142,7 +142,7 @@ public interface TestInput {
 	/**
 	 * Releases a key or mouse button. Does nothing if the key or mouse button is not being held.
 	 *
-	 * <p><strong>Most key mappings will only react to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only react to this when a tick is waited.</h4>
 	 *
 	 * @param key The key or mouse button to release
 	 * @see #holdKey(InputConstants.Key)
@@ -152,7 +152,7 @@ public interface TestInput {
 	/**
 	 * Releases a key. Does nothing if the key is not being held.
 	 *
-	 * <p><strong>Most key mappings will only react to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only react to this when a tick is waited.</h4>
 	 *
 	 * @param keyCode The GLFW key code of the key to release
 	 * @see #holdKey(int)
@@ -162,7 +162,7 @@ public interface TestInput {
 	/**
 	 * Releases a mouse button. Does nothing if the mouse button is not being held.
 	 *
-	 * <p><strong>Most key mappings will only react to this when a tick is waited.</strong>
+	 * <h4>Most key mappings will only react to this when a tick is waited.</h4>
 	 *
 	 * @param button The GLFW mouse button to release
 	 * @see #holdMouse(int)

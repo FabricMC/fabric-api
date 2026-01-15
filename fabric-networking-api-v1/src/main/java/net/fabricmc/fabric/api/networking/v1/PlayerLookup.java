@@ -155,7 +155,7 @@ public final class PlayerLookup {
 	public static Collection<ServerPlayer> tracking(ServerLevel level, BlockPos pos) {
 		Objects.requireNonNull(pos, "BlockPos cannot be null");
 
-		return tracking(level, new ChunkPos(pos));
+		return tracking(level, ChunkPos.containing(pos));
 	}
 
 	/**

@@ -2,13 +2,22 @@
   "required": true,
   "package": "net.fabricmc.fabric.mixin.entity.event",
   "compatibilityLevel": "JAVA_25",
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "mixins": [
     "EntityMixin",
     "LivingEntityMixin",
     "MobMixin",
-    "PlayerMixin",
     "PlayerListMixin",
+    "PlayerMixin",
     "ServerPlayerMixin",
+    "effect.BuildContextsAccessor",
+    "effect.CommandQueueEntryMixin",
+    "effect.ContextChainAccessor",
+    "effect.ContextChainMixin",
+    "effect.LivingEntityMixin",
+    "effect.MobEffectMixin",
     "elytra.LivingEntityMixin"
   ],
   "injectors": {

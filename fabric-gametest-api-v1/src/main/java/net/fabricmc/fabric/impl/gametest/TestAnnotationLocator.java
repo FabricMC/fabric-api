@@ -168,7 +168,8 @@ final class TestAnnotationLocator {
 					gameTest.manualOnly(),
 					gameTest.maxAttempts(),
 					gameTest.requiredSuccesses(),
-					gameTest.skyAccess()
+					gameTest.skyAccess(),
+					gameTest.padding()
 			);
 		}
 

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.item;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -29,6 +31,7 @@ import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.alchemy.Potions;
@@ -86,15 +89,15 @@ public class CustomDamageTest implements ModInitializer {
 		}
 
 		@Override
-		public ItemStack getCraftingRemainder(ItemStack stack) {
+		public @Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				ItemStack moreDamaged = stack.copy();
 				moreDamaged.setCount(1);
 				moreDamaged.setDamageValue(stack.getDamageValue() + 1);
-				return moreDamaged;
+				return ItemStackTemplate.fromNonEmptyStack(moreDamaged);
 			}
 
-			return ItemStack.EMPTY;
+			return null;
 		}
 
 		@Override

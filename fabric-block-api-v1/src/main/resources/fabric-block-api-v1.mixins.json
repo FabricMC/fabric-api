@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.block",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "BlockBehaviourPropertiesMixin",
     "BlockMixin",
     "BlockStateMixin",
     "ChunkSectionBlockStateCounterMixin",
