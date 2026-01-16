@@ -19,10 +19,10 @@ package net.fabricmc.fabric.mixin.attachment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 
-@Mixin(ServerboundCustomPayloadPacket.class)
-public interface ServerboundCustomPayloadPacketAccessor {
+@Mixin(ClientboundCustomPayloadPacket.class)
+public interface ClientboundCustomPayloadPacketAccessor {
 	@Accessor("MAX_PAYLOAD_SIZE")
 	static int getMaxPayloadSize() {
 		throw new UnsupportedOperationException("Implemented via mixin");

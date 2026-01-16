@@ -38,7 +38,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.mixin.attachment.ServerboundCustomPayloadPacketAccessor;
 
 public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
 	public static final StreamCodec<FriendlyByteBuf, AttachmentChange> PACKET_CODEC = StreamCodec.composite(
@@ -50,8 +49,6 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			ByteBufCodecs.BYTE_ARRAY, AttachmentChange::data,
 			AttachmentChange::new
 	);
-	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
-	private static final int MAX_DATA_SIZE_IN_BYTES = ServerboundCustomPayloadPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
 
 	@SuppressWarnings("unchecked")
 	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess registryAccess) {
@@ -68,13 +65,16 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			buf.writeBoolean(false);
 		}
 
-		byte[] encoded = buf.array();
+		// buf.array() returns the backing array directly, which often contains unused space
+		byte[] encoded = new byte[buf.readableBytes()];
+		buf.readBytes(encoded);
+		int maxDataSize = ((AttachmentTypeImpl<?>) type).maxSyncSize();
 
-		if (encoded.length > MAX_DATA_SIZE_IN_BYTES) {
+		if (encoded.length > maxDataSize) {
 			throw new IllegalArgumentException("Data for attachment '%s' was too big (%d bytes, over maximum %d)".formatted(
 					type.identifier(),
 					encoded.length,
-					MAX_DATA_SIZE_IN_BYTES
+					maxDataSize
 			));
 		}
 

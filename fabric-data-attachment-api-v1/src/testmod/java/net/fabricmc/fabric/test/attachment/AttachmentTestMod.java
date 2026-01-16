@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.attachment;
 
+import java.util.stream.LongStream;
+
 import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -95,6 +98,13 @@ public class AttachmentTestMod implements ModInitializer {
 					.persistent(ExtraCodecs.NON_NEGATIVE_INT)
 					.syncWith(ByteBufCodecs.INT, AttachmentSyncPredicate.targetOnly())
 	);
+	public static final long[] LARGE_DATA = LongStream.generate(RandomSource.create(16554)::nextLong).limit((10 * 1024 * 1024) / 8).toArray();
+	public static final AttachmentType<long[]> SYNCED_LARGE = AttachmentRegistry.create(
+			Identifier.fromNamespaceAndPath(MOD_ID, "synced_large"),
+			builder -> builder
+					.initializer(() -> LARGE_DATA)
+					.syncWith(ByteBufCodecs.LONG_ARRAY, AttachmentSyncPredicate.all(), 10 * 1024 * 1024 + 4) // 10 MiB + int length
+	);
 
 	@Override
 	public void onInitialize() {
@@ -113,6 +123,14 @@ public class AttachmentTestMod implements ModInitializer {
 				if (blockEntity != null) {
 					blockEntity.setAttached(SYNCED_WITH_ALL, true);
 					player.displayClientMessage(Component.literal("Attached"), false);
+					return InteractionResult.SUCCESS;
+				}
+			} else if (player.getItemInHand(hand).getItem() == Items.GOLDEN_CARROT) {
+				BlockEntity blockEntity = level.getBlockEntity(hitResult.getBlockPos());
+
+				if (blockEntity != null) {
+					blockEntity.getAttachedOrCreate(SYNCED_LARGE);
+					player.displayClientMessage(Component.literal("Attached LARGE"), false);
 					return InteractionResult.SUCCESS;
 				}
 			}
