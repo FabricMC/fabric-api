@@ -36,7 +36,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
+import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
@@ -54,7 +54,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 				level, pos, state, random, cullTest);
 
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
-		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+		if (!(((FabricBlockGetter) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
 			return; // No inner block to render, or data of wrong type
 		}
 
@@ -105,7 +105,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 	@Nullable
 	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
-		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+		if (!(((FabricBlockGetter) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
 			return this; // No inner block to render, or data of wrong type
 		}
 
@@ -136,7 +136,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 	@Override
 	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
-		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+		if (!(((FabricBlockGetter) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
 			return frameModel.particleIcon(level, pos, state); // No inner block to render, or data of wrong type
 		}
 

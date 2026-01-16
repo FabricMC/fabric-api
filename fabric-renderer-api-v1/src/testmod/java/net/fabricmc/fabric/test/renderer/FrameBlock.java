@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.fabric.api.block.v1.FabricBlock;
-import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
+import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
 
 // Need to implement FabricBlock manually because this is a testmod for another Fabric module, otherwise it would be injected.
 public class FrameBlock extends Block implements EntityBlock, FabricBlock {
@@ -105,7 +105,7 @@ public class FrameBlock extends Block implements EntityBlock, FabricBlock {
 	@Override
 	public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		// For this specific block, the render data works on both the client and the server, so let's use that.
-		if (((FabricBlockView) renderView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock) {
+		if (((FabricBlockGetter) renderView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock) {
 			return mimickedBlock.defaultBlockState();
 		}
 

@@ -36,7 +36,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
+import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
@@ -53,7 +53,7 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
-		if (((FabricBlockView) level).hasBiomes() && ((FabricBlockView) level).getBiomeFabric(pos).is(biomeTag)) {
+		if (((FabricBlockGetter) level).hasBiomes() && ((FabricBlockGetter) level).getBiomeFabric(pos).is(biomeTag)) {
 			biomeModel.emitQuads(emitter,
 					level, pos, state, random, cullTest);
 		} else {
@@ -65,7 +65,7 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	@Override
 	@Nullable
 	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
-		if (((FabricBlockView) level).hasBiomes() && ((FabricBlockView) level).getBiomeFabric(pos).is(biomeTag)) {
+		if (((FabricBlockGetter) level).hasBiomes() && ((FabricBlockGetter) level).getBiomeFabric(pos).is(biomeTag)) {
 			return biomeModel.createGeometryKey(level, pos, state, random);
 		} else {
 			return regularModel.createGeometryKey(level, pos, state, random);
@@ -83,7 +83,7 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 
 	@Override
 	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		if (((FabricBlockView) level).hasBiomes() && ((FabricBlockView) level).getBiomeFabric(pos).is(biomeTag)) {
+		if (((FabricBlockGetter) level).hasBiomes() && ((FabricBlockGetter) level).getBiomeFabric(pos).is(biomeTag)) {
 			return biomeModel.particleIcon(level, pos, state);
 		} else {
 			return regularModel.particleIcon(level, pos, state);

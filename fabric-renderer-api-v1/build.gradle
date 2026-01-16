@@ -8,7 +8,7 @@ moduleDependencies(project, [
 
 testDependencies(project, [
 	':fabric-block-api-v1',
-	':fabric-block-view-api-v2',
+	':fabric-block-getter-api-v2',
 	':fabric-model-loading-api-v1',
 	':fabric-object-builder-api-v1',
 	':fabric-particles-v1',
