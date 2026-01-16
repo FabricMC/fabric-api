@@ -44,9 +44,7 @@ public final class BlockColorRegistryImpl {
 
 	public static void register(BlockColor color, Block... blocks) {
 		if (blockColors != null) {
-			for (Block block : blocks) {
-				blockColors.register(color, block);
-			}
+			blockColors.register(color, blocks);
 		} else {
 			for (Block block : blocks) {
 				map.put(block, color);
