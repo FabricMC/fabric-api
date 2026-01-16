@@ -37,8 +37,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.ChunkSectionLayerHelper;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
+import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
 
 @Mixin(BlockRenderDispatcher.class)
 abstract class BlockRenderDispatcherMixin {

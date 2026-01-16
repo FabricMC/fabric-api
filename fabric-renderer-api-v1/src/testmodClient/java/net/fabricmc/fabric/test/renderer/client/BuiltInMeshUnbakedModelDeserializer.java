@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.util.GsonHelper;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 
 public class BuiltInMeshUnbakedModelDeserializer extends SimpleUnbakedModelDeserializer {
 	@Override
