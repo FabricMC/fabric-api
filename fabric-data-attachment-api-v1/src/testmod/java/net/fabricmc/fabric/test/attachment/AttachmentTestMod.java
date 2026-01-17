@@ -105,7 +105,7 @@ public class AttachmentTestMod implements ModInitializer {
 			builder -> builder
 					.initializer(() -> LARGE_DATA)
 					.persistent(Codec.LONG.listOf())
-					.syncWith(ByteBufCodecs.LONG.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all(), 10 * 1024 * 1024 + 3) // 10 MiB + int length
+					.syncWith(ByteBufCodecs.LONG.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all(), 10 * 1024 * 1024 + 4) // 10 MiB + int length
 	);
 
 	@Override
