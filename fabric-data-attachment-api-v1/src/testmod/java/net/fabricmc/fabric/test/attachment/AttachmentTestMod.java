@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.attachment;
 
+import java.util.List;
 import java.util.stream.LongStream;
 
 import com.mojang.serialization.Codec;
@@ -98,12 +99,13 @@ public class AttachmentTestMod implements ModInitializer {
 					.persistent(ExtraCodecs.NON_NEGATIVE_INT)
 					.syncWith(ByteBufCodecs.INT, AttachmentSyncPredicate.targetOnly())
 	);
-	public static final long[] LARGE_DATA = LongStream.generate(RandomSource.create(16554)::nextLong).limit((10 * 1024 * 1024) / 8).toArray();
-	public static final AttachmentType<long[]> SYNCED_LARGE = AttachmentRegistry.create(
+	public static final List<Long> LARGE_DATA = LongStream.generate(RandomSource.create(16554)::nextLong).limit((10 * 1024 * 1024) / 8).boxed().toList();
+	public static final AttachmentType<List<Long>> SYNCED_LARGE = AttachmentRegistry.create(
 			Identifier.fromNamespaceAndPath(MOD_ID, "synced_large"),
 			builder -> builder
 					.initializer(() -> LARGE_DATA)
-					.syncWith(ByteBufCodecs.LONG_ARRAY, AttachmentSyncPredicate.all(), 10 * 1024 * 1024 + 4) // 10 MiB + int length
+					.persistent(Codec.LONG.listOf())
+					.syncWith(ByteBufCodecs.LONG.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.all(), 10 * 1024 * 1024 + 3) // 10 MiB + int length
 	);
 
 	@Override
