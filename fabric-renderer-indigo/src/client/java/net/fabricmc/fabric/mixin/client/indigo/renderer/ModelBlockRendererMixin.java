@@ -27,7 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
+import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
 
 @Mixin(ModelBlockRenderer.class)
 abstract class ModelBlockRendererMixin {

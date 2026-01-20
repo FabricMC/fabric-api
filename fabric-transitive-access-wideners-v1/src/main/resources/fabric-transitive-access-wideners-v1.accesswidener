@@ -228,7 +228,7 @@ transitive-accessible method net/minecraft/world/level/block/SnowyDirtBlock <ini
 transitive-accessible method net/minecraft/world/level/block/SpawnerBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/SpongeBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/StairBlock <init> (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/StemBlock <init> (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/tags/TagKey;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/StemBlock <init> (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/tags/TagKey;Lnet/minecraft/tags/TagKey;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/StructureBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/StructureVoidBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/SugarCaneBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V

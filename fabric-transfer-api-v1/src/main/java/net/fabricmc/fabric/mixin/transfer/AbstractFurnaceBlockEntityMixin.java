@@ -42,9 +42,9 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlock
 	@Shadow
 	protected NonNullList<ItemStack> items;
 	@Shadow
-	int cookingTimer;
+	private int cookingTimer;
 	@Shadow
-	int cookingTotalTime;
+	private int cookingTotalTime;
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
 

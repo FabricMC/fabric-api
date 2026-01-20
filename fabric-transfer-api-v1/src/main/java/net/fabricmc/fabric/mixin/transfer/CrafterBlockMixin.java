@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 @Mixin(CrafterBlock.class)
 public class CrafterBlockMixin {
 	// Inject after vanilla's attempts to insert the stack into an inventory.
-	@Inject(method = "dispenseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z", shift = At.Shift.BEFORE))
+	@Inject(method = "dispenseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z"))
 	private void transferOrSpawnStack(ServerLevel level, BlockPos pos, CrafterBlockEntity blockEntity, ItemStack inputStack, BlockState state, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci, @Local Direction direction, @Local Container inventory, @Local(ordinal = 1) ItemStack itemStack) {
 		if (inventory != null) {
 			// Vanilla already found and tested an inventory, nothing else to do even if it failed to insert.

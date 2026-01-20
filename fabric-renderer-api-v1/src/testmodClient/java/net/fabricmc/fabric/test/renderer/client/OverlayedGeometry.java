@@ -29,12 +29,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.MeshQuadCollection;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 
 public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry {
 	@Override

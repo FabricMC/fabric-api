@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.event.interaction;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,8 +45,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ServerGamePacketListenerImplMixin {
 	@Shadow
-	@Final
-	private ServerPlayer player;
+	public ServerPlayer player;
 
 	@Shadow
 	private void tryPickItem(ItemStack stack) {

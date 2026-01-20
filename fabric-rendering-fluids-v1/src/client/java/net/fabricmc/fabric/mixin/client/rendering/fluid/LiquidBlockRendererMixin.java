@@ -23,6 +23,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -140,7 +141,7 @@ public class LiquidBlockRendererMixin {
 	@ModifyVariable(
 			method = "tesselate",
 			at = @At(value = "MIXINEXTRAS:EXPRESSION", ordinal = 0),
-			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;")),
+			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", opcode = Opcodes.GETFIELD)),
 			ordinal = 2
 	)
 	private TextureAtlasSprite modifyOverlaySprite(

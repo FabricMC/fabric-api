@@ -26,13 +26,13 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.core.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
-import net.fabricmc.fabric.api.renderer.v1.model.MeshQuadCollection;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelStateHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelStateHelper;
 
 public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeometry {
 	// (B - A) is the side length of a regular octagon that fits in a unit square.

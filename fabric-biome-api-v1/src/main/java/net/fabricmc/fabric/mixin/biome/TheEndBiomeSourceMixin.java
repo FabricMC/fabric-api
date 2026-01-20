@@ -49,7 +49,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Shadow
 	@Mutable
 	@Final
-	static MapCodec<TheEndBiomeSource> CODEC;
+	public static MapCodec<TheEndBiomeSource> CODEC;
 
 	@Unique
 	private Supplier<TheEndBiomeData.Overrides> overrides;

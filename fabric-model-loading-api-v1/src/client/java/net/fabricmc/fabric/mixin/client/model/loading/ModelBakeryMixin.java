@@ -53,11 +53,11 @@ import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher
 abstract class ModelBakeryMixin {
 	@Shadow
 	@Final
-	static Logger LOGGER;
+	private static Logger LOGGER;
 
 	@Shadow
 	@Final
-	Map<Identifier, ResolvedModel> resolvedModels;
+	private Map<Identifier, ResolvedModel> resolvedModels;
 
 	@Unique
 	@Nullable

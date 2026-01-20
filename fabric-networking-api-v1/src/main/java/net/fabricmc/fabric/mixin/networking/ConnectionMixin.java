@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -64,7 +65,7 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 		this.playChannels = new ConcurrentHashMap<>();
 	}
 
-	@Inject(method = "sendPacket", at = @At(value = "FIELD", target = "Lnet/minecraft/network/Connection;sentPackets:I"))
+	@Inject(method = "sendPacket", at = @At(value = "FIELD", target = "Lnet/minecraft/network/Connection;sentPackets:I", opcode = Opcodes.GETFIELD))
 	private void checkPacket(Packet<?> packet, ChannelFutureListener callback, boolean flush, CallbackInfo ci) {
 		if (this.packetListener instanceof PacketCallbackListener) {
 			((PacketCallbackListener) this.packetListener).sent(packet);

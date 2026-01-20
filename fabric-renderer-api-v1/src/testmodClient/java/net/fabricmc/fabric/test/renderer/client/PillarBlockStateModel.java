@@ -38,8 +38,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.block.v1.FabricBlockState;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.test.renderer.Registration;
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
