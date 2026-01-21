@@ -47,7 +47,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class SyncGametest implements FabricClientGameTest {
-	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-persistence-gametest");
+	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-syncing-gametest");
 
 	private static ServerPlayer getSinglePlayer(MinecraftServer server) {
 		return server.getPlayerList().getPlayers().getFirst();
