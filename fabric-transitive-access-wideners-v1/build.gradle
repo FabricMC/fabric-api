@@ -22,13 +22,13 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 
-tasks.register('generateAccessWidener') {
+tasks.register('generateClassTweaker') {
 	doLast {
 		List<String> lines = new ArrayList<>();
 		lines.add("accessWidener v2 official")
 		lines.add("")
 		lines.add("# DO NOT EDIT BY HAND! This file is generated automatically.")
-		lines.add("# Edit \"template.classtweaker\" instead then run \"gradlew generateAccessWidener\".")
+		lines.add("# Edit \"template.classtweaker\" instead then run \"gradlew generateClassTweaker\".")
 		lines.add("")
 		lines.addAll(file("template.classtweaker").text.lines().toList())
 
@@ -195,4 +195,4 @@ def validateAccessWidener(List<String> lines) {
 	}
 }
 
-generateResources.dependsOn generateAccessWidener
+generateResources.dependsOn generateClassTweaker
