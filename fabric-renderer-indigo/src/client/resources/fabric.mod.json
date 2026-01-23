@@ -33,5 +33,5 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener" : "fabric-renderer-indigo.accesswidener"
+  "accessWidener" : "fabric-renderer-indigo.classtweaker"
 }

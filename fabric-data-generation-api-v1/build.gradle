@@ -27,7 +27,7 @@ sourceSets {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
+	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.classtweaker")
 
 	runs {
 		datagen {
@@ -96,9 +96,9 @@ tasks.register('generateAccessWidener') {
 		String accessWidener = "accessWidener\tv2\tofficial\n"
 		accessWidener += "\n"
 		accessWidener += "# DO NOT EDIT BY HAND! This file is generated automatically.\n"
-		accessWidener += "# Edit \"template.accesswidener\" instead then run \"gradlew generateAccessWidener\".\n"
+		accessWidener += "# Edit \"template.classtweaker\" instead then run \"gradlew generateAccessWidener\".\n"
 		accessWidener += "\n"
-		accessWidener += file("template.accesswidener").text + "\n"
+		accessWidener += file("template.classtweaker").text + "\n"
 
 		visitMethods(classes["net/minecraft/data/recipes/RecipeProvider"]) { name, desc, owner ->
 			if (it.name == "generate")
@@ -139,7 +139,7 @@ tasks.register('generateAccessWidener') {
 			}
 		}
 
-		file("src/main/resources/fabric-data-generation-api-v1.accesswidener").text = accessWidener
+		file("src/main/resources/fabric-data-generation-api-v1.classtweaker").text = accessWidener
 	}
 }
 

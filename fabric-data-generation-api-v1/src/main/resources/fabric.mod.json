@@ -31,7 +31,7 @@
       "environment": "client"
     }
   ],
-  "accessWidener" : "fabric-data-generation-api-v1.accesswidener",
+  "accessWidener" : "fabric-data-generation-api-v1.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {

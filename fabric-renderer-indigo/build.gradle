@@ -1,7 +1,7 @@
 version = getSubprojectVersion(project)
 
 loom {
-	accessWidenerPath = file("src/client/resources/fabric-renderer-indigo.accesswidener")
+	accessWidenerPath = file("src/client/resources/fabric-renderer-indigo.classtweaker")
 }
 
 moduleDependencies(project, [

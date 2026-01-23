@@ -20,7 +20,7 @@
     "fabricloader": ">=0.18.4"
   },
   "description": "Asset and data resource loading.",
-  "accessWidener": "fabric-resource-loader-v1.accesswidener",
+  "accessWidener": "fabric-resource-loader-v1.classtweaker",
   "mixins": [
     "fabric-resource-loader-v1.mixins.json",
     {

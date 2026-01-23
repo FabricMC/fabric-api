@@ -37,5 +37,5 @@
       "net/minecraft/core/component/DataComponentMap\u0024Builder": ["net/fabricmc/fabric/api/item/v1/FabricComponentMapBuilder"]
     }
   },
-  "accessWidener": "fabric-item-api-v1.accesswidener"
+  "accessWidener": "fabric-item-api-v1.classtweaker"
 }

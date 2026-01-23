@@ -38,5 +38,5 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener": "fabric-lifecycle-events-v1.accesswidener"
+  "accessWidener": "fabric-lifecycle-events-v1.classtweaker"
 }

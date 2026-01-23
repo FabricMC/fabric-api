@@ -41,5 +41,5 @@
       "net/minecraft/core/particles/BlockParticleOption": ["net/fabricmc/fabric/api/particle/v1/FabricBlockParticleOption"]
     }
   },
-  "accessWidener": "fabric-particles-v1.accesswidener"
+  "accessWidener": "fabric-particles-v1.classtweaker"
 }

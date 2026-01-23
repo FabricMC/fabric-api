@@ -22,7 +22,7 @@
       "environment": "client"
     }
   ],
-  "accessWidener": "fabric-recipe-api-v1.accesswidener",
+  "accessWidener": "fabric-recipe-api-v1.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.4",
     "fabric-networking-api-v1": "*",

@@ -18,5 +18,5 @@ testDependencies(project, [
 ])
 
 loom {
-	accessWidenerPath = file('src/client/resources/fabric-renderer-api-v1.accesswidener')
+	accessWidenerPath = file('src/client/resources/fabric-renderer-api-v1.classtweaker')
 }
