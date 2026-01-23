@@ -28,11 +28,9 @@
   "mixins": [
     "fabric-convention-tags-api-v2.mixins.json"
   ],
+  "accessWidener": "fabric-convention-tags-v2.classtweaker",
   "description": "Contains common tags used by mods for better inter-mod compatibility.",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/tags/TagKey": ["net/fabricmc/fabric/api/tag/FabricTagKey"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

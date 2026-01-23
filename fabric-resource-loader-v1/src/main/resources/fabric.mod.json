@@ -29,10 +29,6 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/server/MinecraftServer": ["net/fabricmc/fabric/api/resource/v1/DataResourceStore"],
-      "net/minecraft/server/packs/resources/Resource": ["net/fabricmc/fabric/api/resource/v1/FabricResource"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

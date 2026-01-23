@@ -17,3 +17,4 @@ accessible	field	net/minecraft/world/item/CreativeModeTabs	CACHED_PARAMETERS	Lne
 transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$TabVisibility
 transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$Output
 accessible	class	net/minecraft/world/item/CreativeModeTab$ItemDisplayBuilder
+transitive-inject-interface	net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen	net/fabricmc/fabric/api/client/creativetab/v1/FabricCreativeModeInventoryScreen

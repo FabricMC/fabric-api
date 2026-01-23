@@ -38,9 +38,6 @@
   },
   "accessWidener": "fabric-registry-sync-v0.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/core/Registry": ["net/fabricmc/fabric/api/event/registry/FabricRegistry"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

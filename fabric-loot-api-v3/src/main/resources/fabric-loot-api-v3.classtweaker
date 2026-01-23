@@ -1,0 +1,3 @@
+classTweaker	v1	official
+transitive-inject-interface	net/minecraft/world/level/storage/loot/LootTable$Builder	net/fabricmc/fabric/api/loot/v3/FabricLootTableBuilder
+transitive-inject-interface	net/minecraft/world/level/storage/loot/LootPool$Builder	net/fabricmc/fabric/api/loot/v3/FabricLootPoolBuilder

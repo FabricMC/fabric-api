@@ -29,60 +29,8 @@
   "mixins": [
     "fabric-rendering-v1.mixins.json"
   ],
+  "accessWidener": "fabric-rendering-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "com/mojang/blaze3d/pipeline/RenderPipeline": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline"
-      ],
-      "com/mojang/blaze3d/pipeline/RenderPipeline\u0024Snippet": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline\u0024Snippet"
-      ],
-      "com/mojang/blaze3d/pipeline/RenderPipeline\u0024Builder": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline\u0024Builder"
-      ],
-      "net/minecraft/client/model/Model": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricModel<TS;>"
-      ],
-      "net/minecraft/client/renderer/entity/state/EntityRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/MapRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/MapRenderState\u0024MapDecorationRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/item/ItemStackRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/item/ItemStackRenderState\u0024LayerRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/LevelRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/block/MovingBlockRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/blockentity/state/BlockEntityRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/BlockOutlineRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/CameraRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/SkyRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/WeatherRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
-      "net/minecraft/client/renderer/state/WorldBorderRenderState": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

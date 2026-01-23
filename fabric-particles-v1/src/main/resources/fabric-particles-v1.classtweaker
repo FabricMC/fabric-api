@@ -4,3 +4,4 @@ accessible	field	net/minecraft/client/particle/ParticleResources	providers	Lit/u
 accessible	field	net/minecraft/client/particle/ParticleResources	spriteSets	Ljava/util/Map;
 accessible	method	net/minecraft/client/particle/ParticleResources$MutableSpriteSet	<init>	()V
 accessible	field	net/minecraft/client/particle/ParticleResources$MutableSpriteSet	sprites	Ljava/util/List;
+transitive-inject-interface	net/minecraft/core/particles/BlockParticleOption	net/fabricmc/fabric/api/particle/v1/FabricBlockParticleOption

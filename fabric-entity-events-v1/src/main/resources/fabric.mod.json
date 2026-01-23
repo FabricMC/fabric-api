@@ -22,10 +22,8 @@
   "mixins": [
     "fabric-entity-events-v1.mixins.json"
   ],
+  "accessWidener": "fabric-entity-events-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/effect/MobEffect": ["net/fabricmc/fabric/api/entity/event/v1/effect/FabricMobEffect"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

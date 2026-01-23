@@ -26,10 +26,8 @@
       "environment": "client"
     }
   ],
+  "accessWidener": "fabric-sound-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/client/resources/sounds/SoundInstance": ["net/fabricmc/fabric/api/client/sound/v1/FabricSoundInstance"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

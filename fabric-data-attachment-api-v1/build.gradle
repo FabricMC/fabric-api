@@ -1,5 +1,9 @@
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-data-attachment-api-v1.classtweaker')
+}
+
 moduleDependencies(project, [
 	'fabric-api-base',
 	':fabric-entity-events-v1',
