@@ -169,9 +169,10 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 			if (DISCONNECT_ON_UNKNOWN_TARGETS) {
 				throw new AttachmentSyncException(errorMessageComponent);
-			} else {
-				LOGGER.warn(errorMessageComponent.getString().trim());
 			}
+
+			LOGGER.warn(errorMessageComponent.getString().trim());
+			return;
 		}
 
 		target.setAttached((AttachmentType<Object>) type, value);

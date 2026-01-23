@@ -287,7 +287,7 @@ public class CommonAttachmentTests {
 	}
 
 	@Test
-	void applyToInvalidTarget() {
+	void applyToInvalidTarget() throws AttachmentSyncException {
 		RegistryAccess ra = mockRA();
 
 		ServerLevel level = mock(ServerLevel.class);
@@ -302,7 +302,7 @@ public class CommonAttachmentTests {
 				new byte[]{0}
 		);
 
-		assertThrows(AttachmentSyncException.class, () -> attachmentChange.tryApply(level));
+		attachmentChange.tryApply(level);
 	}
 
 	/*
