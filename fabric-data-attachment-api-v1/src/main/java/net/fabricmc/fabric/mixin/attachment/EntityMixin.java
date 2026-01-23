@@ -95,4 +95,11 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	public RegistryAccess fabric_getRegistryAccess() {
 		return this.level().registryAccess();
 	}
+
+	@Inject(method = "setId", at = @At("HEAD"))
+	private void setId(int id, CallbackInfo ci) {
+		var oldTargetInfo = new AttachmentTargetInfo.EntityTarget(this.id);
+		var newTargetInfo = new AttachmentTargetInfo.EntityTarget(id);
+		fabric_updateSyncTarget(oldTargetInfo, newTargetInfo);
+	}
 }

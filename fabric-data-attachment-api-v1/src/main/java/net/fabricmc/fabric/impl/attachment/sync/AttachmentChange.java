@@ -167,4 +167,8 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 		target.setAttached((AttachmentType<Object>) type, value);
 	}
+
+	public AttachmentChange withNewTarget(AttachmentTargetInfo<?> newTargetInfo) {
+		return new AttachmentChange(newTargetInfo, this.type, this.data);
+	}
 }

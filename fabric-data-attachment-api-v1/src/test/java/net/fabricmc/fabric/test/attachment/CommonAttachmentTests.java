@@ -47,6 +47,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -70,6 +71,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncException;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
@@ -223,6 +225,21 @@ public class CommonAttachmentTests {
 		assertFalse(respawnTarget.hasAttached(notCopiedOnRespawn));
 		assertTrue(nonRespawnTarget.hasAttached(copiedOnRespawn));
 		assertTrue(nonRespawnTarget.hasAttached(notCopiedOnRespawn));
+	}
+
+	// Test https://github.com/FabricMC/fabric-api/issues/4943#issuecomment-3790935408
+	@Test
+	void testEntityChangeId() {
+		ServerPlayer player = mockAndDisableSync(ServerPlayer.class);
+		Entity entity = mockAndDisableSync(Entity.class);
+		entity.setAttached(SYNCED, 456);
+
+		entity.setId(123);
+
+		AttachmentTargetImpl targetImpl = (AttachmentTargetImpl) entity;
+		targetImpl.fabric_computeInitialSyncChanges(player, change -> {
+			assertEquals(123, ((AttachmentTargetInfo.EntityTarget) change.targetInfo()).networkId());
+		});
 	}
 
 	@Test

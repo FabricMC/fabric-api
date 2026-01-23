@@ -84,6 +84,13 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
+	/**
+	 * Sync targets can change their identity {@link net.minecraft.world.entity.Entity#setId(int)}, use this function to update the target to match the new identity.
+	 */
+	default <T> void fabric_updateSyncTarget(AttachmentTargetInfo<T> oldTargetInfo, AttachmentTargetInfo<T> newTargetInfo) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
 	default void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 	}
 
