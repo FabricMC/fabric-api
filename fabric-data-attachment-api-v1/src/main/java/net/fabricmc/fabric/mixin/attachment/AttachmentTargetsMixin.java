@@ -16,9 +16,13 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -53,6 +57,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, AttachmentChange> syncedAttachments = null;
+	@Unique
+	@Nullable
+	private Set<AttachmentType<?>> deferredSyncedAttachments = null;
 	@Unique
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Event<OnAttachedSet<?>>> attachedChangedListeners = null;
@@ -175,12 +182,24 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			}
 
 			syncedAttachments.remove(type);
+
+			if (fabric_shouldDeferSync()) {
+				deferredSyncedAttachments.remove(type);
+			}
 		} else {
 			if (syncedAttachments == null) {
 				syncedAttachments = new IdentityHashMap<>();
 			}
 
 			syncedAttachments.put(type, change);
+
+			if (fabric_shouldDeferSync()) {
+				if (deferredSyncedAttachments == null) {
+					deferredSyncedAttachments = Collections.newSetFromMap(new IdentityHashMap<>());
+				}
+
+				deferredSyncedAttachments.add(type);
+			}
 		}
 	}
 
@@ -195,6 +214,29 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				changeOutput.accept(entry.getValue());
 			}
 		}
+	}
+
+	@Override
+	public Map<ServerPlayer, List<AttachmentChange>> fabric_computeAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		if (syncedAttachments == null || deferredSyncedAttachments == null) {
+			return Map.of();
+		}
+
+		Map<ServerPlayer, List<AttachmentChange>> changesPerPlayer = new IdentityHashMap<>();
+
+		for (AttachmentType<?> type : deferredSyncedAttachments) {
+			AttachmentChange change = Objects.requireNonNull(syncedAttachments.get(type));
+
+			for (ServerPlayer player : players) {
+				List<AttachmentChange> changes = changesPerPlayer.computeIfAbsent(player, _ -> new ArrayList<>());
+				if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
+					changes.add(change);
+				}
+			}
+		}
+
+		deferredSyncedAttachments.clear();
+		return changesPerPlayer;
 	}
 
 	@Override
