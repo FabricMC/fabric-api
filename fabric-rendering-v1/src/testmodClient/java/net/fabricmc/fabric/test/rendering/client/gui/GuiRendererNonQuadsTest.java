@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client.gui;
 
+import java.util.function.BiFunction;
+
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -32,10 +34,6 @@ import net.minecraft.util.Util;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class GuiRendererNonQuadsTest implements ClientModInitializer {
 	@Override
