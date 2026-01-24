@@ -50,9 +50,9 @@ abstract class ScreenEffectRendererMixin {
 	}
 
 	@Inject(method = "getViewBlockingState", at = @At("RETURN"))
-	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos mutable) {
+	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos testPos) {
 		if (cir.getReturnValue() != null) {
-			pos = mutable.immutable();
+			pos = testPos.immutable();
 		} else {
 			pos = null;
 		}

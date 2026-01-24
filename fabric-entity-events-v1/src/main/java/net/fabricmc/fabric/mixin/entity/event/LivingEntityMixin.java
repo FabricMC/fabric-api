@@ -85,9 +85,9 @@ abstract class LivingEntityMixin {
 	}
 
 	@Inject(method = "hurtServer", at = @At("TAIL"))
-	private void afterDamage(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, @Local(name = "originalDamage") float dealt, @Local(name = "blocked") boolean blocked) {
+	private void afterDamage(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, @Local(name = "originalDamage") float originalDamage, @Local(name = "blocked") boolean blocked) {
 		if (!isDeadOrDying()) {
-			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, dealt, amount, blocked);
+			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, originalDamage, amount, blocked);
 		}
 	}
 

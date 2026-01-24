@@ -38,8 +38,8 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.QuadToPosPipe;
 @Mixin(ItemStackRenderState.class)
 abstract class ItemStackRenderStateMixin {
 	@Inject(method = "visitExtents(Ljava/util/function/Consumer;)V", at = @At(value = "NEW", target = "com/mojang/blaze3d/vertex/PoseStack$Pose"))
-	private void afterInitVecLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local(name = "scratch") Vector3f vec, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
-		pipeRef.set(new QuadToPosPipe(posConsumer, vec));
+	private void afterInitVecLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local(name = "scratch") Vector3f scratch, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
+		pipeRef.set(new QuadToPosPipe(posConsumer, scratch));
 	}
 
 	@Inject(method = "visitExtents(Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;setIdentity()V"))

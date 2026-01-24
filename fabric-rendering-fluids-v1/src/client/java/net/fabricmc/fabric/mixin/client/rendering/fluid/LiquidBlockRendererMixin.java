@@ -146,7 +146,7 @@ public class LiquidBlockRendererMixin {
 	private TextureAtlasSprite modifyOverlaySprite(
 			TextureAtlasSprite waterOverlay,
 			BlockAndTintGetter level,
-			@Local(name = "tPos") BlockPos neighborPos,
+			@Local(name = "tPos") BlockPos tPos,
 			@Local(name = "isLava") boolean isLava,
 			@Local(name = "flowingSprite") TextureAtlasSprite flowingSprite,
 			@Share("useOverlay") LocalBooleanRef useOverlay
@@ -154,7 +154,7 @@ public class LiquidBlockRendererMixin {
 		final FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 		boolean hasOverlay = info.handler != null ? info.hasOverlay : !isLava;
 
-		Block neighborBlock = level.getBlockState(neighborPos).getBlock();
+		Block neighborBlock = level.getBlockState(tPos).getBlock();
 		useOverlay.set(hasOverlay && FluidRenderHandlerRegistry.INSTANCE.isBlockTransparent(neighborBlock));
 
 		if (useOverlay.get()) {

@@ -82,8 +82,8 @@ abstract class ReloadableServerRegistriesMixin {
 	}
 
 	@Inject(method = "lambda$scheduleRegistryLoad$0", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
-	private static <T extends Validatable> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local(name = "elements") Map<Identifier, T> map) {
-		map.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
+	private static <T extends Validatable> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local(name = "elements") Map<Identifier, T> elements) {
+		elements.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
 	}
 
 	@Unique

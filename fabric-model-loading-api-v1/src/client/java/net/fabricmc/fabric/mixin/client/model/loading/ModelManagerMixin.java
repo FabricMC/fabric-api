@@ -118,12 +118,12 @@ abstract class ModelManagerMixin implements FabricModelManager {
 
 	@Inject(method = "discoverModelDependencies", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelDiscovery;resolve()Ljava/util/Map;"))
 	private static void resolveExtraModels(
-			Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos result, CallbackInfoReturnable<?> cir,
-			@Local(name = "result") ModelDiscovery collector
+			Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos loadedClientInfos, CallbackInfoReturnable<?> cir,
+			@Local(name = "result") ModelDiscovery result
 	) {
 		// We know eventDispatcherFuture is available, as it is required by the item and block models (hookModels).
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
-		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(collector::addRoot);
+		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(result::addRoot);
 	}
 
 	@Inject(method = "apply", at = @At(value = "RETURN"))
