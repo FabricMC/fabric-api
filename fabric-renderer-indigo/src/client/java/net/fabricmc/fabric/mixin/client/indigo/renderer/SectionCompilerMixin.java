@@ -108,7 +108,7 @@ abstract class SectionCompilerMixin {
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 */
 	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
-	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(ordinal = 2) BlockPos blockPos) {
+	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(name = "pos") BlockPos blockPos) {
 		RenderShape renderShape = blockState.getRenderShape();
 
 		if (renderShape == RenderShape.MODEL) {

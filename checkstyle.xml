@@ -284,6 +284,20 @@
             <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
         </module>
 
+        <!-- Prevent ordinal usage in @Local annotations on method parameters, except when inside @Definition -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //PARAMETER_DEF/MODIFIERS/ANNOTATION[
+                    ./IDENT[@text='Local']
+                    and
+                    ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='ordinal']
+                    and
+                    not(ancestor::ANNOTATION/IDENT[@text='Definition'])
+                ]
+            "/>
+            <message key="matchxpath.match" value="ordinal is not allowed in @Local annotations on method parameters (except within @Definition)"/>
+        </module>
+
         <module name="MatchXpath">
             <property name="query" value="//LITERAL_ASSERT"/>
             <message key="matchxpath.match" value="Avoid using 'assert'."/>
