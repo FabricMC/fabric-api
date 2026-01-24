@@ -142,8 +142,7 @@ public class LiquidBlockRendererMixin {
 			method = "tesselate",
 			at = @At(value = "MIXINEXTRAS:EXPRESSION", ordinal = 0),
 			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", opcode = Opcodes.GETFIELD)),
-			ordinal = 2
-	)
+			name = "sprite")
 	private TextureAtlasSprite modifyOverlaySprite(
 			TextureAtlasSprite waterOverlay,
 			BlockAndTintGetter level,

@@ -80,8 +80,8 @@ public abstract class ServerGamePacketListenerImplMixin {
 		return ItemStack.EMPTY;
 	}
 
-	@Inject(method = "handleInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"))
-	public void handleInteract(ServerboundInteractPacket packet, CallbackInfo info, @Local Entity target) {
+	@Inject(method = "handleInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
+	public void handleInteract(ServerboundInteractPacket packet, CallbackInfo info, @Local(name = "target") Entity target) {
 		Level level = player.level();
 
 		EntityHitResult hitResult = new EntityHitResult(target, packet.location().add(target.getX(), target.getY(), target.getZ()));
