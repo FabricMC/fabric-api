@@ -155,6 +155,11 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 					acknowledgeSynced(type, value, input.lookup());
 				}
 			});
+
+			if (this.deferredSyncedAttachments != null) {
+				// Avoid unnecessary extra syncing after initial sync
+				this.deferredSyncedAttachments.clear();
+			}
 		}
 	}
 
