@@ -234,6 +234,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 			for (ServerPlayer player : players) {
 				List<AttachmentChange> changes = changesPerPlayer.computeIfAbsent(player, _ -> new ArrayList<>());
+
 				if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
 					changes.add(change);
 				}
