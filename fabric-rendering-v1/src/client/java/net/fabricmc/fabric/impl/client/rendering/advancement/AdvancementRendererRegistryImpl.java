@@ -57,17 +57,17 @@ public final class AdvancementRendererRegistryImpl {
 	}
 
 	private static <T> void registerRenderer(String type, Map<Identifier, T> renderers, T renderer, Identifier... advancementIds) {
-		Objects.requireNonNull(renderers, type + " renderer is null");
+		Objects.requireNonNull(renderer, type + " renderer is null");
 
 		if (advancementIds.length == 0) {
-			throw new IllegalArgumentException(type + "advancement renderer registered for no advancements");
+			throw new IllegalArgumentException(type + " advancement renderer registered for no advancements");
 		}
 
 		for (Identifier advancementId : advancementIds) {
-			Objects.requireNonNull(advancementId, "advancement id is null");
+			Objects.requireNonNull(advancementId, " advancement id is null");
 
 			if (renderers.putIfAbsent(advancementId, renderer) != null) {
-				throw new IllegalArgumentException(type + "advancement renderer already exists for " + advancementId);
+				throw new IllegalArgumentException(type + " advancement renderer already exists for " + advancementId);
 			}
 		}
 	}
