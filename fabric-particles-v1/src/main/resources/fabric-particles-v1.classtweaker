@@ -1,0 +1,7 @@
+classTweaker	v1	official
+accessible	field	net/minecraft/client/particle/ParticleEngine	resourceManager	Lnet/minecraft/client/particle/ParticleResources;
+accessible	field	net/minecraft/client/particle/ParticleResources	providers	Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
+accessible	field	net/minecraft/client/particle/ParticleResources	spriteSets	Ljava/util/Map;
+accessible	method	net/minecraft/client/particle/ParticleResources$MutableSpriteSet	<init>	()V
+accessible	field	net/minecraft/client/particle/ParticleResources$MutableSpriteSet	sprites	Ljava/util/List;
+transitive-inject-interface	net/minecraft/core/particles/BlockParticleOption	net/fabricmc/fabric/api/particle/v1/FabricBlockParticleOption

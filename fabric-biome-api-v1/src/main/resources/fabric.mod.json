@@ -16,14 +16,14 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.18.3",
+    "fabricloader": ">=0.18.4",
     "minecraft": ">=1.16.2"
   },
   "description": "Hooks for adding biomes to the default world generator.",
   "mixins": [
     "fabric-biome-api-v1.mixins.json"
   ],
-  "accessWidener" : "fabric-biome-api-v1.accesswidener",
+  "accessWidener" : "fabric-biome-api-v1.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

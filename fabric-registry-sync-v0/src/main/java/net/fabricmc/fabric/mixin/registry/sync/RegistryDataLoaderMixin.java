@@ -30,15 +30,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.RegistryLoadTask;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
@@ -66,19 +65,21 @@ public class RegistryDataLoaderMixin {
 		return (arg1) -> ScopedValue.where(IS_SERVER, isServer).call(() -> function.apply(arg1));
 	}
 
-	@Inject(
-			method = "lambda$load$2(Ljava/util/List;Ljava/util/Map;Ljava/lang/Void;)Lnet/minecraft/core/RegistryAccess$Frozen;",
-			at = @At(value = "HEAD")
+	@WrapOperation(
+			method = "lambda$load$0",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/RegistryDataLoader;createContext(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/resources/RegistryOps$RegistryInfoLookup;")
 	)
-	private static void beforeLoad(List<RegistryLoadTask<?>> loadTasks, Map<ResourceKey<?>, Exception> loadingErrors, Void ignored, CallbackInfoReturnable<RegistryAccess.Frozen> cir) {
-		if (!IS_SERVER.get()) return;
+	private static RegistryOps.RegistryInfoLookup beforeLoad(List<HolderLookup.RegistryLookup<?>> contextRegistries, List<RegistryLoadTask<?>> loadTasks, Operation<RegistryOps.RegistryInfoLookup> original) {
+		if (IS_SERVER.get()) {
+			Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(loadTasks.size());
 
-		Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(loadTasks.size());
+			for (RegistryLoadTask<?> entry : loadTasks) {
+				registries.put(entry.registry.key(), entry.registry);
+			}
 
-		for (RegistryLoadTask<?> entry : loadTasks) {
-			registries.put(entry.registry.key(), entry.registry);
+			DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(new DynamicRegistryViewImpl(registries));
 		}
 
-		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(new DynamicRegistryViewImpl(registries));
+		return original.call(contextRegistries, loadTasks);
 	}
 }

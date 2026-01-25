@@ -31,7 +31,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
+import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 

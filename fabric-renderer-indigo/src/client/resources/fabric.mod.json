@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.18.3",
+    "fabricloader": ">=0.18.4",
     "minecraft": ">=1.21.5-beta.1",
     "fabric-api-base": "*",
     "fabric-renderer-api-v1": "*"
@@ -33,5 +33,5 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener" : "fabric-renderer-indigo.accesswidener"
+  "accessWidener" : "fabric-renderer-indigo.classtweaker"
 }

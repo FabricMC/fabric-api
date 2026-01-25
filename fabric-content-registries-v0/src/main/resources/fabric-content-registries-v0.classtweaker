@@ -1,0 +1,3 @@
+classTweaker	v1	official
+accessible	method	net/minecraft/world/item/alchemy/PotionBrewing$Mix	<init>	(Lnet/minecraft/core/Holder;Lnet/minecraft/world/item/crafting/Ingredient;Lnet/minecraft/core/Holder;)V
+transitive-inject-interface	net/minecraft/world/item/alchemy/PotionBrewing$Builder	net/fabricmc/fabric/api/registry/FabricPotionBrewingBuilder

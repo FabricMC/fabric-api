@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.18.3",
+    "fabricloader": ">=0.18.4",
     "minecraft": ">=1.19.2"
   },
   "description": "Hooks for modifying Minecraft's sound system.",
@@ -26,10 +26,8 @@
       "environment": "client"
     }
   ],
+  "accessWidener": "fabric-sound-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/client/resources/sounds/SoundInstance": ["net/fabricmc/fabric/api/client/sound/v1/FabricSoundInstance"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

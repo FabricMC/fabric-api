@@ -40,7 +40,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.CompositeBlockStateModel;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
 public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	private final BlockStateModel[] models;

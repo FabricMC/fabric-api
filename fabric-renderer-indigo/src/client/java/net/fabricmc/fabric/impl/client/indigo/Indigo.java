@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;

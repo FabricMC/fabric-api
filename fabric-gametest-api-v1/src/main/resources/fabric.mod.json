@@ -21,14 +21,14 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.18.3",
+    "fabricloader": ">=0.18.4",
     "fabric-resource-loader-v1": "*"
   },
   "description": "Allows registration of custom game tests.",
   "mixins": [
     "fabric-gametest-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-gametest-api-v1.accesswidener",
+  "accessWidener": "fabric-gametest-api-v1.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

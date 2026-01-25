@@ -29,7 +29,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;

@@ -1,0 +1,3 @@
+classTweaker	v1	official
+accessible	class	net/minecraft/client/Options$FieldAccess
+accessible	class	net/minecraft/client/multiplayer/ClientChunkCache$Storage

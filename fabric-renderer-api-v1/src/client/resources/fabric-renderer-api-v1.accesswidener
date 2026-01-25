@@ -1,3 +1,0 @@
-accessWidener	v2	official
-accessible	class	net/minecraft/client/renderer/block/model/multipart/MultiPartModel$SharedBakedState
-accessible	method	net/minecraft/client/resources/model/QuadCollection	<init>	(Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V

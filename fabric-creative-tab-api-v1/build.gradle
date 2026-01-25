@@ -6,5 +6,5 @@ moduleDependencies(project, [
 ])
 
 loom {
-	accessWidenerPath = file('src/main/resources/fabric-creative-tab-api-v1.accesswidener')
+	accessWidenerPath = file('src/main/resources/fabric-creative-tab-api-v1.classtweaker')
 }

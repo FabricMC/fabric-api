@@ -1,4 +1,0 @@
-accessWidener	v2	official
-accessible	class	net/minecraft/resources/RegistryOps$HolderLookupAdapter
-accessible class net/minecraft/resources/RegistryLoadTask$PendingRegistration
-accessible field net/minecraft/resources/RegistryOps lookupProvider Lnet/minecraft/resources/RegistryOps$RegistryInfoLookup;

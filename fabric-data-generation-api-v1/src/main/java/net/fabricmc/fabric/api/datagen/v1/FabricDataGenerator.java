@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
@@ -37,7 +36,7 @@ import net.fabricmc.loader.api.ModContainer;
 /**
  * An extension to vanilla's {@link DataGenerator} providing mod specific data, and helper functions.
  */
-public final class FabricDataGenerator extends DataGenerator {
+public final class FabricDataGenerator extends DataGenerator.Uncached {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 	private final FabricPackOutput fabricOutput;
@@ -45,7 +44,7 @@ public final class FabricDataGenerator extends DataGenerator {
 
 	@ApiStatus.Internal
 	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(output, SharedConstants.getCurrentVersion(), true);
+		super(output);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
 		this.fabricOutput = new FabricPackOutput(mod, output, strictValidation);

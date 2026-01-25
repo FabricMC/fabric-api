@@ -1,0 +1,9 @@
+classTweaker	v1	official
+accessible	class	net/minecraft/world/inventory/MenuType$MenuSupplier
+accessible	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+extendable	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+accessible	class	net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
+accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
+accessible	method	net/minecraft/client/gui/screens/MenuScreens	getConstructor	(Lnet/minecraft/world/inventory/MenuType;)Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;
+accessible	field	net/minecraft/world/SimpleMenuProvider	menuConstructor	Lnet/minecraft/world/inventory/MenuConstructor;
+transitive-inject-interface	net/minecraft/world/MenuProvider	net/fabricmc/fabric/api/menu/v1/FabricMenuProvider

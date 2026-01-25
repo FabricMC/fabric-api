@@ -1,0 +1,4 @@
+classTweaker	v1	official
+transitive-inject-interface	net/minecraft/world/level/block/Block	net/fabricmc/fabric/api/block/v1/FabricBlock
+transitive-inject-interface	net/minecraft/world/level/block/state/BlockBehaviour$Properties	net/fabricmc/fabric/api/block/v1/FabricBlock$FabricProperties
+transitive-inject-interface	net/minecraft/world/level/block/state/BlockState	net/fabricmc/fabric/api/block/v1/FabricBlockState

@@ -60,7 +60,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 	}
 
 	@Inject(method = "getDataPackSelectionSettings",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;reload()V", shift = At.Shift.BEFORE))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;reload()V"))
 	private void onScanPacks(CallbackInfoReturnable<Pair<File, PackRepository>> cir) {
 		// Allow to display built-in data packs in the data pack selection screen at world creation.
 		this.tempDataPackRepository.sources.add(new ModResourcePackCreator(PackType.SERVER_DATA));

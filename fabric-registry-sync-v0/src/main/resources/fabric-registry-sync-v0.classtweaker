@@ -1,0 +1,10 @@
+classTweaker	v1	official
+accessible	field	net/minecraft/core/MappedRegistry	frozen	Z
+accessible	method	net/minecraft/core/Holder$Reference	bindValue	(Ljava/lang/Object;)V
+accessible	method	net/minecraft/core/registries/BuiltInRegistries	createContents	()V
+accessible	field	net/minecraft/resources/RegistryDataLoader	SYNCHRONIZED_REGISTRIES	Ljava/util/List;
+mutable	field	net/minecraft/resources/RegistryDataLoader	SYNCHRONIZED_REGISTRIES	Ljava/util/List;
+accessible	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
+mutable	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
+accessible field net/minecraft/resources/RegistryLoadTask registry Lnet/minecraft/core/WritableRegistry;
+transitive-inject-interface	net/minecraft/core/Registry	net/fabricmc/fabric/api/event/registry/FabricRegistry

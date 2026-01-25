@@ -1,5 +1,9 @@
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-entity-events-v1.classtweaker')
+}
+
 moduleDependencies(project, ['fabric-api-base'])
 
 testDependencies(project, [

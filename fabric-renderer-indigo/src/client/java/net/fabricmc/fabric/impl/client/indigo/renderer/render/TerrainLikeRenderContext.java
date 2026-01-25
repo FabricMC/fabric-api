@@ -31,7 +31,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
+import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**

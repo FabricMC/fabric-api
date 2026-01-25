@@ -1,0 +1,7 @@
+classTweaker	v1	official
+accessible class net/minecraft/resources/RegistryLoadTask$PendingRegistration
+accessible class net/minecraft/core/component/DataComponentInitializers$BakedEntry
+transitive-inject-interface	net/minecraft/world/item/Item	net/fabricmc/fabric/api/item/v1/FabricItem
+transitive-inject-interface	net/minecraft/world/item/Item$Properties	net/fabricmc/fabric/api/item/v1/FabricItem$Properties
+transitive-inject-interface	net/minecraft/world/item/ItemStack	net/fabricmc/fabric/api/item/v1/FabricItemStack
+transitive-inject-interface	net/minecraft/core/component/DataComponentMap$Builder	net/fabricmc/fabric/api/item/v1/FabricComponentMapBuilder

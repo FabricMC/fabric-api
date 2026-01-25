@@ -1,5 +1,9 @@
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-convention-tags-v2.classtweaker')
+}
+
 moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-lifecycle-events-v1'

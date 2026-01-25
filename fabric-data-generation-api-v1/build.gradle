@@ -27,7 +27,7 @@ sourceSets {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.accesswidener")
+	accessWidenerPath = file("src/main/resources/fabric-data-generation-api-v1.classtweaker")
 
 	runs {
 		datagen {
@@ -83,7 +83,7 @@ import java.lang.reflect.Modifier
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-tasks.register('generateAccessWidener') {
+tasks.register('generateClassTweaker') {
 	inputs.files(loom.getNamedMinecraftJars())
 
 	doLast {
@@ -93,18 +93,18 @@ tasks.register('generateAccessWidener') {
 		def clientJar = minecraftProvider.clientOnlyJar.path.toFile()
 		def classes = getClasses([commonJar, clientJar])
 
-		String accessWidener = "accessWidener\tv2\tofficial\n"
-		accessWidener += "\n"
-		accessWidener += "# DO NOT EDIT BY HAND! This file is generated automatically.\n"
-		accessWidener += "# Edit \"template.accesswidener\" instead then run \"gradlew generateAccessWidener\".\n"
-		accessWidener += "\n"
-		accessWidener += file("template.accesswidener").text + "\n"
+		String out = "classTweaker\tv1\tofficial\n"
+		out += "\n"
+		out += "# DO NOT EDIT BY HAND! This file is generated automatically.\n"
+		out += "# Edit \"template.classtweaker\" instead then run \"gradlew generateClassTweaker\".\n"
+		out += "\n"
+		out += file("template.classtweaker").text + "\n"
 
 		visitMethods(classes["net/minecraft/data/recipes/RecipeProvider"]) { name, desc, owner ->
 			if (it.name == "generate")
 				return
 
-			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
 		visitMethods(classes["net/minecraft/client/data/models/BlockModelGenerators"]) { name, desc, owner ->
@@ -112,15 +112,15 @@ tasks.register('generateAccessWidener') {
 				// Skip over methods that dont take any arguments, as they are specific to minecraft.
 				return
 
-			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
 		visitMethods(classes["net/minecraft/data/loot/BlockLootSubProvider"]) { name, desc, owner ->
-			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
 		visitMethods(classes["net/minecraft/client/data/models/ItemModelGenerators"]) { name, desc, owner ->
-			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
 		classes.values().forEach { classNode ->
@@ -135,11 +135,11 @@ tasks.register('generateAccessWidener') {
 					return
 				}
 
-				accessWidener += "transitive-extendable\tmethod\t${owner}\t${name}\t${desc}\n"
+				out += "transitive-extendable\tmethod\t${owner}\t${name}\t${desc}\n"
 			}
 		}
 
-		file("src/main/resources/fabric-data-generation-api-v1.accesswidener").text = accessWidener
+		file("src/main/resources/fabric-data-generation-api-v1.classtweaker").text = out
 	}
 }
 
@@ -215,5 +215,5 @@ def hasAncestor(ClassNode classNode, Map<String, ClassNode> classes, String ance
 	}
 }
 
-generateResources.dependsOn generateAccessWidener
+generateResources.dependsOn generateClassTweaker
 generateResources.dependsOn runDatagenClient

@@ -44,7 +44,7 @@ abstract class ItemFeatureRendererMixin {
 	@Unique
 	private final ItemRenderContext itemRenderContext = new ItemRenderContext();
 
-	@Inject(method = "render", at = @At("RETURN"))
+	@Inject(method = "renderSolid", at = @At("RETURN"))
 	private void onReturnRender(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
 		for (MeshItemSubmit itemSubmit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
 			poseStack.pushPose();

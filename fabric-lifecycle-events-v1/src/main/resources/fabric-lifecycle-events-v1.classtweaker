@@ -1,0 +1,4 @@
+classTweaker	v1	official
+accessible	class	net/minecraft/server/MinecraftServer$ReloadableResources
+accessible	class	net/minecraft/client/multiplayer/ClientChunkCache$Storage
+accessible	method	net/minecraft/client/multiplayer/ClientChunkCache$Storage	inRange	(II)Z

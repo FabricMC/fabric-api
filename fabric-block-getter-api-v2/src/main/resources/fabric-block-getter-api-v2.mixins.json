@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.blockgetter",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "BlockEntityMixin",
+    "BlockGetterMixin",
+    "LevelReaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

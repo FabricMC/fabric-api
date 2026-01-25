@@ -18,10 +18,10 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
 /**
  * Our implementation of {@link MutableMesh}, mainly used for optimized mesh creation.

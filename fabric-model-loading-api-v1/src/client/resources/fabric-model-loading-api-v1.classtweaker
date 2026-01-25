@@ -1,0 +1,3 @@
+classTweaker	v1	official
+accessible	class	net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl
+transitive-inject-interface	net/minecraft/client/resources/model/ModelManager	net/fabricmc/fabric/api/client/model/loading/v1/FabricModelManager

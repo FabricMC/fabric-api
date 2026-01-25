@@ -42,8 +42,8 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 

@@ -43,6 +43,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin({BlockEntity.class, Entity.class, Level.class, ChunkAccess.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
@@ -194,5 +195,20 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				changeOutput.accept(entry.getValue());
 			}
 		}
+	}
+
+	@Override
+	public <T> void fabric_updateSyncTarget(AttachmentTargetInfo<T> oldTargetInfo, AttachmentTargetInfo<T> newTargetInfo) {
+		if (syncedAttachments == null) {
+			return;
+		}
+
+		syncedAttachments.replaceAll((_, attachmentChange) -> {
+			if (attachmentChange.targetInfo().equals(oldTargetInfo)) {
+				return attachmentChange.withNewTarget(newTargetInfo);
+			}
+
+			return attachmentChange;
+		});
 	}
 }

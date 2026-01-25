@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
 public class ShapelessRecipeMixin {
 	@Final
 	@Shadow
-	List<Ingredient> ingredients;
+	private List<Ingredient> ingredients;
 	@Unique
 	private boolean fabric_requiresTesting = false;
 

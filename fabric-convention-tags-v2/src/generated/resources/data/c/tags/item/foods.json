@@ -26,6 +26,10 @@
       "required": false
     },
     {
+      "id": "#c:foods/dough",
+      "required": false
+    },
+    {
       "id": "#c:foods/raw_meat",
       "required": false
     },

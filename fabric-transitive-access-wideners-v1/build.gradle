@@ -1,7 +1,7 @@
 version = getSubprojectVersion(project)
 
 loom {
-	accessWidenerPath = file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener')
+	accessWidenerPath = file('src/main/resources/fabric-transitive-access-wideners-v1.classtweaker')
 }
 
 testDependencies(project, [
@@ -22,15 +22,15 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 
-tasks.register('generateAccessWidener') {
+tasks.register('generateClassTweaker') {
 	doLast {
 		List<String> lines = new ArrayList<>();
 		lines.add("accessWidener v2 official")
 		lines.add("")
 		lines.add("# DO NOT EDIT BY HAND! This file is generated automatically.")
-		lines.add("# Edit \"template.accesswidener\" instead then run \"gradlew generateAccessWidener\".")
+		lines.add("# Edit \"template.classtweaker\" instead then run \"gradlew generateClassTweaker\".")
 		lines.add("")
-		lines.addAll(file("template.accesswidener").text.lines().toList())
+		lines.addAll(file("template.classtweaker").text.lines().toList())
 
 		Path commonJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.path
 
@@ -49,7 +49,7 @@ tasks.register('generateAccessWidener') {
 			generateRenderPipelinesFields(lines, fs)
 		}
 
-		file('src/main/resources/fabric-transitive-access-wideners-v1.accesswidener').text = String.join('\n', lines) + '\n'
+		file('src/main/resources/fabric-transitive-access-wideners-v1.classtweaker').text = String.join('\n', lines) + '\n'
 
 		validateAccessWidener(lines)
 	}
@@ -191,8 +191,8 @@ def validateAccessWidener(List<String> lines) {
 	}
 
 	if (exceptions.size() > 0) {
-		throw new InvalidUserDataException("\"fabric-transitive-access-wideners-v1.accesswidener\" contains non-transitive access modifiers at lines: [" + String.join(", ", exceptions) + "]")
+		throw new InvalidUserDataException("\"fabric-transitive-access-wideners-v1.classtweaker\" contains non-transitive access modifiers at lines: [" + String.join(", ", exceptions) + "]")
 	}
 }
 
-generateResources.dependsOn generateAccessWidener
+generateResources.dependsOn generateClassTweaker

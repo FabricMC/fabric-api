@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.TagBuilder;
@@ -70,6 +73,14 @@ interface TagAppenderMixin<E, T> extends FabricTagAppender<E, T> {
 		public TagAppender<E, T> forceAddTag(TagKey<T> tag) {
 			((FabricTagAppender) this.val$original).forceAddTag(tag);
 			return (TagAppender<E, T>) this;
+		}
+
+		@WrapOperation(
+				method = "addOptional",
+				at = @At(value = "INVOKE", target = "Lnet/minecraft/data/tags/TagAppender;add(Ljava/lang/Object;)Lnet/minecraft/data/tags/TagAppender;")
+		)
+		private TagAppender<E, T> fixAddOptional(TagAppender instance, E e, Operation<TagAppender<E, T>> original) {
+			return instance.addOptional(e);
 		}
 	}
 }

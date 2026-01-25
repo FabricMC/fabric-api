@@ -57,13 +57,13 @@ abstract class MappedRegistryMixin<T> implements MappedRegistryExtension, TagAli
 	private ResourceKey<? extends Registry<T>> key;
 
 	@Shadow
-	MappedRegistry.TagSet<T> allTags;
+	private MappedRegistry.TagSet<T> allTags;
 
 	@Shadow
 	protected abstract HolderSet.Named<T> createTag(TagKey<T> tag);
 
 	@Shadow
-	abstract void refreshTagsInHolders();
+	protected abstract void refreshTagsInHolders();
 
 	@Shadow
 	public abstract ResourceKey<? extends Registry<T>> key();
