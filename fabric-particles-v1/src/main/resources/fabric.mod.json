@@ -36,10 +36,7 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/core/particles/BlockParticleOption": ["net/fabricmc/fabric/api/particle/v1/FabricBlockParticleOption"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener": "fabric-particles-v1.accesswidener"
+  "accessWidener": "fabric-particles-v1.classtweaker"
 }

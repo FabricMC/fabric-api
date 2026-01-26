@@ -24,11 +24,8 @@
   "mixins": [
     "fabric-loot-api-v3.mixins.json"
   ],
+  "accessWidener": "fabric-loot-api-v3.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/level/storage/loot/LootTable\u0024Builder": ["net/fabricmc/fabric/api/loot/v3/FabricLootTableBuilder"],
-      "net/minecraft/world/level/storage/loot/LootPool\u0024Builder": ["net/fabricmc/fabric/api/loot/v3/FabricLootPoolBuilder"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

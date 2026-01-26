@@ -26,11 +26,8 @@
       "environment": "client"
     }
   ],
+  "accessWidener": "fabric-block-getter-api-v2.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/level/BlockGetter": ["net/fabricmc/fabric/api/blockgetter/v2/FabricBlockGetter"],
-      "net/minecraft/world/level/block/entity/BlockEntity": ["net/fabricmc/fabric/api/blockgetter/v2/RenderDataBlockEntity"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

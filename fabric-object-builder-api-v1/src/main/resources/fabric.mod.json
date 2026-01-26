@@ -28,12 +28,8 @@
       "environment": "client"
     }
   ],
-  "accessWidener" : "fabric-object-builder-api-v1.accesswidener",
+  "accessWidener" : "fabric-object-builder-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/entity/EntityType\u0024Builder": ["net/fabricmc/fabric/api/object/builder/v1/entity/FabricEntityType\u0024Builder<TT;>"],
-      "net/minecraft/world/level/block/entity/BlockEntityType": ["net/fabricmc/fabric/api/object/builder/v1/block/entity/FabricBlockEntityType"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

@@ -1,7 +1,7 @@
 accessWidener v2 official
 
 # DO NOT EDIT BY HAND! This file is generated automatically.
-# Edit "template.accesswidener" instead then run "gradlew generateAccessWidener".
+# Edit "template.classtweaker" instead then run "gradlew generateClassTweaker".
 
 # Registering custom advancement criteria
 transitive-accessible	method	net/minecraft/advancements/CriteriaTriggers	register	(Ljava/lang/String;Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;

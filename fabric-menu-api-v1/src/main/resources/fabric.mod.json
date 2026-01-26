@@ -30,11 +30,8 @@
   "mixins": [
     "fabric-menu-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-menu-api-v1.accesswidener",
+  "accessWidener": "fabric-menu-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/MenuProvider": ["net/fabricmc/fabric/api/menu/v1/FabricMenuProvider"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

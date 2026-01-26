@@ -24,7 +24,7 @@
       "net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl::clientInit"
     ]
   },
-  "accessWidener": "fabric-networking-api-v1.accesswidener",
+  "accessWidener": "fabric-networking-api-v1.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.4",
     "fabric-api-base": "*"
@@ -38,9 +38,6 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/server/network/ServerConfigurationPacketListenerImpl": [ "net/fabricmc/fabric/api/networking/v1/FabricServerConfigurationPacketListenerImpl" ]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

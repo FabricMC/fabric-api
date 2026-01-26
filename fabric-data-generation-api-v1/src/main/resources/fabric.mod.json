@@ -31,14 +31,8 @@
       "environment": "client"
     }
   ],
-  "accessWidener" : "fabric-data-generation-api-v1.accesswidener",
+  "accessWidener" : "fabric-data-generation-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/data/loot/BlockLootSubProvider": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricBlockLootSubProvider"],
-      "net/minecraft/data/loot/EntityLootSubProvider": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootSubProvider"],
-      "net/minecraft/data/recipes/RecipeOutput": ["net/fabricmc/fabric/api/datagen/v1/recipe/FabricRecipeOutput"],
-      "net/minecraft/data/tags/TagAppender": ["net/fabricmc/fabric/api/datagen/v1/provider/FabricTagAppender<TE;TT;>"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

@@ -32,11 +32,8 @@
       "config": "fabric-model-loading-api-v1.mixins.json"
     }
   ],
-  "accessWidener": "fabric-model-loading-api-v1.accesswidener",
+  "accessWidener": "fabric-model-loading-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/client/resources/model/ModelManager": ["net/fabricmc/fabric/api/client/model/loading/v1/FabricModelManager"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

@@ -29,13 +29,7 @@
   },
   "description": "Hooks for items",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/item/Item": ["net/fabricmc/fabric/api/item/v1/FabricItem"],
-      "net/minecraft/world/item/Item\u0024Properties": ["net/fabricmc/fabric/api/item/v1/FabricItem\u0024Properties"],
-      "net/minecraft/world/item/ItemStack": ["net/fabricmc/fabric/api/item/v1/FabricItemStack"],
-      "net/minecraft/core/component/DataComponentMap\u0024Builder": ["net/fabricmc/fabric/api/item/v1/FabricComponentMapBuilder"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener": "fabric-item-api-v1.accesswidener"
+  "accessWidener": "fabric-item-api-v1.classtweaker"
 }

@@ -21,7 +21,7 @@
     "minecraft": ">1.19-alpha.22.11.a"
   },
   "description": "Adds command-related hooks.",
-  "accessWidener": "fabric-command-api-v2.accesswidener",
+  "accessWidener": "fabric-command-api-v2.classtweaker",
   "mixins": [
     "fabric-command-api-v2.mixins.json",
     {
@@ -30,9 +30,6 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/commands/arguments/selector/EntitySelectorParser": ["net/fabricmc/fabric/api/command/v2/FabricEntitySelectorParser"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

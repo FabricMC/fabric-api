@@ -24,12 +24,8 @@
   "mixins": [
     "fabric-block-api-v1.mixins.json"
   ],
+  "accessWidener": "fabric-block-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/level/block/Block": ["net/fabricmc/fabric/api/block/v1/FabricBlock"],
-      "net/minecraft/world/level/block/state/BlockBehaviour\u0024Properties": ["net/fabricmc/fabric/api/block/v1/FabricBlock\u0024FabricProperties"],
-      "net/minecraft/world/level/block/state/BlockState": ["net/fabricmc/fabric/api/block/v1/FabricBlockState"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

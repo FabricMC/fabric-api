@@ -1,4 +1,4 @@
-accessWidener	v1	official
+classTweaker	v1	official
 extendable	method	net/minecraft/world/level/block/state/BlockBehaviour$Properties	<init>	()V
 accessible	method	net/minecraft/world/entity/ai/village/poi/PoiTypes	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/world/entity/ai/village/poi/PoiType;
 extendable	class	net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
@@ -7,3 +7,5 @@ accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/mine
 accessible	field	net/minecraft/world/entity/npc/villager/VillagerType	BY_BIOME	Ljava/util/Map;
 accessible	method	net/minecraft/world/level/block/state/properties/WoodType	register	(Lnet/minecraft/world/level/block/state/properties/WoodType;)Lnet/minecraft/world/level/block/state/properties/WoodType;
 accessible	method	net/minecraft/world/level/block/state/properties/BlockSetType	register	(Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;
+transitive-inject-interface	net/minecraft/world/entity/EntityType$Builder	net/fabricmc/fabric/api/object/builder/v1/entity/FabricEntityType$Builder<TT;>
+transitive-inject-interface	net/minecraft/world/level/block/entity/BlockEntityType	net/fabricmc/fabric/api/object/builder/v1/block/entity/FabricBlockEntityType

@@ -2,7 +2,7 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "net.fabricmc.fabric-loom" version "1.14.7" apply false
+	id "net.fabricmc.fabric-loom" version "1.15.2" apply false
 	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
@@ -336,7 +336,7 @@ apply from: "gradle/module-validation.gradle"
 apply from: "gradle/module-versioning.gradle"
 
 loom {
-	accessWidenerPath = file("gradle/javadoc.accesswidener")
+	accessWidenerPath = file("gradle/javadoc.classtweaker")
 }
 
 javadoc {

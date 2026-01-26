@@ -20,7 +20,7 @@
     "fabricloader": ">=0.18.4"
   },
   "description": "Asset and data resource loading.",
-  "accessWidener": "fabric-resource-loader-v1.accesswidener",
+  "accessWidener": "fabric-resource-loader-v1.classtweaker",
   "mixins": [
     "fabric-resource-loader-v1.mixins.json",
     {
@@ -29,10 +29,6 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/server/MinecraftServer": ["net/fabricmc/fabric/api/resource/v1/DataResourceStore"],
-      "net/minecraft/server/packs/resources/Resource": ["net/fabricmc/fabric/api/resource/v1/FabricResource"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

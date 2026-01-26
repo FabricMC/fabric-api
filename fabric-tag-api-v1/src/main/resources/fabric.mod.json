@@ -32,7 +32,7 @@
   "mixins": [
     "fabric-tag-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-tag-api-v1.accesswidener",
+  "accessWidener": "fabric-tag-api-v1.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

@@ -28,11 +28,8 @@
       "environment": "client"
     }
   ],
-  "accessWidener": "fabric-creative-tab-api-v1.accesswidener",
+  "accessWidener": "fabric-creative-tab-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen": ["net/fabricmc/fabric/api/client/creativetab/v1/FabricCreativeModeInventoryScreen"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

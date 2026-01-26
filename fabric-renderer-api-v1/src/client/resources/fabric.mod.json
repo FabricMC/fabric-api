@@ -34,20 +34,8 @@
   "mixins": [
     "fabric-renderer-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-renderer-api-v1.accesswidener",
+  "accessWidener": "fabric-renderer-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/client/renderer/block/model/BlockModelPart": ["net/fabricmc/fabric/api/client/renderer/v1/model/FabricBlockModelPart"],
-      "net/minecraft/client/renderer/block/BlockModelShaper": ["net/fabricmc/fabric/api/client/renderer/v1/model/FabricBlockModelShaper"],
-      "net/minecraft/client/renderer/block/model/BlockStateModel": ["net/fabricmc/fabric/api/client/renderer/v1/model/FabricBlockStateModel"],
-      "net/minecraft/client/renderer/block/ModelBlockRenderer": ["net/fabricmc/fabric/api/client/renderer/v1/render/FabricModelBlockRenderer"],
-      "net/minecraft/client/renderer/block/BlockRenderDispatcher": ["net/fabricmc/fabric/api/client/renderer/v1/render/FabricBlockRenderDispatcher"],
-      "net/minecraft/client/renderer/item/ItemStackRenderState\u0024LayerRenderState": ["net/fabricmc/fabric/api/client/renderer/v1/render/FabricLayerRenderState"],
-      "net/minecraft/client/renderer/OrderedSubmitNodeCollector": ["net/fabricmc/fabric/api/client/renderer/v1/render/FabricOrderedSubmitNodeCollector"],
-      "net/minecraft/client/resources/model/SpriteGetter": ["net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricSpriteGetter"],
-      "net/minecraft/client/renderer/texture/TextureAtlas": ["net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricTextureAtlas"],
-      "net/minecraft/client/renderer/texture/SpriteLoader\u0024Preparations": ["net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricPreparations"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

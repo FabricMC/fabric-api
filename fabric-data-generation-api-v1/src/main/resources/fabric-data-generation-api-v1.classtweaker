@@ -1,7 +1,7 @@
-accessWidener	v2	official
+classTweaker	v1	official
 
 # DO NOT EDIT BY HAND! This file is generated automatically.
-# Edit "template.accesswidener" instead then run "gradlew generateAccessWidener".
+# Edit "template.classtweaker" instead then run "gradlew generateClassTweaker".
 
 accessible	field	net/minecraft/data/DataGenerator	vanillaPackOutput	Lnet/minecraft/data/PackOutput;
 mutable	field	net/minecraft/data/DataGenerator	vanillaPackOutput	Lnet/minecraft/data/PackOutput;
@@ -52,6 +52,11 @@ transitive-accessible	class	net/minecraft/client/data/models/BlockModelGenerator
 accessible	class	net/minecraft/client/data/models/ModelProvider$ItemInfoCollector
 accessible	class	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector
 accessible	field	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector	generators	Ljava/util/Map;
+
+transitive-inject-interface	net/minecraft/data/loot/BlockLootSubProvider	net/fabricmc/fabric/api/datagen/v1/loot/FabricBlockLootSubProvider
+transitive-inject-interface	net/minecraft/data/loot/EntityLootSubProvider	net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootSubProvider
+transitive-inject-interface	net/minecraft/data/recipes/RecipeOutput	net/fabricmc/fabric/api/datagen/v1/recipe/FabricRecipeOutput
+transitive-inject-interface	net/minecraft/data/tags/TagAppender	net/fabricmc/fabric/api/datagen/v1/provider/FabricTagAppender<TE;TT;>
 
 ### Generated access wideners below
 

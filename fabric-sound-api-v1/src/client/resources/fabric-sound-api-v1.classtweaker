@@ -1,0 +1,2 @@
+classTweaker	v1	official
+transitive-inject-interface	net/minecraft/client/resources/sounds/SoundInstance	net/fabricmc/fabric/api/client/sound/v1/FabricSoundInstance

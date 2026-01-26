@@ -27,7 +27,7 @@
   "mixins": [
     "fabric-resource-conditions-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-resource-conditions-api-v1.accesswidener",
+  "accessWidener": "fabric-resource-conditions-api-v1.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

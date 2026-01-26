@@ -22,7 +22,7 @@
       "environment": "client"
     }
   ],
-  "accessWidener": "fabric-recipe-api-v1.accesswidener",
+  "accessWidener": "fabric-recipe-api-v1.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.4",
     "fabric-networking-api-v1": "*",
@@ -41,11 +41,6 @@
   },
   "description": "Recipe extensions such as creation of new types of recipe ingredients and recipe synchronization.",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/world/item/crafting/Ingredient": ["net/fabricmc/fabric/api/recipe/v1/ingredient/FabricIngredient"],
-      "net/minecraft/world/item/crafting/RecipeManager": ["net/fabricmc/fabric/api/recipe/v1/FabricRecipeManager"],
-      "net/minecraft/world/item/crafting/RecipeAccess": ["net/fabricmc/fabric/api/recipe/v1/FabricRecipeAccess"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

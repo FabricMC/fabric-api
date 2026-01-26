@@ -24,6 +24,8 @@ import java.util.Set;
 
 import io.netty.buffer.Unpooled;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.RegistryAccess;
@@ -61,6 +63,9 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	);
 	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
 	private static final int MAX_DATA_SIZE_IN_BYTES = ServerboundCustomPayloadPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
+	private static final boolean DISCONNECT_ON_UNKNOWN_TARGETS = System.getProperty("fabric.attachment.disconnect_on_unknown_targets") != null;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentChange.class);
 
 	@SuppressWarnings("unchecked")
 	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess registryAccess) {
@@ -162,9 +167,18 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 					.append(CommonComponents.NEW_LINE);
 			targetInfo.appendDebugInformation(errorMessageComponent);
 
-			throw new AttachmentSyncException(errorMessageComponent);
+			if (DISCONNECT_ON_UNKNOWN_TARGETS) {
+				throw new AttachmentSyncException(errorMessageComponent);
+			}
+
+			LOGGER.warn(errorMessageComponent.getString().trim());
+			return;
 		}
 
 		target.setAttached((AttachmentType<Object>) type, value);
+	}
+
+	public AttachmentChange withNewTarget(AttachmentTargetInfo<?> newTargetInfo) {
+		return new AttachmentChange(newTargetInfo, this.type, this.data);
 	}
 }

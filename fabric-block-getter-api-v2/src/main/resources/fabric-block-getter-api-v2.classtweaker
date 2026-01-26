@@ -1,0 +1,3 @@
+classTweaker	v1	official
+transitive-inject-interface	net/minecraft/world/level/BlockGetter	net/fabricmc/fabric/api/blockgetter/v2/FabricBlockGetter
+transitive-inject-interface	net/minecraft/world/level/block/entity/BlockEntity	net/fabricmc/fabric/api/blockgetter/v2/RenderDataBlockEntity
