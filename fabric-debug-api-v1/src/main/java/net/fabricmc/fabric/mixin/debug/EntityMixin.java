@@ -28,7 +28,7 @@ import net.minecraft.world.entity.Entity;
 import net.fabricmc.fabric.impl.debug.EntityDebugSubscriptionRegistryImpl;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin {
+abstract class EntityMixin {
 	@Inject(
 			method = "registerDebugValues",
 			at = @At("HEAD")

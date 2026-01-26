@@ -31,7 +31,7 @@ import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.fabricmc.fabric.impl.debug.client.renderer.DebugRendererRegistryImpl;
 
 @Mixin(DebugRenderer.class)
-public abstract class DebugRendererMixin {
+abstract class DebugRendererMixin {
 	@Shadow
 	@Final
 	private List<DebugRenderer.SimpleDebugRenderer> renderers;

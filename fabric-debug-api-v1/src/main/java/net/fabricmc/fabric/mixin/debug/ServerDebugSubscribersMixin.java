@@ -28,7 +28,7 @@ import net.minecraft.util.debug.ServerDebugSubscribers;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(ServerDebugSubscribers.class)
-public abstract class ServerDebugSubscribersMixin {
+abstract class ServerDebugSubscribersMixin {
 	@Definition(
 			id = "IS_RUNNING_IN_IDE",
 			field = "Lnet/minecraft/SharedConstants;IS_RUNNING_IN_IDE:Z"

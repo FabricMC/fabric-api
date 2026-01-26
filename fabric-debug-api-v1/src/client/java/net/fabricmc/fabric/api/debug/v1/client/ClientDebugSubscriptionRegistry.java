@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.debug.client.ClientDebugSubscriptionRegistryImpl
 public final class ClientDebugSubscriptionRegistry {
 	/// Registers a [DebugSubscription] on the client.
 	///
-	/// **Note:** this will register **outside development environments** if it
+	/// @apiNote This will register **outside development environments** if it
 	/// is not checked. Surround calls to this method with
 	/// [net.fabricmc.loader.api.FabricLoader#isDevelopmentEnvironment] if you
 	/// do not intend for a debug feature to be present in production.
@@ -42,7 +42,7 @@ public final class ClientDebugSubscriptionRegistry {
 	/// Registers a [DebugSubscription] on the client if the `isEnabledFlag`
 	/// parameter is `true`.
 	///
-	/// **Note:** this will register **outside development environments** if it
+	/// @apiNote This will register **outside development environments** if it
 	/// is not checked. Surround calls to this method with
 	/// [net.fabricmc.loader.api.FabricLoader#isDevelopmentEnvironment] if you
 	/// do not intend for a debug feature to be present in production.

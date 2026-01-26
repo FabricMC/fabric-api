@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.debug.EntityDebugSubscriptionRegistryImpl;
 /// [net.minecraft.world.entity.Entity#registerDebugValues], so we have to
 /// duplicate some code.
 @Mixin(Mob.class)
-public abstract class MobMixin {
+abstract class MobMixin {
 	@Inject(
 			method = "registerDebugValues",
 			at = @At("HEAD")
