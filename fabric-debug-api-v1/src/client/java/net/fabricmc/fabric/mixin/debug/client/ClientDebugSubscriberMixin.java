@@ -30,7 +30,7 @@ import net.minecraft.util.debug.DebugSubscription;
 import net.fabricmc.fabric.impl.debug.client.ClientDebugSubscriptionRegistryImpl;
 
 @Mixin(ClientDebugSubscriber.class)
-public abstract class ClientDebugSubscriberMixin {
+abstract class ClientDebugSubscriberMixin {
 	@Inject(
 			method = "requestedSubscriptions",
 			at = @At("RETURN")

@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.debug.EntityDebugSubscriptionRegistryImpl;
 /// The Mob class does not super-call
 /// [net.minecraft.world.entity.Entity#registerDebugValues], so we have to Mixin it as well.
 @Mixin(value = {Entity.class, Mob.class})
-public abstract class EntityMixin {
+abstract class EntityMixin {
 	@Inject(
 			method = "registerDebugValues",
 			at = @At("HEAD")
