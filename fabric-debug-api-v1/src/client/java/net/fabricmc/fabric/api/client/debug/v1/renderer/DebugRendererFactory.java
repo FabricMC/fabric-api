@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.debug.v1.client.renderer;
+package net.fabricmc.fabric.api.client.debug.v1.renderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.debug.DebugRenderer;

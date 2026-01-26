@@ -22,7 +22,7 @@ import java.util.Set;
 
 import net.minecraft.util.debug.DebugSubscription;
 
-import net.fabricmc.fabric.api.debug.v1.client.renderer.DebugRendererFactory;
+import net.fabricmc.fabric.api.client.debug.v1.renderer.DebugRendererFactory;
 
 public final class DebugRendererRegistryImpl {
 	public static final Set<Entry> RENDERERS = new HashSet<>();

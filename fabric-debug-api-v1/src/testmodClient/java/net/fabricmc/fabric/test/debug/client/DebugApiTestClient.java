@@ -27,8 +27,8 @@ import net.minecraft.util.debug.DebugValueAccess;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.debug.v1.client.ClientDebugSubscriptionRegistry;
-import net.fabricmc.fabric.api.debug.v1.client.renderer.DebugRendererRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.ClientDebugSubscriptionRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.renderer.DebugRendererRegistry;
 import net.fabricmc.fabric.test.debug.DebugApiTest;
 import net.fabricmc.loader.api.FabricLoader;
 

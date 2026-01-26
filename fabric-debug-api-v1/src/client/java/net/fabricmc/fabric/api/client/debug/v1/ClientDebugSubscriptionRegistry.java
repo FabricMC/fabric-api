@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.debug.v1.client;
+package net.fabricmc.fabric.api.client.debug.v1;
 
 import java.util.Objects;
 
