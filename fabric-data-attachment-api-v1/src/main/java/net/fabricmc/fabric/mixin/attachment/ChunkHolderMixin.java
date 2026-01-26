@@ -15,16 +15,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
 @Mixin(ChunkHolder.class)
 public class ChunkHolderMixin {
 	@Inject(method = "broadcastBlockEntity", at = @At("TAIL"))
 	private void broadcastBlockEntity(List<ServerPlayer> players, Level level, BlockPos blockPos, CallbackInfo ci, @Local(name = "blockEntity") BlockEntity blockEntity) {
 		if (blockEntity != null) {
-			((AttachmentTargetImpl) blockEntity).fabric_computeAndClearDeferredSyncChanges(players).forEach((serverPlayer, attachmentChanges) -> {
-				AttachmentChange.partitionAndSendPackets(attachmentChanges, serverPlayer);
-			});
+			((AttachmentTargetImpl) blockEntity).fabric_sendAndClearDeferredSyncChanges(players);
 		}
 	}
 }

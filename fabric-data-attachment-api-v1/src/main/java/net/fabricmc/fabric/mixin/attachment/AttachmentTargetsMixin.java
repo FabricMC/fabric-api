@@ -222,26 +222,29 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public Map<ServerPlayer, List<AttachmentChange>> fabric_computeAndClearDeferredSyncChanges(List<ServerPlayer> players) {
-		if (syncedAttachments == null || deferredSyncedAttachments == null) {
-			return Map.of();
+	public void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		if (syncedAttachments == null || deferredSyncedAttachments == null || deferredSyncedAttachments.isEmpty()) {
+			return;
 		}
 
-		Map<ServerPlayer, List<AttachmentChange>> changesPerPlayer = new IdentityHashMap<>();
+		List<AttachmentChange> deferredChanges = syncedAttachments.values().stream()
+				.filter(change -> deferredSyncedAttachments.contains(change.type())).toList();
 
-		for (AttachmentType<?> type : deferredSyncedAttachments) {
-			AttachmentChange change = Objects.requireNonNull(syncedAttachments.get(type));
+		for (ServerPlayer player : players) {
+			List<AttachmentChange> syncableChanges = new ArrayList<>();
 
-			for (ServerPlayer player : players) {
-				List<AttachmentChange> changes = changesPerPlayer.computeIfAbsent(player, _ -> new ArrayList<>());
-				if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-					changes.add(change);
+			for (AttachmentChange change : deferredChanges) {
+				if (((AttachmentTypeImpl<?>) change.type()).syncPredicate().test(this, player)) {
+					syncableChanges.add(change);
 				}
+			}
+
+			if (!syncableChanges.isEmpty()) {
+				AttachmentChange.partitionAndSendPackets(syncableChanges, player);
 			}
 		}
 
 		deferredSyncedAttachments.clear();
-		return changesPerPlayer;
 	}
 
 	@Override

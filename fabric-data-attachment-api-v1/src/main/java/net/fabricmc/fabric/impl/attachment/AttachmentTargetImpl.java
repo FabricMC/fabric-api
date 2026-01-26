@@ -86,11 +86,11 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	}
 
 	/**
-	 * Computes changes that should be communicated to clients in a deferred manner, then clears those changes.
+	 * Sends changes that should be communicated to clients in a deferred manner, then clears those changes.
 	 *
 	 * <p>Used when the target does not immediately sync when the attachment is set, but instead defers sync to (usually) match vanilla's sync timing.
 	 */
-	default Map<ServerPlayer, List<AttachmentChange>> fabric_computeAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+	default void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
