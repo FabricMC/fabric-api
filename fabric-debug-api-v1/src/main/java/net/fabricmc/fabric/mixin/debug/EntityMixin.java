@@ -24,10 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.debug.DebugValueSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 
 import net.fabricmc.fabric.impl.debug.EntityDebugSubscriptionRegistryImpl;
 
-@Mixin(Entity.class)
+/// The Mob class does not super-call
+/// [net.minecraft.world.entity.Entity#registerDebugValues], so we have to Mixin it as well.
+@Mixin(value = {Entity.class, Mob.class})
 public abstract class EntityMixin {
 	@Inject(
 			method = "registerDebugValues",

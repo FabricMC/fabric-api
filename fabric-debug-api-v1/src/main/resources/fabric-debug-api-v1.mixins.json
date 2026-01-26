@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "EntityMixin",
-    "MobMixin",
     "ServerDebugSubscribersMixin"
   ],
   "injectors": {
