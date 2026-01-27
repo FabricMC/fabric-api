@@ -87,7 +87,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			dispatcher.register(ClientCommands.literal("test_client_command_with_registry_using_arg").then(
 					ClientCommands.argument("item", ItemArgument.item(buildContext)).executes(context -> {
 						final ItemInput item = ItemArgument.getItem(context, "item");
-						context.getSource().sendFeedback(item.createItemStack(1, false).getDisplayName());
+						context.getSource().sendFeedback(item.createItemStack(1).getDisplayName());
 
 						return 0;
 					})

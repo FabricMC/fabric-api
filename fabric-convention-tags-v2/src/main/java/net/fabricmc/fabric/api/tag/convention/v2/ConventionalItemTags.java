@@ -462,7 +462,6 @@ public final class ConventionalItemTags {
 	/**
 	 * Tag that holds all blocks and items that can be dyed a specific color.
 	 * (Does not include color blending items like leather armor.
-	 * Use {@link net.minecraft.tags.ItemTags#DYEABLE} tag instead for color blending items)
 	 *
 	 * <p>Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
 	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
