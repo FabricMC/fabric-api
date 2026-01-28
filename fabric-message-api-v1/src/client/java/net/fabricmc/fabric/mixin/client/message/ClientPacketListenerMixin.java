@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 @Mixin(value = ClientPacketListener.class, priority = 800)
 public abstract class ClientPacketListenerMixin {
 	@Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
-	private void fabric_allowSendChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true, name = "content") LocalRef<String> content) {
+	private void fabric_allowSendChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> content) {
 		if (ClientSendMessageEvents.ALLOW_CHAT.invoker().allowSendChatMessage(content.get())) {
 			content.set(ClientSendMessageEvents.MODIFY_CHAT.invoker().modifySendChatMessage(content.get()));
 			ClientSendMessageEvents.CHAT.invoker().onSendChatMessage(content.get());
@@ -45,7 +45,7 @@ public abstract class ClientPacketListenerMixin {
 	}
 
 	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
-	private void fabric_allowSendCommandMessage(String _command, CallbackInfo ci, @Local(argsOnly = true, name = "command") LocalRef<String> command) {
+	private void fabric_allowSendCommandMessage(String _command, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> command) {
 		if (ClientSendMessageEvents.ALLOW_COMMAND.invoker().allowSendCommandMessage(command.get())) {
 			command.set(ClientSendMessageEvents.MODIFY_COMMAND.invoker().modifySendCommandMessage(command.get()));
 			ClientSendMessageEvents.COMMAND.invoker().onSendCommandMessage(command.get());

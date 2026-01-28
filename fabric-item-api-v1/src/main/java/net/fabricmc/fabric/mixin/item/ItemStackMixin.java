@@ -64,7 +64,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	public abstract void shrink(int i);
 
 	@WrapOperation(method = "hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V"))
-	private void hookDamage(ItemStack instance, int amount, ServerLevel serverLevel, ServerPlayer serverPlayer, Consumer<Item> consumer, Operation<Void> original, @Local(argsOnly = true, name = "owner") LivingEntity entity, @Local(argsOnly = true, name = "slot") EquipmentSlot slot) {
+	private void hookDamage(ItemStack instance, int amount, ServerLevel serverLevel, ServerPlayer serverPlayer, Consumer<Item> consumer, Operation<Void> original, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot) {
 		CustomDamageHandler handler = ((ItemExtensions) getItem()).fabric_getCustomDamageHandler();
 
 		/*
@@ -94,10 +94,10 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	@ModifyArg(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;addToTooltip(Lnet/minecraft/core/component/DataComponentType;Lnet/minecraft/world/item/Item$TooltipContext;Lnet/minecraft/world/item/component/TooltipDisplay;Ljava/util/function/Consumer;Lnet/minecraft/world/item/TooltipFlag;)V"))
 	private DataComponentType<?> preAppendComponentTooltip(
 			DataComponentType<?> componentType,
-			@Local(argsOnly = true, name = "context") Item.TooltipContext context,
-			@Local(argsOnly = true, name = "display") TooltipDisplay displayComponent,
-			@Local(argsOnly = true, name = "tooltipFlag") TooltipFlag type,
-			@Local(argsOnly = true, name = "builder") Consumer<Component> componentConsumer,
+			@Local(argsOnly = true) Item.TooltipContext context,
+			@Local(argsOnly = true) TooltipDisplay displayComponent,
+			@Local(argsOnly = true) TooltipFlag type,
+			@Local(argsOnly = true) Consumer<Component> componentConsumer,
 			@Share("index") LocalIntRef index
 	) {
 		preAppendTooltip(componentType, context, displayComponent, componentConsumer, type, index);
@@ -107,10 +107,10 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	@ModifyArg(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/component/TooltipDisplay;shows(Lnet/minecraft/core/component/DataComponentType;)Z"))
 	private DataComponentType<?> preShouldDisplay(
 			DataComponentType<?> componentType,
-			@Local(argsOnly = true, name = "context") Item.TooltipContext context,
-			@Local(argsOnly = true, name = "display") TooltipDisplay displayComponent,
-			@Local(argsOnly = true, name = "tooltipFlag") TooltipFlag type,
-			@Local(argsOnly = true, name = "builder") Consumer<Component> componentConsumer,
+			@Local(argsOnly = true) Item.TooltipContext context,
+			@Local(argsOnly = true) TooltipDisplay displayComponent,
+			@Local(argsOnly = true) TooltipFlag type,
+			@Local(argsOnly = true) Consumer<Component> componentConsumer,
 			@Share("index") LocalIntRef index
 	) {
 		preAppendTooltip(componentType, context, displayComponent, componentConsumer, type, index);

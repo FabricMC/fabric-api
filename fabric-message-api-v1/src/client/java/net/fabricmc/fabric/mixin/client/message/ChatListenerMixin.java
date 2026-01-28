@@ -68,7 +68,7 @@ public abstract class ChatListenerMixin {
 	}
 
 	@Inject(method = "handleSystemMessage", at = @At("HEAD"), cancellable = true)
-	private void fabric_allowGameMessage(Component _message, boolean overlay, CallbackInfo ci, @Local(argsOnly = true, name = "message") LocalRef<Component> message) {
+	private void fabric_allowGameMessage(Component _message, boolean overlay, CallbackInfo ci, @Local(argsOnly = true) LocalRef<Component> message) {
 		if (ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message.get(), overlay)) {
 			message.set(ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message.get(), overlay));
 			ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message.get(), overlay);

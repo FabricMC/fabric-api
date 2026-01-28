@@ -40,7 +40,7 @@ public class SimpleReloadInstanceMixin {
 					target = "Lnet/minecraft/server/packs/resources/SimpleReloadInstance;of(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/server/packs/resources/ReloadInstance;"
 			)
 	)
-	private static List<PreparableReloadListener> sortSimple(List<PreparableReloadListener> reloaders, @Local(argsOnly = true, name = "resourceManager") ResourceManager resourceManager) {
+	private static List<PreparableReloadListener> sortSimple(List<PreparableReloadListener> reloaders, @Local(argsOnly = true) ResourceManager resourceManager) {
 		if (resourceManager instanceof FabricMultiPackResourceManager flrm) {
 			return ResourceLoaderImpl.sort(flrm.fabric$getPackType(), reloaders);
 		}
@@ -55,7 +55,7 @@ public class SimpleReloadInstanceMixin {
 					target = "Lnet/minecraft/server/packs/resources/ProfiledReloadInstance;of(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/server/packs/resources/ReloadInstance;"
 			)
 	)
-	private static List<PreparableReloadListener> sortProfiled(List<PreparableReloadListener> reloaders, @Local(argsOnly = true, name = "resourceManager") ResourceManager resourceManager) {
+	private static List<PreparableReloadListener> sortProfiled(List<PreparableReloadListener> reloaders, @Local(argsOnly = true) ResourceManager resourceManager) {
 		if (resourceManager instanceof FabricMultiPackResourceManager flrm) {
 			return ResourceLoaderImpl.sort(flrm.fabric$getPackType(), reloaders);
 		}
