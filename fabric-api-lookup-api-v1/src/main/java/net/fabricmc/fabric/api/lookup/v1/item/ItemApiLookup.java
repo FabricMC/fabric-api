@@ -92,7 +92,7 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
  * @param <C> The type of the additional context object.
  */
 @ApiStatus.NonExtendable
-public interface ItemApiLookup<A, C> {
+public interface ItemApiLookup<A, C extends @Nullable Object> {
 	/**
 	 * Retrieve the {@link ItemApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
@@ -102,7 +102,7 @@ public interface ItemApiLookup<A, C> {
 	 * @return The unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
-	static <A, C> ItemApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+	static <A, C extends @Nullable Object> ItemApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return ItemApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
@@ -168,7 +168,7 @@ public interface ItemApiLookup<A, C> {
 	ItemApiProvider<A, C> getProvider(Item item);
 
 	@FunctionalInterface
-	interface ItemApiProvider<A, C> {
+	interface ItemApiProvider<A, C extends @Nullable Object> {
 		/**
 		 * Return an API of type {@code A} if available for the given item stack with the given context, or {@code null} otherwise.
 		 *
