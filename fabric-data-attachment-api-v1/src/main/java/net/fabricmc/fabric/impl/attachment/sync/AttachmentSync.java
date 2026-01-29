@@ -22,8 +22,13 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import io.netty.buffer.ByteBufUtil;
+
 import net.minecraft.network.Connection;
+import net.minecraft.network.VarInt;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ConfigurationTask;
@@ -42,10 +47,22 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundAttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundRequestAcceptedAttachmentsPayload;
 import net.fabricmc.fabric.impl.attachment.sync.serverbound.ServerboundAcceptedAttachmentsPayload;
+import net.fabricmc.fabric.mixin.attachment.ClientboundCustomPayloadPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public class AttachmentSync implements ModInitializer {
 	public static final int MAX_IDENTIFIER_SIZE = 256;
+	public static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + MAX_IDENTIFIER_SIZE;
+	public static final int DEFAULT_MAX_DATA_SIZE;
+	public static final int DEFAULT_ATTACHMENT_SYNC_PACKET_SIZE;
+
+	static {
+		// ensure no splitting by default
+		int identifierSize = ByteBufUtil.utf8MaxBytes(ClientboundAttachmentSyncPayload.PACKET_ID.toString());
+		int networkingApiPaddingSize = VarInt.getByteSize(identifierSize) + identifierSize + 5 * 2;
+		DEFAULT_MAX_DATA_SIZE = ClientboundCustomPayloadPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES - networkingApiPaddingSize;
+		DEFAULT_ATTACHMENT_SYNC_PACKET_SIZE = MAX_PADDING_SIZE_IN_BYTES + DEFAULT_MAX_DATA_SIZE;
+	}
 
 	public static ServerboundAcceptedAttachmentsPayload createResponsePayload() {
 		return new ServerboundAcceptedAttachmentsPayload(AttachmentRegistryImpl.getSyncableAttachments());
@@ -60,7 +77,23 @@ public class AttachmentSync implements ModInitializer {
 				.fabric_getSupportedAttachments();
 
 		if (supported.contains(change.type().identifier())) {
-			ServerPlayNetworking.send(player, new ClientboundAttachmentSyncPayload(List.of(change)));
+			ServerPlayNetworking.send(player, new ClientboundAttachmentSyncPayload(change));
+		}
+	}
+
+	public static void trySync(List<AttachmentChange> changes, ServerPlayer player) {
+		Set<Identifier> supported = ((SupportedAttachmentsConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
+				.fabric_getSupportedAttachments();
+
+		List<Packet<? super ClientGamePacketListener>> syncableChanges = new ArrayList<>();
+		changes.forEach(change -> {
+			if (supported.contains(change.type().identifier())) {
+				syncableChanges.add(ServerPlayNetworking.createClientboundPacket(new ClientboundAttachmentSyncPayload(change)));
+			}
+		});
+
+		if (!syncableChanges.isEmpty()) {
+			ServerPlayNetworking.getSender(player).sendPacket(new ClientboundBundlePacket(syncableChanges));
 		}
 	}
 
@@ -109,8 +142,8 @@ public class AttachmentSync implements ModInitializer {
 				});
 
 		// Play
-		PayloadTypeRegistry.clientboundPlay().register(
-				ClientboundAttachmentSyncPayload.ID, ClientboundAttachmentSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().registerLarge(
+				ClientboundAttachmentSyncPayload.TYPE, ClientboundAttachmentSyncPayload.CODEC, AttachmentRegistryImpl::getMaxSyncPacketSize);
 
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
@@ -120,7 +153,7 @@ public class AttachmentSync implements ModInitializer {
 			((AttachmentTargetImpl) player).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
-				AttachmentChange.partitionAndSendPackets(changes, player);
+				trySync(changes, player);
 			}
 		});
 
@@ -131,7 +164,7 @@ public class AttachmentSync implements ModInitializer {
 			((AttachmentTargetImpl) destination).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
-				AttachmentChange.partitionAndSendPackets(changes, player);
+				trySync(changes, player);
 			}
 		});
 
@@ -140,7 +173,7 @@ public class AttachmentSync implements ModInitializer {
 			((AttachmentTargetImpl) trackedEntity).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
-				AttachmentChange.partitionAndSendPackets(changes, player);
+				trySync(changes, player);
 			}
 		});
 	}

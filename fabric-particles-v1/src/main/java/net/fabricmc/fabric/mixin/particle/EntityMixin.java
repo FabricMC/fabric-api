@@ -30,8 +30,8 @@ import net.fabricmc.fabric.impl.particle.BlockParticleOptionExtension;
 @Mixin(Entity.class)
 abstract class EntityMixin {
 	@ModifyExpressionValue(method = "spawnSprintParticle", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
-	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original, @Local(ordinal = 0) BlockPos blockPos) {
-		((BlockParticleOptionExtension) original).fabric_setBlockPos(blockPos);
+	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original, @Local(name = "pos") BlockPos pos) {
+		((BlockParticleOptionExtension) original).fabric_setBlockPos(pos);
 		return original;
 	}
 }

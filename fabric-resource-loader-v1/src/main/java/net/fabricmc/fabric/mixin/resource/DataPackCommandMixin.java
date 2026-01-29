@@ -62,7 +62,7 @@ public class DataPackCommandMixin {
 	}
 
 	@Inject(method = "getPack", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z"))
-	private static void errorOnInternalPack(CommandContext<CommandSourceStack> context, String name, boolean enable, CallbackInfoReturnable<Pack> cir, @Local Pack profile) throws CommandSyntaxException {
-		if (((FabricPack) profile).fabric$isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getId());
+	private static void errorOnInternalPack(CommandContext<CommandSourceStack> context, String name, boolean enable, CallbackInfoReturnable<Pack> cir, @Local(name = "pack") Pack pack) throws CommandSyntaxException {
+		if (((FabricPack) pack).fabric$isHidden()) throw INTERNAL_PACK_EXCEPTION.create(pack.getId());
 	}
 }

@@ -42,13 +42,13 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 public class CrafterBlockMixin {
 	// Inject after vanilla's attempts to insert the stack into an inventory.
 	@Inject(method = "dispenseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z"))
-	private void transferOrSpawnStack(ServerLevel level, BlockPos pos, CrafterBlockEntity blockEntity, ItemStack inputStack, BlockState state, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci, @Local Direction direction, @Local Container inventory, @Local(ordinal = 1) ItemStack itemStack) {
-		if (inventory != null) {
+	private void transferOrSpawnStack(ServerLevel level, BlockPos pos, CrafterBlockEntity blockEntity, ItemStack inputStack, BlockState state, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci, @Local(name = "direction") Direction direction, @Local(name = "into") Container into, @Local(name = "remaining") ItemStack remaining) {
+		if (into != null) {
 			// Vanilla already found and tested an inventory, nothing else to do even if it failed to insert.
 			return;
 		}
 
-		if (itemStack.isEmpty()) {
+		if (remaining.isEmpty()) {
 			// Nothing left to do, in theory should never get here.
 			return;
 		}
@@ -58,10 +58,10 @@ public class CrafterBlockMixin {
 		if (target != null) {
 			// Attempt to move the entire stack, and decrement the size of success moves.
 			try (Transaction transaction = Transaction.openOuter()) {
-				long moved = target.insert(ItemVariant.of(itemStack), inputStack.getCount(), transaction);
+				long moved = target.insert(ItemVariant.of(remaining), inputStack.getCount(), transaction);
 
 				if (moved > 0) {
-					itemStack.shrink((int) moved);
+					remaining.shrink((int) moved);
 					transaction.commit();
 				}
 			}

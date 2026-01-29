@@ -47,7 +47,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class SyncGametest implements FabricClientGameTest {
-	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-persistence-gametest");
+	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-syncing-gametest");
 
 	private static ServerPlayer getSinglePlayer(MinecraftServer server) {
 		return server.getPlayerList().getPlayers().getFirst();
@@ -112,6 +112,7 @@ public class SyncGametest implements FabricClientGameTest {
 				level.addFreshEntity(villager);
 				setSyncedWithAll(villager);
 				set(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
+				villager.setAttached(AttachmentTestMod.SYNCED_LARGE, AttachmentTestMod.LARGE_DATA);
 
 				LevelChunk originChunk = level.getChunk(0, 0);
 				setSyncedWithAll(originChunk);
@@ -153,6 +154,7 @@ public class SyncGametest implements FabricClientGameTest {
 					assertHasSyncedWithAll(client.player);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_ITEM);
+					assertHasSynced(villager, AttachmentTestMod.SYNCED_LARGE);
 
 					// `level` is the overworld here
 					assertHasNotSynced(level, AttachmentTestMod.SYNCED_WITH_ALL);

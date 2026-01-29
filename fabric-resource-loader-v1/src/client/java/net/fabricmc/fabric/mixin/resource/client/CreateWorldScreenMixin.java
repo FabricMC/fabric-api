@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.resource.client;
 import java.io.File;
 
 import com.mojang.datafixers.util.Pair;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,7 +47,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
 	}
 
 	@ModifyVariable(method = "openCreateWorldScreen(Lnet/minecraft/client/Minecraft;Ljava/lang/Runnable;Ljava/util/function/Function;Lnet/minecraft/client/gui/screens/worldselection/WorldCreationContextMapper;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldCallback;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;createDefaultLoadConfig(Lnet/minecraft/server/packs/repository/PackRepository;Lnet/minecraft/world/level/WorldDataConfiguration;)Lnet/minecraft/server/WorldLoader$InitConfig;"))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;createDefaultLoadConfig(Lnet/minecraft/server/packs/repository/PackRepository;Lnet/minecraft/world/level/WorldDataConfiguration;)Lnet/minecraft/server/WorldLoader$InitConfig;"),
+			name = "vanillaOnlyPackRepository")
 	private static PackRepository onCreateResManagerInit(PackRepository manager) {
 		// Add mod data packs to the initial res pack manager so they are active even if the user doesn't use custom data packs
 		manager.sources.add(new ModResourcePackCreator(PackType.SERVER_DATA));
@@ -54,7 +56,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 	}
 
 	@Redirect(method = "openCreateWorldScreen(Lnet/minecraft/client/Minecraft;Ljava/lang/Runnable;Ljava/util/function/Function;Lnet/minecraft/client/gui/screens/worldselection/WorldCreationContextMapper;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldCallback;)V",
-			at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/WorldDataConfiguration;DEFAULT:Lnet/minecraft/world/level/WorldDataConfiguration;", ordinal = 0))
+			at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/WorldDataConfiguration;DEFAULT:Lnet/minecraft/world/level/WorldDataConfiguration;", ordinal = 0, opcode = Opcodes.GETSTATIC))
 	private static WorldDataConfiguration replaceDefaultSettings() {
 		return ModPackResourcesUtil.createDefaultDataConfiguration();
 	}

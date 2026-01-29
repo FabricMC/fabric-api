@@ -66,7 +66,7 @@ public abstract class ServerPlayerMixin extends Player {
 	}
 
 	@Inject(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
-	private void fabric_storeOpenedMenu(MenuProvider factory, CallbackInfoReturnable<OptionalInt> info, @Local AbstractContainerMenu menu) {
+	private void fabric_storeOpenedMenu(MenuProvider factory, CallbackInfoReturnable<OptionalInt> info, @Local(name = "menu") AbstractContainerMenu menu) {
 		if (factory instanceof ExtendedMenuProvider || (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedMenuProvider)) {
 			// Set the menu, so the factory method can access it through the player.
 			containerMenu = menu;

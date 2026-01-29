@@ -74,7 +74,7 @@ public abstract class MinecraftMixin {
 			method = "startUseItem",
 			cancellable = true
 	)
-	private void injectUseEntityCallback(CallbackInfo ci, @Local InteractionHand hand, @Local EntityHitResult hitResult, @Local Entity entity) {
+	private void injectUseEntityCallback(CallbackInfo ci, @Local(name = "hand") InteractionHand hand, @Local(name = "entityHit") EntityHitResult hitResult, @Local(name = "entity") Entity entity) {
 		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.level(), hand, entity, hitResult);
 
 		if (result != InteractionResult.PASS) {

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -206,18 +205,8 @@ public interface FabricItem {
 		 *
 		 * @return currently stored item id or null, if not set
 		 */
-		default @Nullable ResourceKey<Item> getId() {
+		default @Nullable ResourceKey<Item> itemId() {
 			throw new AssertionError("Implemented in Mixin");
-		}
-
-		/**
-		 * Return the id of item that was defined by {@link Item.Properties#setId}.
-		 *
-		 * @return currently stored item id
-		 * @throws NullPointerException if id is not set
-		 */
-		default ResourceKey<Item> getIdOrThrow() {
-			return Objects.requireNonNull(this.getId(), "Item id not set");
 		}
 	}
 }

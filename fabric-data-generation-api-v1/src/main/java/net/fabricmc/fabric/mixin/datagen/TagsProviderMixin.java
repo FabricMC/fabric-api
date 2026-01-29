@@ -58,8 +58,8 @@ public class TagsProviderMixin<T> {
 	}
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
-	private boolean addReplaced(boolean replaced, @Local TagBuilder tagBuilder) {
-		if (tagBuilder instanceof FabricTagBuilder fabricTagBuilder) {
+	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder builder) {
+		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
 			return fabricTagBuilder.fabric_isReplaced();
 		}
 

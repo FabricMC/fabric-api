@@ -104,18 +104,18 @@ public class ServerPlayerGameModeMixin {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "destroyBlock", cancellable = true)
-	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity entity, @Local BlockState state) {
-		boolean result = PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.level, this.player, pos, state, entity);
+	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockEntity") BlockEntity blockEntity, @Local(name = "state") BlockState state) {
+		boolean result = PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.level, this.player, pos, state, blockEntity);
 
 		if (!result) {
-			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCanceled(this.level, this.player, pos, state, entity);
+			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCanceled(this.level, this.player, pos, state, blockEntity);
 
 			cir.setReturnValue(false);
 		}
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"), method = "destroyBlock")
-	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity entity, @Local BlockState state) {
-		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.level, this.player, pos, state, entity);
+	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "blockEntity") BlockEntity blockEntity, @Local(name = "adjustedState") BlockState adjustedState) {
+		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.level, this.player, pos, adjustedState, blockEntity);
 	}
 }

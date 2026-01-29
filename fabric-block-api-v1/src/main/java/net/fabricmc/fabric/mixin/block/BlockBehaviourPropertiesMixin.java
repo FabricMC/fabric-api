@@ -32,7 +32,7 @@ public class BlockBehaviourPropertiesMixin implements FabricBlock.FabricProperti
 	private @Nullable ResourceKey<Block> id;
 
 	@Override
-	public @Nullable ResourceKey<Block> getId() {
+	public @Nullable ResourceKey<Block> blockId() {
 		return this.id;
 	}
 }

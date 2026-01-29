@@ -284,6 +284,32 @@
             <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
         </module>
 
+        <!-- Prevent ordinal usage in @Local annotations on method parameters -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //PARAMETER_DEF/MODIFIERS/ANNOTATION[
+                    ./IDENT[@text='Local']
+                    and
+                    ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='ordinal']
+                ]
+            "/>
+            <message key="matchxpath.match" value="ordinal is not allowed in @Local annotations on method parameters"/>
+        </module>
+
+        <!-- Prevent specifying name and argsOnly in @Local annotations on method parameters -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //PARAMETER_DEF/MODIFIERS/ANNOTATION[
+                    ./IDENT[@text='Local']
+                    and
+                    ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='name']
+                    and
+                    ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='argsOnly']
+                ]
+            "/>
+            <message key="matchxpath.match" value="name and argsOnly cannot both be specified in @Local, perfer argsOnly"/>
+        </module>
+
         <module name="MatchXpath">
             <property name="query" value="//LITERAL_ASSERT"/>
             <message key="matchxpath.match" value="Avoid using 'assert'."/>

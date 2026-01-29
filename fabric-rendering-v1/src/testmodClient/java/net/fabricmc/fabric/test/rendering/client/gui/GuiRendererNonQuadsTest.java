@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client.gui;
 
+import java.util.function.BiFunction;
+
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -44,27 +46,32 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 					(float) graphics.guiHeight() / 8
 			);
 
-			graphics.guiRenderState.submitGuiElement(new CustomTestState(
-					new Matrix3x2f(graphics.pose()),
-					graphics.scissorStack.peek(),
-					graphics.guiHeight() / 8, graphics.guiHeight() / 8,
-					graphics.guiHeight() / 8 + 16, graphics.guiHeight() / 8 + 16,
-					graphics.guiWidth() / 8, graphics.guiHeight() / 8
-			));
+			BiFunction<Integer, Integer, CustomTestState> testStateCreator = (xOffset, yOffset) ->
+					new CustomTestState(
+							new Matrix3x2f(graphics.pose()),
+							null,
+							graphics.guiHeight() / 8 + xOffset, graphics.guiHeight() / 8 + yOffset,
+							graphics.guiHeight() / 8 + 16 + xOffset, graphics.guiHeight() / 8 + 16 + yOffset,
+							graphics.guiWidth() / 8 + xOffset, graphics.guiHeight() / 8 + yOffset
+			);
+
+			graphics.guiRenderState.submitGuiElement(testStateCreator.apply(0, 0));
+			// this second triangle should not stretch to include the first triangle's vertex
+			graphics.guiRenderState.submitGuiElement(testStateCreator.apply(24, 24));
 
 			graphics.pose().popMatrix();
 		});
 	}
 
-	record CustomTestState(Matrix3x2f matrix, ScreenRectangle bounds, ScreenRectangle scissorArea, int x0, int y0, int x1, int y1, int x2, int y2) implements GuiElementRenderState {
-		CustomTestState(Matrix3x2f matrix, ScreenRectangle scissorArea, int x0, int y0, int x1, int y1, int x2, int y2) {
+	record CustomTestState(Matrix3x2f matrix, ScreenRectangle bounds, @Nullable ScreenRectangle scissorArea, int x0, int y0, int x1, int y1, int x2, int y2) implements GuiElementRenderState {
+		CustomTestState(Matrix3x2f matrix, @Nullable ScreenRectangle scissorArea, int x0, int y0, int x1, int y1, int x2, int y2) {
 			this(matrix, createTriangleBounds(x0, y0, x1, y1, x2, y2, matrix, scissorArea), scissorArea, x0, y0, x1, y1, x2, y2);
 		}
 
 		private static final RenderPipeline PIPELINE = RenderPipeline.builder(RenderPipelines.GUI_SNIPPET)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "gui_renderer_non_quads_test"))
 				.withUsePipelineDrawModeForGui(true)
-				.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
+				.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN)
 				.build();
 
 		@Override

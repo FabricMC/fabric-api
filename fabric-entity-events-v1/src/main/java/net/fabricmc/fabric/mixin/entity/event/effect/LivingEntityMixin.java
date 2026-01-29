@@ -179,13 +179,13 @@ public abstract class LivingEntityMixin extends Entity {
 					target = "Ljava/util/Iterator;remove()V"
 			)
 	)
-	private void beforeExpireRemoveEffect(CallbackInfo ci, @Local MobEffectInstance effectInstance) {
+	private void beforeExpireRemoveEffect(CallbackInfo ci, @Local(name = "effect") MobEffectInstance effect) {
 		if (this.isClient()) {
 			return;
 		}
 
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-				.beforeRemove(effectInstance, this.self(), MobEffectUtil.getCommandContext());
+				.beforeRemove(effect, this.self(), MobEffectUtil.getCommandContext());
 	}
 
 	@Inject(

@@ -66,7 +66,8 @@ public class SimpleReloadInstanceMixin {
 	@ModifyVariable(
 			method = "create(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/server/packs/resources/ReloadInstance;",
 			at = @At(value = "LOAD", ordinal = 0),
-			argsOnly = true
+			argsOnly = true,
+			name = "enableProfiling"
 	)
 	private static boolean adjustProfiledCheck(boolean profiled) {
 		return profiled || ResourceLoaderImpl.DEBUG_PROFILE_RESOURCE_RELOADERS;

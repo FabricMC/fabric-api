@@ -46,7 +46,7 @@ public class ItemPropertiesMixin implements FabricItem.Properties {
 	}
 
 	@Override
-	public @Nullable ResourceKey<Item> getId() {
+	public @Nullable ResourceKey<Item> itemId() {
 		return this.id;
 	}
 }

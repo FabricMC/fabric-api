@@ -35,7 +35,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -49,6 +48,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.util.EventResult;
 
 @Mixin(ServerPlayer.class)
 abstract class ServerPlayerMixin extends LivingEntityMixin {
@@ -111,7 +111,7 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	@Redirect(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
 	private boolean hasNoMonstersNearby(List<Monster> monsters, BlockPos pos) {
 		boolean vanillaResult = monsters.isEmpty();
-		InteractionResult result = EntitySleepEvents.ALLOW_NEARBY_MONSTERS.invoker().allowNearbyMonsters((Player) (Object) this, pos, vanillaResult);
-		return result != InteractionResult.PASS ? result.consumesAction() : vanillaResult;
+		EventResult result = EntitySleepEvents.ALLOW_NEARBY_MONSTERS.invoker().allowNearbyMonsters((Player) (Object) this, pos, vanillaResult);
+		return result.allowAction(vanillaResult);
 	}
 }

@@ -35,7 +35,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -51,6 +50,7 @@ import net.minecraft.world.phys.Vec3;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.util.EventResult;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
@@ -85,9 +85,9 @@ abstract class LivingEntityMixin {
 	}
 
 	@Inject(method = "hurtServer", at = @At("TAIL"))
-	private void afterDamage(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) float dealt, @Local(ordinal = 0) boolean blocked) {
+	private void afterDamage(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, @Local(name = "originalDamage") float originalDamage, @Local(name = "blocked") boolean blocked) {
 		if (!isDeadOrDying()) {
-			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, dealt, amount, blocked);
+			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, originalDamage, amount, blocked);
 		}
 	}
 
@@ -110,10 +110,10 @@ abstract class LivingEntityMixin {
 	@Inject(method = "lambda$checkBedExists$0", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingInBed(BlockPos sleepingPos, CallbackInfoReturnable<Boolean> info) {
 		BlockState bedState = ((LivingEntity) (Object) this).level().getBlockState(sleepingPos);
-		InteractionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
+		EventResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
 
-		if (result != InteractionResult.PASS) {
-			info.setReturnValue(result.consumesAction());
+		if (result != EventResult.PASS) {
+			info.setReturnValue(result.allowAction());
 		}
 	}
 
@@ -128,10 +128,10 @@ abstract class LivingEntityMixin {
 	@Dynamic("lambda$stopSleeping$0: Synthetic lambda body for Optional.ifPresent in stopSleeping")
 	@ModifyVariable(method = {"lambda$stopSleeping$0", "startSleeping"}, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
 	private BlockState modifyBedForOccupiedState(BlockState state, BlockPos sleepingPos) {
-		InteractionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, state, state.getBlock() instanceof BedBlock);
+		EventResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, state, state.getBlock() instanceof BedBlock);
 
 		// If a valid bed, replace with vanilla red bed so that the vanilla instanceof check succeeds.
-		return result.consumesAction() ? Blocks.RED_BED.defaultBlockState() : state;
+		return result.allowAction(false) ? Blocks.RED_BED.defaultBlockState() : state;
 	}
 
 	// The injector is shared because lambda$stopSleeping$23 and sleep share much of the structure here.
