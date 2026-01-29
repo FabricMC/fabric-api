@@ -139,7 +139,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * @param <C> The type of the additional context object.
  */
 @ApiStatus.NonExtendable
-public interface BlockApiLookup<A, C> {
+public interface BlockApiLookup<A, C extends @Nullable Object> {
 	/**
 	 * Retrieve the {@link BlockApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
@@ -149,7 +149,7 @@ public interface BlockApiLookup<A, C> {
 	 * @return The unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
-	static <A, C> BlockApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+	static <A, C extends @Nullable Object> BlockApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return BlockApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
@@ -267,7 +267,7 @@ public interface BlockApiLookup<A, C> {
 	BlockApiProvider<A, C> getProvider(Block block);
 
 	@FunctionalInterface
-	interface BlockApiProvider<A, C> {
+	interface BlockApiProvider<A, C extends @Nullable Object> {
 		/**
 		 * Return an API of type {@code A} if available in the level at the given pos with the given context, or {@code null} otherwise.
 		 *
@@ -283,7 +283,7 @@ public interface BlockApiLookup<A, C> {
 	}
 
 	@FunctionalInterface
-	interface BlockEntityApiProvider<A, C> {
+	interface BlockEntityApiProvider<A, C extends @Nullable Object> {
 		/**
 		 * Return an API of type {@code A} if available in the given block entity with the given context, or {@code null} otherwise.
 		 *
