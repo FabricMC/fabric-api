@@ -73,10 +73,10 @@ public class ModelProviderMixin {
 
 	@Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/models/BlockModelGenerators;run()V"))
 	private void setFabricPackOutput(CachedOutput output, CallbackInfoReturnable<CompletableFuture<?>> cir,
-									@Local ModelProvider.BlockStateGeneratorCollector blockStateGeneratorCollector,
-									@Local ModelProvider.ItemInfoCollector itemInfoCollectors) {
-		((FabricModelProviderDefinitions) blockStateGeneratorCollector).setFabricPackOutput(fabricPackOutput);
-		((FabricModelProviderDefinitions) itemInfoCollectors).setFabricPackOutput(fabricPackOutput);
-		((FabricItemAssetDefinitions) itemInfoCollectors).fabric_setProcessedBlocks(blockStateGeneratorCollector.generators.keySet());
+									@Local(name = "blockStateGenerators") ModelProvider.BlockStateGeneratorCollector blockStateGenerators,
+									@Local(name = "itemModels") ModelProvider.ItemInfoCollector itemModels) {
+		((FabricModelProviderDefinitions) blockStateGenerators).setFabricPackOutput(fabricPackOutput);
+		((FabricModelProviderDefinitions) itemModels).setFabricPackOutput(fabricPackOutput);
+		((FabricItemAssetDefinitions) itemModels).fabric_setProcessedBlocks(blockStateGenerators.generators.keySet());
 	}
 }

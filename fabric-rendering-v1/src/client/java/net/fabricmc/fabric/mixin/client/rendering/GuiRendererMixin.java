@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -93,7 +95,7 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 		pipRendererPools.values().forEach(PictureInPictureRendererPool::cleanUpUnusedRenderers);
 	}
 
-	@ModifyVariable(method = "preparePictureInPictureState", at = @At("STORE"))
+	@ModifyVariable(method = "preparePictureInPictureState", at = @At("STORE"), name = "renderer")
 	private <T extends PictureInPictureRenderState> PictureInPictureRenderer<T> substituteSpecialElementRenderer(PictureInPictureRenderer<T> original, T elementState) {
 		if (original == null || !hasFabricInitialized) {
 			return original;
@@ -125,5 +127,10 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 		}
 
 		original.call(instance, buffer, indexType);
+	}
+
+	@ModifyExpressionValue(method = "addElementToMesh(Lnet/minecraft/client/gui/render/state/GuiElementRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;scissorChanged(Lnet/minecraft/client/gui/navigation/ScreenRectangle;Lnet/minecraft/client/gui/navigation/ScreenRectangle;)Z"))
+	private boolean uploadPrimitivesIndividually(boolean original, @Local RenderPipeline pipeline) {
+		return original || pipeline.getVertexFormatMode().connectedPrimitives;
 	}
 }

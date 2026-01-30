@@ -82,14 +82,14 @@ abstract class SectionCompilerMixin {
 	private void hookBuild(SectionPos sectionPos, RenderSectionRegion region, VertexSorting sorter,
 						SectionBufferBuilderPack buffers,
 						CallbackInfoReturnable<SectionCompiler.Results> cir,
-						@Local(ordinal = 0) BlockPos sectionOrigin,
-						@Local(ordinal = 0) PoseStack poseStack,
-						@Local(ordinal = 0) Map<ChunkSectionLayer, BufferBuilder> builderMap,
-						@Local(ordinal = 0) RandomSource random) {
+						@Local(name = "minPos") BlockPos minPos,
+						@Local(name = "poseStack") PoseStack poseStack,
+						@Local(name = "startedLayers") Map<ChunkSectionLayer, BufferBuilder> startedLayers,
+						@Local(name = "random") RandomSource random) {
 		// hook just before iterating over the render chunk's blocks to capture the buffer builder map
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-		renderer.prepare(region, sectionOrigin,
-				poseStack, random, layer -> getOrBeginLayer(builderMap,
+		renderer.prepare(region, minPos,
+				poseStack, random, layer -> getOrBeginLayer(startedLayers,
 						buffers, layer));
 		((AccessRenderSectionRegion) region).fabric_setRenderer(renderer);
 	}
@@ -108,12 +108,12 @@ abstract class SectionCompilerMixin {
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 */
 	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
-	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(ordinal = 2) BlockPos blockPos) {
+	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(name = "pos") BlockPos pos) {
 		RenderShape renderShape = blockState.getRenderShape();
 
 		if (renderShape == RenderShape.MODEL) {
 			BlockStateModel model = blockRenderer.getBlockModel(blockState);
-			((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
+			((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, pos);
 			return RenderShape.INVISIBLE; // Cancel the vanilla logic
 		}
 

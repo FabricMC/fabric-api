@@ -6,7 +6,10 @@
     "WorldDimensionsMixin",
     "V2832Mixin",
     "TaggedChoiceMixin",
-    "TaggedChoiceTaggedChoiceTypeMixin"
+    "TaggedChoiceTaggedChoiceTypeMixin",
+    "DimensionTypeAccessor",
+    "MappedRegistryAccessor",
+    "RegistryAccessImmutableRegistryAccessMixin"
   ],
   "injectors": {
     "defaultRequire": 1

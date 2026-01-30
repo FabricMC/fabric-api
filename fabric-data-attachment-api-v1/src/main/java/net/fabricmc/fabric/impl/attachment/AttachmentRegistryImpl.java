@@ -43,6 +43,7 @@ public final class AttachmentRegistryImpl {
 	private static final Map<Identifier, AttachmentType<?>> attachmentRegistry = new HashMap<>();
 	private static final Set<Identifier> syncableAttachments = new HashSet<>();
 	private static final Set<Identifier> syncableView = Collections.unmodifiableSet(syncableAttachments);
+	private static int maxSyncPacketSize = AttachmentSync.DEFAULT_ATTACHMENT_SYNC_PACKET_SIZE;
 
 	public static <A> void register(Identifier id, AttachmentType<A> attachmentType) {
 		AttachmentType<?> existing = attachmentRegistry.put(id, attachmentType);
@@ -74,6 +75,16 @@ public final class AttachmentRegistryImpl {
 		return new BuilderImpl<>();
 	}
 
+	public static int getMaxSyncPacketSize() {
+		if (maxSyncPacketSize == -1) {
+			throw new IllegalStateException("getMaxSyncPacketSize should only be called ONCE!");
+		}
+
+		int maxSize = maxSyncPacketSize;
+		maxSyncPacketSize = -1;
+		return maxSize;
+	}
+
 	public static class BuilderImpl<A> implements AttachmentRegistry.Builder<A> {
 		@Nullable
 		private Supplier<A> defaultInitializer = null;
@@ -84,6 +95,7 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private AttachmentSyncPredicate syncPredicate = null;
 		private boolean copyOnDeath = false;
+		private int maxSyncSize = -1;
 
 		@Override
 		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
@@ -107,13 +119,25 @@ public final class AttachmentRegistryImpl {
 			return this;
 		}
 
-		@Deprecated
+		@Override
 		public AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec, AttachmentSyncPredicate syncPredicate) {
 			Objects.requireNonNull(streamCodec, "stream codec cannot be null");
 			Objects.requireNonNull(syncPredicate, "sync predicate cannot be null");
 
 			this.streamCodec = streamCodec;
 			this.syncPredicate = syncPredicate;
+			return this;
+		}
+
+		@Override
+		public AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec, AttachmentSyncPredicate syncPredicate, int maxSyncSize) {
+			if (maxSyncSize < 0) {
+				throw new IllegalArgumentException("maxSyncSize must be positive!");
+			}
+
+			syncWith(streamCodec, syncPredicate);
+			this.maxSyncSize = maxSyncSize;
+
 			return this;
 		}
 
@@ -130,13 +154,24 @@ public final class AttachmentRegistryImpl {
 				);
 			}
 
+			if (maxSyncSize <= AttachmentSync.DEFAULT_MAX_DATA_SIZE) {
+				maxSyncSize = AttachmentSync.DEFAULT_MAX_DATA_SIZE;
+			} else if (maxSyncPacketSize == -1) {
+				throw new IllegalStateException("Large attachment " + id + " registered too late! Must be registered during mod initialization.");
+			} else {
+				int newMaxPacketSize = maxSyncSize + AttachmentSync.MAX_PADDING_SIZE_IN_BYTES;
+				newMaxPacketSize = newMaxPacketSize < 0 ? Integer.MAX_VALUE : newMaxPacketSize; // prevent overflow
+				maxSyncPacketSize = Math.max(newMaxPacketSize, maxSyncPacketSize);
+			}
+
 			var attachment = new AttachmentTypeImpl<>(
 					id,
 					defaultInitializer,
 					persistenceCodec,
 					streamCodec,
 					syncPredicate,
-					copyOnDeath
+					copyOnDeath,
+					maxSyncSize
 			);
 			register(id, attachment);
 			return attachment;

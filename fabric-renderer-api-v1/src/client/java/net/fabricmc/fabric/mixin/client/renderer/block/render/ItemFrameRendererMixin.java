@@ -34,9 +34,9 @@ import net.minecraft.world.level.block.state.BlockState;
 abstract class ItemFrameRendererMixin {
 	// Provide the BlockState as context.
 	@Redirect(method = "submit(Lnet/minecraft/client/renderer/entity/state/ItemFrameRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
-	private void renderProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, RenderType renderType, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local BlockState blockState) {
+	private void renderProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, RenderType renderType, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local(name = "fakeBlockState") BlockState fakeBlockState) {
 		// The vertex consumer is for a special layer that renders solid, but vanilla has no equivalent
 		// cutout/translucent layers that we can use here without risking compatibility.
-		submitNodeCollector.submitBlockStateModel(poseStack, blockLayer -> renderType, model, r, g, b, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
+		submitNodeCollector.submitBlockStateModel(poseStack, blockLayer -> renderType, model, r, g, b, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, fakeBlockState);
 	}
 }

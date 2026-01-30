@@ -82,7 +82,7 @@ public class TransferTestInitializer implements ModInitializer {
 									.then(Commands.argument("count", LongArgumentType.longArg(1))
 											.executes(context -> {
 												ItemVariant variant = ItemVariant.of(ItemArgument.getItem(context, "stack")
-														.createItemStack(1, false));
+														.createItemStack(1));
 
 												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrException(), InteractionHand.MAIN_HAND);
 												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);
@@ -115,7 +115,7 @@ public class TransferTestInitializer implements ModInitializer {
 									.then(Commands.argument("count", LongArgumentType.longArg(1))
 											.executes(context -> {
 												ItemVariant variant = ItemVariant.of(ItemArgument.getItem(context, "stack")
-														.createItemStack(1, false));
+														.createItemStack(1));
 
 												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrException(), InteractionHand.MAIN_HAND);
 												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);

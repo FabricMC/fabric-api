@@ -25,6 +25,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
@@ -141,7 +142,7 @@ public class LootTest implements ModInitializer {
 				return;
 			}
 
-			ItemStack tool = Objects.requireNonNull(context.getOptionalParameter(LootContextParams.TOOL), "LootContext contains tool, but it was null");
+			ItemInstance tool = Objects.requireNonNull(context.getOptionalParameter(LootContextParams.TOOL), "LootContext contains tool, but it was null");
 
 			if (!tool.is(Items.DIAMOND_PICKAXE)) {
 				return;

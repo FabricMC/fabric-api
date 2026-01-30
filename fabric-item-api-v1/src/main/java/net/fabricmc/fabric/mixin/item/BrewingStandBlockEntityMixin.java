@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 @Mixin(BrewingStandBlockEntity.class)
 public class BrewingStandBlockEntityMixin {
 	@Redirect(method = "doBrew", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getCraftingRemainder()Lnet/minecraft/world/item/ItemStackTemplate;"))
-	private static ItemStackTemplate getCraftingRemainder(Item item, @Local(ordinal = 0) ItemStack stack) {
-		return stack.getCraftingRemainder();
+	private static ItemStackTemplate getCraftingRemainder(Item item, @Local(name = "ingredient") ItemStack ingredient) {
+		return ingredient.getCraftingRemainder();
 	}
 }

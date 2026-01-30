@@ -108,7 +108,7 @@ public class LiquidBlockRendererMixin {
 	@ModifyVariable(
 			method = "tesselate",
 			at = @At("STORE"),
-			ordinal = 0
+			name = "stillSprite"
 	)
 	public TextureAtlasSprite modStill(TextureAtlasSprite original) {
 		return getOrDefault(0, original);
@@ -117,7 +117,7 @@ public class LiquidBlockRendererMixin {
 	@ModifyVariable(
 			method = "tesselate",
 			at = @At("STORE"),
-			ordinal = 1
+			name = "flowingSprite"
 	)
 	public TextureAtlasSprite modFlowing(TextureAtlasSprite original) {
 		return getOrDefault(1, original);
@@ -142,20 +142,19 @@ public class LiquidBlockRendererMixin {
 			method = "tesselate",
 			at = @At(value = "MIXINEXTRAS:EXPRESSION", ordinal = 0),
 			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;", opcode = Opcodes.GETFIELD)),
-			ordinal = 2
-	)
+			name = "sprite")
 	private TextureAtlasSprite modifyOverlaySprite(
 			TextureAtlasSprite waterOverlay,
 			BlockAndTintGetter level,
-			@Local(ordinal = 1) BlockPos neighborPos,
-			@Local(ordinal = 0) boolean isLava,
-			@Local(ordinal = 1) TextureAtlasSprite flowingSprite,
+			@Local(name = "tPos") BlockPos tPos,
+			@Local(name = "isLava") boolean isLava,
+			@Local(name = "flowingSprite") TextureAtlasSprite flowingSprite,
 			@Share("useOverlay") LocalBooleanRef useOverlay
 	) {
 		final FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 		boolean hasOverlay = info.handler != null ? info.hasOverlay : !isLava;
 
-		Block neighborBlock = level.getBlockState(neighborPos).getBlock();
+		Block neighborBlock = level.getBlockState(tPos).getBlock();
 		useOverlay.set(hasOverlay && FluidRenderHandlerRegistry.INSTANCE.isBlockTransparent(neighborBlock));
 
 		if (useOverlay.get()) {

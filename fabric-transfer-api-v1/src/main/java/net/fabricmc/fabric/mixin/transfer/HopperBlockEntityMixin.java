@@ -52,9 +52,9 @@ public class HopperBlockEntityMixin {
 			method = "ejectItems",
 			cancellable = true
 	)
-	private static void hookInsert(Level level, BlockPos pos, HopperBlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir, @Local Container targetInventory) {
+	private static void hookInsert(Level level, BlockPos pos, HopperBlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir, @Local(name = "container") Container container) {
 		// Let vanilla handle the transfer if it found an inventory.
-		if (targetInventory != null) return;
+		if (container != null) return;
 
 		// Otherwise inject our transfer logic.
 		Direction direction = ((HopperBlockEntityMixin) (Object) blockEntity).facing;
@@ -81,9 +81,9 @@ public class HopperBlockEntityMixin {
 			method = "suckInItems(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/entity/Hopper;)Z",
 			cancellable = true
 	)
-	private static void hookExtract(Level level, Hopper hopper, CallbackInfoReturnable<Boolean> cir, @Local Container inputInventory) {
+	private static void hookExtract(Level level, Hopper hopper, CallbackInfoReturnable<Boolean> cir, @Local(name = "container") Container container) {
 		// Let vanilla handle the transfer if it found an inventory.
-		if (inputInventory != null) return;
+		if (container != null) return;
 
 		// Otherwise inject our transfer logic.
 		BlockPos sourcePos = BlockPos.containing(hopper.getLevelX(), hopper.getLevelY() + 1.0D, hopper.getLevelZ());

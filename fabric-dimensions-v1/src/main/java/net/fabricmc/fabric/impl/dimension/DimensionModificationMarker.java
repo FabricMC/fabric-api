@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.attachment;
+package net.fabricmc.fabric.impl.dimension;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
-
-@Mixin(ServerboundCustomPayloadPacket.class)
-public interface ServerboundCustomPayloadPacketAccessor {
-	@Accessor("MAX_PAYLOAD_SIZE")
-	static int getMaxPayloadSize() {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
+/**
+ * Prevents double-modification of dimensions in the same dynamic registry manager from occurring and fails-fast
+ * if it does occur.
+ */
+public interface DimensionModificationMarker {
+	void fabric_markDimensionsModified();
 }

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resource;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -27,7 +28,7 @@ import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 
 @Mixin(DedicatedServerProperties.class)
 public class DedicatedServerPropertiesMixin {
-	@Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/WorldDataConfiguration;DEFAULT:Lnet/minecraft/world/level/WorldDataConfiguration;"))
+	@Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/WorldDataConfiguration;DEFAULT:Lnet/minecraft/world/level/WorldDataConfiguration;", opcode = Opcodes.GETSTATIC))
 	private WorldDataConfiguration replaceDefaultDataConfiguration() {
 		return ModPackResourcesUtil.createDefaultDataConfiguration();
 	}

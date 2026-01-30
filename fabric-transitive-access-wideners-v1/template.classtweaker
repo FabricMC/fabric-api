@@ -131,6 +131,9 @@ transitive-accessible	method	net/minecraft/client/renderer/rendertype/RenderType
 # Armor defense map helper
 transitive-accessible	method	net/minecraft/world/item/equipment/ArmorMaterials makeDefense	(IIIII)Ljava/util/Map;
 
+# Item Properties methods
+transitive-accessible   method  net/minecraft/world/item/Item$Properties itemIdOrThrow ()Lnet/minecraft/resources/ResourceKey;
+
 # World generation helpers
 transitive-accessible   method  net/minecraft/data/worldgen/biome/OverworldBiomes baseBiome (FF)Lnet/minecraft/world/level/biome/Biome$BiomeBuilder;
 transitive-accessible   method  net/minecraft/data/worldgen/biome/OverworldBiomes globalOverworldGeneration (Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V
