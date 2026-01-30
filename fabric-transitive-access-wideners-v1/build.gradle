@@ -169,6 +169,8 @@ def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
 	}
 	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor')
 	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor')
+	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$GenericAction')
+	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$FloatAction')
 }
 
 ClassNode loadClass(Path path) {

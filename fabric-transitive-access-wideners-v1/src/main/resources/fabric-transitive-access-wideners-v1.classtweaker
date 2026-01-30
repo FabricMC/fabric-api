@@ -320,6 +320,8 @@ transitive-accessible method net/minecraft/world/item/enchantment/Enchantment ap
 transitive-accessible method net/minecraft/world/item/enchantment/Enchantment applyEffects (Ljava/util/List;Lnet/minecraft/world/level/storage/loot/LootContext;Lorg/apache/commons/lang3/mutable/MutableFloat;Lnet/minecraft/world/item/enchantment/Enchantment$FloatAction;)V
 transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor
 transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor
+transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$GenericAction
+transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$FloatAction
 
 # private fields of RenderPipelines
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines MATRICES_PROJECTION_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
