@@ -47,6 +47,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin({BlockEntity.class, Entity.class, Level.class, ChunkAccess.class})
@@ -156,10 +157,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				}
 			});
 
-			if (this.deferredSyncedAttachments != null) {
-				// Avoid unnecessary extra syncing after initial sync
-				this.deferredSyncedAttachments.clear();
-			}
+			// Avoid unnecessary extra syncing after initial sync
+			fabric_clearDeferredSyncChanges();
 		}
 	}
 
@@ -240,11 +239,18 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			}
 
 			if (!syncableChanges.isEmpty()) {
-				AttachmentChange.partitionAndSendPackets(syncableChanges, player);
+				AttachmentSync.trySync(syncableChanges, player);
 			}
 		}
 
 		deferredSyncedAttachments.clear();
+	}
+
+	@Override
+	public void fabric_clearDeferredSyncChanges() {
+		if (deferredSyncedAttachments != null) {
+			deferredSyncedAttachments.clear();
+		}
 	}
 
 	@Override

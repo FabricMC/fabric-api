@@ -54,6 +54,9 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 				target.setAttached(type, entry.getValue());
 			}
 		}
+
+		// Avoid unnecessary extra syncing after initial sync
+		((AttachmentTargetImpl) target).fabric_clearDeferredSyncChanges();
 	}
 
 	@Nullable
@@ -91,6 +94,10 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	 * <p>Used when the target does not immediately sync when the attachment is set, but instead defers sync to (usually) match vanilla's sync timing.
 	 */
 	default void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default void fabric_clearDeferredSyncChanges() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
