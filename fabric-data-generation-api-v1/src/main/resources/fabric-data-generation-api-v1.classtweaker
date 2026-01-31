@@ -130,9 +130,15 @@ transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	grate	(Ln
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	copperBulb	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	waxedChiseled	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	suspiciousStew	(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/level/block/SuspiciousEffectHolder;)V
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	dyedItem	(Lnet/minecraft/world/item/Item;Ljava/lang/String;)V
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	dyedShulkerBoxRecipe	(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;)V
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	dyedBundleRecipe	(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	generateRecipes	(Lnet/minecraft/data/BlockFamily;Lnet/minecraft/world/flag/FeatureFlagSet;)V
-transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	getBaseBlock	(Lnet/minecraft/data/BlockFamily;Lnet/minecraft/data/BlockFamily$Variant;)Lnet/minecraft/world/level/block/Block;
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	generateCraftingRecipe	(Lnet/minecraft/data/BlockFamily;Lnet/minecraft/data/BlockFamily$Variant;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/ItemLike;)V
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	generateStonecutterRecipe	(Lnet/minecraft/data/BlockFamily;Lnet/minecraft/data/BlockFamily$Variant;Lnet/minecraft/world/level/block/Block;)V
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	getBaseBlockForCrafting	(Lnet/minecraft/data/BlockFamily;Lnet/minecraft/data/BlockFamily$Variant;)Lnet/minecraft/world/level/block/Block;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	insideOf	(Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/advancements/Criterion;
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	bredAnimal	()Lnet/minecraft/advancements/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	has	(Lnet/minecraft/advancements/criterion/MinMaxBounds$Ints;Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/advancements/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	has	(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/advancements/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	has	(Lnet/minecraft/tags/TagKey;)Lnet/minecraft/advancements/Criterion;

@@ -63,9 +63,9 @@ abstract class LevelChunkMixin {
 	}
 
 	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V", shift = At.Shift.AFTER))
-	private void onRemoveBlockEntity(BlockEntity blockEntity, CallbackInfo info, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
+	private void onRemoveBlockEntity(BlockEntity blockEntity, CallbackInfo info, @Local(name = "previousEntry") BlockEntity previousEntry) {
 		if (this.getLevel() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getLevel());
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(previousEntry, (ServerLevel) this.getLevel());
 		}
 	}
 
@@ -83,9 +83,9 @@ abstract class LevelChunkMixin {
 	}
 
 	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V"))
-	private void onRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local @Nullable BlockEntity removed) {
-		if (removed != null && this.getLevel() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getLevel());
+	private void onRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local(name = "removeThis") @Nullable BlockEntity removeThis) {
+		if (removeThis != null && this.getLevel() instanceof ServerLevel) {
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removeThis, (ServerLevel) this.getLevel());
 		}
 	}
 }

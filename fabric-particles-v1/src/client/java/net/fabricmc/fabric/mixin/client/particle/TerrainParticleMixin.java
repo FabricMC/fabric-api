@@ -55,7 +55,8 @@ abstract class TerrainParticleMixin extends SingleQuadParticle {
 					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/TerrainParticle;bCol:F", ordinal = 0, opcode = Opcodes.PUTFIELD),
 					to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z")
 			),
-			allow = 1
+			allow = 1,
+			name = "blockState"
 	)
 	private BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientLevel level, @Local(argsOnly = true) BlockPos blockPos) {
 		if (!ParticleRenderEvents.ALLOW_TERRAIN_PARTICLE_TINT.invoker().allowTerrainParticleTint(state, level, blockPos)) {

@@ -27,12 +27,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
+import net.fabricmc.fabric.mixin.transfer.ItemStackAccessor;
 
 public class VariantCodecs {
 	// AIR is valid (for some reason), don't use ItemStack#ITEM_CODEC
@@ -60,6 +60,6 @@ public class VariantCodecs {
 	);
 
 	private static DataResult<ItemVariant> validateComponents(ItemVariant variant) {
-		return ItemStack.validateComponents(PatchedDataComponentMap.fromPatch(variant.getItem().components(), variant.getComponentsPatch())).map(v -> variant);
+		return ItemStackAccessor.validateComponents(PatchedDataComponentMap.fromPatch(variant.getItem().components(), variant.getComponentsPatch())).map(v -> variant);
 	}
 }

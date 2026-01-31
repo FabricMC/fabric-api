@@ -91,8 +91,8 @@ public abstract class MultiPlayerGameModeMixin {
 	}
 
 	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
-	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockState blockState) {
-		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(minecraft.level, minecraft.player, pos, blockState);
+	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(name = "oldState") BlockState oldState) {
+		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(minecraft.level, minecraft.player, pos, oldState);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V"), method = "useItemOn", cancellable = true)

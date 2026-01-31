@@ -116,7 +116,7 @@ public interface FabricBlock {
 		 *
 		 * @return currently stored block id or null, if not set
 		 */
-		default @Nullable ResourceKey<Block> getId() {
+		default @Nullable ResourceKey<Block> blockId() {
 			throw new AssertionError("Implemented in Mixin");
 		}
 
@@ -126,8 +126,8 @@ public interface FabricBlock {
 		 * @return currently stored block id
 		 * @throws NullPointerException if id is not set
 		 */
-		default ResourceKey<Block> getIdOrThrow() {
-			return Objects.requireNonNull(this.getId(), "Block id not set");
+		default ResourceKey<Block> blockIdOrThrow() {
+			return Objects.requireNonNull(this.blockId(), "Block id not set");
 		}
 	}
 }

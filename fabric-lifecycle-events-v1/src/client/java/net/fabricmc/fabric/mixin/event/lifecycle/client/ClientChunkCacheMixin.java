@@ -50,15 +50,15 @@ public abstract class ClientChunkCacheMixin {
 	}
 
 	@Inject(method = "replaceWithPacketData", at = @At(value = "NEW", target = "net/minecraft/world/level/chunk/LevelChunk"))
-	private void onChunkUnload(int x, int z, FriendlyByteBuf buf, Map<Heightmap.Types, long[]> highmap, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> consumer, CallbackInfoReturnable<LevelChunk> info, @Local LevelChunk levelChunk) {
-		if (levelChunk != null) {
-			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, levelChunk);
+	private void onChunkUnload(int x, int z, FriendlyByteBuf buf, Map<Heightmap.Types, long[]> highmap, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> consumer, CallbackInfoReturnable<LevelChunk> info, @Local(name = "chunk") LevelChunk chunk) {
+		if (chunk != null) {
+			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, chunk);
 		}
 	}
 
 	@Inject(method = "drop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;drop(ILnet/minecraft/world/level/chunk/LevelChunk;)V"))
-	private void onChunkUnload(ChunkPos pos, CallbackInfo ci, @Local LevelChunk chunk) {
-		ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, chunk);
+	private void onChunkUnload(ChunkPos pos, CallbackInfo ci, @Local(name = "currentChunk") LevelChunk currentChunk) {
+		ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, currentChunk);
 	}
 
 	@Inject(
@@ -68,9 +68,9 @@ public abstract class ClientChunkCacheMixin {
 					target = "Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;inRange(II)Z"
 			)
 	)
-	private void onUpdateLoadDistance(int loadDistance, CallbackInfo ci, @Local ClientChunkCache.Storage clientChunkCacheStorage, @Local LevelChunk oldChunk, @Local ChunkPos chunkPos) {
-		if (!clientChunkCacheStorage.inRange(chunkPos.x(), chunkPos.z())) {
-			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, oldChunk);
+	private void onUpdateLoadDistance(int loadDistance, CallbackInfo ci, @Local(name = "newStorage") ClientChunkCache.Storage newStorage, @Local(name = "chunk") LevelChunk chunk, @Local(name = "pos") ChunkPos pos) {
+		if (!newStorage.inRange(pos.x(), pos.z())) {
+			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, chunk);
 		}
 	}
 }

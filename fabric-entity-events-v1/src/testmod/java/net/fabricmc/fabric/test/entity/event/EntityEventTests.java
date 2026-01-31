@@ -32,7 +32,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -56,6 +55,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.util.EventResult;
 
 public final class EntityEventTests implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityEventTests.class);
@@ -174,7 +174,7 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		EntitySleepEvents.ALLOW_BED.register((entity, sleepingPos, state, vanillaResult) -> {
-			return state.is(TEST_BED) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+			return state.is(TEST_BED) ? EventResult.ALLOW : EventResult.PASS;
 		});
 
 		EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, sleepingDirection) -> {
@@ -186,12 +186,12 @@ public final class EntityEventTests implements ModInitializer {
 			ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
 			if (stack.is(Items.GREEN_WOOL)) {
-				return InteractionResult.SUCCESS;
+				return EventResult.ALLOW;
 			} else if (stack.is(Items.RED_WOOL)) {
-				return InteractionResult.FAIL;
+				return EventResult.DENY;
 			}
 
-			return InteractionResult.PASS;
+			return EventResult.PASS;
 		});
 
 		EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, sleepingPos) -> {

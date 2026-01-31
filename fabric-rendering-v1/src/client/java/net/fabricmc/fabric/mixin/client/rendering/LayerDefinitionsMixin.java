@@ -36,13 +36,13 @@ import net.fabricmc.fabric.impl.client.rendering.ModelLayerImpl;
 @Mixin(LayerDefinitions.class)
 abstract class LayerDefinitionsMixin {
 	@Inject(method = "createRoots", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"))
-	private static void registerExtraModelData(CallbackInfoReturnable<Map<ModelLayerLocation, LayerDefinition>> info, @Local ImmutableMap.Builder<ModelLayerLocation, LayerDefinition> builder) {
+	private static void registerExtraModelData(CallbackInfoReturnable<Map<ModelLayerLocation, LayerDefinition>> info, @Local(name = "result") ImmutableMap.Builder<ModelLayerLocation, LayerDefinition> result) {
 		for (Map.Entry<ModelLayerLocation, ModelLayerRegistry.TexturedLayerDefinitionProvider> entry : ModelLayerImpl.PROVIDERS.entrySet()) {
-			builder.put(entry.getKey(), entry.getValue().createLayerDefinition());
+			result.put(entry.getKey(), entry.getValue().createLayerDefinition());
 		}
 
 		for (Map.Entry<ArmorModelSet<ModelLayerLocation>, ModelLayerRegistry.TexturedArmorModelSetProvider> entry : ModelLayerImpl.ARMOR_PROVIDERS.entrySet()) {
-			entry.getKey().putFrom(entry.getValue().createArmorModelSet(), builder);
+			entry.getKey().putFrom(entry.getValue().createArmorModelSet(), result);
 		}
 	}
 }

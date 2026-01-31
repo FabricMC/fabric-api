@@ -118,16 +118,16 @@ abstract class ModelManagerMixin implements FabricModelManager {
 
 	@Inject(method = "discoverModelDependencies", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelDiscovery;resolve()Ljava/util/Map;"))
 	private static void resolveExtraModels(
-			Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos result, CallbackInfoReturnable<?> cir,
-			@Local ModelDiscovery collector
+			Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos loadedClientInfos, CallbackInfoReturnable<?> cir,
+			@Local(name = "result") ModelDiscovery result
 	) {
 		// We know eventDispatcherFuture is available, as it is required by the item and block models (hookModels).
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
-		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(collector::addRoot);
+		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(result::addRoot);
 	}
 
 	@Inject(method = "apply", at = @At(value = "RETURN"))
-	private void onReturnUpload(CallbackInfo ci, @Local ModelBakery.BakingResult bakedModels) {
+	private void onReturnUpload(CallbackInfo ci, @Local(name = "bakedModels") ModelBakery.BakingResult bakedModels) {
 		extraModels = ((BakedModelsHooks) (Object) bakedModels).fabric_getExtraModels();
 	}
 
@@ -144,7 +144,7 @@ abstract class ModelManagerMixin implements FabricModelManager {
 	// code doesn't explicitly cast the model to BlockModel, and the enclosing method returns UnbakedModels per
 	// its return type, it's safe to return an UnbakedModel here.
 	@ModifyArg(method = "lambda$loadBlockModels$2(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lcom/mojang/datafixers/util/Pair;of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;"), index = 1)
-	private static Object actuallyDeserializeModel(Object originalModel, @Local Reader reader) {
+	private static Object actuallyDeserializeModel(Object originalModel, @Local(name = "reader") Reader reader) {
 		return UnbakedModelDeserializer.deserialize(reader);
 	}
 }

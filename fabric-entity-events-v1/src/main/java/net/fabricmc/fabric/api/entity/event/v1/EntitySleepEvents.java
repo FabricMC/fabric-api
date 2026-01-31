@@ -20,7 +20,6 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.util.EventResult;
 
 /**
  * Events about the sleep of {@linkplain LivingEntity living entities}.
@@ -107,14 +107,14 @@ public final class EntitySleepEvents {
 	 */
 	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, callbacks -> (entity, sleepingPos, state, vanillaResult) -> {
 		for (AllowBed callback : callbacks) {
-			InteractionResult result = callback.allowBed(entity, sleepingPos, state, vanillaResult);
+			EventResult result = callback.allowBed(entity, sleepingPos, state, vanillaResult);
 
-			if (result != InteractionResult.PASS) {
+			if (result != EventResult.PASS) {
 				return result;
 			}
 		}
 
-		return InteractionResult.PASS;
+		return EventResult.PASS;
 	});
 
 	/**
@@ -124,14 +124,14 @@ public final class EntitySleepEvents {
 	 */
 	public static final Event<AllowNearbyMonsters> ALLOW_NEARBY_MONSTERS = EventFactory.createArrayBacked(AllowNearbyMonsters.class, callbacks -> (player, sleepingPos, vanillaResult) -> {
 		for (AllowNearbyMonsters callback : callbacks) {
-			InteractionResult result = callback.allowNearbyMonsters(player, sleepingPos, vanillaResult);
+			EventResult result = callback.allowNearbyMonsters(player, sleepingPos, vanillaResult);
 
-			if (result != InteractionResult.PASS) {
+			if (result != EventResult.PASS) {
 				return result;
 			}
 		}
 
-		return InteractionResult.PASS;
+		return EventResult.PASS;
 	});
 
 	/**
@@ -251,16 +251,16 @@ public final class EntitySleepEvents {
 		/**
 		 * Checks whether a block is a valid bed for the entity.
 		 *
-		 * <p>Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
+		 * <p>Non-{@linkplain EventResult#PASS passing} return values cancel further callbacks.
 		 *
 		 * @param entity        the sleeping entity
 		 * @param sleepingPos   the position of the block
 		 * @param state         the block state to check
 		 * @param vanillaResult {@code true} if vanilla allows the block, {@code false} otherwise
-		 * @return {@link InteractionResult#SUCCESS} if the bed is valid, {@link InteractionResult#FAIL} if it's not,
-		 *         {@link InteractionResult#PASS} to fall back to other callbacks
+		 * @return {@link EventResult#ALLOW} if the bed is valid, {@link EventResult#DENY} if it's not,
+		 *         {@link EventResult#PASS} to fall back to other callbacks
 		 */
-		InteractionResult allowBed(LivingEntity entity, BlockPos sleepingPos, BlockState state, boolean vanillaResult);
+		EventResult allowBed(LivingEntity entity, BlockPos sleepingPos, BlockState state, boolean vanillaResult);
 	}
 
 	@FunctionalInterface
@@ -268,15 +268,15 @@ public final class EntitySleepEvents {
 		/**
 		 * Checks whether the current time of day is valid for sleeping.
 		 *
-		 * <p>Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
+		 * <p>Non-{@linkplain EventResult#PASS passing} return values cancel further callbacks.
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPos() sleeping position} of the player
 		 * @param vanillaResult {@code true} if vanilla allows the time, {@code false} otherwise
-		 * @return {@link InteractionResult#SUCCESS} if the time is valid, {@link InteractionResult#FAIL} if it's not,
-		 *         {@link InteractionResult#PASS} to fall back to other callbacks
+		 * @return {@link EventResult#ALLOW} if the time is valid, {@link EventResult#DENY} if it's not,
+		 *         {@link EventResult#PASS} to fall back to other callbacks
 		 */
-		InteractionResult allowSleepTime(Player player, BlockPos sleepingPos, boolean vanillaResult);
+		EventResult allowSleepTime(Player player, BlockPos sleepingPos, boolean vanillaResult);
 	}
 
 	@FunctionalInterface
@@ -284,15 +284,15 @@ public final class EntitySleepEvents {
 		/**
 		 * Checks whether a player can sleep when monsters are nearby.
 		 *
-		 * <p>Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
+		 * <p>Non-{@linkplain EventResult#PASS passing} return values cancel further callbacks.
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPos() sleeping position} of the player
 		 * @param vanillaResult {@code true} if vanilla's monster check succeeded (there were no monsters), {@code false} otherwise
-		 * @return {@link InteractionResult#SUCCESS} to allow sleeping, {@link InteractionResult#FAIL} to prevent sleeping,
-		 *         {@link InteractionResult#PASS} to fall back to other callbacks
+		 * @return {@link EventResult#ALLOW} to allow sleeping, {@link EventResult#DENY} to prevent sleeping,
+		 *         {@link EventResult#PASS} to fall back to other callbacks
 		 */
-		InteractionResult allowNearbyMonsters(Player player, BlockPos sleepingPos, boolean vanillaResult);
+		EventResult allowNearbyMonsters(Player player, BlockPos sleepingPos, boolean vanillaResult);
 	}
 
 	@FunctionalInterface

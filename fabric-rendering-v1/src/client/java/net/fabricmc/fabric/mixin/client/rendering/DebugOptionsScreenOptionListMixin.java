@@ -38,7 +38,7 @@ public class DebugOptionsScreenOptionListMixin {
 	}
 
 	@WrapOperation(method = "updateSearch", at = @At(value = "INVOKE", target = "Ljava/lang/String;contains(Ljava/lang/CharSequence;)Z"))
-	private boolean searchPath(String instance, CharSequence searchStrings, Operation<Boolean> original, @Local Map.Entry<Identifier, DebugScreenEntry> entry) {
+	private boolean searchPath(String instance, CharSequence searchStrings, Operation<Boolean> original, @Local(name = "entry") Map.Entry<Identifier, DebugScreenEntry> entry) {
 		final String namespace = entry.getKey().getNamespace();
 		return original.call(instance, searchStrings)
 				|| (!Identifier.DEFAULT_NAMESPACE.equals(namespace) && namespace.contains(searchStrings));

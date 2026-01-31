@@ -47,6 +47,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin({BlockEntity.class, Entity.class, Level.class, ChunkAccess.class})
@@ -156,10 +157,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				}
 			});
 
-			if (this.deferredSyncedAttachments != null) {
-				// Avoid unnecessary extra syncing after initial sync
-				this.deferredSyncedAttachments.clear();
-			}
+			// Avoid unnecessary extra syncing after initial sync
+			fabric_clearDeferredSyncChanges();
 		}
 	}
 
@@ -189,7 +188,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			syncedAttachments.remove(type);
 
 			if (fabric_shouldDeferSync()) {
-				deferredSyncedAttachments.remove(type);
+				deferredSyncedAttachments.add(type);
 			}
 		} else {
 			if (syncedAttachments == null) {
@@ -222,27 +221,43 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public Map<ServerPlayer, List<AttachmentChange>> fabric_computeAndClearDeferredSyncChanges(List<ServerPlayer> players) {
-		if (syncedAttachments == null || deferredSyncedAttachments == null) {
-			return Map.of();
+	public void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		if (syncedAttachments == null || deferredSyncedAttachments == null || deferredSyncedAttachments.isEmpty()) {
+			return;
 		}
 
-		Map<ServerPlayer, List<AttachmentChange>> changesPerPlayer = new IdentityHashMap<>();
+		List<AttachmentChange> deferredChanges = deferredSyncedAttachments.stream().map(type -> {
+			AttachmentChange change = syncedAttachments.get(type);
 
-		for (AttachmentType<?> type : deferredSyncedAttachments) {
-			AttachmentChange change = Objects.requireNonNull(syncedAttachments.get(type));
+			if (change == null) { // attachment was removed
+				change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, null, fabric_getRegistryAccess());
+			}
 
-			for (ServerPlayer player : players) {
-				List<AttachmentChange> changes = changesPerPlayer.computeIfAbsent(player, _ -> new ArrayList<>());
+			return change;
+		}).toList();
 
-				if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-					changes.add(change);
+		for (ServerPlayer player : players) {
+			List<AttachmentChange> syncableChanges = new ArrayList<>();
+
+			for (AttachmentChange change : deferredChanges) {
+				if (((AttachmentTypeImpl<?>) change.type()).syncPredicate().test(this, player)) {
+					syncableChanges.add(change);
 				}
+			}
+
+			if (!syncableChanges.isEmpty()) {
+				AttachmentSync.trySync(syncableChanges, player);
 			}
 		}
 
 		deferredSyncedAttachments.clear();
-		return changesPerPlayer;
+	}
+
+	@Override
+	public void fabric_clearDeferredSyncChanges() {
+		if (deferredSyncedAttachments != null) {
+			deferredSyncedAttachments.clear();
+		}
 	}
 
 	@Override
