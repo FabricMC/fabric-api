@@ -188,7 +188,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			syncedAttachments.remove(type);
 
 			if (fabric_shouldDeferSync()) {
-				deferredSyncedAttachments.remove(type);
+				deferredSyncedAttachments.add(type);
 			}
 		} else {
 			if (syncedAttachments == null) {
@@ -226,8 +226,15 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			return;
 		}
 
-		List<AttachmentChange> deferredChanges = syncedAttachments.values().stream()
-				.filter(change -> deferredSyncedAttachments.contains(change.type())).toList();
+		List<AttachmentChange> deferredChanges = deferredSyncedAttachments.stream().map(type -> {
+			AttachmentChange change = syncedAttachments.get(type);
+
+			if (change == null) { // attachment was removed
+				change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, null, fabric_getRegistryAccess());
+			}
+
+			return change;
+		}).toList();
 
 		for (ServerPlayer player : players) {
 			List<AttachmentChange> syncableChanges = new ArrayList<>();
