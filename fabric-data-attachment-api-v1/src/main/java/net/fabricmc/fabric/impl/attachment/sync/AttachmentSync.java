@@ -82,6 +82,11 @@ public class AttachmentSync implements ModInitializer {
 	}
 
 	public static void trySync(List<AttachmentChange> changes, ServerPlayer player) {
+		if (changes.size() == 1) {
+			trySync(changes.getFirst(), player);
+			return;
+		}
+
 		Set<Identifier> supported = ((SupportedAttachmentsConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
 				.fabric_getSupportedAttachments();
 
