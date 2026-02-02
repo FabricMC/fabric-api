@@ -60,8 +60,10 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private ItemRenderTypeGetter renderTypeGetter;
 	private ItemStackRenderState.FoilType defaultFoilType;
 	private boolean ignoreQuadFoilType;
+	private boolean translucent;
 
 	private PoseStack.Pose specialFoilPose;
+	// TODO: reuse this between submits
 	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * FOIL_TYPE_COUNT];
 
 	public void renderItem(
@@ -76,7 +78,8 @@ public class ItemRenderContext extends AbstractRenderContext {
 			RenderType renderType,
 			@Nullable ItemRenderTypeGetter renderTypeGetter,
 			ItemStackRenderState.FoilType foilType,
-			boolean ignoreQuadFoilType
+			boolean ignoreQuadFoilType,
+			boolean translucent
 	) {
 		this.displayContext = displayContext;
 		pose = poseStack.last();
@@ -89,6 +92,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		this.renderTypeGetter = renderTypeGetter;
 		defaultFoilType = foilType;
 		this.ignoreQuadFoilType = ignoreQuadFoilType;
+		this.translucent = translucent;
 
 		bufferQuads(vanillaQuads, mesh);
 
@@ -119,7 +123,13 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final VertexConsumer vertexConsumer = getVertexConsumer(quad.atlas(), quad.chunkLayer(), quad.foilType());
+		final RenderType renderType = getRenderType(quad.atlas(), quad.chunkLayer());
+
+		if (renderType.hasBlending() != translucent) {
+			return;
+		}
+
+		final VertexConsumer vertexConsumer = getVertexConsumer(renderType, quad.foilType());
 
 		tintQuad(quad);
 		shadeQuad(quad, quad.emissive());
@@ -152,9 +162,8 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer quadLayer, ItemStackRenderState.@Nullable FoilType quadFoilType) {
+	private RenderType getRenderType(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer quadLayer) {
 		RenderType renderType;
-		ItemStackRenderState.FoilType foilType;
 
 		if (renderTypeGetter != null) {
 			renderType = renderTypeGetter.renderType(quadAtlas, quadLayer);
@@ -165,6 +174,12 @@ public class ItemRenderContext extends AbstractRenderContext {
 		} else {
 			renderType = defaultRenderType;
 		}
+
+		return renderType;
+	}
+
+	private VertexConsumer getVertexConsumer(RenderType renderType, ItemStackRenderState.@Nullable FoilType quadFoilType) {
+		ItemStackRenderState.FoilType foilType;
 
 		if (ignoreQuadFoilType || quadFoilType == null) {
 			foilType = defaultFoilType;

@@ -16,12 +16,16 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer;
 
+import java.util.function.Predicate;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -55,21 +59,19 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
+	public void tesselateBlock(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, boolean cull, long seed, int overlay) {
 		TerrainLikeRenderContext.POOL.get().bufferModel(
-				level, model, state, pos,
-				poseStack, bufferSource, cull, seed, overlay);
+				level, model, state, pos, poseStack, bufferSource, layerFilter, cull, seed, overlay);
 	}
 
 	@Override
-	public void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		SimpleBlockRenderContext.POOL.get().bufferModel(pose,
-				bufferSource, model, red, green, blue, light, overlay,
-				level, pos, state);
+	public void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		SimpleBlockRenderContext.POOL.get().bufferModel(
+				pose, bufferSource, layerFilter, model, red, green, blue, light, overlay, level, pos, state);
 	}
 
 	@Override
-	public void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
+	public void renderSingleBlock(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
 		RenderShape renderShape = state.getRenderShape();
 
 		if (renderShape != RenderShape.INVISIBLE) {
@@ -78,9 +80,9 @@ public class IndigoRenderer implements Renderer {
 			float red = (tint >> 16 & 255) / 255.0F;
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
-			FabricModelBlockRenderer.render(
+			FabricModelBlockRenderer.renderModel(
 					poseStack.last(), ChunkSectionLayerHelper.entityDelegate(
-							bufferSource), model, red, green, blue, light, overlay,
+							bufferSource), layerFilter, model, red, green, blue, light, overlay,
 					level, pos, state);
 		}
 	}
