@@ -41,7 +41,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.WorldBorderRenderer;
@@ -124,38 +123,39 @@ public abstract class LevelRendererMixin {
 	}
 
 	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
-	private void beforeEntitySubmission(CallbackInfo ci) {
-		LevelRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
+	private void beforeCollectSubmits(CallbackInfo ci) {
+		LevelRenderEvents.BEFORE_COLLECT_SUBMITS.invoker().beforeCollectSubmits(renderContext);
 	}
 
-	@WrapOperation(method = "lambda$addMainPass$0",
-			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V")
-	)
-	private void afterEntityRender(OutlineBufferSource instance, Operation<Void> original) {
-		original.call(instance);
-		LevelRenderEvents.AFTER_ENTITIES.invoker().afterEntities(renderContext);
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V", ordinal = 0))
+	private void afterRenderSolidFeatures(CallbackInfo ci) {
+		LevelRenderEvents.AFTER_SOLID_FEATURES.invoker().afterSolidFeatures(renderContext);
 	}
 
-	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/debug/DebugRenderer;emitGizmos(Lnet/minecraft/client/renderer/culling/Frustum;DDDF)V"))
-	private void beforeDebugRender(CallbackInfo ci) {
-		LevelRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(renderContext);
-	}
-
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucentTerrain"))
-	private void beforeTranslucentRender(CallbackInfo ci) {
-		LevelRenderEvents.BEFORE_TRANSLUCENT.invoker().beforeTranslucent(renderContext);
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=destroyProgress"))
+	private void afterRenderTranslucentFeatures(CallbackInfo ci) {
+		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.invoker().afterTranslucentFeatures(renderContext);
 	}
 
 	@Inject(method = "renderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/CameraRenderState;pos:Lnet/minecraft/world/phys/Vec3;", opcode = Opcodes.GETFIELD), cancellable = true)
-	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource consumers, PoseStack poseStack, boolean bl, LevelRenderState worldRenderState, CallbackInfo ci) {
+	private void beforeRenderBlockOutline(MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean translucent, LevelRenderState levelRenderState, CallbackInfo ci) {
 		if (!LevelRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.levelState().blockOutlineRenderState)) {
-			consumers.endLastBatch();
+			bufferSource.endLastBatch();
 			ci.cancel();
 		}
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V"))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;finalizeGizmoCollection()V"))
+	private void beforeRenderGizmos(CallbackInfo ci) {
+		LevelRenderEvents.BEFORE_GIZMOS.invoker().beforeGizmos(renderContext);
+	}
+
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucentTerrain"))
+	private void beforeTranslucentRender(CallbackInfo ci) {
+		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.invoker().beforeTranslucentTerrain(renderContext);
+	}
+
+	@Inject(method = "lambda$addMainPass$0", at = @At("RETURN"))
 	private void endMainRender(CallbackInfo ci) {
 		LevelRenderEvents.END_MAIN.invoker().endMain(renderContext);
 	}

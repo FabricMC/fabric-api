@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.rendering.v1.level;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.world.phys.HitResult;
 
@@ -87,8 +88,8 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called after all chunks to be rendered are uploaded to GPU,
-	 * before any chunks are drawn to the framebuffer.
+	 * Called at the start of the main pass, after the sky is drawn to the framebuffer and all chunks to be rendered are
+	 * uploaded to GPU, and before any chunks are drawn to the framebuffer.
 	 */
 	public static final Event<StartMain> START_MAIN = EventFactory.createArrayBacked(StartMain.class, callbacks -> context -> {
 		for (final StartMain callback : callbacks) {
@@ -97,65 +98,32 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called after the {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#SOLID SOLID}, {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#CUTOUT CUTOUT},
-	 * and {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#CUTOUT CUTOUT_MIPPED} terrain layers are drawn to the framebuffer,
-	 * before entity and block entities are submitted and drawn to the framebuffer.
-	 *
-	 * <p>Use to render non-translucent terrain to the framebuffer.
-	 *
-	 * <p>Note that 3rd-party renderers may combine these passes or otherwise alter the
-	 * rendering pipeline for sake of performance or features. This can break direct writes to the
-	 * framebuffer.  Use this event for cases that cannot be satisfied by FabricBakedModel,
-	 * BlockEntityRenderer or other existing abstraction. If at all possible, use an existing terrain
-	 * RenderLayer instead of outputting to the framebuffer directly with GL calls.
-	 *
-	 * <p>The consumer is responsible for setup and tear down of GL state appropriate for the intended output.
-	 *
-	 * <p>Because solid and cutout quads are depth-tested, order of output does not matter except to improve
-	 * culling performance, which should not be significant after primary terrain rendering. This means
-	 * mods that currently hook calls to individual render layers can simply execute them all at once when
-	 * the event is called.
-	 * However, you should not access any data outside the provided render states. If more data is needed,
-	 * extract them during {@link #END_EXTRACTION}.
+	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the framebuffer, and before
+	 * any submit nodes from entities, block entities, or particles are added to the submit node storage.
 	 */
-	public static final Event<BeforeEntities> BEFORE_ENTITIES = EventFactory.createArrayBacked(BeforeEntities.class, callbacks -> context -> {
-		for (final BeforeEntities callback : callbacks) {
-			callback.beforeEntities(context);
+	public static final Event<BeforeCollectSubmits> BEFORE_COLLECT_SUBMITS = EventFactory.createArrayBacked(BeforeCollectSubmits.class, callbacks -> context -> {
+		for (final BeforeCollectSubmits callback : callbacks) {
+			callback.beforeCollectSubmits(context);
 		}
 	});
 
 	/**
-	 * Called after entities and block entities are drawn to the framebuffer.
+	 * Called after the solid geometry of submits collected from entities, block entities, and particles are drawn to
+	 * the framebuffer.
 	 */
-	public static final Event<AfterEntities> AFTER_ENTITIES = EventFactory.createArrayBacked(AfterEntities.class, callbacks -> context -> {
-		for (final AfterEntities callback : callbacks) {
-			callback.afterEntities(context);
+	public static final Event<AfterSolidFeatures> AFTER_SOLID_FEATURES = EventFactory.createArrayBacked(AfterSolidFeatures.class, callbacks -> context -> {
+		for (final AfterSolidFeatures callback : callbacks) {
+			callback.afterSolidFeatures(context);
 		}
 	});
 
 	/**
-	 * Called after entities, block breaking, and most non-translucent objects are drawn to the framebuffer,
-	 * before vanilla debug renderers and translucency are drawn to the framebuffer.
-	 *
-	 * <p>Use to drawn lines, overlays and other content similar to vanilla debug renders.
+	 * Called after the translucent geometry of submits collected from entities and block entities are drawn to the
+	 * framebuffer. Note that this excludes translucent particle geometry, which is rendered much later.
 	 */
-	public static final Event<DebugRender> BEFORE_DEBUG_RENDER = EventFactory.createArrayBacked(DebugRender.class, callbacks -> context -> {
-		for (final DebugRender callback : callbacks) {
-			callback.beforeDebugRender(context);
-		}
-	});
-
-	/**
-	 * Called after entities and block entities are drawn to the framebuffer,
-	 * before translucent terrain is drawn to the framebuffer,
-	 * and before translucency combine has happened in fabulous mode.
-	 *
-	 * <p>Use to draw on top of the main and entity framebuffer targets
-	 * before clouds and weather are drawn.
-	 */
-	public static final Event<BeforeTranslucent> BEFORE_TRANSLUCENT = EventFactory.createArrayBacked(BeforeTranslucent.class, callbacks -> context -> {
-		for (final BeforeTranslucent callback : callbacks) {
-			callback.beforeTranslucent(context);
+	public static final Event<AfterTranslucentFeatures> AFTER_TRANSLUCENT_FEATURES = EventFactory.createArrayBacked(AfterTranslucentFeatures.class, callbacks -> context -> {
+		for (final AfterTranslucentFeatures callback : callbacks) {
+			callback.afterTranslucentFeatures(context);
 		}
 	});
 
@@ -189,11 +157,31 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called at the end of the main render pass, after entities, block entities,
-	 * terrain, and translucent terrain are drawn to the framebuffer,
-	 * before particles, clouds, weather, and late debug are drawn to the framebuffer.
-	 *
-	 * <p>Use to draw on top of the level before hand and GUI are drawn.
+	 * Called after all geometry of submits collected from entities, block entities, and particles (except translucent
+	 * particle geometry), the block breaking overlay, and the block outline for solid blocks are drawn to the
+	 * framebuffer, and before gizmos are collected.
+	 */
+	public static final Event<BeforeGizmos> BEFORE_GIZMOS = EventFactory.createArrayBacked(BeforeGizmos.class, callbacks -> context -> {
+		for (final BeforeGizmos callback : callbacks) {
+			callback.beforeGizmos(context);
+		}
+	});
+
+	/**
+	 * Called after opaque terrain, entities, block entities, solid particles, overlays, and gizmos are drawn to the
+	 * framebuffer, before {@linkplain ChunkSectionLayerGroup#TRANSLUCENT translucent} terrain and translucent particles
+	 * are drawn to the framebuffer.
+	 */
+	public static final Event<BeforeTranslucentTerrain> BEFORE_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(BeforeTranslucentTerrain.class, callbacks -> context -> {
+		for (final BeforeTranslucentTerrain callback : callbacks) {
+			callback.beforeTranslucentTerrain(context);
+		}
+	});
+
+	/**
+	 * Called at the end of the main render pass, after terrain, entities, block entities, and particles are drawn to
+	 * the framebuffer, and before clouds, weather, and late debug are drawn to the framebuffer and before fabulous
+	 * translucent framebuffers are combined.
 	 */
 	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
 		for (final EndMain callback : callbacks) {
@@ -217,28 +205,33 @@ public final class LevelRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface BeforeEntities {
-		void beforeEntities(LevelRenderContext context);
+	public interface BeforeCollectSubmits {
+		void beforeCollectSubmits(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface AfterEntities {
-		void afterEntities(LevelRenderContext context);
+	public interface AfterSolidFeatures {
+		void afterSolidFeatures(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface DebugRender {
-		void beforeDebugRender(LevelRenderContext context);
-	}
-
-	@FunctionalInterface
-	public interface BeforeTranslucent {
-		void beforeTranslucent(LevelRenderContext context);
+	public interface AfterTranslucentFeatures {
+		void afterTranslucentFeatures(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface BeforeBlockOutline {
 		boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState);
+	}
+
+	@FunctionalInterface
+	public interface BeforeGizmos {
+		void beforeGizmos(LevelRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface BeforeTranslucentTerrain {
+		void beforeTranslucentTerrain(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
