@@ -42,7 +42,7 @@ public class Indigo {
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 	public static final boolean FIX_LUMINOUS_AO_SHADE;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
 	/** If set the default config file will be generated on startup, restoring pre 26.1 behavior. */
 	private static final boolean GENERATE_CONFIG_FILE = System.getProperty("fabric.indigo.generateConfigFile") != null;
 

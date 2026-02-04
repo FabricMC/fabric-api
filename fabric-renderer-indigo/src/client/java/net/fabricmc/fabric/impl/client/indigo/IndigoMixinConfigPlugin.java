@@ -32,6 +32,13 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	public static boolean shouldApplyIndigo() {
 		if (needsLoad) {
 			indigoApplicable = RendererProvider.getChosenProvider().id().equals("fabric-renderer-indigo");
+
+			if (indigoApplicable) {
+				Indigo.LOGGER.info("[Indigo] Applying Indigo renderer!");
+			} else {
+				Indigo.LOGGER.info("[Indigo] Different rendering plugin detected; not applying Indigo.");
+			}
+
 			needsLoad = false;
 		}
 
