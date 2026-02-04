@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.renderer;
 
+import java.util.ServiceLoader;
+
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.RendererReadyEntrypoint;
+import net.fabricmc.loader.api.FabricLoader;
 
-public final class RendererManager {
+public final class RendererManager implements ClientModInitializer {
 	private static Renderer activeRenderer;
-
-	private RendererManager() {
-	}
 
 	public static Renderer getRenderer() {
 		if (activeRenderer == null) {
@@ -42,5 +44,27 @@ public final class RendererManager {
 		}
 
 		activeRenderer = renderer;
+		FabricLoader.getInstance().invokeEntrypoints(
+				"fabric-renderer-ready",
+				RendererReadyEntrypoint.class,
+				RendererReadyEntrypoint::onRendererReady
+		);
+	}
+
+	@Override
+	public void onInitializeClient() {
+		ServiceLoader<Renderer> serviceLoader = ServiceLoader.load(Renderer.class);
+		Renderer renderer = null;
+
+		for (Renderer next : serviceLoader) {
+			if (next.isEnabled()) {
+				renderer = next;
+				break;
+			}
+		}
+
+		if (renderer != null) {
+			registerRenderer(renderer);
+		}
 	}
 }

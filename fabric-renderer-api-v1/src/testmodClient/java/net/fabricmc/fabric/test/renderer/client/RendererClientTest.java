@@ -19,13 +19,17 @@ package net.fabricmc.fabric.test.renderer.client;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
+import net.fabricmc.fabric.api.client.renderer.v1.RendererReadyEntrypoint;
 import net.fabricmc.fabric.api.client.rendering.v1.ChunkSectionLayerMap;
 import net.fabricmc.fabric.test.renderer.Registration;
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
-public final class RendererClientTest implements ClientModInitializer {
+public final class RendererClientTest implements ClientModInitializer, RendererReadyEntrypoint {
+	private static boolean entrypointCalled;
+
 	@Override
 	public void onInitializeClient() {
 		UnbakedModelDeserializer.register(RendererTest.id("builtin_mesh"), new BuiltInMeshUnbakedModelDeserializer());
@@ -38,5 +42,16 @@ public final class RendererClientTest implements ClientModInitializer {
 		// We don't specify a material for the frame mesh,
 		// so it will use the default material, i.e. the one from ChunkSectionLayers.
 		ChunkSectionLayerMap.putBlock(Registration.FRAME_BLOCK, ChunkSectionLayer.CUTOUT);
+
+		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
+			if (!entrypointCalled) {
+				throw new IllegalStateException("RendererReadyEntrypoint was not invoked!");
+			}
+		});
+	}
+
+	@Override
+	public void onRendererReady() {
+		entrypointCalled = true;
 	}
 }

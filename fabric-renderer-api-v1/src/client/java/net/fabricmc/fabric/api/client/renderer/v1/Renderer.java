@@ -73,15 +73,10 @@ public interface Renderer {
 	}
 
 	/**
-	 * Rendering extension mods must implement {@link Renderer} and
-	 * call this method during initialization.
-	 *
-	 * <p>Only one {@link Renderer} plug-in can be active in any game instance.
-	 * If a second mod attempts to register, this method will throw an UnsupportedOperationException.
+	 * @return whether this renderer should be registered
 	 */
-	static void register(Renderer renderer) {
-		RendererManager.registerRenderer(renderer);
-	}
+	@ApiStatus.OverrideOnly
+	boolean isEnabled();
 
 	/**
 	 * Obtain a new {@link MutableMesh} instance to build optimized meshes and create baked models
