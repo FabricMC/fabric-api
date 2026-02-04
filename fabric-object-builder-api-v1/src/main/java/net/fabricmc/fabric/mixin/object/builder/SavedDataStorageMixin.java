@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.datafix.DataFixTypes;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.SavedDataStorage;
 
-@Mixin(DimensionDataStorage.class)
-class DimensionDataStorageMixin {
+@Mixin(SavedDataStorage.class)
+class SavedDataStorageMixin {
 	/**
 	 * Handle mods passing a null DataFixTypes to a PersistentState.Type.
 	 */

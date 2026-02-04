@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.resource;
 
 import java.net.Proxy;
 import java.util.List;
+import java.util.Optional;
 
 import com.mojang.datafixers.DataFixer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,6 +37,7 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.KnownPack;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceStore;
@@ -61,7 +63,7 @@ public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKn
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services apiServices, LevelLoadListener chunkLoadProgress, CallbackInfo ci) {
+	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Optional<GameRules> gameRules, Proxy proxy, DataFixer dataFixer, Services apiServices, LevelLoadListener chunkLoadProgress, CallbackInfo ci) {
 		this.originalKnownPacks = worldStem.resourceManager().listPacks().flatMap(pack -> pack.location().knownPackInfo().stream()).toList();
 	}
 

@@ -40,11 +40,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(BlockEntity.class)
@@ -113,18 +110,20 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
-		PlayerLookup.tracking((BlockEntity) (Object) this)
-				.forEach(player -> {
-					if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-						AttachmentSync.trySync(change, player);
-					}
-				});
+		if (this.level instanceof ServerLevel serverLevel) {
+			serverLevel.getChunkSource().blockChanged(this.worldPosition);
+		}
 	}
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
 		// Persistent attachments are read at a time with no level
 		return !this.hasLevel() || !this.level.isClientSide();
+	}
+
+	@Override
+	public boolean fabric_shouldDeferSync() {
+		return true;
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public class SimpleJsonResourceReloadListenerMixin {
 		if (resourceData.isJsonObject()) {
 			JsonObject obj = resourceData.getAsJsonObject();
 
-			final String dataType = ((FileToIdConverterAccessor) resourceFinder).getDirectoryName();
+			final String dataType = resourceFinder.prefix();
 
 			if (!ResourceConditionsImpl.applyResourceConditions(obj, dataType, entry.getKey(), registryInfo)) {
 				return DataResult.success(SKIP_DATA_MARKER);

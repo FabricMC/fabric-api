@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -40,7 +41,7 @@ import net.minecraft.world.level.storage.ValueInput;
  */
 public class AttachmentSavedData extends SavedData {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentSavedData.class);
-	public static final String ID = "fabric_attachments";
+	public static final Identifier ID = Identifier.fromNamespaceAndPath("fabric", "attachments");
 	private final AttachmentTargetImpl levelTarget;
 	private final boolean wasSerialized;
 

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.gametest.threading;
 
+import java.util.Optional;
+
 import com.google.common.base.Preconditions;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
@@ -34,6 +36,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.util.thread.BlockableEventLoop;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
@@ -108,10 +111,10 @@ public class MinecraftMixin {
 	}
 
 	@Inject(method = "doWorldLoad", at = @At("HEAD"), cancellable = true)
-	private void deferStartIntegratedServer(LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, boolean newWorld, CallbackInfo ci) {
+	private void deferStartIntegratedServer(LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Optional<GameRules> gameRules, boolean newWorld, CallbackInfo ci) {
 		if (ThreadingImpl.taskToRun != null) {
 			// don't start the integrated server (which busywaits) inside a task
-			deferredTask = () -> Minecraft.getInstance().doWorldLoad(storageAccess, dataPackManager, worldStem, newWorld);
+			deferredTask = () -> Minecraft.getInstance().doWorldLoad(storageAccess, dataPackManager, worldStem, gameRules, newWorld);
 			ci.cancel();
 		}
 	}

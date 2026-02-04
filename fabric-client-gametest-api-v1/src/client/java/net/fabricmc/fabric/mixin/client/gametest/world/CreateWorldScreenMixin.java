@@ -40,7 +40,7 @@ public class CreateWorldScreenMixin {
 	@Inject(method = "onCreate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/WorldOpenFlows;confirmWorldCreation(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;Lcom/mojang/serialization/Lifecycle;Ljava/lang/Runnable;Z)V"), cancellable = true)
 	private void createLevelDataForServers(CallbackInfo ci, @Local(name = "finalLayers") LayeredRegistryAccess<RegistryLayer> finalLayers, @Local(name = "worldData") PrimaryLevelData worldData) {
 		if (DedicatedServerImplUtil.saveLevelDataTo != null) {
-			CompoundTag levelDatInner = worldData.createTag(finalLayers.compositeAccess(), null);
+			CompoundTag levelDatInner = worldData.createTag(null);
 			CompoundTag levelDat = new CompoundTag();
 			levelDat.put("Data", levelDatInner);
 

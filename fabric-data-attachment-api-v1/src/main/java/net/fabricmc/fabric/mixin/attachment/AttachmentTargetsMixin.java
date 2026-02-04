@@ -16,9 +16,13 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -43,6 +47,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin({BlockEntity.class, Entity.class, Level.class, ChunkAccess.class})
@@ -53,6 +58,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, AttachmentChange> syncedAttachments = null;
+	@Unique
+	@Nullable
+	private Set<AttachmentType<?>> deferredSyncedAttachments = null;
 	@Unique
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Event<OnAttachedSet<?>>> attachedChangedListeners = null;
@@ -148,6 +156,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 					acknowledgeSynced(type, value, input.lookup());
 				}
 			});
+
+			// Avoid unnecessary extra syncing after initial sync
+			fabric_clearDeferredSyncChanges();
 		}
 	}
 
@@ -175,12 +186,24 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			}
 
 			syncedAttachments.remove(type);
+
+			if (fabric_shouldDeferSync()) {
+				deferredSyncedAttachments.add(type);
+			}
 		} else {
 			if (syncedAttachments == null) {
 				syncedAttachments = new IdentityHashMap<>();
 			}
 
 			syncedAttachments.put(type, change);
+
+			if (fabric_shouldDeferSync()) {
+				if (deferredSyncedAttachments == null) {
+					deferredSyncedAttachments = Collections.newSetFromMap(new IdentityHashMap<>());
+				}
+
+				deferredSyncedAttachments.add(type);
+			}
 		}
 	}
 
@@ -194,6 +217,46 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			if (((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().test(this, player)) {
 				changeOutput.accept(entry.getValue());
 			}
+		}
+	}
+
+	@Override
+	public void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		if (syncedAttachments == null || deferredSyncedAttachments == null || deferredSyncedAttachments.isEmpty()) {
+			return;
+		}
+
+		List<AttachmentChange> deferredChanges = deferredSyncedAttachments.stream().map(type -> {
+			AttachmentChange change = syncedAttachments.get(type);
+
+			if (change == null) { // attachment was removed
+				change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, null, fabric_getRegistryAccess());
+			}
+
+			return change;
+		}).toList();
+
+		for (ServerPlayer player : players) {
+			List<AttachmentChange> syncableChanges = new ArrayList<>();
+
+			for (AttachmentChange change : deferredChanges) {
+				if (((AttachmentTypeImpl<?>) change.type()).syncPredicate().test(this, player)) {
+					syncableChanges.add(change);
+				}
+			}
+
+			if (!syncableChanges.isEmpty()) {
+				AttachmentSync.trySync(syncableChanges, player);
+			}
+		}
+
+		deferredSyncedAttachments.clear();
+	}
+
+	@Override
+	public void fabric_clearDeferredSyncChanges() {
+		if (deferredSyncedAttachments != null) {
+			deferredSyncedAttachments.clear();
 		}
 	}
 

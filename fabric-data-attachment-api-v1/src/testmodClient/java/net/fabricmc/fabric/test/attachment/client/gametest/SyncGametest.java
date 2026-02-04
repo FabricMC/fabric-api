@@ -34,6 +34,7 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -138,6 +139,9 @@ public class SyncGametest implements FabricClientGameTest {
 
 					// check that the client changes the render distance as requested
 					player.setAttached(AttachmentTestMod.SYNCED_RENDER_DISTANCE, 8);
+
+					// check that block entity deferred syncing works correctly
+					set(server.overworld().getBlockEntity(state.furnacePos), AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 				});
 
 				// safety
@@ -147,14 +151,16 @@ public class SyncGametest implements FabricClientGameTest {
 				context.runOnClient(client -> {
 					ClientLevel level = Objects.requireNonNull(client.level);
 					Entity villager = level.getEntity(state.villagerId);
+					BlockEntity furnace = level.getBlockEntity(state.furnacePos);
 
-					assertHasSyncedWithAll(level.getBlockEntity(state.furnacePos));
+					assertHasSyncedWithAll(furnace);
 					assertHasSyncedWithAll(villager);
 					assertHasSyncedWithAll(level.getChunk(0, 0));
 					assertHasSyncedWithAll(client.player);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_ITEM);
 					assertHasSynced(villager, AttachmentTestMod.SYNCED_LARGE);
+					assertHasSynced(furnace, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 
 					// `level` is the overworld here
 					assertHasNotSynced(level, AttachmentTestMod.SYNCED_WITH_ALL);
