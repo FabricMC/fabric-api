@@ -26,11 +26,11 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  */
 public interface RendererProvider {
 	/**
-	 * Gets the chosen {@link RendererProvider} or finds one if it has not yet been found.
+	 * Gets the current, chosen {@link RendererProvider} or finds one if it has not yet been found.
 	 *
-	 * @return the chosen {@link RendererProvider}.
+	 * @return the current {@link RendererProvider}.
 	 */
-	static RendererProvider getChosenProvider() {
+	static RendererProvider get() {
 		return RendererManager.getOrLoadRendererProvider();
 	}
 
