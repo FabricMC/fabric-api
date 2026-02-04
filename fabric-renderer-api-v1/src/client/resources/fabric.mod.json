@@ -17,7 +17,8 @@
   ],
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.impl.client.renderer.DebugOverlayClient"
+      "net.fabricmc.fabric.impl.client.renderer.DebugOverlayClient",
+      "net.fabricmc.fabric.impl.client.renderer.RendererManager"
     ]
   },
   "depends": {

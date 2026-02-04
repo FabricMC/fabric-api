@@ -49,7 +49,7 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 		}
 	}
 
-	static boolean shouldApplyIndigo() {
+	public static boolean shouldApplyIndigo() {
 		loadIfNeeded();
 		return indigoApplicable;
 	}
