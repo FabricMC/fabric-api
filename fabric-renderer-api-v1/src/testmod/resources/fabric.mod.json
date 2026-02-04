@@ -14,6 +14,9 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.renderer.client.RendererClientTest"
+    ],
+    "fabric-renderer-ready": [
+      "net.fabricmc.fabric.test.renderer.client.RendererClientTest"
     ]
   }
 }

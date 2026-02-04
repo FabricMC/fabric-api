@@ -43,7 +43,7 @@ public final class RendererClientTest implements ClientModInitializer, RendererR
 		// so it will use the default material, i.e. the one from ChunkSectionLayers.
 		ChunkSectionLayerMap.putBlock(Registration.FRAME_BLOCK, ChunkSectionLayer.CUTOUT);
 
-		ClientLifecycleEvents.CLIENT_STOPPING.register(_ -> {
+		ClientLifecycleEvents.CLIENT_STARTED.register(_ -> {
 			if (!entrypointCalled) {
 				throw new IllegalStateException("RendererReadyEntrypoint was not invoked!");
 			}
