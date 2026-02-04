@@ -73,12 +73,6 @@ public interface Renderer {
 	}
 
 	/**
-	 * @return whether this renderer should be registered
-	 */
-	@ApiStatus.OverrideOnly
-	boolean isEnabled();
-
-	/**
 	 * Obtain a new {@link MutableMesh} instance to build optimized meshes and create baked models
 	 * with enhanced features.
 	 *

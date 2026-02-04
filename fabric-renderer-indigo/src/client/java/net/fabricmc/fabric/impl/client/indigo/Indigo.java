@@ -28,12 +28,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
 import net.fabricmc.loader.api.FabricLoader;
 
-public class Indigo implements ClientModInitializer {
+public class Indigo {
 	public static final AoConfig AMBIENT_OCCLUSION_MODE;
 	/** Set true in dev env to confirm results match vanilla when they should. */
 	public static final boolean DEBUG_COMPARE_LIGHTING;
@@ -120,9 +119,5 @@ public class Indigo implements ClientModInitializer {
 				LOGGER.warn("[Indigo] Could not store property file '{}'", configFile.toAbsolutePath(), e);
 			}
 		}
-	}
-
-	@Override
-	public void onInitializeClient() {
 	}
 }

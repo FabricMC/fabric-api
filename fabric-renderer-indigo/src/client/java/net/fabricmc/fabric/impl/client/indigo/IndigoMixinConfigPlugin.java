@@ -23,34 +23,18 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
 
 public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
-	/** Set by other renderers to disable loading of Indigo. */
-	private static final String JSON_KEY_DISABLE_INDIGO = "fabric-renderer-api-v1:contains_renderer";
-
 	private static boolean needsLoad = true;
-
 	private static boolean indigoApplicable = true;
 
-	private static void loadIfNeeded() {
+	public static boolean shouldApplyIndigo() {
 		if (needsLoad) {
-			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-				final ModMetadata meta = container.getMetadata();
-
-				if (meta.containsCustomValue(JSON_KEY_DISABLE_INDIGO)) {
-					indigoApplicable = false;
-				}
-			}
-
+			indigoApplicable = RendererProvider.getChosenProvider().id().equals("fabric-renderer-indigo");
 			needsLoad = false;
 		}
-	}
 
-	public static boolean shouldApplyIndigo() {
-		loadIfNeeded();
 		return indigoApplicable;
 	}
 

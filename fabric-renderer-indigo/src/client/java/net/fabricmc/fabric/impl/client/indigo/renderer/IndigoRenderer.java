@@ -35,7 +35,6 @@ import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
-import net.fabricmc.fabric.impl.client.indigo.IndigoMixinConfigPlugin;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderContext;
@@ -46,9 +45,17 @@ import net.fabricmc.fabric.mixin.client.indigo.renderer.BlockRenderDispatcherAcc
  * The Fabric default renderer implementation. Supports all features defined in the API.
  */
 public class IndigoRenderer implements Renderer {
-	@Override
-	public boolean isEnabled() {
-		return IndigoMixinConfigPlugin.shouldApplyIndigo();
+	private static IndigoRenderer instance;
+
+	private IndigoRenderer() {
+	}
+
+	static IndigoRenderer getOrCreateInstance() {
+		if (instance == null) {
+			instance = new IndigoRenderer();
+		}
+
+		return instance;
 	}
 
 	@Override

@@ -20,10 +20,12 @@ import java.util.ServiceLoader;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
 import net.fabricmc.fabric.api.client.renderer.v1.RendererReadyEntrypoint;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class RendererManager implements ClientModInitializer {
+	private static RendererProvider chosenRendererProvider;
 	private static Renderer activeRenderer;
 
 	public static Renderer getRenderer() {
@@ -53,18 +55,33 @@ public final class RendererManager implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ServiceLoader<Renderer> serviceLoader = ServiceLoader.load(Renderer.class);
-		Renderer renderer = null;
+		// Register the Renderer or load it if it has not yet been
+		registerRenderer(getOrLoadRendererProvider().getRenderer());
+	}
 
-		for (Renderer next : serviceLoader) {
-			if (next.isEnabled()) {
-				renderer = next;
-				break;
+	public static RendererProvider getOrLoadRendererProvider() {
+		if (chosenRendererProvider != null) {
+			return chosenRendererProvider;
+		}
+
+		// Because Stream is banned, we have to sort manually even though Stream#reduce would be so
+		// much more readable.
+		ServiceLoader<RendererProvider> serviceLoader = ServiceLoader.load(RendererProvider.class);
+		int highestPriority = Integer.MIN_VALUE;
+		RendererProvider rendererProvider = null;
+
+		for (RendererProvider next : serviceLoader) {
+			if (next.priority() > highestPriority) {
+				rendererProvider = next;
+				highestPriority = next.priority();
 			}
 		}
 
-		if (renderer != null) {
-			registerRenderer(renderer);
+		if (rendererProvider != null) {
+			chosenRendererProvider = rendererProvider;
+			return rendererProvider;
+		} else {
+			throw new NullPointerException("A renderer plug-in has not been provided before Minecraft has loaded. This is unsupported.");
 		}
 	}
 }
