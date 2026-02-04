@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  */
 public interface RendererProvider {
 	/**
-	 * Gets the current, chosen {@link RendererProvider} or finds one if it has not yet been found.
+	 * Gets the current, chosen {@link RendererProvider} or finds one if it has not yet been chosen.
 	 *
 	 * @return the current {@link RendererProvider}.
 	 */
