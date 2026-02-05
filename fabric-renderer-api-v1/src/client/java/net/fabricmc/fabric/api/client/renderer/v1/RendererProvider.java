@@ -37,6 +37,8 @@ public interface RendererProvider {
 	/**
 	 * Get or instantiate an implementation of {@link Renderer}.
 	 *
+	 * @apiNote Do not call this method before the {@link RendererReadyEntrypoint} has been invoked.
+	 *
 	 * @return an instance of the currently registered {@link Renderer}.
 	 * @implSpec This method should instantiate an implementation of {@link Renderer} the first time
 	 * it is invoked and return that instance for any subsequent calls.
