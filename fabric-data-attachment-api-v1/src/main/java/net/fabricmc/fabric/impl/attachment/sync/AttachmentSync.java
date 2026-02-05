@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.attachment.sync;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -32,6 +33,7 @@ import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ConfigurationTask;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
@@ -40,6 +42,7 @@ import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
@@ -55,6 +58,7 @@ public class AttachmentSync implements ModInitializer {
 	public static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + MAX_IDENTIFIER_SIZE;
 	public static final int DEFAULT_MAX_DATA_SIZE;
 	public static final int DEFAULT_ATTACHMENT_SYNC_PACKET_SIZE;
+	public static final Set<ServerGamePacketListenerImpl> packetListeners = new HashSet<>();
 
 	static {
 		// ensure no splitting by default
@@ -149,6 +153,22 @@ public class AttachmentSync implements ModInitializer {
 		// Play
 		PayloadTypeRegistry.clientboundPlay().registerLarge(
 				ClientboundAttachmentSyncPayload.TYPE, ClientboundAttachmentSyncPayload.CODEC, AttachmentRegistryImpl::getMaxSyncPacketSize);
+
+		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
+			packetListeners.add(listener);
+
+			// player may not be fully loaded yet, but since these are global attachments it doesn't really matter.
+			List<AttachmentChange> changes = new ArrayList<>();
+			((AttachmentTargetImpl) server.globalAttachments()).fabric_computeInitialSyncChanges(listener.player, changes::add);
+
+			if (!changes.isEmpty()) {
+				trySync(changes, listener.player);
+			}
+		});
+
+		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
+			packetListeners.remove(listener);
+		});
 
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();

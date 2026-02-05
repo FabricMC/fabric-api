@@ -41,6 +41,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.attachment.v1.GlobalAttachments;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
@@ -50,7 +51,7 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
-@Mixin({BlockEntity.class, Entity.class, Level.class, ChunkAccess.class})
+@Mixin({BlockEntity.class, Entity.class, Level.class, ChunkAccess.class, GlobalAttachments.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	@Nullable
