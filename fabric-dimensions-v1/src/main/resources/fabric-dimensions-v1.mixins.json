@@ -1,14 +1,20 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.dimension",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "DimensionOptionsRegistryHolderMixin",
-    "Schema2832Mixin",
+    "WorldDimensionsMixin",
+    "V2832Mixin",
     "TaggedChoiceMixin",
-    "TaggedChoiceTaggedChoiceTypeMixin"
+    "TaggedChoiceTaggedChoiceTypeMixin",
+    "DimensionTypeAccessor",
+    "MappedRegistryAccessor",
+    "RegistryAccessImmutableRegistryAccessMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

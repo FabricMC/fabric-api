@@ -1,13 +1,16 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.event.interaction.client",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
-    "ClientPlayerInteractionManagerMixin",
-    "KeyBindingAccessor",
-    "MinecraftClientMixin"
+    "MultiPlayerGameModeMixin",
+    "KeyMappingAccessor",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

@@ -19,9 +19,9 @@ package net.fabricmc.fabric.api.resource.conditions.v1;
 import java.util.List;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.registry.RegistryOps;
+import net.minecraft.resources.RegistryOps;
 
 /**
  * A resource condition. To create a custom condition type, implement this interface,
@@ -54,10 +54,10 @@ public interface ResourceCondition {
 	 *
 	 * @implNote {@code registryLookup} should never be {@code null} for supported use cases
 	 * (such as recipes or advancements). However, it may be {@code null} in client-side
-	 * resources, or for non-vanilla resource types.
+	 * resources, or for non-vanilla pack types.
 	 *
 	 * @param registryInfo the registry lookup, or {@code null} in case registry is unavailable
 	 * @return whether the condition was successful
 	 */
-	boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo);
+	boolean test(RegistryOps.@Nullable RegistryInfoLookup registryInfo);
 }

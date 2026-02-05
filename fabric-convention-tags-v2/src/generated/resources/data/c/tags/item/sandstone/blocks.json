@@ -7,10 +7,6 @@
     {
       "id": "#c:sandstone/red_blocks",
       "required": false
-    },
-    {
-      "id": "#c:sandstone_blocks",
-      "required": false
     }
   ]
 }

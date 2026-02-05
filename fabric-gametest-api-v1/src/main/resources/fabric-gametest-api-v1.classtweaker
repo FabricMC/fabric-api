@@ -1,0 +1,6 @@
+classTweaker	v1	official
+
+accessible	class	net/minecraft/world/level/levelgen/structure/templatesystem/loader/TemplateSource
+accessible	method	net/minecraft/world/level/levelgen/structure/templatesystem/loader/TemplateSource	<init>	(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/core/HolderGetter;)V
+
+accessible field net/minecraft/resources/RegistryLoadTask registry Lnet/minecraft/core/WritableRegistry;

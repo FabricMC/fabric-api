@@ -1,9 +1,6 @@
 {
   "schemaVersion": 1,
   "id": "fabric-api",
-  "provides": [
-    "fabric"
-  ],
   "name": "Fabric API",
   "version": "${version}",
   "environment": "*",
@@ -19,9 +16,9 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
-    "java": ">=21",
-    "minecraft": ">=1.21.6- <1.21.7-"
+    "fabricloader": ">=0.18.4",
+    "java": ">=25",
+    "minecraft": "~26.1-"
   },
   "description": "Core API module providing key hooks and intercompatibility features."
 }

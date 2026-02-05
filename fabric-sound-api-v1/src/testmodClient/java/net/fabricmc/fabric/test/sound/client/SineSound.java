@@ -18,24 +18,24 @@ package net.fabricmc.fabric.test.sound.client;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.client.sound.AbstractSoundInstance;
-import net.minecraft.client.sound.AudioStream;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundLoader;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.resources.sounds.AbstractSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.AudioStream;
+import net.minecraft.client.sounds.SoundBufferLibrary;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
 
 class SineSound extends AbstractSoundInstance {
-	SineSound(Vec3d pos) {
-		super(Identifier.of(ClientSoundTest.MOD_ID, "sine_wave"), SoundCategory.BLOCKS, SoundInstance.createRandom());
+	SineSound(Vec3 pos) {
+		super(Identifier.fromNamespaceAndPath(ClientSoundTest.MOD_ID, "sine_wave"), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
 		x = pos.x;
 		y = pos.y;
 		z = pos.z;
 	}
 
 	@Override
-	public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
+	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
 		return CompletableFuture.completedFuture(new SineStream());
 	}
 }

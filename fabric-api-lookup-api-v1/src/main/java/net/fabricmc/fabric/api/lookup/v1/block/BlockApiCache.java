@@ -19,18 +19,18 @@ package net.fabricmc.fabric.api.lookup.v1.block;
 import java.util.Objects;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
 /**
- * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster API access.
+ * A {@link BlockApiLookup} bound to a {@link ServerLevel} and a position, providing much faster API access.
  * Refer to {@link BlockApiLookup} for example code.
  *
  * <p>This object caches the block entity at the target position, and the last used API provider, removing those queries.
@@ -41,9 +41,9 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * @see BlockApiLookup
  */
 @ApiStatus.NonExtendable
-public interface BlockApiCache<A, C> {
+public interface BlockApiCache<A, C extends @Nullable Object> {
 	/**
-	 * Attempt to retrieve an API from a block in the world, using the world and the position passed at creation time.
+	 * Attempt to retrieve an API from a block in the level, using the level and the position passed at creation time.
 	 *
 	 * <p>Note: If the block state is known, it is more efficient to use {@link BlockApiCache#find(BlockState, Object)}.
 	 *
@@ -56,7 +56,7 @@ public interface BlockApiCache<A, C> {
 	}
 
 	/**
-	 * Attempt to retrieve an API from a block in the world, using the world and the position passed at creation time.
+	 * Attempt to retrieve an API from a block in the level, using the level and the position passed at creation time.
 	 *
 	 * @param state The block state at the target position, or null if unknown.
 	 * @param context Additional context for the query, defined by type parameter C.
@@ -80,9 +80,9 @@ public interface BlockApiCache<A, C> {
 	BlockApiLookup<A, C> getLookup();
 
 	/**
-	 * Return the world this cache is bound to.
+	 * Return the level this cache is bound to.
 	 */
-	ServerWorld getWorld();
+	ServerLevel getLevel();
 
 	/**
 	 * Return the position this cache is bound to.
@@ -90,16 +90,16 @@ public interface BlockApiCache<A, C> {
 	BlockPos getPos();
 
 	/**
-	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same API as the passed lookup.
+	 * Create a new instance bound to the passed {@link ServerLevel} and position, and querying the same API as the passed lookup.
 	 */
-	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerWorld world, BlockPos pos) {
+	static <A, C extends @Nullable Object> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerLevel level, BlockPos pos) {
 		Objects.requireNonNull(pos, "BlockPos may not be null.");
-		Objects.requireNonNull(world, "ServerWorld may not be null.");
+		Objects.requireNonNull(level, "ServerLevel may not be null.");
 
 		if (!(lookup instanceof BlockApiLookupImpl)) {
 			throw new IllegalArgumentException("Cannot cache foreign implementation of BlockApiLookup. Use `BlockApiLookup#get(Identifier, Class<A>, Class<C>);` to get instances.");
 		}
 
-		return new BlockApiCacheImpl<>((BlockApiLookupImpl<A, C>) lookup, world, pos);
+		return new BlockApiCacheImpl<>((BlockApiLookupImpl<A, C>) lookup, level, pos);
 	}
 }

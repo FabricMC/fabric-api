@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
 
 import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
@@ -33,17 +33,17 @@ public final class NetherBiomes {
 	 * Adds a biome to the Nether generator.
 	 *
 	 * @param biome           The biome to add. Must not be null.
-	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see MultiNoiseUtil.NoiseValuePoint
+	 * @param targetPoint data about the given {@link Biome}'s spawning information in the nether.
+	 * @see Climate.TargetPoint
 	 */
-	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseValuePoint mixedNoisePoint) {
-		NetherBiomeData.addNetherBiome(biome, MultiNoiseUtil.createNoiseHypercube(
-				mixedNoisePoint.temperatureNoise(),
-				mixedNoisePoint.humidityNoise(),
-				mixedNoisePoint.continentalnessNoise(),
-				mixedNoisePoint.erosionNoise(),
-				mixedNoisePoint.depth(),
-				mixedNoisePoint.weirdnessNoise(),
+	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.TargetPoint targetPoint) {
+		NetherBiomeData.addNetherBiome(biome, Climate.parameters(
+				targetPoint.temperature(),
+				targetPoint.humidity(),
+				targetPoint.continentalness(),
+				targetPoint.erosion(),
+				targetPoint.depth(),
+				targetPoint.weirdness(),
 				0
 		));
 	}
@@ -52,18 +52,18 @@ public final class NetherBiomes {
 	 * Adds a biome to the Nether generator.
 	 *
 	 * @param biome           The biome to add. Must not be null.
-	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see MultiNoiseUtil.NoiseHypercube
+	 * @param parameterPoint data about the given {@link Biome}'s spawning information in the nether.
+	 * @see Climate.ParameterPoint
 	 */
-	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseHypercube mixedNoisePoint) {
-		NetherBiomeData.addNetherBiome(biome, mixedNoisePoint);
+	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.ParameterPoint parameterPoint) {
+		NetherBiomeData.addNetherBiome(biome, parameterPoint);
 	}
 
 	/**
 	 * Returns true if the given biome can generate in the nether, considering the Vanilla nether biomes,
 	 * and any biomes added to the Nether by mods.
 	 */
-	public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
+	public static boolean canGenerateInNether(ResourceKey<Biome> biome) {
 		return NetherBiomeData.canGenerateInNether(biome);
 	}
 }

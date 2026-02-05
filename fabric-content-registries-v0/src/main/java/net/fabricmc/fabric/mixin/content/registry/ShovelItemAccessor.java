@@ -21,14 +21,14 @@ import java.util.Map;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ShovelItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(ShovelItem.class)
 public interface ShovelItemAccessor {
-	@Accessor("PATH_STATES")
-	static Map<Block, BlockState> getPathStates() {
+	@Accessor("FLATTENABLES")
+	static Map<Block, BlockState> getFlattenables() {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 }

@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 @Mixin(DataProvider.class)
 public interface DataProviderMixin {
 	@Dynamic("lambda method passed to Util.make")
-	@Inject(method = "method_43808", at = @At("HEAD"))
+	@Inject(method = "lambda$static$0", at = @At("HEAD"))
 	private static void fabric_injectResourceConditionsSortOrder(Object2IntOpenHashMap<String> map, CallbackInfo ci) {
 		map.put(ResourceConditions.CONDITIONS_KEY, -100);
 	}

@@ -23,12 +23,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.locale.Language;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -77,16 +77,16 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 		// Log missing item tag translations only when world is started.
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			Language language = Language.getInstance();
-			Registry<Item> itemRegistry = server.getRegistryManager().getOrThrow(RegistryKeys.ITEM);
+			Registry<Item> itemRegistry = server.registryAccess().lookupOrThrow(Registries.ITEM);
 			List<TagKey<Item>> untranslatedItemTags = new ObjectArrayList<>();
-			itemRegistry.streamTags().forEach(itemTagKey -> {
+			itemRegistry.getTags().forEach(itemTagKey -> {
 				// We do not translate vanilla's tags at this moment.
-				if (itemTagKey.getTag().id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+				if (itemTagKey.key().location().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 					return;
 				}
 
-				if (!language.hasTranslation(itemTagKey.getTag().getTranslationKey())) {
-					untranslatedItemTags.add(itemTagKey.getTag());
+				if (!language.has(itemTagKey.key().getTranslationKey())) {
+					untranslatedItemTags.add(itemTagKey.key());
 				}
 			});
 
@@ -108,7 +108,7 @@ public class TranslationConventionLogWarnings implements ModInitializer {
 				stringBuilder.append("\nUntranslated item tags:");
 
 				for (TagKey<Item> tagKey : untranslatedItemTags) {
-					stringBuilder.append("\n     ").append(tagKey.id());
+					stringBuilder.append("\n     ").append(tagKey.location());
 				}
 			}
 

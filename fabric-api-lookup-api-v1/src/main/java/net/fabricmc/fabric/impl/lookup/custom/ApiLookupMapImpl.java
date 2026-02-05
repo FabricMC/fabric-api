@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 

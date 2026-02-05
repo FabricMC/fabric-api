@@ -3,7 +3,7 @@ version = getSubprojectVersion(project)
 moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-registry-sync-v0',
-	'fabric-resource-loader-v0'
+	'fabric-resource-loader-v1'
 ])
 
 testDependencies(project, [
@@ -13,5 +13,5 @@ testDependencies(project, [
 ])
 
 loom {
-	accessWidenerPath = file("src/main/resources/fabric-object-builder-api-v1.accesswidener")
+	accessWidenerPath = file("src/main/resources/fabric-object-builder-api-v1.classtweaker")
 }

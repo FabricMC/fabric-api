@@ -16,51 +16,51 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class TestFluids {
 	public static final String MOD_ID = "fabric-rendering-fluids-v1-testmod";
-	public static final RegistryKey<Block> NO_OVERLAY_KEY = block("no_overlay");
-	public static final NoOverlayFluid NO_OVERLAY = Registry.register(Registries.FLUID, NO_OVERLAY_KEY.getValue(), new NoOverlayFluid.Still());
-	public static final NoOverlayFluid NO_OVERLAY_FLOWING = Registry.register(Registries.FLUID, id("no_overlay_flowing"), new NoOverlayFluid.Flowing());
+	public static final ResourceKey<Block> NO_OVERLAY_KEY = block("no_overlay");
+	public static final NoOverlayFluid NO_OVERLAY = Registry.register(BuiltInRegistries.FLUID, NO_OVERLAY_KEY.identifier(), new NoOverlayFluid.Still());
+	public static final NoOverlayFluid NO_OVERLAY_FLOWING = Registry.register(BuiltInRegistries.FLUID, id("no_overlay_flowing"), new NoOverlayFluid.Flowing());
 
-	public static final FluidBlock NO_OVERLAY_BLOCK = Registry.register(Registries.BLOCK, NO_OVERLAY_KEY, new FluidBlock(NO_OVERLAY, AbstractBlock.Settings.copy(Blocks.WATER).registryKey(NO_OVERLAY_KEY)) {
+	public static final LiquidBlock NO_OVERLAY_BLOCK = Registry.register(BuiltInRegistries.BLOCK, NO_OVERLAY_KEY, new LiquidBlock(NO_OVERLAY, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).setId(NO_OVERLAY_KEY)) {
 	});
 
-	public static final RegistryKey<Block> OVERLAY_KEY = block("overlay");
-	public static final OverlayFluid OVERLAY = Registry.register(Registries.FLUID, OVERLAY_KEY.getValue(), new OverlayFluid.Still());
-	public static final OverlayFluid OVERLAY_FLOWING = Registry.register(Registries.FLUID, id("overlay_flowing"), new OverlayFluid.Flowing());
+	public static final ResourceKey<Block> OVERLAY_KEY = block("overlay");
+	public static final OverlayFluid OVERLAY = Registry.register(BuiltInRegistries.FLUID, OVERLAY_KEY.identifier(), new OverlayFluid.Still());
+	public static final OverlayFluid OVERLAY_FLOWING = Registry.register(BuiltInRegistries.FLUID, id("overlay_flowing"), new OverlayFluid.Flowing());
 
-	public static final FluidBlock OVERLAY_BLOCK = Registry.register(Registries.BLOCK, OVERLAY_KEY, new FluidBlock(OVERLAY, AbstractBlock.Settings.copy(Blocks.WATER).registryKey(OVERLAY_KEY)) {
+	public static final LiquidBlock OVERLAY_BLOCK = Registry.register(BuiltInRegistries.BLOCK, OVERLAY_KEY, new LiquidBlock(OVERLAY, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).setId(OVERLAY_KEY)) {
 	});
 
-	public static final RegistryKey<Block> UNREGISTERED_KEY = block("unregistered");
-	public static final UnregisteredFluid UNREGISTERED = Registry.register(Registries.FLUID, UNREGISTERED_KEY.getValue(), new UnregisteredFluid.Still());
-	public static final UnregisteredFluid UNREGISTERED_FLOWING = Registry.register(Registries.FLUID, id("unregistered_flowing"), new UnregisteredFluid.Flowing());
+	public static final ResourceKey<Block> UNREGISTERED_KEY = block("unregistered");
+	public static final UnregisteredFluid UNREGISTERED = Registry.register(BuiltInRegistries.FLUID, UNREGISTERED_KEY.identifier(), new UnregisteredFluid.Still());
+	public static final UnregisteredFluid UNREGISTERED_FLOWING = Registry.register(BuiltInRegistries.FLUID, id("unregistered_flowing"), new UnregisteredFluid.Flowing());
 
-	public static final FluidBlock UNREGISTERED_BLOCK = Registry.register(Registries.BLOCK, UNREGISTERED_KEY, new FluidBlock(UNREGISTERED, AbstractBlock.Settings.copy(Blocks.WATER).registryKey(UNREGISTERED_KEY)) {
+	public static final LiquidBlock UNREGISTERED_BLOCK = Registry.register(BuiltInRegistries.BLOCK, UNREGISTERED_KEY, new LiquidBlock(UNREGISTERED, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).setId(UNREGISTERED_KEY)) {
 	});
 
-	public static final RegistryKey<Block> CUSTOM_KEY = block("custom");
-	public static final CustomFluid CUSTOM = Registry.register(Registries.FLUID, CUSTOM_KEY.getValue(), new CustomFluid.Still());
-	public static final CustomFluid CUSTOM_FLOWING = Registry.register(Registries.FLUID, id("custom_flowing"), new CustomFluid.Flowing());
+	public static final ResourceKey<Block> CUSTOM_KEY = block("custom");
+	public static final CustomFluid CUSTOM = Registry.register(BuiltInRegistries.FLUID, CUSTOM_KEY.identifier(), new CustomFluid.Still());
+	public static final CustomFluid CUSTOM_FLOWING = Registry.register(BuiltInRegistries.FLUID, id("custom_flowing"), new CustomFluid.Flowing());
 
-	public static final FluidBlock CUSTOM_BLOCK = Registry.register(Registries.BLOCK, CUSTOM_KEY, new FluidBlock(CUSTOM, AbstractBlock.Settings.copy(Blocks.WATER).registryKey(CUSTOM_KEY)) {
+	public static final LiquidBlock CUSTOM_BLOCK = Registry.register(BuiltInRegistries.BLOCK, CUSTOM_KEY, new LiquidBlock(CUSTOM, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).setId(CUSTOM_KEY)) {
 	});
 
 	private static Identifier id(String path) {
-		return Identifier.of(MOD_ID, path);
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
-	private static RegistryKey<Block> block(String path) {
-		return RegistryKey.of(RegistryKeys.BLOCK, id(path));
+	private static ResourceKey<Block> block(String path) {
+		return ResourceKey.create(Registries.BLOCK, id(path));
 	}
 }

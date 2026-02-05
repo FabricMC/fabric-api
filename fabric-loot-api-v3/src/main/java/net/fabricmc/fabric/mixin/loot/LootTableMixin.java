@@ -22,14 +22,14 @@ import java.util.function.Consumer;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.impl.loot.FabricLootTable;
@@ -42,18 +42,18 @@ class LootTableMixin implements FabricLootTable {
 	 */
 	@Unique
 	@Nullable
-	RegistryEntry<LootTable> entry = null;
+	Holder<LootTable> holder = null;
 
-	@WrapMethod(method = "generateUnprocessedLoot(Lnet/minecraft/loot/context/LootContext;Ljava/util/function/Consumer;)V")
+	@WrapMethod(method = "getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V")
 	private void fabric$modifyDrops(LootContext context, Consumer<ItemStack> lootConsumer, Operation<Void> original) {
-		if (entry == null) {
-			this.entry = LootUtil.getEntryOrDirect(context.getWorld(), (LootTable) (Object) this);
+		if (holder == null) {
+			this.holder = LootUtil.getEntryOrDirect(context.getLevel(), (LootTable) (Object) this);
 		}
 
 		List<ItemStack> list = new ObjectArrayList<>();
 		original.call(context, (Consumer<ItemStack>) list::add);
 		LootTableEvents.MODIFY_DROPS.invoker().modifyLootTableDrops(
-				this.entry,
+				this.holder,
 				context,
 				list
 		);
@@ -61,7 +61,7 @@ class LootTableMixin implements FabricLootTable {
 	}
 
 	@Override
-	public void fabric$setRegistryEntry(RegistryEntry<LootTable> key) {
-		this.entry = key;
+	public void fabric$setHolder(Holder<LootTable> key) {
+		this.holder = key;
 	}
 }

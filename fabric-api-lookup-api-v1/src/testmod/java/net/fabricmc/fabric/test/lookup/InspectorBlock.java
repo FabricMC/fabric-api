@@ -16,50 +16,50 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
 import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTest;
 import net.fabricmc.fabric.test.lookup.item.FabricItemApiLookupTest;
 
 public class InspectorBlock extends Block {
-	public InspectorBlock(Settings settings) {
+	public InspectorBlock(Properties settings) {
 		super(settings);
 	}
 
 	@Override
-	public ActionResult onUseWithItem(ItemStack stack, BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult blockHitResult) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
 		Inspectable inspectable = FabricItemApiLookupTest.INSPECTABLE.find(stack, null);
 
 		if (inspectable != null) {
-			if (!world.isClient()) {
-				player.sendMessage(inspectable.inspect(), true);
+			if (!level.isClientSide()) {
+				player.displayClientMessage(inspectable.inspect(), true);
 			}
 
-			return ActionResult.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 
-		return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
-	public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
-		if (!world.isClient()) {
+	public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+		if (!level.isClientSide()) {
 			Inspectable inspectable = FabricEntityApiLookupTest.INSPECTABLE.find(entity, null);
 
 			if (inspectable != null) {
-				for (ServerPlayerEntity player : world.getServer().getPlayerManager().getPlayerList()) {
-					player.sendMessage(inspectable.inspect(), true);
+				for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+					player.displayClientMessage(inspectable.inspect(), true);
 				}
 			}
 		}

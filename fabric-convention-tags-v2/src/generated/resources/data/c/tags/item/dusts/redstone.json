@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:redstone",
-    {
-      "id": "#c:redstone_dusts",
-      "required": false
-    }
+    "minecraft:redstone"
   ]
 }

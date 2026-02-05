@@ -18,24 +18,26 @@ package net.fabricmc.fabric.test.attachment.client.gametest;
 
 import java.util.Objects;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.Items;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -46,10 +48,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class SyncGametest implements FabricClientGameTest {
-	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-persistence-gametest");
+	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-syncing-gametest");
 
-	private static ServerPlayerEntity getSinglePlayer(MinecraftServer server) {
-		return server.getPlayerManager().getPlayerList().getFirst();
+	private static ServerPlayer getSinglePlayer(MinecraftServer server) {
+		return server.getPlayerList().getPlayers().getFirst();
 	}
 
 	private static void setSyncedWithAll(AttachmentTarget target) {
@@ -86,56 +88,60 @@ public class SyncGametest implements FabricClientGameTest {
 		try (TestDedicatedServerContext serverContext = context.worldBuilder().createServer(serverProps)) {
 			var state = new Object() {
 				BlockPos furnacePos;
-				int villagerId;
+				UUID villagerId;
 			};
 
 			context.runOnClient(client -> {
 				// set client render distance before the server sets it
-				client.options.getViewDistance().setValue(5);
+				client.options.renderDistance().set(5);
 			});
 
 			LOGGER.info("Setting up synced attachments before join");
 			// setup before player joins
 			serverContext.runOnServer(server -> {
-				ServerWorld world = server.getOverworld();
-				BlockPos top = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BlockPos.ORIGIN);
+				ServerLevel level = server.overworld();
+				BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.ZERO);
 				state.furnacePos = top;
 
-				world.setBlockState(top, Blocks.FURNACE.getDefaultState());
-				setSyncedWithAll(world.getBlockEntity(top, BlockEntityType.FURNACE).orElseThrow());
+				level.setBlockAndUpdate(top, Blocks.FURNACE.defaultBlockState());
+				setSyncedWithAll(level.getBlockEntity(top, BlockEntityType.FURNACE).orElseThrow());
 
-				var villager = new VillagerEntity(EntityType.VILLAGER, world);
-				villager.setAiDisabled(true);
+				var villager = new Villager(EntityType.VILLAGER, level);
+				villager.setNoAi(true);
 				villager.setInvulnerable(true);
-				state.villagerId = villager.getId();
-				world.spawnEntity(villager);
+				state.villagerId = villager.getUUID();
+				level.addFreshEntity(villager);
 				setSyncedWithAll(villager);
 				set(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
+				villager.setAttached(AttachmentTestMod.SYNCED_LARGE, AttachmentTestMod.LARGE_DATA);
 
-				WorldChunk originChunk = world.getChunk(0, 0);
+				LevelChunk originChunk = level.getChunk(0, 0);
 				setSyncedWithAll(originChunk);
 
-				ServerWorld nether = server.getWorld(World.NETHER);
+				ServerLevel nether = server.getLevel(Level.NETHER);
 				setSyncedWithAll(Objects.requireNonNull(nether));
 			});
 
 			LOGGER.info("Joining dedicated server");
 
 			try (TestServerConnection connection = serverContext.connect()) {
-				connection.getClientWorld().waitForChunksDownload();
+				connection.getClientLevel().waitForChunksDownload();
 
 				LOGGER.info("Setting up rest of synced attachments");
 				serverContext.runOnServer(server -> {
-					ServerPlayerEntity player = getSinglePlayer(server);
+					ServerPlayer player = getSinglePlayer(server);
 					setSyncedWithAll(player);
 					set(player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					set(player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
 
 					// check registry objects are synced correctly
-					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultStack());
+					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultInstance());
 
 					// check that the client changes the render distance as requested
 					player.setAttached(AttachmentTestMod.SYNCED_RENDER_DISTANCE, 8);
+
+					// check that block entity deferred syncing works correctly
+					set(server.overworld().getBlockEntity(state.furnacePos), AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 				});
 
 				// safety
@@ -143,27 +149,30 @@ public class SyncGametest implements FabricClientGameTest {
 
 				LOGGER.info("Testing synced attachments (1/2)");
 				context.runOnClient(client -> {
-					ClientWorld world = Objects.requireNonNull(client.world);
-					Entity villager = world.getEntityById(state.villagerId);
+					ClientLevel level = Objects.requireNonNull(client.level);
+					Entity villager = level.getEntity(state.villagerId);
+					BlockEntity furnace = level.getBlockEntity(state.furnacePos);
 
-					assertHasSyncedWithAll(world.getBlockEntity(state.furnacePos));
+					assertHasSyncedWithAll(furnace);
 					assertHasSyncedWithAll(villager);
-					assertHasSyncedWithAll(world.getChunk(0, 0));
+					assertHasSyncedWithAll(level.getChunk(0, 0));
 					assertHasSyncedWithAll(client.player);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_ITEM);
+					assertHasSynced(villager, AttachmentTestMod.SYNCED_LARGE);
+					assertHasSynced(furnace, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 
-					// `world` is the overworld here
-					assertHasNotSynced(world, AttachmentTestMod.SYNCED_WITH_ALL);
+					// `level` is the overworld here
+					assertHasNotSynced(level, AttachmentTestMod.SYNCED_WITH_ALL);
 					assertHasNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					assertHasNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 
-					if (client.options.getViewDistance().getValue() != 8) {
+					if (client.options.renderDistance().get() != 8) {
 						throw new AssertionError("Client did not set render distance to server requested synced attachment.");
 					}
 
 					// reset view distance
-					client.options.getViewDistance().setValue(12);
+					client.options.renderDistance().set(12);
 				});
 
 				LOGGER.info("Setting up second phase");
@@ -177,7 +186,7 @@ public class SyncGametest implements FabricClientGameTest {
 
 				LOGGER.info("Testing synced attachments (2/2)");
 				context.runOnClient(client -> {
-					assertHasSyncedWithAll(client.world);
+					assertHasSyncedWithAll(client.level);
 					// asserts the removal wasn't synced
 					assertPresence(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY, true);
 				});

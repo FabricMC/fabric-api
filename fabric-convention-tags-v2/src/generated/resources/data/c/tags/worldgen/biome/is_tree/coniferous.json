@@ -4,10 +4,6 @@
       "id": "#c:is_taiga",
       "required": false
     },
-    "minecraft:grove",
-    {
-      "id": "#c:tree_coniferous",
-      "required": false
-    }
+    "minecraft:grove"
   ]
 }

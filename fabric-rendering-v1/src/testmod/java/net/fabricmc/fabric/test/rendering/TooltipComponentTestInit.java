@@ -19,66 +19,66 @@ package net.fabricmc.fabric.test.rendering;
 import java.util.Map;
 import java.util.Optional;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.ArmorMaterial;
-import net.minecraft.item.equipment.EquipmentAssetKeys;
-import net.minecraft.item.equipment.EquipmentType;
-import net.minecraft.item.tooltip.TooltipData;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import net.fabricmc.api.ModInitializer;
 
 public class TooltipComponentTestInit implements ModInitializer {
-	public static final RegistryKey<Item> CUSTOM_TOOLTIP_ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-rendering-v1-testmod", "custom_tooltip"));
-	public static final Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem(new Item.Settings().registryKey(CUSTOM_TOOLTIP_ITEM_KEY));
+	public static final ResourceKey<Item> CUSTOM_TOOLTIP_ITEM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "custom_tooltip"));
+	public static final Item CUSTOM_TOOLTIP_ITEM = new CustomTooltipItem(new Item.Properties().setId(CUSTOM_TOOLTIP_ITEM_KEY));
 
 	public static final ArmorMaterial TEST_ARMOR_MATERIAL = createTestArmorMaterial();
-	public static final RegistryKey<Item> CUSTOM_ARMOR_ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-rendering-v1-testmod", "test_chest"));
-	public static final Item CUSTOM_ARMOR_ITEM = new Item(new Item.Settings().armor(TEST_ARMOR_MATERIAL, EquipmentType.CHESTPLATE).registryKey(CUSTOM_ARMOR_ITEM_KEY));
+	public static final ResourceKey<Item> CUSTOM_ARMOR_ITEM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "test_chest"));
+	public static final Item CUSTOM_ARMOR_ITEM = new Item(new Item.Properties().humanoidArmor(TEST_ARMOR_MATERIAL, ArmorType.CHESTPLATE).setId(CUSTOM_ARMOR_ITEM_KEY));
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, CUSTOM_TOOLTIP_ITEM_KEY, CUSTOM_TOOLTIP_ITEM);
-		Registry.register(Registries.ITEM, CUSTOM_ARMOR_ITEM_KEY, CUSTOM_ARMOR_ITEM);
+		Registry.register(BuiltInRegistries.ITEM, CUSTOM_TOOLTIP_ITEM_KEY, CUSTOM_TOOLTIP_ITEM);
+		Registry.register(BuiltInRegistries.ITEM, CUSTOM_ARMOR_ITEM_KEY, CUSTOM_ARMOR_ITEM);
 	}
 
 	private static class CustomTooltipItem extends Item {
-		CustomTooltipItem(Settings settings) {
+		CustomTooltipItem(Properties settings) {
 			super(settings);
 		}
 
 		@Override
-		public Optional<TooltipData> getTooltipData(ItemStack stack) {
-			return Optional.of(new Data(stack.getItem().getTranslationKey()));
+		public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+			return Optional.of(new Data(stack.getItem().getDescriptionId()));
 		}
 	}
 
-	public record Data(String string) implements TooltipData {
+	public record Data(String string) implements TooltipComponent {
 	}
 
 	private static ArmorMaterial createTestArmorMaterial() {
 		return new ArmorMaterial(
 				0,
 				Map.of(
-						EquipmentType.BOOTS, 1,
-						EquipmentType.LEGGINGS, 2,
-						EquipmentType.CHESTPLATE, 3,
-						EquipmentType.HELMET, 1,
-						EquipmentType.BODY, 3
+						ArmorType.BOOTS, 1,
+						ArmorType.LEGGINGS, 2,
+						ArmorType.CHESTPLATE, 3,
+						ArmorType.HELMET, 1,
+						ArmorType.BODY, 3
 				),
 				1,
-				SoundEvents.ITEM_ARMOR_EQUIP_LEATHER,
+				SoundEvents.ARMOR_EQUIP_LEATHER,
 				0,
 				0.5F,
 				ItemTags.REPAIRS_LEATHER_ARMOR,
-				EquipmentAssetKeys.IRON
+				EquipmentAssets.IRON
 		);
 	}
 }

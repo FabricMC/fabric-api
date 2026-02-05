@@ -22,13 +22,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.mojang.datafixers.types.Type;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.object.builder.ExtendedBlockEntityType;
 
@@ -84,7 +84,7 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 
 	/**
 	 * Makes the built {@link BlockEntityType} return {@code true} from
-	 * {@link BlockEntityType#canPotentiallyExecuteCommands()}.
+	 * {@link BlockEntityType#onlyOpCanSetNbt()}.
 	 *
 	 * @param canPotentiallyExecuteCommands whether the block entity is able to execute commands
 	 * @return this builder

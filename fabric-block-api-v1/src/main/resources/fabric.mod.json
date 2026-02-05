@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13"
+    "fabricloader": ">=0.18.4"
   },
   "entrypoints": {
   },
@@ -24,11 +24,8 @@
   "mixins": [
     "fabric-block-api-v1.mixins.json"
   ],
+  "accessWidener": "fabric-block-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2248": ["net/fabricmc/fabric/api/block/v1/FabricBlock"],
-      "net/minecraft/class_2680": ["net/fabricmc/fabric/api/block/v1/FabricBlockState"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

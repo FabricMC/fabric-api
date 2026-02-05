@@ -22,23 +22,23 @@ import java.util.function.UnaryOperator;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import net.fabricmc.fabric.api.event.Event;
 
 /**
  * Marks all objects on which data can be attached using {@link AttachmentType}s.
  *
- * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerWorld} and {@link Chunk} via mixin.</p>
+ * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerLevel} and {@link ChunkAccess} via mixin.</p>
  *
- * <p>Note about {@link BlockEntity} and {@link Chunk} targets: these objects need to be notified of changes to their
- * state (using {@link BlockEntity#markDirty()} and {@link Chunk#markNeedsSaving()} respectively), otherwise the modifications will not take effect properly.
+ * <p>Note about {@link BlockEntity} and {@link ChunkAccess} targets: these objects need to be notified of changes to their
+ * state (using {@link BlockEntity#setChanged()} and {@link ChunkAccess#markUnsaved()} respectively), otherwise the modifications will not take effect properly.
  * The {@link #setAttached(AttachmentType, Object)} method handles this automatically, but this needs to be done manually
  * when attached data is mutable, for example:
  * <pre>{@code
@@ -46,20 +46,19 @@ import net.fabricmc.fabric.api.event.Event;
  * BlockEntity be = ...;
  * MutableType data = be.getAttachedOrCreate(MUTABLE_ATTACHMENT_TYPE);
  * data.mutate();
- * be.markDirty(); // Required because we are not using setAttached
+ * be.setChanged(); // Required because we are not using setAttached
  * }</pre>
- * </p>
  *
  * <p>
  * Note about {@link BlockEntity} targets: by default, many block entities use their NBT to synchronize with the client.
  * That would mean persistent attachments are automatically synced with the client for those block entities. As this is
- * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#toInitialChunkDataNbt},
+ * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#getUpdateTag},
  * which takes care of all vanilla types. However, modded block entities may be coded differently, so be wary of this
  * when attaching data to modded block entities.
  * </p>
  *
  * <p>
- * Note about {@link Chunk} targets with {@link ChunkStatus#EMPTY}: These chunks are not saved unless the generation
+ * Note about {@link ChunkAccess} targets with {@link ChunkStatus#EMPTY}: These chunks are not saved unless the generation
  * progresses to at least {@link ChunkStatus#STRUCTURE_STARTS}. Therefore, persistent attachments to those chunks may not
  * be saved. The {@link #setAttached(AttachmentType, Object)} method will log a warning when this is attempted.
  * </p>

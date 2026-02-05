@@ -15,10 +15,6 @@
     "minecraft:brown_glazed_terracotta",
     "minecraft:green_glazed_terracotta",
     "minecraft:black_glazed_terracotta",
-    "minecraft:red_glazed_terracotta",
-    {
-      "id": "#c:glazed_terracotta",
-      "required": false
-    }
+    "minecraft:red_glazed_terracotta"
   ]
 }

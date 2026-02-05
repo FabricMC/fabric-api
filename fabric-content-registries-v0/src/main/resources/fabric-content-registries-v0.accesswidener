@@ -1,3 +1,0 @@
-accessWidener	v1	named
-
-accessible method net/minecraft/recipe/BrewingRecipeRegistry$Recipe <init> (Lnet/minecraft/registry/entry/RegistryEntry;Lnet/minecraft/recipe/Ingredient;Lnet/minecraft/registry/entry/RegistryEntry;)V

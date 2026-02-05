@@ -1,7 +1,11 @@
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file('src/client/resources/fabric-sound-api-v1.classtweaker')
+}
+
 testDependencies(project, [
 	':fabric-api-base',
-	':fabric-resource-loader-v0',
+	':fabric-resource-loader-v1',
 	':fabric-command-api-v2'
 ])

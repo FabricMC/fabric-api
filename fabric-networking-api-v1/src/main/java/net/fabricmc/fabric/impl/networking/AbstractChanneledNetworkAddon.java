@@ -25,14 +25,15 @@ import java.util.Objects;
 import java.util.Set;
 
 import io.netty.channel.ChannelFutureListener;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.Connection;
+import net.minecraft.network.ConnectionProtocol;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.RunningOnDifferentThreadException;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
@@ -47,20 +48,20 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	// The maximum length of a channel name a connecting client can use, 128 is the default and minimum value.
 	private static final int MAX_CHANNEL_NAME_LENGTH = Math.max(Integer.getInteger("fabric.networking.maxChannelNameLength", GlobalReceiverRegistry.DEFAULT_CHANNEL_NAME_MAX_LENGTH), GlobalReceiverRegistry.DEFAULT_CHANNEL_NAME_MAX_LENGTH);
 
-	protected final ClientConnection connection;
+	protected final Connection connection;
 	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 
 	protected int commonVersion = -1;
 
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
+	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, Connection connection, String description) {
 		super(receiver, description);
 		this.connection = connection;
 		this.receiver = receiver;
 		this.sendableChannels = Collections.synchronizedSet(new HashSet<>());
 	}
 
-	protected void registerPendingChannels(ChannelInfoHolder holder, NetworkPhase state) {
+	protected void registerPendingChannels(ChannelInfoHolder holder, ConnectionProtocol state) {
 		final Collection<Identifier> pending = holder.fabric_getPendingChannelsNames(state);
 
 		if (!pending.isEmpty()) {
@@ -70,8 +71,8 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// always supposed to handle async!
-	public boolean handle(CustomPayload payload) {
-		final Identifier channelName = payload.getId().id();
+	public boolean handle(CustomPacketPayload payload) {
+		final Identifier channelName = payload.type().id();
 		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
 
 		// Handle reserved packets
@@ -93,6 +94,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			return false;
 		}
 
+		if (!isOnReceiveThread()) {
+			throw RunningOnDifferentThreadException.RUNNING_ON_DIFFERENT_THREAD;
+		}
+
 		try {
 			this.receive(handler, payload);
 		} catch (Throwable ex) {
@@ -103,7 +108,9 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		return true;
 	}
 
-	protected abstract void receive(H handler, CustomPayload payload);
+	protected abstract boolean isOnReceiveThread();
+
+	protected abstract void receive(H handler, CustomPacketPayload payload);
 
 	protected void sendInitialChannelRegistrationPacket() {
 		final RegistrationPayload payload = createRegistrationPayload(RegistrationPayload.REGISTER, this.getReceivableChannels());
@@ -114,12 +121,12 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Nullable
-	protected RegistrationPayload createRegistrationPayload(CustomPayload.Id<RegistrationPayload> id, Collection<Identifier> channels) {
+	protected RegistrationPayload createRegistrationPayload(CustomPacketPayload.Type<RegistrationPayload> type, Collection<Identifier> channels) {
 		if (channels.isEmpty()) {
 			return null;
 		}
 
-		return new RegistrationPayload(id, new ArrayList<>(channels));
+		return new RegistrationPayload(type, new ArrayList<>(channels));
 	}
 
 	// wrap in try with res (buf)
@@ -161,7 +168,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Override
-	public void disconnect(Text disconnectReason) {
+	public void disconnect(Component disconnectReason) {
 		Objects.requireNonNull(disconnectReason, "Disconnect reason cannot be null");
 
 		this.connection.disconnect(disconnectReason);
@@ -184,7 +191,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	@Override
 	public void onCommonVersionPacket(int negotiatedVersion) {
-		assert negotiatedVersion == 1; // We only support version 1 for now
+		// We only support version 1 for now
+		if (negotiatedVersion != 1) {
+			throw new UnsupportedOperationException("Unsupported common packet version: " + negotiatedVersion);
+		}
 
 		commonVersion = negotiatedVersion;
 		this.logger.debug("Negotiated common packet version {}", commonVersion);
@@ -196,18 +206,18 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(commonVersion, payload.version()));
 		}
 
-		final String currentPhase = getPhase();
+		final String currentPhase = getProtocol();
 
 		if (currentPhase == null) {
 			// We don't support receiving the register packet during this phase. See getPhase() for supported phases.
 			// The normal case where the play channels are sent during configuration is handled in the client/common configuration packet handlers.
-			logger.warn("Received common register packet for phase {} in network state: {}", payload.phase(), receiver.getPhase());
+			logger.warn("Received common register packet for protocol {} in protocol: {}", payload.protocol(), receiver.getProtocol());
 			return;
 		}
 
-		if (!payload.phase().equals(currentPhase)) {
+		if (!payload.protocol().equals(currentPhase)) {
 			// We need to handle receiving the play phase during configuration!
-			throw new IllegalStateException("Register packet received for phase (%s) on handler for phase(%s)".formatted(payload.phase(), currentPhase));
+			throw new IllegalStateException("Register packet received for protocol (%s) on handler for protocol(%s)".formatted(payload.protocol(), currentPhase));
 		}
 
 		register(new ArrayList<>(payload.channels()));
@@ -215,7 +225,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	@Override
 	public CommonRegisterPayload createRegisterPayload() {
-		return new CommonRegisterPayload(getNegotiatedVersion(), getPhase(), this.getReceivableChannels());
+		return new CommonRegisterPayload(getNegotiatedVersion(), getProtocol(), this.getReceivableChannels());
 	}
 
 	@Override
@@ -228,10 +238,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Nullable
-	private String getPhase() {
-		return switch (receiver.getPhase()) {
-		case PLAY -> CommonRegisterPayload.PLAY_PHASE;
-		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
+	private String getProtocol() {
+		return switch (receiver.getProtocol()) {
+		case PLAY -> CommonRegisterPayload.PLAY_PROTOCOL;
+		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PROTOCOL;
 		default -> null; // We don't support receiving this packet on any other phase
 		};
 	}

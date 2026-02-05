@@ -2,13 +2,10 @@
   "values": [
     "minecraft:wooden_pickaxe",
     "minecraft:stone_pickaxe",
+    "minecraft:copper_pickaxe",
     "minecraft:golden_pickaxe",
     "minecraft:iron_pickaxe",
     "minecraft:diamond_pickaxe",
-    "minecraft:netherite_pickaxe",
-    {
-      "id": "#c:tools/mining_tools",
-      "required": false
-    }
+    "minecraft:netherite_pickaxe"
   ]
 }

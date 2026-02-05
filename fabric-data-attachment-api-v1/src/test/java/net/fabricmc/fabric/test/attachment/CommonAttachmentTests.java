@@ -37,54 +37,56 @@ import com.mojang.serialization.Codec;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BellBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MarkerEntity;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.NbtReadView;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.util.ErrorReporter;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Marker;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BellBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
+import net.fabricmc.fabric.impl.attachment.AttachmentSavedData;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncException;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
 	private static final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
-			Identifier.of(MOD_ID, "persistent"),
+			Identifier.fromNamespaceAndPath(MOD_ID, "persistent"),
 			Codec.INT
 	);
 	private static final AttachmentType<Integer> SYNCED = AttachmentRegistry.create(
-			Identifier.of(MOD_ID, "synced"),
+			Identifier.fromNamespaceAndPath(MOD_ID, "synced"),
 			builder -> {
-				builder.syncWith(PacketCodecs.INTEGER, AttachmentSyncPredicate.all());
+				builder.syncWith(ByteBufCodecs.INT, AttachmentSyncPredicate.all());
 			}
 	);
 
-	private static final AttachmentType<WheelInfo> WHEEL = AttachmentRegistry.create(Identifier.of(AttachmentTestMod.MOD_ID, "wheel_info"),
+	private static final AttachmentType<WheelInfo> WHEEL = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(AttachmentTestMod.MOD_ID, "wheel_info"),
 			attachment -> attachment
 					.initializer(() -> new WheelInfo(100, 5432, 37))
 					.persistent(WheelInfo.CODEC)
@@ -92,8 +94,8 @@ public class CommonAttachmentTests {
 
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	private static <T> T mockAndDisableSync(Class<T> cl) {
@@ -104,22 +106,22 @@ public class CommonAttachmentTests {
 
 	@Test
 	void testTargets() {
-		AttachmentType<String> basic = AttachmentRegistry.create(Identifier.of(MOD_ID, "basic_attachment"));
+		AttachmentType<String> basic = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(MOD_ID, "basic_attachment"));
 		// Attachment targets
 		/*
 		 * CALLS_REAL_METHODS makes sense here because AttachmentTarget does not refer to anything in the underlying
-		 * class, and it saves us a lot of pain trying to get the regular constructors for ServerWorld and WorldChunk to work.
+		 * class, and it saves us a lot of pain trying to get the regular constructors for ServerLevel and LevelChunk to work.
 		 */
-		ServerWorld serverWorld = mockAndDisableSync(ServerWorld.class);
+		ServerLevel serverLevel = mockAndDisableSync(ServerLevel.class);
 		Entity entity = mockAndDisableSync(Entity.class);
 		BlockEntity blockEntity = mockAndDisableSync(BlockEntity.class);
 
-		WorldChunk worldChunk = mockAndDisableSync(WorldChunk.class);
-		worldChunk.setUnsavedListener(pos -> { });
+		LevelChunk levelChunk = mockAndDisableSync(LevelChunk.class);
+		levelChunk.setUnsavedListener(pos -> { });
 
 		ProtoChunk protoChunk = mockAndDisableSync(ProtoChunk.class);
 
-		for (AttachmentTarget target : new AttachmentTarget[]{serverWorld, entity, blockEntity, worldChunk, protoChunk}) {
+		for (AttachmentTarget target : new AttachmentTarget[]{serverLevel, entity, blockEntity, levelChunk, protoChunk}) {
 			testForTarget(target, basic);
 		}
 	}
@@ -147,7 +149,7 @@ public class CommonAttachmentTests {
 	@Test
 	void testDefaulted() {
 		AttachmentType<Integer> defaulted = AttachmentRegistry.createDefaulted(
-				Identifier.of(MOD_ID, "defaulted_attachment"),
+				Identifier.fromNamespaceAndPath(MOD_ID, "defaulted_attachment"),
 				() -> 0
 		);
 		Entity target = mockAndDisableSync(Entity.class);
@@ -161,19 +163,19 @@ public class CommonAttachmentTests {
 	@Test
 	void testStaticReadWrite() {
 		AttachmentType<Double> dummy = AttachmentRegistry.createPersistent(
-				Identifier.of(MOD_ID, "dummy"),
+				Identifier.fromNamespaceAndPath(MOD_ID, "dummy"),
 				Codec.DOUBLE
 		);
 		var map = new IdentityHashMap<AttachmentType<?>, Object>();
 		map.put(dummy, 0.5d);
-		DynamicRegistryManager drm = mockDRM();
-		NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, drm);
+		RegistryAccess ra = mockRA();
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, ra);
 
-		AttachmentSerializingImpl.serializeAttachmentData(view, map);
-		assertTrue(view.getNbt().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
-		assertTrue(view.getNbt().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow().contains(dummy.identifier().toString()));
+		AttachmentSerializingImpl.serializeAttachmentData(output, map);
+		assertTrue(output.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		assertTrue(output.buildResult().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow().contains(dummy.identifier().toString()));
 
-		map = AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.create(ErrorReporter.EMPTY, drm, view.getNbt()));
+		map = AttachmentSerializingImpl.deserializeAttachmentData(TagValueInput.create(ProblemReporter.DISCARDING, ra, output.buildResult()));
 		assertEquals(1, map.size());
 		Map.Entry<AttachmentType<?>, Object> entry = map.entrySet().stream().findFirst().orElseThrow();
 		// in this case the key should be the exact same object
@@ -184,30 +186,30 @@ public class CommonAttachmentTests {
 
 	@Test
 	void deserializeNull() {
-		var nbt = new NbtCompound();
+		var tag = new CompoundTag();
 		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(null));
 
-		nbt.put(Identifier.ofVanilla("test").toString(), new NbtCompound());
-		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.create(ErrorReporter.EMPTY, mockDRM(), nbt)));
+		tag.put(Identifier.withDefaultNamespace("test").toString(), new CompoundTag());
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(TagValueInput.create(ProblemReporter.DISCARDING, mockRA(), tag)));
 	}
 
 	@Test
 	void serializeNullOrEmpty() {
-		NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, mockDRM());
-		AttachmentSerializingImpl.serializeAttachmentData(view, null);
-		assertFalse(view.getNbt().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, mockRA());
+		AttachmentSerializingImpl.serializeAttachmentData(output, null);
+		assertFalse(output.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 
-		view = NbtWriteView.create(ErrorReporter.EMPTY, mockDRM());
-		AttachmentSerializingImpl.serializeAttachmentData(view, new IdentityHashMap<>());
-		assertFalse(view.getNbt().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, mockRA());
+		AttachmentSerializingImpl.serializeAttachmentData(output, new IdentityHashMap<>());
+		assertFalse(output.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 	}
 
 	@Test
 	void testEntityCopy() {
 		AttachmentType<Boolean> notCopiedOnRespawn = AttachmentRegistry.create(
-				Identifier.of(MOD_ID, "not_copied_on_respawn")
+				Identifier.fromNamespaceAndPath(MOD_ID, "not_copied_on_respawn")
 		);
-		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.create(Identifier.of(MOD_ID, "copied_on_respawn"),
+		AttachmentType<Boolean> copiedOnRespawn = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(MOD_ID, "copied_on_respawn"),
 				AttachmentRegistry.Builder::copyOnDeath);
 
 		Entity original = mockAndDisableSync(Entity.class);
@@ -225,36 +227,51 @@ public class CommonAttachmentTests {
 		assertTrue(nonRespawnTarget.hasAttached(notCopiedOnRespawn));
 	}
 
+	// Test https://github.com/FabricMC/fabric-api/issues/4943#issuecomment-3790935408
+	@Test
+	void testEntityChangeId() {
+		ServerPlayer player = mockAndDisableSync(ServerPlayer.class);
+		Entity entity = mockAndDisableSync(Entity.class);
+		entity.setAttached(SYNCED, 456);
+
+		entity.setId(123);
+
+		AttachmentTargetImpl targetImpl = (AttachmentTargetImpl) entity;
+		targetImpl.fabric_computeInitialSyncChanges(player, change -> {
+			assertEquals(123, ((AttachmentTargetInfo.EntityTarget) change.targetInfo()).networkId());
+		});
+	}
+
 	@Test
 	void testEntityPersistence() {
-		DynamicRegistryManager drm = mockDRM();
-		World mockWorld = mock(World.class);
-		when(mockWorld.getRegistryManager()).thenReturn(drm);
-		Entity entity = new MarkerEntity(EntityType.MARKER, mockWorld);
+		RegistryAccess ra = mockRA();
+		Level mockLevel = mock(Level.class);
+		when(mockLevel.registryAccess()).thenReturn(ra);
+		Entity entity = new Marker(EntityType.MARKER, mockLevel);
 		assertFalse(entity.hasAttached(PERSISTENT));
 
 		int expected = 1;
 		entity.setAttached(PERSISTENT, expected);
-		NbtWriteView fakeSave = NbtWriteView.create(ErrorReporter.EMPTY);
-		entity.writeData(fakeSave);
+		TagValueOutput fakeSave = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+		entity.saveWithoutId(fakeSave);
 
-		entity = new MarkerEntity(EntityType.MARKER, mockWorld); // fresh object, like on restart
-		entity.setChangeListener(mock());
-		entity.readData(NbtReadView.create(ErrorReporter.EMPTY, drm, fakeSave.getNbt()));
+		entity = new Marker(EntityType.MARKER, mockLevel); // fresh object, like on restart
+		entity.setLevelCallback(mock());
+		entity.load(TagValueInput.create(ProblemReporter.DISCARDING, ra, fakeSave.buildResult()));
 		assertTrue(entity.hasAttached(PERSISTENT));
 		assertEquals(expected, entity.getAttached(PERSISTENT));
 	}
 
 	@Test
 	void testBlockEntityPersistence() {
-		BlockEntity blockEntity = new BellBlockEntity(BlockPos.ORIGIN, Blocks.BELL.getDefaultState());
+		BlockEntity blockEntity = new BellBlockEntity(BlockPos.ZERO, Blocks.BELL.defaultBlockState());
 		assertFalse(blockEntity.hasAttached(PERSISTENT));
 
 		int expected = 1;
 		blockEntity.setAttached(PERSISTENT, expected);
-		NbtCompound fakeSave = blockEntity.createNbtWithIdentifyingData(mockDRM());
+		CompoundTag fakeSave = blockEntity.saveWithFullMetadata(mockRA());
 
-		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, Blocks.BELL.getDefaultState(), fakeSave, mockDRM());
+		blockEntity = BlockEntity.loadStatic(BlockPos.ZERO, Blocks.BELL.defaultBlockState(), fakeSave, mockRA());
 		assertNotNull(blockEntity);
 		assertTrue(blockEntity.hasAttached(PERSISTENT));
 		assertEquals(expected, blockEntity.getAttached(PERSISTENT));
@@ -263,38 +280,38 @@ public class CommonAttachmentTests {
 	@Test
 	void testWorldPersistentState() {
 		// Trying to simulate actual saving and loading for the world is too hard
-		DynamicRegistryManager drm = mockDRM();
+		RegistryAccess ra = mockRA();
 
-		ServerWorld world = mockAndDisableSync(ServerWorld.class);
-		when(world.getRegistryManager()).thenReturn(drm);
+		ServerLevel level = mockAndDisableSync(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(ra);
 
-		AttachmentPersistentState state = new AttachmentPersistentState(world);
-		assertFalse(world.hasAttached(PERSISTENT));
+		AttachmentSavedData state = new AttachmentSavedData(level);
+		assertFalse(level.hasAttached(PERSISTENT));
 		assertFalse(state.isDirty());
 
 		int expected = 1;
-		world.setAttached(PERSISTENT, expected);
+		level.setAttached(PERSISTENT, expected);
 		assertTrue(state.isDirty());
-		NbtCompound fakeSave = (NbtCompound) AttachmentPersistentState.codec(world).encodeStart(RegistryOps.of(NbtOps.INSTANCE, drm), state).getOrThrow();
+		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(level).encodeStart(RegistryOps.create(NbtOps.INSTANCE, ra), state).getOrThrow();
 		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
 
-		world = mockAndDisableSync(ServerWorld.class);
-		when(world.getRegistryManager()).thenReturn(drm);
+		level = mockAndDisableSync(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(ra);
 
-		AttachmentPersistentState.codec(world).decode(RegistryOps.of(NbtOps.INSTANCE, drm), fakeSave).getOrThrow();
-		assertTrue(world.hasAttached(PERSISTENT));
-		assertEquals(expected, world.getAttached(PERSISTENT));
+		AttachmentSavedData.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
+		assertTrue(level.hasAttached(PERSISTENT));
+		assertEquals(expected, level.getAttached(PERSISTENT));
 	}
 
 	@Test
-	void applyToInvalidTarget() {
-		DynamicRegistryManager drm = mockDRM();
+	void applyToInvalidTarget() throws AttachmentSyncException {
+		RegistryAccess ra = mockRA();
 
-		ServerWorld world = mock(ServerWorld.class);
-		when(world.getRegistryManager()).thenReturn(drm);
-		when(world.getRegistryKey()).thenReturn(World.END);
+		ServerLevel level = mock(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(ra);
+		when(level.dimension()).thenReturn(Level.END);
 
-		BlockEntity blockEntity = new ChestBlockEntity(BlockPos.ORIGIN, Blocks.CHEST.getDefaultState());
+		BlockEntity blockEntity = new ChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState());
 
 		AttachmentChange attachmentChange = new AttachmentChange(
 				((AttachmentTargetImpl) blockEntity).fabric_getSyncTargetInfo(),
@@ -302,7 +319,7 @@ public class CommonAttachmentTests {
 				new byte[]{0}
 		);
 
-		assertThrows(AttachmentSyncException.class, () -> attachmentChange.tryApply(world));
+		attachmentChange.tryApply(level);
 	}
 
 	/*
@@ -310,9 +327,9 @@ public class CommonAttachmentTests {
 	 * so testing is handled by the testmod instead.
 	 */
 
-	private static DynamicRegistryManager mockDRM() {
-		DynamicRegistryManager drm = mock(DynamicRegistryManager.class);
-		when(drm.getOps(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.of(NbtOps.INSTANCE, drm));
-		return drm;
+	private static RegistryAccess mockRA() {
+		RegistryAccess ra = mock(RegistryAccess.class);
+		when(ra.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, ra));
+		return ra;
 	}
 }

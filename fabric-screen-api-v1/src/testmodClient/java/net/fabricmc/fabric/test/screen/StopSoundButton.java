@@ -16,33 +16,34 @@
 
 package net.fabricmc.fabric.test.screen;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 
-class StopSoundButton extends PressableWidget {
+class StopSoundButton extends AbstractButton {
 	StopSoundButton(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.of(""));
+		super(x, y, width, height, Component.nullToEmpty(""));
 	}
 
 	@Override
-	protected void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-		drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
+	protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
 		if (this.isHovered()) {
-			drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.literal("Click to stop all sounds"), this.getX(), this.getY());
+			graphics.setTooltipForNextFrame(Minecraft.getInstance().font, Component.literal("Click to stop all sounds"), this.getX(), this.getY());
 		}
 	}
 
 	@Override
-	public void onPress() {
-		MinecraftClient.getInstance().getSoundManager().stopAll();
+	public void onPress(InputWithModifiers ctx) {
+		Minecraft.getInstance().getSoundManager().stop();
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
+	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 	}
 }

@@ -23,18 +23,19 @@ import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.display.SlotDisplay;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -43,11 +44,11 @@ public class ComponentsIngredient implements CustomIngredient {
 	public static final CustomIngredientSerializer<ComponentsIngredient> SERIALIZER = new Serializer();
 
 	private final Ingredient base;
-	private final ComponentChanges components;
+	private final DataComponentPatch components;
 
-	public ComponentsIngredient(Ingredient base, ComponentChanges components) {
+	public ComponentsIngredient(Ingredient base, DataComponentPatch components) {
 		if (components.isEmpty()) {
-			throw new IllegalArgumentException("ComponentIngredient must have at least one defined component");
+			throw new IllegalArgumentException("ComponentsIngredient must have at least one defined component");
 		}
 
 		this.base = base;
@@ -59,13 +60,13 @@ public class ComponentsIngredient implements CustomIngredient {
 		if (!base.test(stack)) return false;
 
 		// None strict matching
-		for (Map.Entry<ComponentType<?>, Optional<?>> entry : components.entrySet()) {
-			final ComponentType<?> type = entry.getKey();
+		for (Map.Entry<DataComponentType<?>, Optional<?>> entry : components.entrySet()) {
+			final DataComponentType<?> type = entry.getKey();
 			final Optional<?> value = entry.getValue();
 
 			if (value.isPresent()) {
 				// Expect the stack to contain a matching component
-				if (!stack.contains(type)) {
+				if (!stack.has(type)) {
 					return false;
 				}
 
@@ -74,7 +75,7 @@ public class ComponentsIngredient implements CustomIngredient {
 				}
 			} else {
 				// Expect the target stack to not contain this component
-				if (stack.contains(type)) {
+				if (stack.has(type)) {
 					return false;
 				}
 			}
@@ -84,21 +85,19 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public Stream<RegistryEntry<Item>> getMatchingItems() {
-		return base.getMatchingItems();
+	public Stream<Holder<Item>> items() {
+		return base.items();
 	}
 
 	@Override
-	public SlotDisplay toDisplay() {
-		return new SlotDisplay.CompositeSlotDisplay(
-			base.getMatchingItems().map(this::createEntryDisplay).toList()
+	public SlotDisplay display() {
+		return new SlotDisplay.Composite(
+			base.items().map(this::createEntryDisplay).toList()
 		);
 	}
 
-	private SlotDisplay createEntryDisplay(RegistryEntry<Item> entry) {
-		ItemStack stack = entry.value().getDefaultStack();
-		stack.applyChanges(components);
-		return new SlotDisplay.StackSlotDisplay(stack);
+	private SlotDisplay createEntryDisplay(Holder<Item> holder) {
+		return new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(holder, 1, components));
 	}
 
 	@Override
@@ -116,7 +115,7 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	@Nullable
-	private ComponentChanges getComponents() {
+	private DataComponentPatch getComponents() {
 		return components;
 	}
 
@@ -134,16 +133,16 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<ComponentsIngredient> {
-		private static final Identifier ID = Identifier.of("fabric", "components");
+		private static final Identifier ID = Identifier.fromNamespaceAndPath("fabric", "components");
 		private static final MapCodec<ComponentsIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
 				instance.group(
 						Ingredient.CODEC.fieldOf("base").forGetter(ComponentsIngredient::getBase),
-						ComponentChanges.CODEC.fieldOf("components").forGetter(ComponentsIngredient::getComponents)
+						DataComponentPatch.CODEC.fieldOf("components").forGetter(ComponentsIngredient::getComponents)
 				).apply(instance, ComponentsIngredient::new)
 		);
-		private static final PacketCodec<RegistryByteBuf, ComponentsIngredient> PACKET_CODEC = PacketCodec.tuple(
-				Ingredient.PACKET_CODEC, ComponentsIngredient::getBase,
-				ComponentChanges.PACKET_CODEC, ComponentsIngredient::getComponents,
+		private static final StreamCodec<RegistryFriendlyByteBuf, ComponentsIngredient> PACKET_CODEC = StreamCodec.composite(
+				Ingredient.CONTENTS_STREAM_CODEC, ComponentsIngredient::getBase,
+				DataComponentPatch.STREAM_CODEC, ComponentsIngredient::getComponents,
 				ComponentsIngredient::new
 		);
 
@@ -158,7 +157,7 @@ public class ComponentsIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public PacketCodec<RegistryByteBuf, ComponentsIngredient> getPacketCodec() {
+		public StreamCodec<RegistryFriendlyByteBuf, ComponentsIngredient> getStreamCodec() {
 			return PACKET_CODEC;
 		}
 	}

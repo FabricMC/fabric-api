@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.rendering.v1.hud;
 import java.util.Objects;
 import java.util.function.Function;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
@@ -27,13 +27,20 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
  * A registry of identified hud layers with methods to add layers in specific positions.
  *
  * <p>Operations relative to a vanilla element will inherit that element's render condition.
- * The render condition for all vanilla layers except {@link VanillaHudElements#SLEEP} is {@link net.minecraft.client.option.GameOptions#hudHidden}.
- * Only {@link #addFirst(Identifier, HudElement)} and {@link #addLast(Identifier, HudElement)} will not inherit any render condition.
- * There is currently no mechanism to change the render condition of a vanilla element.
- * For vanilla layers, see {@link VanillaHudElements}.
+ *
+ * <p>The render condition for all vanilla layers except {@link VanillaHudElements#SLEEP} is
+ * {@link net.minecraft.client.Options#hideGui}.
+ *
+ * <p>Only {@link #addFirst(Identifier, HudElement)} and {@link #addLast(Identifier, HudElement)} will not inherit any
+ * render condition.
+ *
+ * <p>There is currently no mechanism to change the render condition of a vanilla element.
+ *
+ * <p>For vanilla layers, see {@link VanillaHudElements}.
  *
  * <p>Common places to add layers (as of 1.21.6):
  * <table>
+ *     <caption>Common injection points for HUD layers</caption>
  *     <tr>
  *         <th>Injection Point</th>
  *         <th>Use Case</th>
@@ -48,15 +55,15 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
  *     </tr>
  *     <tr>
  *         <td>After {@link VanillaHudElements#BOSS_BAR BOSS_BAR}</td>
- *         <td>Render after most main hud layers like hotbar, spectator hud, status bars, experience bar, status effects overlays, and boss bar and before the sleep overlay</td>
+ *         <td>Render after most main hud layers like hotbar, spectator GUI, status bars, experience bar, mob effects overlays, and boss bar and before the sleep overlay</td>
  *     </tr>
  *     <tr>
  *         <td>Before {@link VanillaHudElements#DEMO_TIMER DEMO_TIMER}</td>
- *         <td>Render after sleep overlay and before the demo timer, debug HUD, scoreboard, overlay message (action bar), and title and subtitle</td>
+ *         <td>Render after sleep overlay and before the demo timer, debug overlay, scoreboard, overlay message (action bar), and title and subtitle</td>
  *     </tr>
  *     <tr>
  *         <td>Before {@link VanillaHudElements#CHAT CHAT}</td>
- *         <td>Render after the debug HUD, scoreboard, overlay message (action bar), and title and subtitle and before {@link net.minecraft.client.gui.hud.ChatHud ChatHud}, player list, and sound subtitles</td>
+ *         <td>Render after the debug overlay, scoreboard, overlay message (action bar), and title and subtitle and before {@linkplain net.minecraft.client.gui.components.ChatComponent chat hud}, player list, and sound subtitles</td>
  *     </tr>
  *     <tr>
  *         <td>After {@link VanillaHudElements#SUBTITLES SUBTITLES}</td>
@@ -133,6 +140,10 @@ public interface HudElementRegistry {
 	 * Replaces an element with the specified identifier, the element retains its original identifier.
 	 *
 	 * <p>The render condition of the vanilla element being replaced, if any, also applies to the new element.
+	 *
+	 * <p>If the replaced element is a status bar (like {@link VanillaHudElements#HEALTH_BAR HEALTH_BAR},
+	 * {@link VanillaHudElements#ARMOR_BAR ARMOR_BAR} or {@link VanillaHudElements#FOOD_BAR FOOD_BAR}), it may be
+	 * necessary to register a new {@link StatusBarHeightProvider} in {@link HudStatusBarHeightRegistry}.
 	 *
 	 * @param identifier the identifier of the element to replace
 	 * @param replacer   a function that takes the old element and returns the new element

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.transaction;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
@@ -60,7 +60,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
  *
  * <p>Participants are responsible for upholding this contract themselves, by using {@link #addCloseCallback}
  * to react to transaction close events and properly validate or revert changes.
- * Any action that modifies state outside of the transaction, such as calls to {@code markDirty()} or neighbor updates,
+ * Any action that modifies state outside of the transaction, such as calls to {@code setChanged()} or neighbor updates,
  * should be deferred until {@linkplain #addOuterCloseCallback after the outer transaction is closed}
  * to give every participant a chance to react to transaction close events.
  *

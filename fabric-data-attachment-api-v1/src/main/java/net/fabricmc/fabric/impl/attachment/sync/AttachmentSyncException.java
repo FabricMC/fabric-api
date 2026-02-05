@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public class AttachmentSyncException extends Exception {
-	private final Text text;
+	private final Component component;
 
-	public AttachmentSyncException(Text text) {
-		super(text.getString());
-		this.text = text;
+	public AttachmentSyncException(Component component) {
+		super(component.getString());
+		this.component = component;
 	}
 
-	public Text getText() {
-		return text;
+	public Component getComponent() {
+		return component;
 	}
 }

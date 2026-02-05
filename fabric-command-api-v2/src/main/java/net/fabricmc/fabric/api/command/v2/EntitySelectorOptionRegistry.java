@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.command.v2;
 
 import java.util.function.Predicate;
 
-import net.minecraft.command.EntitySelectorOptions;
-import net.minecraft.command.EntitySelectorReader;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.commands.arguments.selector.EntitySelectorParser;
+import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.mixin.command.EntitySelectorOptionsAccessor;
 
@@ -40,31 +40,31 @@ public final class EntitySelectorOptionRegistry {
 	 * {@code example_min_health} and can be used like {@code @e[example_min_health=5]}.
 	 * <pre>{@code
 	 * EntitySelectorOptionRegistry.register(
-	 * 	Identifier.of("example", "min_health"),
-	 * 	Text.literal("Minimum entity health"),
-	 * 	(reader) -> {
-	 * 	    final float minHealth = reader.getReader().readFloat();
+	 * 	Identifier.fromNamespaceAndPath("modid", "min_health"),
+	 * 	Component.literal("Minimum entity health"),
+	 * 	(parser) -> {
+	 * 	    final float minHealth = parser.getReader().readFloat();
 	 *
 	 * 	    if (minHealth > 0) {
-	 * 	        reader.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
+	 * 	        parser.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
 	 * 	    }
 	 * 	},
-	 * 	(reader) -> true
+	 * 	(parser) -> true
 	 * );
 	 * }</pre>
 	 *
 	 * <p>By default, a selector option can be used multiple times. To make a non-repeatable
-	 * option, either use {@link FabricEntitySelectorReader} to flag the existence of an option
+	 * option, either use {@link FabricEntitySelectorParser} to flag the existence of an option
 	 * and check it inside {@code canUse}, or use {@link #registerNonRepeatable} instead of this
 	 * method.
 	 *
 	 * @param id the ID of the option
 	 * @param description the description of the option
-	 * @param handler the handler for the entity option that reads and sets the predicate
+	 * @param modifier the modifier for the entity option that reads and sets the predicate
 	 * @param canUse the predicate that checks whether the option is syntactically valid
 	 */
-	public static void register(Identifier id, Text description, EntitySelectorOptions.SelectorHandler handler, Predicate<EntitySelectorReader> canUse) {
-		EntitySelectorOptionsAccessor.callPutOption(id.toUnderscoreSeparatedString(), handler, canUse, description);
+	public static void register(Identifier id, Component description, EntitySelectorOptions.Modifier modifier, Predicate<EntitySelectorParser> canUse) {
+		EntitySelectorOptionsAccessor.callPutOption(id.toDebugFileName(), modifier, canUse, description);
 	}
 
 	/**
@@ -73,12 +73,12 @@ public final class EntitySelectorOptionRegistry {
 	 *
 	 * @param id the ID of the option
 	 * @param description the description of the option
-	 * @param handler the handler for the entity option that reads and sets the predicate
+	 * @param modifier the modifier for the entity option that reads and sets the predicate
 	 */
-	public static void registerNonRepeatable(Identifier id, Text description, EntitySelectorOptions.SelectorHandler handler) {
-		register(id, description, (reader) -> {
-			handler.handle(reader);
-			reader.setCustomFlag(id, true);
-		}, (reader) -> !reader.getCustomFlag(id)); // has a flag = used before
+	public static void registerNonRepeatable(Identifier id, Component description, EntitySelectorOptions.Modifier modifier) {
+		register(id, description, (parser) -> {
+			modifier.handle(parser);
+			parser.setCustomFlag(id, true);
+		}, (parser) -> !parser.getCustomFlag(id)); // has a flag = used before
 	}
 }

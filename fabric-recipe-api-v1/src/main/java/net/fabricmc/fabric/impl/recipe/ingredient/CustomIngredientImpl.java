@@ -25,16 +25,16 @@ import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.display.SlotDisplay;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -76,18 +76,18 @@ public class CustomIngredientImpl extends Ingredient {
 
 	private final CustomIngredient customIngredient;
 	@Nullable
-	private List<RegistryEntry<Item>> customMatchingItems;
+	private List<Holder<Item>> customMatchingItems;
 
 	public CustomIngredientImpl(CustomIngredient customIngredient) {
-		// We must pass a registry entry list that contains something that isn't air. It doesn't actually get used.
-		super(RegistryEntryList.of(Items.STONE.getRegistryEntry()));
+		// We must pass a holder list that contains something that isn't air. It doesn't actually get used.
+		super(HolderSet.direct(Items.STONE.builtInRegistryHolder()));
 
 		this.customIngredient = customIngredient;
 	}
 
-	public List<RegistryEntry<Item>> getCustomMatchingItems() {
+	public List<Holder<Item>> getCustomMatchingItems() {
 		if (customMatchingItems == null) {
-			customMatchingItems = customIngredient.getMatchingItems().toList();
+			customMatchingItems = customIngredient.items().toList();
 		}
 
 		return customMatchingItems;
@@ -104,7 +104,7 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public Stream<RegistryEntry<Item>> getMatchingItems() {
+	public Stream<Holder<Item>> items() {
 		return getCustomMatchingItems().stream();
 	}
 
@@ -119,13 +119,13 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public boolean acceptsItem(RegistryEntry<Item> registryEntry) {
-		return getCustomMatchingItems().contains(registryEntry);
+	public boolean acceptsItem(Holder<Item> holder) {
+		return getCustomMatchingItems().contains(holder);
 	}
 
 	@Override
-	public SlotDisplay toDisplay() {
-		return customIngredient.toDisplay();
+	public SlotDisplay display() {
+		return customIngredient.display();
 	}
 
 	@Override

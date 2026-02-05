@@ -34,19 +34,19 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataProvider;
-import net.minecraft.registry.BuiltinRegistries;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryBuilder;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryLoader;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -114,9 +114,9 @@ public final class FabricDataGenHelper {
 
 		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
 		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
-		CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture = CompletableFuture.supplyAsync(() -> createRegistryWrapper(entrypoints), Util.getMainWorkerExecutor());
+		CompletableFuture<HolderLookup.Provider> registriesFuture = CompletableFuture.supplyAsync(() -> createHolderLookupProvider(entrypoints), Util.backgroundExecutor());
 
-		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.JSON_KEY_SORT_ORDER;
+		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.FIXED_ORDER_FIELDS;
 		Object2IntOpenHashMap<String> defaultJsonKeySortOrders = new Object2IntOpenHashMap<>(jsonKeySortOrders);
 
 		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
@@ -158,69 +158,69 @@ public final class FabricDataGenHelper {
 		}
 	}
 
-	private static RegistryWrapper.WrapperLookup createRegistryWrapper(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {
+	private static HolderLookup.Provider createHolderLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {
 		// Build a list of all the RegistryBuilder's including vanilla's
-		List<RegistryBuilder> builders = new ArrayList<>();
-		builders.add(BuiltinRegistries.REGISTRY_BUILDER);
+		List<RegistrySetBuilder> builders = new ArrayList<>();
+		builders.add(VanillaRegistries.BUILDER);
 
 		for (DataGeneratorEntrypoint entrypoint : dataGeneratorInitializers) {
-			final var registryBuilder = new RegistryBuilder();
+			final var registryBuilder = new RegistrySetBuilder();
 			entrypoint.buildRegistry(registryBuilder);
 			builders.add(registryBuilder);
 		}
 
 		// Collect all the bootstrap functions, and merge the lifecycles.
 		class BuilderData {
-			final RegistryKey key;
-			List<RegistryBuilder.BootstrapFunction<?>> bootstrapFunctions;
+			final ResourceKey key;
+			List<RegistrySetBuilder.RegistryBootstrap<?>> bootstrapFunctions;
 			Lifecycle lifecycle;
 
-			BuilderData(RegistryKey key) {
+			BuilderData(ResourceKey key) {
 				this.key = key;
 				this.bootstrapFunctions = new ArrayList<>();
 				this.lifecycle = Lifecycle.stable();
 			}
 
-			void with(RegistryBuilder.RegistryInfo<?> registryInfo) {
+			void with(RegistrySetBuilder.RegistryStub<?> registryInfo) {
 				bootstrapFunctions.add(registryInfo.bootstrap());
 				lifecycle = registryInfo.lifecycle().add(lifecycle);
 			}
 
-			void apply(RegistryBuilder builder) {
-				builder.addRegistry(key, lifecycle, this::bootstrap);
+			void apply(RegistrySetBuilder builder) {
+				builder.add(key, lifecycle, this::bootstrap);
 			}
 
-			void bootstrap(Registerable registerable) {
-				for (RegistryBuilder.BootstrapFunction<?> function : bootstrapFunctions) {
-					function.run(registerable);
+			void bootstrap(BootstrapContext context) {
+				for (RegistrySetBuilder.RegistryBootstrap<?> function : bootstrapFunctions) {
+					function.run(context);
 				}
 			}
 		}
 
-		Map<RegistryKey<?>, BuilderData> builderDataMap = new HashMap<>();
+		Map<ResourceKey<?>, BuilderData> builderDataMap = new HashMap<>();
 
 		// Ensure all dynamic registries are present.
-		for (RegistryLoader.Entry<?> key : DynamicRegistries.getDynamicRegistries()) {
+		for (RegistryDataLoader.RegistryData<?> key : DynamicRegistries.getDynamicRegistries()) {
 			builderDataMap.computeIfAbsent(key.key(), BuilderData::new);
 		}
 
-		for (RegistryBuilder builder : builders) {
-			for (RegistryBuilder.RegistryInfo<?> info : builder.registries) {
+		for (RegistrySetBuilder builder : builders) {
+			for (RegistrySetBuilder.RegistryStub<?> info : builder.entries) {
 				builderDataMap.computeIfAbsent(info.key(), BuilderData::new)
 						.with(info);
 			}
 		}
 
 		// Apply all the builders into one.
-		RegistryBuilder merged = new RegistryBuilder();
+		RegistrySetBuilder merged = new RegistrySetBuilder();
 
 		for (BuilderData value : builderDataMap.values()) {
 			value.apply(merged);
 		}
 
-		RegistryWrapper.WrapperLookup wrapperLookup = merged.createWrapperLookup(DynamicRegistryManager.of(Registries.REGISTRIES));
-		BuiltinRegistries.validate(wrapperLookup);
-		return wrapperLookup;
+		HolderLookup.Provider registryLookup = merged.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+		VanillaRegistries.validateThatAllBiomeFeaturesHaveBiomeFilter(registryLookup);
+		return registryLookup;
 	}
 
 	/**

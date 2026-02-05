@@ -31,33 +31,35 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.option.CloudRenderMode;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.tutorial.TutorialStep;
-import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.client.util.math.Rect2i;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Nullables;
+import net.minecraft.Optionull;
+import net.minecraft.client.CloudStatus;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.client.Options;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.tutorial.TutorialSteps;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonAlgorithm;
@@ -72,10 +74,10 @@ import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCompari
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotOptionsImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.world.TestWorldBuilderImpl;
-import net.fabricmc.fabric.mixin.client.gametest.CyclingButtonWidgetAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.ScreenAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.lifecycle.GameOptionsAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.screenshot.RenderTickCounterConstantAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.CycleButtonAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.ScreenAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.lifecycle.OptionsAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.screenshot.DeltaTrackerDefaultValueAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class ClientGameTestContextImpl implements ClientGameTestContext {
@@ -86,54 +88,60 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	private static final Map<String, Object> DEFAULT_GAME_OPTIONS = new HashMap<>();
 
-	public static void initGameOptions(GameOptions options) {
+	public static void initGameOptions(Options options) {
 		// Messes with the consistency of gametests
-		options.tutorialStep = TutorialStep.NONE;
-		options.getCloudRenderMode().setValue(CloudRenderMode.OFF);
+		options.tutorialStep = TutorialSteps.NONE;
+		options.cloudStatus().set(CloudStatus.OFF);
 
 		// Messes with game tests starting
 		options.onboardAccessibility = false;
 
 		// Makes chunk rendering finish sooner
-		options.getViewDistance().setValue(5);
+		options.renderDistance().set(5);
 
 		// Just annoying
-		options.getSoundVolumeOption(SoundCategory.MUSIC).setValue(0.0);
+		options.getSoundSourceOptionInstance(SoundSource.MUSIC).set(0.0);
 
-		((GameOptionsAccessor) options).invokeAccept(new GameOptions.Visitor() {
+		// Disable Anisotropic Filtering
+		options.maxAnisotropyBit().set(0);
+
+		// Disable chunk fade
+		options.chunkSectionFadeInTime().set(0D);
+
+		((OptionsAccessor) options).invokeProcessOptions(new Options.FieldAccess() {
 			@Override
-			public int visitInt(String key, int current) {
+			public int process(String key, int current) {
 				DEFAULT_GAME_OPTIONS.put(key, current);
 				return current;
 			}
 
 			@Override
-			public boolean visitBoolean(String key, boolean current) {
+			public boolean process(String key, boolean current) {
 				DEFAULT_GAME_OPTIONS.put(key, current);
 				return current;
 			}
 
 			@Override
-			public String visitString(String key, String current) {
+			public String process(String key, String current) {
 				DEFAULT_GAME_OPTIONS.put(key, current);
 				return current;
 			}
 
 			@Override
-			public float visitFloat(String key, float current) {
+			public float process(String key, float current) {
 				DEFAULT_GAME_OPTIONS.put(key, current);
 				return current;
 			}
 
 			@Override
-			public <T> T visitObject(String key, T current, Function<String, T> decoder, Function<T, String> encoder) {
+			public <T> T process(String key, T current, Function<String, T> decoder, Function<T, String> encoder) {
 				DEFAULT_GAME_OPTIONS.put(key, current);
 				return current;
 			}
 
 			@Override
-			public <T> void accept(String key, SimpleOption<T> option) {
-				DEFAULT_GAME_OPTIONS.put(key, option.getValue());
+			public <T> void process(String key, OptionInstance<T> option) {
+				DEFAULT_GAME_OPTIONS.put(key, option.get());
 			}
 		});
 	}
@@ -155,14 +163,14 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
-	public int waitFor(Predicate<MinecraftClient> predicate) {
+	public int waitFor(Predicate<Minecraft> predicate) {
 		ThreadingImpl.checkOnGametestThread("waitFor");
 		Preconditions.checkNotNull(predicate, "predicate");
 		return waitFor(predicate, DEFAULT_TIMEOUT);
 	}
 
 	@Override
-	public int waitFor(Predicate<MinecraftClient> predicate, int timeout) {
+	public int waitFor(Predicate<Minecraft> predicate, int timeout) {
 		ThreadingImpl.checkOnGametestThread("waitFor");
 		Preconditions.checkNotNull(predicate, "predicate");
 
@@ -199,9 +207,9 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("waitForScreen");
 
 		if (screenClass == null) {
-			return waitFor(client -> client.currentScreen == null);
+			return waitFor(client -> client.screen == null);
 		} else {
-			return waitFor(client -> screenClass.isInstance(client.currentScreen));
+			return waitFor(client -> screenClass.isInstance(client.screen));
 		}
 	}
 
@@ -217,10 +225,10 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		Preconditions.checkNotNull(translationKey, "translationKey");
 
 		runOnClient(client -> {
-			if (!tryClickScreenButtonImpl(client.currentScreen, translationKey)) {
+			if (!tryClickScreenButtonImpl(client.screen, translationKey)) {
 				throw new AssertionError("Could not find button '%s' in screen '%s'".formatted(
 					translationKey,
-					Nullables.map(client.currentScreen, screen -> screen.getClass().getName())
+					Optionull.map(client.screen, screen -> screen.getClass().getName())
 				));
 			}
 		});
@@ -231,7 +239,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("tryClickScreenButton");
 		Preconditions.checkNotNull(translationKey, "translationKey");
 
-		return computeOnClient(client -> tryClickScreenButtonImpl(client.currentScreen, translationKey));
+		return computeOnClient(client -> tryClickScreenButtonImpl(client.screen, translationKey));
 	}
 
 	private static boolean tryClickScreenButtonImpl(@Nullable Screen screen, String translationKey) {
@@ -239,19 +247,19 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			return false;
 		}
 
-		final String buttonText = Text.translatable(translationKey).getString();
+		final String buttonText = Component.translatable(translationKey).getString();
 		final ScreenAccessor screenAccessor = (ScreenAccessor) screen;
 
-		for (Drawable drawable : screenAccessor.getDrawables()) {
-			if (drawable instanceof PressableWidget pressableWidget && pressMatchingButton(pressableWidget, buttonText)) {
+		for (Renderable renderable : screenAccessor.getRenderables()) {
+			if (renderable instanceof AbstractButton button && pressMatchingButton(button, buttonText)) {
 				return true;
 			}
 
-			if (drawable instanceof Widget widget) {
+			if (renderable instanceof LayoutElement layoutElement) {
 				MutableBoolean found = new MutableBoolean(false);
-				widget.forEachChild(clickableWidget -> {
+				layoutElement.visitWidgets(widget -> {
 					if (!found.booleanValue()) {
-						found.setValue(pressMatchingButton(clickableWidget, buttonText));
+						found.setValue(pressMatchingButton(widget, buttonText));
 					}
 				});
 
@@ -265,19 +273,21 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		return false;
 	}
 
-	private static boolean pressMatchingButton(ClickableWidget widget, String text) {
-		if (widget instanceof ButtonWidget buttonWidget) {
-			if (text.equals(buttonWidget.getMessage().getString())) {
-				buttonWidget.onPress();
+	private static boolean pressMatchingButton(AbstractWidget widget, String text) {
+		var clickEvent = new MouseButtonInfo(GLFW.GLFW_KEY_UNKNOWN, 0);
+
+		if (widget instanceof Button button) {
+			if (text.equals(button.getMessage().getString())) {
+				button.onPress(clickEvent);
 				return true;
 			}
 		}
 
-		if (widget instanceof CyclingButtonWidget<?> buttonWidget) {
-			CyclingButtonWidgetAccessor accessor = (CyclingButtonWidgetAccessor) buttonWidget;
+		if (widget instanceof CycleButton<?> button) {
+			CycleButtonAccessor accessor = (CycleButtonAccessor) button;
 
-			if (text.equals(accessor.getOptionText().getString())) {
-				buttonWidget.onPress();
+			if (text.equals(accessor.getName().getString())) {
+				button.onPress(clickEvent);
 				return true;
 			}
 		}
@@ -371,13 +381,13 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("doTakeScreenshot");
 
 		Vector2i prevSize = computeOnClient(client -> {
-			int prevWidth = client.getWindow().getFramebufferWidth();
-			int prevHeight = client.getWindow().getFramebufferHeight();
+			int prevWidth = client.getWindow().getWidth();
+			int prevHeight = client.getWindow().getHeight();
 
 			if (options.size != null) {
-				client.getWindow().setFramebufferWidth(options.size.x);
-				client.getWindow().setFramebufferHeight(options.size.y);
-				client.getFramebuffer().resize(options.size.x, options.size.y);
+				client.getWindow().setWidth(options.size.x);
+				client.getWindow().setHeight(options.size.y);
+				client.getMainRenderTarget().resize(options.size.x, options.size.y);
 			}
 
 			return new Vector2i(prevWidth, prevHeight);
@@ -385,10 +395,10 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 		try {
 			CompletableFuture<T> future = computeOnClient(client -> {
-				client.gameRenderer.render(RenderTickCounterConstantAccessor.create(options.tickDelta), true);
+				client.gameRenderer.render(DeltaTrackerDefaultValueAccessor.create(options.deltaTicks), true);
 				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
-				ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), screenshot -> {
+				Screenshot.takeScreenshot(client.getMainRenderTarget(), screenshot -> {
 					try {
 						resultFuture.complete(screenshotConsumer.apply(screenshot));
 					} catch (Throwable e) {
@@ -410,9 +420,9 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		} finally {
 			if (options.size != null) {
 				computeOnClient(client -> {
-					client.getWindow().setFramebufferWidth(prevSize.x);
-					client.getWindow().setFramebufferHeight(prevSize.y);
-					client.getFramebuffer().resize(prevSize.x, prevSize.y);
+					client.getWindow().setWidth(prevSize.x);
+					client.getWindow().setHeight(prevSize.y);
+					client.getMainRenderTarget().resize(prevSize.x, prevSize.y);
 					return null;
 				});
 			}
@@ -432,7 +442,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		Path screenshotFile = destinationDir.resolve(counterPrefix + fileName + ".png");
 
 		try {
-			screenshot.writeTo(screenshotFile);
+			screenshot.writeToFile(screenshotFile);
 		} catch (IOException e) {
 			throw new AssertionError("Failed to write screenshot file", e);
 		}
@@ -446,7 +456,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 			try {
 				Files.createDirectories(savePath.getParent());
-				subScreenshot.writeTo(savePath);
+				subScreenshot.writeToFile(savePath);
 			} catch (IOException e) {
 				throw new AssertionError("Failed to write screenshot file", e);
 			}
@@ -473,57 +483,57 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("restoreDefaultGameOptions");
 
 		runOnClient(client -> {
-			((GameOptionsAccessor) MinecraftClient.getInstance().options).invokeAccept(new GameOptions.Visitor() {
+			((OptionsAccessor) Minecraft.getInstance().options).invokeProcessOptions(new Options.FieldAccess() {
 				@Override
-				public int visitInt(String key, int current) {
+				public int process(String key, int current) {
 					return (Integer) DEFAULT_GAME_OPTIONS.get(key);
 				}
 
 				@Override
-				public boolean visitBoolean(String key, boolean current) {
+				public boolean process(String key, boolean current) {
 					return (Boolean) DEFAULT_GAME_OPTIONS.get(key);
 				}
 
 				@Override
-				public String visitString(String key, String current) {
+				public String process(String key, String current) {
 					return (String) DEFAULT_GAME_OPTIONS.get(key);
 				}
 
 				@Override
-				public float visitFloat(String key, float current) {
+				public float process(String key, float current) {
 					return (Float) DEFAULT_GAME_OPTIONS.get(key);
 				}
 
 				@SuppressWarnings("unchecked")
 				@Override
-				public <T> T visitObject(String key, T current, Function<String, T> decoder, Function<T, String> encoder) {
+				public <T> T process(String key, T current, Function<String, T> decoder, Function<T, String> encoder) {
 					return (T) DEFAULT_GAME_OPTIONS.get(key);
 				}
 
 				@SuppressWarnings("unchecked")
 				@Override
-				public <T> void accept(String key, SimpleOption<T> option) {
-					option.setValue((T) DEFAULT_GAME_OPTIONS.get(key));
+				public <T> void process(String key, OptionInstance<T> option) {
+					option.set((T) DEFAULT_GAME_OPTIONS.get(key));
 				}
 			});
 		});
 	}
 
 	@Override
-	public <E extends Throwable> void runOnClient(FailableConsumer<MinecraftClient, E> action) throws E {
+	public <E extends Throwable> void runOnClient(FailableConsumer<Minecraft, E> action) throws E {
 		ThreadingImpl.checkOnGametestThread("runOnClient");
 		Preconditions.checkNotNull(action, "action");
 
-		ThreadingImpl.runOnClient(() -> action.accept(MinecraftClient.getInstance()));
+		ThreadingImpl.runOnClient(() -> action.accept(Minecraft.getInstance()));
 	}
 
 	@Override
-	public <T, E extends Throwable> T computeOnClient(FailableFunction<MinecraftClient, T, E> function) throws E {
+	public <T, E extends Throwable> T computeOnClient(FailableFunction<Minecraft, T, E> function) throws E {
 		ThreadingImpl.checkOnGametestThread("computeOnClient");
 		Preconditions.checkNotNull(function, "function");
 
 		MutableObject<T> result = new MutableObject<>();
-		ThreadingImpl.runOnClient(() -> result.setValue(function.apply(MinecraftClient.getInstance())));
+		ThreadingImpl.runOnClient(() -> result.setValue(function.apply(Minecraft.getInstance())));
 		return result.getValue();
 	}
 }

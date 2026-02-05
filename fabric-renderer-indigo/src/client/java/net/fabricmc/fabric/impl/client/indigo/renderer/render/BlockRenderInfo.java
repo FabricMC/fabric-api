@@ -16,42 +16,42 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
- * Holds, manages, and provides access to the block/world related state
+ * Holds, manages, and provides access to the block/level related state
  * needed to buffer quads.
  */
 public class BlockRenderInfo {
-	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColors();
-	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
+	private final BlockColors blockColorMap = Minecraft.getInstance().getBlockColors();
+	private final BlockPos.MutableBlockPos searchPos = new BlockPos.MutableBlockPos();
 
-	public BlockRenderView blockView;
+	public BlockAndTintGetter level;
 	public BlockPos blockPos;
 	public BlockState blockState;
 
 	private boolean useAo;
 	private boolean defaultAo;
-	private BlockRenderLayer defaultLayer;
+	private ChunkSectionLayer defaultLayer;
 
 	private boolean enableCulling;
 	private int cullCompletionFlags;
 	private int cullResultFlags;
 
-	public void prepareForWorld(BlockRenderView blockView, boolean enableCulling) {
-		this.blockView = blockView;
+	public void prepareForLevel(BlockAndTintGetter level, boolean enableCulling) {
+		this.level = level;
 		this.enableCulling = enableCulling;
 	}
 
@@ -59,31 +59,32 @@ public class BlockRenderInfo {
 		this.blockPos = blockPos;
 		this.blockState = blockState;
 
-		useAo = MinecraftClient.isAmbientOcclusionEnabled();
-		defaultAo = useAo && blockState.getLuminance() == 0;
+		useAo = Minecraft.useAmbientOcclusion();
+		defaultAo = useAo && blockState.getLightEmission() == 0;
 
-		defaultLayer = RenderLayers.getBlockLayer(blockState);
+		defaultLayer = ItemBlockRenderTypes.getChunkRenderType(blockState);
 
 		cullCompletionFlags = 0;
 		cullResultFlags = 0;
 	}
 
 	public void release() {
-		blockView = null;
+		level = null;
 		blockPos = null;
 		blockState = null;
 	}
 
 	public int blockColor(int tintIndex) {
-		return 0xFF000000 | blockColorMap.getColor(blockState, blockView, blockPos, tintIndex);
+		return 0xFF000000 | blockColorMap.getColor(blockState,
+				level, blockPos, tintIndex);
 	}
 
 	public boolean effectiveAo(TriState aoMode) {
 		return useAo && aoMode.orElse(defaultAo);
 	}
 
-	public BlockRenderLayer effectiveRenderLayer(@Nullable BlockRenderLayer quadRenderLayer) {
-		return quadRenderLayer == null ? defaultLayer : quadRenderLayer;
+	public ChunkSectionLayer effectiveChunkLayer(@Nullable ChunkSectionLayer quadLayer) {
+		return quadLayer == null ? defaultLayer : quadLayer;
 	}
 
 	public boolean shouldDrawSide(@Nullable Direction side) {
@@ -91,12 +92,12 @@ public class BlockRenderInfo {
 			return true;
 		}
 
-		final int mask = 1 << side.getIndex();
+		final int mask = 1 << side.get3DDataValue();
 
 		if ((cullCompletionFlags & mask) == 0) {
 			cullCompletionFlags |= mask;
 
-			if (Block.shouldDrawSide(blockState, blockView.getBlockState(searchPos.set(blockPos, side)), side)) {
+			if (Block.shouldRenderFace(blockState, level.getBlockState(searchPos.setWithOffset(blockPos, side)), side)) {
 				cullResultFlags |= mask;
 				return true;
 			} else {

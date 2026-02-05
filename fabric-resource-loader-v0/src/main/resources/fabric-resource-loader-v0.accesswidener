@@ -1,6 +1,0 @@
-accessWidener	v2	named
-accessible field net/minecraft/resource/NamespaceResourceManager type Lnet/minecraft/resource/ResourceType;
-accessible method net/minecraft/resource/NamespaceResourceManager getMetadataPath (Lnet/minecraft/util/Identifier;)Lnet/minecraft/util/Identifier;
-accessible method net/minecraft/resource/NamespaceResourceManager loadMetadata (Lnet/minecraft/resource/InputSupplier;)Lnet/minecraft/resource/metadata/ResourceMetadata;
-accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;
-accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;

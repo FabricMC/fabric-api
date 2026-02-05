@@ -1,9 +1,0 @@
-{
-  "commands.datapack.fabric.internal": "Неможливо увімкнути або вимкнути вбудований пакет Fabric «%s».",
-  "pack.description.modResources": "Ресурси модів.",
-  "pack.name.fabricMod": "Мод Fabric «%s»",
-  "pack.name.fabricMod.subPack": "Мод Fabric «%s» (%s)",
-  "pack.name.fabricMods": "Моди Fabric",
-  "pack.source.builtinMod": "вбудований: %s",
-  "pack.source.fabricmod": "Мод Fabric"
-}

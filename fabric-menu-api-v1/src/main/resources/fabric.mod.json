@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-menu-api-v1",
+  "name": "Fabric Menu API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-menu-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "fabric-api-base": "*",
+    "fabric-networking-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": ["net.fabricmc.fabric.impl.menu.Networking"],
+    "client": [
+      "net.fabricmc.fabric.impl.menu.client.ClientNetworking"
+    ]
+  },
+  "description": "Hooks and extensions for creating menus.",
+  "mixins": [
+    "fabric-menu-api-v1.mixins.json"
+  ],
+  "accessWidener": "fabric-menu-api-v1.classtweaker",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

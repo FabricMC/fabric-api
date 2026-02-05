@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 /**
- * See {@link net.minecraft.registry.tag.FluidTags} for vanilla tags.
+ * See {@link net.minecraft.tags.FluidTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  *
  * <p>Note, fluid tags should not be plural to match the vanilla standard.
@@ -62,13 +62,13 @@ public final class ConventionalFluidTags {
 	public static final TagKey<Fluid> EXPERIENCE = register("experience");
 	/**
 	 * Holds all fluids related to potions. The effects of the potion fluid should be read from Data Components.
-	 * The effects and color of the potion fluid should be read from {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}
+	 * The effects and color of the potion fluid should be read from {@link net.minecraft.core.component.DataComponents#POTION_CONTENTS}
 	 * component that people should be attaching to the FluidVariant of this fluid.
 	 */
 	public static final TagKey<Fluid> POTION = register("potion");
 	/**
 	 * Holds all fluids related to Suspicious Stew.
-	 * The effects of the suspicious stew fluid should be read from {@link net.minecraft.component.DataComponentTypes#SUSPICIOUS_STEW_EFFECTS}
+	 * The effects of the suspicious stew fluid should be read from {@link net.minecraft.core.component.DataComponents#SUSPICIOUS_STEW_EFFECTS}
 	 * component that people should be attaching to the FluidVariant of this fluid.
 	 */
 	public static final TagKey<Fluid> SUSPICIOUS_STEW = register("suspicious_stew");

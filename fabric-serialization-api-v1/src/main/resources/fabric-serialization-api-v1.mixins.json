@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.serialization",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "TagValueInputMixin",
+    "TagValueOutputMixin",
+    "ValueInputMixin",
+    "ValueOutputMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

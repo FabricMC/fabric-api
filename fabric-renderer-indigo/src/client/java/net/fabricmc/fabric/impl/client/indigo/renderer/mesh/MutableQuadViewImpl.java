@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TINT_INDEX;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
@@ -30,20 +29,21 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.model.geom.builders.UVPair;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadTransform;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 
 /**
@@ -74,10 +74,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		// Apply non-zero defaults
 		quad.color(-1, -1, -1, -1);
 		quad.cullFace(null);
-		quad.renderLayer(null);
+		quad.chunkLayer(null);
 		quad.diffuseShade(true);
 		quad.ambientOcclusion(TriState.DEFAULT);
-		quad.glint(null);
+		quad.foilType(null);
 		quad.tintIndex(-1);
 	}
 
@@ -175,8 +175,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl renderLayer(@Nullable BlockRenderLayer renderLayer) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS], renderLayer);
+	public MutableQuadViewImpl chunkLayer(@Nullable ChunkSectionLayer layer) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS],
+				layer
+		);
 		return this;
 	}
 
@@ -200,8 +202,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl glint(@Nullable ItemRenderState.Glint glint) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.glint(data[baseIndex + HEADER_BITS], glint);
+	public MutableQuadViewImpl foilType(ItemStackRenderState.@Nullable FoilType foilType) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.foilType(data[baseIndex + HEADER_BITS],
+				foilType
+		);
 		return this;
 	}
 
@@ -209,6 +213,12 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	public MutableQuadViewImpl shadeMode(ShadeMode mode) {
 		Objects.requireNonNull(mode, "ShadeMode may not be null");
 		data[baseIndex + HEADER_BITS] = EncodingFormat.shadeMode(data[baseIndex + HEADER_BITS], mode);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl atlas(QuadAtlas quadAtlas) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS], quadAtlas);
 		return this;
 	}
 
@@ -239,45 +249,40 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl fromVanilla(int[] vertexData, int startIndex) {
-		System.arraycopy(vertexData, startIndex, data, baseIndex + HEADER_STRIDE, VANILLA_QUAD_STRIDE);
-		isGeometryInvalid = true;
-
-		int normalFlags = 0;
-		int colorIndex = baseIndex + VERTEX_COLOR;
-		int normalIndex = baseIndex + VERTEX_NORMAL;
-
-		for (int i = 0; i < 4; i++) {
-			data[colorIndex] = ColorHelper.fromVanillaColor(data[colorIndex]);
-
-			// Set normal flag if normal is not zero, ignoring W component
-			if ((data[normalIndex] & 0xFFFFFF) != 0) {
-				normalFlags |= 1 << i;
-			}
-
-			colorIndex += VERTEX_STRIDE;
-			normalIndex += VERTEX_STRIDE;
-		}
-
-		normalFlags(normalFlags);
-		return this;
-	}
-
-	@Override
 	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
-		fromVanilla(quad.vertexData(), 0);
-		nominalFace(quad.face());
-		diffuseShade(quad.shade());
-		tintIndex(quad.tintIndex());
+		pos(0, quad.position0());
+		pos(1, quad.position1());
+		pos(2, quad.position2());
+		pos(3, quad.position3());
+
+		color(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+
+		long packedUV0 = quad.packedUV0();
+		long packedUV1 = quad.packedUV1();
+		long packedUV2 = quad.packedUV2();
+		long packedUV3 = quad.packedUV3();
+		uv(0, UVPair.unpackU(packedUV0), UVPair.unpackV(packedUV0));
+		uv(1, UVPair.unpackU(packedUV1), UVPair.unpackV(packedUV1));
+		uv(2, UVPair.unpackU(packedUV2), UVPair.unpackV(packedUV2));
+		uv(3, UVPair.unpackU(packedUV3), UVPair.unpackV(packedUV3));
 
 		int lightEmission = quad.lightEmission();
+		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
+		lightmap(lightmap, lightmap, lightmap, lightmap);
 
-		if (lightEmission > 0) {
-			for (int i = 0; i < 4; i++) {
-				lightmap(i, LightmapTextureManager.applyEmission(lightmap(i), lightEmission));
-			}
+		normalFlags(0);
+
+		nominalFace(quad.direction());
+		emissive(lightEmission == 15);
+		diffuseShade(quad.shade());
+		QuadAtlas atlas = QuadAtlas.of(quad.sprite().atlasLocation());
+
+		if (atlas == null) {
+			atlas = QuadAtlas.BLOCK;
 		}
 
+		atlas(atlas);
+		tintIndex(quad.tintIndex());
 		return this;
 	}
 
@@ -300,10 +305,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	public void popTransform() {
 		transformStack.pop();
 
-		if (transformStack.size() == 0) {
+		if (transformStack.isEmpty()) {
 			activeTransform = NO_TRANSFORM;
 		} else if (transformStack.size() == 1) {
-			activeTransform = transformStack.get(0);
+			activeTransform = transformStack.getFirst();
 		}
 	}
 

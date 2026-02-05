@@ -20,89 +20,91 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.IntSupplier;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.DrownedEntity;
-import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.test.TestContext;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.TeleportTarget;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.zombie.Drowned;
+import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
-import net.fabricmc.fabric.test.attachment.mixin.ZombieEntityAccessor;
+import net.fabricmc.fabric.test.attachment.mixin.ZombieAccessor;
 
 public class AttachmentCopyTests {
 	// using a lambda type because serialization shouldn't play a role in this
 	public static AttachmentType<IntSupplier> DUMMY = AttachmentRegistry.create(
-			Identifier.of(AttachmentTestMod.MOD_ID, "dummy")
+			Identifier.fromNamespaceAndPath(AttachmentTestMod.MOD_ID, "dummy")
 	);
 	public static AttachmentType<IntSupplier> COPY_ON_DEATH = AttachmentRegistry.create(
-			Identifier.of(AttachmentTestMod.MOD_ID, "copy_test"),
+			Identifier.fromNamespaceAndPath(AttachmentTestMod.MOD_ID, "copy_test"),
 			AttachmentRegistry.Builder::copyOnDeath
 	);
 
 	@GameTest
-	public void testCrossWorldTeleport(TestContext context) {
-		MinecraftServer server = context.getWorld().getServer();
-		ServerWorld overworld = server.getOverworld();
-		ServerWorld end = server.getWorld(World.END);
+	public void testCrossLevelTeleport(GameTestHelper helper) {
+		MinecraftServer server = helper.getLevel().getServer();
+		ServerLevel overworld = server.overworld();
+		ServerLevel end = server.getLevel(Level.END);
 		// using overworld and end to avoid portal code related to the nether
 
-		Entity entity = EntityType.PIG.create(overworld, SpawnReason.SPAWN_ITEM_USE);
+		Entity entity = EntityType.PIG.create(overworld, EntitySpawnReason.SPAWN_ITEM_USE);
 		Objects.requireNonNull(entity, "entity was null");
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
 
-		Entity moved = entity.teleportTo(new TeleportTarget(end, entity, TeleportTarget.NO_OP));
-		if (moved == null) throw context.createError("Cross-world teleportation failed");
+		Vec3 spawnPos = entity.adjustSpawnLocation(end, end.getRespawnData().pos()).getBottomCenter();
+		Entity moved = entity.teleport(new TeleportTransition(end, spawnPos, Vec3.ZERO, 0.0F, 0.0F, TeleportTransition.DO_NOTHING));
+		if (moved == null) throw helper.assertionException("Cross-level teleportation failed");
 
 		IntSupplier attached1 = moved.getAttached(DUMMY);
 		IntSupplier attached2 = moved.getAttached(COPY_ON_DEATH);
 
 		if (attached1 == null || attached1.getAsInt() != 10 || attached2 == null || attached2.getAsInt() != 10) {
-			throw context.createError("Attachment copying failed during cross-world teleportation");
+			throw helper.assertionException("Attachment copying failed during cross-level teleportation");
 		}
 
 		moved.discard();
-		context.complete();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testMobConversion(TestContext context) {
-		ZombieEntity mob = context.spawnEntity(EntityType.ZOMBIE, BlockPos.ORIGIN);
+	public void testMobConversion(GameTestHelper helper) {
+		Zombie mob = helper.spawn(EntityType.ZOMBIE, BlockPos.ZERO);
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 
-		ZombieEntityAccessor zombieEntityAccessor = (ZombieEntityAccessor) mob;
-		zombieEntityAccessor.invokeConvertTo(EntityType.DROWNED);
-		List<DrownedEntity> drowned = context.getEntities(EntityType.DROWNED);
+		ZombieAccessor zombieAccessor = (ZombieAccessor) mob;
+		zombieAccessor.invokeConvertTo(helper.getLevel(), EntityType.DROWNED);
+		List<Drowned> drowned = helper.getEntities(EntityType.DROWNED);
 
 		if (drowned.size() != 1) {
-			throw context.createError("Conversion failed");
+			throw helper.assertionException("Conversion failed");
 		}
 
-		DrownedEntity converted = drowned.getFirst();
-		if (converted == null) throw context.createError("Conversion failed");
+		Drowned converted = drowned.getFirst();
+		if (converted == null) throw helper.assertionException("Conversion failed");
 
 		if (converted.hasAttached(DUMMY)) {
-			throw context.createError("Attachment shouldn't have been copied on mob conversion");
+			throw helper.assertionException("Attachment shouldn't have been copied on mob conversion");
 		}
 
 		IntSupplier attached = converted.getAttached(COPY_ON_DEATH);
 
 		if (attached == null || attached.getAsInt() != 42) {
-			throw context.createError("Attachment copying failed during mob conversion");
+			throw helper.assertionException("Attachment copying failed during mob conversion");
 		}
 
 		converted.discard();
-		context.complete();
+		helper.succeed();
 	}
 }

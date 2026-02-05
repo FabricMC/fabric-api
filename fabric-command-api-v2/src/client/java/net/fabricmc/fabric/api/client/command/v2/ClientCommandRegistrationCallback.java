@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.command.v2;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.commands.CommandBuildContext;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -28,12 +28,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>To register some commands, you would register an event listener and implement the callback.
  *
- * <p>See {@link ClientCommandManager} for more details and an example.
+ * <p>See {@link ClientCommands} for more details and an example.
  */
 public interface ClientCommandRegistrationCallback {
-	Event<ClientCommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandRegistrationCallback.class, (callbacks) -> (dispatcher, registryAccess) -> {
+	Event<ClientCommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext) -> {
 		for (ClientCommandRegistrationCallback callback : callbacks) {
-			callback.register(dispatcher, registryAccess);
+			callback.register(dispatcher, buildContext);
 		}
 	});
 
@@ -41,7 +41,7 @@ public interface ClientCommandRegistrationCallback {
 	 * Called when registering client commands.
 	 *
 	 * @param dispatcher the command dispatcher to register commands to
-	 * @param registryAccess object exposing access to the game's registries
+	 * @param buildContext object exposing access to the game's holders
 	 */
-	void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess);
+	void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext buildContext);
 }

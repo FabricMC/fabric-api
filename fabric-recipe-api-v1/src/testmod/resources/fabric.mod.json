@@ -9,6 +9,12 @@
     "fabric-recipe-api-v1":"*"
   },
   "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.recipe.sync.RecipeSyncTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.recipe.client.sync.RecipeSyncClientTest"
+    ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.recipe.ingredient.ShapelessRecipeMatchTests"
     ]

@@ -1,15 +1,18 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.command",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "ArgumentTypesAccessor",
-    "CommandManagerMixin",
+    "ArgumentTypeInfosAccessor",
+    "CommandsMixin",
     "EntitySelectorOptionsAccessor",
-    "EntitySelectorReaderMixin",
+    "EntitySelectorParserMixin",
     "HelpCommandAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

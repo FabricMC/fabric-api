@@ -17,6 +17,9 @@
 /**
  * API for creating client-sided commands.
  *
- * @see net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+ * @see net.fabricmc.fabric.api.client.command.v2.ClientCommands
  */
+@NullMarked
 package net.fabricmc.fabric.api.client.command.v2;
+
+import org.jspecify.annotations.NullMarked;

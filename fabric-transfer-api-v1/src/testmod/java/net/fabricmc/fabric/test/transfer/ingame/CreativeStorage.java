@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;

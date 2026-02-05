@@ -20,46 +20,46 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.MergedComponentMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.PatchedDataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
+import net.fabricmc.fabric.mixin.transfer.ItemStackAccessor;
 
 public class VariantCodecs {
 	// AIR is valid (for some reason), don't use ItemStack#ITEM_CODEC
 	private static final Codec<ItemVariant> UNVALIDATED_ITEM_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Registries.ITEM.getEntryCodec().fieldOf("item").forGetter(ItemVariant::getRegistryEntry),
-			ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(ItemVariant::getComponents)
+			BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemVariant::typeHolder),
+			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemVariant::getComponentsPatch)
 		).apply(instance, ItemVariantImpl::of)
 	);
 	public static final Codec<ItemVariant> ITEM_CODEC = UNVALIDATED_ITEM_CODEC.validate(VariantCodecs::validateComponents);
-	public static final PacketCodec<RegistryByteBuf, ItemVariant> ITEM_PACKET_CODEC = PacketCodec.tuple(
-			PacketCodecs.registryEntry(RegistryKeys.ITEM), ItemVariant::getRegistryEntry,
-			ComponentChanges.PACKET_CODEC, ItemVariant::getComponents,
+	public static final StreamCodec<RegistryFriendlyByteBuf, ItemVariant> ITEM_PACKET_CODEC = StreamCodec.composite(
+			ByteBufCodecs.holderRegistry(Registries.ITEM), ItemVariant::typeHolder,
+			DataComponentPatch.STREAM_CODEC, ItemVariant::getComponentsPatch,
 			ItemVariantImpl::of
 	);
 
 	public static final Codec<FluidVariant> FLUID_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Registries.FLUID.getEntryCodec().fieldOf("fluid").forGetter(FluidVariant::getRegistryEntry),
-			ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(FluidVariant::getComponents)
+			BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(FluidVariant::typeHolder),
+			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(FluidVariant::getComponentsPatch)
 		).apply(instance, FluidVariantImpl::of)
 	);
-	public static final PacketCodec<RegistryByteBuf, FluidVariant> FLUID_PACKET_CODEC = PacketCodec.tuple(
-			PacketCodecs.registryEntry(RegistryKeys.FLUID), FluidVariant::getRegistryEntry,
-			ComponentChanges.PACKET_CODEC, FluidVariant::getComponents,
+	public static final StreamCodec<RegistryFriendlyByteBuf, FluidVariant> FLUID_PACKET_CODEC = StreamCodec.composite(
+			ByteBufCodecs.holderRegistry(Registries.FLUID), FluidVariant::typeHolder,
+			DataComponentPatch.STREAM_CODEC, FluidVariant::getComponentsPatch,
 			FluidVariantImpl::of
 	);
 
 	private static DataResult<ItemVariant> validateComponents(ItemVariant variant) {
-		return ItemStack.validateComponents(MergedComponentMap.create(variant.getItem().getComponents(), variant.getComponents())).map(v -> variant);
+		return ItemStackAccessor.validateComponents(PatchedDataComponentMap.fromPatch(variant.getItem().components(), variant.getComponentsPatch())).map(v -> variant);
 	}
 }

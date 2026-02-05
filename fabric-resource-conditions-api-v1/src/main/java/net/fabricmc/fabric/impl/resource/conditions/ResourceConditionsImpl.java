@@ -17,29 +17,25 @@
 package net.fabricmc.fabric.impl.resource.conditions;
 
 import java.util.Collection;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.flag.FeatureFlags;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -48,7 +44,8 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public final class ResourceConditionsImpl implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
-	public static FeatureSet currentFeatures = null;
+	public static FeatureFlagSet currentFeatures = null;
+	public static Exception DISABLED_RESOURCE_EXCEPTION = new Exception("Disabled resource");
 
 	@Override
 	public void onInitialize() {
@@ -63,7 +60,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
 	}
 
-	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, RegistryOps.@Nullable RegistryInfoLookup registryInfo) {
 		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
@@ -88,7 +85,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 
 	// Condition implementations
 
-	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryOps.RegistryInfoGetter registryInfo, boolean and) {
+	public static boolean conditionsMet(List<ResourceCondition> conditions, RegistryOps.@Nullable RegistryInfoLookup registryInfo, boolean and) {
 		for (ResourceCondition condition : conditions) {
 			if (condition.test(registryInfo) != and) {
 				return !and;
@@ -108,48 +105,33 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return and;
 	}
 
-	/**
-	 * Stores the tags deserialized before they are bound, to use them in the tags_populated conditions.
-	 * If the resource reload fails, the thread local is not cleared and:
-	 * - the map will remain in memory until the next reload;
-	 * - any call to {@link #tagsPopulated} will check the tags from the failed reload instead of failing directly.
-	 * This is probably acceptable.
-	 */
-	public static final AtomicReference<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new AtomicReference<>();
-
-	public static void setTags(List<Registry.PendingTagLoad<?>> tags) {
-		Map<RegistryKey<?>, Set<Identifier>> tagMap = new IdentityHashMap<>();
-
-		for (Registry.PendingTagLoad<?> registryTags : tags) {
-			tagMap.put(registryTags.getKey(), registryTags.getLookup().streamTagKeys().map(TagKey::id).collect(Collectors.toSet()));
-		}
-
-		if (LOADED_TAGS.getAndSet(tagMap) != null) {
-			throw new IllegalStateException("Tags already captured, this should not happen");
-		}
-	}
-
-	// Cannot use registry because tags are not loaded to the registry at this stage yet.
-	public static boolean tagsPopulated(Identifier registryId, List<Identifier> tags) {
-		Map<RegistryKey<?>, Set<Identifier>> tagMap = LOADED_TAGS.get();
-
-		if (tagMap == null) {
+	public static boolean tagsPopulated(RegistryOps.@Nullable RegistryInfoLookup infoGetter, Identifier registryId, List<Identifier> tags) {
+		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing tags_populated resource condition check", registryId);
 			return false;
 		}
 
-		Set<Identifier> tagSet = tagMap.get(RegistryKey.ofRegistry(registryId));
+		ResourceKey<? extends Registry<Object>> registryKey = ResourceKey.createRegistryKey(registryId);
+		Optional<RegistryOps.RegistryInfo<Object>> optionalInfo = infoGetter.lookup(registryKey);
 
-		if (tagSet == null) {
-			return tags.isEmpty();
+		if (optionalInfo.isPresent()) {
+			HolderGetter<Object> lookup = optionalInfo.get().getter();
+
+			for (Identifier id : tags) {
+				if (lookup.get(TagKey.create(registryKey, id)).isEmpty()) {
+					return false;
+				}
+			}
+
+			return true;
 		} else {
-			return tagSet.containsAll(tags);
+			return tags.isEmpty();
 		}
 	}
 
 	public static boolean featuresEnabled(Collection<Identifier> features) {
 		MutableBoolean foundUnknown = new MutableBoolean();
-		FeatureSet set = FeatureFlags.FEATURE_MANAGER.featureSetOf(features, (id) -> {
+		FeatureFlagSet set = FeatureFlags.REGISTRY.fromNames(features, (id) -> {
 			LOGGER.info("Found unknown feature {}, treating it as failure", id);
 			foundUnknown.setTrue();
 		});
@@ -166,19 +148,20 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	public static boolean registryContains(@Nullable RegistryOps.RegistryInfoGetter registryInfo, Identifier registryId, List<Identifier> entries) {
-		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
-
-		if (registryInfo == null) {
+	public static boolean registryContains(RegistryOps.@Nullable RegistryInfoLookup infoGetter, Identifier registryId, List<Identifier> entries) {
+		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
 			return false;
 		}
 
-		Optional<RegistryOps.RegistryInfo<Object>> wrapper = registryInfo.getRegistryInfo(registryKey);
+		ResourceKey<? extends Registry<Object>> registryKey = ResourceKey.createRegistryKey(registryId);
+		Optional<RegistryOps.RegistryInfo<Object>> optionalInfo = infoGetter.lookup(registryKey);
 
-		if (wrapper.isPresent()) {
+		if (optionalInfo.isPresent()) {
+			HolderGetter<Object> lookup = optionalInfo.get().getter();
+
 			for (Identifier id : entries) {
-				if (wrapper.get().entryLookup().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
+				if (lookup.get(ResourceKey.create(registryKey, id)).isEmpty()) {
 					return false;
 				}
 			}

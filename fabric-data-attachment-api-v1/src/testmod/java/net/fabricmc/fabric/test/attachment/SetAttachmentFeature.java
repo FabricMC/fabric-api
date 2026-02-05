@@ -18,29 +18,29 @@ package net.fabricmc.fabric.test.attachment;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.WrapperProtoChunk;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ImposterProtoChunk;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class SetAttachmentFeature extends Feature<DefaultFeatureConfig> {
+public class SetAttachmentFeature extends Feature<NoneFeatureConfiguration> {
 	public static boolean featurePlaced;
 
-	public SetAttachmentFeature(Codec<DefaultFeatureConfig> codec) {
+	public SetAttachmentFeature(Codec<NoneFeatureConfiguration> codec) {
 		super(codec);
 	}
 
 	@Override
-	public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
-		Chunk chunk = context.getWorld().getChunk(context.getOrigin());
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		ChunkAccess chunk = context.level().getChunk(context.origin());
 
 		if (chunk.getPos().equals(new ChunkPos(0, 0))) {
 			featurePlaced = true;
 
-			if (!(chunk instanceof ProtoChunk) || chunk instanceof WrapperProtoChunk) {
+			if (!(chunk instanceof ProtoChunk) || chunk instanceof ImposterProtoChunk) {
 				AttachmentTestMod.LOGGER.warn("Feature not attaching to ProtoChunk");
 			}
 

@@ -22,15 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.pipeline.MainTarget;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.WindowFramebuffer;
-import net.minecraft.client.gui.screen.ReconfiguringScreen;
-import net.minecraft.client.gui.screen.world.WorldCreator;
-import net.minecraft.client.option.Perspective;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.multiplayer.ServerReconfigScreen;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -54,28 +54,28 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		}
 
 		{
-			testScreenSize(context, WindowFramebuffer.DEFAULT_WIDTH, WindowFramebuffer.DEFAULT_HEIGHT);
+			testScreenSize(context, MainTarget.DEFAULT_WIDTH, MainTarget.DEFAULT_HEIGHT);
 			context.getInput().resizeWindow(1000, 500);
 			context.waitTick();
 			testScreenSize(context, 1000, 500);
-			context.getInput().resizeWindow(WindowFramebuffer.DEFAULT_WIDTH, WindowFramebuffer.DEFAULT_HEIGHT);
+			context.getInput().resizeWindow(MainTarget.DEFAULT_WIDTH, MainTarget.DEFAULT_HEIGHT);
 		}
 
 		TestWorldSave spWorldSave;
 		try (TestSingleplayerContext singleplayer = context.worldBuilder()
-				.adjustSettings(creator -> creator.setGameMode(WorldCreator.Mode.CREATIVE)).create()) {
+				.adjustSettings(creator -> creator.setGameMode(WorldCreationUiState.SelectedGameMode.CREATIVE)).create()) {
 			spWorldSave = singleplayer.getWorldSave();
 
 			{
-				enableDebugHud(context);
-				singleplayer.getClientWorld().waitForChunksRender();
+				setDebugOverlay(context, true);
+				singleplayer.getClientLevel().waitForChunksRender();
 				context.takeScreenshot("in_game_overworld");
 			}
 
 			{
-				context.getInput().pressKey(options -> options.chatKey);
+				context.getInput().pressKey(options -> options.keyChat);
 				context.getInput().typeChars("Hello, World!");
-				context.getInput().holdKeyFor(InputUtil.GLFW_KEY_ENTER, 0); // press without delay, enter not a keybind
+				context.getInput().holdKeyFor(InputConstants.KEY_RETURN, 0); // press without delay, enter not a keybind
 				context.waitTick(); // wait for the server to receive the chat message
 				context.takeScreenshot("chat_message_sent");
 			}
@@ -84,13 +84,13 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 			{
 				// See if the player render events are working.
-				setPerspective(context, Perspective.THIRD_PERSON_BACK);
+				setCameraType(context, CameraType.THIRD_PERSON_BACK);
 				context.takeScreenshot("in_game_overworld_third_person");
-				setPerspective(context, Perspective.FIRST_PERSON);
+				setCameraType(context, CameraType.FIRST_PERSON);
 			}
 
 			{
-				context.getInput().pressKey(options -> options.inventoryKey);
+				context.getInput().pressKey(options -> options.keyInventory);
 				context.waitTick(); // wait for the server to receive the request
 				context.takeScreenshot("in_game_inventory");
 				context.setScreen(() -> null);
@@ -98,50 +98,52 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		}
 
 		try (TestSingleplayerContext singleplayer = spWorldSave.open()) {
-			singleplayer.getClientWorld().waitForChunksRender();
+			singleplayer.getClientLevel().waitForChunksRender();
 			context.takeScreenshot("in_game_overworld_2");
 		}
 
 		try (TestDedicatedServerContext server = context.worldBuilder().createServer()) {
 			try (TestServerConnection connection = server.connect()) {
-				connection.getClientWorld().waitForChunksRender();
+				connection.getClientLevel().waitForChunksRender();
 				context.takeScreenshot("server_in_game");
 
 				{ // Test that we can enter and exit configuration
-					final GameProfile profile = context.computeOnClient(MinecraftClient::getGameProfile);
-					server.runCommand("debugconfig config " + profile.getName());
-					context.waitForScreen(ReconfiguringScreen.class);
+					final GameProfile profile = context.computeOnClient(Minecraft::getGameProfile);
+					server.runCommand("debugconfig config " + profile.name());
+					context.waitForScreen(ServerReconfigScreen.class);
 					context.takeScreenshot("server_config");
-					server.runCommand("debugconfig unconfig " + profile.getId());
+					server.runCommand("debugconfig unconfig " + profile.id());
 					// TODO: better way to wait for reconfiguration to end
 					context.waitTicks(100);
 				}
 			}
 		}
+
+		setDebugOverlay(context, false);
 	}
 
 	private static void waitForTitleScreenFade(ClientGameTestContext context) {
 		context.waitFor(client -> {
-			return !(client.currentScreen instanceof TitleScreenAccessor titleScreen) || !titleScreen.getDoBackgroundFade();
+			return !(client.screen instanceof TitleScreenAccessor titleScreen) || !titleScreen.isFading();
 		});
 	}
 
-	private static void enableDebugHud(ClientGameTestContext context) {
-		context.runOnClient(client -> client.inGameHud.getDebugHud().toggleDebugHud());
+	private static void setDebugOverlay(ClientGameTestContext context, boolean f3Enabled) {
+		context.runOnClient(client -> client.debugEntries.setOverlayVisible(f3Enabled));
 	}
 
-	private static void setPerspective(ClientGameTestContext context, Perspective perspective) {
-		context.runOnClient(client -> client.options.setPerspective(perspective));
+	private static void setCameraType(ClientGameTestContext context, CameraType cameraType) {
+		context.runOnClient(client -> client.options.setCameraType(cameraType));
 	}
 
 	private static void testScreenSize(ClientGameTestContext context, int expectedWidth, int expectedHeight) {
 		context.runOnClient(client -> {
-			if (client.getWindow().getWidth() != expectedWidth || client.getWindow().getHeight() != expectedHeight) {
-				throw new AssertionError("Expected window size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getWidth(), client.getWindow().getHeight()));
+			if (client.getWindow().getScreenWidth() != expectedWidth || client.getWindow().getScreenHeight() != expectedHeight) {
+				throw new AssertionError("Expected window size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getScreenWidth(), client.getWindow().getScreenHeight()));
 			}
 
-			if (client.getWindow().getFramebufferWidth() != expectedWidth || client.getWindow().getFramebufferHeight() != expectedHeight) {
-				throw new AssertionError("Expected framebuffer size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight()));
+			if (client.getWindow().getWidth() != expectedWidth || client.getWindow().getHeight() != expectedHeight) {
+				throw new AssertionError("Expected framebuffer size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getWidth(), client.getWindow().getHeight()));
 			}
 		});
 

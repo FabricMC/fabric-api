@@ -1,0 +1,20 @@
+classTweaker	v1	official
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	BUILDING_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	COLORED_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	NATURAL_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	FUNCTIONAL_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	REDSTONE_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	HOTBAR	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	SEARCH	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	TOOLS_AND_UTILITIES	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	COMBAT	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	FOOD_AND_DRINKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	INGREDIENTS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	SPAWN_EGGS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	OP_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	INVENTORY	Lnet/minecraft/resources/ResourceKey;
+accessible	field	net/minecraft/world/item/CreativeModeTabs	CACHED_PARAMETERS	Lnet/minecraft/world/item/CreativeModeTab$ItemDisplayParameters;
+transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$TabVisibility
+transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$Output
+accessible	class	net/minecraft/world/item/CreativeModeTab$ItemDisplayBuilder
+transitive-inject-interface	net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen	net/fabricmc/fabric/api/client/creativetab/v1/FabricCreativeModeInventoryScreen

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item.base;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 /**
  * An item variant storage backed by an {@link ItemStack}.
  * Implementors should at least override {@link #getStack} and {@link #setStack},
- * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
+ * and probably {@link #onFinalCommit} as well for {@code setChanged()} and similar calls.
  *
  * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which items may be inserted or extracted.
  * If one of these two functions is overridden to always return false, implementors may also wish to override
@@ -74,7 +74,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	 * @return The maximum capacity of this storage for the passed item variant.
 	 */
 	protected int getCapacity(ItemVariant itemVariant) {
-		return itemVariant.getItem().getMaxCount();
+		return itemVariant.getItem().getDefaultMaxStackSize();
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 				if (currentStack.isEmpty()) {
 					currentStack = insertedVariant.toStack(insertedAmount);
 				} else {
-					currentStack.increment(insertedAmount);
+					currentStack.grow(insertedAmount);
 				}
 
 				setStack(currentStack);
@@ -137,7 +137,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 			if (extracted > 0) {
 				this.updateSnapshots(transaction);
 				currentStack = getStack();
-				currentStack.decrement(extracted);
+				currentStack.shrink(extracted);
 				setStack(currentStack);
 
 				return extracted;

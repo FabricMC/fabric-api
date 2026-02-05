@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.blockgetter.client",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "MovingBlockRenderStateMixin",
+    "RenderRegionCacheMixin",
+    "RenderSectionRegionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

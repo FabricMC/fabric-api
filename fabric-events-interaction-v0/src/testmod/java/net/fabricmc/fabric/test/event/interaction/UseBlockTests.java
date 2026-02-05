@@ -19,12 +19,16 @@ package net.fabricmc.fabric.test.event.interaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.player.BlockEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 
 public class UseBlockTests implements ModInitializer {
@@ -32,30 +36,71 @@ public class UseBlockTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			LOGGER.info("UseBlockCallback: before chest/water hook (client-side = %s)".formatted(world.isClient));
-			return ActionResult.PASS;
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+			LOGGER.info("UseBlockCallback: before chest/water hook (client-side = %s)".formatted(level.isClientSide()));
+			return InteractionResult.PASS;
 		});
 
 		// If a chest is used and the player holds a water bucket, delete it!
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 			BlockPos pos = hitResult.getBlockPos();
 
-			if (!player.isSpectator() && world.canEntityModifyAt(player, pos)) {
-				if (world.getBlockState(pos).isOf(Blocks.CHEST)) {
-					if (player.getStackInHand(hand).isOf(Items.WATER_BUCKET)) {
-						world.setBlockState(pos, Blocks.AIR.getDefaultState());
-						return ActionResult.SUCCESS;
+			if (!player.isSpectator() && level.mayInteract(player, pos)) {
+				if (level.getBlockState(pos).is(Blocks.CHEST)) {
+					if (player.getItemInHand(hand).is(Items.WATER_BUCKET)) {
+						level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						return InteractionResult.SUCCESS;
 					}
 				}
 			}
 
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		});
 
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			LOGGER.info("UseBlockCallback: after chest/water hook (client-side = %s)".formatted(world.isClient));
-			return ActionResult.PASS;
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+			LOGGER.info("UseBlockCallback: after chest/water hook (client-side = %s)".formatted(level.isClientSide()));
+			return InteractionResult.PASS;
+		});
+
+		BlockEvents.USE_WITHOUT_ITEM.register((blockState, level, blockPos, player, blockHitResult) -> {
+			LOGGER.info("BlockEvents.USE_WITHOUT_ITEM: (client-side = %s)".formatted(level.isClientSide()));
+
+			return null;
+		});
+
+		BlockEvents.USE_ITEM_ON.register((itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult) -> {
+			LOGGER.info("BlockEvents.USE_ITEM_ON: (client-side = %s)".formatted(level.isClientSide()));
+
+			return null;
+		});
+
+		BlockEvents.USE_WITHOUT_ITEM.register((blockState, level, blockPos, player, blockHitResult) -> {
+			if (blockState.is(Blocks.NOTE_BLOCK) && player.hasEffect(MobEffects.BAD_OMEN)) {
+				return InteractionResult.FAIL;
+			}
+
+			return null;
+		});
+
+		BlockEvents.USE_ITEM_ON.register((itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult) -> {
+			if (blockState.is(Blocks.SNOW) && itemStack.is(ItemTags.SHOVELS)) {
+				if (!level.isClientSide()) {
+					int layer = blockState.getValue(SnowLayerBlock.LAYERS) - 1;
+
+					if (layer <= 0) {
+						level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
+					} else {
+						level.setBlockAndUpdate(blockPos, blockState.setValue(SnowLayerBlock.LAYERS, layer));
+					}
+
+					itemStack.hurtAndBreak(1, player, interactionHand);
+					player.addItem(Items.SNOWBALL.getDefaultInstance());
+				}
+
+				return InteractionResult.SUCCESS;
+			}
+
+			return null;
 		});
 	}
 }

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.gamerule;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -25,105 +26,97 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.GameRules;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleCategory;
+import net.minecraft.world.level.gamerules.GameRules;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
 
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameRulesTestMod.class);
-	private static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
-	public static final CustomGameRuleCategory GREEN_CATEGORY = new CustomGameRuleCategory(Identifier.of("fabric", "green"), Text.literal("This One is Green").styled(style -> style.withBold(true).withColor(Formatting.DARK_GREEN)));
-	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(Identifier.of("fabric", "red"), Text.literal("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
+	public static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
+	public static final GameRuleCategory GREEN_CATEGORY = GameRuleCategory.register(Identifier.fromNamespaceAndPath("fabric", "green"));
+	public static final GameRuleCategory RED_CATEGORY = GameRuleCategory.register(Identifier.fromNamespaceAndPath("fabric", "red"));
 
 	// Bounded, Integer, Double and Float rules
-	public static final GameRules.Key<GameRules.IntRule> POSITIVE_ONLY_TEST_INT = register("positiveOnlyTestInteger", GameRules.Category.UPDATES, GameRuleFactory.createIntRule(2, 0));
-	public static final GameRules.Key<DoubleRule> ONE_TO_TEN_DOUBLE = register("oneToTenDouble", GameRules.Category.MISC, GameRuleFactory.createDoubleRule(1.0D, 1.0D, 10.0D));
+	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = GameRuleBuilder.forInteger(2)
+			.minValue(0)
+			.buildAndRegister(id("positive_only_test_integer"));
+	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = GameRuleBuilder.forDouble(1.0D)
+			.range(1.0D, 10.0D)
+			.buildAndRegister(id("one_to_ten_double"));
 
 	// Test enum rule, with only some supported values.
-	public static final GameRules.Key<EnumRule<Direction>> CARDINAL_DIRECTION_ENUM = register("cardinalDirection", GameRules.Category.MISC, GameRuleFactory.createEnumRule(Direction.NORTH, CARDINAL_DIRECTIONS, (server, rule) -> {
-		LOGGER.info("Changed rule value to {}", rule.get());
-	}));
+	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM_RULE = GameRuleBuilder.forEnum(Direction.NORTH)
+			.supportedValues(CARDINAL_DIRECTIONS)
+			.buildAndRegister(id("cardinal_direction"));
 
 	// Rules in custom categories
-	public static final GameRules.Key<GameRules.BooleanRule> RED_BOOLEAN = register("redBoolean", RED_CATEGORY, GameRuleFactory.createBooleanRule(true));
-	public static final GameRules.Key<GameRules.BooleanRule> GREEN_BOOLEAN = register("greenBoolean", GREEN_CATEGORY, GameRuleFactory.createBooleanRule(false));
+	public static final GameRule<Boolean> RED_BOOLEAN = GameRuleBuilder.forBoolean(true)
+			.category(RED_CATEGORY)
+			.buildAndRegister(Identifier.fromNamespaceAndPath("fabric", "red_boolean"));
+	public static final GameRule<Boolean> GREEN_BOOLEAN = GameRuleBuilder.forBoolean(false)
+			.category(GREEN_CATEGORY)
+			.buildAndRegister(id("green_boolean"));
 
 	// An enum rule with no "toString" logic
-	public static final GameRules.Key<EnumRule<PlayerEntity.SleepFailureReason>> RED_SLEEP_FAILURE_ENUM = register("redSleepFailureEnum", RED_CATEGORY, GameRuleFactory.createEnumRule(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
+	public static final GameRule<TestEnum> RED_ENUM = GameRuleBuilder.forEnum(TestEnum.SCISSORS)
+			.category(RED_CATEGORY)
+			.buildAndRegister(id("red_enum"));
 
-	private static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
-		return GameRuleRegistry.register(name, category, type);
-	}
+	public static final AtomicBoolean FIRE_DAMAGE_CHANGED = new AtomicBoolean(false);
 
-	private static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
-		return GameRuleRegistry.register(name, category, type);
+	private static Identifier id(String name) {
+		return Identifier.withDefaultNamespace(name); // TODO replace once MC-303846 is fixed
 	}
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Loading GameRules test mod.");
-
-		// Test a vanilla rule
-		if (!GameRuleRegistry.hasRegistration("keepInventory")) {
-			throw new AssertionError("Expected to find \"keepInventory\" already registered, but it was not detected as registered");
-		}
-
-		// Test our own rule
-		if (!GameRuleRegistry.hasRegistration("redSleepFailureEnum")) {
-			throw new AssertionError("Expected to find \"redSleepFailureEnum\" already registered, but it was not detected as registered");
-		}
-
 		LOGGER.info("Loaded GameRules test mod.");
 
-		// Validate the EnumRule has registered it's commands
+		// Validate the EnumRule has registered its commands
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			RootCommandNode<ServerCommandSource> dispatcher = server.getCommandManager().getDispatcher().getRoot();
+			RootCommandNode<CommandSourceStack> dispatcher = server.getCommands().getDispatcher().getRoot();
 			// Find the GameRule node
-			CommandNode<ServerCommandSource> gamerule = dispatcher.getChild("gamerule");
+			CommandNode<CommandSourceStack> gamerule = dispatcher.getChild("gamerule");
 
 			if (gamerule == null) {
 				throw new AssertionError("Failed to find GameRule command node on server's command dispatcher");
 			}
 
 			// Find the literal corresponding to our enum rule, using cardinal directions here.
-			CommandNode<ServerCommandSource> cardinalDirection = gamerule.getChild("cardinalDirection");
+			CommandNode<CommandSourceStack> cardinalDirection = gamerule.getChild("cardinal_direction");
 
 			if (cardinalDirection == null) {
-				throw new AssertionError("Failed to find \"cardinalDirection\" literal node corresponding a rule.");
+				throw new AssertionError("Failed to find \"cardinal_direction\" literal node corresponding a rule.");
 			}
 
 			// Verify we have a query command set.
 			if (cardinalDirection.getCommand() == null) {
-				throw new AssertionError("Expected to find a query command on \"cardinalDirection\" command node, but it was not present");
+				throw new AssertionError("Expected to find a query command on \"cardinal_direction\" command node, but it was not present");
 			}
 
-			Collection<CommandNode<ServerCommandSource>> children = cardinalDirection.getChildren();
+			Collection<CommandNode<CommandSourceStack>> children = cardinalDirection.getChildren();
 
 			// There should only be 4 child nodes.
 			if (children.size() != 4) {
-				throw new AssertionError(String.format("Expected only 4 child nodes on \"cardinalDirection\" command node, but %s were found", children.size()));
+				throw new AssertionError(String.format("Expected only 4 child nodes on \"cardinal_direction\" command node, but %s were found", children.size()));
 			}
 
 			// All children should be literals
 			children.stream().filter(node -> !(node instanceof LiteralCommandNode)).findAny().ifPresent(node -> {
-				throw new AssertionError(String.format("Found non-literal child node on \"cardinalDirection\" command node %s", node));
+				throw new AssertionError(String.format("Found non-literal child node on \"cardinal_direction\" command node %s", node));
 			});
 
 			// Verify we have all the correct nodes
-			for (CommandNode<ServerCommandSource> child : children) {
-				LiteralCommandNode<ServerCommandSource> node = (LiteralCommandNode<ServerCommandSource>) child;
+			for (CommandNode<CommandSourceStack> child : children) {
+				LiteralCommandNode<CommandSourceStack> node = (LiteralCommandNode<CommandSourceStack>) child;
 				String name = node.getName();
 				switch (name) {
 				case "north":
@@ -142,5 +135,9 @@ public class GameRulesTestMod implements ModInitializer {
 
 			LOGGER.info("GameRule command checks have passed. Try giving the enum rules a test.");
 		});
+
+		GameRuleEvents.changeCallback(GameRules.FIRE_DAMAGE).register(
+				(value, server) -> FIRE_DAMAGE_CHANGED.set(true)
+		);
 	}
 }

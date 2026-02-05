@@ -18,15 +18,15 @@ package net.fabricmc.fabric.test.lookup.item;
 
 import static net.fabricmc.fabric.test.lookup.FabricApiLookupTest.ensureException;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.test.lookup.FabricApiLookupTest;
@@ -34,20 +34,20 @@ import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
 public class FabricItemApiLookupTest {
 	public static final ItemApiLookup<Inspectable, Void> INSPECTABLE =
-			ItemApiLookup.get(Identifier.of("testmod", "inspectable"), Inspectable.class, Void.class);
+			ItemApiLookup.get(Identifier.fromNamespaceAndPath("testmod", "inspectable"), Inspectable.class, Void.class);
 
-	public static final RegistryKey<Item> HELLO_ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(FabricApiLookupTest.MOD_ID, "hello"));
-	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!", new Item.Settings().registryKey(HELLO_ITEM_KEY));
+	public static final ResourceKey<Item> HELLO_ITEM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(FabricApiLookupTest.MOD_ID, "hello"));
+	public static final InspectableItem HELLO_ITEM = new InspectableItem("Hello Fabric API tester!", new Item.Properties().setId(HELLO_ITEM_KEY));
 
 	public static void onInitialize() {
-		Registry.register(Registries.ITEM, HELLO_ITEM_KEY, HELLO_ITEM);
+		Registry.register(BuiltInRegistries.ITEM, HELLO_ITEM_KEY, HELLO_ITEM);
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
 		INSPECTABLE.registerForItems((stack, ignored) -> () -> {
-			if (stack.contains(DataComponentTypes.CUSTOM_NAME)) {
-				return stack.getName();
+			if (stack.has(DataComponents.CUSTOM_NAME)) {
+				return stack.getHoverName();
 			} else {
-				return Text.literal("Unnamed gem.");
+				return Component.literal("Unnamed gem.");
 			}
 		}, Items.DIAMOND, Items.DIAMOND_BLOCK);
 		// Test registerSelf

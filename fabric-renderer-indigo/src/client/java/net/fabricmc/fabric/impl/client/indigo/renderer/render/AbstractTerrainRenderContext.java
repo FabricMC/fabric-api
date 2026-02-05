@@ -19,16 +19,17 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.AXIS_ALIGNED_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector3fc;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
@@ -43,7 +44,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 	private int cachedTintIndex = -1;
 	private int cachedTint;
 
-	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
+	private final BlockPos.MutableBlockPos lightPos = new BlockPos.MutableBlockPos();
 
 	protected AbstractTerrainRenderContext() {
 		lightDataProvider = createLightDataProvider(blockInfo);
@@ -52,7 +53,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 	protected abstract LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo);
 
-	protected abstract VertexConsumer getVertexConsumer(BlockRenderLayer layer);
+	protected abstract VertexConsumer getVertexConsumer(ChunkSectionLayer layer);
 
 	/** Must be called before buffering a block model. */
 	protected void prepare(BlockPos pos, BlockState state) {
@@ -69,7 +70,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 		final boolean ao = blockInfo.effectiveAo(quad.ambientOcclusion());
 		final boolean vanillaShade = quad.shadeMode() == ShadeMode.VANILLA;
-		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(quad.renderLayer()));
+		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveChunkLayer(quad.chunkLayer()));
 
 		tintQuad(quad);
 		shadeQuad(quad, ao, quad.emissive(), vanillaShade);
@@ -90,7 +91,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			}
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, net.minecraft.util.math.ColorHelper.mix(quad.color(i), tint));
+				quad.color(i, ARGB.multiply(quad.color(i), tint));
 			}
 		}
 	}
@@ -102,12 +103,12 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), aoCalc.ao[i]));
-					quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+					quad.color(i, ARGB.scaleRGB(quad.color(i), aoCalc.ao[i]));
+					quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
 				}
 			} else {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), aoCalc.ao[i]));
+					quad.color(i, ARGB.scaleRGB(quad.color(i), aoCalc.ao[i]));
 					quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), aoCalc.light[i]));
 				}
 			}
@@ -116,7 +117,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
-					quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+					quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
 				}
 			} else {
 				final int light = flatLight(quad);
@@ -140,13 +141,13 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			if (quad.hasAllVertexNormals()) {
 				for (int i = 0; i < 4; i++) {
 					float shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
-					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), shade));
+					quad.color(i, ARGB.scaleRGB(quad.color(i), shade));
 				}
 			} else {
 				final float faceShade;
 
 				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
-					faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
+					faceShade = blockInfo.level.getShade(quad.lightFace(), hasShade);
 				} else {
 					Vector3fc faceNormal = quad.faceNormal();
 					faceShade = normalShade(faceNormal.x(), faceNormal.y(), faceNormal.z(), hasShade);
@@ -162,22 +163,22 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 							shade = faceShade;
 						}
 
-						quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), shade));
+						quad.color(i, ARGB.scaleRGB(quad.color(i), shade));
 					}
 				} else {
 					if (faceShade != 1.0f) {
 						for (int i = 0; i < 4; i++) {
-							quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), faceShade));
+							quad.color(i, ARGB.scaleRGB(quad.color(i), faceShade));
 						}
 					}
 				}
 			}
 		} else {
-			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
+			final float faceShade = blockInfo.level.getShade(quad.lightFace(), hasShade);
 
 			if (faceShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), faceShade));
+					quad.color(i, ARGB.scaleRGB(quad.color(i), faceShade));
 				}
 			}
 		}
@@ -193,26 +194,26 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		float div = 0;
 
 		if (normalX > 0) {
-			sum += normalX * blockInfo.blockView.getBrightness(Direction.EAST, hasShade);
+			sum += normalX * blockInfo.level.getShade(Direction.EAST, hasShade);
 			div += normalX;
 		} else if (normalX < 0) {
-			sum += -normalX * blockInfo.blockView.getBrightness(Direction.WEST, hasShade);
+			sum += -normalX * blockInfo.level.getShade(Direction.WEST, hasShade);
 			div -= normalX;
 		}
 
 		if (normalY > 0) {
-			sum += normalY * blockInfo.blockView.getBrightness(Direction.UP, hasShade);
+			sum += normalY * blockInfo.level.getShade(Direction.UP, hasShade);
 			div += normalY;
 		} else if (normalY < 0) {
-			sum += -normalY * blockInfo.blockView.getBrightness(Direction.DOWN, hasShade);
+			sum += -normalY * blockInfo.level.getShade(Direction.DOWN, hasShade);
 			div -= normalY;
 		}
 
 		if (normalZ > 0) {
-			sum += normalZ * blockInfo.blockView.getBrightness(Direction.SOUTH, hasShade);
+			sum += normalZ * blockInfo.level.getShade(Direction.SOUTH, hasShade);
 			div += normalZ;
 		} else if (normalZ < 0) {
-			sum += -normalZ * blockInfo.blockView.getBrightness(Direction.NORTH, hasShade);
+			sum += -normalZ * blockInfo.level.getShade(Direction.NORTH, hasShade);
 			div -= normalZ;
 		}
 
@@ -229,14 +230,14 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		lightPos.set(pos);
 
 		// To mirror Vanilla's behavior, if the face has a cull-face, always sample the light value
-		// offset in that direction. See net.minecraft.client.render.block.BlockModelRenderer.renderQuadsFlat
+		// offset in that direction. See net.minecraft.client.renderer.block.ModelBlockRenderer.renderModelFaceFlat
 		// for reference.
 		if (quad.cullFace() != null) {
 			lightPos.move(quad.cullFace());
 		} else {
 			final int flags = quad.geometryFlags();
 
-			if ((flags & LIGHT_FACE_FLAG) != 0 || ((flags & AXIS_ALIGNED_FLAG) != 0 && blockState.isFullCube(blockInfo.blockView, pos))) {
+			if ((flags & LIGHT_FACE_FLAG) != 0 || ((flags & AXIS_ALIGNED_FLAG) != 0 && blockState.isCollisionShapeFullBlock(blockInfo.level, pos))) {
 				lightPos.move(quad.lightFace());
 			}
 		}

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -75,7 +75,7 @@ public final class ServerPlayerEvents {
 	/**
 	 * An event that is called when a player takes fatal damage.
 	 *
-	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
+	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayer}.
 	 */
 	@Deprecated
 	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
@@ -97,7 +97,7 @@ public final class ServerPlayerEvents {
 		 * @param newPlayer the new player
 		 * @param alive whether the old player is still alive
 		 */
-		void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
+		void copyFromPlayer(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive);
 	}
 
 	@FunctionalInterface
@@ -109,7 +109,7 @@ public final class ServerPlayerEvents {
 		 * @param newPlayer the new player
 		 * @param alive whether the old player is still alive
 		 */
-		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
+		void afterRespawn(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive);
 	}
 
 	@FunctionalInterface
@@ -119,7 +119,7 @@ public final class ServerPlayerEvents {
 		 *
 		 * @param player the player
 		 */
-		void onJoin(ServerPlayerEntity player);
+		void onJoin(ServerPlayer player);
 	}
 
 	@FunctionalInterface
@@ -129,11 +129,11 @@ public final class ServerPlayerEvents {
 		 *
 		 * @param player the player
 		 */
-		void onLeave(ServerPlayerEntity player);
+		void onLeave(ServerPlayer player);
 	}
 
 	/**
-	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
+	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayer}.
 	 */
 	@Deprecated
 	@FunctionalInterface
@@ -146,7 +146,7 @@ public final class ServerPlayerEvents {
 		 * @param damageAmount the damageAmount of damage that has killed the player
 		 * @return true if the death should go ahead, false otherwise.
 		 */
-		boolean allowDeath(ServerPlayerEntity player, DamageSource damageSource, float damageAmount);
+		boolean allowDeath(ServerPlayer player, DamageSource damageSource, float damageAmount);
 	}
 
 	private ServerPlayerEvents() {
@@ -155,7 +155,7 @@ public final class ServerPlayerEvents {
 	static {
 		// Forward general living entity event to (older) player-specific event.
 		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
-			if (entity instanceof ServerPlayerEntity player) {
+			if (entity instanceof ServerPlayer player) {
 				return ServerPlayerEvents.ALLOW_DEATH.invoker().allowDeath(player, damageSource, damageAmount);
 			}
 

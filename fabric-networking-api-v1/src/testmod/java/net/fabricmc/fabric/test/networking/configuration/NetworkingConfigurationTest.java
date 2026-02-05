@@ -21,14 +21,14 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.command.DebugConfigCommand;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.commands.DebugConfigCommand;
+import net.minecraft.server.network.ConfigurationTask;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -45,29 +45,29 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configurationS2C().register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
-		PayloadTypeRegistry.configurationC2S().register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
-		PayloadTypeRegistry.configurationC2S().register(ConfigurationStartPacket.ID, ConfigurationStartPacket.CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().register(ConfigurationPacket.TYPE, ConfigurationPacket.CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(ConfigurationCompletePacket.TYPE, ConfigurationCompletePacket.CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(ConfigurationStartPacket.TYPE, ConfigurationStartPacket.CODEC);
 
-		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			if (ServerConfigurationNetworking.isReconfiguring(handler)) {
+		ServerConfigurationConnectionEvents.CONFIGURE.register((listener, server) -> {
+			if (ServerConfigurationNetworking.isReconfiguring(listener)) {
 				LOGGER.info("Reconfiguring client");
 			}
 
 			// You must check to see if the client can handle your config task
-			if (ServerConfigurationNetworking.canSend(handler, ConfigurationPacket.ID)) {
-				handler.addTask(new TestConfigurationTask("Example data"));
+			if (ServerConfigurationNetworking.canSend(listener, ConfigurationPacket.TYPE)) {
+				listener.addTask(new TestConfigurationTask("Example data"));
 			} else {
 				// You can opt to disconnect the client if it cannot handle the configuration task
-				handler.disconnect(Text.literal("Network test configuration not supported by client"));
+				listener.disconnect(Component.literal("Network test configuration not supported by client"));
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, context) -> {
-			context.networkHandler().completeTask(TestConfigurationTask.KEY);
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.TYPE, (packet, context) -> {
+			context.packetListener().completeTask(TestConfigurationTask.KEY);
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationStartPacket.ID, (packet, context) -> {
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationStartPacket.TYPE, (packet, context) -> {
 			LOGGER.info("Received configuration start packet from client");
 		});
 
@@ -75,64 +75,64 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> DebugConfigCommand.register(dispatcher, registryAccess));
 	}
 
-	public record TestConfigurationTask(String data) implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key(Identifier.of(NetworkingTestmods.ID, "configure").toString());
+	public record TestConfigurationTask(String data) implements ConfigurationTask {
+		public static final Type KEY = new Type(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure").toString());
 
 		@Override
-		public void sendPacket(Consumer<Packet<?>> sender) {
+		public void start(Consumer<Packet<?>> sender) {
 			var packet = new ConfigurationPacket(data);
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(packet));
+			sender.accept(ServerConfigurationNetworking.createClientboundPacket(packet));
 		}
 
 		@Override
-		public Key getKey() {
+		public Type type() {
 			return KEY;
 		}
 	}
 
-	public record ConfigurationPacket(String data) implements CustomPayload {
-		public static final CustomPayload.Id<ConfigurationPacket> ID = new Id<>(Identifier.of(NetworkingTestmods.ID, "configure"));
-		public static final PacketCodec<PacketByteBuf, ConfigurationPacket> CODEC = CustomPayload.codecOf(ConfigurationPacket::write, ConfigurationPacket::new);
+	public record ConfigurationPacket(String data) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ConfigurationPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure"));
+		public static final StreamCodec<FriendlyByteBuf, ConfigurationPacket> CODEC = CustomPacketPayload.codec(ConfigurationPacket::write, ConfigurationPacket::new);
 
-		public ConfigurationPacket(PacketByteBuf buf) {
-			this(buf.readString());
+		public ConfigurationPacket(FriendlyByteBuf buf) {
+			this(buf.readUtf());
 		}
 
-		public void write(PacketByteBuf buf) {
-			buf.writeString(data);
+		public void write(FriendlyByteBuf buf) {
+			buf.writeUtf(data);
 		}
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
-			return ID;
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
 		}
 	}
 
-	public static class ConfigurationCompletePacket implements CustomPayload {
+	public static class ConfigurationCompletePacket implements CustomPacketPayload {
 		public static final ConfigurationCompletePacket INSTANCE = new ConfigurationCompletePacket();
-		public static final CustomPayload.Id<ConfigurationCompletePacket> ID = new Id<>(Identifier.of(NetworkingTestmods.ID, "configure_complete"));
-		public static final PacketCodec<PacketByteBuf, ConfigurationCompletePacket> CODEC = PacketCodec.unit(INSTANCE);
+		public static final CustomPacketPayload.Type<ConfigurationCompletePacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure_complete"));
+		public static final StreamCodec<FriendlyByteBuf, ConfigurationCompletePacket> CODEC = StreamCodec.unit(INSTANCE);
 
 		private ConfigurationCompletePacket() {
 		}
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
-			return ID;
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
 		}
 	}
 
-	public static class ConfigurationStartPacket implements CustomPayload {
+	public static class ConfigurationStartPacket implements CustomPacketPayload {
 		public static final ConfigurationStartPacket INSTANCE = new ConfigurationStartPacket();
-		public static final CustomPayload.Id<ConfigurationStartPacket> ID = new Id<>(Identifier.of(NetworkingTestmods.ID, "configure_start"));
-		public static final PacketCodec<PacketByteBuf, ConfigurationStartPacket> CODEC = PacketCodec.unit(INSTANCE);
+		public static final CustomPacketPayload.Type<ConfigurationStartPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure_start"));
+		public static final StreamCodec<FriendlyByteBuf, ConfigurationStartPacket> CODEC = StreamCodec.unit(INSTANCE);
 
 		private ConfigurationStartPacket() {
 		}
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
-			return ID;
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
 		}
 	}
 }

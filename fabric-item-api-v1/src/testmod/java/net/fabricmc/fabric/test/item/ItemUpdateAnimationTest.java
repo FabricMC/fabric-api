@@ -16,28 +16,28 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.component.ComponentType;
-import net.minecraft.item.Item;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.ModInitializer;
 
 public class ItemUpdateAnimationTest implements ModInitializer {
-	public static final ComponentType<Integer> TICKS = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of("fabric-item-api-v1-testmod", "ticks"),
-																			ComponentType.<Integer>builder().codec(Codecs.NON_NEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+	public static final DataComponentType<Integer> TICKS = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "ticks"),
+																			DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
 
 	@Override
 	public void onInitialize() {
-		RegistryKey<Item> updatingAllowedKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_allowed"));
-		RegistryKey<Item> updatingDisallowedKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "updating_disallowed"));
+		ResourceKey<Item> updatingAllowedKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "updating_allowed"));
+		ResourceKey<Item> updatingDisallowedKey = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "updating_disallowed"));
 
-		Registry.register(Registries.ITEM, updatingAllowedKey, new UpdatingItem(true, new Item.Settings().registryKey(updatingAllowedKey)));
-		Registry.register(Registries.ITEM, updatingDisallowedKey, new UpdatingItem(false, new Item.Settings().registryKey(updatingDisallowedKey)));
+		Registry.register(BuiltInRegistries.ITEM, updatingAllowedKey, new UpdatingItem(true, new Item.Properties().setId(updatingAllowedKey)));
+		Registry.register(BuiltInRegistries.ITEM, updatingDisallowedKey, new UpdatingItem(false, new Item.Properties().setId(updatingDisallowedKey)));
 	}
 }

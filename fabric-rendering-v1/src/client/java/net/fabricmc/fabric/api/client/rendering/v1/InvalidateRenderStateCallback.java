@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Called when the world renderer reloads, usually as result of changing resource pack
+ * Called when the level renderer reloads, usually as result of changing resource pack
  * or video configuration, or when the player types F3+A in the debug screen.
  * Afterwards all render chunks will be reset and reloaded.
  *

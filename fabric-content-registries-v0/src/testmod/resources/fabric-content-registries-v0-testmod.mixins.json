@@ -1,10 +1,13 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.test.mixin.content.registry",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

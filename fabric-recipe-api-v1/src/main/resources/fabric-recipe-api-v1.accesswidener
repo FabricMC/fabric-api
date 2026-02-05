@@ -1,9 +1,0 @@
-accessWidener   v2  named
-
-extendable    class    net/minecraft/recipe/Ingredient
-accessible    method   net/minecraft/recipe/Ingredient <init> (Lnet/minecraft/registry/entry/RegistryEntryList;)V
-accessible    method   net/minecraft/recipe/Ingredient createDisplayWithRemainder (Lnet/minecraft/registry/entry/RegistryEntry;)Lnet/minecraft/recipe/display/SlotDisplay;
-
-accessible    field    net/minecraft/network/ClientConnection    channel    Lio/netty/channel/Channel;
-
-accessible    field    net/minecraft/server/network/ServerLoginNetworkHandler    connection    Lnet/minecraft/network/ClientConnection;

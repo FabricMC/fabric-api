@@ -21,12 +21,12 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -37,7 +37,7 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 	// Cannot use registry-bound codec because they fail parsing if nonexistent,
 	// and resource conditions themselves should not fail to parse on condition failure
 	public static final MapCodec<RegistryContainsResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Identifier.CODEC.fieldOf("registry").orElse(RegistryKeys.ITEM.getValue()).forGetter(RegistryContainsResourceCondition::registry),
+			Identifier.CODEC.fieldOf("registry").orElse(Registries.ITEM.identifier()).forGetter(RegistryContainsResourceCondition::registry),
 			Identifier.CODEC.listOf().fieldOf("values").forGetter(RegistryContainsResourceCondition::entries)
 	).apply(instance, RegistryContainsResourceCondition::new));
 
@@ -46,8 +46,8 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 	}
 
 	@SafeVarargs
-	public <T> RegistryContainsResourceCondition(RegistryKey<T>... entries) {
-		this(entries[0].getRegistry(), Arrays.stream(entries).map(RegistryKey::getValue).toList());
+	public <T> RegistryContainsResourceCondition(ResourceKey<T>... entries) {
+		this(entries[0].registry(), Arrays.stream(entries).map(ResourceKey::identifier).toList());
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+	public boolean test(RegistryOps.@Nullable RegistryInfoLookup registryInfo) {
 		return ResourceConditionsImpl.registryContains(registryInfo, this.registry(), this.entries());
 	}
 }

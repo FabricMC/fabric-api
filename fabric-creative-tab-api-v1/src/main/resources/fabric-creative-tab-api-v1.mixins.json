@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.creativetab",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "CreativeModeTabAccessor",
+    "CreativeModeTabMixin",
+    "CreativeModeTabsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

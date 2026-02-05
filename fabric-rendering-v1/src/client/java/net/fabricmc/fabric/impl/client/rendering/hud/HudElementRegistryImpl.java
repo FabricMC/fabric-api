@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -50,11 +50,10 @@ public class HudElementRegistryImpl {
 			VanillaHudElements.EXPERIENCE_LEVEL,
 			VanillaHudElements.HELD_ITEM_TOOLTIP,
 			VanillaHudElements.SPECTATOR_TOOLTIP,
-			VanillaHudElements.STATUS_EFFECTS,
+			VanillaHudElements.MOB_EFFECTS,
 			VanillaHudElements.BOSS_BAR,
 			VanillaHudElements.SLEEP,
 			VanillaHudElements.DEMO_TIMER,
-			VanillaHudElements.DEBUG,
 			VanillaHudElements.SCOREBOARD,
 			VanillaHudElements.OVERLAY_MESSAGE,
 			VanillaHudElements.TITLE_AND_SUBTITLE,
@@ -211,10 +210,10 @@ public class HudElementRegistryImpl {
 			layers().add(HudLayer.ofVanilla(id));
 		}
 
-		public void render(DrawContext context, RenderTickCounter tickCounter, HudElement vanillaElement) {
+		public void render(GuiGraphics graphics, DeltaTracker deltaTracker, HudElement vanillaElement) {
 			for (HudLayer layer : layers) {
 				if (!layer.isRemoved()) {
-					layer.element(vanillaElement).render(context, tickCounter);
+					layer.element(vanillaElement).render(graphics, deltaTracker);
 				}
 			}
 		}

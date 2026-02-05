@@ -21,8 +21,8 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import net.minecraft.block.Block;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
@@ -68,7 +68,7 @@ public interface ModelLoadingPlugin {
 
 		/**
 		 * Add a model that will be loaded, baked, and made available through
-		 * {@link FabricBakedModelManager#getModel(ExtraModelKey)}.
+		 * {@link FabricModelManager#getModel(ExtraModelKey)}.
 		 *
 		 * <p>Dependency gathering and baking is performed by an {@link UnbakedExtraModel}. This allows you to depend
 		 * on multiple models files at once, baking them into a single dynamic model. To load a single model, then

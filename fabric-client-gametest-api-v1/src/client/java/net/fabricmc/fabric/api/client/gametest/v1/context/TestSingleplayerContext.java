@@ -35,11 +35,11 @@ public interface TestSingleplayerContext extends AutoCloseable {
 	TestWorldSave getWorldSave();
 
 	/**
-	 * Gets the handle for the client world.
+	 * Gets the handle for the client level.
 	 *
-	 * @return The handle for the client world
+	 * @return The handle for the client level
 	 */
-	TestClientWorldContext getClientWorld();
+	TestClientLevelContext getClientLevel();
 
 	/**
 	 * Gets the handle for the integrated server.

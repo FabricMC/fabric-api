@@ -1,0 +1,12 @@
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+	'fabric-api-base'
+])
+
+testDependencies(project, [
+])
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-debug-api-v1.accesswidener")
+}

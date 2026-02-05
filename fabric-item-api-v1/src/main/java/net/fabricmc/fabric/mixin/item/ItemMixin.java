@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
@@ -42,8 +42,8 @@ abstract class ItemMixin implements ItemExtensions, FabricItem {
 	private CustomDamageHandler customDamageHandler;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void onConstruct(Item.Settings settings, CallbackInfo info) {
-		FabricItemInternals.onBuild(settings, (Item) (Object) this);
+	private void onConstruct(Item.Properties properties, CallbackInfo info) {
+		FabricItemInternals.onBuild(properties, (Item) (Object) this);
 	}
 
 	@Override

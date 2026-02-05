@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 

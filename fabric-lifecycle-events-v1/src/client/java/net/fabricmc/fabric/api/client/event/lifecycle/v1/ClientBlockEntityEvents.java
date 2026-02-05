@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -27,35 +27,35 @@ public final class ClientBlockEntityEvents {
 	}
 
 	/**
-	 * Called when a BlockEntity is loaded into a ClientWorld.
+	 * Called when a BlockEntity is loaded into a ClientLevel.
 	 *
-	 * <p>When this event is called, the block entity is already in the world.
+	 * <p>When this event is called, the block entity is already in the level.
 	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
-	public static final Event<ClientBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Load.class, callbacks -> (blockEntity, world) -> {
+	public static final Event<ClientBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Load.class, callbacks -> (blockEntity, level) -> {
 		for (Load callback : callbacks) {
-			callback.onLoad(blockEntity, world);
+			callback.onLoad(blockEntity, level);
 		}
 	});
 
 	/**
-	 * Called when a BlockEntity is about to be unloaded from a ClientWorld.
+	 * Called when a BlockEntity is about to be unloaded from a ClientLevel.
 	 *
-	 * <p>When this event is called, the block entity is still present on the world.
+	 * <p>When this event is called, the block entity is still present on the level.
 	 */
-	public static final Event<ClientBlockEntityEvents.Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Unload.class, callbacks -> (blockEntity, world) -> {
+	public static final Event<ClientBlockEntityEvents.Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Unload.class, callbacks -> (blockEntity, level) -> {
 		for (Unload callback : callbacks) {
-			callback.onUnload(blockEntity, world);
+			callback.onUnload(blockEntity, level);
 		}
 	});
 
 	@FunctionalInterface
 	public interface Load {
-		void onLoad(BlockEntity blockEntity, ClientWorld world);
+		void onLoad(BlockEntity blockEntity, ClientLevel level);
 	}
 
 	@FunctionalInterface
 	public interface Unload {
-		void onUnload(BlockEntity blockEntity, ClientWorld world);
+		void onUnload(BlockEntity blockEntity, ClientLevel level);
 	}
 }

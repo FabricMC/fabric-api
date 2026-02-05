@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -28,7 +28,7 @@ public interface ListenableRegistry<T> {
 	@SuppressWarnings("unchecked")
 	static <T> ListenableRegistry<T> get(Registry<T> registry) {
 		if (!(registry instanceof ListenableRegistry)) {
-			throw new IllegalArgumentException("Unsupported registry: " + registry.getKey().getValue());
+			throw new IllegalArgumentException("Unsupported registry: " + registry.key().identifier());
 		}
 
 		// Safe cast: this is implemented via Mixin and T will always match the T in Registry<T>

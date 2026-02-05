@@ -16,27 +16,27 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 public interface AttachmentTargetImpl extends AttachmentTarget {
 	/**
 	 * Copies attachments from the original to the target. This is used when a ProtoChunk is converted to a
-	 * WorldChunk, and when an entity is respawned and a new instance is created. For entity respawns, it is
-	 * triggered on player respawn, entity conversion, return from the End, or cross-world entity teleportation.
+	 * LevelChunk, and when an entity is respawned and a new instance is created. For entity respawns, it is
+	 * triggered on player respawn, entity conversion, return from the End, or cross-level entity teleportation.
 	 * In the first two cases, only the attachments with {@link AttachmentType#copyOnDeath()} will be transferred.
 	 */
 	@SuppressWarnings("unchecked")
@@ -54,6 +54,9 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 				target.setAttached(type, entry.getValue());
 			}
 		}
+
+		// Avoid unnecessary extra syncing after initial sync
+		((AttachmentTargetImpl) target).fabric_clearDeferredSyncChanges();
 	}
 
 	@Nullable
@@ -61,11 +64,11 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_writeAttachmentsToNbt(WriteView view) {
+	default void fabric_writeAttachmentsToNbt(ValueOutput output) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_readAttachmentsFromNbt(ReadView view) {
+	default void fabric_readAttachmentsFromNbt(ValueInput input) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -81,11 +84,31 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	/*
 	 * Computes changes that should be communicated to newcomers (i.e. clients that start tracking this target)
 	 */
-	default void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+	default void fabric_computeInitialSyncChanges(ServerPlayer player, Consumer<AttachmentChange> changeOutput) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
+	/**
+	 * Sends changes that should be communicated to clients in a deferred manner, then clears those changes.
+	 *
+	 * <p>Used when the target does not immediately sync when the attachment is set, but instead defers sync to (usually) match vanilla's sync timing.
+	 */
+	default void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default void fabric_clearDeferredSyncChanges() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Sync targets can change their identity {@link net.minecraft.world.entity.Entity#setId(int)}, use this function to update the target to match the new identity.
+	 */
+	default <T> void fabric_updateSyncTarget(AttachmentTargetInfo<T> oldTargetInfo, AttachmentTargetInfo<T> newTargetInfo) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 	}
 
 	default void fabric_markChanged(AttachmentType<?> type) {
@@ -95,5 +118,9 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	DynamicRegistryManager fabric_getDynamicRegistryManager();
+	default boolean fabric_shouldDeferSync() {
+		return false;
+	}
+
+	RegistryAccess fabric_getRegistryAccess();
 }

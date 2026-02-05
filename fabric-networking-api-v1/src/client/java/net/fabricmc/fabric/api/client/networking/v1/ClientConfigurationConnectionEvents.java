@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientConfigurationNetworkHandler;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -32,11 +32,11 @@ public final class ClientConfigurationConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 *
-	 * @see ClientConfigurationNetworking#registerReceiver(CustomPayload.Id, ClientConfigurationNetworking.ConfigurationPayloadHandler)
+	 * @see ClientConfigurationNetworking#registerReceiver(CustomPacketPayload.Type, ClientConfigurationNetworking.ConfigurationPayloadHandler)
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Init callback : callbacks) {
-			callback.onConfigurationInit(handler, client);
+			callback.onConfigurationInit(listener, client);
 		}
 	});
 
@@ -45,31 +45,31 @@ public final class ClientConfigurationConnectionEvents {
 	 *
 	 * <p>Packets may be sent during this event.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Start callback : callbacks) {
-			callback.onConfigurationStart(handler, client);
+			callback.onConfigurationStart(listener, client);
 		}
 	});
 
 	/**
-	 * An event called after the ReadyS2CPacket has been received, just before switching to the PLAY state.
+	 * An event called after the ClientboundFinishConfigurationPacket has been received, just before switching to the PLAY state.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Complete> COMPLETE = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Complete.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Complete> COMPLETE = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Complete.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Complete callback : callbacks) {
-			callback.onConfigurationComplete(handler, client);
+			callback.onConfigurationComplete(listener, client);
 		}
 	});
 
 	/**
-	 * An event for the disconnection of the client configuration network handler.
+	 * An event for the disconnection of the client configuration packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Disconnect.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Disconnect.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Disconnect callback : callbacks) {
-			callback.onConfigurationDisconnect(handler, client);
+			callback.onConfigurationDisconnect(listener, client);
 		}
 	});
 
@@ -78,22 +78,22 @@ public final class ClientConfigurationConnectionEvents {
 
 	@FunctionalInterface
 	public interface Init {
-		void onConfigurationInit(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+		void onConfigurationInit(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Start {
-		void onConfigurationStart(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+		void onConfigurationStart(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Complete {
-		void onConfigurationComplete(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+		void onConfigurationComplete(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Disconnect {
-		void onConfigurationDisconnect(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+		void onConfigurationDisconnect(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	// Deprecated:
@@ -102,9 +102,9 @@ public final class ClientConfigurationConnectionEvents {
 	 * @deprecated replaced by {@link #COMPLETE}
 	 */
 	@Deprecated
-	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Ready callback : callbacks) {
-			callback.onConfigurationReady(handler, client);
+			callback.onConfigurationReady(listener, client);
 		}
 	});
 
@@ -114,6 +114,6 @@ public final class ClientConfigurationConnectionEvents {
 	@Deprecated
 	@FunctionalInterface
 	public interface Ready {
-		void onConfigurationReady(ClientConfigurationNetworkHandler handler, MinecraftClient client);
+		void onConfigurationReady(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 }

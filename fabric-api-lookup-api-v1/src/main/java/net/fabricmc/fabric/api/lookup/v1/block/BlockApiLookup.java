@@ -19,20 +19,20 @@ package net.fabricmc.fabric.api.lookup.v1.block;
 import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
 /**
- * An object that allows retrieving APIs from blocks in a world.
+ * An object that allows retrieving APIs from blocks in a level.
  * Instances of this interface can be obtained through {@link #get}.
  *
  * <p>When trying to {@link BlockApiLookup#find} an API, the block or block entity at that position will be queried if it exists.
@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * <p>Note: If you are going to query APIs a lot, consider using {@link BlockApiCache}, it may drastically improve performance.
  *
- * <h3>Usage Example</h3>
+ * <h2>Usage Example</h2>
  * Let us pretend we have the following interface that we would like to attach to some blocks depending on the direction.
  *
  * <pre>{@code
@@ -51,12 +51,12 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * <pre>{@code
  * public final class MyApi {
- *     public static final BlockApiLookup<FluidContainer, Direction> FLUID_CONTAINER = BlockApiLookup.get(Identifier.of("mymod", "fluid_container"), FluidContainer.class, Direction.class);
+ *     public static final BlockApiLookup<FluidContainer, Direction> FLUID_CONTAINER = BlockApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"), FluidContainer.class, Direction.class);
  * }}</pre>
  * Using that, we can query instances of {@code FluidContainer}:
  *
  * <pre>{@code
- * FluidContainer container = MyApi.FLUID_CONTAINER.find(world, pos, direction);
+ * FluidContainer container = MyApi.FLUID_CONTAINER.find(level, pos, direction);
  * if (container != null) {
  *     // Do something with the container
  *     if (container.containsFluids()) {
@@ -89,12 +89,12 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * }, BLOCK_ENTITY_TYPE_1, BLOCK_ENTITY_TYPE_2);
  *
  * // Without a block entity, registerForBlocks can be used.
- * MyApi.FLUID_CONTAINER.registerForBlocks((world, pos, state, blockEntity, direction) -> {
+ * MyApi.FLUID_CONTAINER.registerForBlocks((level, pos, state, blockEntity, direction) -> {
  *     // return a FluidContainer for your block, or null if there is none
  * }, BLOCK_INSTANCE, ANOTHER_BLOCK_INSTANCE); // register as many blocks as you want
  *
  * // Block entity fallback, for example to interface with another mod's FluidInventory.
- * MyApi.FLUID_CONTAINER.registerFallback((world, pos, state, blockEntity, direction) -> {
+ * MyApi.FLUID_CONTAINER.registerFallback((level, pos, state, blockEntity, direction) -> {
  *     if (blockEntity instanceof FluidInventory) {
  *         // return wrapper
  *     }
@@ -102,7 +102,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * });
  *
  * // General fallback, to interface with anything, for example another BlockApiLookup.
- * MyApi.FLUID_CONTAINER.registerFallback((world, pos, state, blockEntity, direction) -> {
+ * MyApi.FLUID_CONTAINER.registerFallback((level, pos, state, blockEntity, direction) -> {
  *     // return something if available, or null
  * });}</pre>
  *
@@ -112,7 +112,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * <pre>{@code
  * // 1) create and store an instance
- * BlockApiCache<FluidContainer, Direction> cache = BlockApiCache.create(MyApi.FLUID_CONTAINER, serverWorld, pos);
+ * BlockApiCache<FluidContainer, Direction> cache = BlockApiCache.create(MyApi.FLUID_CONTAINER, serverLevel, pos);
  *
  * // 2) use it later, the block entity instance will be cached among other things
  * FluidContainer container = cache.find(direction);
@@ -139,7 +139,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * @param <C> The type of the additional context object.
  */
 @ApiStatus.NonExtendable
-public interface BlockApiLookup<A, C> {
+public interface BlockApiLookup<A, C extends @Nullable Object> {
 	/**
 	 * Retrieve the {@link BlockApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
@@ -149,31 +149,31 @@ public interface BlockApiLookup<A, C> {
 	 * @return The unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
-	static <A, C> BlockApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+	static <A, C extends @Nullable Object> BlockApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return BlockApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
 	/**
-	 * Attempt to retrieve an API from a block in the world.
+	 * Attempt to retrieve an API from a block in the level.
 	 * Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 *
-	 * <p>Note: If the block state or the block entity is known, it is more efficient to use {@link BlockApiLookup#find(World, BlockPos, BlockState, BlockEntity, Object)}.
+	 * <p>Note: If the block state or the block entity is known, it is more efficient to use {@link BlockApiLookup#find(Level, BlockPos, BlockState, BlockEntity, Object)}.
 	 *
-	 * @param world The world.
+	 * @param level The level.
 	 * @param pos The position of the block.
 	 * @param context Additional context for the query, defined by type parameter C.
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	default A find(World world, BlockPos pos, C context) {
-		return find(world, pos, null, null, context);
+	default A find(Level level, BlockPos pos, C context) {
+		return find(level, pos, null, null, context);
 	}
 
 	/**
-	 * Attempt to retrieve an API from a block in the world.
+	 * Attempt to retrieve an API from a block in the level.
 	 * Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 *
-	 * @param world The world.
+	 * @param level The level.
 	 * @param pos The position of the block.
 	 * @param context Additional context for the query, defined by type parameter C.
 	 * @param state The block state at the target position, or null if unknown.
@@ -181,7 +181,7 @@ public interface BlockApiLookup<A, C> {
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	A find(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context);
+	A find(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context);
 
 	/**
 	 * Expose the API for the passed block entities directly implementing it.
@@ -207,8 +207,8 @@ public interface BlockApiLookup<A, C> {
 	 * The mapping from the parameters of the query to the API is handled by the passed {@code provider}.
 	 * This overload allows using the correct block entity class directly.
 	 *
-	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the world, but it is converted to
-	 * its {@linkplain BlockEntityType#blocks} when this method is called.
+	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the level, but it is converted to
+	 * its {@linkplain BlockEntityType#validBlocks} when this method is called.
 	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
 	 *
 	 * @param <T> The block entity class for which an API is exposed.
@@ -227,8 +227,8 @@ public interface BlockApiLookup<A, C> {
 	 * This overload allows registering multiple block entity types at once,
 	 * but due to how generics work in java, the provider has to cast to the correct block entity class if necessary.
 	 *
-	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the world, but it is converted to
-	 * its {@linkplain BlockEntityType#blocks} when this method is called.
+	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the level, but it is converted to
+	 * its {@linkplain BlockEntityType#validBlocks} when this method is called.
 	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
 	 *
 	 * @param provider The provider.
@@ -267,23 +267,23 @@ public interface BlockApiLookup<A, C> {
 	BlockApiProvider<A, C> getProvider(Block block);
 
 	@FunctionalInterface
-	interface BlockApiProvider<A, C> {
+	interface BlockApiProvider<A, C extends @Nullable Object> {
 		/**
-		 * Return an API of type {@code A} if available in the world at the given pos with the given context, or {@code null} otherwise.
+		 * Return an API of type {@code A} if available in the level at the given pos with the given context, or {@code null} otherwise.
 		 *
-		 * @param world The world.
-		 * @param pos The position in the world.
+		 * @param level The level.
+		 * @param pos The position in the level.
 		 * @param state The block state.
-		 * @param blockEntity The block entity, if it exists in the world.
+		 * @param blockEntity The block entity, if it exists in the level.
 		 * @param context Additional context passed to the query.
 		 * @return An API of type {@code A}, or {@code null} if no API is available.
 		 */
 		@Nullable
-		A find(World world, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context);
+		A find(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context);
 	}
 
 	@FunctionalInterface
-	interface BlockEntityApiProvider<A, C> {
+	interface BlockEntityApiProvider<A, C extends @Nullable Object> {
 		/**
 		 * Return an API of type {@code A} if available in the given block entity with the given context, or {@code null} otherwise.
 		 *

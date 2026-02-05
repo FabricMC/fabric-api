@@ -20,86 +20,86 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 
-public class TrackStackEntity extends MobEntity {
-	private static final TrackedData<GlobalPos> GLOBAL_POS = DataTracker.registerData(TrackStackEntity.class, EntityTrackedDataTest.GLOBAL_POS);
-	private static final TrackedData<Item> ITEM = DataTracker.registerData(TrackStackEntity.class, EntityTrackedDataTest.ITEM);
-	private static final TrackedData<Optional<DyeColor>> OPTIONAL_DYE_COLOR = DataTracker.registerData(TrackStackEntity.class, EntityTrackedDataTest.OPTIONAL_DYE_COLOR);
+public class TrackStackEntity extends Mob {
+	private static final EntityDataAccessor<GlobalPos> GLOBAL_POS = SynchedEntityData.defineId(TrackStackEntity.class, EntityDataAccessorTest.GLOBAL_POS);
+	private static final EntityDataAccessor<Item> ITEM = SynchedEntityData.defineId(TrackStackEntity.class, EntityDataAccessorTest.ITEM);
+	private static final EntityDataAccessor<Optional<DyeColor>> OPTIONAL_DYE_COLOR = SynchedEntityData.defineId(TrackStackEntity.class, EntityDataAccessorTest.OPTIONAL_DYE_COLOR);
 
-	public TrackStackEntity(EntityType<? extends TrackStackEntity> entityType, World world) {
-		super(entityType, world);
+	public TrackStackEntity(EntityType<? extends TrackStackEntity> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.ENTITY_CAT_AMBIENT;
+		return SoundEvents.CAT_AMBIENT;
 	}
 
-	public Iterable<Text> getLabelLines() {
-		List<Text> lines = new ArrayList<>();
+	public Iterable<Component> getLabelLines() {
+		List<Component> lines = new ArrayList<>();
 
-		// Get tracked data from data tracker
-		GlobalPos globalPos = this.dataTracker.get(GLOBAL_POS);
-		Item item = this.dataTracker.get(ITEM);
-		Optional<DyeColor> optionalDyeColor = this.dataTracker.get(OPTIONAL_DYE_COLOR);
+		// Get entity data
+		GlobalPos globalPos = this.entityData.get(GLOBAL_POS);
+		Item item = this.entityData.get(ITEM);
+		Optional<DyeColor> optionalDyeColor = this.entityData.get(OPTIONAL_DYE_COLOR);
 
 		// Add in reverse order
 		lines.add(optionalDyeColor.map(color -> {
-			return Text.literal(color.toString());
+			return Component.literal(color.toString());
 		}).orElseGet(() -> {
-			return Text.literal("<empty>");
-		}).formatted(Formatting.BLACK));
+			return Component.literal("<empty>");
+		}).withStyle(ChatFormatting.BLACK));
 
-		lines.add(item.getName().copy().formatted(Formatting.DARK_PURPLE));
-		lines.add(Text.literal(globalPos.dimension().getValue().toString()));
-		lines.add(Text.translatable("chat.coordinates", globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ()).formatted(Formatting.YELLOW));
+		lines.add(item.getName(item.getDefaultInstance()).copy().withStyle(ChatFormatting.DARK_PURPLE));
+		lines.add(Component.literal(globalPos.dimension().identifier().toString()));
+		lines.add(Component.translatable("chat.coordinates", globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ()).withStyle(ChatFormatting.YELLOW));
 
-		lines.add(Text.empty());
-		lines.add(this.getName().copy().formatted(Formatting.GOLD, Formatting.BOLD));
+		lines.add(Component.empty());
+		lines.add(this.getName().copy().withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 
 		return lines;
 	}
 
 	@Override
-	protected ActionResult interactMob(PlayerEntity player, Hand hand) {
-		GlobalPos globalPos = GlobalPos.create(player.getWorld().getRegistryKey(), player.getBlockPos());
-		this.dataTracker.set(GLOBAL_POS, globalPos);
+	protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+		GlobalPos globalPos = GlobalPos.of(player.level().dimension(), player.blockPosition());
+		this.entityData.set(GLOBAL_POS, globalPos);
 
-		Item item = player.getStackInHand(hand).getItem();
-		this.dataTracker.set(ITEM, item);
+		Item item = player.getItemInHand(hand).getItem();
+		this.entityData.set(ITEM, item);
 
-		if (!player.getWorld().isClient) {
+		if (!player.level().isClientSide()) {
 			DyeColor[] colors = DyeColor.values();
-			Optional<DyeColor> color = Optional.of(colors[this.getRandom().nextBetweenExclusive(0, colors.length)]);
-			this.dataTracker.set(OPTIONAL_DYE_COLOR, color);
+			Optional<DyeColor> color = Optional.of(colors[this.getRandom().nextInt(0, colors.length)]);
+			this.entityData.set(OPTIONAL_DYE_COLOR, color);
 		}
 
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
 
-		builder.add(GLOBAL_POS, GlobalPos.create(World.OVERWORLD, BlockPos.ORIGIN));
-		builder.add(ITEM, Items.POTATO);
-		builder.add(OPTIONAL_DYE_COLOR, Optional.empty());
+		builder.define(GLOBAL_POS, GlobalPos.of(Level.OVERWORLD, BlockPos.ZERO));
+		builder.define(ITEM, Items.POTATO);
+		builder.define(OPTIONAL_DYE_COLOR, Optional.empty());
 	}
 }

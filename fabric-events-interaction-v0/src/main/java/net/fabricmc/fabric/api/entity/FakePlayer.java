@@ -23,28 +23,28 @@ import java.util.UUID;
 
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
-import net.minecraft.scoreboard.Team;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.Stat;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ClientInformation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stat;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.scores.PlayerTeam;
 
-import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
+import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
 
 /**
- * A "fake player" is a {@link ServerPlayerEntity} that is not a human player.
+ * A "fake player" is a {@link ServerPlayer} that is not a human player.
  * They are typically used to automatically perform player actions such as placing blocks.
  *
- * <p>The easiest way to obtain a fake player is with {@link FakePlayer#get(ServerWorld)} or {@link FakePlayer#get(ServerWorld, GameProfile)}.
+ * <p>The easiest way to obtain a fake player is with {@link FakePlayer#get(ServerLevel)} or {@link FakePlayer#get(ServerLevel, GameProfile)}.
  * It is also possible to create a subclass for more control over the fake player's behavior.
  *
  * <p>For good inter-mod compatibility, fake players should have the UUID of their owning (human) player.
@@ -57,11 +57,11 @@ import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
  * }</pre>
  * If a fake player does not belong to a specific player, the {@link #DEFAULT_UUID default UUID} should be used.
  *
- * <p>Fake players try to behave like regular {@link ServerPlayerEntity} objects to a reasonable extent.
- * In some edge cases, or for gameplay considerations, it might be necessary to check whether a {@link ServerPlayerEntity} is a fake player.
+ * <p>Fake players try to behave like regular {@link ServerPlayer} objects to a reasonable extent.
+ * In some edge cases, or for gameplay considerations, it might be necessary to check whether a {@link ServerPlayer} is a fake player.
  * This can be done with an {@code instanceof} check: {@code player instanceof FakePlayer}.
  */
-public class FakePlayer extends ServerPlayerEntity {
+public class FakePlayer extends ServerPlayer {
 	/**
 	 * Default UUID, for fake players not associated with a specific (human) player.
 	 */
@@ -69,86 +69,86 @@ public class FakePlayer extends ServerPlayerEntity {
 	private static final GameProfile DEFAULT_PROFILE = new GameProfile(DEFAULT_UUID, "[Minecraft]");
 
 	/**
-	 * Retrieves a fake player for the specified world, using the {@link #DEFAULT_UUID default UUID}.
+	 * Retrieves a fake player for the specified level, using the {@link #DEFAULT_UUID default UUID}.
 	 * This is suitable when the fake player is not associated with a specific (human) player.
 	 * Otherwise, the UUID of the owning (human) player should be used (see class javadoc).
 	 *
-	 * <p>Instances are reused for the same world parameter.
+	 * <p>Instances are reused for the same level parameter.
 	 *
 	 * <p>Caution should be exerted when storing the returned value,
-	 * as strong references to the fake player will keep the world loaded.
+	 * as strong references to the fake player will keep the level loaded.
 	 */
-	public static FakePlayer get(ServerWorld world) {
-		return get(world, DEFAULT_PROFILE);
+	public static FakePlayer get(ServerLevel level) {
+		return get(level, DEFAULT_PROFILE);
 	}
 
 	/**
-	 * Retrieves a fake player for the specified world and game profile.
+	 * Retrieves a fake player for the specified level and game profile.
 	 * See class javadoc for more information on fake player game profiles.
 	 *
 	 * <p>Instances are reused for the same parameters.
 	 *
 	 * <p>Caution should be exerted when storing the returned value,
-	 * as strong references to the fake player will keep the world loaded.
+	 * as strong references to the fake player will keep the level loaded.
 	 */
-	public static FakePlayer get(ServerWorld world, GameProfile profile) {
-		Objects.requireNonNull(world, "World may not be null.");
+	public static FakePlayer get(ServerLevel level, GameProfile profile) {
+		Objects.requireNonNull(level, "Level may not be null.");
 		Objects.requireNonNull(profile, "Game profile may not be null.");
 
-		return FAKE_PLAYER_MAP.computeIfAbsent(new FakePlayerKey(world, profile), key -> new FakePlayer(key.world, key.profile));
+		return FAKE_PLAYER_MAP.computeIfAbsent(new FakePlayerKey(level, profile), key -> new FakePlayer(key.level, key.profile));
 	}
 
-	private record FakePlayerKey(ServerWorld world, GameProfile profile) { }
+	private record FakePlayerKey(ServerLevel level, GameProfile profile) { }
 	private static final Map<FakePlayerKey, FakePlayer> FAKE_PLAYER_MAP = new MapMaker().weakValues().makeMap();
 
-	protected FakePlayer(ServerWorld world, GameProfile profile) {
-		super(world.getServer(), world, profile, SyncedClientOptions.createDefault());
+	protected FakePlayer(ServerLevel level, GameProfile profile) {
+		super(level.getServer(), level, profile, ClientInformation.createDefault());
 
-		this.networkHandler = new FakePlayerNetworkHandler(this);
+		this.connection = new FakePlayerPacketListener(this);
 	}
 
 	@Override
 	public void tick() { }
 
 	@Override
-	public void setClientOptions(SyncedClientOptions settings) { }
+	public void updateOptions(ClientInformation settings) { }
 
 	@Override
-	public void increaseStat(Stat<?> stat, int amount) { }
+	public void awardStat(Stat<?> stat, int amount) { }
 
 	@Override
 	public void resetStat(Stat<?> stat) { }
 
 	@Override
-	public boolean isInvulnerableTo(ServerWorld world, DamageSource damageSource) {
+	public boolean isInvulnerableTo(ServerLevel level, DamageSource damageSource) {
 		return true;
 	}
 
 	@Nullable
 	@Override
-	public Team getScoreboardTeam() {
+	public PlayerTeam getTeam() {
 		// Scoreboard team is checked using the gameprofile name by default, which we don't want.
 		return null;
 	}
 
 	@Override
-	public void sleep(BlockPos pos) {
+	public void startSleeping(BlockPos pos) {
 		// Don't lock bed forever.
 	}
 
 	@Override
-	public boolean startRiding(Entity entity, boolean force) {
+	public boolean startRiding(Entity entity, boolean force, boolean emitEvent) {
 		return false;
 	}
 
 	@Override
-	public void openEditSignScreen(SignBlockEntity sign, boolean front) { }
+	public void openTextEdit(SignBlockEntity sign, boolean front) { }
 
 	@Override
-	public OptionalInt openHandledScreen(@Nullable NamedScreenHandlerFactory factory) {
+	public OptionalInt openMenu(@Nullable MenuProvider factory) {
 		return OptionalInt.empty();
 	}
 
 	@Override
-	public void openHorseInventory(AbstractHorseEntity horse, Inventory inventory) { }
+	public void openHorseInventory(AbstractHorse horse, Container inventory) { }
 }

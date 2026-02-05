@@ -1,0 +1,7 @@
+{
+  "fabric:type": "fabric-renderer-api-v1-testmod:overlayed",
+  "parent": "block/glass",
+  "textures": {
+    "overlay": "item/chorus_fruit"
+  }
+}

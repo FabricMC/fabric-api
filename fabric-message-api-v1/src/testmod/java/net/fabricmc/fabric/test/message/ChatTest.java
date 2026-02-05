@@ -21,10 +21,10 @@ import java.util.concurrent.Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
@@ -35,7 +35,7 @@ public class ChatTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Executor ioWorkerExecutor = Util.getIoWorkerExecutor();
+		Executor ioWorkerExecutor = Util.ioPool();
 
 		// Basic content phase testing
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
@@ -49,7 +49,7 @@ public class ChatTest implements ModInitializer {
 		// Content phase testing, with variable info
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("random")) {
-				return Text.of(String.valueOf(Random.create().nextBetween(0, 100)));
+				return Component.nullToEmpty(String.valueOf(RandomSource.create().nextIntBetweenInclusive(0, 100)));
 			}
 
 			return message;
@@ -57,8 +57,8 @@ public class ChatTest implements ModInitializer {
 
 		// Basic styling phase testing
 		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
-			if (sender != null && sender.isInCreativeMode()) {
-				return message.copy().styled(style -> style.withColor(0xFFA500));
+			if (sender != null && sender.hasInfiniteMaterials()) {
+				return message.copy().withStyle(style -> style.withColor(0xFFA500));
 			}
 
 			return message;
@@ -77,17 +77,17 @@ public class ChatTest implements ModInitializer {
 
 		// ServerMessageEvents blocking
 		ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(
-				(message, sender, params) -> !message.getSignedContent().contains("sadtater")
+				(message, sender, params) -> !message.signedContent().contains("sadtater")
 		);
 		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((server, message, overlay) -> {
-			if (message.getContent() instanceof TranslatableTextContent translatable) {
+			if (message.getContents() instanceof TranslatableContents translatable) {
 				return !translatable.getKey().startsWith("death.attack.badRespawnPoint.");
 			}
 
 			return true;
 		});
 		ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register(
-				(message, source, params) -> !message.getSignedContent().contains("sadtater")
+				(message, source, params) -> !message.signedContent().contains("sadtater")
 		);
 	}
 }

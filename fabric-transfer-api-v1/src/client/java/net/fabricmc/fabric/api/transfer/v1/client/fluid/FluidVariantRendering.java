@@ -20,17 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -75,28 +75,28 @@ public final class FluidVariantRendering {
 	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
 	 *
-	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, TooltipType) the other overload}, the current tooltip context is automatically used.
+	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, TooltipFlag) the other overload}, the current tooltip context is automatically used.
 	 */
-	public static List<Text> getTooltip(FluidVariant fluidVariant) {
-		return getTooltip(fluidVariant, MinecraftClient.getInstance().options.advancedItemTooltips ? TooltipType.Default.ADVANCED : TooltipType.Default.BASIC);
+	public static List<Component> getTooltip(FluidVariant fluidVariant) {
+		return getTooltip(fluidVariant, Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 	}
 
 	/**
 	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
 	 */
-	public static List<Text> getTooltip(FluidVariant fluidVariant, TooltipType type) {
-		List<Text> tooltip = new ArrayList<>();
+	public static List<Component> getTooltip(FluidVariant fluidVariant, TooltipFlag flag) {
+		List<Component> tooltip = new ArrayList<>();
 
 		// Name first
 		tooltip.add(FluidVariantAttributes.getName(fluidVariant));
 
 		// Additional tooltip information
-		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, type);
+		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, flag);
 
 		// If advanced tooltips are enabled, render the fluid id
-		if (type.isAdvanced()) {
-			tooltip.add(Text.literal(Registries.FLUID.getId(fluidVariant.getFluid()).toString()).formatted(Formatting.DARK_GRAY));
+		if (flag.isAdvanced()) {
+			tooltip.add(Component.literal(BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).toString()).withStyle(ChatFormatting.DARK_GRAY));
 		}
 
 		// TODO: consider adding an event to append to tooltips?
@@ -111,7 +111,7 @@ public final class FluidVariantRendering {
 	 * @see FluidVariantRenderHandler#getSprites
 	 */
 	@Nullable
-	public static Sprite[] getSprites(FluidVariant fluidVariant) {
+	public static TextureAtlasSprite[] getSprites(FluidVariant fluidVariant) {
 		return getHandlerOrDefault(fluidVariant.getFluid()).getSprites(fluidVariant);
 	}
 
@@ -120,8 +120,8 @@ public final class FluidVariantRendering {
 	 * The sprite should be rendered using the color returned by {@link #getColor}.
 	 */
 	@Nullable
-	public static Sprite getSprite(FluidVariant fluidVariant) {
-		Sprite[] sprites = getSprites(fluidVariant);
+	public static TextureAtlasSprite getSprite(FluidVariant fluidVariant) {
+		TextureAtlasSprite[] sprites = getSprites(fluidVariant);
 		return sprites != null ? Objects.requireNonNull(sprites[0]) : null;
 	}
 
@@ -135,11 +135,11 @@ public final class FluidVariantRendering {
 	/**
 	 * Return the color that should be used when rendering {@linkplain #getSprite the sprite} of the passed fluid variant.
 	 *
-	 * <p>If the world and the position parameters are null, a position-independent color is returned.
-	 * If the world and position parameters are not null, the color may depend on the position.
-	 * For example, if world and position are passed, water will use them to return a biome-dependent color.
+	 * <p>If the level and the position parameters are null, a position-independent color is returned.
+	 * If the level and position parameters are not null, the color may depend on the position.
+	 * For example, if level and position are passed, water will use them to return a biome-dependent color.
 	 */
-	public static int getColor(FluidVariant fluidVariant, @Nullable BlockRenderView view, @Nullable BlockPos pos) {
+	public static int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
 		return getHandlerOrDefault(fluidVariant.getFluid()).getColor(fluidVariant, view, pos);
 	}
 }

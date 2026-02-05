@@ -22,16 +22,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CrafterBlock;
-import net.minecraft.block.entity.CrafterBlockEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.CrafterBlock;
+import net.minecraft.world.level.block.entity.CrafterBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -41,27 +41,27 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 @Mixin(CrafterBlock.class)
 public class CrafterBlockMixin {
 	// Inject after vanilla's attempts to insert the stack into an inventory.
-	@Inject(method = "transferOrSpawnStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z", shift = At.Shift.BEFORE))
-	private void transferOrSpawnStack(ServerWorld world, BlockPos pos, CrafterBlockEntity blockEntity, ItemStack inputStack, BlockState state, RecipeEntry<CraftingRecipe> recipe, CallbackInfo ci, @Local Direction direction, @Local Inventory inventory, @Local(ordinal = 1) ItemStack itemStack) {
-		if (inventory != null) {
+	@Inject(method = "dispenseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z"))
+	private void transferOrSpawnStack(ServerLevel level, BlockPos pos, CrafterBlockEntity blockEntity, ItemStack inputStack, BlockState state, RecipeHolder<CraftingRecipe> recipe, CallbackInfo ci, @Local(name = "direction") Direction direction, @Local(name = "into") Container into, @Local(name = "remaining") ItemStack remaining) {
+		if (into != null) {
 			// Vanilla already found and tested an inventory, nothing else to do even if it failed to insert.
 			return;
 		}
 
-		if (itemStack.isEmpty()) {
+		if (remaining.isEmpty()) {
 			// Nothing left to do, in theory should never get here.
 			return;
 		}
 
-		final Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+		final Storage<ItemVariant> target = ItemStorage.SIDED.find(level, pos.relative(direction), direction.getOpposite());
 
 		if (target != null) {
 			// Attempt to move the entire stack, and decrement the size of success moves.
 			try (Transaction transaction = Transaction.openOuter()) {
-				long moved = target.insert(ItemVariant.of(itemStack), inputStack.getCount(), transaction);
+				long moved = target.insert(ItemVariant.of(remaining), inputStack.getCount(), transaction);
 
 				if (moved > 0) {
-					itemStack.decrement((int) moved);
+					remaining.shrink((int) moved);
 					transaction.commit();
 				}
 			}

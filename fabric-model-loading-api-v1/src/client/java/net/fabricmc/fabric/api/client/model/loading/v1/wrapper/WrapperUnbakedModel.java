@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.model.Geometry;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.Identifier;
 
 /**
  * A simple implementation of {@link UnbakedModel} that delegates all method calls to the {@link #wrapped} field.
@@ -52,18 +52,18 @@ public abstract class WrapperUnbakedModel implements UnbakedModel {
 
 	@Override
 	@Nullable
-	public ModelTransformation transformations() {
-		return wrapped.transformations();
+	public ItemTransforms transforms() {
+		return wrapped.transforms();
 	}
 
 	@Override
-	public ModelTextures.Textures textures() {
-		return wrapped.textures();
+	public TextureSlots.Data textureSlots() {
+		return wrapped.textureSlots();
 	}
 
 	@Override
 	@Nullable
-	public Geometry geometry() {
+	public UnbakedGeometry geometry() {
 		return wrapped.geometry();
 	}
 

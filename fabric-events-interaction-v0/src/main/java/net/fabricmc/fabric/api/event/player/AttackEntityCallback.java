@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -39,18 +39,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface AttackEntityCallback {
 	Event<AttackEntityCallback> EVENT = EventFactory.createArrayBacked(AttackEntityCallback.class,
-			(listeners) -> (player, world, hand, entity, hitResult) -> {
+			(listeners) -> (player, level, hand, entity, hitResult) -> {
 				for (AttackEntityCallback event : listeners) {
-					ActionResult result = event.interact(player, world, hand, entity, hitResult);
+					InteractionResult result = event.interact(player, level, hand, entity, hitResult);
 
-					if (result != ActionResult.PASS) {
+					if (result != InteractionResult.PASS) {
 						return result;
 					}
 				}
 
-				return ActionResult.PASS;
+				return InteractionResult.PASS;
 			}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult);
+	InteractionResult interact(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult);
 }

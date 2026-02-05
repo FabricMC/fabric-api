@@ -21,15 +21,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.DropperBlock;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.DropperBlock;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -44,24 +44,24 @@ public class DropperBlockMixin {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/block/dispenser/DispenserBehavior;dispense(Lnet/minecraft/util/math/BlockPointer;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;"
+					target = "Lnet/minecraft/core/dispenser/DispenseItemBehavior;dispense(Lnet/minecraft/core/dispenser/BlockSource;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"
 			),
-			method = "dispense",
+			method = "dispenseFrom",
 			cancellable = true,
 			allow = 1
 	)
-	public void hookDispense(ServerWorld world, BlockState blockState, BlockPos pos, CallbackInfo ci) {
-		DispenserBlockEntity dispenser = (DispenserBlockEntity) world.getBlockEntity(pos);
-		Direction direction = dispenser.getCachedState().get(DispenserBlock.FACING);
+	public void hookDispense(ServerLevel level, BlockState blockState, BlockPos pos, CallbackInfo ci) {
+		DispenserBlockEntity dispenser = (DispenserBlockEntity) level.getBlockEntity(pos);
+		Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
 
-		Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+		Storage<ItemVariant> target = ItemStorage.SIDED.find(level, pos.relative(direction), direction.getOpposite());
 
 		if (target != null) {
 			// Always cancel if a storage is available.
 			ci.cancel();
 
 			// We pick a non empty slot. It's not necessarily the same as the one vanilla picked, but that doesn't matter.
-			int slot = dispenser.chooseNonEmptySlot(world.random);
+			int slot = dispenser.getRandomSlot(level.getRandom());
 
 			if (slot == -1) {
 				TransferApiImpl.LOGGER.warn("Skipping dropper transfer because the empty slot is unexpectedly -1.");
@@ -69,7 +69,7 @@ public class DropperBlockMixin {
 			}
 
 			StorageUtil.move(
-					InventoryStorage.of(dispenser, null).getSlot(slot),
+					ContainerStorage.of(dispenser, null).getSlot(slot),
 					target,
 					k -> true,
 					1,

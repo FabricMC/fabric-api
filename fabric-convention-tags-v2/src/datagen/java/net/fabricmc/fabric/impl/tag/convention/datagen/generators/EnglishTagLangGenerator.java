@@ -18,9 +18,9 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
@@ -31,12 +31,12 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalStructureTags;
 
 public class EnglishTagLangGenerator extends FabricLanguageProvider {
-	public EnglishTagLangGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+	public EnglishTagLangGenerator(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 		super(output, registryLookup);
 	}
 
 	@Override
-	public void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder) {
+	public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
 		// Blocks
 		translationBuilder.add(ConventionalBlockTags.STONES, "Stones");
 		translationBuilder.add(ConventionalBlockTags.COBBLESTONES, "Cobblestones");
@@ -83,11 +83,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS, "Colorless Glass Blocks");
 		translationBuilder.add(ConventionalBlockTags.GLASS_PANES, "Glass Panes");
 		translationBuilder.add(ConventionalBlockTags.GLASS_PANES_COLORLESS, "Colorless Glass Panes");
-		translationBuilder.add(ConventionalBlockTags.SHULKER_BOXES, "Shulker Boxes");
 		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalBlockTags.CONCRETES, "Concretes");
-		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTA, "Glazed Terracotta");
-		translationBuilder.add(ConventionalBlockTags.CONCRETE, "Concrete");
 		translationBuilder.add(ConventionalBlockTags.BUDDING_BLOCKS, "Budding Blocks");
 		translationBuilder.add(ConventionalBlockTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalBlockTags.CLUSTERS, "Clusters");
@@ -151,6 +148,10 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RESIN, "Resin Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalBlockTags.OVERWORLD_NATURAL_LOGS, "Overworld Natural Logs");
+		translationBuilder.add(ConventionalBlockTags.NETHER_NATURAL_LOGS, "Nether Natural Logs");
+		translationBuilder.add(ConventionalBlockTags.NATURAL_LOGS, "Natural Logs");
+		translationBuilder.add(ConventionalBlockTags.NATURAL_WOODS, "Natural Woods");
 		translationBuilder.add(ConventionalBlockTags.STRIPPED_LOGS, "Stripped Logs");
 		translationBuilder.add(ConventionalBlockTags.STRIPPED_WOODS, "Stripped Woods");
 		translationBuilder.add(ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
@@ -176,7 +177,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.CRYING_OBSIDIANS, "Crying Obsidians");
 		translationBuilder.add(ConventionalItemTags.TOOLS, "Tools");
 		translationBuilder.add(ConventionalItemTags.SHEAR_TOOLS, "Shears");
-		translationBuilder.add(ConventionalItemTags.SPEAR_TOOLS, "Spears");
+		translationBuilder.add(ConventionalItemTags.TRIDENT_TOOLS, "Tridents");
 		translationBuilder.add(ConventionalItemTags.BOW_TOOLS, "Bows");
 		translationBuilder.add(ConventionalItemTags.CROSSBOW_TOOLS, "Crossbows");
 		translationBuilder.add(ConventionalItemTags.SHIELD_TOOLS, "Shields");
@@ -188,17 +189,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.MELEE_WEAPON_TOOLS, "Melee Weapons");
 		translationBuilder.add(ConventionalItemTags.RANGED_WEAPON_TOOLS, "Ranged Weapons");
 		translationBuilder.add(ConventionalItemTags.MINING_TOOL_TOOLS, "Mining Tools");
-		translationBuilder.add(ConventionalItemTags.SHEARS_TOOLS, "Shears");
-		translationBuilder.add(ConventionalItemTags.SPEARS_TOOLS, "Spears");
-		translationBuilder.add(ConventionalItemTags.BOWS_TOOLS, "Bows");
-		translationBuilder.add(ConventionalItemTags.CROSSBOWS_TOOLS, "Crossbows");
-		translationBuilder.add(ConventionalItemTags.SHIELDS_TOOLS, "Shields");
-		translationBuilder.add(ConventionalItemTags.FISHING_RODS_TOOLS, "Fishing Rods");
-		translationBuilder.add(ConventionalItemTags.BRUSHES_TOOLS, "Brushes");
-		translationBuilder.add(ConventionalItemTags.MELEE_WEAPONS_TOOLS, "Melee Weapons");
-		translationBuilder.add(ConventionalItemTags.RANGED_WEAPONS_TOOLS, "Ranged Weapons");
-		translationBuilder.add(ConventionalItemTags.MINING_TOOLS, "Mining Tools");
 		translationBuilder.add(ConventionalItemTags.ARMORS, "Armors");
+		translationBuilder.add(ConventionalItemTags.HUMANOID_ARMORS, "Humanoid Armors");
+		translationBuilder.add(ConventionalItemTags.HORSE_ARMORS, "Horse Armors");
+		translationBuilder.add(ConventionalItemTags.NAUTILUS_ARMORS, "Nautilus Armors");
+		translationBuilder.add(ConventionalItemTags.WOLF_ARMORS, "Wolf Armors");
 		translationBuilder.add(ConventionalItemTags.ENCHANTABLES, "Enchantables");
 		translationBuilder.add(ConventionalItemTags.BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.DUSTS, "Dusts");
@@ -208,13 +203,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.NUGGETS, "Nuggets");
 		translationBuilder.add(ConventionalItemTags.ORES, "Ores");
 		translationBuilder.add(ConventionalItemTags.RAW_MATERIALS, "Raw Materials");
-		translationBuilder.add(ConventionalItemTags.RAW_BLOCKS, "Raw Blocks");
 		translationBuilder.add(ConventionalItemTags.IRON_RAW_MATERIALS, "Raw Iron Materials");
 		translationBuilder.add(ConventionalItemTags.GOLD_RAW_MATERIALS, "Raw Gold Materials");
 		translationBuilder.add(ConventionalItemTags.COPPER_RAW_MATERIALS, "Raw Copper Materials");
-		translationBuilder.add(ConventionalItemTags.IRON_RAW_BLOCKS, "Raw Iron Blocks");
-		translationBuilder.add(ConventionalItemTags.GOLD_RAW_BLOCKS, "Raw Gold Blocks");
-		translationBuilder.add(ConventionalItemTags.COPPER_RAW_BLOCKS, "Raw Copper Blocks");
 		translationBuilder.add(ConventionalItemTags.NORMAL_BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.NETHER_BRICKS, "Nether Bricks");
 		translationBuilder.add(ConventionalItemTags.RESIN_BRICKS, "Resin Bricks");
@@ -247,12 +238,12 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.AMETHYST_GEMS, "Amethyst Gems");
 		translationBuilder.add(ConventionalItemTags.EMERALD_GEMS, "Emerald Gems");
 		translationBuilder.add(ConventionalItemTags.PRISMARINE_GEMS, "Prismarine Gems");
+		translationBuilder.add(ConventionalItemTags.COPPER_NUGGETS, "Copper Nuggets");
 		translationBuilder.add(ConventionalItemTags.IRON_NUGGETS, "Iron Nuggets");
 		translationBuilder.add(ConventionalItemTags.GOLD_NUGGETS, "Gold Nuggets");
 		translationBuilder.add(ConventionalItemTags.REDSTONE_DUSTS, "Redstone Dusts");
 		translationBuilder.add(ConventionalItemTags.GLOWSTONE_DUSTS, "Glowstone Dusts");
 		translationBuilder.add(ConventionalItemTags.RESIN_CLUMPS, "Resin Clumps");
-		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
 		translationBuilder.add(ConventionalItemTags.POTIONS, "Potions");
 		translationBuilder.add(ConventionalItemTags.BOTTLE_POTIONS, "Bottled Potions");
 		translationBuilder.add(ConventionalItemTags.FOODS, "Foods");
@@ -262,6 +253,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.BERRY_FOODS, "Berries");
 		translationBuilder.add(ConventionalItemTags.BREAD_FOODS, "Breads");
 		translationBuilder.add(ConventionalItemTags.COOKIE_FOODS, "Cookies");
+		translationBuilder.add(ConventionalItemTags.DOUGH_FOODS, "Doughs");
 		translationBuilder.add(ConventionalItemTags.RAW_MEAT_FOODS, "Raw Meats");
 		translationBuilder.add(ConventionalItemTags.COOKED_MEAT_FOODS, "Cooked Meats");
 		translationBuilder.add(ConventionalItemTags.RAW_FISH_FOODS, "Raw Fishes");
@@ -272,17 +264,6 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.GOLDEN_FOODS, "Golden Foods");
 		translationBuilder.add(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS, "Edible When Placed");
 		translationBuilder.add(ConventionalItemTags.FOOD_POISONING_FOODS, "Food Poisoning");
-		translationBuilder.add(ConventionalItemTags.FRUITS_FOODS, "Fruits");
-		translationBuilder.add(ConventionalItemTags.VEGETABLES_FOODS, "Vegetables");
-		translationBuilder.add(ConventionalItemTags.BERRIES_FOODS, "Berries");
-		translationBuilder.add(ConventionalItemTags.BREADS_FOODS, "Breads");
-		translationBuilder.add(ConventionalItemTags.COOKIES_FOODS, "Cookies");
-		translationBuilder.add(ConventionalItemTags.RAW_MEATS_FOODS, "Raw Meats");
-		translationBuilder.add(ConventionalItemTags.COOKED_MEATS_FOODS, "Cooked Meats");
-		translationBuilder.add(ConventionalItemTags.RAW_FISHES_FOODS, "Raw Fishes");
-		translationBuilder.add(ConventionalItemTags.COOKED_FISHES_FOODS, "Cooked Fishes");
-		translationBuilder.add(ConventionalItemTags.SOUPS_FOODS, "Soups");
-		translationBuilder.add(ConventionalItemTags.CANDIES_FOODS, "Candies");
 		translationBuilder.add(ConventionalItemTags.DRINKS, "Drinks");
 		translationBuilder.add(ConventionalItemTags.WATER_DRINKS, "Water");
 		translationBuilder.add(ConventionalItemTags.WATERY_DRINKS, "Watery Drinks");
@@ -317,9 +298,6 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalItemTags.CONCRETES, "Concretes");
 		translationBuilder.add(ConventionalItemTags.CONCRETE_POWDERS, "Concrete Powders");
-		translationBuilder.add(ConventionalItemTags.CONCRETE, "Concrete");
-		translationBuilder.add(ConventionalItemTags.CONCRETE_POWDER, "Concrete Powder");
-		translationBuilder.add(ConventionalItemTags.GLAZED_TERRACOTTA, "Glazed Terracotta");
 		translationBuilder.add(ConventionalItemTags.BUDDING_BLOCKS, "Budding Blocks");
 		translationBuilder.add(ConventionalItemTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalItemTags.CLUSTERS, "Clusters");
@@ -400,6 +378,10 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RESIN, "Resin Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalItemTags.OVERWORLD_NATURAL_LOGS, "Overworld Natural Log Blocks");
+		translationBuilder.add(ConventionalItemTags.NETHER_NATURAL_LOGS, "Nether Natural Log Blocks");
+		translationBuilder.add(ConventionalItemTags.NATURAL_LOGS, "Natural Log Blocks");
+		translationBuilder.add(ConventionalItemTags.NATURAL_WOODS, "Natural Wood Blocks");
 		translationBuilder.add(ConventionalItemTags.STRIPPED_LOGS, "Stripped Log Blocks");
 		translationBuilder.add(ConventionalItemTags.STRIPPED_WOODS, "Stripped Wood Blocks");
 		translationBuilder.add(ConventionalItemTags.CROPS, "Crops");

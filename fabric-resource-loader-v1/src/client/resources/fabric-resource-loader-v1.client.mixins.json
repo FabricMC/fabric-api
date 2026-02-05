@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.resource.client",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "BuiltInPackSourceMixin",
+    "ClientTooltipComponentMixin",
+    "CreateWorldScreenMixin",
+    "GameOptionsWriteVisitorMixin",
+    "KeyedClientResourceReloadListenerMixin",
+    "KnownPacksManagerMixin",
+    "OptionsMixin",
+    "PackSelectionModelMixin",
+    "TransferableSelectionListPackEntryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

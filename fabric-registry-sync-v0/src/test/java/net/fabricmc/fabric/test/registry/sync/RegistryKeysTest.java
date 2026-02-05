@@ -21,31 +21,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.Bootstrap;
 
 public class RegistryKeysTest {
-	private static final RegistryKey<Registry<Object>> TEST_KEY = RegistryKey.ofRegistry(Identifier.of("registry-keys", "test"));
+	private static final ResourceKey<Registry<Object>> TEST_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("registry-keys", "test"));
 
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
 	void getPath() {
-		assertEquals("item", RegistryKeys.getPath(RegistryKeys.ITEM));
-		assertEquals("registry-keys/test", RegistryKeys.getPath(TEST_KEY));
+		assertEquals("item", Registries.elementsDirPath(Registries.ITEM));
+		assertEquals("registry-keys/test", Registries.elementsDirPath(TEST_KEY));
 	}
 
 	@Test
 	void getTagPath() {
-		assertEquals("tags/item", RegistryKeys.getTagPath(RegistryKeys.ITEM));
-		assertEquals("tags/registry-keys/test", RegistryKeys.getTagPath(TEST_KEY));
+		assertEquals("tags/item", Registries.tagsDirPath(Registries.ITEM));
+		assertEquals("tags/registry-keys/test", Registries.tagsDirPath(TEST_KEY));
 	}
 }

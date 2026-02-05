@@ -22,32 +22,32 @@ import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.registry.BuiltinRegistries;
-import net.minecraft.registry.ExperimentalRegistriesValidator;
-import net.minecraft.registry.RegistryBuilder;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.registries.RegistryPatchGenerator;
+import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.loader.api.ModContainer;
 
 /**
  * An extension to vanilla's {@link DataGenerator} providing mod specific data, and helper functions.
  */
-public final class FabricDataGenerator extends DataGenerator {
+public final class FabricDataGenerator extends DataGenerator.Uncached {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
-	private final FabricDataOutput fabricOutput;
-	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
+	private final FabricPackOutput fabricOutput;
+	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
 	@ApiStatus.Internal
-	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-		super(output, SharedConstants.getGameVersion(), true);
+	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		super(output);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
-		this.fabricOutput = new FabricDataOutput(mod, output, strictValidation);
+		this.fabricOutput = new FabricPackOutput(mod, output, strictValidation);
 		this.registriesFuture = registriesFuture;
 	}
 
@@ -67,8 +67,8 @@ public final class FabricDataGenerator extends DataGenerator {
 	 * in the identifier.
 	 */
 	public Pack createBuiltinResourcePack(Identifier id) {
-		Path path = this.output.getPath().resolve("resourcepacks").resolve(id.getPath());
-		return new Pack(true, id.toString(), new FabricDataOutput(modContainer, path, strictValidation));
+		Path path = this.vanillaPackOutput.getOutputFolder().resolve("resourcepacks").resolve(id.getPath());
+		return new Pack(true, id.toString(), new FabricPackOutput(modContainer, path, strictValidation));
 	}
 
 	/**
@@ -99,16 +99,16 @@ public final class FabricDataGenerator extends DataGenerator {
 	}
 
 	/**
-	 * Get a future returning the default registries produced by {@link BuiltinRegistries} and
-	 * {@link DataGeneratorEntrypoint#buildRegistry(RegistryBuilder)}.
+	 * Get a future returning the default registries produced by {@link VanillaRegistries} and
+	 * {@link DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder)}.
 	 *
 	 * <p>Generally one does not need direct access to the registries, and instead can pass them directly to a
 	 * {@link DataProvider} by using {@link Pack#addProvider(Pack.RegistryDependentFactory)}. However, this method may
-	 * be useful when extending the vanilla registries (such as with {@link ExperimentalRegistriesValidator}).
+	 * be useful when extending the vanilla registries (such as with {@link RegistryPatchGenerator}).
 	 *
 	 * @return A future containing the builtin registries.
 	 */
-	public CompletableFuture<RegistryWrapper.WrapperLookup> getRegistries() {
+	public CompletableFuture<HolderLookup.Provider> getRegistries() {
 		return registriesFuture;
 	}
 
@@ -117,7 +117,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	 */
 	@Override
 	@Deprecated
-	public DataGenerator.Pack createVanillaPack(boolean shouldRun) {
+	public DataGenerator.PackGenerator getVanillaPack(boolean shouldRun) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -126,35 +126,35 @@ public final class FabricDataGenerator extends DataGenerator {
 	 */
 	@Override
 	@Deprecated
-	public DataGenerator.Pack createVanillaSubPack(boolean shouldRun, String packName) {
+	public DataGenerator.PackGenerator getBuiltinDatapack(boolean shouldRun, String packName) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Represents a pack of generated data (i.e. data pack or resource pack). Providers are added to a pack.
 	 */
-	public final class Pack extends DataGenerator.Pack {
-		private Pack(boolean shouldRun, String name, FabricDataOutput output) {
+	public final class Pack extends DataGenerator.PackGenerator {
+		private Pack(boolean shouldRun, String name, FabricPackOutput output) {
 			super(shouldRun, name, output);
 		}
 
 		/**
-		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput}.
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricPackOutput}.
 		 *
 		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(Factory<T> factory) {
-			return super.addProvider(output -> factory.create((FabricDataOutput) output));
+			return super.addProvider(output -> factory.create((FabricPackOutput) output));
 		}
 
 		/**
-		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput} and the registries.
-		 * This is used, for example, with {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider}.
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricPackOutput} and the registries.
+		 * This is used, for example, with {@link FabricTagsProvider}.
 		 *
 		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
-			return super.addProvider(output -> factory.create((FabricDataOutput) output, registriesFuture));
+			return super.addProvider(output -> factory.create((FabricPackOutput) output, registriesFuture));
 		}
 
 		/**
@@ -162,7 +162,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 */
 		@FunctionalInterface
 		public interface Factory<T extends DataProvider> {
-			T create(FabricDataOutput output);
+			T create(FabricPackOutput output);
 		}
 
 		/**
@@ -171,7 +171,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 */
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
-			T create(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture);
+			T create(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture);
 		}
 	}
 }

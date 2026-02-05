@@ -17,13 +17,13 @@
 package net.fabricmc.fabric.impl.client.gametest.context;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.screen.MessageScreen;
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screens.GenericMessageScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
@@ -32,13 +32,13 @@ import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 public class TestSingleplayerContextImpl implements TestSingleplayerContext {
 	private final ClientGameTestContext context;
 	private final TestWorldSave worldSave;
-	private final TestClientWorldContext clientWorld;
+	private final TestClientLevelContext clientLevel;
 	private final TestServerContext server;
 
 	public TestSingleplayerContextImpl(ClientGameTestContext context, TestWorldSave worldSave, MinecraftServer server) {
 		this.context = context;
 		this.worldSave = worldSave;
-		this.clientWorld = new TestClientWorldContextImpl(context);
+		this.clientLevel = new TestClientLevelContextImpl(context);
 		this.server = new TestServerContextImpl(server);
 	}
 
@@ -48,8 +48,8 @@ public class TestSingleplayerContextImpl implements TestSingleplayerContext {
 	}
 
 	@Override
-	public TestClientWorldContext getClientWorld() {
-		return clientWorld;
+	public TestClientLevelContext getClientLevel() {
+		return clientLevel;
 	}
 
 	@Override
@@ -62,15 +62,15 @@ public class TestSingleplayerContextImpl implements TestSingleplayerContext {
 		ThreadingImpl.checkOnGametestThread("close");
 
 		context.runOnClient(client -> {
-			if (client.world == null) {
+			if (client.level == null) {
 				throw new IllegalStateException("Exited the world before closing singleplayer context");
 			}
 
-			client.world.disconnect(Text.translatable("menu.savingLevel"));
-			client.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")), false);
+			client.level.disconnect(Component.translatable("menu.savingLevel"));
+			client.disconnect(new GenericMessageScreen(Component.translatable("menu.savingLevel")), false);
 		});
 
-		context.waitFor(client -> !ThreadingImpl.isServerRunning && client.world == null, SharedConstants.TICKS_PER_MINUTE);
+		context.waitFor(client -> !ThreadingImpl.isServerRunning && client.level == null, SharedConstants.TICKS_PER_MINUTE);
 		context.setScreen(TitleScreen::new);
 	}
 }

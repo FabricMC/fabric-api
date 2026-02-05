@@ -1,12 +1,17 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.client.rendering.fluid",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
-    "FluidRendererMixin"
+    "LiquidBlockRendererMixin"
   ],
   "injectors": {
-    "defaultRequire": 1,
-    "maxShiftBy": 5
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "mixinextras": {
+    "minVersion": "0.5.0"
   }
 }

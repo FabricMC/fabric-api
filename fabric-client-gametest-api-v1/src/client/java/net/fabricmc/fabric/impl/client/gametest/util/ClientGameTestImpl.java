@@ -20,12 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.world.BackupPromptScreen;
-import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
-import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.BackupConfirmScreen;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.LevelLoadingScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 
@@ -37,11 +37,11 @@ public final class ClientGameTestImpl {
 
 	public static void waitForWorldLoad(ClientGameTestContext context) {
 		for (int i = 0; i < SharedConstants.TICKS_PER_MINUTE; i++) {
-			if (context.computeOnClient(client -> isExperimentalWarningScreen(client.currentScreen))) {
+			if (context.computeOnClient(client -> isExperimentalWarningScreen(client.screen))) {
 				context.clickScreenButton("gui.yes");
 			}
 
-			if (context.computeOnClient(client -> client.currentScreen instanceof BackupPromptScreen)) {
+			if (context.computeOnClient(client -> client.screen instanceof BackupConfirmScreen)) {
 				context.clickScreenButton("selectWorld.backupJoinSkipButton");
 			}
 
@@ -62,14 +62,15 @@ public final class ClientGameTestImpl {
 			return false;
 		}
 
-		if (!(screen.getTitle().getContent() instanceof TranslatableTextContent translatableContents)) {
+		if (!(screen.getTitle().getContents() instanceof TranslatableContents translatableContents)) {
 			return false;
 		}
 
 		return "selectWorld.warning.experimental.title".equals(translatableContents.getKey());
 	}
 
-	private static boolean isWorldLoadingFinished(MinecraftClient client) {
-		return client.world != null && !(client.currentScreen instanceof LevelLoadingScreen);
+	private static boolean isWorldLoadingFinished(Minecraft client) {
+		LOGGER.info("World loading finished: {} screen: {}", client.level, client.screen);
+		return client.level != null && !(client.screen instanceof LevelLoadingScreen);
 	}
 }

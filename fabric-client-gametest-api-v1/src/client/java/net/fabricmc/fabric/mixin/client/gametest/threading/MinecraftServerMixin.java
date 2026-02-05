@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.util.thread.BlockableEventLoop;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 import net.fabricmc.fabric.impl.client.gametest.threading.NetworkSynchronizer;
@@ -51,27 +51,27 @@ public class MinecraftServerMixin {
 		}
 	}
 
-	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setCrashReport(Lnet/minecraft/util/crash/CrashReport;)V", shift = At.Shift.AFTER))
+	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;onServerCrash(Lnet/minecraft/CrashReport;)V", shift = At.Shift.AFTER))
 	protected void onCrash(CallbackInfo ci) {
 		if (ThreadingImpl.testFailureException == null) {
 			ThreadingImpl.testFailureException = new Throwable("The server crashed");
 		}
 
-		MinecraftClient.getInstance().scheduleStop();
+		Minecraft.getInstance().stop();
 		ThreadingImpl.setGameCrashed();
 		deregisterServer();
 	}
 
-	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V"))
+	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;waitUntilNextTick()V"))
 	private void preRunTasks(CallbackInfo ci) {
 		if (!TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
 		}
 	}
 
-	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V", shift = At.Shift.AFTER))
+	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;waitUntilNextTick()V", shift = At.Shift.AFTER))
 	private void postRunTasks(CallbackInfo ci) {
-		NetworkSynchronizer.SERVERBOUND.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
+		NetworkSynchronizer.SERVERBOUND.waitForPacketHandlers((BlockableEventLoop<?>) (Object) this);
 
 		if (!TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
@@ -101,7 +101,7 @@ public class MinecraftServerMixin {
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TICK);
 	}
 
-	@Inject(method = "canExecute(Lnet/minecraft/server/ServerTask;)Z", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "shouldRun(Lnet/minecraft/server/TickTask;)Z", at = @At("HEAD"), cancellable = true)
 	private void alwaysExecuteNetworkTask(CallbackInfoReturnable<Boolean> cir) {
 		if (NetworkSynchronizer.SERVERBOUND.isRunningNetworkTasks()) {
 			cir.setReturnValue(true);

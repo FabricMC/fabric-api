@@ -22,9 +22,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BucketItem;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
@@ -38,14 +38,14 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 public class BucketItemMixin {
 	@Shadow
 	@Final
-	private Fluid fluid;
+	private Fluid content;
 
 	@ModifyVariable(
-			method = "playEmptyingSound",
+			method = "playEmptySound",
 			at = @At("STORE"),
-			index = 4
+			name = "soundEvent"
 	)
 	private SoundEvent hookEmptyingSound(SoundEvent previous) {
-		return FluidVariantAttributes.getHandlerOrDefault(fluid).getEmptySound(FluidVariant.of(fluid)).orElse(previous);
+		return FluidVariantAttributes.getHandlerOrDefault(content).getEmptySound(FluidVariant.of(content)).orElse(previous);
 	}
 }

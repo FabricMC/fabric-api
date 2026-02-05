@@ -20,14 +20,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.listener.ServerCommonPacketListener;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ServerCommonPacketListener;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -39,9 +39,9 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
  * Offers access to play stage client-side networking functionalities.
  *
  * <p>Client-side networking functionalities include receiving clientbound packets,
- * sending serverbound packets, and events related to client-side network handlers.
- * Packets <strong>received</strong> by this class must be registered to {@link PayloadTypeRegistry#playS2C()} on both ends.
- * Packets <strong>sent</strong> by this class must be registered to {@link PayloadTypeRegistry#playC2S()} on both ends.
+ * sending serverbound packets, and events related to client-side packet listeners.
+ * Packets <strong>received</strong> by this class must be registered to {@link PayloadTypeRegistry#clientboundPlay()} on both ends.
+ * Packets <strong>sent</strong> by this class must be registered to {@link PayloadTypeRegistry#serverboundPlay()} on both ends.
  * Packets must be registered before registering any receivers.
  *
  * <p>This class should be only used on the physical client and for the logical client.
@@ -64,11 +64,11 @@ public final class ClientPlayNetworking {
 	 * @param type the payload type
 	 * @param handler the handler
 	 * @return false if a handler is already registered to the channel
-	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playS2C() registered} yet
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#clientboundPlay() registered} yet
 	 * @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ClientPlayNetworking#registerReceiver(CustomPayload.Id, PlayPayloadHandler)
+	 * @see ClientPlayNetworking#registerReceiver(CustomPacketPayload.Type, PlayPayloadHandler)
 	 */
-	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
+	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
 		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), handler);
 	}
 
@@ -80,12 +80,11 @@ public final class ClientPlayNetworking {
 	 *
 	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)}
-	 * @see ClientPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)}
+	 * @see ClientPlayNetworking#registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)
 	 * @see ClientPlayNetworking#unregisterReceiver(Identifier)
 	 */
-	@Nullable
-	public static ClientPlayNetworking.PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
+	public static ClientPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(id);
 	}
 
@@ -111,11 +110,11 @@ public final class ClientPlayNetworking {
 	 * @param type the payload type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered for the type
-	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playS2C() registered} yet
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#clientboundPlay() registered} yet
 	 * @throws IllegalStateException if the client is not connected to a server
 	 * @see ClientPlayConnectionEvents#INIT
 	 */
-	public static <T extends CustomPayload> boolean registerReceiver(CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
+	public static <T extends CustomPacketPayload> boolean registerReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
@@ -132,11 +131,10 @@ public final class ClientPlayNetworking {
 	 *
 	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(CustomPayload.Id, PlayPayloadHandler)}
+	 * or it was not registered using {@link #registerReceiver(CustomPacketPayload.Type, PlayPayloadHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	@Nullable
-	public static ClientPlayNetworking.PlayPayloadHandler<?> unregisterReceiver(Identifier id) {
+	public static ClientPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterReceiver(Identifier id) {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {
@@ -187,8 +185,8 @@ public final class ClientPlayNetworking {
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
 		// You cant send without a client player, so this is fine
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(channelName);
+		if (Minecraft.getInstance().getConnection() != null) {
+			return ClientNetworkingImpl.getAddon(Minecraft.getInstance().getConnection()).getSendableChannels().contains(channelName);
 		}
 
 		return false;
@@ -201,7 +199,7 @@ public final class ClientPlayNetworking {
 	 * @param type the payload type
 	 * @return {@code true} if the connected server has declared the ability to receive a payload on the specified channel
 	 */
-	public static boolean canSend(CustomPayload.Id<?> type) {
+	public static boolean canSend(CustomPacketPayload.Type<?> type) {
 		return canSend(type.id());
 	}
 
@@ -211,8 +209,8 @@ public final class ClientPlayNetworking {
 	 * @param packet the fabric payload
 	 * @return a new payload
 	 */
-	public static <T extends CustomPayload> Packet<ServerCommonPacketListener> createC2SPacket(T packet) {
-		return ClientNetworkingImpl.createC2SPacket(packet);
+	public static <T extends CustomPacketPayload> Packet<ServerCommonPacketListener> createServerboundPacket(T packet) {
+		return ClientNetworkingImpl.createServerboundPacket(packet);
 	}
 
 	/**
@@ -223,8 +221,8 @@ public final class ClientPlayNetworking {
 	 */
 	public static PacketSender getSender() throws IllegalStateException {
 		// You cant send without a client player, so this is fine
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler());
+		if (Minecraft.getInstance().getConnection() != null) {
+			return ClientNetworkingImpl.getAddon(Minecraft.getInstance().getConnection());
 		}
 
 		throw new IllegalStateException("Cannot get payload sender when not in game!");
@@ -233,18 +231,18 @@ public final class ClientPlayNetworking {
 	/**
 	 * Sends a payload to the connected server.
 	 *
-	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#playC2S() registered}.</p>
+	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#serverboundPlay() registered}.</p>
 	 *
 	 * @param payload the payload
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static void send(CustomPayload payload) {
+	public static void send(CustomPacketPayload payload) {
 		Objects.requireNonNull(payload, "Payload cannot be null");
-		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
+		Objects.requireNonNull(payload.type(), "CustomPacketPayload#type() cannot return null for payload class: " + payload.getClass());
 
 		// You cant send without a client player, so this is fine
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			MinecraftClient.getInstance().getNetworkHandler().sendPacket(createC2SPacket(payload));
+		if (Minecraft.getInstance().getConnection() != null) {
+			Minecraft.getInstance().getConnection().send(createServerboundPacket(payload));
 			return;
 		}
 
@@ -255,11 +253,11 @@ public final class ClientPlayNetworking {
 	}
 
 	/**
-	 * A thread-safe payload handler utilizing {@link CustomPayload}.
+	 * A thread-safe payload handler utilizing {@link CustomPacketPayload}.
 	 * @param <T> the type of the payload
 	 */
 	@FunctionalInterface
-	public interface PlayPayloadHandler<T extends CustomPayload> {
+	public interface PlayPayloadHandler<T extends CustomPacketPayload> {
 		/**
 		 * Handles the incoming payload. This is called on the render thread, and can safely
 		 * call client methods.
@@ -268,15 +266,15 @@ public final class ClientPlayNetworking {
 		 * <pre>{@code
 		 * // use PayloadTypeRegistry for registering the payload
 		 * ClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) -> {
-		 * 	context.client().inGameHud.setOverlayMessage(payload.message(), true);
+		 * 	context.client().gui.setOverlayMessage(payload.message(), true);
 		 * });
 		 * }</pre>
 		 *
-		 * <p>The network handler can be accessed via {@link ClientPlayerEntity#networkHandler}.
+		 * <p>The packet listener can be accessed via {@link LocalPlayer#connection}.
 		 *
 		 * @param payload the packet payload
 		 * @param context the play networking context
-		 * @see CustomPayload
+		 * @see CustomPacketPayload
 		 */
 		void receive(T payload, Context context);
 	}
@@ -284,14 +282,14 @@ public final class ClientPlayNetworking {
 	@ApiStatus.NonExtendable
 	public interface Context {
 		/**
-		 * @return The MinecraftClient instance
+		 * @return The Minecraft instance
 		 */
-		MinecraftClient client();
+		Minecraft client();
 
 		/**
 		 * @return The player that received the payload
 		 */
-		ClientPlayerEntity player();
+		LocalPlayer player();
 
 		/**
 		 * @return The packet sender

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
@@ -32,14 +32,14 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerInventoryStorage {
+class PlayerInventoryStorageImpl extends ContainerStorageImpl implements PlayerInventoryStorage {
 	private final DroppedStacks droppedStacks;
-	private final PlayerInventory playerInventory;
+	private final Inventory inventory;
 
-	PlayerInventoryStorageImpl(PlayerInventory playerInventory) {
-		super(playerInventory);
+	PlayerInventoryStorageImpl(Inventory inventory) {
+		super(inventory);
 		this.droppedStacks = new DroppedStacks();
-		this.playerInventory = playerInventory;
+		this.inventory = inventory;
 	}
 
 	@Override
@@ -52,10 +52,10 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 		StoragePreconditions.notBlankNotNegative(resource, amount);
 		long initialAmount = amount;
 
-		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, PlayerInventory.MAIN_SIZE);
+		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, Inventory.INVENTORY_SIZE);
 
 		// Stack into the main stack first and the offhand stack second.
-		for (Hand hand : Hand.values()) {
+		for (InteractionHand hand : InteractionHand.values()) {
 			SingleSlotStorage<ItemVariant> handSlot = getHandSlot(hand);
 
 			if (handSlot.getResource().equals(resource)) {
@@ -77,21 +77,21 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 		// Drop in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
-		if (amount > 0 && !playerInventory.player.getWorld().isClient()) {
+		if (amount > 0 && !inventory.player.level().isClientSide()) {
 			droppedStacks.addDrop(variant, amount, throwRandomly, retainOwnership, transaction);
 		}
 	}
 
 	@Override
-	public SingleSlotStorage<ItemVariant> getHandSlot(Hand hand) {
-		if (Objects.requireNonNull(hand) == Hand.MAIN_HAND) {
-			if (PlayerInventory.isValidHotbarIndex(playerInventory.getSelectedSlot())) {
-				return getSlot(playerInventory.getSelectedSlot());
+	public SingleSlotStorage<ItemVariant> getHandSlot(InteractionHand hand) {
+		if (Objects.requireNonNull(hand) == InteractionHand.MAIN_HAND) {
+			if (Inventory.isHotbarSlot(inventory.getSelectedSlot())) {
+				return getSlot(inventory.getSelectedSlot());
 			} else {
-				throw new RuntimeException("Unexpected player selected slot: " + playerInventory.getSelectedSlot());
+				throw new RuntimeException("Unexpected player selected slot: " + inventory.getSelectedSlot());
 			}
-		} else if (hand == Hand.OFF_HAND) {
-			return getSlot(PlayerInventory.OFF_HAND_SLOT);
+		} else if (hand == InteractionHand.OFF_HAND) {
+			return getSlot(Inventory.SLOT_OFFHAND);
 		} else {
 			throw new UnsupportedOperationException("Unknown hand: " + hand);
 		}
@@ -99,7 +99,7 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 	@Override
 	public String toString() {
-		return "PlayerInventoryStorage[" + DebugMessages.forInventory(playerInventory) + "]";
+		return "PlayerInventoryStorage[" + DebugMessages.forInventory(inventory) + "]";
 	}
 
 	private class DroppedStacks extends SnapshotParticipant<Integer> {
@@ -132,8 +132,8 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 				long remainder = entry.amount;
 
 				while (remainder > 0) {
-					int dropped = (int) Math.min(entry.key.getItem().getMaxCount(), remainder);
-					playerInventory.player.dropItem(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
+					int dropped = (int) Math.min(entry.key.getItem().getDefaultMaxStackSize(), remainder);
+					inventory.player.drop(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
 					remainder -= dropped;
 				}
 			}

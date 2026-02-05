@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -45,42 +45,42 @@ public final class ClientTickEvents {
 	});
 
 	/**
-	 * Called at the start of a ClientWorld's tick.
+	 * Called at the start of a ClientLevel's tick.
 	 */
-	public static final Event<StartWorldTick> START_WORLD_TICK = EventFactory.createArrayBacked(StartWorldTick.class, callbacks -> world -> {
-		for (StartWorldTick callback : callbacks) {
-			callback.onStartTick(world);
+	public static final Event<StartLevelTick> START_LEVEL_TICK = EventFactory.createArrayBacked(StartLevelTick.class, callbacks -> level -> {
+		for (StartLevelTick callback : callbacks) {
+			callback.onStartTick(level);
 		}
 	});
 
 	/**
-	 * Called at the end of a ClientWorld's tick.
+	 * Called at the end of a ClientLevel's tick.
 	 *
-	 * <p>End of world tick may be used to start async computations for the next tick.
+	 * <p>End of level tick may be used to start async computations for the next tick.
 	 */
-	public static final Event<EndWorldTick> END_WORLD_TICK = EventFactory.createArrayBacked(EndWorldTick.class, callbacks -> world -> {
-		for (EndWorldTick callback : callbacks) {
-			callback.onEndTick(world);
+	public static final Event<EndLevelTick> END_LEVEL_TICK = EventFactory.createArrayBacked(EndLevelTick.class, callbacks -> level -> {
+		for (EndLevelTick callback : callbacks) {
+			callback.onEndTick(level);
 		}
 	});
 
 	@FunctionalInterface
 	public interface StartTick {
-		void onStartTick(MinecraftClient client);
+		void onStartTick(Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface EndTick {
-		void onEndTick(MinecraftClient client);
+		void onEndTick(Minecraft client);
 	}
 
 	@FunctionalInterface
-	public interface StartWorldTick {
-		void onStartTick(ClientWorld world);
+	public interface StartLevelTick {
+		void onStartTick(ClientLevel level);
 	}
 
 	@FunctionalInterface
-	public interface EndWorldTick {
-		void onEndTick(ClientWorld world);
+	public interface EndLevelTick {
+		void onEndTick(ClientLevel level);
 	}
 }

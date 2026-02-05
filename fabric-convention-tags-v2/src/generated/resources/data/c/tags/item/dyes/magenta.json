@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:magenta_dye",
-    {
-      "id": "#c:magenta_dyes",
-      "required": false
-    }
+    "minecraft:magenta_dye"
   ]
 }

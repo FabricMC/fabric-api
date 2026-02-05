@@ -3,10 +3,6 @@
     {
       "id": "#c:is_jungle",
       "required": false
-    },
-    {
-      "id": "#c:tree_jungle",
-      "required": false
     }
   ]
 }

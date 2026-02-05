@@ -1,21 +1,22 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.object.builder",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "AbstractBlockAccessor",
     "BlockEntityTypeMixin",
-    "DefaultAttributeRegistryAccessor",
-    "DefaultAttributeRegistryMixin",
+    "DefaultAttributesAccessor",
+    "DefaultAttributesMixin",
     "DetectorRailBlockMixin",
     "EntityTypeBuilderMixin",
     "EntityTypeMixin",
-    "PersistentStateManagerMixin",
-    "TrackedDataHandlerRegistryAccessor",
-    "TrackedDataHandlerRegistryMixin",
-    "TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin"
+    "SavedDataStorageMixin",
+    "EntityDataSerializersAccessor",
+    "EntityDataSerializersMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

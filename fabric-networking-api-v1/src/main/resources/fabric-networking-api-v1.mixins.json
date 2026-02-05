@@ -1,30 +1,37 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.networking",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "PacketCodecDispatcherMixin",
-    "ClientConnectionMixin",
-    "CommandManagerMixin",
-    "CustomPayloadC2SPacketMixin",
-    "CustomPayloadS2CPacketMixin",
-    "CustomPayloadPacketCodecMixin",
+    "BundlePacketMixin",
+    "ConnectionMixin",
+    "CommandsMixin",
+    "ServerboundCustomPayloadPacketMixin",
+    "CustomPayloadStreamCodecMixin",
+    "ClientboundCustomPayloadPacketMixin",
     "DebugConfigCommandMixin",
-    "EntityTrackerEntryMixin",
-    "LoginQueryRequestS2CPacketMixin",
-    "LoginQueryResponseC2SPacketMixin",
-    "PlayerManagerMixin",
-    "RegistryByteBufMixin",
-    "ServerCommonNetworkHandlerMixin",
-    "ServerConfigurationNetworkHandlerMixin",
-    "ServerLoginNetworkHandlerMixin",
-    "ServerPlayNetworkHandlerMixin",
+    "PacketEncoderMixin",
+    "ServerEntityMixin",
+    "ClientboundCustomQueryPacketMixin",
+    "ServerboundCustomQueryAnswerPacketMixin",
+    "IdDispatchCodecMixin",
+    "PlayerListMixin",
+    "RegistryFriendlyByteBufMixin",
+    "ServerCommonPacketListenerImplMixin",
+    "ServerConfigurationPacketListenerImplMixin",
+    "ServerLoginPacketListenerImplMixin",
+    "ServerGamePacketListenerImplMixin",
+    "accessor.PacketDecoderAccessor",
+    "accessor.PacketEncoderAccessor",
     "accessor.EntityTrackerAccessor",
-    "accessor.ServerCommonNetworkHandlerAccessor",
-    "accessor.ServerLoginNetworkHandlerAccessor",
-    "accessor.ServerChunkLoadingManagerAccessor"
+    "accessor.ChunkMapAccessor",
+    "accessor.ServerCommonPacketListenerImplAccessor",
+    "accessor.ServerLoginPacketListenerImplAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

@@ -16,18 +16,34 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 public abstract class AbstractTransferApiTest {
 	protected static void bootstrap() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
+
+		for (Item item : BuiltInRegistries.ITEM) {
+			int maxStackSize = 64;
+
+			if (item == Items.DIAMOND_PICKAXE) {
+				maxStackSize = 1;
+			}
+
+			item.builtInRegistryHolder().bindComponents(DataComponentMap.builder()
+					.set(DataComponents.MAX_STACK_SIZE, maxStackSize)
+					.build());
+		}
 	}
 
-	protected static DynamicRegistryManager staticDrm() {
-		return DynamicRegistryManager.of(Registries.REGISTRIES);
+	protected static RegistryAccess staticDrm() {
+		return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 	}
 }

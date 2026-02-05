@@ -20,11 +20,11 @@ import com.mojang.brigadier.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 
@@ -34,11 +34,11 @@ public class ChatTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		//Register test client commands
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("block").then(ClientCommandManager.literal("send").executes(context -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommands.literal("block").then(ClientCommands.literal("send").executes(context -> {
 			throw new AssertionError("This client command should be blocked!");
 		}))));
 		//Register the modified result command from ClientSendMessageEvents#MODIFY_COMMAND to ensure that MODIFY_COMMAND executes before the client command api
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("sending").then(ClientCommandManager.literal("modified").then(ClientCommandManager.literal("command").then(ClientCommandManager.literal("message").executes(context -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommands.literal("sending").then(ClientCommands.literal("modified").then(ClientCommands.literal("command").then(ClientCommands.literal("message").executes(context -> {
 			LOGGER.info("Command modified by ClientSendMessageEvents#MODIFY_COMMAND successfully processed by fabric client command api");
 			return Command.SINGLE_SUCCESS;
 		}))))));
@@ -89,8 +89,8 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString()));
-		ClientReceiveMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.getName(), receptionTimestamp.toEpochMilli(), message.getString()));
+		ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
+		ClientReceiveMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
 		//Test client receive game message events
 		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (message.getString().contains("block receive")) {
@@ -103,7 +103,7 @@ public class ChatTestClient implements ClientModInitializer {
 		ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> {
 			if (message.getString().contains("modify receive")) {
 				LOGGER.info("Modifying received game message: " + message.getString());
-				return Text.of("modified receiving game message");
+				return Component.nullToEmpty("modified receiving game message");
 			}
 
 			return message;

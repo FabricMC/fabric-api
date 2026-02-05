@@ -28,49 +28,49 @@ import java.util.concurrent.CompletableFuture;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.Block;
-import net.minecraft.data.DataOutput;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.stat.StatType;
-import net.minecraft.text.TextContent;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.PackOutput;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.stats.StatType;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StrictJsonParser;
 import net.minecraft.util.Util;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String, CompletableFuture) FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
+ * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricPackOutput, String, CompletableFuture) FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricLanguageProvider implements DataProvider {
-	protected final FabricDataOutput dataOutput;
+	protected final FabricPackOutput packOutput;
 	private final String languageCode;
-	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup;
+	private final CompletableFuture<HolderLookup.Provider> registryLookup;
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-		this(dataOutput, "en_us", registryLookup);
+	protected FabricLanguageProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		this(packOutput, "en_us", registryLookup);
 	}
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput, String languageCode, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-		this.dataOutput = dataOutput;
+	protected FabricLanguageProvider(FabricPackOutput packOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		this.packOutput = packOutput;
 		this.languageCode = languageCode;
 		this.registryLookup = registryLookup;
 	}
@@ -80,10 +80,10 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	 *
 	 * <p>Call {@link TranslationBuilder#add(String, String)} to add a translation.
 	 */
-	public abstract void generateTranslations(RegistryWrapper.WrapperLookup registryLookup, TranslationBuilder translationBuilder);
+	public abstract void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder);
 
 	@Override
-	public CompletableFuture<?> run(DataWriter writer) {
+	public CompletableFuture<?> run(CachedOutput output) {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
 		return this.registryLookup.thenCompose(lookup -> {
@@ -104,14 +104,19 @@ public abstract class FabricLanguageProvider implements DataProvider {
 				langEntryJson.addProperty(entry.getKey(), entry.getValue());
 			}
 
-			return DataProvider.writeToPath(writer, langEntryJson, getLangFilePath(this.languageCode));
+			return DataProvider.saveStable(output, langEntryJson, getLangFilePath(this.languageCode));
 		});
 	}
 
-	private Path getLangFilePath(String code) {
-		return dataOutput
-				.getResolver(DataOutput.OutputType.RESOURCE_PACK, "lang")
-				.resolveJson(Identifier.of(dataOutput.getModId(), code));
+	/**
+	 * Override this method to change where the generated language file is placed.
+	 *
+	 * @param code The language code (like "en_us") of the translations.
+	 */
+	protected Path getLangFilePath(String code) {
+		return packOutput
+				.createPathProvider(PackOutput.Target.RESOURCE_PACK, "lang")
+				.json(Identifier.fromNamespaceAndPath(packOutput.getModId(), code));
 	}
 
 	@Override
@@ -140,7 +145,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry.
 		 */
 		default void add(Item item, String value) {
-			add(item.getTranslationKey(), value);
+			add(item.getDescriptionId(), value);
 		}
 
 		/**
@@ -150,25 +155,25 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry.
 		 */
 		default void add(Block block, String value) {
-			add(block.getTranslationKey(), value);
+			add(block.getDescriptionId(), value);
 		}
 
 		/**
-		 * Adds a translation for an {@link ItemGroup}.
+		 * Adds a translation for an {@link CreativeModeTab}.
 		 *
-		 * @param registryKey The {@link RegistryKey} to get the translation key from.
+		 * @param resourceKey The {@link ResourceKey} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
-		default void add(RegistryKey<ItemGroup> registryKey, String value) {
-			final ItemGroup group = Registries.ITEM_GROUP.getValueOrThrow(registryKey);
-			final TextContent content = group.getDisplayName().getContent();
+		default void add(ResourceKey<CreativeModeTab> resourceKey, String value) {
+			final CreativeModeTab group = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(resourceKey);
+			final ComponentContents content = group.getDisplayName().getContents();
 
-			if (content instanceof TranslatableTextContent translatableTextContent) {
-				add(translatableTextContent.getKey(), value);
+			if (content instanceof TranslatableContents translatableContent) {
+				add(translatableContent.getKey(), value);
 				return;
 			}
 
-			throw new UnsupportedOperationException("Cannot add language entry for ItemGroup (%s) as the display name is not translatable.".formatted(group.getDisplayName().getString()));
+			throw new UnsupportedOperationException("Cannot add language entry for CreativeModeTab (%s) as the display name is not translatable.".formatted(group.getDisplayName().getString()));
 		}
 
 		/**
@@ -178,7 +183,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value      The value of the entry.
 		 */
 		default void add(EntityType<?> entityType, String value) {
-			add(entityType.getTranslationKey(), value);
+			add(entityType.getDescriptionId(), value);
 		}
 
 		/**
@@ -187,18 +192,18 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param enchantment The {@link Enchantment} to get the translation key from.
 		 * @param value       The value of the entry.
 		 */
-		default void addEnchantment(RegistryKey<Enchantment> enchantment, String value) {
-			add(Util.createTranslationKey("enchantment", enchantment.getValue()), value);
+		default void addEnchantment(ResourceKey<Enchantment> enchantment, String value) {
+			add(Util.makeDescriptionId("enchantment", enchantment.identifier()), value);
 		}
 
 		/**
-		 * Adds a translation for an {@link EntityAttribute}.
+		 * Adds a translation for an {@link Attribute}.
 		 *
-		 * @param entityAttribute The {@link EntityAttribute} to get the translation key from.
-		 * @param value           The value of the entry.
+		 * @param attribute The {@link Attribute} to get the translation key from.
+		 * @param value     The value of the entry.
 		 */
-		default void add(RegistryEntry<EntityAttribute> entityAttribute, String value) {
-			add(entityAttribute.value().getTranslationKey(), value);
+		default void add(Holder<Attribute> attribute, String value) {
+			add(attribute.value().getDescriptionId(), value);
 		}
 
 		/**
@@ -208,17 +213,17 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value    The value of the entry.
 		 */
 		default void add(StatType<?> statType, String value) {
-			add("stat_type." + Registries.STAT_TYPE.getId(statType).toString().replace(':', '.'), value);
+			add("stat_type." + BuiltInRegistries.STAT_TYPE.getKey(statType).toString().replace(':', '.'), value);
 		}
 
 		/**
-		 * Adds a translation for a {@link StatusEffect}.
+		 * Adds a translation for a {@link MobEffect}.
 		 *
-		 * @param statusEffect The {@link StatusEffect} to get the translation key from.
-		 * @param value        The value of the entry.
+		 * @param mobEffect The {@link MobEffect} to get the translation key from.
+		 * @param value     The value of the entry.
 		 */
-		default void add(StatusEffect statusEffect, String value) {
-			add(statusEffect.getTranslationKey(), value);
+		default void add(MobEffect mobEffect, String value) {
+			add(mobEffect.getDescriptionId(), value);
 		}
 
 		/**
@@ -228,7 +233,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value      The value of the entry.
 		 */
 		default void add(Identifier identifier, String value) {
-			add(identifier.toTranslationKey(), value);
+			add(identifier.toLanguageKey(), value);
 		}
 
 		/**
@@ -250,7 +255,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry
 		 */
 		default void add(SoundEvent sound, String value) {
-			add(Util.createTranslationKey("subtitles", sound.id()), value);
+			add(Util.makeDescriptionId("subtitles", sound.location()), value);
 		}
 
 		/**

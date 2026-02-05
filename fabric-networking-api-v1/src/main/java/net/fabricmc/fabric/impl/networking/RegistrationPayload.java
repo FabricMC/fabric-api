@@ -23,23 +23,23 @@ import java.util.List;
 
 import io.netty.util.AsciiString;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
+import net.minecraft.IdentifierException;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
-public record RegistrationPayload(Id<RegistrationPayload> id, List<Identifier> channels) implements CustomPayload {
-	public static final CustomPayload.Id<RegistrationPayload> REGISTER = new CustomPayload.Id<>(NetworkingImpl.REGISTER_CHANNEL);
-	public static final CustomPayload.Id<RegistrationPayload> UNREGISTER = new CustomPayload.Id<>(NetworkingImpl.UNREGISTER_CHANNEL);
-	public static final PacketCodec<PacketByteBuf, RegistrationPayload> REGISTER_CODEC = codec(REGISTER);
-	public static final PacketCodec<PacketByteBuf, RegistrationPayload> UNREGISTER_CODEC = codec(UNREGISTER);
+public record RegistrationPayload(Type<RegistrationPayload> type, List<Identifier> channels) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<RegistrationPayload> REGISTER = new CustomPacketPayload.Type<>(NetworkingImpl.REGISTER_CHANNEL);
+	public static final CustomPacketPayload.Type<RegistrationPayload> UNREGISTER = new CustomPacketPayload.Type<>(NetworkingImpl.UNREGISTER_CHANNEL);
+	public static final StreamCodec<FriendlyByteBuf, RegistrationPayload> REGISTER_CODEC = codec(REGISTER);
+	public static final StreamCodec<FriendlyByteBuf, RegistrationPayload> UNREGISTER_CODEC = codec(UNREGISTER);
 
-	private RegistrationPayload(Id<RegistrationPayload> id, PacketByteBuf buf) {
+	private RegistrationPayload(Type<RegistrationPayload> id, FriendlyByteBuf buf) {
 		this(id, read(buf));
 	}
 
-	private void write(PacketByteBuf buf) {
+	private void write(FriendlyByteBuf buf) {
 		boolean first = true;
 
 		for (Identifier channel : channels) {
@@ -53,7 +53,7 @@ public record RegistrationPayload(Id<RegistrationPayload> id, List<Identifier> c
 		}
 	}
 
-	private static List<Identifier> read(PacketByteBuf buf) {
+	private static List<Identifier> read(FriendlyByteBuf buf) {
 		List<Identifier> ids = new ArrayList<>();
 		StringBuilder active = new StringBuilder();
 
@@ -77,18 +77,13 @@ public record RegistrationPayload(Id<RegistrationPayload> id, List<Identifier> c
 		String literal = sb.toString();
 
 		try {
-			ids.add(Identifier.of(literal));
-		} catch (InvalidIdentifierException ex) {
+			ids.add(Identifier.parse(literal));
+		} catch (IdentifierException ex) {
 			NetworkingImpl.LOGGER.warn("Received invalid channel identifier \"{}\"", literal);
 		}
 	}
 
-	@Override
-	public Id<? extends CustomPayload> getId() {
-		return id;
-	}
-
-	private static PacketCodec<PacketByteBuf, RegistrationPayload> codec(Id<RegistrationPayload> id) {
-		return CustomPayload.codecOf(RegistrationPayload::write, buf -> new RegistrationPayload(id, buf));
+	private static StreamCodec<FriendlyByteBuf, RegistrationPayload> codec(Type<RegistrationPayload> id) {
+		return CustomPacketPayload.codec(RegistrationPayload::write, buf -> new RegistrationPayload(id, buf));
 	}
 }

@@ -21,12 +21,12 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -37,18 +37,18 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 	// Cannot use registry-bound codec because they fail parsing if nonexistent,
 	// and resource conditions themselves should not fail to parse on condition failure
 	public static final MapCodec<TagsPopulatedResourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Identifier.CODEC.fieldOf("registry").orElse(RegistryKeys.ITEM.getValue()).forGetter(TagsPopulatedResourceCondition::registry),
+			Identifier.CODEC.fieldOf("registry").orElse(Registries.ITEM.identifier()).forGetter(TagsPopulatedResourceCondition::registry),
 			Identifier.CODEC.listOf().fieldOf("values").forGetter(TagsPopulatedResourceCondition::tags)
 	).apply(instance, TagsPopulatedResourceCondition::new));
 
 	@SafeVarargs
 	public <T> TagsPopulatedResourceCondition(Identifier registry, TagKey<T>... tags) {
-		this(registry, Arrays.stream(tags).map(TagKey::id).toList());
+		this(registry, Arrays.stream(tags).map(TagKey::location).toList());
 	}
 
 	@SafeVarargs
 	public <T> TagsPopulatedResourceCondition(TagKey<T>... tags) {
-		this(tags[0].registryRef().getValue(), Arrays.stream(tags).map(TagKey::id).toList());
+		this(tags[0].registry().identifier(), Arrays.stream(tags).map(TagKey::location).toList());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
-		return ResourceConditionsImpl.tagsPopulated(this.registry(), this.tags());
+	public boolean test(RegistryOps.@Nullable RegistryInfoLookup registryInfo) {
+		return ResourceConditionsImpl.tagsPopulated(registryInfo, this.registry(), this.tags());
 	}
 }

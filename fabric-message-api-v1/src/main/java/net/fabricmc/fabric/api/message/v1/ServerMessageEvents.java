@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.message.v1;
 
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -43,9 +43,9 @@ public final class ServerMessageEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, params) -> {
+	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, boundChatType) -> {
 		for (AllowChatMessage handler : handlers) {
-			if (!handler.allowChatMessage(message, sender, params)) return false;
+			if (!handler.allowChatMessage(message, sender, boundChatType)) return false;
 		}
 
 		return true;
@@ -81,9 +81,9 @@ public final class ServerMessageEvents {
 	 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 	 * triggered after triggering {@link #COMMAND_MESSAGE}.
 	 */
-	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, params) -> {
+	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, boundChatType) -> {
 		for (AllowCommandMessage handler : handlers) {
-			if (!handler.allowCommandMessage(message, source, params)) return false;
+			if (!handler.allowCommandMessage(message, source, boundChatType)) return false;
 		}
 
 		return true;
@@ -98,9 +98,9 @@ public final class ServerMessageEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, params) -> {
+	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, boundChatType) -> {
 		for (ChatMessage handler : handlers) {
-			handler.onChatMessage(message, sender, params);
+			handler.onChatMessage(message, sender, boundChatType);
 		}
 	});
 
@@ -124,9 +124,9 @@ public final class ServerMessageEvents {
 	 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
 	 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 	 */
-	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, params) -> {
+	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, boundChatType) -> {
 		for (CommandMessage handler : handlers) {
-			handler.onCommandMessage(message, source, params);
+			handler.onCommandMessage(message, source, boundChatType);
 		}
 	});
 
@@ -145,12 +145,12 @@ public final class ServerMessageEvents {
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 		 * and after triggering {@link #COMMAND_MESSAGE} event.
 		 *
-		 * @param message the broadcast message with message decorators applied; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
 		 * @param sender  the player that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowChatMessage(SignedMessage message, ServerPlayerEntity sender, MessageType.Parameters params);
+		boolean allowChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
@@ -166,7 +166,7 @@ public final class ServerMessageEvents {
 		 * @param overlay {@code true} when the message is an overlay
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowGameMessage(MinecraftServer server, Text message, boolean overlay);
+		boolean allowGameMessage(MinecraftServer server, Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -181,12 +181,12 @@ public final class ServerMessageEvents {
 		 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 		 * triggered after triggering {@link #COMMAND_MESSAGE}.
 		 *
-		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
 		 * @param source  the command source that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params);
+		boolean allowCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
@@ -200,11 +200,11 @@ public final class ServerMessageEvents {
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 		 * and after triggering {@link #COMMAND_MESSAGE} event.
 		 *
-		 * @param message the broadcast message with message decorators applied; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
 		 * @param sender  the player that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 */
-		void onChatMessage(SignedMessage message, ServerPlayerEntity sender, MessageType.Parameters params);
+		void onChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
@@ -218,7 +218,7 @@ public final class ServerMessageEvents {
 		 * @param message the broadcast message
 		 * @param overlay {@code true} when the message is an overlay
 		 */
-		void onGameMessage(MinecraftServer server, Text message, boolean overlay);
+		void onGameMessage(MinecraftServer server, Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -232,10 +232,10 @@ public final class ServerMessageEvents {
 		 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
 		 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 		 *
-		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
 		 * @param source  the command source that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 */
-		void onCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params);
+		void onCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound boundChatType);
 	}
 }

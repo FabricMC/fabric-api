@@ -16,26 +16,29 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.Event;
@@ -44,9 +47,10 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
-@Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
+@Mixin({BlockEntity.class, Entity.class, Level.class, ChunkAccess.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	@Nullable
@@ -54,6 +58,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, AttachmentChange> syncedAttachments = null;
+	@Unique
+	@Nullable
+	private Set<AttachmentType<?>> deferredSyncedAttachments = null;
 	@Unique
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, Event<OnAttachedSet<?>>> attachedChangedListeners = null;
@@ -93,9 +100,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			this.fabric_markChanged(type);
 
 			if (this.fabric_shouldTryToSync() && type.isSynced()) {
-				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
+				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getRegistryAccess());
 				acknowledgeSyncedEntry(type, change);
-				this.fabric_syncChange(type, new AttachmentSyncPayloadS2C(List.of(change)));
+				this.fabric_syncChange(type, change);
 			}
 		}
 
@@ -123,15 +130,15 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(WriteView view) {
-		AttachmentSerializingImpl.serializeAttachmentData(view, dataAttachments);
+	public void fabric_writeAttachmentsToNbt(ValueOutput output) {
+		AttachmentSerializingImpl.serializeAttachmentData(output, dataAttachments);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(ReadView view) {
+	public void fabric_readAttachmentsFromNbt(ValueInput input) {
 		// Note on player targets: no syncing can happen here as the networkHandler is still null
 		// Instead it is done on player join (see AttachmentSync)
-		IdentityHashMap<AttachmentType<?>, Object> fromNbt = AttachmentSerializingImpl.deserializeAttachmentData(view);
+		IdentityHashMap<AttachmentType<?>, Object> fromNbt = AttachmentSerializingImpl.deserializeAttachmentData(input);
 
 		// If the NBT is devoid of data attachments, treat it as a no-op, rather than wiping them out.
 		// Any changes to data attachments (including removals) post-load are done independently of this
@@ -146,9 +153,12 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		if (this.fabric_shouldTryToSync() && this.dataAttachments != null) {
 			this.dataAttachments.forEach((type, value) -> {
 				if (type.isSynced()) {
-					acknowledgeSynced(type, value, view.getRegistries());
+					acknowledgeSynced(type, value, input.lookup());
 				}
 			});
+
+			// Avoid unnecessary extra syncing after initial sync
+			fabric_clearDeferredSyncChanges();
 		}
 	}
 
@@ -163,9 +173,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Unique
-	private void acknowledgeSynced(AttachmentType<?> type, Object value, RegistryWrapper.WrapperLookup wrapperLookup) {
-		DynamicRegistryManager dynamicRegistryManager = (wrapperLookup instanceof DynamicRegistryManager drm) ? drm : fabric_getDynamicRegistryManager();
-		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, dynamicRegistryManager));
+	private void acknowledgeSynced(AttachmentType<?> type, Object value, HolderLookup.Provider registries) {
+		RegistryAccess registryAccess = (registries instanceof RegistryAccess ra) ? ra : fabric_getRegistryAccess();
+		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, registryAccess));
 	}
 
 	@Unique
@@ -176,17 +186,29 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			}
 
 			syncedAttachments.remove(type);
+
+			if (fabric_shouldDeferSync()) {
+				deferredSyncedAttachments.add(type);
+			}
 		} else {
 			if (syncedAttachments == null) {
 				syncedAttachments = new IdentityHashMap<>();
 			}
 
 			syncedAttachments.put(type, change);
+
+			if (fabric_shouldDeferSync()) {
+				if (deferredSyncedAttachments == null) {
+					deferredSyncedAttachments = Collections.newSetFromMap(new IdentityHashMap<>());
+				}
+
+				deferredSyncedAttachments.add(type);
+			}
 		}
 	}
 
 	@Override
-	public void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+	public void fabric_computeInitialSyncChanges(ServerPlayer player, Consumer<AttachmentChange> changeOutput) {
 		if (syncedAttachments == null) {
 			return;
 		}
@@ -196,5 +218,60 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 				changeOutput.accept(entry.getValue());
 			}
 		}
+	}
+
+	@Override
+	public void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		if (syncedAttachments == null || deferredSyncedAttachments == null || deferredSyncedAttachments.isEmpty()) {
+			return;
+		}
+
+		List<AttachmentChange> deferredChanges = deferredSyncedAttachments.stream().map(type -> {
+			AttachmentChange change = syncedAttachments.get(type);
+
+			if (change == null) { // attachment was removed
+				change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, null, fabric_getRegistryAccess());
+			}
+
+			return change;
+		}).toList();
+
+		for (ServerPlayer player : players) {
+			List<AttachmentChange> syncableChanges = new ArrayList<>();
+
+			for (AttachmentChange change : deferredChanges) {
+				if (((AttachmentTypeImpl<?>) change.type()).syncPredicate().test(this, player)) {
+					syncableChanges.add(change);
+				}
+			}
+
+			if (!syncableChanges.isEmpty()) {
+				AttachmentSync.trySync(syncableChanges, player);
+			}
+		}
+
+		deferredSyncedAttachments.clear();
+	}
+
+	@Override
+	public void fabric_clearDeferredSyncChanges() {
+		if (deferredSyncedAttachments != null) {
+			deferredSyncedAttachments.clear();
+		}
+	}
+
+	@Override
+	public <T> void fabric_updateSyncTarget(AttachmentTargetInfo<T> oldTargetInfo, AttachmentTargetInfo<T> newTargetInfo) {
+		if (syncedAttachments == null) {
+			return;
+		}
+
+		syncedAttachments.replaceAll((_, attachmentChange) -> {
+			if (attachmentChange.targetInfo().equals(oldTargetInfo)) {
+				return attachmentChange.withNewTarget(newTargetInfo);
+			}
+
+			return attachmentChange;
+		});
 	}
 }

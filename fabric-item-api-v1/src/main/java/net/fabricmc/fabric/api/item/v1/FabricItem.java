@@ -16,13 +16,25 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
+import java.util.Optional;
+import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.TippedArrowItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 
@@ -40,13 +52,13 @@ public interface FabricItem {
 	 * This function is called on the client side when the components or count of the stack has changed, but not the item,
 	 * and returning false cancels this animation.
 	 *
-	 * @param player   the current player; this may be safely cast to {@link net.minecraft.client.network.ClientPlayerEntity} in client-only code
+	 * @param player   the current player; this may be safely cast to {@link net.minecraft.client.player.LocalPlayer} in client-only code
 	 * @param hand     the hand; this function applies both to the main hand and the off hand
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item
 	 * @return true to run the vanilla animation, false to cancel it.
 	 */
-	default boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+	default boolean allowComponentsUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack, ItemStack newStack) {
 		return true;
 	}
 
@@ -60,21 +72,21 @@ public interface FabricItem {
 	 * @param newStack the new stack, also of this item
 	 * @return true to allow continuing block breaking, false to reset the progress.
 	 */
-	default boolean allowContinuingBlockBreaking(PlayerEntity player, ItemStack oldStack, ItemStack newStack) {
+	default boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
 		return false;
 	}
 
 	/**
 	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
-	 * (This is also known as "recipe remainder".)
+	 * (This is also known as a "crafting remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
 	 *
-	 * <p>Here is an example for a recipe remainder that increments the item's damage.
+	 * <p>Here is an example for a crafting remainder that increments the item's damage.
 	 *
 	 * <pre>{@code
-	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {
+	 *  if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 	 *  	ItemStack moreDamaged = stack.copy();
-	 *  	moreDamaged.setDamage(stack.getDamage() + 1);
+	 *  	moreDamaged.setDamageValue(stack.getDamageValue() + 1);
 	 *  	return moreDamaged;
 	 *  }
 	 *
@@ -82,18 +94,18 @@ public interface FabricItem {
 	 * }</pre>
 	 *
 	 *
-	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
+	 * <p>This is a stack-aware version of {@link Item#getCraftingRemainder()}.
 	 *
-	 * <p>Note that simple item remainders can also be set via {@link Item.Settings#recipeRemainder(Item)}.
+	 * <p>Note that simple item remainders can also be set via {@link Item.Properties#craftRemainder(Item)}.
 	 *
 	 * <p>If you want to get a remainder for a stack,
-	 * is recommended to use the stack version of this method: {@link FabricItemStack#getRecipeRemainder()}.
+	 * is recommended to use the stack version of this method: {@link FabricItemStack#getCraftingRemainder()}.
 	 *
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
 	 */
-	default ItemStack getRecipeRemainder(ItemStack stack) {
-		return ((Item) this).getRecipeRemainder();
+	default @Nullable ItemStackTemplate getCraftingRemainder(ItemStack stack) {
+		return ((Item) this).getCraftingRemainder();
 	}
 
 	/**
@@ -112,37 +124,70 @@ public interface FabricItem {
 	 * @param context the context in which the enchantment is being checked
 	 * @return whether the enchantment is allowed to apply to the stack
 	 */
-	default boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
+	default boolean canBeEnchantedWith(ItemStack stack, Holder<Enchantment> enchantment, EnchantingContext context) {
 		return context == EnchantingContext.PRIMARY
 				? enchantment.value().isPrimaryItem(stack)
-				: enchantment.value().isAcceptableItem(stack);
+				: enchantment.value().canEnchant(stack);
 	}
 
 	/**
-	 * Fabric-provided extensions for {@link Item.Settings}.
-	 * This interface is automatically implemented on all item settings via Mixin and interface injection.
+	 * Gets the namespace of the mod or datapack that created this item.
+	 *
+	 * <p>This can be used if, for example, a library mod registers a generic item that other mods can create new
+	 * variants for, allowing those mods to take credit for those variants if a player wishes to know what mod they
+	 * come from.</p>
+	 *
+	 * <p>Should be used instead of querying the item ID namespace to determine what mod an item is from when displaying
+	 * to the player.</p>
+	 *
+	 * <p>Defaults to the namespace of the item's own holder, except in the cases of potions or enchanted books,
+	 * in which it uses the namespace of the potion contents or single enchantment applied.</p>
+	 *
+	 * <p>Note that while it is recommended that this reflect a namespace and/or mod ID, it can technically be any
+	 * arbitrary string.</p>
+	 *
+	 * @param stack the current stack
+	 * @return the namespace of the mod that created the item
 	 */
-	interface Settings {
+	default String getCreatorNamespace(ItemStack stack) {
+		Holder<?> holder = stack.typeHolder();
+
+		if ((this instanceof PotionItem || this instanceof TippedArrowItem) && stack.has(DataComponents.POTION_CONTENTS)) {
+			Optional<Holder<Potion>> potion = stack.get(DataComponents.POTION_CONTENTS).potion();
+			if (potion.isPresent()) holder = potion.get();
+		} else if (stack.is(Items.ENCHANTED_BOOK) && stack.has(DataComponents.STORED_ENCHANTMENTS)) {
+			Set<Holder<Enchantment>> enchantments = stack.get(DataComponents.STORED_ENCHANTMENTS).keySet();
+			if (enchantments.size() == 1) holder = enchantments.iterator().next();
+		}
+
+		return holder.unwrapKey().orElseThrow().identifier().getNamespace();
+	}
+
+	/**
+	 * Fabric-provided extensions for {@link Item.Properties}.
+	 * This interface is automatically implemented on all item properties via Mixin and interface injection.
+	 */
+	interface Properties {
 		/**
 		 * Sets the equipment slot provider of the item.
 		 *
 		 * @param equipmentSlotProvider the equipment slot provider
 		 * @return this builder
 		 */
-		default Item.Settings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-			FabricItemInternals.computeExtraData((Item.Settings) this).equipmentSlot(equipmentSlotProvider);
-			return (Item.Settings) this;
+		default Item.Properties equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
+			FabricItemInternals.computeExtraData((Item.Properties) this).equipmentSlot(equipmentSlotProvider);
+			return (Item.Properties) this;
 		}
 
 		/**
 		 * Sets the custom damage handler of the item.
-		 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageable()} returns true.
+		 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageableItem()} returns true.
 		 *
 		 * @see CustomDamageHandler
 		 */
-		default Item.Settings customDamage(CustomDamageHandler handler) {
-			FabricItemInternals.computeExtraData((Item.Settings) this).customDamage(handler);
-			return (Item.Settings) this;
+		default Item.Properties customDamage(CustomDamageHandler handler) {
+			FabricItemInternals.computeExtraData((Item.Properties) this).customDamage(handler);
+			return (Item.Properties) this;
 		}
 
 		/**
@@ -151,8 +196,17 @@ public interface FabricItem {
 		 * @param modelId the model id item should use
 		 * @return this builder
 		 */
-		default Item.Settings modelId(Identifier modelId) {
-			return (Item.Settings) this;
+		default Item.Properties modelId(Identifier modelId) {
+			return (Item.Properties) this;
+		}
+
+		/**
+		 * Return the id of item that was defined by {@link Item.Properties#setId}.
+		 *
+		 * @return currently stored item id or null, if not set
+		 */
+		default @Nullable ResourceKey<Item> itemId() {
+			throw new AssertionError("Implemented in Mixin");
 		}
 	}
 }

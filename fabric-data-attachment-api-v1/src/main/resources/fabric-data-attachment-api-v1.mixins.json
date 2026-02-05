@@ -1,24 +1,29 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.attachment",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
     "AttachmentTargetsMixin",
     "BannerBlockEntityMixin",
     "BlockEntityMixin",
-    "ChunkDataSenderMixin",
-    "ChunkMixin",
-    "ClientConnectionMixin",
-    "CustomPayloadC2SPacketAccessor",
+    "ChunkAccessMixin",
+    "ClientboundCustomPayloadPacketAccessor",
+    "ChunkHolderMixin",
+    "ConnectionMixin",
+    "DimensionStorageFileFixMixin",
     "EntityMixin",
-    "SerializedChunkMixin",
-    "ServerWorldMixin",
-    "VarIntsAccessor",
-    "WorldChunkMixin",
-    "WorldMixin",
-    "WrapperProtoChunkMixin"
+    "ImposterProtoChunkMixin",
+    "LevelChunkMixin",
+    "LevelMixin",
+    "PlayerChunkSenderMixin",
+    "SerializableChunkDataMixin",
+    "ServerLevelMixin",
+    "VarIntAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

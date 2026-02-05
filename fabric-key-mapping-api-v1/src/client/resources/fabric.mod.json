@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-key-mapping-api-v1",
+  "name": "Fabric Key Mapping API (v1)",
+  "version": "${version}",
+  "environment": "client",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-key-mapping-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4"
+  },
+  "description": "Key Mapping registry API.",
+  "mixins": [
+    "fabric-key-mapping-api-v1.mixins.json"
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

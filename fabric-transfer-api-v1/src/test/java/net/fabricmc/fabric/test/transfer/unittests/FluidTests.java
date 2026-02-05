@@ -23,16 +23,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentType;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -44,7 +44,7 @@ import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 class FluidTests extends AbstractTransferApiTest {
 	private static FluidVariant TAGGED_WATER, TAGGED_WATER_2, WATER, LAVA;
 	private static int finalCommitCount = 0;
-	public static ComponentType<Integer> TEST;
+	public static DataComponentType<Integer> TEST;
 	private static SingleSlotStorage<FluidVariant> createWaterStorage() {
 		return new SingleVariantStorage<>() {
 			@Override
@@ -73,15 +73,15 @@ class FluidTests extends AbstractTransferApiTest {
 	static void beforeAll() {
 		bootstrap();
 
-		ComponentChanges components = ComponentChanges.builder()
-				.add(TEST, 1)
+		DataComponentPatch components = DataComponentPatch.builder()
+				.set(TEST, 1)
 				.build();
 		TAGGED_WATER = FluidVariant.of(Fluids.WATER, components);
 		TAGGED_WATER_2 = FluidVariant.of(Fluids.WATER, components);
 		WATER = FluidVariant.of(Fluids.WATER);
 		LAVA = FluidVariant.of(Fluids.LAVA);
-		TEST = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(TransferTestInitializer.MOD_ID, "test"),
-								ComponentType.<Integer>builder().codec(Codecs.NON_NEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+		TEST = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TransferTestInitializer.MOD_ID, "test"),
+								DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
 	}
 
 	@Test
@@ -154,10 +154,10 @@ class FluidTests extends AbstractTransferApiTest {
 	}
 
 	@Test
-	void testPacketCodec() {
-		FluidVariant variant = FluidVariant.of(Fluids.WATER, ComponentChanges.builder().add(TEST, 1).build());
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		RegistryByteBuf rbuf = new RegistryByteBuf(buf, staticDrm());
+	void testStreamCodec() {
+		FluidVariant variant = FluidVariant.of(Fluids.WATER, DataComponentPatch.builder().set(TEST, 1).build());
+		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+		RegistryFriendlyByteBuf rbuf = new RegistryFriendlyByteBuf(buf, staticDrm());
 		FluidVariant.PACKET_CODEC.encode(rbuf, variant);
 
 		FluidVariant decoded = FluidVariant.PACKET_CODEC.decode(rbuf);

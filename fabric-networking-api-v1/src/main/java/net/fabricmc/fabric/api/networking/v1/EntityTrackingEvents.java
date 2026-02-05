@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -29,7 +30,7 @@ public final class EntityTrackingEvents {
 	/**
 	 * An event that is called after a player has started tracking an entity.
 	 * Typically, this occurs when an entity enters a client's view distance.
-	 * This event is called after the entity's {@linkplain Entity#createSpawnPacket spawn packet} is sent to the player.
+	 * This event is called after the entity's {@linkplain Entity#getAddEntityPacket(ServerEntity) spawn packet} is sent to the player.
 	 */
 	public static final Event<StartTracking> START_TRACKING = EventFactory.createArrayBacked(StartTracking.class, callbacks -> (trackedEntity, player) -> {
 		for (StartTracking callback : callbacks) {
@@ -55,7 +56,7 @@ public final class EntityTrackingEvents {
 		 * @param trackedEntity the entity that will be tracked
 		 * @param player the player that will track the entity
 		 */
-		void onStartTracking(Entity trackedEntity, ServerPlayerEntity player);
+		void onStartTracking(Entity trackedEntity, ServerPlayer player);
 	}
 
 	@FunctionalInterface
@@ -66,7 +67,7 @@ public final class EntityTrackingEvents {
 		 * @param trackedEntity the entity that is about to stop being tracked
 		 * @param player the player that is about to stop tracking the entity
 		 */
-		void onStopTracking(Entity trackedEntity, ServerPlayerEntity player);
+		void onStopTracking(Entity trackedEntity, ServerPlayer player);
 	}
 
 	private EntityTrackingEvents() {

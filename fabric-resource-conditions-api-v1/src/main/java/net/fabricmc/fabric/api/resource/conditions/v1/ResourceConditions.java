@@ -21,11 +21,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.resource.featuretoggle.FeatureFlag;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.flag.FeatureFlag;
 
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AndResourceCondition;
@@ -148,8 +148,8 @@ public final class ResourceConditions {
 	 * @param <T> the type of the tag values
 	 */
 	@SafeVarargs
-	public static <T> ResourceCondition tagsPopulated(RegistryKey<? extends Registry<T>> registry, TagKey<T>... tags) {
-		return new TagsPopulatedResourceCondition(registry.getValue(), tags);
+	public static <T> ResourceCondition tagsPopulated(ResourceKey<? extends Registry<T>> registry, TagKey<T>... tags) {
+		return new TagsPopulatedResourceCondition(registry.identifier(), tags);
 	}
 
 	/**
@@ -178,15 +178,15 @@ public final class ResourceConditions {
 	 * @param <T> the type of the tag values
 	 */
 	@SafeVarargs
-	public static <T> ResourceCondition registryContains(RegistryKey<T>... entries) {
+	public static <T> ResourceCondition registryContains(ResourceKey<T>... entries) {
 		return new RegistryContainsResourceCondition(entries);
 	}
 
 	/**
-	 * @see #registryContains(RegistryKey[])
+	 * @see #registryContains(ResourceKey[])
 	 * @param <T> the type of the tag values
 	 */
-	public static <T> ResourceCondition registryContains(RegistryKey<? extends Registry<T>> registry, Identifier... entries) {
-		return new RegistryContainsResourceCondition(registry.getValue(), entries);
+	public static <T> ResourceCondition registryContains(ResourceKey<? extends Registry<T>> registry, Identifier... entries) {
+		return new RegistryContainsResourceCondition(registry.identifier(), entries);
 	}
 }

@@ -21,15 +21,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.GrindstoneScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -37,7 +38,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 public final class ScreenTests implements ClientModInitializer {
-	public static final Identifier ARMOR_FULL_TEXTURE = Identifier.ofVanilla("hud/armor_full");
+	public static final Identifier ARMOR_FULL_TEXTURE = Identifier.withDefaultNamespace("hud/armor_full");
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricScreenApiTests");
 
 	@Override
@@ -50,14 +51,14 @@ public final class ScreenTests implements ClientModInitializer {
 		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
 	}
 
-	private void afterInitScreen(MinecraftClient client, Screen screen, int windowWidth, int windowHeight) {
+	private void afterInitScreen(Minecraft client, Screen screen, int windowWidth, int windowHeight) {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
-			final List<ClickableWidget> buttons = Screens.getButtons(screen);
+			final List<AbstractWidget> buttons = Screens.getWidgets(screen);
 
 			// Shrink the realms button, should be the third button on the list
-			final ClickableWidget optionsButton = buttons.get(2);
+			final AbstractWidget optionsButton = buttons.get(2);
 			optionsButton.setWidth(98);
 
 			// Add a new button
@@ -77,35 +78,50 @@ public final class ScreenTests implements ClientModInitializer {
 					.findAny()
 					.orElseThrow(() -> new AssertionError("Failed to find the \"Stop Sound\" button in the screen's elements"));
 
-			// Register render event to draw an icon on the screen
-			ScreenEvents.afterRender(screen).register((_screen, drawContext, mouseX, mouseY, tickDelta) -> {
-				// Render an armor icon to test
-				drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20);
-			});
-
-			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, key, scancode, modifiers) -> {
-				LOGGER.info("After Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, context) -> {
+				LOGGER.info("After Pressed, Context: {}", context);
 				return true; // Let actions continue
 			});
 
-			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifiers) -> {
-				LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, context) -> {
+				LOGGER.warn("Pressed, Context: {}", context);
 			});
-		} else if (screen instanceof CreativeInventoryScreen) {
-			Screens.getButtons(screen).add(new TestButtonWidget());
+		} else if (screen instanceof CreativeModeInventoryScreen) {
+			Screens.getWidgets(screen).add(new TestButton());
+		} else if (screen instanceof GrindstoneScreen) {
+			// Register render event to draw an icon on the screen
+			// Expected result: the icon is drawn BEHIND both the container screen interface and the darkened background, text, items, the carried item, tooltips, etc.
+			ScreenEvents.beforeRender(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+				// Render an armor icon to test
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 34, 20, 20);
+			});
+
+			// Register render event to draw an icon on the screen
+			// Expected result: the icon is drawn ABOVE both the container screen interface and the darkened background, but still BEHIND text, items, the carried item, tooltips, etc.
+			ScreenEvents.afterBackground(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+				// Render an armor icon to test
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 10, 20, 20);
+			});
+
+			// Register render event to draw an icon on the screen
+			// Expected result: the icon is drawn ABOVE everything, including the background, container screen interface, text, items, the carried item, tooltips, etc.
+			ScreenEvents.afterRender(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+				// Render an armor icon to test
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) + 14, 20, 20);
+			});
 		}
 	}
 
 	// Test that mouseReleased is called
-	private static final class TestButtonWidget extends ButtonWidget {
-		private TestButtonWidget() {
-			super(10, 10, 10, 10, Text.literal("X"), button -> {
+	private static final class TestButton extends Button.Plain {
+		private TestButton() {
+			super(10, 10, 10, 10, net.minecraft.network.chat.Component.literal("X"), button -> {
 				LOGGER.info("Pressed");
-			}, DEFAULT_NARRATION_SUPPLIER);
+			}, DEFAULT_NARRATION);
 		}
 
 		@Override
-		public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		public boolean mouseReleased(MouseButtonEvent ctx) {
 			LOGGER.info("Released");
 			return true;
 		}

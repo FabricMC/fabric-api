@@ -1,11 +1,14 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.attachment.client",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "injectors": {
     "defaultRequire": 1
   },
+  "overwrites": {
+    "requireAnnotations": true
+  },
   "client": [
-    "ClientPlayNetworkHandlerMixin"
+    "ClientPacketListenerMixin"
   ]
 }

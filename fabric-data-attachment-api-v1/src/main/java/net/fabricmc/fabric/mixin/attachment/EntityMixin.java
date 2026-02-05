@@ -22,21 +22,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.world.World;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin(Entity.class)
 abstract class EntityMixin implements AttachmentTargetImpl {
@@ -44,22 +44,22 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	private int id;
 
 	@Shadow
-	public abstract World getWorld();
+	public abstract Level level();
 
 	@Inject(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readCustomData(Lnet/minecraft/storage/ReadView;)V"),
-			method = "readData"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/world/level/storage/ValueInput;)V"),
+			method = "load"
 	)
-	private void readEntityAttachments(ReadView data, CallbackInfo ci) {
+	private void readEntityAttachments(ValueInput data, CallbackInfo ci) {
 		this.fabric_readAttachmentsFromNbt(data);
 	}
 
 	@Inject(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeCustomData(Lnet/minecraft/storage/WriteView;)V"),
-			method = "writeData"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;addAdditionalSaveData(Lnet/minecraft/world/level/storage/ValueOutput;)V"),
+			method = "saveWithoutId"
 	)
-	private void writeEntityAttachments(WriteView view, CallbackInfo ci) {
-		this.fabric_writeAttachmentsToNbt(view);
+	private void writeEntityAttachments(ValueOutput output, CallbackInfo ci) {
+		this.fabric_writeAttachmentsToNbt(output);
 	}
 
 	@Override
@@ -68,19 +68,19 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
-		if (!this.getWorld().isClient()) {
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
+		if (!this.level().isClientSide()) {
 			AttachmentSyncPredicate predicate = ((AttachmentTypeImpl<?>) type).syncPredicate();
 
-			if ((Object) this instanceof ServerPlayerEntity self && predicate.test(this, self)) {
+			if ((Object) this instanceof ServerPlayer self && predicate.test(this, self)) {
 				// Players do not track themselves
-				AttachmentSync.trySync(payload, self);
+				AttachmentSync.trySync(change, self);
 			}
 
 			PlayerLookup.tracking((Entity) (Object) this)
 					.forEach(player -> {
 						if (predicate.test(this, player)) {
-							AttachmentSync.trySync(payload, player);
+							AttachmentSync.trySync(change, player);
 						}
 					});
 		}
@@ -88,11 +88,18 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		return !this.getWorld().isClient();
+		return !this.level().isClientSide();
 	}
 
 	@Override
-	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
-		return this.getWorld().getRegistryManager();
+	public RegistryAccess fabric_getRegistryAccess() {
+		return this.level().registryAccess();
+	}
+
+	@Inject(method = "setId", at = @At("HEAD"))
+	private void setId(int id, CallbackInfo ci) {
+		var oldTargetInfo = new AttachmentTargetInfo.EntityTarget(this.id);
+		var newTargetInfo = new AttachmentTargetInfo.EntityTarget(id);
+		fabric_updateSyncTarget(oldTargetInfo, newTargetInfo);
 	}
 }

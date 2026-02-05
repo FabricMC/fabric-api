@@ -18,10 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_FACE_NORMAL;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TINT_INDEX;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
@@ -32,20 +30,19 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.core.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 
@@ -225,7 +222,6 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	@NotNull
 	public final Direction lightFace() {
 		computeGeometry();
 		return EncodingFormat.lightFace(data[baseIndex + HEADER_BITS]);
@@ -245,8 +241,8 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	@Nullable
-	public BlockRenderLayer renderLayer() {
-		return EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS]);
+	public ChunkSectionLayer chunkLayer() {
+		return EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
@@ -265,14 +261,18 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	@Nullable
-	public ItemRenderState.Glint glint() {
-		return EncodingFormat.glint(data[baseIndex + HEADER_BITS]);
+	public ItemStackRenderState.@Nullable FoilType foilType() {
+		return EncodingFormat.foilType(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
 	public ShadeMode shadeMode() {
 		return EncodingFormat.shadeMode(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	public QuadAtlas atlas() {
+		return EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
@@ -283,17 +283,5 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public final int tag() {
 		return data[baseIndex + HEADER_TAG];
-	}
-
-	@Override
-	public final void toVanilla(int[] target, int startIndex) {
-		System.arraycopy(data, baseIndex + HEADER_STRIDE, target, startIndex, QUAD_STRIDE);
-
-		int colorIndex = startIndex + VERTEX_COLOR - HEADER_STRIDE;
-
-		for (int i = 0; i < 4; i++) {
-			target[colorIndex] = ColorHelper.toVanillaColor(target[colorIndex]);
-			colorIndex += VANILLA_VERTEX_STRIDE;
-		}
 	}
 }

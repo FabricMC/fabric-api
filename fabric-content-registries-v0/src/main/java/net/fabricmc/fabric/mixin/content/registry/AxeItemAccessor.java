@@ -22,19 +22,19 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.AxeItem;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.level.block.Block;
 
 @Mixin(AxeItem.class)
 public interface AxeItemAccessor {
-	@Accessor("STRIPPED_BLOCKS")
-	static Map<Block, Block> getStrippedBlocks() {
+	@Accessor("STRIPPABLES")
+	static Map<Block, Block> getStrippables() {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 
-	@Accessor("STRIPPED_BLOCKS")
+	@Accessor("STRIPPABLES")
 	@Mutable
-	static void setStrippedBlocks(Map<Block, Block> strippedBlocks) {
+	static void setStrippables(Map<Block, Block> strippedBlocks) {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 }

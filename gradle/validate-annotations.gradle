@@ -13,7 +13,7 @@ tasks.register('validateAnnotations', ValidateAnnotations) {
 
 tasks.check.dependsOn "validateAnnotations"
 
-class ValidateAnnotations extends SourceTask {
+abstract class ValidateAnnotations extends SourceTask {
 	private static final def API_STATUS_INTERNAL = ~/@ApiStatus\.Internal/
 	private static final def ENVIRONMENT = ~/@Environment/
 

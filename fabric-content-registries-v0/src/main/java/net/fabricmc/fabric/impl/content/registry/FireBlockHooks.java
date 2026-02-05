@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 

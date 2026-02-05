@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -46,18 +46,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface AttackBlockCallback {
 	Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
-			(listeners) -> (player, world, hand, pos, direction) -> {
+			(listeners) -> (player, level, hand, pos, direction) -> {
 				for (AttackBlockCallback event : listeners) {
-					ActionResult result = event.interact(player, world, hand, pos, direction);
+					InteractionResult result = event.interact(player, level, hand, pos, direction);
 
-					if (result != ActionResult.PASS) {
+					if (result != InteractionResult.PASS) {
 						return result;
 					}
 				}
 
-				return ActionResult.PASS;
+				return InteractionResult.PASS;
 			}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction);
+	InteractionResult interact(Player player, Level level, InteractionHand hand, BlockPos pos, Direction direction);
 }

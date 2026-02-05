@@ -20,9 +20,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.registry.tag.TagBuilder;
-import net.minecraft.registry.tag.TagEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagBuilder;
+import net.minecraft.tags.TagEntry;
 
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;

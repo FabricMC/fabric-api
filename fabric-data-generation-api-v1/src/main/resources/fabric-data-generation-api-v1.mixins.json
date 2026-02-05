@@ -1,29 +1,33 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.datagen",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "DataCacheCachedDataMixin",
-    "DataCacheMixin",
+    "HashCacheProviderCacheMixin",
+    "HashCacheMixin",
     "DataProviderMixin",
-    "ProvidedTagBuilderMixin",
-    "ProvidedTagBuilderMixin$ProvidedTagBuilder1Mixin",
-    "ProvidedTagBuilderMixin$ProvidedTagBuilder2Mixin",
+    "TagAppenderMixin",
+    "TagAppenderMixin$TagAppender1Mixin",
+    "TagAppenderMixin$TagAppender2Mixin",
     "TagBuilderMixin",
-    "TagProviderMixin",
-    "loot.BlockLootTableGeneratorAccessor",
-    "loot.BlockLootTableGeneratorMixin",
-    "loot.EntityLootTableGeneratorAccessor",
-    "loot.EntityLootTableGeneratorMixin",
+    "TagsProviderMixin",
+    "loot.BlockLootSubProviderAccessor",
+    "loot.BlockLootSubProviderMixin",
+    "loot.EntityLootSubProviderAccessor",
+    "loot.EntityLootSubProviderMixin",
     "recipe.AllCraftingRecipeJsonBuildersMixin",
-    "recipe.ComplexRecipeJsonBuilderMixin",
-    "recipe.SmithingTransformRecipeJsonBuilderMixin",
-    "recipe.SmithingTrimRecipeJsonBuilderMixin"
+    "recipe.RecipeOutputMixin",
+    "recipe.SpecialRecipeBuilderMixin",
+    "recipe.SmithingTransformRecipeBuilderMixin",
+    "recipe.SmithingTrimRecipeBuilderMixin"
   ],
   "server": [
     "server.MainMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

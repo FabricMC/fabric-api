@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -29,20 +28,21 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.SyncCompletePayload;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPayload;
 
 public final class ClientRegistrySyncHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientRegistrySyncHandler.class);
@@ -50,48 +50,33 @@ public final class ClientRegistrySyncHandler {
 	private ClientRegistrySyncHandler() {
 	}
 
-	public static <T extends RegistryPacketHandler.RegistrySyncPayload> CompletableFuture<Boolean> receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler<T> handler, T payload, boolean accept) {
-		handler.receivePayload(payload);
-
-		if (!handler.isPacketFinished()) {
-			return CompletableFuture.completedFuture(false);
+	public static void receivePacket(RegistrySyncPayload payload, ClientConfigurationNetworking.Context context) {
+		if (!RegistrySyncManager.DEBUG && context.client().isLocalServer()) {
+			context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
+			return;
 		}
 
-		if (RegistrySyncManager.DEBUG) {
-			String handlerName = handler.getClass().getSimpleName();
-			LOGGER.info("{} total packet: {}", handlerName, handler.getTotalPacketReceived());
-			LOGGER.info("{} raw size: {}", handlerName, handler.getRawBufSize());
-			LOGGER.info("{} deflated size: {}", handlerName, handler.getDeflatedBufSize());
-		}
-
-		RegistryPacketHandler.SyncedPacketData data = handler.getSyncedPacketData();
-
-		if (!accept) {
-			return CompletableFuture.completedFuture(true);
-		}
-
-		return executor.submit(() -> {
-			if (data == null) {
-				throw new CompletionException(new RemapException("Received null map in sync packet!"));
-			}
-
+		context.client().execute(() -> {
 			try {
-				apply(data);
-				return true;
-			} catch (RemapException e) {
-				throw new CompletionException(e);
+				apply(payload);
+				context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
+			} catch (Throwable e) {
+				LOGGER.error("Registry remapping failed!", e);
+				context.responseSender().disconnect(getComponent(e));
+				return;
 			}
 		});
 	}
 
-	public static void apply(RegistryPacketHandler.SyncedPacketData data) throws RemapException {
+	@VisibleForTesting
+	public static void apply(RegistrySyncPayload data) throws RemapException {
 		// First check that all of the data provided is valid before making any changes
 		checkRemoteRemap(data);
 
-		for (Map.Entry<Identifier, Object2IntMap<Identifier>> entry : data.idMap().entrySet()) {
+		for (Map.Entry<Identifier, Object2IntMap<Identifier>> entry : data.registryMap().entrySet()) {
 			final Identifier registryId = entry.getKey();
 
-			Registry<?> registry = Registries.REGISTRIES.get(registryId);
+			Registry<?> registry = BuiltInRegistries.REGISTRY.getValue(registryId);
 
 			// Registry was not found on the client, is it optional?
 			// If so we can just ignore it.
@@ -112,14 +97,14 @@ public final class ClientRegistrySyncHandler {
 	}
 
 	@VisibleForTesting
-	public static void checkRemoteRemap(RegistryPacketHandler.SyncedPacketData data) throws RemapException {
-		Map<Identifier, Object2IntMap<Identifier>> map = data.idMap();
+	public static void checkRemoteRemap(RegistrySyncPayload data) throws RemapException {
+		Map<Identifier, Object2IntMap<Identifier>> map = data.registryMap();
 		ArrayList<Identifier> missingRegistries = new ArrayList<>();
 		Map<Identifier, List<Identifier>> missingEntries = new HashMap<>();
 
 		for (Identifier registryId : map.keySet()) {
 			final Object2IntMap<Identifier> remoteRegistry = map.get(registryId);
-			Registry<?> registry = Registries.REGISTRIES.get(registryId);
+			Registry<?> registry = BuiltInRegistries.REGISTRY.getValue(registryId);
 
 			if (registry == null) {
 				if (!isRegistryOptional(registryId, data)) {
@@ -131,8 +116,8 @@ public final class ClientRegistrySyncHandler {
 			}
 
 			for (Identifier remoteId : remoteRegistry.keySet()) {
-				if (!registry.containsId(remoteId)) {
-					// Found a registry entry from the server that is missing on the client
+				if (!registry.containsKey(remoteId)) {
+					// Found a holder from the server that is missing on the client
 					missingEntries.computeIfAbsent(registryId, i -> new ArrayList<>()).add(remoteId);
 				}
 			}
@@ -169,47 +154,47 @@ public final class ClientRegistrySyncHandler {
 		throw new RemapException(missingEntriesError(missingEntries));
 	}
 
-	private static Text missingRegistriesError(List<Identifier> missingRegistries) {
-		MutableText text = Text.empty();
+	private static Component missingRegistriesError(List<Identifier> missingRegistries) {
+		MutableComponent component = Component.empty();
 
 		final int count = missingRegistries.size();
 
 		if (count == 1) {
-			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-registry.title.singular"));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.title.singular"));
 		} else {
-			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-registry.title.plural", count));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.title.plural", count));
 		}
 
-		text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.1").formatted(Formatting.GREEN));
-		text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.2"));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.1").withStyle(ChatFormatting.GREEN));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.2"));
 
 		final int toDisplay = 4;
 
 		for (int i = 0; i < Math.min(missingRegistries.size(), toDisplay); i++) {
-			text = text.append(Text.literal(missingRegistries.get(i).toString()).formatted(Formatting.YELLOW));
-			text = text.append(ScreenTexts.LINE_BREAK);
+			component = component.append(Component.literal(missingRegistries.get(i).toString()).withStyle(ChatFormatting.YELLOW));
+			component = component.append(CommonComponents.NEW_LINE);
 		}
 
 		if (missingRegistries.size() > toDisplay) {
-			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-registry.footer", missingRegistries.size() - toDisplay));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.footer", missingRegistries.size() - toDisplay));
 		}
 
-		return text;
+		return component;
 	}
 
-	private static Text missingEntriesError(Map<Identifier, List<Identifier>> missingEntries) {
-		MutableText text = Text.empty();
+	private static Component missingEntriesError(Map<Identifier, List<Identifier>> missingEntries) {
+		MutableComponent component = Component.empty();
 
 		final int count = missingEntries.values().stream().mapToInt(List::size).sum();
 
 		if (count == 1) {
-			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.title.singular"));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.title.singular"));
 		} else {
-			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.title.plural", count));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.title.plural", count));
 		}
 
-		text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.1").formatted(Formatting.GREEN));
-		text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.2"));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.1").withStyle(ChatFormatting.GREEN));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.2"));
 
 		final int toDisplay = 4;
 		// Get the distinct missing namespaces
@@ -221,19 +206,33 @@ public final class ClientRegistrySyncHandler {
 				.toList();
 
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
-			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
-			text = text.append(ScreenTexts.LINE_BREAK);
+			component = component.append(Component.literal(namespaces.get(i)).withStyle(ChatFormatting.YELLOW));
+			component = component.append(CommonComponents.NEW_LINE);
 		}
 
 		if (namespaces.size() > toDisplay) {
-			text = text.append(Text.translatable("fabric-registry-sync-v0.unknown-remote.footer", namespaces.size() - toDisplay));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.footer", namespaces.size() - toDisplay));
 		}
 
-		return text;
+		return component;
 	}
 
-	private static boolean isRegistryOptional(Identifier registryId, RegistryPacketHandler.SyncedPacketData data) {
-		EnumSet<RegistryAttribute> registryAttributes = data.attributes().get(registryId);
+	private static boolean isRegistryOptional(Identifier registryId, RegistrySyncPayload data) {
+		EnumSet<RegistryAttribute> registryAttributes = data.registryAttributes().get(registryId);
 		return registryAttributes.contains(RegistryAttribute.OPTIONAL);
+	}
+
+	private static Component getComponent(Throwable e) {
+		if (e instanceof RemapException remapException) {
+			final Component component = remapException.getComponent();
+
+			if (component != null) {
+				return component;
+			}
+		} else if (e instanceof CompletionException completionException) {
+			return getComponent(completionException.getCause());
+		}
+
+		return Component.literal("Registry remapping failed: " + e.getMessage());
 	}
 }

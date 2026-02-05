@@ -19,10 +19,10 @@ package net.fabricmc.fabric.api.tag.client.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
 
@@ -70,42 +70,42 @@ public final class ClientTags {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
-		return ClientTagsImpl.getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
+		return ClientTagsImpl.getHolder(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
 	}
 
 	/**
 	 * Checks if an entry is in a tag, for use with entries from a dynamic registry,
-	 * such as {@link net.minecraft.world.biome.Biome}s.
+	 * such as {@link net.minecraft.world.level.biome.Biome}s.
 	 *
 	 * <p>If the synced tag does exist, it is queried. If it does not exist,
 	 * the tag populated from the available mods is checked, recursively checking the
 	 * synced tags and entries contained within.
 	 *
 	 * @param tagKey        the {@code TagKey} to be checked
-	 * @param registryEntry the entry to check
+	 * @param holder the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> holder) {
 		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(registryEntry);
-		return ClientTagsImpl.isInWithLocalFallback(tagKey, registryEntry);
+		Objects.requireNonNull(holder);
+		return ClientTagsImpl.isInWithLocalFallback(tagKey, holder);
 	}
 
 	/**
 	 * Checks if an entry is in a tag provided by the available mods.
 	 *
 	 * @param tagKey      the {@code TagKey} to being checked
-	 * @param registryKey the entry to check
+	 * @param resourceKey the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInLocal(TagKey<T> tagKey, RegistryKey<T> registryKey) {
+	public static <T> boolean isInLocal(TagKey<T> tagKey, ResourceKey<T> resourceKey) {
 		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(registryKey);
+		Objects.requireNonNull(resourceKey);
 
-		if (tagKey.registryRef().getValue().equals(registryKey.getRegistry())) {
+		if (tagKey.registry().identifier().equals(resourceKey.registry())) {
 			// Check local tags
 			Set<Identifier> ids = getOrCreateLocalTag(tagKey);
-			return ids.contains(registryKey.getValue());
+			return ids.contains(resourceKey.identifier());
 		}
 
 		return false;

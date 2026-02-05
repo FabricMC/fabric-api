@@ -18,16 +18,16 @@ package net.fabricmc.fabric.api.loot.v3;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -43,9 +43,9 @@ public final class LootTableEvents {
 	 * This event can be used to replace loot tables.
 	 * If a loot table is replaced, the iteration will stop for that loot table.
 	 */
-	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (key, original, source, registries) -> {
+	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (key, original, source, holder) -> {
 		for (Replace listener : listeners) {
-			@Nullable LootTable replaced = listener.replaceLootTable(key, original, source, registries);
+			@Nullable LootTable replaced = listener.replaceLootTable(key, original, source, holder);
 
 			if (replaced != null) {
 				return replaced;
@@ -62,33 +62,34 @@ public final class LootTableEvents {
 	 * <p>You can also modify loot tables that are created by {@link #REPLACE}.
 	 * They have the loot table source {@link LootTableSource#REPLACED}.
 	 *
-	 * <h2>Example: adding diamonds to the cobblestone loot table</h2>
-	 * We'll add a new diamond {@linkplain net.minecraft.loot.LootPool loot pool} to the cobblestone loot table
+	 * <h4>Example: adding diamonds to the cobblestone loot table</h4>
+	 *
+	 * <p>We'll add a new diamond {@linkplain net.minecraft.world.level.storage.loot.LootPool loot pool} to the cobblestone loot table
 	 * that will be dropped alongside the original cobblestone loot pool.
 	 *
 	 * <p>If you want only one of the items to drop, you can use
 	 * {@link FabricLootTableBuilder#modifyPools(java.util.function.Consumer)} to add the new item to
 	 * the original loot pool instead.
 	 * {@snippet :
-	 * LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
+	 * LootTableEvents.MODIFY.register((key, tableBuilder, source, holder) -> {
 	 *     // If the loot table is for the cobblestone block and it is not overridden by a user:
-	 *     if (Blocks.COBBLESTONE.getLootTableKey() == key && source.isBuiltin()) {
+	 *     if (Blocks.COBBLESTONE.getLootTable() == key && source.isBuiltin()) {
 	 *         // Create a new loot pool that will hold the diamonds.
-	 *         LootPool.Builder pool = LootPool.builder()
+	 *         LootPool.Builder pool = LootPool.lootPool()
 	 *             // Add diamonds...
-	 *             .with(ItemEntry.builder(Items.DIAMOND))
+	 *             .add(LootItem.lootTableItem(Items.DIAMOND))
 	 *             // ...only if the block would survive a potential explosion.
-	 *             .conditionally(SurvivesExplosionLootCondition.builder());
+	 *             .when(ExplosionCondition.survivesExplosion());
 	 *
 	 *         // Add the loot pool to the loot table
-	 *         tableBuilder.pool(pool);
+	 *         tableBuilder.withPool(pool);
 	 *     }
 	 * });
 	 * }
 	 */
-	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source, registries) -> {
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source, holder) -> {
 		for (Modify listener : listeners) {
-			listener.modifyLootTable(key, tableBuilder, source, registries);
+			listener.modifyLootTable(key, tableBuilder, source, holder);
 		}
 	});
 
@@ -106,9 +107,9 @@ public final class LootTableEvents {
 	 * and don't wish to add a custom loot function to every table.
 	 * <br/>Note: if the table was requested to separate drops into stacks of a given size, the resulting drops from this event will be separated.
 	 */
-	public static final Event<ModifyDrops> MODIFY_DROPS = EventFactory.createArrayBacked(ModifyDrops.class, listeners -> (entry, context, drops) -> {
+	public static final Event<ModifyDrops> MODIFY_DROPS = EventFactory.createArrayBacked(ModifyDrops.class, listeners -> (holder, context, drops) -> {
 		for (ModifyDrops listener : listeners) {
-			listener.modifyLootTableDrops(entry, context, drops);
+			listener.modifyLootTableDrops(holder, context, drops);
 		}
 	});
 
@@ -120,11 +121,11 @@ public final class LootTableEvents {
 		 * @param key              the loot table key
 		 * @param original        the original loot table
 		 * @param source          the source of the original loot table
-		 * @param registries      the registry wrapper lookup
+		 * @param holder      the holder lookup
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
-		LootTable replaceLootTable(RegistryKey<LootTable> key, LootTable original, LootTableSource source, RegistryWrapper.WrapperLookup registries);
+		LootTable replaceLootTable(ResourceKey<LootTable> key, LootTable original, LootTableSource source, HolderLookup.Provider holder);
 	}
 
 	@FunctionalInterface
@@ -135,9 +136,9 @@ public final class LootTableEvents {
 		 * @param key              the loot table key
 		 * @param tableBuilder    a builder of the loot table being loaded
 		 * @param source          the source of the loot table
-		 * @param registries      the registry wrapper lookup
+		 * @param holder      the holder lookup
 		 */
-		void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, RegistryWrapper.WrapperLookup registries);
+		void modifyLootTable(ResourceKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, HolderLookup.Provider holder);
 	}
 
 	@FunctionalInterface
@@ -155,10 +156,10 @@ public final class LootTableEvents {
 	public interface ModifyDrops {
 		/**
 		 * Called after a loot table is finished generating drops to modify drops.
-		 * @param entry the loot table's registry entry. This will be a {@link RegistryEntry.Reference} if the lootTable is registered, or a {@link RegistryEntry.Direct} if the table is inline
+		 * @param holder the loot table's registry holder. This will be a {@link Holder.Reference} if the lootTable is registered, or a {@link Holder.Direct} if the table is inline
 		 * @param context the loot context for the current drops
 		 * @param drops the list of drops from the loot table to modify
 		 */
-		void modifyLootTableDrops(RegistryEntry<LootTable> entry, LootContext context, List<ItemStack> drops);
+		void modifyLootTableDrops(Holder<LootTable> holder, LootContext context, List<ItemStack> drops);
 	}
 }

@@ -20,30 +20,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourcePackSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
-import net.fabricmc.fabric.impl.resource.loader.BuiltinModResourcePackSource;
-import net.fabricmc.fabric.impl.resource.loader.FabricResource;
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
+import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 public final class LootUtil {
 	public static final ThreadLocal<Map<Identifier, LootTableSource>> SOURCES = ThreadLocal.withInitial(HashMap::new);
 
 	public static LootTableSource determineSource(Resource resource) {
 		if (resource != null) {
-			ResourcePackSource packSource = ((FabricResource) resource).getFabricPackSource();
+			PackSource packSource = resource.getFabricPackSource();
 
-			if (packSource == ResourcePackSource.BUILTIN) {
+			if (packSource == PackSource.BUILT_IN) {
 				return LootTableSource.VANILLA;
-			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModResourcePackSource) {
+			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModPackSource) {
 				return LootTableSource.MOD;
 			}
 		}
@@ -54,21 +53,21 @@ public final class LootUtil {
 		return LootTableSource.DATA_PACK;
 	}
 
-	public static RegistryEntry<LootTable> getEntryOrDirect(ServerWorld world, LootTable table) {
-		RegistryWrapper.WrapperLookup wrapperLookup = world
+	public static Holder<LootTable> getEntryOrDirect(ServerLevel level, LootTable table) {
+		HolderLookup.Provider provider = level
 				.getServer()
-				.getReloadableRegistries()
-				.createRegistryLookup();
+				.reloadableRegistries()
+				.lookup();
 
-		RegistryWrapper<LootTable> lootTableRegistryWrapper = wrapperLookup
-				.getOptional(RegistryKeys.LOOT_TABLE)
-				.orElseThrow(() -> new IllegalStateException("Failed to fetch LootTable wrapper from WrapperLookup"));
+		HolderLookup<LootTable> lootTableHolderLookup = provider
+				.lookup(Registries.LOOT_TABLE)
+				.orElseThrow(() -> new IllegalStateException("Failed to fetch LootTable provider from HolderLookup.Provider"));
 
-		return lootTableRegistryWrapper
-				.streamEntries()
+		return lootTableHolderLookup
+				.listElements()
 				.filter(it -> it.value().equals(table))
 				.findFirst()
-				.map(Function.<RegistryEntry<LootTable>>identity())
-				.orElseGet(() -> RegistryEntry.of(table));
+				.map(Function.<Holder<LootTable>>identity())
+				.orElseGet(() -> Holder.direct(table));
 	}
 }

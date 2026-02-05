@@ -19,9 +19,9 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
-    "fabric-resource-loader-v0": "*"
+    "fabric-resource-loader-v1": "*"
   },
   "entrypoints": {
     "main": [
@@ -32,7 +32,7 @@
   "mixins": [
     "fabric-tag-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-tag-api-v1.accesswidener",
+  "accessWidener": "fabric-tag-api-v1.classtweaker",
   "custom": {
     "loom:injected_interfaces": {
       "net/minecraft/class_91": [

@@ -22,26 +22,26 @@ import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.Potions;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -60,7 +60,7 @@ class FluidItemTests extends AbstractTransferApiTest {
 	public void testFluidItemApi() {
 		FluidVariant water = FluidVariant.of(Fluids.WATER);
 		ItemVariant waterBucket = ItemVariant.of(Items.WATER_BUCKET);
-		Inventory testInventory = new FluidItemTestInventory(ItemStack.EMPTY, new ItemStack(Items.BUCKET), new ItemStack(Items.WATER_BUCKET));
+		Container testInventory = new FluidItemTestInventory(ItemStack.EMPTY, new ItemStack(Items.BUCKET), new ItemStack(Items.WATER_BUCKET));
 
 		Storage<FluidVariant> slot1Storage = new InventoryContainerItem(testInventory, 1).find(FluidStorage.ITEM);
 		Storage<FluidVariant> slot2Storage = new InventoryContainerItem(testInventory, 2).find(FluidStorage.ITEM);
@@ -71,50 +71,50 @@ class FluidItemTests extends AbstractTransferApiTest {
 			// Test extract.
 			if (slot2Storage.extract(water, BUCKET, transaction) != BUCKET) throw new AssertionError("Should have extracted from full bucket.");
 			// Test that an empty bucket was added.
-			if (!stackEquals(testInventory.getStack(1), Items.BUCKET, 2)) throw new AssertionError("Buckets should have stacked.");
+			if (!stackEquals(testInventory.getItem(1), Items.BUCKET, 2)) throw new AssertionError("Buckets should have stacked.");
 			// Test that we can't extract again
 			if (slot2Storage.extract(water, BUCKET, transaction) != 0) throw new AssertionError("Should not have extracted a second time.");
 			// Now insert water into slot 1.
 			if (slot1Storage.insert(water, BUCKET, transaction) != BUCKET) throw new AssertionError("Failed to insert.");
 			// Check that it filled slot 0.
-			if (!stackEquals(testInventory.getStack(0), Items.WATER_BUCKET, 1)) throw new AssertionError("Should have filled slot 0.");
+			if (!stackEquals(testInventory.getItem(0), Items.WATER_BUCKET, 1)) throw new AssertionError("Should have filled slot 0.");
 			// Now we yeet the bucket just because we can.
-			SingleSlotStorage<ItemVariant> slot0 = InventoryStorage.of(testInventory, null).getSlots().get(0);
+			SingleSlotStorage<ItemVariant> slot0 = ContainerStorage.of(testInventory, null).getSlots().get(0);
 			if (slot0.extract(waterBucket, 1, transaction) != 1) throw new AssertionError("Failed to yeet bucket.");
 			// Now insert should fill slot 1 with a bucket.
 			if (slot1Storage.insert(water, BUCKET, transaction) != BUCKET) throw new AssertionError("Failed to insert.");
 			// Check inventory contents.
-			if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
-			if (!stackEquals(testInventory.getStack(1), Items.WATER_BUCKET, 1)) throw new AssertionError("Should have filled slot 1 with a water bucket.");
+			if (!testInventory.getItem(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
+			if (!stackEquals(testInventory.getItem(1), Items.WATER_BUCKET, 1)) throw new AssertionError("Should have filled slot 1 with a water bucket.");
 		}
 
 		// Check contents after abort
-		if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Failed to abort slot 0.");
-		if (!stackEquals(testInventory.getStack(1), Items.BUCKET, 1)) throw new AssertionError("Failed to abort slot 1.");
-		if (!stackEquals(testInventory.getStack(2), Items.WATER_BUCKET, 1)) throw new AssertionError("Failed to abort slot 2.");
+		if (!testInventory.getItem(0).isEmpty()) throw new AssertionError("Failed to abort slot 0.");
+		if (!stackEquals(testInventory.getItem(1), Items.BUCKET, 1)) throw new AssertionError("Failed to abort slot 1.");
+		if (!stackEquals(testInventory.getItem(2), Items.WATER_BUCKET, 1)) throw new AssertionError("Failed to abort slot 2.");
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {
 		return stack.getItem() == item && stack.getCount() == count;
 	}
 
-	private static class FluidItemTestInventory extends SimpleInventory {
+	private static class FluidItemTestInventory extends SimpleContainer {
 		FluidItemTestInventory(ItemStack... stacks) {
 			super(stacks);
 		}
 
 		@Override
-		public boolean isValid(int slot, ItemStack stack) {
+		public boolean canPlaceItem(int slot, ItemStack stack) {
 			return slot != 2; // Forbid insertion into slot 2.
 		}
 	}
 
 	private static class InventoryContainerItem implements ContainerItemContext {
-		private final InventoryStorage inventory;
+		private final ContainerStorage inventory;
 		private final SingleSlotStorage<ItemVariant> slot;
 
-		InventoryContainerItem(Inventory inv, int slotIndex) {
-			this.inventory = InventoryStorage.of(inv, null);
+		InventoryContainerItem(Container inv, int slotIndex) {
+			this.inventory = ContainerStorage.of(inv, null);
 			this.slot = inventory.getSlots().get(slotIndex);
 		}
 
@@ -146,7 +146,7 @@ class FluidItemTests extends AbstractTransferApiTest {
 	@Test
 	public void testWaterPotion() {
 		FluidVariant water = FluidVariant.of(Fluids.WATER);
-		Inventory testInventory = new SimpleInventory(new ItemStack(Items.GLASS_BOTTLE));
+		Container testInventory = new SimpleContainer(new ItemStack(Items.GLASS_BOTTLE));
 
 		// Try to fill empty potion
 		Storage<FluidVariant> emptyBottleStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
@@ -156,7 +156,7 @@ class FluidItemTests extends AbstractTransferApiTest {
 			transaction.commit();
 		}
 
-		if (getPotion(testInventory.getStack(0)) != Potions.WATER) throw new AssertionError("Expected water potion.");
+		if (getPotion(testInventory.getItem(0)) != Potions.WATER) throw new AssertionError("Expected water potion.");
 
 		// Try to empty from water potion
 		Storage<FluidVariant> waterBottleStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
@@ -167,7 +167,7 @@ class FluidItemTests extends AbstractTransferApiTest {
 		}
 
 		// Make sure extraction nothing is returned for other potions
-		setPotion(testInventory.getStack(0), Potions.LUCK);
+		setPotion(testInventory.getItem(0), Potions.LUCK);
 		Storage<FluidVariant> luckyStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
 
 		if (StorageUtil.findStoredResource(luckyStorage) != null) {
@@ -175,7 +175,7 @@ class FluidItemTests extends AbstractTransferApiTest {
 		}
 
 		// Make sure extraction returns nothing for no potion at all
-		testInventory.setStack(0, new ItemStack(Items.POTION));
+		testInventory.setItem(0, new ItemStack(Items.POTION));
 		Storage<FluidVariant> defaultStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
 
 		if (StorageUtil.findStoredResource(defaultStorage) != null) {
@@ -210,11 +210,11 @@ class FluidItemTests extends AbstractTransferApiTest {
 	}
 
 	@Nullable
-	public static RegistryEntry<Potion> getPotion(ItemStack stack) {
-		return stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion().orElse(null);
+	public static Holder<Potion> getPotion(ItemStack stack) {
+		return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion().orElse(null);
 	}
 
-	public static void setPotion(ItemStack itemStack, RegistryEntry<Potion> potion) {
-		itemStack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(potion));
+	public static void setPotion(ItemStack itemStack, Holder<Potion> potion) {
+		itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
 	}
 }

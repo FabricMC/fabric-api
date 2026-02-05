@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -31,34 +31,34 @@ public final class ClientPlayConnectionEvents {
 	/**
 	 * Event indicating a connection entered the PLAY state, ready for registering channel handlers.
 	 *
-	 * @see ClientPlayNetworking#registerReceiver(CustomPayload.Id, ClientPlayNetworking.PlayPayloadHandler)
+	 * @see ClientPlayNetworking#registerReceiver(CustomPacketPayload.Type, ClientPlayNetworking.PlayPayloadHandler)
 	 */
-	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, client) -> {
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, client) -> {
 		for (Init callback : callbacks) {
-			callback.onPlayInit(handler, client);
+			callback.onPlayInit(listener, client);
 		}
 	});
 
 	/**
-	 * An event for notification when the client play network handler is ready to send packets to the server.
+	 * An event for notification when the client play packet listener is ready to send packets to the server.
 	 *
-	 * <p>At this stage, the network handler is ready to send packets to the server.
+	 * <p>At this stage, the packet listener is ready to send packets to the server.
 	 * Since the client's local state has been set up.
 	 */
-	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (handler, sender, client) -> {
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (listener, sender, client) -> {
 		for (Join callback : callbacks) {
-			callback.onPlayReady(handler, sender, client);
+			callback.onPlayReady(listener, sender, client);
 		}
 	});
 
 	/**
-	 * An event for the disconnection of the client play network handler.
+	 * An event for the disconnection of the client play packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, client) -> {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, client) -> {
 		for (Disconnect callback : callbacks) {
-			callback.onPlayDisconnect(handler, client);
+			callback.onPlayDisconnect(listener, client);
 		}
 	});
 
@@ -67,16 +67,16 @@ public final class ClientPlayConnectionEvents {
 
 	@FunctionalInterface
 	public interface Init {
-		void onPlayInit(ClientPlayNetworkHandler handler, MinecraftClient client);
+		void onPlayInit(ClientPacketListener listener, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Join {
-		void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
+		void onPlayReady(ClientPacketListener listener, PacketSender sender, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Disconnect {
-		void onPlayDisconnect(ClientPlayNetworkHandler handler, MinecraftClient client);
+		void onPlayDisconnect(ClientPacketListener listener, Minecraft client);
 	}
 }

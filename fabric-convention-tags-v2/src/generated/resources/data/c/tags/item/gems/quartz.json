@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:quartz",
-    {
-      "id": "#c:quartz",
-      "required": false
-    }
+    "minecraft:quartz"
   ]
 }

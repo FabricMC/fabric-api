@@ -16,14 +16,18 @@
 
 package net.fabricmc.fabric.api.block.v1;
 
-import org.jetbrains.annotations.Nullable;
+import java.util.Objects;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.World;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * General-purpose Fabric-provided extensions for {@link Block} subclasses.
@@ -46,12 +50,12 @@ public interface FabricBlock {
 	 * identified by the optional {@code sourcePos} and {@code sourceState} parameters.
 	 *
 	 * <p>When a block changes appearance, it should trigger a chunk remesh for itself and the adjacent blocks,
-	 * for example by calling {@link World#updateListeners}.
+	 * for example by calling {@link Level#sendBlockUpdated}.
 	 *
 	 * <p>Note: Overriding this method for a block does <strong>not</strong> change how it renders.
 	 * It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.
 	 *
-	 * <h3>Implementation guidelines</h3>
+	 * <h4>Implementation guidelines</h4>
 	 *
 	 * <p>This can be called on the server, where block entity data can be safely accessed,
 	 * and on the client, possibly in a meshing thread, where block entity data is not safe to access!
@@ -59,10 +63,10 @@ public interface FabricBlock {
 	 * The block entity should override {@code RenderDataBlockEntity#getBlockEntityRenderData} to return
 	 * the necessary data. Refer to the documentation of {@code RenderDataBlockEntity} for more information.
 	 * <pre>{@code @Override
-	 * public BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
-	 *     if (renderView instanceof ServerWorld serverWorld) {
+	 * public BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	 *     if (blockAndTintGetter instanceof ServerLevel serverLevel) {
 	 *         // Server side; ok to use block entity directly!
-	 *         BlockEntity blockEntity = serverWorld.getBlockEntity(pos);
+	 *         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
 	 *
 	 *         if (blockEntity instanceof ...) {
 	 *             // Get data from block entity
@@ -70,7 +74,7 @@ public interface FabricBlock {
 	 *         }
 	 *     } else {
 	 *         // Client side; need to use the block entity render data!
-	 *         Object data = renderView.getBlockEntityRenderData(pos);
+	 *         Object data = blockAndTintGetter.getBlockEntityRenderData(pos);
 	 *
 	 *         // Check if data is not null and of the correct type, and use that to determine the appearance
 	 *         if (data instanceof ...) {
@@ -90,15 +94,40 @@ public interface FabricBlock {
 	 * });
 	 * }</pre>
 	 *
-	 * @param state       state of this block, whose appearance is being queried
-	 * @param renderView  the world this block is in
-	 * @param pos         position of this block, whose appearance is being queried
-	 * @param side        the side for which the appearance is being queried
-	 * @param sourceState (optional) state of the block that is querying the appearance, or null if unknown
-	 * @param sourcePos   (optional) position of the block that is querying the appearance, or null if unknown
+	 * @param state       			state of this block, whose appearance is being queried
+	 * @param blockAndTintGetter  	the level this block is in
+	 * @param pos			        position of this block, whose appearance is being queried
+	 * @param side       			the side for which the appearance is being queried
+	 * @param sourceState 			(optional) state of the block that is querying the appearance, or null if unknown
+	 * @param sourcePos   			(optional) position of the block that is querying the appearance, or null if unknown
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 */
-	default BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	default BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
+	}
+
+	/**
+	 * Fabric-provided extensions for {@link BlockBehaviour.Properties}.
+	 * This interface is automatically implemented on all block properties via Mixin and interface injection.
+	 */
+	interface FabricProperties {
+		/**
+		 * Return the id of block that was defined by {@link BlockBehaviour.Properties#setId}.
+		 *
+		 * @return currently stored block id or null, if not set
+		 */
+		default @Nullable ResourceKey<Block> blockId() {
+			throw new AssertionError("Implemented in Mixin");
+		}
+
+		/**
+		 * Return the id of block that was defined by {@link BlockBehaviour.Properties#setId}.
+		 *
+		 * @return currently stored block id
+		 * @throws NullPointerException if id is not set
+		 */
+		default ResourceKey<Block> blockIdOrThrow() {
+			return Objects.requireNonNull(this.blockId(), "Block id not set");
+		}
 	}
 }

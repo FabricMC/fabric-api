@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:string",
-    {
-      "id": "#c:string",
-      "required": false
-    }
+    "minecraft:string"
   ]
 }

@@ -31,12 +31,12 @@
     }
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-api-base": "*"
   },
   "description": "Events for the game's lifecycle.",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener": "fabric-lifecycle-events-v1.accesswidener"
+  "accessWidener": "fabric-lifecycle-events-v1.classtweaker"
 }

@@ -24,12 +24,12 @@ import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenCustomHashMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.test.transfer.TestUtil;
@@ -45,7 +45,7 @@ public class UnderlyingViewTests extends AbstractTransferApiTest {
 	 */
 	@Test
 	public void testFurnaceSides() {
-		FurnaceBlockEntity furnace = new FurnaceBlockEntity(BlockPos.ORIGIN, Blocks.FURNACE.getDefaultState());
+		FurnaceBlockEntity furnace = new FurnaceBlockEntity(BlockPos.ZERO, Blocks.FURNACE.defaultBlockState());
 
 		Set<StorageView<ItemVariant>> viewSet = Collections.newSetFromMap(new Reference2ReferenceOpenCustomHashMap<>(new Hash.Strategy<>() {
 			@Override
@@ -60,7 +60,7 @@ public class UnderlyingViewTests extends AbstractTransferApiTest {
 		}));
 
 		for (Direction direction : Direction.values()) {
-			viewSet.addAll(InventoryStorage.of(furnace, direction).getSlots());
+			viewSet.addAll(ContainerStorage.of(furnace, direction).getSlots());
 		}
 
 		TestUtil.assertEquals(3, viewSet.size());

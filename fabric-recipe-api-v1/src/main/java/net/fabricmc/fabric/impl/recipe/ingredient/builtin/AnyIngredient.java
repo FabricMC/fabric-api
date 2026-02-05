@@ -21,11 +21,11 @@ import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
@@ -36,7 +36,7 @@ public class AnyIngredient extends CombinedIngredient {
 			.xmap(AnyIngredient::new, AnyIngredient::getIngredients);
 
 	public static final CustomIngredientSerializer<AnyIngredient> SERIALIZER =
-			new CombinedIngredient.Serializer<>(Identifier.of("fabric", "any"), AnyIngredient::new, CODEC);
+			new CombinedIngredient.Serializer<>(Identifier.fromNamespaceAndPath("fabric", "any"), AnyIngredient::new, CODEC);
 
 	public AnyIngredient(List<Ingredient> ingredients) {
 		super(ingredients);
@@ -54,9 +54,9 @@ public class AnyIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public Stream<RegistryEntry<Item>> getMatchingItems() {
+	public Stream<Holder<Item>> items() {
 		return ingredients.stream()
-				.flatMap(Ingredient::getMatchingItems);
+				.flatMap(Ingredient::items);
 	}
 
 	@Override

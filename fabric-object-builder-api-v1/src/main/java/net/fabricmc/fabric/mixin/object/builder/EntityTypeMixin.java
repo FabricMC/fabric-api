@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityType;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
 
@@ -36,14 +36,14 @@ public abstract class EntityTypeMixin implements FabricEntityTypeImpl {
 	@Nullable
 	private Boolean canPotentiallyExecuteCommands;
 
-	@Inject(method = "alwaysUpdateVelocity", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "trackDeltas", at = @At("HEAD"), cancellable = true)
 	public void onAlwaysUpdateVelocity(CallbackInfoReturnable<Boolean> cir) {
 		if (alwaysUpdateVelocity != null) {
 			cir.setReturnValue(alwaysUpdateVelocity);
 		}
 	}
 
-	@Inject(method = "canPotentiallyExecuteCommands", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "onlyOpCanSetNbt", at = @At("HEAD"), cancellable = true)
 	public void onCanPotentiallyExecuteCommands(CallbackInfoReturnable<Boolean> cir) {
 		if (canPotentiallyExecuteCommands != null) {
 			cir.setReturnValue(canPotentiallyExecuteCommands);

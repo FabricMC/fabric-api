@@ -16,26 +16,26 @@
 
 package net.fabricmc.fabric.test.rendering;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.api.ModInitializer;
 
 public class CustomColorResolverTestInit implements ModInitializer {
-	public static final RegistryKey<Block> KEY = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of("fabric-rendering-v1-testmod", "custom_color_block"));
-	public static final Block CUSTOM_COLOR_BLOCK = new Block(AbstractBlock.Settings.create().registryKey(KEY));
-	public static final Item CUSTOM_COLOR_BLOCK_ITEM = new BlockItem(CUSTOM_COLOR_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, KEY.getValue())));
+	public static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "custom_color_block"));
+	public static final Block CUSTOM_COLOR_BLOCK = new Block(BlockBehaviour.Properties.of().setId(KEY));
+	public static final Item CUSTOM_COLOR_BLOCK_ITEM = new BlockItem(CUSTOM_COLOR_BLOCK, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, KEY.identifier())));
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.BLOCK, KEY, CUSTOM_COLOR_BLOCK);
-		Registry.register(Registries.ITEM, KEY.getValue(), CUSTOM_COLOR_BLOCK_ITEM);
+		Registry.register(BuiltInRegistries.BLOCK, KEY, CUSTOM_COLOR_BLOCK);
+		Registry.register(BuiltInRegistries.ITEM, KEY.identifier(), CUSTOM_COLOR_BLOCK_ITEM);
 	}
 }

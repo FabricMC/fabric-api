@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.test.command;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
@@ -37,9 +37,9 @@ public class CustomArgumentTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ArgumentTypeRegistry.registerArgumentType(Identifier.of("fabric-command-test", "smiley"), SmileyArgumentType.class, ConstantArgumentSerializer.of(SmileyArgumentType::smiley));
+		ArgumentTypeRegistry.registerArgumentType(Identifier.fromNamespaceAndPath("fabric-command-test", "smiley"), SmileyArgumentType.class, SingletonArgumentInfo.contextFree(SmileyArgumentType::smiley));
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
 			dispatcher.register(
 					literal("fabric_custom_argument_test").then(
 							argument(ARG_NAME, SmileyArgumentType.smiley())
@@ -47,13 +47,13 @@ public class CustomArgumentTest implements ModInitializer {
 		});
 	}
 
-	private static int executeSmileyCommand(CommandContext<ServerCommandSource> context) {
+	private static int executeSmileyCommand(CommandContext<CommandSourceStack> context) {
 		SmileyArgument smiley = context.getArgument(ARG_NAME, SmileyArgument.class);
 		String feedback = switch (smiley) {
 		case SAD -> "Oh no, here is a heart: <3";
 		case HAPPY -> "Nice to see that you are having a good day :)";
 		};
-		context.getSource().sendFeedback(() -> Text.literal(feedback), false);
+		context.getSource().sendSuccess(() -> Component.literal(feedback), false);
 
 		return 1;
 	}

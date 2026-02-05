@@ -19,14 +19,14 @@ package net.fabricmc.fabric.test.networking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public final class NetworkingTestmods {
 	public static final String ID = "fabric-networking-api-v1-testmod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
 	public static Identifier id(String name) {
-		return Identifier.of(ID, name);
+		return Identifier.fromNamespaceAndPath(ID, name);
 	}
 
 	private NetworkingTestmods() {

@@ -19,12 +19,12 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.impl.transfer.VariantCodecs;
@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 /**
  * An immutable association of a still fluid and data components.
  *
- * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, ComponentChanges)} to create instances.
+ * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, DataComponentPatch)} to create instances.
  *
  * <p>{@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering} can be used for client-side rendering of fluid variants.
  *
@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
 	Codec<FluidVariant> CODEC = VariantCodecs.FLUID_CODEC;
-	PacketCodec<RegistryByteBuf, FluidVariant> PACKET_CODEC = VariantCodecs.FLUID_PACKET_CODEC;
+	StreamCodec<RegistryFriendlyByteBuf, FluidVariant> PACKET_CODEC = VariantCodecs.FLUID_PACKET_CODEC;
 
 	/**
 	 * Retrieve a blank FluidVariant.
@@ -55,22 +55,22 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	/**
 	 * Retrieve a FluidVariant with a fluid, and a {@code null} tag.
 	 *
-	 * <p>The flowing and still variations of {@linkplain net.minecraft.fluid.FlowableFluid flowable fluids}
+	 * <p>The flowing and still variations of {@linkplain net.minecraft.world.level.material.FlowingFluid flowing fluids}
 	 * are normalized to always refer to the still variant. For example,
 	 * {@code FluidVariant.of(Fluids.FLOWING_WATER).getFluid() == Fluids.WATER}.
 	 */
 	static FluidVariant of(Fluid fluid) {
-		return of(fluid, ComponentChanges.EMPTY);
+		return of(fluid, DataComponentPatch.EMPTY);
 	}
 
 	/**
 	 * Retrieve a FluidVariant with a fluid, and an optional tag.
 	 *
-	 * <p>The flowing and still variations of {@linkplain net.minecraft.fluid.FlowableFluid flowable fluids}
+	 * <p>The flowing and still variations of {@linkplain net.minecraft.world.level.material.FlowingFluid flowing fluids}
 	 * are normalized to always refer to the still fluid. For example,
-	 * {@code FluidVariant.of(Fluids.FLOWING_WATER, ComponentChanges.EMPTY).getFluid() == Fluids.WATER}.
+	 * {@code FluidVariant.of(Fluids.FLOWING_WATER, DataComponentPatch.EMPTY).getFluid() == Fluids.WATER}.
 	 */
-	static FluidVariant of(Fluid fluid, ComponentChanges components) {
+	static FluidVariant of(Fluid fluid, DataComponentPatch components) {
 		return FluidVariantImpl.of(fluid, components);
 	}
 
@@ -81,15 +81,16 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 		return getObject();
 	}
 
-	default RegistryEntry<Fluid> getRegistryEntry() {
-		return getFluid().getRegistryEntry();
+	@Override
+	default Holder<Fluid> typeHolder() {
+		return getFluid().builtInRegistryHolder();
 	}
 
 	/**
-	 * Creates a copy of this FluidVariant with the provided component changes applied.
-	 * @param changes the changes to apply
-	 * @return the new variant with the changes applied
+	 * Creates a copy of this FluidVariant with the provided component patch applied.
+	 * @param patch the patch to apply
+	 * @return the new variant with the patch applied
 	 */
 	@Override
-	FluidVariant withComponentChanges(ComponentChanges changes);
+	FluidVariant withComponents(DataComponentPatch patch);
 }

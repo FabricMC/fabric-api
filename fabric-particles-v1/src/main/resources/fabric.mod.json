@@ -16,15 +16,15 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-networking-api-v1": "*"
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.particle.ExtendedBlockStateParticleEffectSync"
+	    "net.fabricmc.fabric.impl.particle.ExtendedBlockParticleOptionSync"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.client.particle.ExtendedBlockStateParticleEffectSyncClient"
+	    "net.fabricmc.fabric.impl.client.particle.ExtendedBlockParticleOptionSyncClient"
     ]
   },
   "description": "Hooks for registering custom particles.",
@@ -36,10 +36,7 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2388": ["net/fabricmc/fabric/api/particle/v1/FabricBlockStateParticleEffect"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener": "fabric-particles-v1.accesswidener"
+  "accessWidener": "fabric-particles-v1.classtweaker"
 }

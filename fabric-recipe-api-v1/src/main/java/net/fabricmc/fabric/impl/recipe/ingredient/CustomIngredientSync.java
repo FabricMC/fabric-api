@@ -19,17 +19,17 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.minecraft.network.handler.EncoderHandler;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.network.ConfigurationTask;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
-import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
+import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
 
 /**
  * To reasonably support server-side only custom ingredients, we only send custom ingredients to clients that support them.
@@ -38,27 +38,27 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
  *
  * <ul>
  *     <li>Each client sends a packet with the set of custom ingredients it supports.</li>
- *     <li>We store that set inside the {@link EncoderHandler} using {@link EncoderHandlerMixin}.</li>
- *     <li>When serializing a custom ingredient, we get access to the current {@link EncoderHandler},
+ *     <li>We store that set inside the {@link PacketEncoder} using {@link PacketEncoderMixin}.</li>
+ *     <li>When serializing a custom ingredient, we get access to the current {@link PacketEncoder},
  *     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.</li>
  * </ul>
  */
 public class CustomIngredientSync implements ModInitializer {
-	public static final Identifier PACKET_ID = Identifier.of("fabric", "custom_ingredient_sync");
+	public static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "custom_ingredient_sync");
 	public static final int PROTOCOL_VERSION_1 = 1;
 	public static final ThreadLocal<Set<Identifier>> CURRENT_SUPPORTED_INGREDIENTS = new ThreadLocal<>();
 
-	public static CustomIngredientPayloadC2S createResponsePayload(int serverProtocolVersion) {
+	public static ServerboundCustomIngredientPayload createResponsePayload(int serverProtocolVersion) {
 		if (serverProtocolVersion < PROTOCOL_VERSION_1) {
 			// Not supposed to happen - notify the server that we didn't understand the query.
 			return null;
 		}
 
 		// Always send protocol 1 - the server should support it even if it supports more recent protocols.
-		return new CustomIngredientPayloadC2S(PROTOCOL_VERSION_1, CustomIngredientImpl.REGISTERED_SERIALIZERS.keySet());
+		return new ServerboundCustomIngredientPayload(PROTOCOL_VERSION_1, CustomIngredientImpl.REGISTERED_SERIALIZERS.keySet());
 	}
 
-	public static Set<Identifier> decodeResponsePayload(CustomIngredientPayloadC2S payload) {
+	public static Set<Identifier> decodeResponsePayload(ServerboundCustomIngredientPayload payload) {
 		int protocolVersion = payload.protocolVersion();
 		switch (protocolVersion) {
 		case PROTOCOL_VERSION_1 -> {
@@ -75,10 +75,10 @@ public class CustomIngredientSync implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configurationC2S()
-				.register(CustomIngredientPayloadC2S.ID, CustomIngredientPayloadC2S.CODEC);
-		PayloadTypeRegistry.configurationS2C()
-				.register(CustomIngredientPayloadS2C.ID, CustomIngredientPayloadS2C.CODEC);
+		PayloadTypeRegistry.serverboundConfiguration()
+				.register(ServerboundCustomIngredientPayload.TYPE, ServerboundCustomIngredientPayload.CODEC);
+		PayloadTypeRegistry.clientboundConfiguration()
+				.register(ClientboundCustomIngredientPayload.TYPE, ClientboundCustomIngredientPayload.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			if (ServerConfigurationNetworking.canSend(handler, PACKET_ID)) {
@@ -86,25 +86,25 @@ public class CustomIngredientSync implements ModInitializer {
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, context) -> {
+		ServerConfigurationNetworking.registerGlobalReceiver(ServerboundCustomIngredientPayload.TYPE, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			((SupportedIngredientsClientConnection) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
-			context.networkHandler().completeTask(IngredientSyncTask.KEY);
+			((SupportedIngredientsConnection) ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
+			context.packetListener().completeTask(IngredientSyncTask.KEY);
 		});
 	}
 
-	private record IngredientSyncTask() implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key(PACKET_ID.toString());
+	private record IngredientSyncTask() implements ConfigurationTask {
+		public static final Type KEY = new Type(PACKET_ID.toString());
 
 		@Override
-		public void sendPacket(Consumer<Packet<?>> sender) {
+		public void start(Consumer<Packet<?>> sender) {
 			// Send packet with 1 so the client can send us back the list of supported tags.
 			// 1 is sent in case we need a different protocol later for some reason.
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(new CustomIngredientPayloadS2C(PROTOCOL_VERSION_1)));
+			sender.accept(ServerConfigurationNetworking.createClientboundPacket(new ClientboundCustomIngredientPayload(PROTOCOL_VERSION_1)));
 		}
 
 		@Override
-		public Key getKey() {
+		public Type type() {
 			return KEY;
 		}
 	}

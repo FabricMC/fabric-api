@@ -1,0 +1,7 @@
+{
+  "message_id": "generic",
+  "exhaustion": 10,
+  "scaling": "never",
+  "effects": "thorns",
+  "death_message_type": "intentional_game_design"
+}

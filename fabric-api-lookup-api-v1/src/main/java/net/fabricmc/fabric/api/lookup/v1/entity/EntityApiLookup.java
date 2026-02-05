@@ -19,11 +19,11 @@ package net.fabricmc.fabric.api.lookup.v1.entity;
 import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 
 import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
 
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * <p>When trying to {@link #find} an API for an entity, the provider registered for the entity type will be queried if it exists.
  * If it doesn't exist, or if it returns {@code null}, the fallback providers will be queried in order.
  *
- * <h3>Usage Example</h3>
+ * <h2>Usage Example</h2>
  * Let's pretend that we have the following interface that we want to attach to entities.
  * <pre>{@code
  * public interface Leveled {
@@ -45,7 +45,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * <p>We need to create the EntityApiLookup. We don't need any context so we use {@link Void}.
  * <pre>{@code
  * public class MyApi {
- *     public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.of("mymod", "leveled_entity"), Leveled.class, Void.class);
+ *     public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.fromNamespaceAndPath("modid", "leveled_entity"), Leveled.class, Void.class);
  * }
  * }</pre>
  *
@@ -54,20 +54,20 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * Leveled leveled = MyApi.LEVELED_ENTITY.find(entity, null);
  * if (leveled != null) {
  *     // Do something with the API.
- *     System.out.println("Entity " + entity.getEntityName() + " is level " + leveled.getLevel());
+ *     System.out.println("Entity " + entity.getScoreboardName() + " is level " + leveled.getLevel());
  * }
  * }</pre>
  *
  * <p>For query to return useful result, we must expose the API.
  * <pre>{@code
  * // If the entity directly implements the interface, registerSelf can be used.
- * public class LeveledPigEntity extends PigEntity implements Leveled {
+ * public class LeveledPig extends Pig implements Leveled {
  *     ...
  * }
  * MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);
  *
  * // Otherwise, registerForType can be used.
- * MyApi.LEVELED_ENTITY.registerForType((zombieEntity, ignored) -> {
+ * MyApi.LEVELED_ENTITY.registerForType((zombie, ignored) -> {
  *     // Return a Leveled instance for your entity here, or null if there's none.
  *     // The context is Void in this case, so it can be ignored.
  * }, EntityType.ZOMBIE);
@@ -83,7 +83,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  *            If no context is necessary, {@link Void} should be used and {@code null} instances should be passed.
  */
 @ApiStatus.NonExtendable
-public interface EntityApiLookup<A, C> {
+public interface EntityApiLookup<A, C extends @Nullable Object> {
 	/**
 	 * Retrieve the {@link EntityApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
@@ -93,7 +93,7 @@ public interface EntityApiLookup<A, C> {
 	 * @return the unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
-	static <A, C> EntityApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+	static <A, C extends @Nullable Object> EntityApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return EntityApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
@@ -168,7 +168,7 @@ public interface EntityApiLookup<A, C> {
 	@Nullable
 	EntityApiProvider<A, C> getProvider(EntityType<?> entityType);
 
-	interface EntityApiProvider<A, C> {
+	interface EntityApiProvider<A, C extends @Nullable Object> {
 		/**
 		 * Return an instance of API {@code A} if available in the given entity with the given context, or {@code null} otherwise.
 		 *

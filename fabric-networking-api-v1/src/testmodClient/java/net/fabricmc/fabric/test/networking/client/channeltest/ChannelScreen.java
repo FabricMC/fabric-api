@@ -16,59 +16,59 @@
 
 package net.fabricmc.fabric.test.networking.client.channeltest;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 final class ChannelScreen extends Screen {
 	private final NetworkingChannelClientTest mod;
-	private ButtonWidget s2cButton;
-	private ButtonWidget c2sButton;
-	private ButtonWidget closeButton;
+	private Button s2cButton;
+	private Button c2sButton;
+	private Button closeButton;
 	private ChannelList channelList;
 
 	ChannelScreen(NetworkingChannelClientTest mod) {
-		super(Text.literal("TODO"));
+		super(Component.literal("TODO"));
 		this.mod = mod;
 	}
 
 	@Override
 	protected void init() {
-		this.s2cButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("S2C"), this::toS2C)
-				.position(this.width / 2 - 55, 5)
+		this.s2cButton = this.addRenderableWidget(Button.builder(Component.literal("S2C"), this::toS2C)
+				.pos(this.width / 2 - 55, 5)
 				.size(50, 20)
-				.tooltip(Tooltip.of(Text.literal("Packets this client can receive")))
+				.tooltip(Tooltip.create(Component.literal("Packets this client can receive")))
 				.build());
-		this.c2sButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("C2S"), this::toC2S)
-				.position(this.width / 2 + 5, 5)
+		this.c2sButton = this.addRenderableWidget(Button.builder(Component.literal("C2S"), this::toC2S)
+				.pos(this.width / 2 + 5, 5)
 				.size(50, 20)
-				.tooltip(Tooltip.of(Text.literal("Packets the server can receive")))
+				.tooltip(Tooltip.create(Component.literal("Packets the server can receive")))
 				.build());
-		this.closeButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("Close"), button -> this.close())
-				.position(this.width / 2 - 60, this.height - 25)
+		this.closeButton = this.addRenderableWidget(Button.builder(Component.literal("Close"), button -> this.onClose())
+				.pos(this.width / 2 - 60, this.height - 25)
 				.size(120, 20)
 				.build());
-		this.channelList = this.addDrawable(new ChannelList(this.client, this.width, this.height - 60, 30, this.textRenderer.fontHeight + 2));
+		this.channelList = this.addRenderableOnly(new ChannelList(this.minecraft, this.width, this.height - 60, 30, this.font.lineHeight + 2));
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-		this.renderBackground(drawContext, mouseX, mouseY, delta);
-		this.channelList.render(drawContext, mouseX, mouseY, delta);
-		super.render(drawContext, mouseX, mouseY, delta);
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		this.renderBackground(graphics, mouseX, mouseY, delta);
+		this.channelList.render(graphics, mouseX, mouseY, delta);
+		super.render(graphics, mouseX, mouseY, delta);
 
 		if (this.s2cButton.active && this.c2sButton.active) {
-			final Text clickMe = Text.literal("Click S2C or C2S to view supported channels").formatted(Formatting.YELLOW);
+			final Component clickMe = Component.literal("Click S2C or C2S to view supported channels").withStyle(ChatFormatting.YELLOW);
 
-			final int textWidth = this.textRenderer.getWidth(clickMe);
-			drawContext.drawTooltip(
-					this.textRenderer,
+			final int textWidth = this.font.width(clickMe);
+			graphics.setTooltipForNextFrame(
+					this.font,
 					clickMe,
 					(int) (this.width / 2.0F - (textWidth / 2.0F)),
 					60
@@ -82,7 +82,7 @@ final class ChannelScreen extends Screen {
 		}
 	}
 
-	private void toC2S(ButtonWidget button) {
+	private void toC2S(Button button) {
 		this.s2cButton.active = true;
 		button.active = false;
 		this.channelList.clear();
@@ -92,7 +92,7 @@ final class ChannelScreen extends Screen {
 		}
 	}
 
-	private void toS2C(ButtonWidget button) {
+	private void toS2C(Button button) {
 		this.c2sButton.active = true;
 		button.active = false;
 		this.channelList.clear();

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.gametest.v1;
 
 import java.lang.reflect.Method;
 
-import net.minecraft.test.TestContext;
+import net.minecraft.gametest.framework.GameTestHelper;
 
 /**
  * Implement this interface on test suites to provide custom logic for invoking {@link GameTest} test methods.
@@ -30,8 +30,8 @@ public interface CustomTestMethodInvoker {
 	 * You can also pass in custom parameters into the test method if desired.
 	 * The structure will have been placed in the world before this method is invoked.
 	 *
-	 * @param context The vanilla test context
+	 * @param helper The vanilla test context
 	 * @param method The test method to invoke
 	 */
-	void invokeTestMethod(TestContext context, Method method) throws ReflectiveOperationException;
+	void invokeTestMethod(GameTestHelper helper, Method method) throws ReflectiveOperationException;
 }

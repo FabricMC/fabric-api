@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -41,20 +41,20 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
-				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
+				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
+				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
 				0xFF5555
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
-				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
-				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay"),
+				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
+				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
+				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay"),
 				0x5555FF
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
-				Identifier.of("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")
+				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")
 		));
 	}
 }

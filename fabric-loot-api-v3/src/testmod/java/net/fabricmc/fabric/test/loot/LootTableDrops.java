@@ -18,31 +18,32 @@ package net.fabricmc.fabric.test.loot;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.loot.context.LootWorldContext;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.context.ContextParameter;
-import net.minecraft.util.context.ContextType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.context.ContextKey;
+import net.minecraft.util.context.ContextKeySet;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * A utility class that can easily generate and check loot table drops.
  */
 public final class LootTableDrops {
-	private final TestContext context;
-	private final Text name;
+	private final GameTestHelper helper;
+	private final Component name;
 	private final List<ItemStack> stacks;
 
-	private LootTableDrops(TestContext context, Text name, List<ItemStack> stacks) {
-		this.context = context;
+	private LootTableDrops(GameTestHelper helper, Component name, List<ItemStack> stacks) {
+		this.helper = helper;
 		this.name = name;
 		this.stacks = stacks;
 	}
@@ -58,8 +59,8 @@ public final class LootTableDrops {
 	 * Asserts that the drop list matches an expected list.
 	 */
 	public void assertEquals(List<ItemStack> expected) {
-		Text message = Text.stringifiedTranslatable("test.error.value_not_equal", name, expected, stacks);
-		context.assertTrue(ItemStack.stacksEqual(expected, stacks), message);
+		Component message = Component.translatableEscape("test.error.value_not_equal", name, expected, stacks);
+		helper.assertTrue(ItemStack.listMatches(expected, stacks), message);
 	}
 
 	/**
@@ -67,13 +68,13 @@ public final class LootTableDrops {
 	 */
 	public void assertContains(ItemStack expected) {
 		for (ItemStack stack : stacks) {
-			if (ItemStack.areEqual(expected, stack)) {
+			if (ItemStack.matches(expected, stack)) {
 				// Found a match
 				return;
 			}
 		}
 
-		throw context.createError(Text.literal("Expected ").append(name).append(" to contain " + expected + ", but found " + stacks));
+		throw helper.assertionException(Component.literal("Expected ").append(name).append(" to contain " + expected + ", but found " + stacks));
 	}
 
 	/**
@@ -81,53 +82,53 @@ public final class LootTableDrops {
 	 */
 	public void assertTotalCount(int expected) {
 		int actual = stacks.stream().mapToInt(ItemStack::getCount).sum();
-		context.assertEquals(expected, actual, Text.literal("total drop count"));
+		helper.assertValueEqual(expected, actual, Component.literal("total drop count"));
 	}
 
 	/**
 	 * Drops a block loot table.
 	 */
-	public static Builder block(TestContext context, Block block) {
-		Text name = Text.empty().append(block.getName()).append(" drops");
-		return new Builder(context, name, LootContextTypes.BLOCK, block.getLootTableKey().orElseThrow())
-				.set(LootContextParameters.BLOCK_STATE, block.getDefaultState())
-				.set(LootContextParameters.ORIGIN, Vec3d.ZERO)
-				.set(LootContextParameters.TOOL, ItemStack.EMPTY);
+	public static Builder block(GameTestHelper helper, Block block) {
+		Component name = Component.empty().append(block.getName()).append(" drops");
+		return new Builder(helper, name, LootContextParamSets.BLOCK, block.getLootTable().orElseThrow())
+				.set(LootContextParams.BLOCK_STATE, block.defaultBlockState())
+				.set(LootContextParams.ORIGIN, Vec3.ZERO)
+				.set(LootContextParams.TOOL, ItemStack.EMPTY);
 	}
 
 	/**
 	 * Drops an entity loot table.
 	 */
-	public static Builder entity(TestContext context, EntityType<?> type) {
-		Text name = Text.empty().append(type.getName()).append(" drops");
-		Entity contextEntity = context.spawnEntity(type, Vec3d.ZERO);
-		return new Builder(context, name, LootContextTypes.ENTITY, type.getLootTableKey().orElseThrow())
-				.set(LootContextParameters.THIS_ENTITY, contextEntity)
-				.set(LootContextParameters.ORIGIN, Vec3d.ZERO)
-				.set(LootContextParameters.DAMAGE_SOURCE, context.getWorld().getDamageSources().generic());
+	public static Builder entity(GameTestHelper helper, EntityType<?> type) {
+		Component name = Component.empty().append(type.getDescription()).append(" drops");
+		Entity contextEntity = helper.spawn(type, BlockPos.ZERO);
+		return new Builder(helper, name, LootContextParamSets.ENTITY, type.getDefaultLootTable().orElseThrow())
+				.set(LootContextParams.THIS_ENTITY, contextEntity)
+				.set(LootContextParams.ORIGIN, Vec3.ZERO)
+				.set(LootContextParams.DAMAGE_SOURCE, helper.getLevel().damageSources().generic());
 	}
 
 	public static final class Builder {
-		private final TestContext testContext;
-		private final Text name;
-		private final LootWorldContext.Builder contextBuilder;
-		private final ContextType contextType;
-		private final RegistryKey<LootTable> tableKey;
+		private final GameTestHelper testHelper;
+		private final Component name;
+		private final LootParams.Builder paramsBuilder;
+		private final ContextKeySet contextKeySet;
+		private final ResourceKey<LootTable> tableKey;
 		private long seed;
 
-		private Builder(TestContext testContext, Text name, ContextType contextType, RegistryKey<LootTable> tableKey) {
-			this.testContext = testContext;
+		private Builder(GameTestHelper testHelper, Component name, ContextKeySet contextKeySet, ResourceKey<LootTable> tableKey) {
+			this.testHelper = testHelper;
 			this.name = name;
-			this.contextBuilder = new LootWorldContext.Builder(testContext.getWorld());
-			this.contextType = contextType;
+			this.paramsBuilder = new LootParams.Builder(testHelper.getLevel());
+			this.contextKeySet = contextKeySet;
 			this.tableKey = tableKey;
 		}
 
 		/**
-		 * Sets a loot context parameter.
+		 * Sets a loot params parameter.
 		 */
-		public <T> Builder set(ContextParameter<T> parameter, T value) {
-			contextBuilder.add(parameter, value);
+		public <T> Builder set(ContextKey<T> key, T value) {
+			paramsBuilder.withParameter(key, value);
 			return this;
 		}
 
@@ -143,10 +144,10 @@ public final class LootTableDrops {
 		 * Runs the drops.
 		 */
 		public LootTableDrops drop() {
-			LootWorldContext context = contextBuilder.build(contextType);
-			LootTable lootTable = testContext.getWorld().getServer().getReloadableRegistries().getLootTable(tableKey);
-			List<ItemStack> stacks = lootTable.generateLoot(context, seed);
-			return new LootTableDrops(testContext, name, stacks);
+			LootParams params = paramsBuilder.create(contextKeySet);
+			LootTable lootTable = testHelper.getLevel().getServer().reloadableRegistries().getLootTable(tableKey);
+			List<ItemStack> stacks = lootTable.getRandomItems(params, seed);
+			return new LootTableDrops(testHelper, name, stacks);
 		}
 	}
 }

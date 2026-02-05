@@ -22,8 +22,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Nullables;
+import net.minecraft.Optionull;
+import net.minecraft.resources.Identifier;
 
 /**
  * A type of resource conditions.
@@ -34,7 +34,7 @@ public interface ResourceConditionType<T extends ResourceCondition> {
 	 * A codec used to serialize the condition type.
 	 */
 	Codec<ResourceConditionType<?>> TYPE_CODEC = Identifier.CODEC.comapFlatMap(id ->
-					Nullables.mapOrElseGet(ResourceConditions.getConditionType(id), DataResult::success, () -> DataResult.error(() -> "Unknown resource condition key: "+ id)),
+					Optionull.mapOrElse(ResourceConditions.getConditionType(id), DataResult::success, () -> DataResult.error(() -> "Unknown resource condition key: "+ id)),
 					ResourceConditionType::id
 	);
 

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.event.client.player;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -35,8 +35,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * To check whether the attack key is just clicked, use {@code clickCount != 0}
  *
  * <p>The vanilla attack cooldown and player game mode does not affect this event.
- * The mod probably needs to check {@link net.minecraft.client.MinecraftClient#attackCooldown} and the game mode.
- * {@link net.minecraft.entity.player.ItemCooldownManager} can be used for custom item cooldown handling.
+ * The mod probably needs to check {@link net.minecraft.client.Minecraft#missTime} and the game mode.
+ * {@link net.minecraft.world.item.ItemCooldowns} can be used for custom item cooldown handling.
  */
 public interface ClientPreAttackCallback {
 	Event<ClientPreAttackCallback> EVENT = EventFactory.createArrayBacked(
@@ -57,5 +57,5 @@ public interface ClientPreAttackCallback {
 	 * @param clickCount the click count of the attack key in this tick.
 	 * @return whether to intercept attack handling
 	 */
-	boolean onClientPlayerPreAttack(MinecraftClient client, ClientPlayerEntity player, int clickCount);
+	boolean onClientPlayerPreAttack(Minecraft client, LocalPlayer player, int clickCount);
 }

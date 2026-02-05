@@ -19,10 +19,10 @@ package net.fabricmc.fabric.mixin.resource.conditions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.registry.RegistryOps;
+import net.minecraft.resources.RegistryOps;
 
 @Mixin(RegistryOps.class)
 public interface RegistryOpsAccessor {
-	@Accessor
-	RegistryOps.RegistryInfoGetter getRegistryInfoGetter();
+	@Accessor("lookupProvider")
+	RegistryOps.RegistryInfoLookup getRegistryInfoGetter();
 }

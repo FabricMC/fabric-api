@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.client.screen;
 
 import java.util.List;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -31,7 +31,7 @@ public interface ScreenExtensions {
 		return (ScreenExtensions) screen;
 	}
 
-	List<ClickableWidget> fabric_getButtons();
+	List<AbstractWidget> fabric_getButtons();
 
 	Event<ScreenEvents.Remove> fabric_getRemoveEvent();
 
@@ -40,6 +40,8 @@ public interface ScreenExtensions {
 	Event<ScreenEvents.AfterTick> fabric_getAfterTickEvent();
 
 	Event<ScreenEvents.BeforeRender> fabric_getBeforeRenderEvent();
+
+	Event<ScreenEvents.AfterBackground> fabric_getAfterBackgroundEvent();
 
 	Event<ScreenEvents.AfterRender> fabric_getAfterRenderEvent();
 
@@ -70,6 +72,12 @@ public interface ScreenExtensions {
 	Event<ScreenMouseEvents.BeforeMouseRelease> fabric_getBeforeMouseReleaseEvent();
 
 	Event<ScreenMouseEvents.AfterMouseRelease> fabric_getAfterMouseReleaseEvent();
+
+	Event<ScreenMouseEvents.AllowMouseDrag> fabric_getAllowMouseDragEvent();
+
+	Event<ScreenMouseEvents.BeforeMouseDrag> fabric_getBeforeMouseDragEvent();
+
+	Event<ScreenMouseEvents.AfterMouseDrag> fabric_getAfterMouseDragEvent();
 
 	Event<ScreenMouseEvents.AllowMouseScroll> fabric_getAllowMouseScrollEvent();
 

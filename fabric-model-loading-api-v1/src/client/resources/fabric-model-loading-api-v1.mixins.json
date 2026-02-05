@@ -1,16 +1,19 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.client.model.loading",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
-    "BakedModelManagerMixin",
-    "JsonUnbakedModelAccessor",
-    "JsonUnbakedModelMixin",
-    "ModelBakerBakedModelsMixin",
-    "ModelBakerMixin",
+    "ModelManagerMixin",
+    "BlockModelAccessor",
+    "BlockModelMixin",
+    "ModelBakeryBakingResultMixin",
+    "ModelBakeryMixin",
     "BlockStateModelUnbakedMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

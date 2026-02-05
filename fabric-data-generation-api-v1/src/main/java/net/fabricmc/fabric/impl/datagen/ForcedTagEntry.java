@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.datagen;
 
 import java.util.function.Predicate;
 
-import net.minecraft.registry.tag.TagEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagEntry;
 
 public class ForcedTagEntry extends TagEntry {
 	public ForcedTagEntry(Identifier id) {
@@ -27,7 +27,7 @@ public class ForcedTagEntry extends TagEntry {
 	}
 
 	@Override
-	public boolean canAdd(Predicate<Identifier> objectExistsTest, Predicate<Identifier> tagExistsTest) {
+	public boolean verifyIfPresent(Predicate<Identifier> objectExistsTest, Predicate<Identifier> tagExistsTest) {
 		return true;
 	}
 }

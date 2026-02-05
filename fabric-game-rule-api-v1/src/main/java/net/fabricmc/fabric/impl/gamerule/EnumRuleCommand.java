@@ -16,43 +16,49 @@
 
 package net.fabricmc.fabric.impl.gamerule;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.world.GameRules;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.gamerules.GameRule;
 
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.mixin.gamerule.GameRuleCommandAccessor;
 
 public final class EnumRuleCommand {
-	public static <E extends Enum<E>> void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.Key<EnumRule<E>> key, EnumRuleType<E> type) {
-		literalArgumentBuilder.then(literal(key.getName()).executes(context -> {
+	public static <E extends Enum<E>> void register(LiteralArgumentBuilder<CommandSourceStack> literalArgumentBuilder, GameRule<E> enumRule) {
+		String name = enumRule.toString();
+		literalArgumentBuilder.then(literal(name).executes(context -> {
 			// We can use the vanilla query method
-			return GameRuleCommandAccessor.invokeExecuteQuery(context.getSource(), key);
+			return GameRuleCommandAccessor.callQueryRule(context.getSource(), enumRule);
 		}));
 
 		// The LiteralRuleType handles the executeSet
-		type.register(literalArgumentBuilder, key);
-	}
+		LiteralCommandNode<CommandSourceStack> ruleNode = literal(name).build();
 
-	public static <E extends Enum<E>> int executeAndSetEnum(CommandContext<ServerCommandSource> context, E value, GameRules.Key<EnumRule<E>> key) throws CommandSyntaxException {
-		// Mostly copied from vanilla, but tweaked so we can use literals
-		ServerCommandSource serverCommandSource = context.getSource();
-		EnumRule<E> rule = serverCommandSource.getServer().getGameRules().get(key);
-
-		try {
-			rule.set(value, serverCommandSource.getServer());
-		} catch (IllegalArgumentException e) {
-			throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
+		for (Enum<?> supportedValue : ((RuleTypeExtensions) (Object) enumRule).fabric_getSupportedEnumValues()) {
+			ruleNode.addChild(literal(supportedValue.toString()).executes(context -> EnumRuleCommand.executeAndSetEnum(context, (E) supportedValue, enumRule)).build());
 		}
 
-		serverCommandSource.sendFeedback(() -> Text.translatable("commands.gamerule.set", key.getName(), rule.toString()), true);
-		return rule.getCommandResult();
+		literalArgumentBuilder.then(ruleNode);
+	}
+
+	public static <E extends Enum<E>> int executeAndSetEnum(CommandContext<CommandSourceStack> context, E value, GameRule<E> enumRule) throws CommandSyntaxException {
+		// Mostly copied from vanilla, but tweaked so we can use literals
+		CommandSourceStack commandSourceStack = context.getSource();
+
+		try {
+			commandSourceStack.getLevel().getGameRules().set(enumRule, value, commandSourceStack.getServer());
+		} catch (IllegalArgumentException e) {
+			throw new SimpleCommandExceptionType(Component.literal(e.getMessage())).create();
+		}
+
+		commandSourceStack.sendSuccess(() -> Component.translatable("commands.gamerule.set", enumRule.id(), enumRule.serialize(value)), true);
+		return enumRule.getCommandResult(value);
 	}
 }

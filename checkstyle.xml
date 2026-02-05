@@ -82,6 +82,9 @@
 			<property name="option" value="top"/>
 			<property name="sortStaticImportsAlphabetically" value="true"/>
 		</module>
+		<module name="IllegalImport">
+			<property name="illegalClasses" value="org.jetbrains.annotations.Nullable"/>
+		</module>
 
 		<!-- Ensures braces are at the end of a line -->
 		<module name="LeftCurly"/>
@@ -194,7 +197,7 @@
 			- largely unconstained trailing subpackages
 			-->
 			<property name="format"
-			value="^net\.fabricmc\.fabric\.(api(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+\.v[0-9]+|(impl|mixin|test)(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+(\.v[0-9]+)?|api\.(event|util|biomes\.v1|registry|client\.screen|container|block|entity|client\.itemgroup|client\.keybinding|tag|tools|client\.model|network|server|client\.render|resource|client\.texture))(|\.[a-z]+(\.[a-z0-9]+)*)$"/>
+			value="^net\.fabricmc\.fabric\.(api(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+\.v[0-9]+|(impl|mixin|test)(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+(\.v[0-9]+)?|api\.(event|util|biomes\.v1|registry|client\.screen|block|entity|tag|client\.render|resource|client\.texture))(|\.[a-z]+(\.[a-z0-9]+)*)$"/>
 		</module>
 
 		<!--<module name="InvalidJavadocPosition"/>-->
@@ -246,6 +249,7 @@
                             or @text='Inject'
                             or @text='ModifyArg'
                             or @text='ModifyExpressionValue'
+                            or @text='ModifyReceiver'
                             or @text='ModifyReturnValue'
                             or @text='ModifyVariable'
                             or @text='Override'
@@ -278,6 +282,52 @@
                 ]
             "/>
             <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
+        </module>
+
+        <!-- Prevent ordinal usage in @Local annotations on method parameters -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //PARAMETER_DEF/MODIFIERS/ANNOTATION[
+                    ./IDENT[@text='Local']
+                    and
+                    ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='ordinal']
+                ]
+            "/>
+            <message key="matchxpath.match" value="ordinal is not allowed in @Local annotations on method parameters"/>
+        </module>
+
+        <!-- Prevent specifying name and argsOnly in @Local annotations on method parameters -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //PARAMETER_DEF/MODIFIERS/ANNOTATION[
+                    ./IDENT[@text='Local']
+                    and
+                    ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='name']
+                    and
+                    ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='argsOnly']
+                ]
+            "/>
+            <message key="matchxpath.match" value="name and argsOnly cannot both be specified in @Local, perfer argsOnly"/>
+        </module>
+
+        <module name="MatchXpath">
+            <property name="query" value="//LITERAL_ASSERT"/>
+            <message key="matchxpath.match" value="Avoid using 'assert'."/>
+        </module>
+
+        <module name="MatchXpath">
+            <property name="query" value="//ANNOTATION/IDENT[@text='Debug']"/>
+            <message key="matchxpath.match" value="@Debug annotation is not allowed"/>
+        </module>
+
+        <module name="MatchXpath">
+            <property name="query" value="//SLIST[count(ancestor::SLIST) >= 6]"/>
+            <message key="matchxpath.match" value="Code blocks must not be nested more than 6 times"/>
+        </module>
+
+        <module name="MatchXpath">
+            <property name="query" value="//ANNOTATION/IDENT[@text='NotNull']"/>
+            <message key="matchxpath.match" value="@NotNull annotation is not allowed"/>
         </module>
 	</module>
 </module>

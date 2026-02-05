@@ -21,9 +21,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.WoodType;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.state.properties.WoodType;
 
 import net.fabricmc.fabric.impl.object.builder.client.SignTypeTextureHelper;
 
@@ -32,9 +32,9 @@ abstract class WoodTypeMixin {
 	@Inject(method = "register", at = @At("RETURN"))
 	private static void onReturnRegister(WoodType type, CallbackInfoReturnable<WoodType> cir) {
 		if (SignTypeTextureHelper.shouldAddTextures) {
-			final Identifier identifier = Identifier.of(type.name());
-			TexturedRenderLayers.SIGN_TYPE_TEXTURES.put(type, TexturedRenderLayers.SIGN_SPRITE_MAPPER.map(identifier));
-			TexturedRenderLayers.HANGING_SIGN_TYPE_TEXTURES.put(type, TexturedRenderLayers.HANGING_SIGN_SPRITE_MAPPER.map(identifier));
+			final Identifier identifier = Identifier.parse(type.name());
+			Sheets.SIGN_MATERIALS.put(type, Sheets.SIGN_MAPPER.apply(identifier));
+			Sheets.HANGING_SIGN_MATERIALS.put(type, Sheets.HANGING_SIGN_MAPPER.apply(identifier));
 		}
 	}
 }

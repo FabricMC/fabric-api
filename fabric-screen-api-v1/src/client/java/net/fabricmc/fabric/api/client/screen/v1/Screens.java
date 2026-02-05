@@ -19,10 +19,10 @@ package net.fabricmc.fabric.api.client.screen.v1;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
@@ -34,30 +34,32 @@ import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
  */
 public final class Screens {
 	/**
-	 * Gets all of a screen's button widgets.
-	 * The provided list allows for addition and removal of buttons from the screen.
-	 * This method should be preferred over adding buttons directly to a screen's {@link Screen#children() child elements}.
+	 * Gets all of a screen's widgets.
+	 * The provided list allows for addition and removal of widgets from the screen.
+	 * This method should be preferred over adding widgets directly to a screen's {@link Screen#children() child elements}.
 	 *
-	 * @return a list of all of a screen's buttons
+	 * @return a list of all of a screen's widgets
 	 */
-	public static List<ClickableWidget> getButtons(Screen screen) {
+	public static List<AbstractWidget> getWidgets(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getButtons();
 	}
 
 	/**
-	 * Gets a screen's text renderer.
+	 * Gets a screen's font.
 	 *
-	 * @return the screen's text renderer.
+	 * @return the screen's font.
+	 * @deprecated Use {@link Screen#getFont()} directly
 	 */
-	public static TextRenderer getTextRenderer(Screen screen) {
+	@Deprecated
+	public static Font getFont(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
-		return ((ScreenAccessor) screen).getTextRenderer();
+		return screen.getFont();
 	}
 
-	public static MinecraftClient getClient(Screen screen) {
+	public static Minecraft getMinecraft(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ((ScreenAccessor) screen).getClient();

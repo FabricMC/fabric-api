@@ -21,14 +21,14 @@ import java.util.Objects;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.impl.transfer.VariantCodecs;
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
 	Codec<ItemVariant> CODEC = VariantCodecs.ITEM_CODEC;
-	PacketCodec<RegistryByteBuf, ItemVariant> PACKET_CODEC = VariantCodecs.ITEM_PACKET_CODEC;
+	StreamCodec<RegistryFriendlyByteBuf, ItemVariant> PACKET_CODEC = VariantCodecs.ITEM_PACKET_CODEC;
 
 	/**
 	 * Retrieve a blank ItemVariant.
@@ -55,20 +55,20 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Retrieve an ItemVariant with the item and tag of a stack.
 	 */
 	static ItemVariant of(ItemStack stack) {
-		return of(stack.getItem(), stack.getComponentChanges());
+		return of(stack.getItem(), stack.getComponentsPatch());
 	}
 
 	/**
 	 * Retrieve an ItemVariant with an item and without a tag.
 	 */
-	static ItemVariant of(ItemConvertible item) {
-		return of(item, ComponentChanges.EMPTY);
+	static ItemVariant of(ItemLike item) {
+		return of(item, DataComponentPatch.EMPTY);
 	}
 
 	/**
 	 * Retrieve an ItemVariant with an item and an optional tag.
 	 */
-	static ItemVariant of(ItemConvertible item, ComponentChanges components) {
+	static ItemVariant of(ItemLike item, DataComponentPatch components) {
 		return ItemVariantImpl.of(item.asItem(), components);
 	}
 
@@ -76,7 +76,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
-		return isOf(stack.getItem()) && Objects.equals(stack.getComponentChanges(), getComponents());
+		return isOf(stack.getItem()) && Objects.equals(stack.getComponentsPatch(), getComponentsPatch());
 	}
 
 	/**
@@ -86,8 +86,9 @@ public interface ItemVariant extends TransferVariant<Item> {
 		return getObject();
 	}
 
-	default RegistryEntry<Item> getRegistryEntry() {
-		return getItem().getRegistryEntry();
+	@Override
+	default Holder<Item> typeHolder() {
+		return getItem().builtInRegistryHolder();
 	}
 
 	/**
@@ -104,16 +105,16 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 */
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
-		return new ItemStack(getRegistryEntry(), count, getComponents());
+		return new ItemStack(typeHolder(), count, getComponentsPatch());
 	}
 
 	/**
-	 * Creates a copy of this ItemVariant with the provided component changes applied.
-	 * @param changes the changes to apply
-	 * @return the new variant with the changes applied
+	 * Creates a copy of this ItemVariant with the provided component patch applied.
+	 * @param patch the patch to apply
+	 * @return the new variant with the patch applied
 	 *
-	 * @see ItemStack#applyUnvalidatedChanges(ComponentChanges)
+	 * @see ItemStack#applyComponents(DataComponentPatch)
 	 */
 	@Override
-	ItemVariant withComponentChanges(ComponentChanges changes);
+	ItemVariant withComponents(DataComponentPatch patch);
 }

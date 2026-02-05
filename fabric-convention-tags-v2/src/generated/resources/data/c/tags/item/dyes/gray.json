@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:gray_dye",
-    {
-      "id": "#c:gray_dyes",
-      "required": false
-    }
+    "minecraft:gray_dye"
   ]
 }

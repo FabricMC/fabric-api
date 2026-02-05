@@ -22,19 +22,21 @@ import java.util.stream.Stream;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.display.SlotDisplay;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -43,9 +45,9 @@ public class CustomDataIngredient implements CustomIngredient {
 	public static final CustomIngredientSerializer<CustomDataIngredient> SERIALIZER = new Serializer();
 
 	private final Ingredient base;
-	private final NbtCompound nbt;
+	private final CompoundTag nbt;
 
-	public CustomDataIngredient(Ingredient base, NbtCompound nbt) {
+	public CustomDataIngredient(Ingredient base, CompoundTag nbt) {
 		if (nbt == null || nbt.isEmpty()) throw new IllegalArgumentException("NBT cannot be null; use components ingredient for strict matching");
 
 		this.base = base;
@@ -56,27 +58,28 @@ public class CustomDataIngredient implements CustomIngredient {
 	public boolean test(ItemStack stack) {
 		if (!base.test(stack)) return false;
 
-		NbtComponent nbt = stack.get(DataComponentTypes.CUSTOM_DATA);
+		CustomData nbt = stack.get(DataComponents.CUSTOM_DATA);
 
-		return nbt != null && nbt.matches(this.nbt);
+		return nbt != null && nbt.matchedBy(this.nbt);
 	}
 
 	@Override
-	public Stream<RegistryEntry<Item>> getMatchingItems() {
-		return base.getMatchingItems();
+	public Stream<Holder<Item>> items() {
+		return base.items();
 	}
 
 	@Override
-	public SlotDisplay toDisplay() {
-		return new SlotDisplay.CompositeSlotDisplay(
-				base.getMatchingItems().map(this::createEntryDisplay).toList()
+	public SlotDisplay display() {
+		return new SlotDisplay.Composite(
+				base.items().map(this::createEntryDisplay).toList()
 		);
 	}
 
-	private SlotDisplay createEntryDisplay(RegistryEntry<Item> entry) {
-		ItemStack stack = entry.value().getDefaultStack();
-		stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, existingNbt -> NbtComponent.of(existingNbt.copyNbt().copyFrom(nbt)));
-		return new SlotDisplay.StackSlotDisplay(stack);
+	private SlotDisplay createEntryDisplay(Holder<Item> holder) {
+		DataComponentPatch data = DataComponentPatch.builder()
+				.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt))
+				.build();
+		return new SlotDisplay.ItemStackSlotDisplay(new ItemStackTemplate(holder, 1, data));
 	}
 
 	@Override
@@ -93,7 +96,7 @@ public class CustomDataIngredient implements CustomIngredient {
 		return base;
 	}
 
-	private NbtCompound getNbt() {
+	private CompoundTag getNbt() {
 		return nbt;
 	}
 
@@ -111,18 +114,18 @@ public class CustomDataIngredient implements CustomIngredient {
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<CustomDataIngredient> {
-		private static final Identifier ID = Identifier.of("fabric", "custom_data");
+		private static final Identifier ID = Identifier.fromNamespaceAndPath("fabric", "custom_data");
 
 		private static final MapCodec<CustomDataIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
 				instance.group(
 						Ingredient.CODEC.fieldOf("base").forGetter(CustomDataIngredient::getBase),
-						StringNbtReader.NBT_COMPOUND_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
+						TagParser.LENIENT_CODEC.fieldOf("nbt").forGetter(CustomDataIngredient::getNbt)
 				).apply(instance, CustomDataIngredient::new)
 		);
 
-		private static final PacketCodec<RegistryByteBuf, CustomDataIngredient> PACKET_CODEC = PacketCodec.tuple(
-				Ingredient.PACKET_CODEC, CustomDataIngredient::getBase,
-				PacketCodecs.NBT_COMPOUND, CustomDataIngredient::getNbt,
+		private static final StreamCodec<RegistryFriendlyByteBuf, CustomDataIngredient> PACKET_CODEC = StreamCodec.composite(
+				Ingredient.CONTENTS_STREAM_CODEC, CustomDataIngredient::getBase,
+				ByteBufCodecs.COMPOUND_TAG, CustomDataIngredient::getNbt,
 				CustomDataIngredient::new
 		);
 
@@ -137,7 +140,7 @@ public class CustomDataIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public PacketCodec<RegistryByteBuf, CustomDataIngredient> getPacketCodec() {
+		public StreamCodec<RegistryFriendlyByteBuf, CustomDataIngredient> getStreamCodec() {
 			return PACKET_CODEC;
 		}
 	}

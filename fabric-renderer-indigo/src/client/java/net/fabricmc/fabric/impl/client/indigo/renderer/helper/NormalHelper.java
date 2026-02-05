@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 
 /**
  * Static routines of general utility for renderer implementations.
@@ -42,10 +41,10 @@ public final class NormalHelper {
 	 * The extra value is for use by shaders.
 	 */
 	public static int packNormal(float x, float y, float z, float w) {
-		x = MathHelper.clamp(x, -1, 1);
-		y = MathHelper.clamp(y, -1, 1);
-		z = MathHelper.clamp(z, -1, 1);
-		w = MathHelper.clamp(w, -1, 1);
+		x = Mth.clamp(x, -1, 1);
+		y = Mth.clamp(y, -1, 1);
+		z = Mth.clamp(z, -1, 1);
+		w = Mth.clamp(w, -1, 1);
 
 		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16) | (((int) (w * PACK) & 0xFF) << 24);
 	}
@@ -61,9 +60,9 @@ public final class NormalHelper {
 	 * Like {@link #packNormal(float, float, float, float)}, but without a {@code w} value.
 	 */
 	public static int packNormal(float x, float y, float z) {
-		x = MathHelper.clamp(x, -1, 1);
-		y = MathHelper.clamp(y, -1, 1);
-		z = MathHelper.clamp(z, -1, 1);
+		x = Mth.clamp(x, -1, 1);
+		y = Mth.clamp(y, -1, 1);
+		z = Mth.clamp(z, -1, 1);
 
 		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16);
 	}
@@ -103,11 +102,11 @@ public final class NormalHelper {
 	 * <p>Will work with triangles also. Assumes counter-clockwise winding order, which is the norm.
 	 * Expects convex quads with all points co-planar.
 	 */
-	public static void computeFaceNormal(@NotNull Vector3f saveTo, QuadView q) {
+	public static void computeFaceNormal(Vector3f saveTo, QuadView q) {
 		final Direction nominalFace = q.nominalFace();
 
 		if (nominalFace != null && GeometryHelper.isQuadParallelToFace(nominalFace, q)) {
-			Vec3i vec = nominalFace.getVector();
+			Vec3i vec = nominalFace.getUnitVec3i();
 			saveTo.set(vec.getX(), vec.getY(), vec.getZ());
 			return;
 		}

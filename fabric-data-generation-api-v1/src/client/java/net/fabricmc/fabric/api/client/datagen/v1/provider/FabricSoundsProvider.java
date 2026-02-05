@@ -25,20 +25,20 @@ import java.util.function.BiConsumer;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.data.DataOutput;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 
 import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 /**
- * Extend this class and implement {@link FabricSoundsProvider#configure(RegistryWrapper.WrapperLookup, SoundExporter)}.
+ * Extend this class and implement {@link FabricSoundsProvider#configure(HolderLookup.Provider, SoundExporter)}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  *
@@ -47,16 +47,16 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
  */
 public abstract class FabricSoundsProvider implements DataProvider {
 	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
-	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
-	private final DataOutput output;
+	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
+	private final PackOutput output;
 
-	public FabricSoundsProvider(DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+	public FabricSoundsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		this.registriesFuture = registriesFuture;
 		this.output = output;
 	}
 
 	@Override
-	public CompletableFuture<?> run(DataWriter writer) {
+	public CompletableFuture<?> run(CachedOutput output) {
 		return registriesFuture.thenCompose(lookup -> {
 			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
 			configure(lookup, (id, builder) -> {
@@ -66,8 +66,8 @@ public abstract class FabricSoundsProvider implements DataProvider {
 			});
 
 			return CompletableFuture.allOf(data.entrySet().stream().map(file -> {
-				Path outputPath = output.resolvePath(DataOutput.OutputType.RESOURCE_PACK).resolve(file.getKey() + "/sounds.json");
-				return DataProvider.writeCodecToPath(writer, lookup, CODEC, file.getValue(), outputPath);
+				Path outputPath = this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(file.getKey() + "/sounds.json");
+				return DataProvider.saveStable(output, lookup, CODEC, file.getValue(), outputPath);
 			}).toArray(CompletableFuture[]::new));
 		});
 	}
@@ -75,10 +75,10 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	/**
 	 * Implement this method and then use {@link BiConsumer#accept} to register sound events to be data-generated.
 	 *
-	 * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
+	 * <p>Registered sound types will be appended to their own {@code sounds.json} in a namespace corresponding to
 	 * the id of the sound event they are assigned to.
 	 */
-	protected abstract void configure(RegistryWrapper.WrapperLookup registryLookup, SoundExporter exporter);
+	protected abstract void configure(HolderLookup.Provider registryLookup, SoundExporter exporter);
 
 	/**
 	 * A consumer used by {@link FabricSoundsProvider#configure}.
@@ -93,19 +93,19 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		 * @param builder the sound event details
 		 */
 		default void add(SoundEvent event, SoundTypeBuilder builder) {
-			add(event.id(), builder);
+			add(event.location(), builder);
 		}
 
 		/**
 		 * Adds a sound event.
 		 *
-		 * @param event   registry entry for sound event
+		 * @param event   holder for sound event
 		 * @param builder the sound event details
 		 *
-		 * @throws IllegalArgumentException if the registry entry provided has not been registered
+		 * @throws IllegalArgumentException if the holder provided has not been registered
 		 */
-		default void add(RegistryEntry<SoundEvent> event, SoundTypeBuilder builder) {
-			add(event.getKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).getValue(), builder);
+		default void add(Holder<SoundEvent> event, SoundTypeBuilder builder) {
+			add(event.unwrapKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).identifier(), builder);
 		}
 
 		/**

@@ -16,21 +16,21 @@
 
 package net.fabricmc.fabric.test.lookup.item;
 
-import net.minecraft.item.Item;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
 public class InspectableItem extends Item implements Inspectable {
 	private final String inspectionResult;
 
-	public InspectableItem(String inspectionResult, Item.Settings settings) {
+	public InspectableItem(String inspectionResult, Item.Properties settings) {
 		super(settings);
 		this.inspectionResult = inspectionResult;
 	}
 
 	@Override
-	public Text inspect() {
-		return Text.literal(inspectionResult);
+	public Component inspect() {
+		return Component.literal(inspectionResult);
 	}
 }

@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.test.crash.report.info;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 import com.mojang.brigadier.context.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.dedicated.DedicatedServerWatchdog;
-import net.minecraft.text.Text;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.ReportType;
+import net.minecraft.CrashReport;
+import net.minecraft.ReportType;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.dedicated.ServerWatchdog;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -36,15 +36,15 @@ public class ThreadDumpTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) ->
 				dispatcher.register(literal("print_thread_dump_test_command").executes(this::executeDumpCommand)));
 	}
 
-	private int executeDumpCommand(CommandContext<ServerCommandSource> context) {
-		final ServerCommandSource source = context.getSource();
-		CrashReport crashReport = DedicatedServerWatchdog.createCrashReport("Watching Server", context.getSource().getServer().getThread().threadId());
-		LOGGER.info(crashReport.asString(ReportType.MINECRAFT_CRASH_REPORT));
-		source.sendFeedback(() -> Text.literal("Thread Dump printed to console."), false);
+	private int executeDumpCommand(CommandContext<CommandSourceStack> context) {
+		final CommandSourceStack source = context.getSource();
+		CrashReport crashReport = ServerWatchdog.createWatchdogCrashReport("Watching Server", context.getSource().getServer().getRunningThread().threadId());
+		LOGGER.info(crashReport.getFriendlyReport(ReportType.CRASH));
+		source.sendSuccess(() -> Component.literal("Thread Dump printed to console."), false);
 		return 1;
 	}
 }

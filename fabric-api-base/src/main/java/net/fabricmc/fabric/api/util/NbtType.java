@@ -16,17 +16,15 @@
 
 package net.fabricmc.fabric.api.util;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.Tag;
 
 /**
  * NBT type ID constants. Useful for filtering by value type in a few cases.
  *
- * <p>For the current list of types, check with {@link NbtElement}.
+ * <p>For the current list of types, check with {@link Tag}.
  *
- * @see NbtCompound#contains(String, int)
- * @see net.minecraft.nbt.NbtTypes#byId(int)
- * @deprecated Use the constants in {@link NbtElement} instead.
+ * @see net.minecraft.nbt.TagTypes#getType(int)
+ * @deprecated Use the constants in {@link Tag} instead.
  */
 @Deprecated
 public final class NbtType {
@@ -43,13 +41,6 @@ public final class NbtType {
 	public static final int COMPOUND = 10;
 	public static final int INT_ARRAY = 11;
 	public static final int LONG_ARRAY = 12;
-
-	/**
-	 * Any numeric value: byte, short, int, long, float, double.
-	 *
-	 * @see NbtCompound#contains(String, int)
-	 */
-	public static final int NUMBER = 99;
 
 	private NbtType() { }
 }

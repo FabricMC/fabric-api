@@ -16,21 +16,22 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+
+import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
@@ -39,9 +40,9 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 	public static final ThreadLocal<TerrainLikeRenderContext> POOL = ThreadLocal.withInitial(TerrainLikeRenderContext::new);
 
-	private final Random random = Random.createLocal();
+	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
-	private BlockVertexConsumerProvider vertexConsumers;
+	private BlockMultiBufferSource bufferSource;
 
 	@Override
 	protected LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo) {
@@ -49,44 +50,45 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 		return new LightDataProvider() {
 			@Override
 			public int light(BlockPos pos, BlockState state) {
-				return WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, state, pos);
+				return LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, blockInfo.level, state, pos);
 			}
 
 			@Override
 			public float ao(BlockPos pos, BlockState state) {
-				return AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
+				return AoLuminanceFix.INSTANCE.apply(blockInfo.level, pos, state);
 			}
 		};
 	}
 
 	@Override
-	protected VertexConsumer getVertexConsumer(BlockRenderLayer layer) {
-		return vertexConsumers.getBuffer(layer);
+	protected VertexConsumer getVertexConsumer(ChunkSectionLayer layer) {
+		return bufferSource.getBuffer(layer);
 	}
 
-	public void bufferModel(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
+	public void bufferModel(BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
 		try {
-			Vec3d offset = state.getModelOffset(pos);
-			matrixStack.translate(offset.x, offset.y, offset.z);
-			matrices = matrixStack.peek();
+			Vec3 offset = state.getOffset(pos);
+			poseStack.translate(offset.x, offset.y, offset.z);
+			pose = poseStack.last();
 			this.overlay = overlay;
 
-			this.vertexConsumers = vertexConsumers;
+			this.bufferSource = bufferSource;
 
-			blockInfo.prepareForWorld(blockView, cull);
+			blockInfo.prepareForLevel(level, cull);
 			random.setSeed(seed);
 
 			prepare(pos, state);
-			model.emitQuads(getEmitter(), blockView, pos, state, random, blockInfo::shouldCullSide);
+			model.emitQuads(getEmitter(), level, pos, state, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
-			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block model - Indigo Renderer");
-			CrashReportSection crashReportSection = crashReport.addElement("Block model being tessellated");
-			CrashReportSection.addBlockInfo(crashReportSection, blockView, pos, state);
-			throw new CrashException(crashReport);
+			CrashReport crashReport = CrashReport.forThrowable(throwable, "Tessellating block model - Indigo Renderer");
+			CrashReportCategory crashReportCategory = crashReport.addCategory("Block model being tessellated");
+			CrashReportCategory.populateBlockDetails(crashReportCategory,
+					level, pos, state);
+			throw new ReportedException(crashReport);
 		} finally {
 			blockInfo.release();
-			matrices = null;
-			this.vertexConsumers = null;
+			pose = null;
+			this.bufferSource = null;
 		}
 	}
 }

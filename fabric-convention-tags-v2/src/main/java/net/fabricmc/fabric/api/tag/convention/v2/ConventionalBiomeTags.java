@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 /**
- * See {@link net.minecraft.registry.tag.BiomeTags} for vanilla tags.
+ * See {@link net.minecraft.tags.BiomeTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality,
  * and as such certain biome tags exist to mirror vanilla tags, and should be preferred
  * over vanilla unless its behavior is desired.
@@ -47,10 +47,10 @@ public final class ConventionalBiomeTags {
 	/**
 	 * Biomes that spawn in the Overworld.
 	 * (This is for people who want to tag their biomes as Overworld without getting
-	 * side effects from {@link net.minecraft.registry.tag.BiomeTags#IS_OVERWORLD}.
+	 * side effects from {@link net.minecraft.tags.BiomeTags#IS_OVERWORLD}.
 	 *
 	 * <p>NOTE: If you do not add to the vanilla Overworld tag, be sure to add to
-	 * {@link net.minecraft.registry.tag.BiomeTags#STRONGHOLD_HAS_STRUCTURE} so
+	 * {@link net.minecraft.tags.BiomeTags#HAS_STRONGHOLD} so
 	 * some Strongholds do not go missing.)
 	 */
 	public static final TagKey<Biome> IS_OVERWORLD = register("is_overworld");
@@ -111,8 +111,7 @@ public final class ConventionalBiomeTags {
 	 * For example, normal Forest biomes are mostly Oak Trees with a few Birch Trees. This biome would be in `c:primary_wood_type/oak` tag due to Oak dominance.
 	 * For biomes that are composed of multiple wood types but in equal proportions, put the biome into multiple wood type tags. Biomes with very few trees like Plains are skipped.
 	 *
-	 * <p></p>
-	 * If a mod introduces a new wood type, create a new tag under the `c:primary_wood_type/` folder.
+	 * <p>If a mod introduces a new wood type, create a new tag under the `c:primary_wood_type/` folder.
 	 * Multiple mods introducing the same new wood type will both be sticking their biomes in same tag.
 	 * For example, two mods providing Willow wood types would add their biomes to `c:primary_wood_type/willow` as it is the same kind of wood, despite different blocks.
 	 */
@@ -332,7 +331,7 @@ public final class ConventionalBiomeTags {
 	/**
 	 * Biomes that spawn in the Nether.
 	 * (This is for people who want to tag their biomes as Nether without getting
-	 * side effects from {@link net.minecraft.registry.tag.BiomeTags#IS_NETHER})
+	 * side effects from {@link net.minecraft.tags.BiomeTags#IS_NETHER})
 	 */
 	public static final TagKey<Biome> IS_NETHER = register("is_nether");
 	public static final TagKey<Biome> IS_NETHER_FOREST = register("is_nether_forest");
@@ -340,7 +339,7 @@ public final class ConventionalBiomeTags {
 	/**
 	 * Biomes that spawn in the End.
 	 * (This is for people who want to tag their biomes as End without getting
-	 * side effects from {@link net.minecraft.registry.tag.BiomeTags#IS_END})
+	 * side effects from {@link net.minecraft.tags.BiomeTags#IS_END})
 	 */
 	public static final TagKey<Biome> IS_END = register("is_end");
 	/**

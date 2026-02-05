@@ -15,10 +15,6 @@
     "minecraft:brown_concrete_powder",
     "minecraft:green_concrete_powder",
     "minecraft:red_concrete_powder",
-    "minecraft:black_concrete_powder",
-    {
-      "id": "#c:concrete_powder",
-      "required": false
-    }
+    "minecraft:black_concrete_powder"
   ]
 }

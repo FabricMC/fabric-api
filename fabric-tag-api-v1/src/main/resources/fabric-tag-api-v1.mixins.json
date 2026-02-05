@@ -1,18 +1,19 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.tag",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "DataPackContentsMixin",
-    "SimpleRegistry2Mixin",
-    "SimpleRegistry3Mixin",
-    "SimpleRegistryMixin",
+    "MappedRegistry2Mixin",
+    "MappedRegistry3Mixin",
+    "MappedRegistryMixin",
+    "ReloadableServerResourcesMixin",
     "SimpleRegistryTagLookup2Accessor",
-    "TagEntryMixin",
-    "TagFileMixin",
-    "TagGroupLoaderMixin"
+    "TagLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

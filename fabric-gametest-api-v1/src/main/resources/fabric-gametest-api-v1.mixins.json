@@ -1,11 +1,11 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.gametest",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "RegistryLoaderMixin",
+    "RegistryDataLoaderMixin",
     "StructureTemplateManagerMixin",
-    "TestServerMixin"
+    "GameTestServerMixin"
   ],
   "server": [
     "server.MainMixin"

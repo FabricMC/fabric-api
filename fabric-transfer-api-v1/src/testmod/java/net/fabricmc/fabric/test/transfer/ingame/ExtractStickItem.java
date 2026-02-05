@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -30,36 +30,36 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class ExtractStickItem extends Item {
-	public ExtractStickItem(Settings settings) {
+	public ExtractStickItem(Properties settings) {
 		super(settings);
 	}
 
 	@Override
-	public ActionResult useOnBlock(ItemUsageContext context) {
-		Storage<FluidVariant> storage = FluidStorage.SIDED.find(context.getWorld(), context.getBlockPos(), context.getSide());
+	public InteractionResult useOn(UseOnContext context) {
+		Storage<FluidVariant> storage = FluidStorage.SIDED.find(context.getLevel(), context.getClickedPos(), context.getClickedFace());
 
 		try (Transaction transaction = Transaction.openOuter()) {
 			// Find something to extract
 			FluidVariant stored = StorageUtil.findExtractableResource(storage, transaction);
-			if (stored == null) return ActionResult.PASS;
+			if (stored == null) return InteractionResult.PASS;
 
 			// By now, storage can't be null :P
 			long extracted = storage.extract(stored, FluidConstants.BUCKET, transaction);
 			// If sneaking, we require exact extraction (can be tested on cauldrons)
-			boolean requireExact = context.getPlayer() != null && context.getPlayer().isSneaking();
+			boolean requireExact = context.getPlayer() != null && context.getPlayer().isShiftKeyDown();
 
 			if (!requireExact || extracted == FluidConstants.BUCKET) {
 				if (context.getPlayer() != null) {
-					context.getPlayer().sendMessage(
-							Text.literal("Extracted some ").append(FluidVariantAttributes.getName(stored)).append("."),
+					context.getPlayer().displayClientMessage(
+							Component.literal("Extracted some ").append(FluidVariantAttributes.getName(stored)).append("."),
 							true);
 				}
 
 				transaction.commit();
-				return ActionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			}
 		}
 
-		return ActionResult.FAIL;
+		return InteractionResult.FAIL;
 	}
 }

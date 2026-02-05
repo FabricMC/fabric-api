@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
-import net.minecraft.resource.LifecycledResourceManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.CloseableResourceManager;
+import net.minecraft.server.players.PlayerList;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -31,7 +31,7 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called when a Minecraft server is starting.
 	 *
-	 * <p>This occurs before the {@link PlayerManager player manager} and any worlds are loaded.
+	 * <p>This occurs before the {@link PlayerList player list} and any levels are loaded.
 	 */
 	public static final Event<ServerStarting> SERVER_STARTING = EventFactory.createArrayBacked(ServerStarting.class, callbacks -> server -> {
 		for (ServerStarting callback : callbacks) {
@@ -42,7 +42,7 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called when a Minecraft server has started and is about to tick for the first time.
 	 *
-	 * <p>At this stage, all worlds are live.
+	 * <p>At this stage, all levels are live.
 	 */
 	public static final Event<ServerStarted> SERVER_STARTED = EventFactory.createArrayBacked(ServerStarted.class, (callbacks) -> (server) -> {
 		for (ServerStarted callback : callbacks) {
@@ -56,7 +56,7 @@ public final class ServerLifecycleEvents {
 	 *
 	 * <p>For example, an integrated server will begin stopping, but its client may continue to run.
 	 *
-	 * <p>All worlds are still present and can be modified.
+	 * <p>All levels are still present and can be modified.
 	 */
 	public static final Event<ServerStopping> SERVER_STOPPING = EventFactory.createArrayBacked(ServerStopping.class, (callbacks) -> (server) -> {
 		for (ServerStopping callback : callbacks) {
@@ -66,7 +66,7 @@ public final class ServerLifecycleEvents {
 
 	/**
 	 * Called when a Minecraft server has stopped.
-	 * All worlds have been closed and all (block)entities and players have been unloaded.
+	 * All levels have been closed and all (block)entities and players have been unloaded.
 	 *
 	 * <p>For example, an {@link net.fabricmc.api.EnvType#CLIENT integrated server} will begin stopping, but its client may continue to run.
 	 * Meanwhile, for a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
@@ -90,9 +90,9 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called before a Minecraft server reloads data packs.
 	 */
-	public static final Event<StartDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(StartDataPackReload.class, callbacks -> (server, serverResourceManager) -> {
+	public static final Event<StartDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(StartDataPackReload.class, callbacks -> (server, resourceManager) -> {
 		for (StartDataPackReload callback : callbacks) {
-			callback.startDataPackReload(server, serverResourceManager);
+			callback.startDataPackReload(server, resourceManager);
 		}
 	});
 
@@ -101,9 +101,9 @@ public final class ServerLifecycleEvents {
 	 *
 	 * <p>If reloading data packs was unsuccessful, the current data packs will be kept.
 	 */
-	public static final Event<EndDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(EndDataPackReload.class, callbacks -> (server, serverResourceManager, success) -> {
+	public static final Event<EndDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(EndDataPackReload.class, callbacks -> (server, resourceManager, success) -> {
 		for (EndDataPackReload callback : callbacks) {
-			callback.endDataPackReload(server, serverResourceManager, success);
+			callback.endDataPackReload(server, resourceManager, success);
 		}
 	});
 
@@ -157,12 +157,12 @@ public final class ServerLifecycleEvents {
 		 * @param player Player to which the data is being sent.
 		 * @param joined True if the player is joining the server, false if the server finished a successful resource reload.
 		 */
-		void onSyncDataPackContents(ServerPlayerEntity player, boolean joined);
+		void onSyncDataPackContents(ServerPlayer player, boolean joined);
 	}
 
 	@FunctionalInterface
 	public interface StartDataPackReload {
-		void startDataPackReload(MinecraftServer server, LifecycledResourceManager resourceManager);
+		void startDataPackReload(MinecraftServer server, CloseableResourceManager resourceManager);
 	}
 
 	@FunctionalInterface
@@ -176,7 +176,7 @@ public final class ServerLifecycleEvents {
 		 * @param resourceManager the resource manager
 		 * @param success if the reload was successful
 		 */
-		void endDataPackReload(MinecraftServer server, LifecycledResourceManager resourceManager, boolean success);
+		void endDataPackReload(MinecraftServer server, CloseableResourceManager resourceManager, boolean success);
 	}
 
 	@FunctionalInterface

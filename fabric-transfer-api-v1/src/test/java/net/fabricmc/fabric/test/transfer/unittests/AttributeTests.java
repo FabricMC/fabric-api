@@ -21,8 +21,8 @@ import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.fluid.Fluids;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -41,8 +41,8 @@ public class AttributeTests extends AbstractTransferApiTest {
 	public void testWater() {
 		FluidVariant water = FluidVariant.of(Fluids.WATER);
 
-		assertEquals(SoundEvents.ITEM_BUCKET_FILL, FluidVariantAttributes.getFillSound(water));
-		assertEquals(SoundEvents.ITEM_BUCKET_EMPTY, FluidVariantAttributes.getEmptySound(water));
+		assertEquals(SoundEvents.BUCKET_FILL, FluidVariantAttributes.getFillSound(water));
+		assertEquals(SoundEvents.BUCKET_EMPTY, FluidVariantAttributes.getEmptySound(water));
 		assertEquals(0, FluidVariantAttributes.getLuminance(water));
 		assertEquals(FluidConstants.WATER_TEMPERATURE, FluidVariantAttributes.getTemperature(water));
 		assertEquals(FluidConstants.WATER_VISCOSITY, FluidVariantAttributes.getViscosity(water, null));
@@ -53,8 +53,8 @@ public class AttributeTests extends AbstractTransferApiTest {
 	public void testLava() {
 		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
 
-		assertEquals(SoundEvents.ITEM_BUCKET_FILL_LAVA, FluidVariantAttributes.getFillSound(lava));
-		assertEquals(SoundEvents.ITEM_BUCKET_EMPTY_LAVA, FluidVariantAttributes.getEmptySound(lava));
+		assertEquals(SoundEvents.BUCKET_FILL_LAVA, FluidVariantAttributes.getFillSound(lava));
+		assertEquals(SoundEvents.BUCKET_EMPTY_LAVA, FluidVariantAttributes.getEmptySound(lava));
 		assertEquals(15, FluidVariantAttributes.getLuminance(lava));
 		assertEquals(FluidConstants.LAVA_TEMPERATURE, FluidVariantAttributes.getTemperature(lava));
 		assertEquals(FluidConstants.LAVA_VISCOSITY, FluidVariantAttributes.getViscosity(lava, null));

@@ -1,0 +1,6 @@
+classTweaker	v1	official
+
+# fields for mods to check whether the environment is as desired for registration
+transitive-accessible	field	net/minecraft/commands/Commands$CommandSelection	includeDedicated	Z
+transitive-accessible	field	net/minecraft/commands/Commands$CommandSelection	includeIntegrated	Z
+transitive-inject-interface	net/minecraft/commands/arguments/selector/EntitySelectorParser	net/fabricmc/fabric/api/command/v2/FabricEntitySelectorParser

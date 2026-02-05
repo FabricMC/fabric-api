@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.render.item.model.ItemModel;
+import net.minecraft.client.renderer.item.ItemModel;
 
 /**
  * A simple implementation of {@link ItemModel.Unbaked} that delegates all method calls to the {@link #wrapped} field.
@@ -35,17 +35,17 @@ public abstract class WrapperUnbakedItemModel implements ItemModel.Unbaked {
 	}
 
 	@Override
-	public void resolve(Resolver resolver) {
-		wrapped.resolve(resolver);
+	public void resolveDependencies(Resolver resolver) {
+		wrapped.resolveDependencies(resolver);
 	}
 
 	@Override
-	public MapCodec<? extends ItemModel.Unbaked> getCodec() {
-		return wrapped.getCodec();
+	public MapCodec<? extends ItemModel.Unbaked> type() {
+		return wrapped.type();
 	}
 
 	@Override
-	public ItemModel bake(ItemModel.BakeContext context) {
+	public ItemModel bake(ItemModel.BakingContext context) {
 		return wrapped.bake(context);
 	}
 }

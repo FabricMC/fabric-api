@@ -19,57 +19,57 @@ package net.fabricmc.fabric.test.networking.client.channeltest;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ServerboundPlayChannelEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
-	public static final KeyBinding OPEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-networking-api-v1-testmod.open", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_MENU, "key.category.fabric-networking-api-v1-testmod"));
-	static final Set<Identifier> SUPPORTED_C2S_CHANNELS = new HashSet<>();
+	public static final KeyMapping OPEN = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-networking-api-v1-testmod.open", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyMapping.Category.MISC));
+	static final Set<Identifier> SUPPORTED_SERVERBOUND_CHANNELS = new HashSet<>();
 
 	@Override
 	public void onInitializeClient() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player != null) {
-				if (OPEN.wasPressed()) {
+				if (OPEN.consumeClick()) {
 					client.setScreen(new ChannelScreen(this));
 				}
 			}
 		});
 
-		C2SPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
-			SUPPORTED_C2S_CHANNELS.addAll(channels);
+		ServerboundPlayChannelEvents.REGISTER.register((listener, sender, client, channels) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.addAll(channels);
 
-			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
-				((ChannelScreen) MinecraftClient.getInstance().currentScreen).refresh();
+			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
+				((ChannelScreen) Minecraft.getInstance().screen).refresh();
 			}
 		});
 
-		C2SPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
-			SUPPORTED_C2S_CHANNELS.removeAll(channels);
+		ServerboundPlayChannelEvents.UNREGISTER.register((listener, sender, client, channels) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.removeAll(channels);
 
-			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
-				((ChannelScreen) MinecraftClient.getInstance().currentScreen).refresh();
+			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
+				((ChannelScreen) Minecraft.getInstance().screen).refresh();
 			}
 		});
 
 		// State destruction on disconnection:
-		ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> {
-			SUPPORTED_C2S_CHANNELS.clear();
+		ClientLoginConnectionEvents.DISCONNECT.register((listener, client) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.clear();
 		});
 
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-			SUPPORTED_C2S_CHANNELS.clear();
+		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.clear();
 		});
 	}
 }

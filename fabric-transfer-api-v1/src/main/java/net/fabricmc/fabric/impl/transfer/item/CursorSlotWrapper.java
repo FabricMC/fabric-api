@@ -20,40 +20,40 @@ import java.util.Map;
 
 import com.google.common.collect.MapMaker;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 
 /**
- * Wrapper around the cursor slot of a screen handler.
+ * Wrapper around the cursor slot of a menu.
  */
 public class CursorSlotWrapper extends SingleStackStorage {
-	private static final Map<ScreenHandler, CursorSlotWrapper> WRAPPERS = new MapMaker().weakValues().makeMap();
+	private static final Map<AbstractContainerMenu, CursorSlotWrapper> WRAPPERS = new MapMaker().weakValues().makeMap();
 
-	public static CursorSlotWrapper get(ScreenHandler screenHandler) {
-		return WRAPPERS.computeIfAbsent(screenHandler, CursorSlotWrapper::new);
+	public static CursorSlotWrapper get(AbstractContainerMenu menu) {
+		return WRAPPERS.computeIfAbsent(menu, CursorSlotWrapper::new);
 	}
 
-	private final ScreenHandler screenHandler;
+	private final AbstractContainerMenu menu;
 
-	private CursorSlotWrapper(ScreenHandler screenHandler) {
-		this.screenHandler = screenHandler;
+	private CursorSlotWrapper(AbstractContainerMenu menu) {
+		this.menu = menu;
 	}
 
 	@Override
 	protected ItemStack getStack() {
-		return screenHandler.getCursorStack();
+		return menu.getCarried();
 	}
 
 	@Override
 	protected void setStack(ItemStack stack) {
-		screenHandler.setCursorStack(stack);
+		menu.setCarried(stack);
 	}
 
 	@Override
 	public String toString() {
-		return "CursorSlotWrapper[" + screenHandler + "/" + Registries.SCREEN_HANDLER.getId(screenHandler.getType()) + "]";
+		return "CursorSlotWrapper[" + menu + "/" + BuiltInRegistries.MENU.getKey(menu.getType()) + "]";
 	}
 }

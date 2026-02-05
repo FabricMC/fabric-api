@@ -15,10 +15,6 @@
     "minecraft:brown_concrete",
     "minecraft:green_concrete",
     "minecraft:black_concrete",
-    "minecraft:red_concrete",
-    {
-      "id": "#c:concrete",
-      "required": false
-    }
+    "minecraft:red_concrete"
   ]
 }

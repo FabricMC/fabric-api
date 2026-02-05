@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block.type;
 
-import net.minecraft.block.BlockSetType;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 /**
  * This class allows easy creation of {@link BlockSetType}s.
@@ -33,16 +33,16 @@ public final class BlockSetTypeBuilder {
 	private boolean openableByHand = true;
 	private boolean openableByWindCharge = true;
 	private boolean buttonActivatedByArrows = true;
-	private BlockSetType.ActivationRule pressurePlateActivationRule = BlockSetType.ActivationRule.EVERYTHING;
-	private BlockSoundGroup soundGroup = BlockSoundGroup.WOOD;
-	private SoundEvent doorCloseSound = SoundEvents.BLOCK_WOODEN_DOOR_CLOSE;
-	private SoundEvent doorOpenSound = SoundEvents.BLOCK_WOODEN_DOOR_OPEN;
-	private SoundEvent trapdoorCloseSound = SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE;
-	private SoundEvent trapdoorOpenSound = SoundEvents.BLOCK_WOODEN_TRAPDOOR_OPEN;
-	private SoundEvent pressurePlateClickOffSound = SoundEvents.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_OFF;
-	private SoundEvent pressurePlateClickOnSound = SoundEvents.BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON;
-	private SoundEvent buttonClickOffSound = SoundEvents.BLOCK_WOODEN_BUTTON_CLICK_OFF;
-	private SoundEvent buttonClickOnSound = SoundEvents.BLOCK_WOODEN_BUTTON_CLICK_ON;
+	private BlockSetType.PressurePlateSensitivity pressurePlateActivationRule = BlockSetType.PressurePlateSensitivity.EVERYTHING;
+	private SoundType soundType = SoundType.WOOD;
+	private SoundEvent doorCloseSound = SoundEvents.WOODEN_DOOR_CLOSE;
+	private SoundEvent doorOpenSound = SoundEvents.WOODEN_DOOR_OPEN;
+	private SoundEvent trapdoorCloseSound = SoundEvents.WOODEN_TRAPDOOR_CLOSE;
+	private SoundEvent trapdoorOpenSound = SoundEvents.WOODEN_TRAPDOOR_OPEN;
+	private SoundEvent pressurePlateClickOffSound = SoundEvents.WOODEN_PRESSURE_PLATE_CLICK_OFF;
+	private SoundEvent pressurePlateClickOnSound = SoundEvents.WOODEN_PRESSURE_PLATE_CLICK_ON;
+	private SoundEvent buttonClickOffSound = SoundEvents.WOODEN_BUTTON_CLICK_OFF;
+	private SoundEvent buttonClickOnSound = SoundEvents.WOODEN_BUTTON_CLICK_ON;
 
 	/**
 	 * Sets whether this block set type's door and trapdoor can be opened by hand.
@@ -81,33 +81,33 @@ public final class BlockSetTypeBuilder {
 	}
 
 	/**
-	 * Sets this block set type's pressure plate {@link BlockSetType.ActivationRule}.
+	 * Sets this block set type's pressure plate {@link BlockSetType.PressurePlateSensitivity}.
 	 *
-	 * <p>Defaults to {@link BlockSetType.ActivationRule#EVERYTHING}.
+	 * <p>Defaults to {@link BlockSetType.PressurePlateSensitivity#EVERYTHING}.
 	 *
 	 * @return this builder for chaining
 	 */
-	public BlockSetTypeBuilder pressurePlateActivationRule(BlockSetType.ActivationRule activationRule) {
+	public BlockSetTypeBuilder pressurePlateActivationRule(BlockSetType.PressurePlateSensitivity activationRule) {
 		this.pressurePlateActivationRule = activationRule;
 		return this;
 	}
 
 	/**
-	 * Sets this block set type's sound group.
+	 * Sets this block set type's sound type.
 	 *
-	 * <p>Defaults to {@link BlockSoundGroup#WOOD}.
+	 * <p>Defaults to {@link SoundType#WOOD}.
 	 *
 	 * @return this builder for chaining
 	 */
-	public BlockSetTypeBuilder soundGroup(BlockSoundGroup soundGroup) {
-		this.soundGroup = soundGroup;
+	public BlockSetTypeBuilder soundType(SoundType soundType) {
+		this.soundType = soundType;
 		return this;
 	}
 
 	/**
 	 * Sets this block set type's door close sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_DOOR_CLOSE}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_DOOR_CLOSE}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -119,7 +119,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's door open sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_DOOR_OPEN}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_DOOR_OPEN}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -131,7 +131,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's trapdoor close sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_TRAPDOOR_CLOSE}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_TRAPDOOR_CLOSE}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -143,7 +143,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's trapdoor open sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_TRAPDOOR_OPEN}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_TRAPDOOR_OPEN}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -155,7 +155,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's pressure plate click off sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_PRESSURE_PLATE_CLICK_OFF}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_OFF}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -167,7 +167,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's pressure plate click on sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_ON}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -179,7 +179,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's button click off sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_BUTTON_CLICK_OFF}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_BUTTON_CLICK_OFF}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -191,7 +191,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's button click on sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_BUTTON_CLICK_ON}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_BUTTON_CLICK_ON}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -213,7 +213,7 @@ public final class BlockSetTypeBuilder {
 		copy.openableByWindCharge(builder.openableByWindCharge);
 		copy.buttonActivatedByArrows(builder.buttonActivatedByArrows);
 		copy.pressurePlateActivationRule(builder.pressurePlateActivationRule);
-		copy.soundGroup(builder.soundGroup);
+		copy.soundType(builder.soundType);
 		copy.doorCloseSound(builder.doorCloseSound);
 		copy.doorOpenSound(builder.doorOpenSound);
 		copy.trapdoorCloseSound(builder.trapdoorCloseSound);
@@ -238,7 +238,7 @@ public final class BlockSetTypeBuilder {
 		copy.openableByWindCharge(setType.canOpenByWindCharge());
 		copy.buttonActivatedByArrows(setType.canButtonBeActivatedByArrows());
 		copy.pressurePlateActivationRule(setType.pressurePlateSensitivity());
-		copy.soundGroup(setType.soundType());
+		copy.soundType(setType.soundType());
 		copy.doorCloseSound(setType.doorClose());
 		copy.doorOpenSound(setType.doorOpen());
 		copy.trapdoorCloseSound(setType.trapdoorClose());
@@ -275,6 +275,7 @@ public final class BlockSetTypeBuilder {
 	 * @return the built {@link BlockSetType}
 	 */
 	public BlockSetType build(Identifier id) {
-		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
+		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule,
+				soundType, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
 	}
 }

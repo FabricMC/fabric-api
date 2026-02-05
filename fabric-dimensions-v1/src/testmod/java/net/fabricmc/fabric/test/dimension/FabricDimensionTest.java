@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.test.dimension;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.dimension.LevelStem;
 
 import net.fabricmc.api.ModInitializer;
 
 public class FabricDimensionTest implements ModInitializer {
-	// The dimension options refer to the JSON-file in the dimension subfolder of the data pack,
-	// which will always share its ID with the world that is created from it
-	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(RegistryKeys.DIMENSION, Identifier.of("fabric_dimension", "void"));
+	// The level stem refers to the JSON-file in the dimension subfolder of the data pack,
+	// which will always share its ID with the level that is created from it
+	private static final ResourceKey<LevelStem> DIMENSION_KEY = ResourceKey.create(Registries.LEVEL_STEM, Identifier.fromNamespaceAndPath("fabric_dimension", "void"));
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.CHUNK_GENERATOR, Identifier.of("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
+		Registry.register(BuiltInRegistries.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
 	}
 }

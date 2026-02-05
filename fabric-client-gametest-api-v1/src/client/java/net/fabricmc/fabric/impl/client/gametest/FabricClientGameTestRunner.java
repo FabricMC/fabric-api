@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -39,7 +39,7 @@ public class FabricClientGameTestRunner {
 
 	public static void start() {
 		// make the game think the window is focused
-		MinecraftClient.getInstance().onWindowFocusChanged(true);
+		Minecraft.getInstance().setWindowActive(true);
 
 		List<EntrypointContainer<FabricClientGameTest>> gameTests = getTestToRun();
 
@@ -103,18 +103,18 @@ public class FabricClientGameTestRunner {
 	private static void setupAndCheckFinalGameTestState(ClientGameTestContextImpl context) {
 		context.getInput().clearKeysDown();
 		context.runOnClient(client -> ((WindowHooks) (Object) client.getWindow()).fabric_resetSize());
-		context.getInput().setCursorPos(context.computeOnClient(client -> client.getWindow().getWidth()) * 0.5, context.computeOnClient(client -> client.getWindow().getHeight()) * 0.5);
+		context.getInput().setCursorPos(context.computeOnClient(client -> client.getWindow().getScreenWidth()) * 0.5, context.computeOnClient(client -> client.getWindow().getScreenHeight()) * 0.5);
 
 		if (ThreadingImpl.isServerRunning) {
 			throw new AssertionError("Client gametest %s finished while a server is still running".formatted(currentlyRunningGameTest.getDefinition()));
 		}
 
 		context.runOnClient(client -> {
-			if (client.world != null) {
+			if (client.level != null) {
 				throw new AssertionError("Client gametest %s finished while still connected to a server".formatted(currentlyRunningGameTest.getDefinition()));
 			}
 
-			if (!(client.currentScreen instanceof TitleScreen)) {
+			if (!(client.screen instanceof TitleScreen)) {
 				throw new AssertionError("Client gametest %s did not finish on the title screen".formatted(currentlyRunningGameTest.getDefinition()));
 			}
 		});

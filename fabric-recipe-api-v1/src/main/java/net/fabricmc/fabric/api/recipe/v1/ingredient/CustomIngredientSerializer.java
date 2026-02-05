@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
@@ -66,9 +66,9 @@ public interface CustomIngredientSerializer<T extends CustomIngredient> {
 	MapCodec<T> getCodec();
 
 	/**
-	 * {@return the packet codec for serializing this ingredient}.
+	 * {@return the stream codec for serializing this ingredient}.
 	 *
-	 * @see Ingredient#PACKET_CODEC
+	 * @see Ingredient#CONTENTS_STREAM_CODEC
 	 */
-	PacketCodec<RegistryByteBuf, T> getPacketCodec();
+	StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();
 }

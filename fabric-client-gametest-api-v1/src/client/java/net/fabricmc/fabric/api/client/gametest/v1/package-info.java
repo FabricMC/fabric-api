@@ -14,11 +14,11 @@
  *     }
  * </pre>
  *
- * <h1>Lifecycle</h1>
+ * <h2>Lifecycle</h2>
  * Client gametests are run sequentially. When a gametest ends, the game will be
  * returned to the title screen. When all gametests have been run, the game will be closed.
  *
- * <h1>Threading</h1>
+ * <h2>Threading</h2>
  *
  * <p>Client gametests run on the client gametest thread. Use the functions inside
  * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext ClientGameTestContext} and other test
@@ -29,7 +29,7 @@
  * <p>The game remains paused unless you explicitly unpause it using various waiting functions such as
  * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
  * A side effect of this is that <strong>the results of your code may not be immediate if the game needs a tick to
- * process them</strong>. A big example of this is key bindings, although some key binding methods have built-in tick
+ * process them</strong>. A big example of this is key mappings, although some key mapping methods have built-in tick
  * waits to mitigate the issue. See the {@link net.fabricmc.fabric.api.client.gametest.v1.TestInput TestInput}
  * documentation for details. Another pseudo-example is effects on the server need a tick to propagate to the client and
  * vice versa, although this is related to packets more than the fact the game is suspended (see the network
@@ -41,7 +41,7 @@
  * is exactly one server tick per client tick while a server is running (singleplayer or multiplayer). There is also a
  * limit of one client tick per frame.
  *
- * <h1>Network synchronization</h1>
+ * <h2>Network synchronization</h2>
  *
  * <p>Network packets are internally tracked and managed so that they are always handled at a consistent time, always
  * before the next tick. Calling {@code waitTick()} is always enough for a server packet to be handled on the client or
@@ -51,12 +51,13 @@
  * send or handle packets, you may need to disable network synchronization. You can do this by setting the
  * {@code fabric.client.gametest.disableNetworkSynchronizer} system property.
  *
- * <h1>Default settings</h1>
+ * <h2>Default settings</h2>
  * The client gametest API adjusts some default settings, usually for consistency of tests. These settings can always be
  * changed back to the default value or a different value inside a gametest.
  *
- * <h2>Game options</h2>
+ * <h3>Game options</h3>
  * <table>
+ *     <caption>Game options adjusted for client gametests</caption>
  *     <tr>
  *         <th>Setting name</th>
  *         <th>Gametest default</th>
@@ -64,44 +65,45 @@
  *         <th>Reason</th>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#tutorialStep Tutorial step}</td>
- *         <td>{@link net.minecraft.client.tutorial.TutorialStep#NONE NONE}</td>
- *         <td>{@link net.minecraft.client.tutorial.TutorialStep#MOVEMENT MOVEMENT}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#tutorialStep Tutorial step}</td>
+ *         <td>{@link net.minecraft.client.tutorial.TutorialSteps#NONE NONE}</td>
+ *         <td>{@link net.minecraft.client.tutorial.TutorialSteps#MOVEMENT MOVEMENT}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#getCloudRenderMode() Cloud render mode}</td>
- *         <td>{@link net.minecraft.client.option.CloudRenderMode#OFF OFF}</td>
- *         <td>{@link net.minecraft.client.option.CloudRenderMode#FANCY FANCY}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#cloudStatus() Cloud status}</td>
+ *         <td>{@link net.minecraft.client.CloudStatus#OFF OFF}</td>
+ *         <td>{@link net.minecraft.client.CloudStatus#FANCY FANCY}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#onboardAccessibility Onboard accessibility}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#onboardAccessibility Onboard accessibility}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Would cause the game test runner to have to click through the onboard accessibility prompt</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#getViewDistance() View distance}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#renderDistance() Render distance}</td>
  *         <td>{@code 5}</td>
  *         <td>{@code 10}</td>
  *         <td>Speeds up loading of chunks, especially for functions such as
- *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext#waitForChunksRender() TestClientWorldContext.waitForChunksRender()}</td>
+ *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext#waitForChunksRender() TestClientLevelContext.waitForChunksRender()}</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#getSoundVolumeOption(net.minecraft.sound.SoundCategory) Music volume}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource) Music volume}</td>
  *         <td>{@code 0.0}</td>
  *         <td>{@code 1.0}</td>
  *         <td>The game music is annoying while running gametests</td>
  *     </tr>
  * </table>
  *
- * <h2>World creation options</h2>
+ * <h3>World creation options</h3>
  * These adjusted defaults only apply if the world builder's
  * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder#setUseConsistentSettings(boolean) consistent settings}
  * have not been set to {@code false}.
  *
  * <table>
+ *     <caption>World creation options adjusted for client gametests</caption>
  *     <tr>
  *         <th>Setting name</th>
  *         <th>Gametest default</th>
@@ -109,45 +111,46 @@
  *         <th>Reason</th>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.gui.screen.world.WorldCreator#setWorldType(net.minecraft.client.gui.screen.world.WorldCreator.WorldType) World type}</td>
- *         <td>{@link net.minecraft.world.gen.WorldPresets#FLAT FLAT}</td>
- *         <td>{@link net.minecraft.world.gen.WorldPresets#DEFAULT DEFAULT}</td>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setWorldType(net.minecraft.client.gui.screens.worldselection.WorldCreationUiState.WorldTypeEntry) World type}</td>
+ *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#FLAT FLAT}</td>
+ *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#NORMAL DEFAULT}</td>
  *         <td>Creates cleaner test cases</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.gui.screen.world.WorldCreator#setSeed(String) Seed}</td>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setSeed(String) Seed}</td>
  *         <td>{@code 1}</td>
  *         <td>Random value</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.gui.screen.world.WorldCreator#setGenerateStructures(boolean) Generate structures}</td>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setGenerateStructures(boolean) Generate structures}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests and creates cleaner tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.GameRules#DO_DAYLIGHT_CYCLE Do daylight cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Do daylight cycle}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.GameRules#DO_WEATHER_CYCLE Do weather cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Do weather cycle}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.GameRules#DO_MOB_SPAWNING Do mob spawning}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Do mob spawning}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  * </table>
  *
- * <h2>Dedicated server properties</h2>
+ * <h3>Dedicated server properties</h3>
  * <table>
+ *     <caption>Dedicated server properties adjusted for client gametests</caption>
  *     <tr>
  *         <th>Setting name</th>
  *         <th>Gametest default</th>
@@ -184,6 +187,8 @@
  * </table>
  */
 @ApiStatus.Experimental
+@NullMarked
 package net.fabricmc.fabric.api.client.gametest.v1;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.NullMarked;

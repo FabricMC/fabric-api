@@ -25,10 +25,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
@@ -118,7 +118,7 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 		Objects.requireNonNull(block, "block cannot be null");
 		Objects.requireNonNull(resolver, "resolver cannot be null");
 
-		Optional<RegistryKey<Block>> optionalKey = Registries.BLOCK.getKey(block);
+		Optional<ResourceKey<Block>> optionalKey = BuiltInRegistries.BLOCK.getResourceKey(block);
 
 		if (optionalKey.isEmpty()) {
 			throw new IllegalArgumentException("Received unregistered block");

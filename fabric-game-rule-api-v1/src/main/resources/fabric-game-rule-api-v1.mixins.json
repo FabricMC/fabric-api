@@ -1,16 +1,18 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.gamerule",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "GameRulesBooleanRuleAccessor",
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
-    "GameRulesAccessor",
-    "GameRulesIntRuleAccessor",
-    "GameRulesKeyMixin"
+    "GameRuleMixin",
+    "GameRulesServiceGameRuleUpdateMixin",
+    "MinecraftServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

@@ -6,10 +6,6 @@
     "minecraft:old_growth_spruce_taiga",
     "minecraft:jungle",
     "minecraft:bamboo_jungle",
-    "minecraft:mangrove_swamp",
-    {
-      "id": "#c:vegetation_dense",
-      "required": false
-    }
+    "minecraft:mangrove_swamp"
   ]
 }

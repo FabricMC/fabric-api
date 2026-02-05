@@ -16,7 +16,11 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
+    "fabric-convention-tags-v2": "*",
+    "fabric-recipe-api-v1": "*",
+    "fabric-registry-sync-v0": "*",
+    "fabric-resource-conditions-api-v1": "*",
     "fabric-tag-api-v1": "*"
   },
   "description": "Allows for automatic data generation.",
@@ -27,14 +31,8 @@
       "environment": "client"
     }
   ],
-  "accessWidener" : "fabric-data-generation-api-v1.accesswidener",
+  "accessWidener" : "fabric-data-generation-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_7788": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricBlockLootTableGenerator"],
-      "net/minecraft/class_7789": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootTableGenerator"],
-      "net/minecraft/class_8790": ["net/fabricmc/fabric/api/datagen/v1/recipe/FabricRecipeExporter"],
-      "net/minecraft/class_11389": ["net/fabricmc/fabric/api/datagen/v1/provider/FabricProvidedTagBuilder"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

@@ -20,8 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 
 public final class ClientLifecycleTests implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientLifecycleTests.class);
@@ -36,7 +36,7 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 			}
 
 			startCalled = true;
-			client.submitAndJoin(() -> { // This should fail if the client thread was not bound yet.
+			client.executeBlocking(() -> { // This should fail if the client thread was not bound yet.
 				System.out.println("Started the client");
 			});
 		});
@@ -50,8 +50,8 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 			System.out.println("Client has started stopping!");
 		});
 
-		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> {
-			LOGGER.info("Client world changed to {}", world.getRegistryKey().getValue());
+		ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((client, level) -> {
+			LOGGER.info("Client level changed to {}", level.dimension().identifier());
 		});
 	}
 }

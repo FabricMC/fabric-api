@@ -16,51 +16,68 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 
 public class ArmorRenderingTests implements ClientModInitializer {
-	private BipedEntityModel<BipedEntityRenderState> armorModel;
-	private final Identifier texture = Identifier.ofVanilla("textures/block/dirt.png");
+	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/block/dirt.png");
+	private static final String MOD_ID = "fabric-rendering-v1-testmod";
 
 	// Renders a biped model with dirt texture, replacing diamond helmet and diamond chest plate rendering
 	// Also makes diamond sword a valid helmet and renders them as dirt helmets. Their default head item rendering is disabled.
 	@Override
 	public void onInitializeClient() {
-		ArmorRenderer armorRenderer = new ArmorRenderer() {
-			@Override
-			public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, BipedEntityRenderState renderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel) {
-				if (armorModel == null) {
-					armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
-				}
+		ArmorModelSet<ModelLayerLocation> armorModelData = new ArmorModelSet<>("helmet", "chestplate", "leggings", "boots")
+				.map(name -> new ModelLayerLocation(Identifier.fromNamespaceAndPath(MOD_ID, "test_armor"), name));
+		ModelLayerRegistry.registerArmorModelLayers(armorModelData, () -> HumanoidModel.createArmorMeshSet(new CubeDeformation(0.5f), new CubeDeformation(1f)).map(modelData -> LayerDefinition.create(modelData, 64, 32)));
+		ArmorRenderer.register(context -> new ArmorRendererTestImpl(context, armorModelData.head()), Items.DIAMOND_HELMET, Items.DIAMOND_SWORD);
+		ArmorRenderer.register(context -> new ArmorRendererTestImpl(context, armorModelData.chest()), Items.DIAMOND_CHESTPLATE);
+	}
 
-				armorModel.setAngles(renderState);
-				armorModel.setVisible(false);
-				armorModel.body.visible = slot == EquipmentSlot.CHEST;
-				armorModel.leftArm.visible = slot == EquipmentSlot.CHEST;
-				armorModel.rightArm.visible = slot == EquipmentSlot.CHEST;
-				armorModel.head.visible = slot == EquipmentSlot.HEAD;
-				ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, armorModel, texture);
+	record ArmorRendererTestImpl(HumanoidModel<HumanoidRenderState> model) implements ArmorRenderer {
+		ArmorRendererTestImpl(EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
+			this(new HumanoidModel<>(context.bakeLayer(modelLayerLocation)));
+		}
+
+		@Override
+		public void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack stack, HumanoidRenderState humanoidRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel) {
+			OrderedSubmitNodeCollector orderedCollector = submitNodeCollector.order(0);
+			ArmorRenderer.submitTransformCopyingModel(contextModel,
+					humanoidRenderState, model,
+					humanoidRenderState, false, orderedCollector,
+					poseStack, RenderTypes.armorCutoutNoCull(TEXTURE), light, OverlayTexture.NO_OVERLAY, 0, null);
+
+			if (stack.hasFoil()) {
+				ArmorRenderer.submitTransformCopyingModel(contextModel,
+						humanoidRenderState, model,
+						humanoidRenderState, false, orderedCollector,
+						poseStack, RenderTypes.armorEntityGlint(), light, OverlayTexture.NO_OVERLAY, 0, null);
 			}
+		}
 
-			@Override
-			public boolean shouldRenderDefaultHeadItem(LivingEntity entity, ItemStack stack) {
-				return !stack.isOf(Items.DIAMOND_SWORD);
-			}
-		};
-
-		ArmorRenderer.register(armorRenderer, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_SWORD);
+		@Override
+		public boolean shouldRenderDefaultHeadItem(LivingEntity entity, ItemStack stack) {
+			return !stack.is(Items.DIAMOND_SWORD);
+		}
 	}
 }

@@ -21,4 +21,7 @@
  *
  * <p>Use the {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint} to register {@link net.minecraft.data.DataProvider} with the {@link net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator}.
  */
+@NullMarked
 package net.fabricmc.fabric.api.datagen.v1;
+
+import org.jspecify.annotations.NullMarked;

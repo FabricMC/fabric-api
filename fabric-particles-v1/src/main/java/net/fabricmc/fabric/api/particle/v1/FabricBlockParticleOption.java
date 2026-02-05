@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.api.particle.v1;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+
+import net.fabricmc.fabric.impl.particle.BlockParticleOptionFactoryImpl;
+
+/**
+ * Note: This interface is automatically implemented on {@link BlockParticleOption} via Mixin and interface injection.
+ */
+public interface FabricBlockParticleOption {
+	/**
+	 * Alternative for {@link BlockParticleOption#BlockParticleOption(ParticleType, BlockState)} that also
+	 * accepts a {@link BlockPos}. This method should be used instead of the vanilla constructor when the block state
+	 * is retrieved using a block pos, most commonly through {@link BlockGetter#getBlockState(BlockPos)}. This ensures
+	 * that any particles created from this option use an accurate pos for any client-side logic.
+	 *
+	 * <p>If an instance with a non-null block pos needs to be synced to the client, the block pos will only be synced
+	 * if it is known that the client supports decoding it (has this Fabric API module installed); otherwise, the effect
+	 * will be sent as a vanilla effect and the client will produce a null block pos.
+	 *
+	 * @param type the particle type
+	 * @param blockState the block state
+	 * @param blockPos the block pos from which the block state was retrieved
+	 * @return the particle option
+	 */
+	static BlockParticleOption create(ParticleType<BlockParticleOption> type, BlockState blockState, @Nullable BlockPos blockPos) {
+		return BlockParticleOptionFactoryImpl.create(type, blockState, blockPos);
+	}
+
+	/**
+	 * @return the block pos from which {@linkplain BlockParticleOption#getState() the block state} was
+	 * retrieved, or {@code null} if not applicable or this instance was synced from a remote server that does not have
+	 * this Fabric API module installed
+	 */
+	@Nullable
+	default BlockPos getBlockPos() {
+		throw new AssertionError("Implemented in Mixin");
+	}
+}

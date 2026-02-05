@@ -21,18 +21,16 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "minecraft": ">=1.20.5-beta.1",
     "fabric-lifecycle-events-v1": "*"
   },
   "mixins": [
     "fabric-convention-tags-api-v2.mixins.json"
   ],
+  "accessWidener": "fabric-convention-tags-v2.classtweaker",
   "description": "Contains common tags used by mods for better inter-mod compatibility.",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_6862": ["net/fabricmc/fabric/api/tag/FabricTagKey"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

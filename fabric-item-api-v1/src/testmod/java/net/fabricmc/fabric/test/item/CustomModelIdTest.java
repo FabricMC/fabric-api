@@ -16,21 +16,21 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.ModInitializer;
 
 public class CustomModelIdTest implements ModInitializer {
-	public static final RegistryKey<Item> NOT_A_DIAMOND_KEY = RegistryKey.of(RegistryKeys.ITEM, Identifier.of("fabric-item-api-v1-testmod", "not_a_diamond"));
-	public static final Item NOT_A_DIAMOND = new Item(new Item.Settings().registryKey(NOT_A_DIAMOND_KEY).modelId(Identifier.ofVanilla("diamond")));
+	public static final ResourceKey<Item> NOT_A_DIAMOND_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "not_a_diamond"));
+	public static final Item NOT_A_DIAMOND = new Item(new Item.Properties().setId(NOT_A_DIAMOND_KEY).modelId(Identifier.withDefaultNamespace("diamond")));
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, NOT_A_DIAMOND_KEY, NOT_A_DIAMOND);
+		Registry.register(BuiltInRegistries.ITEM, NOT_A_DIAMOND_KEY, NOT_A_DIAMOND);
 	}
 }

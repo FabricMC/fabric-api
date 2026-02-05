@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
 import java.util.function.Function;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -52,7 +52,7 @@ public final class FullItemFluidStorage implements ExtractionOnlyStorage<FluidVa
 	 * @param containedAmount How much of {@code containedFluid} is contained.
 	 */
 	public FullItemFluidStorage(ContainerItemContext context, Item emptyItem, FluidVariant containedFluid, long containedAmount) {
-		this(context, fullVariant -> ItemVariant.of(emptyItem, fullVariant.getComponents()), containedFluid, containedAmount);
+		this(context, fullVariant -> ItemVariant.of(emptyItem, fullVariant.getComponentsPatch()), containedFluid, containedAmount);
 	}
 
 	/**

@@ -21,10 +21,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.block.entity.SignBlockEntity;
-import net.minecraft.client.gui.screen.ingame.AbstractSignEditScreen;
-import net.minecraft.client.gui.screen.ingame.HangingSignEditScreen;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
+import net.minecraft.client.gui.screens.inventory.HangingSignEditScreen;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 @Mixin(HangingSignEditScreen.class)
 public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen {
@@ -32,10 +32,10 @@ public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen 
 		super(blockEntity, filtered, bl);
 	}
 
-	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;ofVanilla(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"))
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/Identifier;withDefaultNamespace(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;"))
 	private Identifier init(String id, Operation<Identifier> original) {
-		if (signType.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = Identifier.of(signType.name());
+		if (woodType.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
+			Identifier identifier = Identifier.parse(woodType.name());
 			return identifier.withPath(path -> "textures/gui/hanging_signs/" + path + ".png");
 		}
 

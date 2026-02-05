@@ -22,9 +22,9 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 
@@ -127,7 +127,7 @@ public final class AttachmentRegistry {
 		Builder<A> persistent(Codec<A> codec);
 
 		/**
-		 * Declares that when a player dies and respawns, the attachments of this type should remain.
+		 * Declares that when a player dies and respawns or when a mob is converted (e.g. zombie → drowned), the attachments of this type should remain.
 		 *
 		 * @return the builder
 		 */
@@ -153,11 +153,23 @@ public final class AttachmentRegistry {
 		/**
 		 * Declares that this attachment type may be automatically synchronized with some clients, as determined by {@code syncPredicate}.
 		 *
-		 * @param packetCodec the codec used to serialize the attachment data over the network
+		 * @param streamCodec the codec used to serialize the attachment data over the network
 		 * @param syncPredicate an {@link AttachmentSyncPredicate} determining with which clients to synchronize data
 		 * @return the builder
 		 */
-		AttachmentRegistry.Builder<A> syncWith(PacketCodec<? super RegistryByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate);
+		AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec, AttachmentSyncPredicate syncPredicate);
+
+		/**
+		 * Declares that this attachment type may be automatically synchronized with some clients, as determined by {@code syncPredicate}.
+		 *
+		 * <p>The max size limit should be increased with care, as syncing large amounts of data may result in network lag and excessive bandwidth usage.
+		 *
+		 * @param streamCodec the codec used to serialize the attachment data over the network
+		 * @param syncPredicate an {@link AttachmentSyncPredicate} determining with which clients to synchronize data
+		 * @param maxSyncSize the max number of data bytes that can be synced, defaults to 1 MiB minus some small padding
+		 * @return the builder
+		 */
+		AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec, AttachmentSyncPredicate syncPredicate, int maxSyncSize);
 
 		/**
 		 * Builds and registers the {@link AttachmentType}.

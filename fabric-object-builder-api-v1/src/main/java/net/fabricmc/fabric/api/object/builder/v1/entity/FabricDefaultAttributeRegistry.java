@@ -21,23 +21,23 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
-import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor;
+import net.fabricmc.fabric.mixin.object.builder.DefaultAttributesAccessor;
 
 /**
  * Allows registering custom default attributes for living entities.
  *
  * <p>All living entity types must have default attributes registered. See {@link
- * FabricEntityTypeBuilder} for utility on entity type registration in general.</p>
+ * EntityType.Builder} for utility on entity type registration in general.</p>
  *
  * <p>A registered default attribute for an entity type can be retrieved through
- * {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#get(EntityType)}.</p>
+ * {@link net.minecraft.world.entity.ai.attributes.DefaultAttributes#getSupplier(EntityType)}.</p>
  *
- * @see net.minecraft.entity.attribute.DefaultAttributeRegistry
+ * @see net.minecraft.world.entity.ai.attributes.DefaultAttributes
  */
 public final class FabricDefaultAttributeRegistry {
 	/**
@@ -53,9 +53,9 @@ public final class FabricDefaultAttributeRegistry {
 	 *
 	 * @param type    the entity type
 	 * @param builder the builder that creates the default attribute
-	 * @see	FabricDefaultAttributeRegistry#register(EntityType, DefaultAttributeContainer)
+	 * @see	FabricDefaultAttributeRegistry#register(EntityType, AttributeSupplier)
 	 */
-	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer.Builder builder) {
+	public static void register(EntityType<? extends LivingEntity> type, AttributeSupplier.Builder builder) {
 		register(type, builder.build());
 	}
 
@@ -64,12 +64,11 @@ public final class FabricDefaultAttributeRegistry {
 	 *
 	 * <p>It can be used in a fashion similar to this:
 	 * <blockquote><pre>
-	 * EntityAttributeRegistry.INSTANCE.register(type, LivingEntity.createLivingAttributes());
+	 * FabricDefaultAttributeRegistry.register(type, LivingEntity.createLivingAttributes());
 	 * </pre></blockquote>
-	 * </p>
 	 *
 	 * <p>If a registration overrides another, a debug log message will be emitted. Existing registrations
-	 * can be checked at {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#hasDefinitionFor(EntityType)}.</p>
+	 * can be checked at {@link net.minecraft.world.entity.ai.attributes.DefaultAttributes#hasSupplier(EntityType)}.</p>
 	 *
 	 * <p>For convenience, this can also be done on the {@link FabricEntityType.Builder} to simplify the building process.
 	 *
@@ -77,9 +76,9 @@ public final class FabricDefaultAttributeRegistry {
 	 * @param container the container for the default attribute
 	 * @see	FabricEntityType.Builder.Living#defaultAttributes(Supplier)
 	 */
-	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer container) {
-		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, container) != null) {
-			LOGGER.debug("Overriding existing registration for entity type {}", Registries.ENTITY_TYPE.getId(type));
+	public static void register(EntityType<? extends LivingEntity> type, AttributeSupplier container) {
+		if (DefaultAttributesAccessor.getRegistry().put(type, container) != null) {
+			LOGGER.debug("Overriding existing registration for entity type {}", BuiltInRegistries.ENTITY_TYPE.getKey(type));
 		}
 	}
 }

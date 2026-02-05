@@ -10,6 +10,7 @@
   },
   "entrypoints": {
     "client": [
+      "net.fabricmc.fabric.test.screen.ScreenMouseEventTests",
       "net.fabricmc.fabric.test.screen.ScreenTests"
     ]
   }

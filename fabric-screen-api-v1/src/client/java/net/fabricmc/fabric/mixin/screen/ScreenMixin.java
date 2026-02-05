@@ -26,12 +26,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -45,13 +46,13 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 abstract class ScreenMixin implements ScreenExtensions {
 	@Shadow
 	@Final
-	protected List<Selectable> selectables;
+	private List<NarratableEntry> narratables;
 	@Shadow
 	@Final
-	protected List<Element> children;
+	private List<GuiEventListener> children;
 	@Shadow
 	@Final
-	protected List<Drawable> drawables;
+	private List<Renderable> renderables;
 
 	@Unique
 	private ButtonList fabricButtons;
@@ -63,6 +64,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenEvents.AfterTick> afterTickEvent;
 	@Unique
 	private Event<ScreenEvents.BeforeRender> beforeRenderEvent;
+	@Unique
+	private Event<ScreenEvents.AfterBackground> afterBackgroundEvent;
 	@Unique
 	private Event<ScreenEvents.AfterRender> afterRenderEvent;
 
@@ -94,38 +97,50 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenMouseEvents.AfterMouseRelease> afterMouseReleaseEvent;
 	@Unique
+	private Event<ScreenMouseEvents.AllowMouseDrag> allowMouseDragEvent;
+	@Unique
+	private Event<ScreenMouseEvents.BeforeMouseDrag> beforeMouseDragEvent;
+	@Unique
+	private Event<ScreenMouseEvents.AfterMouseDrag> afterMouseDragEvent;
+	@Unique
 	private Event<ScreenMouseEvents.AllowMouseScroll> allowMouseScrollEvent;
 	@Unique
 	private Event<ScreenMouseEvents.BeforeMouseScroll> beforeMouseScrollEvent;
 	@Unique
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
-	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"))
-	private void beforeInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		beforeInit(client, width, height);
+	@Inject(method = "renderWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.AFTER))
+	public final void renderWithTooltip(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
 	}
 
-	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
-	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		afterInit(client, width, height);
+	@Inject(method = "init(II)V", at = @At("HEAD"))
+	private void beforeInitScreen(int width, int height, CallbackInfo ci) {
+		beforeInit(width, height);
+	}
+
+	@Inject(method = "init(II)V", at = @At("TAIL"))
+	private void afterInitScreen(int width, int height, CallbackInfo ci) {
+		afterInit(width, height);
 	}
 
 	@Inject(method = "resize", at = @At("HEAD"))
-	private void beforeResizeScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		beforeInit(client, width, height);
+	private void beforeResizeScreen(int width, int height, CallbackInfo ci) {
+		beforeInit(width, height);
 	}
 
 	@Inject(method = "resize", at = @At("TAIL"))
-	private void afterResizeScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		afterInit(client, width, height);
+	private void afterResizeScreen(int width, int height, CallbackInfo ci) {
+		afterInit(width, height);
 	}
 
 	@Unique
-	private void beforeInit(MinecraftClient client, int width, int height) {
+	private void beforeInit(int width, int height) {
 		// All elements are repopulated on the screen, so we need to reinitialize all events
 		this.fabricButtons = null;
 		this.removeEvent = ScreenEventFactory.createRemoveEvent();
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
+		this.afterBackgroundEvent = ScreenEventFactory.createAfterBackgroundEvent();
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
@@ -145,23 +160,26 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.allowMouseReleaseEvent = ScreenEventFactory.createAllowMouseReleaseEvent();
 		this.beforeMouseReleaseEvent = ScreenEventFactory.createBeforeMouseReleaseEvent();
 		this.afterMouseReleaseEvent = ScreenEventFactory.createAfterMouseReleaseEvent();
+		this.allowMouseDragEvent = ScreenEventFactory.createAllowMouseDragEvent();
+		this.beforeMouseDragEvent = ScreenEventFactory.createBeforeMouseDragEvent();
+		this.afterMouseDragEvent = ScreenEventFactory.createAfterMouseDragEvent();
 		this.allowMouseScrollEvent = ScreenEventFactory.createAllowMouseScrollEvent();
 		this.beforeMouseScrollEvent = ScreenEventFactory.createBeforeMouseScrollEvent();
 		this.afterMouseScrollEvent = ScreenEventFactory.createAfterMouseScrollEvent();
 
-		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, width, height);
+		ScreenEvents.BEFORE_INIT.invoker().beforeInit(Minecraft.getInstance(), (Screen) (Object) this, width, height);
 	}
 
 	@Unique
-	private void afterInit(MinecraftClient client, int width, int height) {
-		ScreenEvents.AFTER_INIT.invoker().afterInit(client, (Screen) (Object) this, width, height);
+	private void afterInit(int width, int height) {
+		ScreenEvents.AFTER_INIT.invoker().afterInit(Minecraft.getInstance(), (Screen) (Object) this, width, height);
 	}
 
 	@Override
-	public List<ClickableWidget> fabric_getButtons() {
+	public List<AbstractWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
-			this.fabricButtons = new ButtonList(this.drawables, this.selectables, this.children);
+			this.fabricButtons = new ButtonList(this.renderables, this.narratables, this.children);
 		}
 
 		return this.fabricButtons;
@@ -194,6 +212,11 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Override
 	public Event<ScreenEvents.BeforeRender> fabric_getBeforeRenderEvent() {
 		return ensureEventsAreInitialized(this.beforeRenderEvent);
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterBackground> fabric_getAfterBackgroundEvent() {
+		return ensureEventsAreInitialized(this.afterBackgroundEvent);
 	}
 
 	@Override
@@ -263,6 +286,21 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Override
 	public Event<ScreenMouseEvents.AfterMouseRelease> fabric_getAfterMouseReleaseEvent() {
 		return ensureEventsAreInitialized(this.afterMouseReleaseEvent);
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.AllowMouseDrag> fabric_getAllowMouseDragEvent() {
+		return ensureEventsAreInitialized(this.allowMouseDragEvent);
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.BeforeMouseDrag> fabric_getBeforeMouseDragEvent() {
+		return ensureEventsAreInitialized(this.beforeMouseDragEvent);
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.AfterMouseDrag> fabric_getAfterMouseDragEvent() {
+		return ensureEventsAreInitialized(this.afterMouseDragEvent);
 	}
 
 	@Override

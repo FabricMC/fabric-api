@@ -20,18 +20,18 @@ import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
@@ -40,12 +40,12 @@ public class ResourceConditionsUnitTest {
 	private static final String TESTMOD_ID = "fabric-resource-conditions-api-v1-testmod";
 	private static final String API_MOD_ID = "fabric-resource-conditions-api-v1";
 	private static final String UNKNOWN_MOD_ID = "fabric-tiny-potato-api-v1";
-	private static final RegistryKey<? extends Registry<Object>> UNKNOWN_REGISTRY_KEY = RegistryKey.ofRegistry(Identifier.of(TESTMOD_ID, "unknown_registry"));
-	private static final Identifier UNKNOWN_ENTRY_ID = Identifier.of(TESTMOD_ID, "tiny_potato");
+	private static final ResourceKey<? extends Registry<Object>> UNKNOWN_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(TESTMOD_ID, "unknown_registry"));
+	private static final Identifier UNKNOWN_ENTRY_ID = Identifier.fromNamespaceAndPath(TESTMOD_ID, "tiny_potato");
 
 	private static void expectCondition(String name, ResourceCondition condition, boolean expected) {
-		RegistryWrapper.WrapperLookup registryLookup = DynamicRegistryManager.of(Registries.REGISTRIES);
-		boolean actual = condition.test(new RegistryOps.CachedRegistryInfoGetter(registryLookup));
+		HolderLookup.Provider registryLookup = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+		boolean actual = condition.test(new RegistryOps.HolderLookupAdapter(registryLookup));
 
 		if (actual != expected) {
 			throw new AssertionError("Test \"%s\" for condition %s failed; expected %s, got %s".formatted(name, condition.getType().id(), expected, actual));
@@ -57,8 +57,8 @@ public class ResourceConditionsUnitTest {
 
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
@@ -114,10 +114,10 @@ public class ResourceConditionsUnitTest {
 
 	@Test
 	public void registryContains() {
-		RegistryKey<Block> dirtKey = Registries.BLOCK.getKey(Blocks.DIRT).orElseThrow();
+		ResourceKey<Block> dirtKey = BuiltInRegistries.BLOCK.getResourceKey(Blocks.DIRT).orElseThrow();
 		ResourceCondition dirt = ResourceConditions.registryContains(dirtKey);
-		ResourceCondition dirtAndUnknownBlock = ResourceConditions.registryContains(dirtKey, RegistryKey.of(RegistryKeys.BLOCK, UNKNOWN_ENTRY_ID));
-		ResourceCondition emptyBlock = ResourceConditions.registryContains(RegistryKeys.BLOCK, new Identifier[]{});
+		ResourceCondition dirtAndUnknownBlock = ResourceConditions.registryContains(dirtKey, ResourceKey.create(Registries.BLOCK, UNKNOWN_ENTRY_ID));
+		ResourceCondition emptyBlock = ResourceConditions.registryContains(Registries.BLOCK, new Identifier[]{});
 		ResourceCondition unknownRegistry = ResourceConditions.registryContains(UNKNOWN_REGISTRY_KEY, UNKNOWN_ENTRY_ID);
 		ResourceCondition emptyUnknown = ResourceConditions.registryContains(UNKNOWN_REGISTRY_KEY, new Identifier[]{});
 

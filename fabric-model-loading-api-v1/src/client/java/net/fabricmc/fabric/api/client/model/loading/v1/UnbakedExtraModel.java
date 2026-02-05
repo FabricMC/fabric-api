@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ResolvableModel;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ResolvableModel;
 
 /**
  * An unbaked extra model.
  *
  * <p>Similar to {@link ItemModel.Unbaked} and other {@link ResolvableModel}, this model can
- * {@linkplain ResolvableModel.Resolver#resolve(Resolver) depend} on one or more model files, and then combine them into
+ * {@linkplain ResolvableModel#resolveDependencies(Resolver) depend} on one or more model files, and then combine them into
  * a single baked model.
  *
  * @param <T> The type of the baked model.
@@ -37,5 +37,5 @@ public interface UnbakedExtraModel<T> extends ResolvableModel {
 	 * @param baker The current model baker.
 	 * @return The fully-baked model.
 	 */
-	T bake(Baker baker);
+	T bake(ModelBaker baker);
 }

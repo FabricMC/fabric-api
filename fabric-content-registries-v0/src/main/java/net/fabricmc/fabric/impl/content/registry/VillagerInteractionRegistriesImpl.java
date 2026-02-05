@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
-import net.fabricmc.fabric.mixin.content.registry.FarmerWorkTaskAccessor;
-import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
+import net.fabricmc.fabric.mixin.content.registry.VillagerAccessor;
+import net.fabricmc.fabric.mixin.content.registry.WorkAtComposterAccessor;
 
 public final class VillagerInteractionRegistriesImpl {
 	private static final Set<Item> GATHERABLE_ITEMS = new HashSet<>();
@@ -34,15 +34,15 @@ public final class VillagerInteractionRegistriesImpl {
 	private VillagerInteractionRegistriesImpl() {
 	}
 
-	public static Set<Item> getCollectableRegistry() {
+	public static Set<Item> getGatherableItemRegistry() {
 		return GATHERABLE_ITEMS;
 	}
 
 	public static List<Item> getCompostableRegistry() {
-		return ImmutableCollectionUtils.getAsMutableList(FarmerWorkTaskAccessor::fabric_getCompostable, FarmerWorkTaskAccessor::fabric_setCompostables);
+		return ImmutableCollectionUtils.getAsMutableList(WorkAtComposterAccessor::fabric_getCompostable, WorkAtComposterAccessor::fabric_setCompostables);
 	}
 
 	public static Map<Item, Integer> getFoodRegistry() {
-		return ImmutableCollectionUtils.getAsMutableMap(() -> VillagerEntity.ITEM_FOOD_VALUES, VillagerEntityAccessor::fabric_setItemFoodValues);
+		return ImmutableCollectionUtils.getAsMutableMap(() -> Villager.FOOD_POINTS, VillagerAccessor::fabric_setItemFoodValues);
 	}
 }

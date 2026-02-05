@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.event.registry;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 
 /**
  * General-purpose Fabric-provided extensions for {@link Registry} objects.

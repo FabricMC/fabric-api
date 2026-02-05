@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
@@ -84,9 +84,9 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void registerSelf(ItemConvertible... items) {
-		for (ItemConvertible itemConvertible : items) {
-			Item item = itemConvertible.asItem();
+	public void registerSelf(ItemLike... items) {
+		for (ItemLike itemLike : items) {
+			Item item = itemLike.asItem();
 
 			if (!apiClass.isAssignableFrom(item.getClass())) {
 				String errorMessage = String.format(
@@ -102,19 +102,19 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	}
 
 	@Override
-	public void registerForItems(ItemApiProvider<A, C> provider, ItemConvertible... items) {
+	public void registerForItems(ItemApiProvider<A, C> provider, ItemLike... items) {
 		Objects.requireNonNull(provider, "ItemApiProvider may not be null.");
 
 		if (items.length == 0) {
-			throw new IllegalArgumentException("Must register at least one ItemConvertible instance with an ItemApiProvider.");
+			throw new IllegalArgumentException("Must register at least one ItemLike instance with an ItemApiProvider.");
 		}
 
-		for (ItemConvertible itemConvertible : items) {
-			Item item = itemConvertible.asItem();
-			Objects.requireNonNull(item, "Item convertible in item form may not be null.");
+		for (ItemLike itemLike : items) {
+			Item item = itemLike.asItem();
+			Objects.requireNonNull(item, "ItemLike in item form may not be null.");
 
 			if (providerMap.putIfAbsent(item, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for item: " + Registries.ITEM.getId(item));
+				LOGGER.warn("Encountered duplicate API provider registration for item: " + BuiltInRegistries.ITEM.getKey(item));
 			}
 		}
 	}

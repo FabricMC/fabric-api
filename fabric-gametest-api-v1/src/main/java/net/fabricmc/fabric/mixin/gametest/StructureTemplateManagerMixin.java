@@ -26,60 +26,60 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.DataFixer;
 import org.apache.commons.io.IOUtils;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.Block;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceFinder;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.structure.StructureTemplate;
-import net.minecraft.structure.StructureTemplateManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.level.storage.LevelStorage;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.levelgen.structure.templatesystem.loader.TemplateSource;
+import net.minecraft.world.level.storage.LevelStorageSource;
 
 import net.fabricmc.fabric.impl.gametest.FabricGameTestRunner;
 
 @Mixin(StructureTemplateManager.class)
 public abstract class StructureTemplateManagerMixin {
-	@Shadow
-	private ResourceManager resourceManager;
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER))
+	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorageSource.LevelStorageAccess storageAccess, DataFixer dataFixer, HolderGetter<Block> blockLookup, CallbackInfo ci, @Local(name = "sources") ImmutableList.Builder<TemplateSource> builder) {
+		builder.add(new TemplateSource(dataFixer, blockLookup) {
+			@Override
+			public Optional<StructureTemplate> load(Identifier id) {
+				Identifier path = FabricGameTestRunner.GAMETEST_STRUCTURE_FINDER.idToFile(id);
+				Optional<Resource> resource = resourceManager.getResource(path);
 
-	@Shadow
-	public abstract StructureTemplate createTemplate(NbtCompound nbt);
+				if (resource.isPresent()) {
+					try {
+						String snbt = IOUtils.toString(resource.get().openAsReader());
+						CompoundTag tag = NbtUtils.snbtToStructure(snbt);
 
-	@Unique
-	private Optional<StructureTemplate> fabric_loadSnbtFromResource(Identifier id) {
-		Identifier path = FabricGameTestRunner.GAMETEST_STRUCTURE_FINDER.toResourcePath(id);
-		Optional<Resource> resource = this.resourceManager.getResource(path);
+						// Replicate readStructure logic from TemplateSource
+						StructureTemplate structureTemplate = new StructureTemplate();
+						int version = NbtUtils.getDataVersion(tag, 500);
+						structureTemplate.load(blockLookup, DataFixTypes.STRUCTURE.updateToCurrentVersion(dataFixer, tag, version));
 
-		if (resource.isPresent()) {
-			try {
-				String snbt = IOUtils.toString(resource.get().getReader());
-				NbtCompound nbt = NbtHelper.fromNbtProviderString(snbt);
-				return Optional.of(this.createTemplate(nbt));
-			} catch (IOException | CommandSyntaxException e) {
-				throw new RuntimeException("Failed to load GameTest structure " + id, e);
+						return Optional.of(structureTemplate);
+					} catch (IOException | CommandSyntaxException e) {
+						throw new RuntimeException("Failed to load GameTest structure " + id, e);
+					}
+				}
+
+				return Optional.empty();
 			}
-		}
 
-		return Optional.empty();
-	}
-
-	@Unique
-	private Stream<Identifier> streamTemplatesFromResource() {
-		ResourceFinder finder = FabricGameTestRunner.GAMETEST_STRUCTURE_FINDER;
-		return finder.findResources(this.resourceManager).keySet().stream().map(finder::toResourceId);
-	}
-
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER, remap = false))
-	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorage.Session session, DataFixer dataFixer, RegistryEntryLookup<Block> blockLookup, CallbackInfo ci, @Local ImmutableList.Builder<StructureTemplateManager.Provider> builder) {
-		builder.add(new StructureTemplateManager.Provider(this::fabric_loadSnbtFromResource, this::streamTemplatesFromResource));
+			@Override
+			public Stream<Identifier> list() {
+				FileToIdConverter finder = FabricGameTestRunner.GAMETEST_STRUCTURE_FINDER;
+				return finder.listMatchingResources(resourceManager).keySet().stream().map(finder::fileToId);
+			}
+		});
 	}
 }

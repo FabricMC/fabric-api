@@ -17,11 +17,10 @@
 package net.fabricmc.fabric.api.client.gametest.v1.screenshot;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
-
-import net.minecraft.client.texture.NativeImage;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotComparisonAlgorithms;
 

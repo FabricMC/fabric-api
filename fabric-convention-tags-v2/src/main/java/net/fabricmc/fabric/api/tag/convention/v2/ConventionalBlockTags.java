@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 /**
- * See {@link net.minecraft.registry.tag.BlockTags} for vanilla tags.
+ * See {@link net.minecraft.tags.BlockTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
 public final class ConventionalBlockTags {
@@ -243,7 +243,30 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Logs
+	/**
+	 * For logs found naturally in the Overworld, does not include Stripped Logs.
+	 * Aliased with {@link BlockTags#OVERWORLD_NATURAL_LOGS} for consistency.
+	 */
+	public static final TagKey<Block> OVERWORLD_NATURAL_LOGS = register("natural_logs/overworld");
+	/**
+	 * For logs, including Stems, found naturally in the Nether, does not include Stripped Logs.
+	 */
+	public static final TagKey<Block> NETHER_NATURAL_LOGS = register("natural_logs/nether");
+	/**
+	 * For logs, including Stems, found naturally that have not been stripped.
+	 */
+	public static final TagKey<Block> NATURAL_LOGS = register("natural_logs");
+	/**
+	 * For six-sided wood blocks, including Hyphae, found naturally that have not been stripped.
+	 */
+	public static final TagKey<Block> NATURAL_WOODS = register("natural_woods");
+	/**
+	 * For logs, including Stems, found naturally that have been stripped.
+	 */
 	public static final TagKey<Block> STRIPPED_LOGS = register("stripped_logs");
+	/**
+	 * For six-sided wood blocks, including Hyphae, found naturally that have been stripped.
+	 */
 	public static final TagKey<Block> STRIPPED_WOODS = register("stripped_woods");
 
 	// Misc
@@ -253,7 +276,7 @@ public final class ConventionalBlockTags {
 	 * Blocks should be included in this tag if their movement/relocation can cause serious issues such
 	 * as world corruption upon being moved or for balance reason where the block should not be able to be relocated.
 	 * Example: Chunk loaders or pipes where other mods that move blocks do not respect
-	 * {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
+	 * {@link BlockBehaviour.BlockStateBase#getPistonPushReaction}.
 	 */
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 	/**
@@ -314,22 +337,6 @@ public final class ConventionalBlockTags {
 	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Block> ORES_IN_GROUND_STONE = register("ores_in_ground/stone");
-
-	/**
-	 * This tag is redundant. Please use {@link net.minecraft.registry.tag.BlockTags#SHULKER_BOXES} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalBlockTags#GLAZED_TERRACOTTAS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Block> GLAZED_TERRACOTTA = register("glazed_terracotta");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalBlockTags#CONCRETES} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Block> CONCRETE = register("concrete");
 
 	private static TagKey<Block> register(String tagId) {
 		return TagRegistration.BLOCK_TAG.registerC(tagId);

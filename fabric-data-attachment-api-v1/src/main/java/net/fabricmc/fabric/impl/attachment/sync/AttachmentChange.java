@@ -16,59 +16,51 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import io.netty.buffer.Unpooled;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
-import net.fabricmc.fabric.mixin.attachment.CustomPayloadC2SPacketAccessor;
-import net.fabricmc.fabric.mixin.attachment.VarIntsAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
-	public static final PacketCodec<PacketByteBuf, AttachmentChange> PACKET_CODEC = PacketCodec.tuple(
+	public static final StreamCodec<FriendlyByteBuf, AttachmentChange> PACKET_CODEC = StreamCodec.composite(
 			AttachmentTargetInfo.PACKET_CODEC, AttachmentChange::targetInfo,
-			Identifier.PACKET_CODEC.xmap(
+			Identifier.STREAM_CODEC.map(
 					id -> Objects.requireNonNull(AttachmentRegistryImpl.get(id)),
 					AttachmentType::identifier
 			), AttachmentChange::type,
-			PacketCodecs.BYTE_ARRAY, AttachmentChange::data,
+			ByteBufCodecs.BYTE_ARRAY, AttachmentChange::data,
 			AttachmentChange::new
 	);
-	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
-	private static final int MAX_DATA_SIZE_IN_BYTES = CustomPayloadC2SPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
+	private static final boolean DISCONNECT_ON_UNKNOWN_TARGETS = System.getProperty("fabric.attachment.disconnect_on_unknown_targets") != null;
+	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentChange.class);
 
 	@SuppressWarnings("unchecked")
-	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, DynamicRegistryManager dynamicRegistryManager) {
-		PacketCodec<? super RegistryByteBuf, Object> codec = (PacketCodec<? super RegistryByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
-		Objects.requireNonNull(codec, "attachment packet codec cannot be null");
-		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
+	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess registryAccess) {
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
+		Objects.requireNonNull(codec, "attachment stream codec cannot be null");
+		Objects.requireNonNull(registryAccess, "registry access cannot be null");
 
-		RegistryByteBuf buf = new RegistryByteBuf(PacketByteBufs.create(), dynamicRegistryManager);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), registryAccess);
 
 		if (value != null) {
 			buf.writeBoolean(true);
@@ -77,58 +69,30 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			buf.writeBoolean(false);
 		}
 
-		byte[] encoded = buf.array();
+		// buf.array() returns the backing array directly, which often contains unused space
+		byte[] encoded = new byte[buf.readableBytes()];
+		buf.readBytes(encoded);
+		int maxDataSize = ((AttachmentTypeImpl<?>) type).maxSyncSize();
 
-		if (encoded.length > MAX_DATA_SIZE_IN_BYTES) {
+		if (encoded.length > maxDataSize) {
 			throw new IllegalArgumentException("Data for attachment '%s' was too big (%d bytes, over maximum %d)".formatted(
 					type.identifier(),
 					encoded.length,
-					MAX_DATA_SIZE_IN_BYTES
+					maxDataSize
 			));
 		}
 
 		return new AttachmentChange(targetInfo, type, encoded);
 	}
 
-	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayerEntity player) {
-		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection())
-				.fabric_getSupportedAttachments();
-		// sort by size to better partition packets
-		changes.sort(Comparator.comparingInt(c -> c.data().length));
-		List<AttachmentChange> packetChanges = new ArrayList<>();
-		int maxVarIntSize = VarIntsAccessor.getMaxByteSize();
-		int byteSize = maxVarIntSize;
-
-		for (AttachmentChange change : changes) {
-			if (!supported.contains(change.type.identifier())) {
-				continue;
-			}
-
-			int size = MAX_PADDING_SIZE_IN_BYTES + change.data.length;
-
-			if (byteSize + size > MAX_DATA_SIZE_IN_BYTES) {
-				ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
-				packetChanges.clear();
-				byteSize = maxVarIntSize;
-			}
-
-			packetChanges.add(change);
-			byteSize += size;
-		}
-
-		if (!packetChanges.isEmpty()) {
-			ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public Object decodeValue(DynamicRegistryManager dynamicRegistryManager) {
-		PacketCodec<? super RegistryByteBuf, Object> codec = (PacketCodec<? super RegistryByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
+	public Object decodeValue(RegistryAccess registryAccess) {
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
 		Objects.requireNonNull(codec, "codec was null");
-		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
+		Objects.requireNonNull(registryAccess, "registry access cannot be null");
 
-		RegistryByteBuf buf = new RegistryByteBuf(Unpooled.copiedBuffer(data), dynamicRegistryManager);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.copiedBuffer(data), registryAccess);
 
 		if (!buf.readBoolean()) {
 			return null;
@@ -137,34 +101,43 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return codec.decode(buf);
 	}
 
-	public void tryApply(World world) throws AttachmentSyncException {
-		AttachmentTarget target = targetInfo.getTarget(world);
-		Object value = decodeValue(world.getRegistryManager());
+	public void tryApply(Level level) throws AttachmentSyncException {
+		AttachmentTarget target = targetInfo.getTarget(level);
+		Object value = decodeValue(level.registryAccess());
 
 		if (target == null) {
-			final MutableText errorMessageText = Text.empty();
-			errorMessageText
-					.append(Text.translatable("fabric-data-attachment-api-v1.unknown-target.title").formatted(Formatting.RED))
-					.append(ScreenTexts.LINE_BREAK);
-			errorMessageText.append(ScreenTexts.LINE_BREAK);
+			final MutableComponent errorMessageComponent = Component.empty();
+			errorMessageComponent
+					.append(Component.translatable("fabric-data-attachment-api-v1.unknown-target.title").withStyle(ChatFormatting.RED))
+					.append(CommonComponents.NEW_LINE);
+			errorMessageComponent.append(CommonComponents.NEW_LINE);
 
-			errorMessageText
-					.append(Text.translatable(
+			errorMessageComponent
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.attachment-identifier",
-							Text.literal(String.valueOf(type.identifier())).formatted(Formatting.YELLOW))
+							Component.literal(String.valueOf(type.identifier())).withStyle(ChatFormatting.YELLOW))
 					)
-					.append(ScreenTexts.LINE_BREAK);
-			errorMessageText
-					.append(Text.translatable(
-							"fabric-data-attachment-api-v1.unknown-target.world",
-							Text.literal(String.valueOf(world.getRegistryKey().getValue())).formatted(Formatting.YELLOW)
+					.append(CommonComponents.NEW_LINE);
+			errorMessageComponent
+					.append(Component.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.level",
+							Component.literal(String.valueOf(level.dimension().identifier())).withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
-			targetInfo.appendDebugInformation(errorMessageText);
+					.append(CommonComponents.NEW_LINE);
+			targetInfo.appendDebugInformation(errorMessageComponent);
 
-			throw new AttachmentSyncException(errorMessageText);
+			if (DISCONNECT_ON_UNKNOWN_TARGETS) {
+				throw new AttachmentSyncException(errorMessageComponent);
+			}
+
+			LOGGER.warn(errorMessageComponent.getString().trim());
+			return;
 		}
 
 		target.setAttached((AttachmentType<Object>) type, value);
+	}
+
+	public AttachmentChange withNewTarget(AttachmentTargetInfo<?> newTargetInfo) {
+		return new AttachmentChange(newTargetInfo, this.type, this.data);
 	}
 }

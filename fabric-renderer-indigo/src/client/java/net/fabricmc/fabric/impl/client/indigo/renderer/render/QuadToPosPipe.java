@@ -22,7 +22,7 @@ import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 
 public class QuadToPosPipe implements Consumer<QuadView> {
 	private final Consumer<Vector3fc> posConsumer;

@@ -19,12 +19,12 @@ package net.fabricmc.fabric.test.registry.sync;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.registry.entry.RegistryElementCodec;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryFileCodec;
 
-public record TestNestedDynamicObject(RegistryEntry<TestDynamicObject> nested) {
+public record TestNestedDynamicObject(Holder<TestDynamicObject> nested) {
 	public static final Codec<TestNestedDynamicObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			RegistryElementCodec.of(CustomDynamicRegistryTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
+			RegistryFileCodec.create(CustomDynamicRegistryTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
 					.fieldOf("nested")
 					.forGetter(TestNestedDynamicObject::nested)
 	).apply(instance, TestNestedDynamicObject::new));

@@ -23,18 +23,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 
-import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
+import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
+public abstract class JukeboxBlockEntityMixin implements SpecialLogicContainer {
 	@Shadow
-	private ItemStack recordStack;
+	private ItemStack item;
 
 	@Shadow
-	public abstract void setStack(ItemStack stack);
+	public abstract void setTheItem(ItemStack stack);
 
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
@@ -44,10 +44,10 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
 		fabric_suppressSpecialLogic = suppress;
 	}
 
-	@Inject(method = "setStack", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "setTheItem", at = @At("HEAD"), cancellable = true)
 	private void setStackBypass(ItemStack stack, CallbackInfo ci) {
 		if (fabric_suppressSpecialLogic) {
-			recordStack = stack;
+			item = stack;
 			ci.cancel();
 		}
 	}
@@ -56,6 +56,6 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
 	public void fabric_onFinalCommit(int slot, ItemStack oldStack, ItemStack newStack) {
 		// Call setStack again without suppressing vanilla logic,
 		// where now the record will actually getting played/stopped.
-		setStack(newStack);
+		setTheItem(newStack);
 	}
 }

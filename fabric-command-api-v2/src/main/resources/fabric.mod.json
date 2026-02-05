@@ -16,12 +16,12 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
     "minecraft": ">1.19-alpha.22.11.a"
   },
   "description": "Adds command-related hooks.",
-  "accessWidener": "fabric-command-api-v2.accesswidener",
+  "accessWidener": "fabric-command-api-v2.classtweaker",
   "mixins": [
     "fabric-command-api-v2.mixins.json",
     {
@@ -30,9 +30,6 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2303": ["net/fabricmc/fabric/api/command/v2/FabricEntitySelectorReader"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

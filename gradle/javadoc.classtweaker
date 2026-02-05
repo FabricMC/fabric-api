@@ -1,0 +1,5 @@
+classTweaker	v1	official
+# Place access wideners that are required during javadoc generation here
+
+accessible	class	net/minecraft/data/recipes/RecipeProvider$Runner
+accessible	class	net/minecraft/world/item/CreativeModeTab$TabVisibility

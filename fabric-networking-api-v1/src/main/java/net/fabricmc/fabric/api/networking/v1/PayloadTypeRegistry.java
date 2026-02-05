@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.function.IntSupplier;
+
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
@@ -29,45 +31,83 @@ import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
  * A registry for payload types.
  */
 @ApiStatus.NonExtendable
-public interface PayloadTypeRegistry<B extends PacketByteBuf> {
+public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	/**
 	 * Registers a custom payload type.
 	 *
 	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
 	 * and <strong>before registering a packet handler</strong>.
 	 *
-	 * @param id    the id of the payload type
+	 * @param type  the payload type
 	 * @param codec the codec for the payload type
-	 * @param <T>   the payload type
+	 * @param <T>   the payload class
 	 * @return the registered payload type
 	 */
-	<T extends CustomPayload> CustomPayload.Type<? super B, T> register(CustomPayload.Id<T> id, PacketCodec<? super B, T> codec);
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec);
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the client to server configuration channel.
+	 * Registers a large custom payload type.
+	 *
+	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
+	 * and <strong>before registering a packet handler</strong>.
+	 *
+	 * <p>Payload types registered with this method will be split into multiple packets,
+	 * allowing to send packets larger than the vanilla limited size.
+	 *
+	 * @param type          the payload type
+	 * @param codec         the codec for the payload type
+	 * @param <T>           the payload class
+	 * @param maxPacketSize the maximum size of payload packet
+	 * @return the registered payload type
 	 */
-	static PayloadTypeRegistry<PacketByteBuf> configurationC2S() {
-		return PayloadTypeRegistryImpl.CONFIGURATION_C2S;
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize);
+
+	/**
+	 * Registers a large custom payload type.
+	 *
+	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
+	 * and <strong>before registering a packet handler</strong>.
+	 *
+	 * <p>Payload types registered with this method will be split into multiple packets,
+	 * allowing to send packets larger than the vanilla limited size.
+	 *
+	 * <p>The {@code maxPacketSizeSupplier} will be called once, right before the first packet of this payload type
+	 * is sent/received on either side. This allows mods some leeway particularly during mod initialization to
+	 * dynamically determine a suitable max size.
+	 *
+	 * @param type		    the payload type
+	 * @param codec         the codec for the payload type
+	 * @param maxPacketSizeSupplier the function that returns the max size of payload packet
+	 * @param <T>           the payload type
+	 * @return the registered payload type
+	 */
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier);
+
+	/**
+	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) configuration channel.
+	 */
+	static PayloadTypeRegistry<FriendlyByteBuf> serverboundConfiguration() {
+		return PayloadTypeRegistryImpl.SERVERBOUND_CONFIGURATION;
 	}
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the server to client configuration channel.
+	 * @return the {@link PayloadTypeRegistry} instance for the clientbound (server to client) configuration channel.
 	 */
-	static PayloadTypeRegistry<PacketByteBuf> configurationS2C() {
-		return PayloadTypeRegistryImpl.CONFIGURATION_S2C;
+	static PayloadTypeRegistry<FriendlyByteBuf> clientboundConfiguration() {
+		return PayloadTypeRegistryImpl.CLIENTBOUND_CONFIGURATION;
 	}
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the client to server play channel.
+	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) play channel.
 	 */
-	static PayloadTypeRegistry<RegistryByteBuf> playC2S() {
-		return PayloadTypeRegistryImpl.PLAY_C2S;
+	static PayloadTypeRegistry<RegistryFriendlyByteBuf> serverboundPlay() {
+		return PayloadTypeRegistryImpl.SERVERBOUND_PLAY;
 	}
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the server to client play channel.
+	 * @return the {@link PayloadTypeRegistry} instance for the clientbound (server to client) play channel.
 	 */
-	static PayloadTypeRegistry<RegistryByteBuf> playS2C() {
-		return PayloadTypeRegistryImpl.PLAY_S2C;
+	static PayloadTypeRegistry<RegistryFriendlyByteBuf> clientboundPlay() {
+		return PayloadTypeRegistryImpl.CLIENTBOUND_PLAY;
 	}
 }

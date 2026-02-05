@@ -1,0 +1,30 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.resource",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "DataPackCommandMixin",
+    "DedicatedServerPropertiesMixin",
+    "GameTestServerMixin",
+    "KeyedResourceReloaderMixin",
+    "MinecraftServerMixin",
+    "MultiPackResourceManagerMixin",
+    "PackMixin",
+    "PackRepositoryMixin",
+    "ReloadableServerResourcesMixin",
+    "ResourceMixin",
+    "ServerboundSelectKnownPacksMixin",
+    "ServerConfigurationPacketListenerImplMixin",
+    "SimpleReloadInstanceMixin",
+    "SynchronizeRegistriesTaskMixin"
+  ],
+  "server": [
+    "server.LanguageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

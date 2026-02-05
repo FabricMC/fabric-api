@@ -26,16 +26,17 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.screen.world.WorldCreator;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.gen.WorldPreset;
-import net.minecraft.world.gen.WorldPresets;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.levelgen.presets.WorldPreset;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
@@ -46,14 +47,13 @@ import net.fabricmc.fabric.impl.client.gametest.context.TestSingleplayerContextI
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.ClientGameTestImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
-import net.fabricmc.fabric.mixin.client.gametest.world.CreateWorldScreenAccessor;
 
 public class TestWorldBuilderImpl implements TestWorldBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 	private final ClientGameTestContext context;
 	private boolean useConsistentSettings = true;
 
-	private Consumer<WorldCreator> settingsAdjustor = creator -> {
+	private Consumer<WorldCreationUiState> settingsAdjustor = creator -> {
 	};
 
 	public TestWorldBuilderImpl(ClientGameTestContext context) {
@@ -67,7 +67,7 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 	}
 
 	@Override
-	public TestWorldBuilder adjustSettings(Consumer<WorldCreator> settingsAdjuster) {
+	public TestWorldBuilder adjustSettings(Consumer<WorldCreationUiState> settingsAdjuster) {
 		Preconditions.checkNotNull(settingsAdjuster, "settingsAdjuster");
 
 		this.settingsAdjustor = settingsAdjuster;
@@ -82,7 +82,7 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		Path saveDirectory = navigateCreateWorldScreen();
 		ClientGameTestImpl.waitForWorldLoad(context);
 
-		MinecraftServer server = context.computeOnClient(MinecraftClient::getServer);
+		MinecraftServer server = context.computeOnClient(Minecraft::getSingleplayerServer);
 		return new TestSingleplayerContextImpl(context, new TestWorldSaveImpl(context, saveDirectory), server);
 	}
 
@@ -105,19 +105,20 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 			DedicatedServerImplUtil.saveLevelDataTo = null;
 		}
 
-		MinecraftDedicatedServer server = DedicatedServerImplUtil.start(context, serverProperties);
+		DedicatedServer server = DedicatedServerImplUtil.start(context, serverProperties);
 		return new TestDedicatedServerContextImpl(context, server);
 	}
 
 	private Path navigateCreateWorldScreen() {
 		Path saveDirectory = context.computeOnClient(client -> {
-			CreateWorldScreen.show(client, client.currentScreen);
+			Screen oldScreen = client.screen;
+			CreateWorldScreen.openFresh(client, () -> client.setScreen(oldScreen));
 
-			if (!(client.currentScreen instanceof CreateWorldScreen createWorldScreen)) {
+			if (!(client.screen instanceof CreateWorldScreen createWorldScreen)) {
 				throw new AssertionError("CreateWorldScreen.show did not set the current screen");
 			}
 
-			WorldCreator creator = ((CreateWorldScreenAccessor) createWorldScreen).getWorldCreator();
+			WorldCreationUiState creator = createWorldScreen.getUiState();
 
 			if (useConsistentSettings) {
 				setConsistentSettings(creator);
@@ -125,7 +126,7 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 
 			settingsAdjustor.accept(creator);
 
-			return client.getLevelStorage().getSavesDirectory().resolve(creator.getWorldDirectoryName());
+			return client.getLevelSource().getBaseDir().resolve(creator.getTargetFolder());
 		});
 
 		context.clickScreenButton("selectWorld.create");
@@ -133,13 +134,13 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		return saveDirectory;
 	}
 
-	private static void setConsistentSettings(WorldCreator creator) {
-		RegistryEntry<WorldPreset> flatPreset = creator.getGeneratorOptionsHolder().getCombinedRegistryManager().getOrThrow(RegistryKeys.WORLD_PRESET).getOrThrow(WorldPresets.FLAT);
-		creator.setWorldType(new WorldCreator.WorldType(flatPreset));
+	private static void setConsistentSettings(WorldCreationUiState creator) {
+		Holder<WorldPreset> flatPreset = creator.getSettings().worldgenLoadContext().lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.FLAT);
+		creator.setWorldType(new WorldCreationUiState.WorldTypeEntry(flatPreset));
 		creator.setSeed("1");
 		creator.setGenerateStructures(false);
-		creator.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null);
-		creator.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null);
-		creator.getGameRules().get(GameRules.DO_MOB_SPAWNING).set(false, null);
+		creator.getGameRules().set(GameRules.ADVANCE_TIME, false, null);
+		creator.getGameRules().set(GameRules.ADVANCE_WEATHER, false, null);
+		creator.getGameRules().set(GameRules.SPAWN_MOBS, false, null);
 	}
 }

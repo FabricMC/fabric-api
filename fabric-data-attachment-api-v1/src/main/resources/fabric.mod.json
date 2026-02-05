@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-entity-events-v1": "*",
     "fabric-object-builder-api-v1": "*",
     "fabric-networking-api-v1": "*"
@@ -38,13 +38,8 @@
       "net.fabricmc.fabric.impl.attachment.client.AttachmentSyncClient"
     ]
   },
+  "accessWidener": "fabric-data-attachment-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "experimental",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2586": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
-      "net/minecraft/class_2791": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
-      "net/minecraft/class_1297": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
-      "net/minecraft/class_1937": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"]
-    }
+    "fabric-api:module-lifecycle": "experimental"
   }
 }

@@ -20,13 +20,13 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 
 /**
  * A registry for {@linkplain MinecartComparatorLogic custom minecart comparator logic}.
@@ -46,8 +46,8 @@ public final class MinecartComparatorLogicRegistry {
 	 */
 	@Nullable
 	@SuppressWarnings("unchecked")
-	public static MinecartComparatorLogic<AbstractMinecartEntity> getCustomComparatorLogic(EntityType<?> type) {
-		return (MinecartComparatorLogic<AbstractMinecartEntity>) LOGICS.get(type);
+	public static MinecartComparatorLogic<AbstractMinecart> getCustomComparatorLogic(EntityType<?> type) {
+		return (MinecartComparatorLogic<AbstractMinecart>) LOGICS.get(type);
 	}
 
 	/**
@@ -59,12 +59,12 @@ public final class MinecartComparatorLogicRegistry {
 	 * @param type  the minecart entity type
 	 * @param logic the logic to register
 	 */
-	public static <T extends AbstractMinecartEntity> void register(EntityType<T> type, MinecartComparatorLogic<? super T> logic) {
+	public static <T extends AbstractMinecart> void register(EntityType<T> type, MinecartComparatorLogic<? super T> logic) {
 		Objects.requireNonNull(type, "Entity type cannot be null");
 		Objects.requireNonNull(logic, "Logic cannot be null");
 
 		if (LOGICS.put(type, logic) != null) {
-			LOGGER.warn("Overriding existing minecart comparator logic for entity type {}", Registries.ENTITY_TYPE.getId(type));
+			LOGGER.warn("Overriding existing minecart comparator logic for entity type {}", BuiltInRegistries.ENTITY_TYPE.getKey(type));
 		}
 	}
 }

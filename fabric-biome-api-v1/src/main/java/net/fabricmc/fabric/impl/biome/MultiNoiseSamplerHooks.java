@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import net.minecraft.util.math.noise.PerlinNoiseSampler;
+import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
 
 public interface MultiNoiseSamplerHooks {
-	PerlinNoiseSampler fabric_getEndBiomesSampler();
+	ImprovedNoise fabric_getEndBiomesSampler();
 
 	void fabric_setSeed(long seed);
 

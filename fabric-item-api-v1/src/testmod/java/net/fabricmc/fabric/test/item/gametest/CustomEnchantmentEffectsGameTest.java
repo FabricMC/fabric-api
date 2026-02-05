@@ -19,72 +19,72 @@ package net.fabricmc.fabric.test.item.gametest;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.component.EnchantmentEffectComponentTypes;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.effect.EnchantmentEffectEntry;
-import net.minecraft.enchantment.effect.EnchantmentValueEffect;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.CreeperEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameMode;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.ConditionalEffect;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
+import net.minecraft.world.level.GameType;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest;
 
 public class CustomEnchantmentEffectsGameTest {
 	@GameTest
-	public void weirdImpalingSetsFireToTargets(TestContext context) {
+	public void weirdImpalingSetsFireToTargets(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(3, 3, 3);
-		CreeperEntity creeper = context.spawnEntity(EntityType.CREEPER, pos);
-		PlayerEntity player = context.createMockPlayer(GameMode.CREATIVE);
+		Creeper creeper = helper.spawn(EntityType.CREEPER, pos);
+		Player player = helper.makeMockPlayer(GameType.CREATIVE);
 
-		ItemStack trident = Items.TRIDENT.getDefaultStack();
-		Optional<RegistryEntry.Reference<Enchantment>> impaling = getEnchantmentRegistry(context)
-				.getOptional(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
+		ItemStack trident = Items.TRIDENT.getDefaultInstance();
+		Optional<Holder.Reference<Enchantment>> impaling = getEnchantmentRegistry(helper)
+				.get(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
 		if (impaling.isEmpty()) {
-			throw context.createError("Weird Impaling enchantment is not present");
+			throw helper.assertionException("Weird Impaling enchantment is not present");
 		}
 
-		trident.addEnchantment(impaling.get(), 1);
+		trident.enchant(impaling.get(), 1);
 
-		player.setStackInHand(Hand.MAIN_HAND, trident);
+		player.setItemInHand(InteractionHand.MAIN_HAND, trident);
 
-		context.expectEntityWithData(pos, EntityType.CREEPER, Entity::isOnFire, false);
+		helper.assertEntityData(pos, EntityType.CREEPER, Entity::isOnFire, false);
 		player.attack(creeper);
-		context.expectEntityWithDataEnd(pos, EntityType.CREEPER, Entity::isOnFire, true);
+		helper.succeedWhenEntityData(pos, EntityType.CREEPER, Entity::isOnFire, true);
 	}
 
 	@GameTest
-	public void weirdImpalingHasTwoDamageEffects(TestContext context) {
-		Enchantment impaling = getEnchantmentRegistry(context).get(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
+	public void weirdImpalingHasTwoDamageEffects(GameTestHelper helper) {
+		Enchantment impaling = getEnchantmentRegistry(helper).getValue(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
 
 		if (impaling == null) {
-			throw context.createError("Weird Impaling enchantment is not present");
+			throw helper.assertionException("Weird Impaling enchantment is not present");
 		}
 
-		List<EnchantmentEffectEntry<EnchantmentValueEffect>> damageEffects = impaling
-				.getEffect(EnchantmentEffectComponentTypes.DAMAGE);
+		List<ConditionalEffect<EnchantmentValueEffect>> damageEffects = impaling
+				.getEffects(EnchantmentEffectComponents.DAMAGE);
 
-		context.assertTrue(
+		helper.assertTrue(
 				damageEffects.size() == 2,
-				Text.literal(String.format("Weird Impaling has %d damage effect(s), not the expected 2", damageEffects.size()))
+				Component.literal(String.format("Weird Impaling has %d damage effect(s), not the expected 2", damageEffects.size()))
 		);
-		context.complete();
+		helper.succeed();
 	}
 
-	private static Registry<Enchantment> getEnchantmentRegistry(TestContext context) {
-		DynamicRegistryManager registryManager = context.getWorld().getRegistryManager();
-		return registryManager.getOrThrow(RegistryKeys.ENCHANTMENT);
+	private static Registry<Enchantment> getEnchantmentRegistry(GameTestHelper helper) {
+		RegistryAccess registryAccess = helper.getLevel().registryAccess();
+		return registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 	}
 }

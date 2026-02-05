@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.loot;
 
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 public interface FabricLootTable {
-	void fabric$setRegistryEntry(RegistryEntry<LootTable> key);
+	void fabric$setHolder(Holder<LootTable> key);
 }

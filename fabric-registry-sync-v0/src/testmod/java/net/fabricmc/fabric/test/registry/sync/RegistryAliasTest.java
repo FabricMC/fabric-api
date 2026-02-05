@@ -19,15 +19,15 @@ package net.fabricmc.fabric.test.registry.sync;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.api.ModInitializer;
 
@@ -48,24 +48,24 @@ public class RegistryAliasTest implements ModInitializer {
 			LOGGER.info("Registering new IDs");
 			register(TEST_BLOCK, TEST_INGOT);
 			LOGGER.info("Adding aliases");
-			Registries.BLOCK.addAlias(OLD_TEST_BLOCK, TEST_BLOCK);
-			Registries.ITEM.addAlias(OLD_TEST_BLOCK, TEST_BLOCK);
-			Registries.ITEM.addAlias(OLD_TEST_INGOT, TEST_INGOT);
+			BuiltInRegistries.BLOCK.addAlias(OLD_TEST_BLOCK, TEST_BLOCK);
+			BuiltInRegistries.ITEM.addAlias(OLD_TEST_BLOCK, TEST_BLOCK);
+			BuiltInRegistries.ITEM.addAlias(OLD_TEST_INGOT, TEST_INGOT);
 		}
 
-		Registries.ITEM.addAlias(Identifier.of("old_stone"), Identifier.of("stone"));
+		BuiltInRegistries.ITEM.addAlias(Identifier.parse("old_stone"), Identifier.parse("stone"));
 	}
 
 	private static void register(Identifier blockId, Identifier itemId) {
-		Block block = new Block(AbstractBlock.Settings.create().registryKey(RegistryKey.of(RegistryKeys.BLOCK, blockId)));
-		Registry.register(Registries.BLOCK, blockId, block);
-		BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, blockId)));
-		Registry.register(Registries.ITEM, blockId, blockItem);
-		Item item = new Item(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, itemId)));
-		Registry.register(Registries.ITEM, itemId, item);
+		Block block = new Block(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, blockId)));
+		Registry.register(BuiltInRegistries.BLOCK, blockId, block);
+		BlockItem blockItem = new BlockItem(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, blockId)));
+		Registry.register(BuiltInRegistries.ITEM, blockId, blockItem);
+		Item item = new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, itemId)));
+		Registry.register(BuiltInRegistries.ITEM, itemId, item);
 	}
 
 	private static Identifier id(String path) {
-		return Identifier.of("registry_sync_alias_test", path);
+		return Identifier.fromNamespaceAndPath("registry_sync_alias_test", path);
 	}
 }

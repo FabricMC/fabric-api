@@ -16,23 +16,23 @@
 
 package net.fabricmc.fabric.test.renderer;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
-public class OctagonalColumnBlock extends PillarBlock {
-	public static final BooleanProperty VANILLA_SHADE_MODE = BooleanProperty.of("vanilla_shade_mode");
+public class OctagonalColumnBlock extends RotatedPillarBlock {
+	public static final BooleanProperty VANILLA_SHADE_MODE = BooleanProperty.create("vanilla_shade_mode");
 
-	public OctagonalColumnBlock(Settings settings) {
+	public OctagonalColumnBlock(Properties settings) {
 		super(settings);
-		setDefaultState(getDefaultState().with(VANILLA_SHADE_MODE, false));
+		registerDefaultState(defaultBlockState().setValue(VANILLA_SHADE_MODE, false));
 	}
 
 	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		super.appendProperties(builder);
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
 		builder.add(VANILLA_SHADE_MODE);
 	}
 }

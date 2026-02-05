@@ -18,27 +18,27 @@ package net.fabricmc.fabric.test.gametest;
 
 import java.lang.reflect.Method;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class CustomTestInvokerTest implements CustomTestMethodInvoker {
 	@Override
-	public void invokeTestMethod(TestContext context, Method method) throws ReflectiveOperationException {
-		context.setBlockState(0, 1, 0, Blocks.DIAMOND_BLOCK);
+	public void invokeTestMethod(GameTestHelper helper, Method method) throws ReflectiveOperationException {
+		helper.setBlock(0, 1, 0, Blocks.DIAMOND_BLOCK);
 
-		method.invoke(this, context, Blocks.DIAMOND_BLOCK);
+		method.invoke(this, helper, Blocks.DIAMOND_BLOCK);
 	}
 
 	@GameTest
-	public void testCustomInvoker(TestContext context, Block testBlock) {
-		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 1, 0), (block) -> block == testBlock, (b) -> Text.literal("Expect block to be diamond"))
+	public void testCustomInvoker(GameTestHelper helper, Block testBlock) {
+		helper.succeedWhen(() ->
+				helper.assertBlock(new BlockPos(0, 1, 0), (block) -> block == testBlock, (b) -> Component.literal("Expect block to be diamond"))
 		);
 	}
 }

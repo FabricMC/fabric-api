@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.client.sound.v1;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.client.sound.AudioStream;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.AudioStream;
+import net.minecraft.client.sounds.SoundBufferLibrary;
+import net.minecraft.resources.Identifier;
 
 /**
  * General purpose Fabric-provided extensions to {@link SoundInstance}.
@@ -33,9 +33,9 @@ public interface FabricSoundInstance {
 	 * An empty sound, which may be used as a placeholder in your {@code sounds.json} file for sounds with custom audio
 	 * streams.
 	 *
-	 * @see #getAudioStream(SoundLoader, Identifier, boolean)
+	 * @see #getAudioStream(SoundBufferLibrary, Identifier, boolean)
 	 */
-	Identifier EMPTY_SOUND = Identifier.of("fabric-sound-api-v1", "empty");
+	Identifier EMPTY_SOUND = Identifier.fromNamespaceAndPath("fabric-sound-api-v1", "empty");
 
 	/**
 	 * Loads the audio stream for this sound.
@@ -44,7 +44,7 @@ public interface FabricSoundInstance {
 	 * custom {@link AudioStream} implementation which provides audio from another source, such as over the network or
 	 * driven from user input.
 	 *
-	 * <h3>Usage Example</h3>
+	 * <h4>Usage Example</h4>
 	 *
 	 * <p>Creating a sound with a custom audio stream requires the following:
 	 *
@@ -68,25 +68,25 @@ public interface FabricSoundInstance {
 	 * class CustomSound extends AbstractSoundInstance {
 	 *     CustomSound() {
 	 *         // Use the sound defined in sounds.json
-	 *         super(Identifier.of("mod_id", "custom_sound"), SoundCategory.BLOCKS, SoundInstance.createRandom());
+	 *         super(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
 	 *     }
 	 *
 	 *     @Override
-	 *     public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
+	 *     public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
 	 *         // Return your custom AudioStream implementation.
 	 *         return CompletableFuture.completedFuture(new CustomStream());
 	 *     }
 	 * }
 	 * }</pre>
 	 *
-	 * @param loader          The default sound loader, capable of loading {@code .ogg} files.
+	 * @param library         The default buffer library, capable of loading {@code .ogg} files.
 	 * @param id              The resolved sound ID, equal to {@link SoundInstance#getSound()}'s location.
 	 * @param repeatInstantly Whether this sound should loop. This is true when the sound
-	 *                        {@linkplain SoundInstance#isRepeatable() is repeatable} and has
-	 *                        {@linkplain SoundInstance#getRepeatDelay() no delay}.
+	 *                        {@linkplain SoundInstance#isLooping() is repeatable} and has
+	 *                        {@linkplain SoundInstance#getDelay() no delay}.
 	 * @return the loaded audio stream
 	 */
-	default CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
-		return loader.loadStreamed(id, repeatInstantly);
+	default CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
+		return library.getStream(id, repeatInstantly);
 	}
 }

@@ -23,16 +23,16 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.gui.screen.world.WorldCreator;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.chunk.WrapperProtoChunk;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ImposterProtoChunk;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -55,8 +55,8 @@ public class PersistenceGametest implements FabricClientGameTest {
 		}
 	}
 
-	private static ServerPlayerEntity getSinglePlayer(MinecraftServer server) {
-		return server.getPlayerManager().getPlayerList().getFirst();
+	private static ServerPlayer getSinglePlayer(MinecraftServer server) {
+		return server.getPlayerList().getPlayers().getFirst();
 	}
 
 	@Override
@@ -66,14 +66,14 @@ public class PersistenceGametest implements FabricClientGameTest {
 		LOGGER.info("First launch");
 		try (TestSingleplayerContext spContext = context.worldBuilder()
 				.setUseConsistentSettings(false)
-				.adjustSettings(worldCreator -> worldCreator.setGameMode(WorldCreator.Mode.CREATIVE))
+				.adjustSettings(worldCreator -> worldCreator.setGameMode(WorldCreationUiState.SelectedGameMode.CREATIVE))
 				.create()) {
 			save = spContext.getWorldSave();
-			spContext.getClientWorld().waitForChunksDownload();
+			spContext.getClientLevel().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
-				ServerWorld overworld = server.getOverworld();
-				WorldChunk originChunk = overworld.getChunk(0, 0);
+				ServerLevel overworld = server.overworld();
+				LevelChunk originChunk = overworld.getChunk(0, 0);
 
 				assertAttached(
 						originChunk,
@@ -84,11 +84,11 @@ public class PersistenceGametest implements FabricClientGameTest {
 
 				// setting up persistent attachments for second run
 				getSinglePlayer(server).setAttached(PERSISTENT, "player_data");
-				overworld.setAttached(PERSISTENT, "world_data");
+				overworld.setAttached(PERSISTENT, "level_data");
 				originChunk.setAttached(PERSISTENT, "chunk_data");
 
-				ProtoChunk farChunk = (ProtoChunk) overworld.getChunkManager()
-						.getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.STRUCTURE_STARTS, true);
+				ProtoChunk farChunk = (ProtoChunk) overworld.getChunkSource()
+						.getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z(), ChunkStatus.STRUCTURE_STARTS, true);
 				farChunk.setAttached(PERSISTENT, "protochunk_data");
 				LOGGER.info("Set persistent attachments");
 			});
@@ -98,28 +98,28 @@ public class PersistenceGametest implements FabricClientGameTest {
 
 		// second launch
 		try (TestSingleplayerContext spContext = save.open()) {
-			spContext.getClientWorld().waitForChunksDownload();
+			spContext.getClientLevel().waitForChunksDownload();
 
 			LOGGER.info("Testing persistent attachments");
 			spContext.getServer().runOnServer(server -> {
-				ServerWorld overworld = server.getOverworld();
-				WorldChunk originChunk = overworld.getChunk(0, 0);
+				ServerLevel overworld = server.overworld();
+				LevelChunk originChunk = overworld.getChunk(0, 0);
 
 				assertAttached(getSinglePlayer(server), PERSISTENT, "player_data", "Player attachment did not persist");
-				assertAttached(overworld, PERSISTENT, "world_data", "World attachment did not persist");
-				assertAttached(originChunk, PERSISTENT, "chunk_data", "WorldChunk attachment did not persist");
+				assertAttached(overworld, PERSISTENT, "level_data", "Level attachment did not persist");
+				assertAttached(originChunk, PERSISTENT, "chunk_data", "LevelChunk attachment did not persist");
 
-				WrapperProtoChunk wrapperProtoChunk = (WrapperProtoChunk) overworld.getChunkManager()
+				ImposterProtoChunk imposterProtoChunk = (ImposterProtoChunk) overworld.getChunkSource()
 						.getChunk(0, 0, ChunkStatus.EMPTY, true);
 				assertAttached(
-						wrapperProtoChunk, PERSISTENT, "chunk_data",
-						"Attachment is not accessible through WrapperProtoChunk"
+						imposterProtoChunk, PERSISTENT, "chunk_data",
+						"Attachment is not accessible through ImposterProtoChunk"
 				);
 
-				Chunk farChunk = overworld.getChunkManager()
-						.getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.EMPTY, true);
+				ChunkAccess farChunk = overworld.getChunkSource()
+						.getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z(), ChunkStatus.EMPTY, true);
 
-				if (farChunk instanceof WrapperProtoChunk) {
+				if (farChunk instanceof ImposterProtoChunk) {
 					LOGGER.warn("Far chunk already generated, can't test persistence in ProtoChunk.");
 				}
 
@@ -129,16 +129,16 @@ public class PersistenceGametest implements FabricClientGameTest {
 			LOGGER.info("Testing ProtoChunk transfer");
 			// load far chunk
 			spContext.getServer().runCommand("tp @p 4800 ~ 0");
-			spContext.getClientWorld().waitForChunksDownload();
+			spContext.getClientLevel().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
-				WorldChunk farChunk = server.getOverworld().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z);
+				LevelChunk farChunk = server.overworld().getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z());
 
 				assertAttached(
 						farChunk,
 						PERSISTENT,
 						"protochunk_data",
-						"ProtoChunk attachment was not transferred to WorldChunk"
+						"ProtoChunk attachment was not transferred to LevelChunk"
 				);
 			});
 

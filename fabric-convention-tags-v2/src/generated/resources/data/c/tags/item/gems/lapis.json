@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:lapis_lazuli",
-    {
-      "id": "#c:lapis",
-      "required": false
-    }
+    "minecraft:lapis_lazuli"
   ]
 }

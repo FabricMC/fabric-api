@@ -1,0 +1,5 @@
+version = getSubprojectVersion(project)
+
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-serialization-api-v1.classtweaker')
+}

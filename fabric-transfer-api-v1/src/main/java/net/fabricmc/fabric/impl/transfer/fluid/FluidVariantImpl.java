@@ -18,35 +18,35 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.MergedComponentMap;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.PatchedDataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 public class FluidVariantImpl implements FluidVariant {
-	public static FluidVariant of(Fluid fluid, ComponentChanges components) {
+	public static FluidVariant of(Fluid fluid, DataComponentPatch components) {
 		Objects.requireNonNull(fluid, "Fluid may not be null.");
 		Objects.requireNonNull(components, "Components may not be null.");
 
-		if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
+		if (!fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
 			// Note: the empty fluid is not still, that's why we check for it specifically.
 
-			if (fluid instanceof FlowableFluid flowable) {
-				// Normalize FlowableFluids to their still variants.
-				fluid = flowable.getStill();
+			if (fluid instanceof FlowingFluid flowable) {
+				// Normalize FlowingFluids to their still variants.
+				fluid = flowable.getSource();
 			} else {
-				// If not a FlowableFluid, we don't know how to convert -> crash.
-				Identifier id = Registries.FLUID.getId(fluid);
+				// If not a FlowingFluid, we don't know how to convert -> crash.
+				Identifier id = BuiltInRegistries.FLUID.getKey(fluid);
 				throw new IllegalArgumentException("Cannot convert flowing fluid %s (%s) into a still fluid.".formatted(id, fluid));
 			}
 		}
@@ -60,19 +60,19 @@ public class FluidVariantImpl implements FluidVariant {
 		}
 	}
 
-	public static FluidVariant of(RegistryEntry<Fluid> fluid, ComponentChanges components) {
+	public static FluidVariant of(Holder<Fluid> fluid, DataComponentPatch components) {
 		return of(fluid.value(), components);
 	}
 
 	private final Fluid fluid;
-	private final ComponentChanges components;
-	private final ComponentMap componentMap;
+	private final DataComponentPatch components;
+	private final DataComponentMap componentMap;
 	private final int hashCode;
 
-	public FluidVariantImpl(Fluid fluid, ComponentChanges components) {
+	public FluidVariantImpl(Fluid fluid, DataComponentPatch components) {
 		this.fluid = fluid;
 		this.components = components;
-		this.componentMap = components == ComponentChanges.EMPTY ? ComponentMap.EMPTY : MergedComponentMap.create(ComponentMap.EMPTY, components);
+		this.componentMap = components == DataComponentPatch.EMPTY ? DataComponentMap.EMPTY : PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, components);
 		this.hashCode = Objects.hash(fluid, components);
 	}
 
@@ -87,18 +87,18 @@ public class FluidVariantImpl implements FluidVariant {
 	}
 
 	@Override
-	public @Nullable ComponentChanges getComponents() {
+	public @Nullable DataComponentPatch getComponentsPatch() {
 		return components;
 	}
 
 	@Override
-	public ComponentMap getComponentMap() {
+	public DataComponentMap getComponents() {
 		return componentMap;
 	}
 
 	@Override
-	public FluidVariant withComponentChanges(ComponentChanges changes) {
-		return of(fluid, TransferApiImpl.mergeChanges(getComponents(), changes));
+	public FluidVariant withComponents(DataComponentPatch patch) {
+		return of(fluid, TransferApiImpl.mergePatches(getComponentsPatch(), patch));
 	}
 
 	@Override

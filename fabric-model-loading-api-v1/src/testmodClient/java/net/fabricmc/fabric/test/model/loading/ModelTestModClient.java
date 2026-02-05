@@ -18,23 +18,23 @@ package net.fabricmc.fabric.test.model.loading;
 
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CropBlock;
-import net.minecraft.block.HorizontalConnectingBlock;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.MissingModel;
-import net.minecraft.client.render.model.SimpleBlockStateModel;
-import net.minecraft.client.render.model.json.ModelVariant;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.resources.model.MissingBlockModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.CrossCollisionBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
@@ -42,18 +42,19 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 
 public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-model-loading-api-v1-testmod";
 
 	public static final Identifier HALF_RED_SAND_MODEL_ID = id("half_red_sand");
 	public static final ExtraModelKey<BlockStateModel> HALF_RED_SAND_MODEL_KEY = ExtraModelKey.create(HALF_RED_SAND_MODEL_ID::toString);
-	public static final Identifier WHEAT_STAGE0_MODEL_ID = Identifier.ofVanilla("block/wheat_stage0");
-	public static final Identifier WHEAT_STAGE7_MODEL_ID = Identifier.ofVanilla("block/wheat_stage7");
-	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.ofVanilla("block/brown_glazed_terracotta");
+	public static final Identifier WHEAT_STAGE0_MODEL_ID = Identifier.withDefaultNamespace("block/wheat_stage0");
+	public static final Identifier WHEAT_STAGE7_MODEL_ID = Identifier.withDefaultNamespace("block/wheat_stage7");
+	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.withDefaultNamespace("block/brown_glazed_terracotta");
 
 	@Override
 	public void onInitializeClient() {
@@ -62,16 +63,16 @@ public class ModelTestModClient implements ClientModInitializer {
 
 			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {
-				BlockState state = context.block().getDefaultState();
+				BlockState state = context.block().defaultBlockState();
 
-				BlockStateModel.UnbakedGrouped wheatStage0Model = simpleUnbakedGroupedBlockStateModel(WHEAT_STAGE0_MODEL_ID);
-				BlockStateModel.UnbakedGrouped wheatStage7Model = simpleUnbakedGroupedBlockStateModel(WHEAT_STAGE7_MODEL_ID);
+				BlockStateModel.UnbakedRoot wheatStage0Model = simpleUnbakedGroupedBlockStateModel(WHEAT_STAGE0_MODEL_ID);
+				BlockStateModel.UnbakedRoot wheatStage7Model = simpleUnbakedGroupedBlockStateModel(WHEAT_STAGE7_MODEL_ID);
 
 				for (int age = 0; age <= 6; age++) {
-					context.setModel(state.with(CropBlock.AGE, age), wheatStage0Model);
+					context.setModel(state.setValue(CropBlock.AGE, age), wheatStage0Model);
 				}
 
-				context.setModel(state.with(CropBlock.AGE, 7), wheatStage7Model);
+				context.setModel(state.setValue(CropBlock.AGE, 7), wheatStage7Model);
 			});
 
 			// FIXME
@@ -97,17 +98,17 @@ public class ModelTestModClient implements ClientModInitializer {
 			//});
 
 			// Make oak fences with west: true and everything else false appear to be a missing model visually.
-			BlockState westOakFence = Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true);
+			BlockState westOakFence = Blocks.OAK_FENCE.defaultBlockState().setValue(CrossCollisionBlock.WEST, true);
 			pluginContext.modifyBlockModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
 				if (context.state() == westOakFence) {
-					return simpleUnbakedGroupedBlockStateModel(MissingModel.ID);
+					return simpleUnbakedGroupedBlockStateModel(MissingBlockModel.LOCATION);
 				}
 
 				return model;
 			});
 
 			// Remove bottom face of gold blocks
-			BlockState goldBlock = Blocks.GOLD_BLOCK.getDefaultState();
+			BlockState goldBlock = Blocks.GOLD_BLOCK.defaultBlockState();
 			pluginContext.modifyBlockModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
 				if (context.state() == goldBlock) {
 					return new DownQuadRemovingModel(model);
@@ -117,21 +118,23 @@ public class ModelTestModClient implements ClientModInitializer {
 			});
 		});
 
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(SpecificModelReloadListener.INSTANCE);
+		ResourceLoader resourceLoader = ResourceLoader.get(PackType.CLIENT_RESOURCES);
+		resourceLoader.registerReloadListener(SpecificModelReloadListener.ID, SpecificModelReloadListener.INSTANCE);
+		resourceLoader.addListenerOrdering(ResourceReloaderKeys.Client.MODELS, SpecificModelReloadListener.ID);
 
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
-			if (entityRenderer instanceof PlayerEntityRenderer playerRenderer) {
-				registrationHelper.register(new BakedModelFeatureRenderer<>(playerRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
+		LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+			if (entityRenderer instanceof AvatarRenderer playerRenderer) {
+				registrationHelper.register(new BakedModelRenderLayer<>(playerRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
 			}
 		});
 	}
 
 	public static Identifier id(String path) {
-		return Identifier.of(ID, path);
+		return Identifier.fromNamespaceAndPath(ID, path);
 	}
 
-	private static BlockStateModel.UnbakedGrouped simpleUnbakedGroupedBlockStateModel(Identifier model) {
-		return new SimpleBlockStateModel.Unbaked(new ModelVariant(model)).cached();
+	private static BlockStateModel.UnbakedRoot simpleUnbakedGroupedBlockStateModel(Identifier model) {
+		return new SingleVariant.Unbaked(new Variant(model)).asRoot();
 	}
 
 	private static class DownQuadRemovingModel extends WrapperBlockStateModel {
@@ -140,10 +143,10 @@ public class ModelTestModClient implements ClientModInitializer {
 		}
 
 		@Override
-		public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
+		public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 			emitter.pushTransform(q -> q.cullFace() != Direction.DOWN);
 			// Modify the cullTest as an example of how to achieve maximum performance
-			super.emitQuads(emitter, blockView, pos, state, random, cullFace -> {
+			super.emitQuads(emitter, level, pos, state, random, cullFace -> {
 				if (cullFace == Direction.DOWN) {
 					return true;
 				}
@@ -155,8 +158,8 @@ public class ModelTestModClient implements ClientModInitializer {
 
 		@Override
 		@Nullable
-		public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
-			Object subkey = wrapped.createGeometryKey(blockView, pos, state, random);
+		public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+			Object subkey = wrapped.createGeometryKey(level, pos, state, random);
 
 			if (subkey == null) {
 				return subkey;

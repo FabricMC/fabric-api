@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.test.item.gametest;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.Potions;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.test.TestContext;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.item.CustomDamageTest;
@@ -36,16 +36,16 @@ public class BrewingStandGameTest {
 	private static final BlockPos POS = new BlockPos(0, 1, 0);
 
 	@GameTest
-	public void basicBrewing(TestContext context) {
-		context.setBlockState(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS, BrewingStandBlockEntity.class);
+	public void basicBrewing(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = helper.getBlockEntity(POS, BrewingStandBlockEntity.class);
 
-		loadFuel(blockEntity, context);
+		loadFuel(blockEntity, helper);
 
 		prepareForBrewing(blockEntity, new ItemStack(Items.NETHER_WART, 8),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing vanilla brewing.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -53,20 +53,20 @@ public class BrewingStandGameTest {
 				new ItemStack(Items.NETHER_WART, 7),
 				ItemStack.EMPTY);
 
-		context.complete();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void vanillaRemainderTest(TestContext context) {
-		context.setBlockState(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS, BrewingStandBlockEntity.class);
+	public void vanillaRemainderTest(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = helper.getBlockEntity(POS, BrewingStandBlockEntity.class);
 
-		loadFuel(blockEntity, context);
+		loadFuel(blockEntity, helper);
 
 		prepareForBrewing(blockEntity, new ItemStack(Items.DRAGON_BREATH),
 				setPotion(new ItemStack(Items.SPLASH_POTION), Potions.AWKWARD));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing vanilla brewing recipe remainder.",
 				setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
@@ -74,21 +74,21 @@ public class BrewingStandGameTest {
 				ItemStack.EMPTY,
 				ItemStack.EMPTY);
 
-		context.complete();
+		helper.succeed();
 	}
 
 	//@GameTest(templateName = EMPTY_STRUCTURE)
 	// Skip see: https://github.com/FabricMC/fabric/pull/2874
-	public void fabricRemainderTest(TestContext context) {
-		context.setBlockState(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS, BrewingStandBlockEntity.class);
+	public void fabricRemainderTest(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = helper.getBlockEntity(POS, BrewingStandBlockEntity.class);
 
-		loadFuel(blockEntity, context);
+		loadFuel(blockEntity, helper);
 
 		prepareForBrewing(blockEntity, new ItemStack(CustomDamageTest.WEIRD_PICK),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing fabric brewing recipe remainder.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -99,7 +99,7 @@ public class BrewingStandGameTest {
 		prepareForBrewing(blockEntity, RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 10),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing fabric brewing recipe remainder.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -110,7 +110,7 @@ public class BrewingStandGameTest {
 		prepareForBrewing(blockEntity, RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 31),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing fabric brewing recipe remainder.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -118,38 +118,38 @@ public class BrewingStandGameTest {
 				ItemStack.EMPTY,
 				ItemStack.EMPTY);
 
-		context.complete();
+		helper.succeed();
 	}
 
 	private void prepareForBrewing(BrewingStandBlockEntity blockEntity, ItemStack ingredient, ItemStack potion) {
-		blockEntity.setStack(0, potion.copy());
-		blockEntity.setStack(1, potion.copy());
-		blockEntity.setStack(2, potion.copy());
-		blockEntity.setStack(3, ingredient);
+		blockEntity.setItem(0, potion.copy());
+		blockEntity.setItem(1, potion.copy());
+		blockEntity.setItem(2, potion.copy());
+		blockEntity.setItem(3, ingredient);
 	}
 
 	private void assertInventory(BrewingStandBlockEntity blockEntity, String extraErrorInfo, ItemStack... stacks) {
 		for (int i = 0; i < stacks.length; i++) {
-			ItemStack currentStack = blockEntity.getStack(i);
+			ItemStack currentStack = blockEntity.getItem(i);
 			ItemStack expectedStack = stacks[i];
 
 			RecipeGameTest.assertStacks(currentStack, expectedStack, extraErrorInfo);
 		}
 	}
 
-	private void loadFuel(BrewingStandBlockEntity blockEntity, TestContext context) {
-		blockEntity.setStack(4, new ItemStack(Items.BLAZE_POWDER));
-		BrewingStandBlockEntity.tick(context.getWorld(), POS, context.getBlockState(POS), blockEntity);
+	private void loadFuel(BrewingStandBlockEntity blockEntity, GameTestHelper helper) {
+		blockEntity.setItem(4, new ItemStack(Items.BLAZE_POWDER));
+		BrewingStandBlockEntity.serverTick(helper.getLevel(), POS, helper.getBlockState(POS), blockEntity);
 	}
 
-	private void brew(BrewingStandBlockEntity blockEntity, TestContext context) {
+	private void brew(BrewingStandBlockEntity blockEntity, GameTestHelper helper) {
 		for (int i = 0; i < BREWING_TIME; i++) {
-			BrewingStandBlockEntity.tick(context.getWorld(), POS, context.getBlockState(POS), blockEntity);
+			BrewingStandBlockEntity.serverTick(helper.getLevel(), POS, helper.getBlockState(POS), blockEntity);
 		}
 	}
 
-	private static ItemStack setPotion(ItemStack itemStack, RegistryEntry<Potion> potion) {
-		itemStack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(potion));
+	private static ItemStack setPotion(ItemStack itemStack, Holder<Potion> potion) {
+		itemStack.set(DataComponents.POTION_CONTENTS, new PotionContents(potion));
 		return itemStack;
 	}
 }

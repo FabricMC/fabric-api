@@ -1,15 +1,21 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.event.interaction",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "PlayerAdvancementTrackerMixin",
-    "ServerPlayerEntityMixin",
-    "ServerPlayerInteractionManagerMixin",
-    "ServerPlayNetworkHandlerInteractEntityHandlerMixin",
-    "ServerPlayNetworkHandlerMixin"
+    "BlockBehaviourBlockStateBaseMixin",
+    "ItemStackMixin",
+    "PlayerAdvancementsMixin",
+    "PlayerMixin",
+    "ServerGamePacketListenerImplMixin",
+    "ServerPlayerGameModeMixin",
+    "ServerGamePacketListenerImplMixin",
+    "ServerPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

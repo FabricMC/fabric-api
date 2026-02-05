@@ -20,22 +20,22 @@ import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ProtoChunk;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 /**
- * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
+ * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, levels and chunks at the moment).
  * Use the methods provided in {@link AttachmentRegistry} to create and register attachments. Attachments can
  * optionally be made to persist between restarts using a provided {@link Codec}, and to synchronize with player clients.
  *
@@ -43,20 +43,20 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  * immutable types. More generally, different attachments <i>must not</i> share mutable state, and it is <i>strongly advised</i>
  * for attachments not to hold internal references to their target. See the following note on entity targets.</p>
  *
- * <p>Note on {@link Entity} and {@link Chunk} targets: in several instances, the game needs to copy data from one instance to another.
- * These are player respawning, mob conversion, return from the End, cross-world entity teleportation, and conversion of a {@link ProtoChunk} to
- * {@link WorldChunk}. By default, attachments are simply copied wholesale, up to {@link #copyOnDeath()}. Since one instance is discarded,
+ * <p>Note on {@link Entity} and {@link ChunkAccess} targets: in several instances, the game needs to copy data from one instance to another.
+ * These are player respawning, mob conversion, return from the End, cross-level entity teleportation, and conversion of a {@link ProtoChunk} to
+ * {@link LevelChunk}. By default, attachments are simply copied wholesale, up to {@link #copyOnDeath()}. Since one instance is discarded,
  * an attachment that keeps a reference to an {@link Entity} or {@link ProtoChunk} instance can and will break unexpectedly. If,
  * for whatever reason, keeping a reference to the target is absolutely necessary, be sure to implement custom copying logic.
- * For {@link Entity} targets, use {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD},
- * and {@link ServerLivingEntityEvents#MOB_CONVERSION}. For {@link Chunk} targets, mixin into
- * {@link WorldChunk#WorldChunk(ServerWorld, ProtoChunk, WorldChunk.EntityLoader)}.
+ * For {@link Entity} targets, use {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL},
+ * and {@link ServerLivingEntityEvents#MOB_CONVERSION}. For {@link ChunkAccess} targets, mixin into
+ * {@link LevelChunk#LevelChunk(ServerLevel, ProtoChunk, LevelChunk.PostLoadProcessor)}.
  * </p>
  *
  * @param <A> type of the attached data. It is encouraged for this to be an immutable type.
  * @see AttachmentRegistry
  * @see AttachmentRegistry.Builder#persistent(Codec)
- * @see AttachmentRegistry.Builder#syncWith(PacketCodec, AttachmentSyncPredicate)
+ * @see AttachmentRegistry.Builder#syncWith(StreamCodec, AttachmentSyncPredicate)
  */
 @ApiStatus.NonExtendable
 @ApiStatus.Experimental

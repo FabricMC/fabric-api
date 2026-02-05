@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 

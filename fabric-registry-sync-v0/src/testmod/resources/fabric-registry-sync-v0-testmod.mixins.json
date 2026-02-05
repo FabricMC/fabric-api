@@ -1,11 +1,14 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.test.registry.sync.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "PacketCodecsMixin"
+    "ByteBufCodecsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

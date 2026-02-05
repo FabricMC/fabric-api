@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.world.level.block.Block;
 
 public final class SpecialBlockRendererRegistryImpl {
 	private static final Map<Block, SpecialModelRenderer.Unbaked> MAP = new HashMap<>();

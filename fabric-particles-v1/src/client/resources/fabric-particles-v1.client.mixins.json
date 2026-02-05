@@ -1,14 +1,17 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.client.particle",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
-    "BlockDustParticleMixin",
-    "ParticleManagerMixin",
-    "ParticleManagerAccessor",
-    "ParticleManagerAccessor$SimpleSpriteProviderAccessor"
+    "TerrainParticleMixin",
+    "ParticleEngineAccessor",
+    "ParticleEngineMixin",
+    "ParticleResourcesMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

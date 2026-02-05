@@ -20,8 +20,8 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 
@@ -36,7 +36,7 @@ public class RemapStateImpl<T> implements RegistryIdRemapCallback.RemapState<T> 
 		this.newIdMap = new Int2ObjectOpenHashMap<>();
 
 		for (Int2IntMap.Entry entry : rawIdChangeMap.int2IntEntrySet()) {
-			Identifier id = registry.getId(registry.get(entry.getIntValue()));
+			Identifier id = registry.getKey(registry.byId(entry.getIntValue()));
 			newIdMap.put(entry.getIntValue(), id);
 		}
 	}

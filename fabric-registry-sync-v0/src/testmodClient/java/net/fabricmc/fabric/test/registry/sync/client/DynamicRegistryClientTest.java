@@ -24,9 +24,9 @@ import static net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest.T
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -35,22 +35,22 @@ import net.fabricmc.fabric.test.registry.sync.TestNestedDynamicObject;
 
 public final class DynamicRegistryClientTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Identifier SYNCED_ID = Identifier.of("fabric-registry-sync-v0-testmod", "synced");
+	private static final Identifier SYNCED_ID = Identifier.fromNamespaceAndPath("fabric-registry-sync-v0-testmod", "synced");
 
 	@Override
 	public void onInitializeClient() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			LOGGER.info("Starting dynamic registry sync tests...");
 
-			TestDynamicObject synced1 = handler.getRegistryManager()
-					.getOrThrow(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
-					.get(SYNCED_ID);
-			TestDynamicObject synced2 = handler.getRegistryManager()
-					.getOrThrow(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
-					.get(SYNCED_ID);
-			TestNestedDynamicObject simpleNested = handler.getRegistryManager()
-					.getOrThrow(TEST_NESTED_DYNAMIC_REGISTRY_KEY)
-					.get(SYNCED_ID);
+			TestDynamicObject synced1 = handler.registryAccess()
+					.lookupOrThrow(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY)
+					.getValue(SYNCED_ID);
+			TestDynamicObject synced2 = handler.registryAccess()
+					.lookupOrThrow(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY)
+					.getValue(SYNCED_ID);
+			TestNestedDynamicObject simpleNested = handler.registryAccess()
+					.lookupOrThrow(TEST_NESTED_DYNAMIC_REGISTRY_KEY)
+					.getValue(SYNCED_ID);
 
 			LOGGER.info("Synced - simple: {}", synced1);
 			LOGGER.info("Synced - custom network codec: {}", synced2);
@@ -82,8 +82,8 @@ public final class DynamicRegistryClientTest implements ClientModInitializer {
 			//	throw new AssertionError("Did not match up synced nested entry to the other synced value");
 			//}
 
-			// See ClientRegistriesDynamicRegistriesMixin
-			if (handler.getRegistryManager().getOptional(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
+			// See ClientRegistriesDynamicBuiltInRegistriesMixin
+			if (handler.registryAccess().lookup(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
 				throw new AssertionError("Received empty registry that should have been skipped");
 			}
 
@@ -91,7 +91,7 @@ public final class DynamicRegistryClientTest implements ClientModInitializer {
 		});
 	}
 
-	private static void didNotReceive(RegistryKey<? extends Registry<?>> registryKey, Identifier entryId) {
+	private static void didNotReceive(ResourceKey<? extends Registry<?>> registryKey, Identifier entryId) {
 		throw new AssertionError("Did not receive " + registryKey + "/" + entryId);
 	}
 }

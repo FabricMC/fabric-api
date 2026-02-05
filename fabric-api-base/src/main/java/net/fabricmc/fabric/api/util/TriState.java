@@ -21,24 +21,31 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.Nullable;
+import com.mojang.serialization.Codec;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.util.StringRepresentable;
 
 /**
  * Represents a boolean value which can be true, false or refer to a default value.
  */
-public enum TriState {
+public enum TriState implements StringRepresentable {
 	/**
 	 * Represents the boolean value of {@code false}.
 	 */
-	FALSE,
+	FALSE("false"),
 	/**
 	 * Represents a value that refers to a "default" value, often as a fallback.
 	 */
-	DEFAULT,
+	DEFAULT("default"),
 	/**
 	 * Represents the boolean value of {@code true}.
 	 */
-	TRUE;
+	TRUE("true");
+
+	public static final Codec<TriState> CODEC = StringRepresentable.fromEnum(TriState::values);
+
+	private final String name;
 
 	/**
 	 * Gets the corresponding tri-state from a boolean value.
@@ -135,5 +142,34 @@ public enum TriState {
 		}
 
 		throw exceptionSupplier.get();
+	}
+
+	/**
+	 * {@return a parsed TriState from a system property}
+	 *
+	 * @param property the system property
+	 */
+	public static TriState fromSystemProperty(String property) {
+		String value = System.getProperty(property);
+
+		if (value != null) {
+			return Boolean.parseBoolean(value) ? TRUE : FALSE;
+		}
+
+		return DEFAULT;
+	}
+
+	/**
+	 * Value of this enum as string.
+	 *
+	 * @return lowercase name of the value.
+	 */
+	@Override
+	public String getSerializedName() {
+		return this.name;
+	}
+
+	TriState(String name) {
+		this.name = name;
 	}
 }

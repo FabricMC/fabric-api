@@ -1,15 +1,19 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.block",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "BlockBehaviourPropertiesMixin",
     "BlockMixin",
     "BlockStateMixin",
     "ChunkSectionBlockStateCounterMixin",
-    "ChunkSectionMixin",
+    "LevelChunkSectionMixin",
     "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

@@ -1,27 +1,30 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.item",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
-    "AnvilScreenHandlerMixin",
+    "AnvilMenuMixin",
     "BrewingStandBlockEntityMixin",
-    "ComponentMapBuilderMixin",
+    "DataComponentMapBuilderMixin",
     "CraftingRecipeMixin",
+    "DataComponentInitializersMixin",
     "EnchantCommandMixin",
     "EnchantmentBuilderAccessor",
     "EnchantmentBuilderMixin",
     "EnchantmentHelperMixin",
-    "EnchantRandomlyLootFunctionMixin",
-    "ItemAccessor",
+    "EnchantRandomlyFunctionMixin",
     "ItemMixin",
-    "ItemSettingsMixin",
+    "ItemPropertiesMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RegistriesMixin",
-    "RegistryLoaderMixin"
+    "BuiltInRegistriesMixin",
+    "ResourceManagerRegistryLoadTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

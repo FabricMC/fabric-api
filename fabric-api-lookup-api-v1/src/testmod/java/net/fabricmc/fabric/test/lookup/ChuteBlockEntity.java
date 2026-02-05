@@ -16,14 +16,12 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.test.lookup.api.ItemApis;
@@ -33,24 +31,24 @@ import net.fabricmc.fabric.test.lookup.api.ItemUtils;
 
 public class ChuteBlockEntity extends BlockEntity {
 	private int moveDelay = 0;
-	private BlockApiCache<ItemInsertable, @NotNull Direction> cachedInsertable = null;
-	private BlockApiCache<ItemExtractable, @NotNull Direction> cachedExtractable = null;
+	private BlockApiCache<ItemInsertable, Direction> cachedInsertable = null;
+	private BlockApiCache<ItemExtractable, Direction> cachedExtractable = null;
 
 	public ChuteBlockEntity(BlockPos pos, BlockState state) {
 		super(FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, pos, state);
 	}
 
-	public static void serverTick(World world, BlockPos pos, BlockState blockState, ChuteBlockEntity blockEntity) {
-		if (!blockEntity.hasWorld()) {
+	public static void serverTick(Level level, BlockPos pos, BlockState blockState, ChuteBlockEntity blockEntity) {
+		if (!blockEntity.hasLevel()) {
 			return;
 		}
 
 		if (blockEntity.cachedInsertable == null) {
-			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerWorld) world, pos.offset(Direction.DOWN));
+			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerLevel) level, pos.relative(Direction.DOWN));
 		}
 
 		if (blockEntity.cachedExtractable == null) {
-			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerWorld) world, pos.offset(Direction.UP));
+			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerLevel) level, pos.relative(Direction.UP));
 		}
 
 		if (blockEntity.moveDelay == 0) {

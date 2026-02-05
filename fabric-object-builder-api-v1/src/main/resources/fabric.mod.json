@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
     "fabric-registry-sync-v0": "*"
   },
@@ -28,12 +28,8 @@
       "environment": "client"
     }
   ],
-  "accessWidener" : "fabric-object-builder-api-v1.accesswidener",
+  "accessWidener" : "fabric-object-builder-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_1299\u0024class_1300": ["net/fabricmc/fabric/api/object/builder/v1/entity/FabricEntityType\u0024Builder<TT;>"],
-      "net/minecraft/class_2591": ["net/fabricmc/fabric/api/object/builder/v1/block/entity/FabricBlockEntityType"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

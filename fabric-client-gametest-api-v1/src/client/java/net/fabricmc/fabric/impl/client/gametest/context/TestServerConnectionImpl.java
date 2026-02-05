@@ -16,26 +16,26 @@
 
 package net.fabricmc.fabric.impl.client.gametest.context;
 
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 
 public class TestServerConnectionImpl implements TestServerConnection {
 	private final ClientGameTestContext context;
-	private final TestClientWorldContext clientWorld;
+	private final TestClientLevelContext clientLevel;
 
-	public TestServerConnectionImpl(ClientGameTestContext context, TestClientWorldContext clientWorld) {
+	public TestServerConnectionImpl(ClientGameTestContext context, TestClientLevelContext clientLevel) {
 		this.context = context;
-		this.clientWorld = clientWorld;
+		this.clientLevel = clientLevel;
 	}
 
 	@Override
-	public TestClientWorldContext getClientWorld() {
-		return clientWorld;
+	public TestClientLevelContext getClientLevel() {
+		return clientLevel;
 	}
 
 	@Override
@@ -43,15 +43,15 @@ public class TestServerConnectionImpl implements TestServerConnection {
 		ThreadingImpl.checkOnGametestThread("close");
 
 		context.runOnClient(client -> {
-			if (client.world == null) {
+			if (client.level == null) {
 				throw new AssertionError("Disconnected from server before closing the test server connection");
 			}
 
-			client.world.disconnect(Text.literal("Disconnecting"));
+			client.level.disconnect(Component.literal("Disconnecting"));
 			client.disconnectWithSavingScreen();
 		});
 
-		context.waitFor(client -> client.world == null);
+		context.waitFor(client -> client.level == null);
 		context.setScreen(TitleScreen::new);
 	}
 }

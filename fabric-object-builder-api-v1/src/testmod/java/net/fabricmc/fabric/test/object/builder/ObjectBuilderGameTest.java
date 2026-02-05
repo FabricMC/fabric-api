@@ -18,24 +18,24 @@ package net.fabricmc.fabric.test.object.builder;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.test.TestContext;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class ObjectBuilderGameTest {
 	@GameTest
-	public void testBlockUse(TestContext context) {
+	public void testBlockUse(GameTestHelper helper) {
 		List<Block> blocks = List.of(BlockEntityTypeBuilderTest.INITIAL_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.ADDED_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.FIRST_MULTI_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.SECOND_MULTI_BETRAYAL_BLOCK);
-		BlockPos.Mutable pos = BlockPos.ORIGIN.up().mutableCopy();
+		BlockPos.MutableBlockPos pos = BlockPos.ZERO.above().mutable();
 
 		for (Block block : blocks) {
-			context.setBlockState(pos, block);
-			context.useBlock(pos);
-			pos.up();
+			helper.setBlock(pos, block);
+			helper.useBlock(pos);
+			pos.above();
 		}
 
-		context.complete();
+		helper.succeed();
 	}
 }

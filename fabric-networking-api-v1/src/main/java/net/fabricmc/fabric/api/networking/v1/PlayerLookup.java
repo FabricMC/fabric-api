@@ -21,22 +21,22 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.PlayerAssociatedNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerChunkLoadingManager;
-import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.chunk.ChunkManager;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.phys.Vec3;
 
+import net.fabricmc.fabric.mixin.networking.accessor.ChunkMapAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerChunkLoadingManagerAccessor;
 
 /**
  * Helper methods to lookup players in a server.
@@ -54,48 +54,48 @@ public final class PlayerLookup {
 	 * @param server the server
 	 * @return all players on the server
 	 */
-	public static Collection<ServerPlayerEntity> all(MinecraftServer server) {
+	public static Collection<ServerPlayer> all(MinecraftServer server) {
 		Objects.requireNonNull(server, "The server cannot be null");
 
 		// return an immutable collection to guard against accidental removals.
-		if (server.getPlayerManager() != null) {
-			return Collections.unmodifiableCollection(server.getPlayerManager().getPlayerList());
+		if (server.getPlayerList() != null) {
+			return Collections.unmodifiableCollection(server.getPlayerList().getPlayers());
 		}
 
 		return Collections.emptyList();
 	}
 
 	/**
-	 * Gets all the players in a server world.
+	 * Gets all the players in a server level.
 	 *
 	 * <p>The returned collection is immutable.
 	 *
-	 * @param world the server world
-	 * @return the players in the server world
+	 * @param level the server level
+	 * @return the players in the server level
 	 */
-	public static Collection<ServerPlayerEntity> world(ServerWorld world) {
-		Objects.requireNonNull(world, "The world cannot be null");
+	public static Collection<ServerPlayer> level(ServerLevel level) {
+		Objects.requireNonNull(level, "The level cannot be null");
 
 		// return an immutable collection to guard against accidental removals.
-		return Collections.unmodifiableCollection(world.getPlayers());
+		return Collections.unmodifiableCollection(level.players());
 	}
 
 	/**
-	 * Gets all players tracking a chunk in a server world.
+	 * Gets all players tracking a chunk in a server level.
 	 *
-	 * @param world the server world
+	 * @param level the server level
 	 * @param pos   the chunk in question
 	 * @return the players tracking the chunk
 	 */
-	public static Collection<ServerPlayerEntity> tracking(ServerWorld world, ChunkPos pos) {
-		Objects.requireNonNull(world, "The world cannot be null");
+	public static Collection<ServerPlayer> tracking(ServerLevel level, ChunkPos pos) {
+		Objects.requireNonNull(level, "The level cannot be null");
 		Objects.requireNonNull(pos, "The chunk pos cannot be null");
 
-		return world.getChunkManager().chunkLoadingManager.getPlayersWatchingChunk(pos, false);
+		return level.getChunkSource().chunkMap.getPlayers(pos, false);
 	}
 
 	/**
-	 * Gets all players tracking an entity in a server world.
+	 * Gets all players tracking an entity in a server level.
 	 *
 	 * <p>The returned collection is immutable.
 	 *
@@ -105,94 +105,94 @@ public final class PlayerLookup {
 	 *
 	 * @param entity the entity being tracked
 	 * @return the players tracking the entity
-	 * @throws IllegalArgumentException if the entity is not in a server world
+	 * @throws IllegalArgumentException if the entity is not in a server level
 	 */
-	public static Collection<ServerPlayerEntity> tracking(Entity entity) {
+	public static Collection<ServerPlayer> tracking(Entity entity) {
 		Objects.requireNonNull(entity, "Entity cannot be null");
-		ChunkManager manager = entity.getWorld().getChunkManager();
+		ChunkSource manager = entity.level().getChunkSource();
 
-		if (manager instanceof ServerChunkManager) {
-			ServerChunkLoadingManager chunkLoadingManager = ((ServerChunkManager) manager).chunkLoadingManager;
-			EntityTrackerAccessor tracker = ((ServerChunkLoadingManagerAccessor) chunkLoadingManager).getEntityTrackers().get(entity.getId());
+		if (manager instanceof ServerChunkCache) {
+			ChunkMap chunkMap = ((ServerChunkCache) manager).chunkMap;
+			EntityTrackerAccessor tracker = ((ChunkMapAccessor) chunkMap).getEntityMap().get(entity.getId());
 
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {
-				return tracker.getPlayersTracking()
-						.stream().map(PlayerAssociatedNetworkHandler::getPlayer).collect(Collectors.toUnmodifiableSet());
+				return tracker.getSeenBy()
+						.stream().map(ServerPlayerConnection::getPlayer).collect(Collectors.toUnmodifiableSet());
 			}
 
 			return Collections.emptySet();
 		}
 
-		throw new IllegalArgumentException("Only supported on server worlds!");
+		throw new IllegalArgumentException("Only supported on server levels!");
 	}
 
 	/**
-	 * Gets all players tracking a block entity in a server world.
+	 * Gets all players tracking a block entity in a server level.
 	 *
 	 * @param blockEntity the block entity
 	 * @return the players tracking the block position
-	 * @throws IllegalArgumentException if the block entity is not in a server world
+	 * @throws IllegalArgumentException if the block entity is not in a server level
 	 */
-	public static Collection<ServerPlayerEntity> tracking(BlockEntity blockEntity) {
+	public static Collection<ServerPlayer> tracking(BlockEntity blockEntity) {
 		Objects.requireNonNull(blockEntity, "BlockEntity cannot be null");
 
-		//noinspection ConstantConditions - IJ intrinsics don't know hasWorld == true will result in no null
-		if (!blockEntity.hasWorld() || blockEntity.getWorld().isClient()) {
-			throw new IllegalArgumentException("Only supported on server worlds!");
+		//noinspection ConstantConditions - IJ intrinsics don't know hasLevel == true will result in no null
+		if (!blockEntity.hasLevel() || blockEntity.getLevel().isClientSide()) {
+			throw new IllegalArgumentException("Only supported on server levels!");
 		}
 
-		return tracking((ServerWorld) blockEntity.getWorld(), blockEntity.getPos());
+		return tracking((ServerLevel) blockEntity.getLevel(), blockEntity.getBlockPos());
 	}
 
 	/**
-	 * Gets all players tracking a block position in a server world.
+	 * Gets all players tracking a block position in a server level.
 	 *
-	 * @param world the server world
+	 * @param level the server level
 	 * @param pos   the block position
 	 * @return the players tracking the block position
 	 */
-	public static Collection<ServerPlayerEntity> tracking(ServerWorld world, BlockPos pos) {
+	public static Collection<ServerPlayer> tracking(ServerLevel level, BlockPos pos) {
 		Objects.requireNonNull(pos, "BlockPos cannot be null");
 
-		return tracking(world, new ChunkPos(pos));
+		return tracking(level, ChunkPos.containing(pos));
 	}
 
 	/**
-	 * Gets all players around a position in a world.
+	 * Gets all players around a position in a level.
 	 *
 	 * <p>The distance check is done in the three-dimensional space instead of in the horizontal plane.
 	 *
-	 * @param world  the world
+	 * @param level  the level
 	 * @param pos the position
 	 * @param radius the maximum distance from the position in blocks
 	 * @return the players around the position
 	 */
-	public static Collection<ServerPlayerEntity> around(ServerWorld world, Vec3d pos, double radius) {
+	public static Collection<ServerPlayer> around(ServerLevel level, Vec3 pos, double radius) {
 		double radiusSq = radius * radius;
 
-		return world(world)
+		return level(level)
 				.stream()
-				.filter((p) -> p.squaredDistanceTo(pos) <= radiusSq)
+				.filter((p) -> p.distanceToSqr(pos) <= radiusSq)
 				.collect(Collectors.toList());
 	}
 
 	/**
-	 * Gets all players around a position in a world.
+	 * Gets all players around a position in a level.
 	 *
 	 * <p>The distance check is done in the three-dimensional space instead of in the horizontal plane.
 	 *
-	 * @param world  the world
+	 * @param level  the level
 	 * @param pos    the position (can be a block pos)
 	 * @param radius the maximum distance from the position in blocks
 	 * @return the players around the position
 	 */
-	public static Collection<ServerPlayerEntity> around(ServerWorld world, Vec3i pos, double radius) {
+	public static Collection<ServerPlayer> around(ServerLevel level, Vec3i pos, double radius) {
 		double radiusSq = radius * radius;
 
-		return world(world)
+		return level(level)
 				.stream()
-				.filter((p) -> p.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= radiusSq)
+				.filter((p) -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) <= radiusSq)
 				.collect(Collectors.toList());
 	}
 

@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.mob.CreakingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.monster.creaking.Creaking;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;
@@ -35,7 +35,7 @@ public class PlayerPickItemTests implements ModInitializer {
 		// - When sneaking, holding Ctrl/Cmd, and picking an item from a creaking, structure void with the entity name will be given.
 
 		PlayerPickItemEvents.BLOCK.register((player, pos, state, includeData) -> {
-			if (player.isSneaking() && state.isOf(Blocks.BEDROCK)) {
+			if (player.isShiftKeyDown() && state.is(Blocks.BEDROCK)) {
 				return includeData ? ItemStack.EMPTY : new ItemStack(Items.BARRIER);
 			}
 
@@ -43,9 +43,9 @@ public class PlayerPickItemTests implements ModInitializer {
 		});
 
 		PlayerPickItemEvents.ENTITY.register((player, entity, includeData) -> {
-			if (player.isSneaking() && entity instanceof CreakingEntity) {
+			if (player.isShiftKeyDown() && entity instanceof Creaking) {
 				ItemStack stack = new ItemStack(includeData ? Items.STRUCTURE_VOID : Items.LIGHT);
-				stack.set(DataComponentTypes.ITEM_NAME, entity.getName());
+				stack.set(DataComponents.ITEM_NAME, entity.getName());
 				return stack;
 			}
 

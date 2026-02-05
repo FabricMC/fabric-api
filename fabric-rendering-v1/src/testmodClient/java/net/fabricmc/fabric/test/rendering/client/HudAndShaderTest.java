@@ -35,7 +35,7 @@ public class HudAndShaderTest implements ClientModInitializer {
 		/* TODO 1.21.5
 		ShaderProgramKeys.getAll().add(TEST_SHADER);
 
-		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+		HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
 			if (true) {
 				// TODO needs fixing for 1.21.5, check debug text color
 				return;
@@ -47,10 +47,10 @@ public class HudAndShaderTest implements ClientModInitializer {
 			int y = window.getScaledHeight() - 15;
 			RenderSystem.setShader(TEST_SHADER);
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
-			Matrix4f positionMatrix = drawContext.getMatrices().peek().getPositionMatrix();
+			Matrix4f positionMatrix = graphics.getMatrices().peek().getPositionMatrix();
 
-			drawContext.draw(vertexConsumerProvider -> {
-				VertexConsumer buffer = vertexConsumerProvider.getBuffer(RenderLayer.getGui());
+			graphics.draw(multiBufferSource -> {
+				VertexConsumer buffer = multiBufferSource.getBuffer(RenderLayer.getGui());
 				buffer.vertex(positionMatrix, x, y, 50).color(255, 255, 255, 255);
 				buffer.vertex(positionMatrix, x, y + 10, 50).color(255, 255, 255, 255);
 				buffer.vertex(positionMatrix, x + 10, y + 10, 50).color(255, 255, 255, 255);

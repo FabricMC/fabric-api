@@ -24,12 +24,12 @@ import net.fabricmc.fabric.test.networking.common.NetworkingCommonTest;
 public class NetworkingCommonClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(NetworkingCommonTest.CommonPayload.ID, (payload, context) -> {
+		ClientPlayNetworking.registerGlobalReceiver(NetworkingCommonTest.CommonPayload.TYPE, (payload, context) -> {
 			// Echo the payload back
 			context.responseSender().sendPacket(payload);
 		});
 
-		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingCommonTest.CommonPayload.ID, (payload, context) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingCommonTest.CommonPayload.TYPE, (payload, context) -> {
 			// Echo the payload back
 			context.responseSender().sendPacket(payload);
 		});

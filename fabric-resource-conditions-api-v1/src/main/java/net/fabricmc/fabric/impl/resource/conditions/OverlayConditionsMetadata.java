@@ -24,14 +24,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.resource.metadata.ResourceMetadataSerializer;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 
 public record OverlayConditionsMetadata(List<Entry> overlays) {
 	public static final Codec<OverlayConditionsMetadata> CODEC = Entry.CODEC.listOf().fieldOf("entries").xmap(OverlayConditionsMetadata::new, OverlayConditionsMetadata::overlays).codec();
-	public static final ResourceMetadataSerializer<OverlayConditionsMetadata> SERIALIZER = new ResourceMetadataSerializer<>(ResourceConditions.OVERLAYS_KEY, CODEC);
+	public static final MetadataSectionType<OverlayConditionsMetadata> SERIALIZER = new MetadataSectionType<>(ResourceConditions.OVERLAYS_KEY, CODEC);
 
 	public List<String> appliedOverlays() {
 		List<String> appliedOverlays = new ArrayList<>();

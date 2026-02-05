@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -46,56 +47,66 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 
 	@Override
 	public void onInitializeClient() {
-		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudTests::renderBeforeMiscOverlay);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudTests::renderAfterMiscOverlay);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, Identifier.of(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::renderAfterExperienceLevel);
-		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudTests::renderBeforeDemoTimer);
-		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudTests::renderBeforeChat);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudTests::renderAfterSubtitles);
+		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_MISC_OVERLAY), HudTests::renderBeforeMiscOverlay);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_MISC_OVERLAY), HudTests::renderAfterMiscOverlay);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::renderAfterExperienceLevel);
+		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_DEMO_TIMER), HudTests::renderBeforeDemoTimer);
+		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_CHAT), HudTests::renderBeforeChat);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.SUBTITLES, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_SUBTITLES), HudTests::renderAfterSubtitles);
+
+		// https://github.com/FabricMC/fabric/issues/4933#issuecomment-3552574307
+		HudElementRegistry.replaceElement(
+				VanillaHudElements.SUBTITLES, original -> (graphics, tracker) -> {
+					graphics.pose().pushMatrix();
+					graphics.pose().scale(0.25f);
+					original.render(graphics, tracker);
+					graphics.pose().popMatrix();
+				}
+		);
 	}
 
-	private static void renderBeforeMiscOverlay(DrawContext context, RenderTickCounter tickCounter) {
+	private static void renderBeforeMiscOverlay(GuiGraphics graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a blue rectangle at the top right of the screen, and it should be blocked by misc overlays such as vignette, spyglass, and powder snow
-		context.fill(context.getScaledWindowWidth() - 200, 0, context.getScaledWindowWidth(), 30, Colors.BLUE);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "1. Blue rectangle blocked by overlays", context.getScaledWindowWidth() - 196, 10, Colors.WHITE);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "such as powder snow", context.getScaledWindowWidth() - 111, 20, Colors.WHITE);
+		graphics.fill(graphics.guiWidth() - 200, 0, graphics.guiWidth(), 30, CommonColors.BLUE);
+		graphics.drawString(Minecraft.getInstance().font, "1. Blue rectangle blocked by overlays", graphics.guiWidth() - 196, 10, CommonColors.WHITE);
+		graphics.drawString(Minecraft.getInstance().font, "such as powder snow", graphics.guiWidth() - 111, 20, CommonColors.WHITE);
 	}
 
-	private static void renderAfterMiscOverlay(DrawContext context, RenderTickCounter tickCounter) {
+	private static void renderAfterMiscOverlay(GuiGraphics graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a red square in the center of the screen underneath the crosshair
-		context.fill(context.getScaledWindowWidth() / 2 - 10, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth() / 2 + 10, context.getScaledWindowHeight() / 2 + 10, Colors.RED);
-		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "2. Red square underneath crosshair", context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() / 2 + 10, Colors.WHITE);
+		graphics.fill(graphics.guiWidth() / 2 - 10, graphics.guiHeight() / 2 - 10, graphics.guiWidth() / 2 + 10, graphics.guiHeight() / 2 + 10, CommonColors.RED);
+		graphics.drawCenteredString(Minecraft.getInstance().font, "2. Red square underneath crosshair", graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 10, CommonColors.WHITE);
 	}
 
-	private static void renderAfterExperienceLevel(DrawContext context, RenderTickCounter tickCounter) {
+	private static void renderAfterExperienceLevel(GuiGraphics graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a green rectangle at the bottom of the screen, and it should block the hotbar and status bars
-		context.fill(context.getScaledWindowWidth() / 2 - 50, context.getScaledWindowHeight() - 50, context.getScaledWindowWidth() / 2 + 50, context.getScaledWindowHeight() - 10, Colors.GREEN);
-		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "3. This green rectangle should block the hotbar and status bars.", context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() - 40, Colors.WHITE);
+		graphics.fill(graphics.guiWidth() / 2 - 50, graphics.guiHeight() - 50, graphics.guiWidth() / 2 + 50, graphics.guiHeight() - 10, CommonColors.GREEN);
+		graphics.drawCenteredString(Minecraft.getInstance().font, "3. This green rectangle should block the hotbar and status bars.", graphics.guiWidth() / 2, graphics.guiHeight() - 40, CommonColors.WHITE);
 	}
 
-	private static void renderBeforeDemoTimer(DrawContext context, RenderTickCounter tickCounter) {
+	private static void renderBeforeDemoTimer(GuiGraphics graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a yellow rectangle at the right of the screen, and it should be above the sleep overlay but below the scoreboard
-		context.fill(context.getScaledWindowWidth() - 240, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth(), context.getScaledWindowHeight() / 2 + 10, Colors.YELLOW);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "4. This yellow rectangle should be above", context.getScaledWindowWidth() - 236, context.getScaledWindowHeight() / 2 - 10, Colors.WHITE);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "the sleep overlay but below the scoreboard.", context.getScaledWindowWidth() - 236, context.getScaledWindowHeight() / 2, Colors.WHITE);
+		graphics.fill(graphics.guiWidth() - 240, graphics.guiHeight() / 2 - 10, graphics.guiWidth(), graphics.guiHeight() / 2 + 10, CommonColors.YELLOW);
+		graphics.drawString(Minecraft.getInstance().font, "4. This yellow rectangle should be above", graphics.guiWidth() - 236, graphics.guiHeight() / 2 - 10, CommonColors.WHITE);
+		graphics.drawString(Minecraft.getInstance().font, "the sleep overlay but below the scoreboard.", graphics.guiWidth() - 236, graphics.guiHeight() / 2, CommonColors.WHITE);
 	}
 
-	private static void renderBeforeChat(DrawContext context, RenderTickCounter tickCounter) {
+	private static void renderBeforeChat(GuiGraphics graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a blue rectangle at the bottom left of the screen, and it should be blocked by the chat
-		context.fill(0, context.getScaledWindowHeight() - 40, 300, context.getScaledWindowHeight() - 50, Colors.BLUE);
-		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "5. This blue rectangle should be blocked by the chat.", 0, context.getScaledWindowHeight() - 50, Colors.WHITE);
+		graphics.fill(0, graphics.guiHeight() - 40, 300, graphics.guiHeight() - 50, CommonColors.BLUE);
+		graphics.drawString(Minecraft.getInstance().font, "5. This blue rectangle should be blocked by the chat.", 0, graphics.guiHeight() - 50, CommonColors.WHITE);
 	}
 
-	private static void renderAfterSubtitles(DrawContext context, RenderTickCounter tickCounter) {
+	private static void renderAfterSubtitles(GuiGraphics graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a yellow rectangle at the top of the screen, and it should block the player list
-		context.fill(context.getScaledWindowWidth() / 2 - 150, 0, context.getScaledWindowWidth() / 2 + 150, 15, Colors.YELLOW);
-		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "6. This yellow rectangle should block the player list.", context.getScaledWindowWidth() / 2, 0, Colors.WHITE);
+		graphics.fill(graphics.guiWidth() / 2 - 150, 0, graphics.guiWidth() / 2 + 150, 15, CommonColors.YELLOW);
+		graphics.drawCenteredString(Minecraft.getInstance().font, "6. This yellow rectangle should block the player list.", graphics.guiWidth() / 2, 0, CommonColors.WHITE);
 	}
 
 	@Override
@@ -103,8 +114,8 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 		// Set up required test environment
 		context.getInput().resizeWindow(2048, 1024); // Multiple of 256 to not squish the pixels of 256x overlays.
 		context.runOnClient(client -> {
-			client.options.hudHidden = false;
-			client.options.getGuiScale().setValue(2);
+			client.options.hideGui = false;
+			client.options.guiScale().set(2);
 		});
 		shouldRender = true;
 
@@ -114,11 +125,11 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 			singleplayer.getServer().runCommand("/scoreboard objectives add hud_layer_test dummy");
 			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay list hud_layer_test"); // Hack to show player list
 			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay sidebar hud_layer_test"); // Hack to show sidebar
-			singleplayer.getServer().runOnServer(server -> server.getOverworld().setBlockState(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.getDefaultState()));
+			singleplayer.getServer().runOnServer(server -> server.overworld().setBlockAndUpdate(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.defaultBlockState()));
 
 			// Wait for stuff to load
-			singleplayer.getClientWorld().waitForChunksRender();
-			singleplayer.getServer().runOnServer(server -> server.getPlayerManager().broadcast(Text.of("hud_layer_" + BEFORE_CHAT), false)); // Chat messages disappear in 200 ticks so we send one 150 ticks in advance to test the before chat layer
+			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getServer().runOnServer(server -> server.getPlayerList().broadcastSystemMessage(Component.nullToEmpty("hud_layer_" + BEFORE_CHAT), false)); // Chat messages disappear in 200 ticks so we send one 150 ticks in advance to test the before chat layer
 			context.waitTicks(150); // The powder snow frosty vignette takes 140 ticks to fully appear, so we additionally wait for a total of 150 ticks
 
 			// Take and assert screenshots
@@ -127,15 +138,15 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_HOTBAR_AND_BARS).withRegion(924, 924, 200, 80).save());
 
 			// The sleep overlay takes 100 ticks to fully appear, so we start sleeping and wait for 100 ticks
-			context.runOnClient(client -> client.player.setSleepingPosition(new BlockPos(0, -59, 0)));
+			context.runOnClient(client -> client.player.setSleepingPos(new BlockPos(0, -59, 0)));
 			context.waitTicks(100);
 
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_DEMO_TIMER).withRegion(1568, 492, 480, 40).save());
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_CHAT).withRegion(0, 924, 600, 20).save());
 
-			context.runOnClient(client -> client.player.clearSleepingPosition());
+			context.runOnClient(client -> client.player.clearSleepingPos());
 			context.waitTick();
-			context.getInput().holdKey(InputUtil.GLFW_KEY_TAB); // Show player list
+			context.getInput().holdKey(InputConstants.KEY_TAB); // Show player list
 			context.waitTick();
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_SUBTITLES).withRegion(724, 0, 600, 30).save());
 		}

@@ -20,11 +20,11 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.display.SlotDisplay;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
@@ -75,7 +75,7 @@ public interface CustomIngredient {
 	 *
 	 * <p>Note: no caching needs to be done by the implementation, this is already handled by the ingredient itself.
 	 */
-	Stream<RegistryEntry<Item>> getMatchingItems();
+	Stream<Holder<Item>> items();
 
 	/**
 	 * Returns whether this ingredient always requires {@linkplain #test direct stack testing}.
@@ -97,13 +97,13 @@ public interface CustomIngredient {
 	 *
 	 * @return a {@link SlotDisplay} instance.
 	 */
-	default SlotDisplay toDisplay() {
-		// Matches the vanilla logic in Ingredient.toDisplay()
-		return new SlotDisplay.CompositeSlotDisplay(getMatchingItems().map(Ingredient::createDisplayWithRemainder).toList());
+	default SlotDisplay display() {
+		// Matches the vanilla logic in Ingredient.display()
+		return new SlotDisplay.Composite(items().map(Ingredient::displayForSingleItem).toList());
 	}
 
 	/**
-	 * {@return a new {@link Ingredient} behaving as defined by this custom ingredient}.
+	 * {@return a new {@link Ingredient } behaving as defined by this custom ingredient}.
 	 */
 	@ApiStatus.NonExtendable
 	default Ingredient toVanilla() {

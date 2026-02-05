@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <pre>
  * {@code
  * DynamicRegistrySetupCallback.EVENT.register(registryView -> {
- *     registryView.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
+ *     registryView.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
  *         // Do something
  *     });
  * });
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </pre>
  *
  * @see DynamicRegistryView
- * @see net.minecraft.registry.ServerDynamicRegistryType
+ * @see net.minecraft.server.RegistryLayer
  */
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {

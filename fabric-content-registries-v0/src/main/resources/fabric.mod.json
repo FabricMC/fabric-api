@@ -16,20 +16,18 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
     "fabric-lifecycle-events-v1": "*",
-    "fabric-resource-loader-v0": "*"
+    "fabric-resource-loader-v1": "*"
   },
   "description": "Adds registries for vanilla mechanics that are missing them.",
   "mixins": [
     "fabric-content-registries-v0.mixins.json"
   ],
-  "accessWidener" : "fabric-content-registries-v0.accesswidener",
+  "accessWidener" : "fabric-content-registries-v0.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_1845\u0024class_9665": ["net/fabricmc/fabric/api/registry/FabricBrewingRecipeRegistryBuilder"]
-    }
+    "loom:provided_javadoc": "fabric-content-registries-v0.mapping"
   }
 }

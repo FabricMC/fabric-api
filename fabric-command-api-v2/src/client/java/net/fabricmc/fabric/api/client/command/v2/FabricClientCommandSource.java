@@ -16,46 +16,48 @@
 
 package net.fabricmc.fabric.api.client.command.v2;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 
 /**
- * Extensions to {@link CommandSource} for client-sided commands.
+ * Extensions to {@link SharedSuggestionProvider} for client-sided commands.
  */
-public interface FabricClientCommandSource extends CommandSource {
+public interface FabricClientCommandSource extends SharedSuggestionProvider {
 	/**
 	 * Sends a feedback message to the player.
 	 *
 	 * @param message the feedback message
 	 */
-	void sendFeedback(Text message);
+	void sendFeedback(Component message);
 
 	/**
 	 * Sends an error message to the player.
 	 *
 	 * @param message the error message
 	 */
-	void sendError(Text message);
+	void sendError(Component message);
 
 	/**
 	 * Gets the client instance used to run the command.
 	 *
 	 * @return the client
 	 */
-	MinecraftClient getClient();
+	Minecraft getClient();
 
 	/**
 	 * Gets the player that used the command.
 	 *
 	 * @return the player
 	 */
-	ClientPlayerEntity getPlayer();
+	LocalPlayer getPlayer();
 
 	/**
 	 * Gets the entity that used the command.
@@ -71,8 +73,8 @@ public interface FabricClientCommandSource extends CommandSource {
 	 *
 	 * @return the position
 	 */
-	default Vec3d getPosition() {
-		return getPlayer().getPos();
+	default Vec3 getPosition() {
+		return getPlayer().position();
 	}
 
 	/**
@@ -80,16 +82,16 @@ public interface FabricClientCommandSource extends CommandSource {
 	 *
 	 * @return the rotation
 	 */
-	default Vec2f getRotation() {
-		return getPlayer().getRotationClient();
+	default Vec2 getRotation() {
+		return getPlayer().getRotationVector();
 	}
 
 	/**
-	 * Gets the world where the player used the command.
+	 * Gets the level where the player used the command.
 	 *
-	 * @return the world
+	 * @return the level
 	 */
-	ClientWorld getWorld();
+	ClientLevel getLevel();
 
 	/**
 	 * Gets the meta property under {@code key} that was assigned to this source.
@@ -99,7 +101,7 @@ public interface FabricClientCommandSource extends CommandSource {
 	 * @param key the meta key
 	 * @return the meta
 	 */
-	default Object getMeta(String key) {
+	default @Nullable Object getMeta(String key) {
 		return null;
 	}
 }

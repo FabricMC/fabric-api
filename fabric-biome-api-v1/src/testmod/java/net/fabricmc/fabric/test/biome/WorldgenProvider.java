@@ -18,22 +18,22 @@ package net.fabricmc.fabric.test.biome;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 
 public class WorldgenProvider extends FabricDynamicRegistryProvider {
-	public WorldgenProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+	public WorldgenProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		super(output, registriesFuture);
 	}
 
 	@Override
-	protected void configure(RegistryWrapper.WrapperLookup registries, Entries entries) {
-		entries.addAll(registries.getOrThrow(RegistryKeys.BIOME));
-		entries.addAll(registries.getOrThrow(RegistryKeys.PLACED_FEATURE));
-		entries.addAll(registries.getOrThrow(RegistryKeys.CONFIGURED_FEATURE));
+	protected void configure(HolderLookup.Provider registries, Entries entries) {
+		entries.addAll(registries.lookupOrThrow(Registries.BIOME));
+		entries.addAll(registries.lookupOrThrow(Registries.PLACED_FEATURE));
+		entries.addAll(registries.lookupOrThrow(Registries.CONFIGURED_FEATURE));
 	}
 
 	@Override

@@ -16,27 +16,27 @@
 
 package net.fabricmc.fabric.test.gametest;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class ExampleFabricTestSuite {
 	@GameTest(structure = "fabric-gametest-api-v1-testmod:exampletestsuite.diamond")
-	public void diamond(TestContext context) {
+	public void diamond(GameTestHelper helper) {
 		// Nothing to do as the structure placed the block.
-		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Text.literal("Expect block to be diamond"))
+		helper.succeedWhen(() ->
+				helper.assertBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Component.literal("Expect block to be diamond"))
 		);
 	}
 
 	@GameTest
-	public void noStructure(TestContext context) {
-		context.setBlockState(0, 1, 0, Blocks.DIAMOND_BLOCK);
-		context.addInstantFinalTask(() ->
-				context.checkBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Text.literal("Expect block to be diamond"))
+	public void noStructure(GameTestHelper helper) {
+		helper.setBlock(0, 1, 0, Blocks.DIAMOND_BLOCK);
+		helper.succeedWhen(() ->
+				helper.assertBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Component.literal("Expect block to be diamond"))
 		);
 	}
 }

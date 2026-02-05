@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.api.lookup.v1.item;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
  * <p>When trying to {@link #find} an API for an item stack, the provider registered for the item of the stack will be queried if it exists.
  * If it doesn't exist, or if it returns {@code null}, the fallback providers will be queried in order.
  *
- * <h3>Usage Example</h3>
+ * <h2>Usage Example</h2>
  * Let us reuse {@code FluidContainer} from {@linkplain BlockApiLookup the BlockApiLookup example}.
  * We will query {@code FluidContainer} instances from the stack directly.
  * We need no context, so we will use {@code Void}.
@@ -47,7 +47,7 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
  *
  * <pre>{@code
  * public final class MyApi {
- *     public static final ItemApiLookup<FluidContainer, Void> FLUID_CONTAINER_ITEM = ItemApiLookup.get(Identifier.of("mymod", "fluid_container"), FluidContainer.class, Void.class);
+ *     public static final ItemApiLookup<FluidContainer, Void> FLUID_CONTAINER_ITEM = ItemApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"), FluidContainer.class, Void.class);
  * }}</pre>
  * API instances are easy to access:
  *
@@ -92,7 +92,7 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
  * @param <C> The type of the additional context object.
  */
 @ApiStatus.NonExtendable
-public interface ItemApiLookup<A, C> {
+public interface ItemApiLookup<A, C extends @Nullable Object> {
 	/**
 	 * Retrieve the {@link ItemApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
@@ -102,7 +102,7 @@ public interface ItemApiLookup<A, C> {
 	 * @return The unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
-	static <A, C> ItemApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+	static <A, C extends @Nullable Object> ItemApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return ItemApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
@@ -127,7 +127,7 @@ public interface ItemApiLookup<A, C> {
 	 * @param items Items for which to expose the API.
 	 * @throws IllegalArgumentException If the API class is not assignable from a class of one of the items.
 	 */
-	void registerSelf(ItemConvertible... items);
+	void registerSelf(ItemLike... items);
 
 	/**
 	 * Expose the API for the passed items.
@@ -136,7 +136,7 @@ public interface ItemApiLookup<A, C> {
 	 * @param provider The provider.
 	 * @param items The items.
 	 */
-	void registerForItems(ItemApiProvider<A, C> provider, ItemConvertible... items);
+	void registerForItems(ItemApiProvider<A, C> provider, ItemLike... items);
 
 	/**
 	 * Expose the API for all queries: the fallbacks providers will be invoked if no object was found using the regular providers.
@@ -168,7 +168,7 @@ public interface ItemApiLookup<A, C> {
 	ItemApiProvider<A, C> getProvider(Item item);
 
 	@FunctionalInterface
-	interface ItemApiProvider<A, C> {
+	interface ItemApiProvider<A, C extends @Nullable Object> {
 		/**
 		 * Return an API of type {@code A} if available for the given item stack with the given context, or {@code null} otherwise.
 		 *

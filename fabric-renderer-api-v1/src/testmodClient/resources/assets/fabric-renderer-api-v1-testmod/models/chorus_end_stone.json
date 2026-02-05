@@ -1,0 +1,7 @@
+{
+  "fabric:type": "fabric-renderer-api-v1-testmod:overlayed",
+  "parent": "block/end_stone",
+  "textures": {
+    "overlay": "item/chorus_fruit"
+  }
+}

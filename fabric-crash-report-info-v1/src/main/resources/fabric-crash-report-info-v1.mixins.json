@@ -1,12 +1,15 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.crash.report.info",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "DedicatedServerWatchdogMixin",
-    "SystemDetailsMixin"
+    "ServerWatchdogMixin",
+    "SystemReportMixin"
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

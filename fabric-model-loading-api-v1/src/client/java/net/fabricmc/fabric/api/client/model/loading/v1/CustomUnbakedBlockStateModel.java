@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.SimpleBlockStateModel;
-import net.minecraft.client.render.model.json.ModelVariant;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateModelRegistry;
 
@@ -38,12 +38,12 @@ import net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateMode
  * }
  * }</pre>
  *
- * <p>The above JSON object may be used in a {@code blockstates/} file wherever a {@link ModelVariant} or
- * {@link SimpleBlockStateModel.Unbaked} is normally valid. Note that if the {@code "fabric:type"} key is present,
- * the object will never be parsed as a {@link ModelVariant}, even if the custom type does not exist or is not able to
+ * <p>The above JSON object may be used in a {@code blockstates/} file wherever a {@link Variant} or
+ * {@link SingleVariant.Unbaked} is normally valid. Note that if the {@code "fabric:type"} key is present,
+ * the object will never be parsed as a {@link Variant}, even if the custom type does not exist or is not able to
  * parse the object.
  *
- * <p>{@link BlockStateModel.Unbaked#CODEC} and {@link BlockStateModel.Unbaked#WEIGHTED_CODEC} are automatically patched
+ * <p>{@link BlockStateModel.Unbaked#CODEC} and {@link BlockStateModel.Unbaked#HARDCODED_WEIGHTED_CODEC} are automatically patched
  * to support custom models. Custom types are encouraged to use {@link BlockStateModel.Unbaked#CODEC} to
  * deserialize/serialize submodels.
  *

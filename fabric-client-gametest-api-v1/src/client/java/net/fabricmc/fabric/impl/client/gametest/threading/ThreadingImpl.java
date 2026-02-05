@@ -22,11 +22,11 @@ import java.util.concurrent.Semaphore;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.function.FailableRunnable;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 
@@ -55,7 +55,7 @@ import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
  * queues are when most packets are handled, and without them being run in sequence it would be unspecified whether a
  * packet would be handled on the current tick until the next one. The server task queue is before the client so that
  * changes on the server appear on the client more readily. The test phase is run after the task queues rather than at
- * the end of the physical tick (i.e. {@code MinecraftClient}'s and {@code MinecraftServer}'s {@code tick} methods), for
+ * the end of the physical tick (i.e. {@code Minecraft}'s and {@code MinecraftServer}'s {@code tick} methods), for
  * no particular reason other than to avoid needing a 5th phase, and having a power of 2 number of phases is convenient
  * when using {@linkplain Phaser}, as it doesn't break when the phase counter overflows.
  *
@@ -144,7 +144,7 @@ public final class ThreadingImpl {
 				testFailureException = e;
 			} finally {
 				if (clientCanAcceptTasks) {
-					runOnClient(() -> MinecraftClient.getInstance().scheduleStop());
+					runOnClient(() -> Minecraft.getInstance().stop());
 				}
 
 				if (testFailureException != null) {

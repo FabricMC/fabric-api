@@ -34,13 +34,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.TheEndBiomeSource;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.TheEndBiomeSource;
 
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
@@ -49,7 +49,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Shadow
 	@Mutable
 	@Final
-	static MapCodec<TheEndBiomeSource> CODEC;
+	public static MapCodec<TheEndBiomeSource> CODEC;
 
 	@Unique
 	private Supplier<TheEndBiomeData.Overrides> overrides;
@@ -67,7 +67,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void modifyCodec(CallbackInfo ci) {
 		CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-			return instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME)).apply(instance, instance.stable(TheEndBiomeSource::createVanilla));
+			return instance.group(RegistryOps.retrieveGetter(Registries.BIOME)).apply(instance, instance.stable(TheEndBiomeSource::create));
 		});
 	}
 
@@ -75,16 +75,16 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	 * Captures the biome registry at the beginning of the static factory method to allow access to it in the
 	 * constructor.
 	 */
-	@Inject(method = "createVanilla", at = @At("HEAD"))
-	private static void rememberLookup(RegistryEntryLookup<Biome> biomes, CallbackInfoReturnable<?> ci) {
+	@Inject(method = "create", at = @At("HEAD"))
+	private static void rememberLookup(HolderGetter<Biome> biomes, CallbackInfoReturnable<?> ci) {
 		TheEndBiomeData.biomeRegistry.set(biomes);
 	}
 
 	/**
 	 * Frees up the captured biome registry.
 	 */
-	@Inject(method = "createVanilla", at = @At("TAIL"))
-	private static void clearLookup(RegistryEntryLookup<Biome> biomes, CallbackInfoReturnable<?> ci) {
+	@Inject(method = "create", at = @At("TAIL"))
+	private static void clearLookup(HolderGetter<Biome> biomes, CallbackInfoReturnable<?> ci) {
 		TheEndBiomeData.biomeRegistry.remove();
 	}
 
@@ -92,8 +92,8 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	 * Uses the captured biome registry to set up the modded end biomes.
 	 */
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void init(RegistryEntry<Biome> centerBiome, RegistryEntry<Biome> highlandsBiome, RegistryEntry<Biome> midlandsBiome, RegistryEntry<Biome> smallIslandsBiome, RegistryEntry<Biome> barrensBiome, CallbackInfo ci) {
-		RegistryEntryLookup<Biome> biomes = TheEndBiomeData.biomeRegistry.get();
+	private void init(Holder<Biome> centerBiome, Holder<Biome> highlandsBiome, Holder<Biome> midlandsBiome, Holder<Biome> smallIslandsBiome, Holder<Biome> barrensBiome, CallbackInfo ci) {
+		HolderGetter<Biome> biomes = TheEndBiomeData.biomeRegistry.get();
 
 		if (biomes == null) {
 			throw new IllegalStateException("Biome registry not set by Mixin");
@@ -104,13 +104,13 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 		});
 	}
 
-	@Inject(method = "getBiome", at = @At("RETURN"), cancellable = true)
-	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, MultiNoiseUtil.MultiNoiseSampler noise, CallbackInfoReturnable<RegistryEntry<Biome>> cir) {
+	@Inject(method = "getNoiseBiome", at = @At("RETURN"), cancellable = true)
+	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler noise, CallbackInfoReturnable<Holder<Biome>> cir) {
 		cir.setReturnValue(overrides.get().pick(biomeX, biomeY, biomeZ, noise, cir.getReturnValue()));
 	}
 
 	@Override
-	protected Set<RegistryEntry<Biome>> modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+	protected Set<Holder<Biome>> modifyBiomeSet(Set<Holder<Biome>> biomes) {
 		if (!hasCheckedForModifiedSet) {
 			hasCheckedForModifiedSet = true;
 			biomeSetModified = !overrides.get().customBiomes.isEmpty();

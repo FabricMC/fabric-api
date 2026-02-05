@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.test.block.client;
 
-import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.ChunkSectionLayerMap;
 import net.fabricmc.fabric.test.block.ClimbableTrapdoorTest;
 
 public final class ClimbableTrapdoorClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		BlockRenderLayerMap.putBlocks(
-				BlockRenderLayer.CUTOUT,
+		ChunkSectionLayerMap.putBlocks(
+				ChunkSectionLayer.CUTOUT,
 				ClimbableTrapdoorTest.customLadderBlock,
 				ClimbableTrapdoorTest.customNonLadderBlock
 		);

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.lookup.api;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Something that can accept items.

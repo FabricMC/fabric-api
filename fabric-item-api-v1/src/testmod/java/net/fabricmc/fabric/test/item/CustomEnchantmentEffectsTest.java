@@ -16,32 +16,32 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.component.EnchantmentEffectComponentTypes;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentLevelBasedValue;
-import net.minecraft.enchantment.effect.EnchantmentEffectTarget;
-import net.minecraft.enchantment.effect.entity.IgniteEnchantmentEffect;
-import net.minecraft.enchantment.effect.value.AddEnchantmentEffect;
-import net.minecraft.entity.EntityType;
-import net.minecraft.loot.condition.DamageSourcePropertiesLootCondition;
-import net.minecraft.loot.condition.EntityPropertiesLootCondition;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.predicate.entity.DamageSourcePredicate;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.EntityTypePredicate;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.criterion.DamageSourcePredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.EntityTypePredicate;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentTarget;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.item.enchantment.effects.AddValue;
+import net.minecraft.world.item.enchantment.effects.Ignite;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 public class CustomEnchantmentEffectsTest implements ModInitializer {
 	// weird impaling is a copy of impaling used for testing (just in case minecraft changes impaling for some reason)
-	public static final RegistryKey<Enchantment> WEIRD_IMPALING = RegistryKey.of(
-			RegistryKeys.ENCHANTMENT,
-			Identifier.of("fabric-item-api-v1-testmod", "weird_impaling")
+	public static final ResourceKey<Enchantment> WEIRD_IMPALING = ResourceKey.create(
+			Registries.ENCHANTMENT,
+			Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "weird_impaling")
 	);
 
 	@Override
@@ -50,24 +50,24 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 				(key, builder, source) -> {
 					if (source.isBuiltin() && key == WEIRD_IMPALING) {
 						// make impaling set things on fire
-						builder.addEffect(
-								EnchantmentEffectComponentTypes.POST_ATTACK,
-								EnchantmentEffectTarget.ATTACKER,
-								EnchantmentEffectTarget.VICTIM,
-								new IgniteEnchantmentEffect(EnchantmentLevelBasedValue.linear(4.0f)),
-								DamageSourcePropertiesLootCondition.builder(
-										DamageSourcePredicate.Builder.create().isDirect(true)
+						builder.withEffect(
+								EnchantmentEffectComponents.POST_ATTACK,
+								EnchantmentTarget.ATTACKER,
+								EnchantmentTarget.VICTIM,
+								new Ignite(LevelBasedValue.perLevel(4.0f)),
+								DamageSourceCondition.hasDamageSource(
+										DamageSourcePredicate.Builder.damageType().isDirect(true)
 								)
 						);
 
 						// add bonus impaling damage to zombie
-						builder.addEffect(
-								EnchantmentEffectComponentTypes.DAMAGE,
-								new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(2.5f)),
-								EntityPropertiesLootCondition.builder(
+						builder.withEffect(
+								EnchantmentEffectComponents.DAMAGE,
+								new AddValue(LevelBasedValue.perLevel(2.5f)),
+								LootItemEntityPropertyCondition.hasProperties(
 										LootContext.EntityTarget.THIS,
-										EntityPredicate.Builder.create()
-												.type(EntityTypePredicate.create(Registries.ENTITY_TYPE, EntityType.ZOMBIE))
+										EntityPredicate.Builder.entity()
+												.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE, EntityType.ZOMBIE))
 								)
 						);
 					}

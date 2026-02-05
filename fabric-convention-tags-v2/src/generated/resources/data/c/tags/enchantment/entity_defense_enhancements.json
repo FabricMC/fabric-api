@@ -5,10 +5,6 @@
     "minecraft:projectile_protection",
     "minecraft:fire_protection",
     "minecraft:respiration",
-    "minecraft:feather_falling",
-    {
-      "id": "#c:entity_defense_enhancement",
-      "required": false
-    }
+    "minecraft:feather_falling"
   ]
 }

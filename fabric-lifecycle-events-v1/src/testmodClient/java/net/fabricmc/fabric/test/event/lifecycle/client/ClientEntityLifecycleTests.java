@@ -22,8 +22,8 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
@@ -43,25 +43,25 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ClientEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			this.clientEntities.add(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {
-				logger.info("[CLIENT]" + " LOADED " + Registries.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+				logger.info("[CLIENT]" + " LOADED " + BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
 			}
 		});
 
-		ClientEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+		ClientEntityEvents.ENTITY_UNLOAD.register((entity, level) -> {
 			this.clientEntities.remove(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {
-				logger.info("[CLIENT]" + " UNLOADED " + Registries.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+				logger.info("[CLIENT]" + " UNLOADED " + BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
 			}
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (this.clientTicks++ % 200 == 0 && client.world != null) {
-				final int entities = Iterables.toArray(client.world.getEntities(), Entity.class).length;
+			if (this.clientTicks++ % 200 == 0 && client.level != null) {
+				final int entities = Iterables.toArray(client.level.entitiesForRendering(), Entity.class).length;
 
 				if (PRINT_CLIENT_ENTITY_MESSAGES) {
 					logger.info("[CLIENT] Tracked Entities:" + this.clientEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
@@ -76,7 +76,7 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(minecraftServer -> {
-			if (!minecraftServer.isDedicated()) { // fixme: Use ClientNetworking#PLAY_DISCONNECTED instead of the server stop callback for testing.
+			if (!minecraftServer.isDedicatedServer()) { // fixme: Use ClientNetworking#PLAY_DISCONNECTED instead of the server stop callback for testing.
 				logger.info("[CLIENT] Disconnected. Tracking: " + this.clientEntities.size() + " entities");
 
 				if (this.clientEntities.size() != 0) {

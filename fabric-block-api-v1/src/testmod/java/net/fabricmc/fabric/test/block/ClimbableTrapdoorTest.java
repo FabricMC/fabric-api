@@ -18,22 +18,22 @@ package net.fabricmc.fabric.test.block;
 
 import java.util.function.Function;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LadderBlock;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import net.fabricmc.api.ModInitializer;
 
@@ -54,24 +54,24 @@ public final class ClimbableTrapdoorTest implements ModInitializer {
 		customNonLadderBlock = registerBlock("custom_non_ladder", NonLadderBlock::new);
 	}
 
-	private static Block registerBlock(String name, Function<AbstractBlock.Settings, Block> blockFactory) {
-		Identifier id = Identifier.of(MOD_ID, name);
-		RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, id);
-		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, id);
-		Block block = blockFactory.apply(AbstractBlock.Settings.create().nonOpaque().registryKey(blockKey));
-		Registry.register(Registries.BLOCK, blockKey, block);
-		Registry.register(Registries.ITEM, itemKey, new BlockItem(block, new Item.Settings().registryKey(itemKey)));
+	private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> blockFactory) {
+		Identifier id = Identifier.fromNamespaceAndPath(MOD_ID, name);
+		ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
+		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
+		Block block = blockFactory.apply(BlockBehaviour.Properties.of().noOcclusion().setId(blockKey));
+		Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
+		Registry.register(BuiltInRegistries.ITEM, itemKey, new BlockItem(block, new Item.Properties().setId(itemKey)));
 		return block;
 	}
 
 	private static final class NonLadderBlock extends Block {
-		NonLadderBlock(Settings settings) {
+		NonLadderBlock(Properties settings) {
 			super(settings);
 		}
 
 		@Override
-		protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-			return VoxelShapes.empty();
+		protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+			return Shapes.empty();
 		}
 	}
 }

@@ -19,65 +19,140 @@ package net.fabricmc.fabric.impl.networking;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.IntSupplier;
 
-import org.jetbrains.annotations.Nullable;
+import io.netty.buffer.ByteBufUtil;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.ConnectionProtocol;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.ProtocolInfo;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.VarInt;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.impl.networking.splitter.FabricPacketSplitter;
 
-public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements PayloadTypeRegistry<B> {
-	public static final PayloadTypeRegistryImpl<PacketByteBuf> CONFIGURATION_C2S = new PayloadTypeRegistryImpl<>(NetworkPhase.CONFIGURATION, NetworkSide.SERVERBOUND);
-	public static final PayloadTypeRegistryImpl<PacketByteBuf> CONFIGURATION_S2C = new PayloadTypeRegistryImpl<>(NetworkPhase.CONFIGURATION, NetworkSide.CLIENTBOUND);
-	public static final PayloadTypeRegistryImpl<RegistryByteBuf> PLAY_C2S = new PayloadTypeRegistryImpl<>(NetworkPhase.PLAY, NetworkSide.SERVERBOUND);
-	public static final PayloadTypeRegistryImpl<RegistryByteBuf> PLAY_S2C = new PayloadTypeRegistryImpl<>(NetworkPhase.PLAY, NetworkSide.CLIENTBOUND);
+public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements PayloadTypeRegistry<B> {
+	public static final PayloadTypeRegistryImpl<FriendlyByteBuf> SERVERBOUND_CONFIGURATION = new PayloadTypeRegistryImpl<>(ConnectionProtocol.CONFIGURATION, PacketFlow.SERVERBOUND);
+	public static final PayloadTypeRegistryImpl<FriendlyByteBuf> CLIENTBOUND_CONFIGURATION = new PayloadTypeRegistryImpl<>(ConnectionProtocol.CONFIGURATION, PacketFlow.CLIENTBOUND);
+	public static final PayloadTypeRegistryImpl<RegistryFriendlyByteBuf> SERVERBOUND_PLAY = new PayloadTypeRegistryImpl<>(ConnectionProtocol.PLAY, PacketFlow.SERVERBOUND);
+	public static final PayloadTypeRegistryImpl<RegistryFriendlyByteBuf> CLIENTBOUND_PLAY = new PayloadTypeRegistryImpl<>(ConnectionProtocol.PLAY, PacketFlow.CLIENTBOUND);
+	private final Map<Identifier, CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload>> packetTypes = new HashMap<>();
+	private final Object2IntMap<Identifier> maxPacketSizes = new Object2IntOpenHashMap<>();
+	private final Object2ObjectMap<Identifier, IntSupplier> pendingMaxPacketSizes = new Object2ObjectOpenHashMap<>();
+	private final ConnectionProtocol protocol;
+	private final PacketFlow flow;
+	private final int minimalSplittableSize;
 
-	private final Map<Identifier, CustomPayload.Type<B, ? extends CustomPayload>> packetTypes = new HashMap<>();
-	private final NetworkPhase state;
-	private final NetworkSide side;
+	private PayloadTypeRegistryImpl(ConnectionProtocol protocol, PacketFlow flow) {
+		this.protocol = protocol;
+		this.flow = flow;
+		this.minimalSplittableSize = flow == PacketFlow.CLIENTBOUND ? FabricPacketSplitter.SAFE_S2C_SPLIT_SIZE : FabricPacketSplitter.SAFE_C2S_SPLIT_SIZE;
+	}
 
-	private PayloadTypeRegistryImpl(NetworkPhase state, NetworkSide side) {
-		this.state = state;
-		this.side = side;
+	@Nullable
+	public static PayloadTypeRegistryImpl<?> get(ProtocolInfo<?> state) {
+		return switch (state.id()) {
+		case CONFIGURATION -> state.flow() == PacketFlow.CLIENTBOUND ? CLIENTBOUND_CONFIGURATION : SERVERBOUND_CONFIGURATION;
+		case PLAY -> state.flow() == PacketFlow.CLIENTBOUND ? CLIENTBOUND_PLAY : SERVERBOUND_PLAY;
+		default -> null;
+		};
 	}
 
 	@Override
-	public <T extends CustomPayload> CustomPayload.Type<? super B, T> register(CustomPayload.Id<T> id, PacketCodec<? super B, T> codec) {
-		Objects.requireNonNull(id, "id");
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec) {
+		Objects.requireNonNull(type, "type");
 		Objects.requireNonNull(codec, "codec");
 
-		final CustomPayload.Type<B, T> payloadType = new CustomPayload.Type<>(id, codec.cast());
+		final CustomPacketPayload.TypeAndCodec<B, T> payloadType = new CustomPacketPayload.TypeAndCodec<>(type, codec.cast());
 
-		if (packetTypes.containsKey(id.id())) {
-			throw new IllegalArgumentException("Packet type " + id + " is already registered!");
+		if (packetTypes.containsKey(type.id())) {
+			throw new IllegalArgumentException("Packet type " + type + " is already registered!");
 		}
 
-		packetTypes.put(id.id(), payloadType);
+		packetTypes.put(type.id(), payloadType);
 		return payloadType;
 	}
 
-	@Nullable
-	public CustomPayload.Type<B, ? extends CustomPayload> get(Identifier id) {
+	@Override
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize) {
+		if (maxPacketSize < 0) {
+			throw new IllegalArgumentException("Provided maxPacketSize needs to be positive!");
+		}
+
+		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
+		padAndSetMaxPacketSize(type.id(), maxPacketSize);
+		return typeAndCodec;
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier) {
+		Objects.requireNonNull(maxPacketSizeSupplier, "maxPacketSizeSupplier");
+
+		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
+		pendingMaxPacketSizes.put(type.id(), maxPacketSizeSupplier);
+		return typeAndCodec;
+	}
+
+	private void padAndSetMaxPacketSize(Identifier id, int maxSize) {
+		// Defines max packet size, increased by length of packet's Identifier to cover full size of CustomPayloadX2YPackets.
+		int identifierSize = ByteBufUtil.utf8MaxBytes(id.toString());
+		int paddingSize = VarInt.getByteSize(identifierSize) + identifierSize + 5 * 2;
+		int maxPacketSize = maxSize + paddingSize;
+
+		// Prevent overflow
+		if (maxPacketSize < 0) {
+			maxPacketSize = Integer.MAX_VALUE;
+		}
+
+		// No need to enable splitting, if packet's max size is smaller than chunk
+		if (maxPacketSize > this.minimalSplittableSize) {
+			this.maxPacketSizes.put(id, maxPacketSize);
+		}
+	}
+
+	public CustomPacketPayload.@Nullable TypeAndCodec<B, ? extends CustomPacketPayload> get(Identifier id) {
 		return packetTypes.get(id);
 	}
 
-	@Nullable
-	public <T extends CustomPayload> CustomPayload.Type<B, T> get(CustomPayload.Id<T> id) {
+	public <T extends CustomPacketPayload> CustomPacketPayload.@Nullable TypeAndCodec<B, T> get(CustomPacketPayload.Type<T> type) {
 		//noinspection unchecked
-		return (CustomPayload.Type<B, T>) packetTypes.get(id.id());
+		return (CustomPacketPayload.TypeAndCodec<B, T>) packetTypes.get(type.id());
 	}
 
-	public NetworkPhase getPhase() {
-		return state;
+	/**
+	 * @return the max packet size, or -1 if the payload type does not need splitting.
+	 */
+	public int getMaxPacketSizeForSplitting(Identifier id) {
+		IntSupplier supplier = this.pendingMaxPacketSizes.remove(id);
+
+		if (supplier != null) {
+			int maxPacketSize = supplier.getAsInt();
+
+			if (maxPacketSize < 0) {
+				throw new IllegalArgumentException("maxPacketSize supplier for packet type " + id + ": must be positive!");
+			}
+
+			padAndSetMaxPacketSize(id, maxPacketSize);
+		}
+
+		return this.maxPacketSizes.getOrDefault(id, -1);
 	}
 
-	public NetworkSide getSide() {
-		return side;
+	public ConnectionProtocol getProtocol() {
+		return protocol;
+	}
+
+	public PacketFlow getFlow() {
+		return flow;
 	}
 }

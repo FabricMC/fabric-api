@@ -16,19 +16,16 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
-    "fabric-resource-loader-v0": "*"
+    "fabric-resource-loader-v1": "*"
   },
   "description": "Hooks for manipulating loot tables.",
   "mixins": [
     "fabric-loot-api-v3.mixins.json"
   ],
+  "accessWidener": "fabric-loot-api-v3.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "stable",
-    "loom:injected_interfaces": {
-      "net/minecraft/class_52\u0024class_53": ["net/fabricmc/fabric/api/loot/v3/FabricLootTableBuilder"],
-      "net/minecraft/class_55\u0024class_56": ["net/fabricmc/fabric/api/loot/v3/FabricLootPoolBuilder"]
-    }
+    "fabric-api:module-lifecycle": "stable"
   }
 }

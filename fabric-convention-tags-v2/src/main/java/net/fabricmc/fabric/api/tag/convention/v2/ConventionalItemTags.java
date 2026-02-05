@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.item.Item;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 /**
- * See {@link net.minecraft.registry.tag.ItemTags} for vanilla tags.
+ * See {@link net.minecraft.tags.ItemTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
 public final class ConventionalItemTags {
@@ -55,10 +55,10 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> TOOLS = register("tools");
 	public static final TagKey<Item> SHEAR_TOOLS = register("tools/shear");
 	/**
-	 * For spear tools, like Minecraft's tridents.
+	 * For throwable stick-like tools, like Minecraft's trident.
 	 * Note, other weapons like boomerangs and throwing knives are best put into their own tools tag.
 	 */
-	public static final TagKey<Item> SPEAR_TOOLS = register("tools/spear");
+	public static final TagKey<Item> TRIDENT_TOOLS = register("tools/trident");
 	public static final TagKey<Item> BOW_TOOLS = register("tools/bow");
 	public static final TagKey<Item> CROSSBOW_TOOLS = register("tools/crossbow");
 	public static final TagKey<Item> SHIELD_TOOLS = register("tools/shield");
@@ -91,9 +91,26 @@ public final class ConventionalItemTags {
 
 	// Armor tags
 	/**
-	 * Collects the 4 vanilla armor tags into one parent collection for ease.
+	 * A tag containing all conventional armor tags.
+	 * Note that this can contain armor that does not necessarily fit on a player. For that, see {@link ConventionalItemTags#HUMANOID_ARMORS}
 	 */
 	public static final TagKey<Item> ARMORS = register("armors");
+	/**
+	 * Armor that can fit on a humanoid mob like the Player. This tag collects the 4 vanilla armor tags into one parent collection for ease.
+	 */
+	public static final TagKey<Item> HUMANOID_ARMORS = register("armors/humanoid");
+	/**
+	 * A tag containing armor that can fit on a Horse.
+	 */
+	public static final TagKey<Item> HORSE_ARMORS = register("armors/horse");
+	/**
+	 * A tag containing armor that can fit on a Nautilus.
+	 */
+	public static final TagKey<Item> NAUTILUS_ARMORS = register("armors/nautilus");
+	/**
+	 * A tag containing armor that can fit on a Wolf.
+	 */
+	public static final TagKey<Item> WOLF_ARMORS = register("armors/wolf");
 
 	// Tools/Armor tags
 	/**
@@ -172,6 +189,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> PRISMARINE_GEMS = register("gems/prismarine");
 
 	// Nuggets - vanilla instances
+	public static final TagKey<Item> COPPER_NUGGETS = register("nuggets/copper");
 	public static final TagKey<Item> IRON_NUGGETS = register("nuggets/iron");
 	public static final TagKey<Item> GOLD_NUGGETS = register("nuggets/gold");
 
@@ -183,13 +201,13 @@ public final class ConventionalItemTags {
 
 	// Consumables
 	/**
-	 * Items that can hold various potion effects by making use of {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}.
+	 * Items that can hold various potion effects by making use of {@link net.minecraft.core.component.DataComponents#POTION_CONTENTS}.
 	 * Contents of this tag may not always be a kind of bottle. Buckets of potions could go here.
 	 * The subtags would be the name of the container that is holding the potion effects such as `c:potions/bucket` or `c:potions/vial` as examples.
 	 */
 	public static final TagKey<Item> POTIONS = register("potions");
 	/**
-	 * Variations of the potion bottle that can hold various effects by using {@link net.minecraft.component.DataComponentTypes#POTION_CONTENTS}.
+	 * Variations of the potion bottle that can hold various effects by using {@link net.minecraft.core.component.DataComponents#POTION_CONTENTS}.
 	 * Examples are splash and lingering potions from vanilla.
 	 * If a mod adds a new variant like seeking potion that applies effect to the closest entity at impact, that would in this tag.
 	 */
@@ -217,6 +235,19 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BERRY_FOODS = register("foods/berry");
 	public static final TagKey<Item> BREAD_FOODS = register("foods/bread");
 	public static final TagKey<Item> COOKIE_FOODS = register("foods/cookie");
+	/// For all doughs regardless of type, specific types of dough should fall under their respective sub-tag.
+	///
+	/// For example:
+	/// - Wheat dough (which generally results in bread) would go in "#c:foods/dough/wheat"
+	/// - Rye dough (which has rye as it's main ingredient) would go in "#c:foods/dough/rye"
+	/// - Sub-tags should also be added to this tag, for example: "#c:foods/dough/wheat" should be added to "#c:foods/dough"
+	///
+	/// **There are some important assumptions that should be kept in mind.**
+	/// - It is assumed that "1 dough = result", which in the case of wheat dough would be "1 dough = 1 bread"
+	/// - It is assumed that this dough can be baked into another item
+	/// - It is **not** assumed that all doughs result in bread, there can be doughs in this tag that result in things like pizza, etc.
+	/// This means that this tag should **not** be used for furnace recipes, mods should add their own dough to result recipes for their respective items.
+	public static final TagKey<Item> DOUGH_FOODS = register("foods/dough");
 	public static final TagKey<Item> RAW_MEAT_FOODS = register("foods/raw_meat");
 	public static final TagKey<Item> COOKED_MEAT_FOODS = register("foods/cooked_meat");
 	public static final TagKey<Item> RAW_FISH_FOODS = register("foods/raw_fish");
@@ -250,7 +281,7 @@ public final class ConventionalItemTags {
 	// Drinks
 	/**
 	 * Drinks are defined as (1) consumable items that (2) use the
-	 * {@linkplain net.minecraft.item.consume.UseAction#DRINK drink use action}, (3) can be consumed regardless of the
+	 * {@linkplain net.minecraft.world.item.ItemUseAnimation#DRINK drink use animation}, (3) can be consumed regardless of the
 	 * player's current hunger.
 	 *
 	 * <p>Drinks may provide nutrition and saturation, but are not required to do so.
@@ -271,11 +302,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> HONEY_DRINKS = register("drinks/honey");
 	/**
 	 * For consumable drinks that are magic in nature and usually grant at least one
-	 * {@link net.minecraft.entity.effect.StatusEffect} when consumed.
+	 * {@link net.minecraft.world.effect.MobEffect} when consumed.
 	 */
 	public static final TagKey<Item> MAGIC_DRINKS = register("drinks/magic");
 	/**
-	 * For drinks that always grant the {@linkplain net.minecraft.entity.effect.StatusEffects#BAD_OMEN Bad Omen} effect.
+	 * For drinks that always grant the {@linkplain net.minecraft.world.effect.MobEffects#BAD_OMEN Bad Omen} effect.
 	 */
 	public static final TagKey<Item> OMINOUS_DRINKS = register("drinks/ominous");
 	/**
@@ -431,7 +462,6 @@ public final class ConventionalItemTags {
 	/**
 	 * Tag that holds all blocks and items that can be dyed a specific color.
 	 * (Does not include color blending items like leather armor.
-	 * Use {@link net.minecraft.registry.tag.ItemTags#DYEABLE} tag instead for color blending items)
 	 *
 	 * <p>Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
 	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
@@ -484,7 +514,29 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Logs
+	/**
+	 * For logs found naturally in the Overworld, does not include Stripped Logs.
+	 */
+	public static final TagKey<Item> OVERWORLD_NATURAL_LOGS = register("natural_logs/overworld");
+	/**
+	 * For logs, including Stems, found naturally in the Nether, does not include Stripped Logs.
+	 */
+	public static final TagKey<Item> NETHER_NATURAL_LOGS = register("natural_logs/nether");
+	/**
+	 * For logs, including Stems, found naturally that have not been stripped.
+	 */
+	public static final TagKey<Item> NATURAL_LOGS = register("natural_logs");
+	/**
+	 * For six-sided wood blocks, including Hyphae, found naturally that have not been stripped.
+	 */
+	public static final TagKey<Item> NATURAL_WOODS = register("natural_woods");
+	/**
+	 * For logs, including Stems, found naturally that have been stripped.
+	 */
 	public static final TagKey<Item> STRIPPED_LOGS = register("stripped_logs");
+	/**
+	 * For six-sided wood blocks, including Hyphae, found naturally that have been stripped.
+	 */
 	public static final TagKey<Item> STRIPPED_WOODS = register("stripped_woods");
 
 	// Crops
@@ -555,7 +607,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SLIME_BALLS = register("slime_balls");
 	/**
 	 * For bonemeal-like items that can grow plants.
-	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability {@link net.minecraft.component.DataComponentTypes#DAMAGE} to handle them properly)
+	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability {@link net.minecraft.core.component.DataComponents#DAMAGE} to handle them properly)
 	 */
 	public static final TagKey<Item> FERTILIZERS = register("fertilizers");
 
@@ -609,152 +661,6 @@ public final class ConventionalItemTags {
 	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Item> ORES_IN_GROUND_STONE = register("ores_in_ground/stone");
-
-	/**
-	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> RAW_BLOCKS = register("raw_blocks");
-	/**
-	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_IRON} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> IRON_RAW_BLOCKS = register("raw_blocks/iron");
-	/**
-	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_GOLD} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> GOLD_RAW_BLOCKS = register("raw_blocks/gold");
-	/**
-	 * This tag is redundant. Please use {@link ConventionalItemTags#STORAGE_BLOCKS_RAW_COPPER} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> COPPER_RAW_BLOCKS = register("raw_blocks/copper");
-	/**
-	 * This tag is redundant. Please use {@link net.minecraft.registry.tag.ItemTags#COALS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> COAL = register("coal");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#SHEAR_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> SHEARS_TOOLS = register("tools/shears");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#SPEAR_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> SPEARS_TOOLS = register("tools/spears");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#BOW_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> BOWS_TOOLS = register("tools/bows");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#CROSSBOW_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> CROSSBOWS_TOOLS = register("tools/crossbows");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#SHIELD_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> SHIELDS_TOOLS = register("tools/shields");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#FISHING_ROD_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> FISHING_RODS_TOOLS = register("tools/fishing_rods");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#BRUSH_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> BRUSHES_TOOLS = register("tools/brushes");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#MELEE_WEAPON_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> MELEE_WEAPONS_TOOLS = register("tools/melee_weapons");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#RANGED_WEAPON_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> RANGED_WEAPONS_TOOLS = register("tools/ranged_weapons");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#MINING_TOOL_TOOLS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> MINING_TOOLS = register("tools/mining_tools");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#GLAZED_TERRACOTTAS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> GLAZED_TERRACOTTA = register("glazed_terracotta");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#CONCRETES} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> CONCRETE = register("concrete");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#CONCRETE_POWDERS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> CONCRETE_POWDER = register("concrete_powder");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#FRUIT_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> FRUITS_FOODS = register("foods/fruits");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#VEGETABLE_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> VEGETABLES_FOODS = register("foods/vegetables");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#BERRY_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> BERRIES_FOODS = register("foods/berries");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#BREAD_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> BREADS_FOODS = register("foods/breads");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKIE_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> COOKIES_FOODS = register("foods/cookies");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#RAW_MEAT_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> RAW_MEATS_FOODS = register("foods/raw_meats");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKED_MEAT_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> COOKED_MEATS_FOODS = register("foods/cooked_meats");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#RAW_FISH_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> RAW_FISHES_FOODS = register("foods/raw_fishes");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#COOKED_FISH_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> COOKED_FISHES_FOODS = register("foods/cooked_fishes");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#SOUP_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> SOUPS_FOODS = register("foods/soups");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalItemTags#CANDY_FOODS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Item> CANDIES_FOODS = register("foods/candies");
 
 	private static TagKey<Item> register(String tagId) {
 		return TagRegistration.ITEM_TAG.registerC(tagId);

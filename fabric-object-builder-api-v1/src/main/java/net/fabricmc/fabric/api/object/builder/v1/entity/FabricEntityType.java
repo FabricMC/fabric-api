@@ -19,15 +19,14 @@ package net.fabricmc.fabric.api.object.builder.v1.entity;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.SpawnLocation;
-import net.minecraft.entity.SpawnRestriction;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.world.Heightmap;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacementType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
 
@@ -64,15 +63,15 @@ public interface FabricEntityType {
 		/**
 		 * Creates an entity type builder for a living entity.
 		 *
-		 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
+		 * <p>This entity's mob category will automatically be set to {@link MobCategory#MISC}.
 		 *
 		 * @param <T> the type of entity
 		 * @param livingBuilder a function to configure living entity specific properties
 		 *
 		 * @return a new living entity type builder
 		 */
-		static <T extends LivingEntity> EntityType.Builder<T> createLiving(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, UnaryOperator<Living<T>> livingBuilder) {
-			return FabricEntityTypeImpl.Builder.createLiving(factory, spawnGroup, livingBuilder);
+		static <T extends LivingEntity> EntityType.Builder<T> createLiving(EntityType.EntityFactory<T> factory, MobCategory mobCategory, UnaryOperator<Living<T>> livingBuilder) {
+			return FabricEntityTypeImpl.Builder.createLiving(factory, mobCategory, livingBuilder);
 		}
 
 		/**
@@ -83,12 +82,12 @@ public interface FabricEntityType {
 		 *
 		 * @return a new mob entity type builder
 		 */
-		static <T extends MobEntity> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, UnaryOperator<Mob<T>> mobBuilder) {
-			return FabricEntityTypeImpl.Builder.createMob(factory, spawnGroup, mobBuilder);
+		static <T extends net.minecraft.world.entity.Mob> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, MobCategory mobCategory, UnaryOperator<Mob<T>> mobBuilder) {
+			return FabricEntityTypeImpl.Builder.createMob(factory, mobCategory, mobBuilder);
 		}
 
 		/**
-		 * A builder for additional properties of a living entity, use via {@link #createLiving(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}.
+		 * A builder for additional properties of a living entity, use via {@link #createLiving(EntityType.EntityFactory, MobCategory, UnaryOperator)}.
 		 * @param <T> the type of living entity
 		 */
 		interface Living<T extends LivingEntity> {
@@ -98,22 +97,22 @@ public interface FabricEntityType {
 			 * @param defaultAttributeBuilder a function to generate the default attribute builder from the entity type
 			 * @return this builder for chaining
 			 */
-			Living<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder);
+			Living<T> defaultAttributes(Supplier<AttributeSupplier.Builder> defaultAttributeBuilder);
 		}
 
 		/**
-		 * A builder for additional properties of a mob entity, use via {@link #createMob(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}.
+		 * A builder for additional properties of a mob entity, use via {@link #createMob(EntityType.EntityFactory, MobCategory, UnaryOperator)}.
 		 * @param <T> the type of mob entity
 		 */
-		interface Mob<T extends MobEntity> extends Living<T> {
+		interface Mob<T extends net.minecraft.world.entity.Mob> extends Living<T> {
 			/**
-			 * Registers a spawn restriction for this entity.
+			 * Registers a spawn placement for this entity.
 			 *
 			 * <p>This is used by mobs to determine whether Minecraft should spawn an entity within a certain context.
 			 *
 			 * @return this builder for chaining.
 			 */
-			Mob<T> spawnRestriction(SpawnLocation location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate);
+			Mob<T> spawnPlacement(SpawnPlacementType placementType, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> spawnPredicate);
 
 			/**
 			 * Sets the default attributes for a type of mob entity.
@@ -122,7 +121,7 @@ public interface FabricEntityType {
 			 * @return this builder for chaining
 			 */
 			@Override
-			Mob<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder);
+			Mob<T> defaultAttributes(Supplier<AttributeSupplier.Builder> defaultAttributeBuilder);
 		}
 	}
 }

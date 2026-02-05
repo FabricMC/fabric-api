@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.test.networking.client.channeltest;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
-final class ChannelList extends EntryListWidget<ChannelList.Entry> {
-	ChannelList(MinecraftClient client, int width, int height, int top, int itemHeight) {
+final class ChannelList extends AbstractSelectionList<ChannelList.Entry> {
+	ChannelList(Minecraft client, int width, int height, int top, int itemHeight) {
 		super(client, width, height, top, itemHeight);
 	}
 
@@ -39,11 +39,11 @@ final class ChannelList extends EntryListWidget<ChannelList.Entry> {
 	}
 
 	@Override
-	public void appendClickableNarrations(NarrationMessageBuilder arg) {
+	public void updateWidgetNarration(NarrationElementOutput arg) {
 		// TODO seems to be possibly accessibility related
 	}
 
-	class Entry extends EntryListWidget.Entry<Entry> {
+	class Entry extends AbstractSelectionList.Entry<Entry> {
 		private final Identifier channel;
 
 		Entry(Identifier channel) {
@@ -51,8 +51,8 @@ final class ChannelList extends EntryListWidget<ChannelList.Entry> {
 		}
 
 		@Override
-		public void render(DrawContext drawContext, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			drawContext.drawTooltip(ChannelList.this.client.textRenderer, Text.literal(this.channel.toString()).formatted(Formatting.WHITE), x, y);
+		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			graphics.setTooltipForNextFrame(ChannelList.this.minecraft.font, Component.literal(this.channel.toString()).withStyle(ChatFormatting.WHITE), getContentX(), getContentY());
 		}
 	}
 }

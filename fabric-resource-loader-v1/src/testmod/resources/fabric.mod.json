@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-resource-loader-v1-testmod",
+  "name": "Fabric Resource Loader (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-resource-loader-v1": "*",
+    "fabric-resource-loader-v1-testmod-a": "*",
+    "fabric-resource-loader-v1-testmod-b": "*",
+    "fabric-resource-loader-v1-testmod-c": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.resource.loader.BuiltinPackTestMod",
+      "net.fabricmc.fabric.test.resource.loader.ResourceReloaderTestMod",
+      "net.fabricmc.fabric.test.resource.loader.VanillaBuiltinPackInjectionTestMod"
+    ],
+    "server": [
+      "net.fabricmc.fabric.test.resource.loader.LanguageTestMod"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.resource.loader.BuiltinPackSortingTest"
+    ]
+  },
+  "mixins": [
+    "fabric-resource-loader-v1-testmod.mixins.json"
+  ]
+}

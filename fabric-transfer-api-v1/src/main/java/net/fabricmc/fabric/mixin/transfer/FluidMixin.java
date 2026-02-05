@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 public class FluidMixin implements FluidVariantCache {
 	@Unique
 	@SuppressWarnings("ConstantConditions")
-	private final FluidVariant cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, ComponentChanges.EMPTY);
+	private final FluidVariant cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, DataComponentPatch.EMPTY);
 
 	@Override
 	public FluidVariant fabric_getCachedFluidVariant() {
@@ -54,7 +54,7 @@ public class FluidMixin implements FluidVariantCache {
 	}
 
 	@Inject(
-			method = "getBucketFillSound",
+			method = "getPickupSound",
 			at = @At("HEAD"),
 			cancellable = true
 	)

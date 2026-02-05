@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -44,20 +44,20 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
 public final class ScreenEvents {
 	/**
-	 * An event that is called before {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to its default state.
-	 * It should be noted some methods in {@link Screens} such as a screen's {@link Screens#getTextRenderer(Screen) text renderer} may not be initialized yet, and as such their use is discouraged.
+	 * An event that is called before {@link Screen#init(int, int) a screen is initialized} to its default state.
+	 * It should be noted some methods in {@link Screens} such as a screen's {@link Screen#getFont() font} may not be initialized yet, and as such their use is discouraged.
 	 *
 	 * <!--<p>Typically this event is used to register screen events such as listening to when child elements are added to the screen. ------ Uncomment when child add/remove event is added for elements-->
 	 * You can still use {@link ScreenEvents#AFTER_INIT} to register events such as keyboard and mouse events.
 	 *
 	 * <p>The {@link ScreenExtensions} provided by the {@code info} parameter may be used to register tick, render events, keyboard, mouse, additional and removal of child elements (including buttons).
-	 * For example, to register an event on inventory like screens after render, the following code could be used:
+	 * For example, to register an event on container-like screens after render, the following code could be used:
 	 * <pre>{@code
 	 * &#64;Override
 	 * public void onInitializeClient() {
 	 * 	ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-	 * 		if (screen instanceof AbstractInventoryScreen) {
-	 * 			ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, tickDelta) -> {
+	 * 		if (screen instanceof AbstractContainerScreen) {
+	 * 			ScreenEvents.afterRender(screen).register((screen1, graphics, mouseX, mouseY, tickProgress) -> {
 	 * 				...
 	 * 			});
 	 * 		}
@@ -76,7 +76,7 @@ public final class ScreenEvents {
 	});
 
 	/**
-	 * An event that is called after {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to its default state.
+	 * An event that is called after {@link Screen#init(int, int) a screen is initialized} to its default state.
 	 *
 	 * <p>Typically this event is used to modify a screen after the screen has been initialized.
 	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this event.
@@ -85,13 +85,13 @@ public final class ScreenEvents {
 	 * <pre>{@code
 	 * ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 	 * 	if (screen instanceof TitleScreen) {
-	 * 		Screens.getButtons(screen).add(new ButtonWidget(...));
+	 * 		Screens.getWidgets(screen).add(new Button(...));
 	 * 	}
 	 * });
 	 * }</pre>
 	 *
-	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.Drawable drawn}.
-	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.Drawable#render(DrawContext, int, int, float) render} methods in the corresponding screen events.
+	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.components.Renderable drawn}.
+	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.components.Renderable#render(GuiGraphics, int, int, float) render} methods in the corresponding screen events.
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT
@@ -124,6 +124,17 @@ public final class ScreenEvents {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeRenderEvent();
+	}
+
+	/**
+	 * An event that is called after a screen's background is rendered.
+	 *
+	 * @return the event
+	 */
+	public static Event<AfterBackground> afterBackground(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAfterBackgroundEvent();
 	}
 
 	/**
@@ -161,12 +172,12 @@ public final class ScreenEvents {
 
 	@FunctionalInterface
 	public interface BeforeInit {
-		void beforeInit(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight);
+		void beforeInit(Minecraft client, Screen screen, int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface
 	public interface AfterInit {
-		void afterInit(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight);
+		void afterInit(Minecraft client, Screen screen, int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface
@@ -176,12 +187,17 @@ public final class ScreenEvents {
 
 	@FunctionalInterface
 	public interface BeforeRender {
-		void beforeRender(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta);
+		void beforeRender(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
+	}
+
+	@FunctionalInterface
+	public interface AfterBackground {
+		void afterBackground(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface
 	public interface AfterRender {
-		void afterRender(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta);
+		void afterRender(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface

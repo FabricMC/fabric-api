@@ -22,28 +22,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LadderBlock;
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.block.v1.BlockFunctionalityTags;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
 	@Inject(
-			method = "canEnterTrapdoor",
-			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"),
+			method = "trapdoorUsableAsLadder",
+			at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),
 			allow = 1,
 			cancellable = true
 	)
-	private void allowTaggedBlocksForTrapdoorClimbing(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> info, @Local(ordinal = 1) BlockState belowState) {
-		if (belowState.isIn(BlockFunctionalityTags.CAN_CLIMB_TRAPDOOR_ABOVE)) {
+	private void allowTaggedBlocksForTrapdoorClimbing(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> info, @Local(name = "belowState") BlockState belowState) {
+		if (belowState.is(BlockFunctionalityTags.CAN_CLIMB_TRAPDOOR_ABOVE)) {
 			if (belowState.getBlock() instanceof LadderBlock) {
 				// Check that the ladder and trapdoor are placed in the same direction.
 				// Vanilla does the same check for the normal ladder block.
-				if (belowState.get(LadderBlock.FACING) == state.get(TrapdoorBlock.FACING)) {
+				if (belowState.getValue(LadderBlock.FACING) == state.getValue(TrapDoorBlock.FACING)) {
 					info.setReturnValue(true);
 				}
 			} else {
