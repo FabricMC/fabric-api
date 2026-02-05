@@ -54,17 +54,15 @@ public class AttachmentSavedData extends SavedData {
 	}
 
 	public static Codec<AttachmentSavedData> codec(MinecraftServer server) {
-		return codec((AttachmentTargetImpl) server.globalAttachments(), "global server attachments");
+		return codec((AttachmentTargetImpl) server.globalAttachments(), () -> "AttachmentSavedData @ global server attachments");
 	}
 
 	public static Codec<AttachmentSavedData> codec(ServerLevel level) {
-		return codec((AttachmentTargetImpl) level, level.dimension().identifier().toString());
+		return codec((AttachmentTargetImpl) level, () -> "AttachmentSavedData @ " + level.dimension().identifier());
 	}
 
 	// TODO 1.21.5 look at making this more idiomatic
-	private static Codec<AttachmentSavedData> codec(AttachmentTargetImpl target, String reportIdentifier) {
-		final ProblemReporter.PathElement reporterContext = () -> "AttachmentSavedData @ " + reportIdentifier;
-
+	private static Codec<AttachmentSavedData> codec(AttachmentTargetImpl target, ProblemReporter.PathElement reporterContext) {
 		return Codec.of(new Encoder<>() {
 			@Override
 			public <T> DataResult<T> encode(AttachmentSavedData input, DynamicOps<T> ops, T prefix) {
