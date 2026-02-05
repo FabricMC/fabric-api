@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tag;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -29,6 +30,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Encoder;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,8 +39,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Slice;
 
-import net.minecraft.registry.tag.TagEntry;
-import net.minecraft.registry.tag.TagFile;
+import net.minecraft.tags.TagEntry;
+import net.minecraft.tags.TagFile;
 
 import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
 import net.fabricmc.fabric.impl.tag.FabricTagEntryImpl;
@@ -54,7 +56,7 @@ public class TagFileMixin {
 	public static Codec<TagFile> CODEC;
 
 	@ModifyArg(
-			method = "method_43950",
+			method = "lambda$static$0",
 			at = @At(
 					value = "INVOKE",
 					target = "Lcom/mojang/datafixers/Products$P2;apply(Lcom/mojang/datafixers/kinds/Applicative;Ljava/util/function/BiFunction;)Lcom/mojang/datafixers/kinds/App;"
@@ -68,7 +70,7 @@ public class TagFileMixin {
 	}
 
 	@ModifyArg(
-			method = "method_43950",
+			method = "lambda$static$0",
 			at = @At(
 					value = "INVOKE:FIRST",
 					target = "Lcom/mojang/serialization/MapCodec;forGetter(Ljava/util/function/Function;)Lcom/mojang/serialization/codecs/RecordCodecBuilder;"
@@ -82,7 +84,7 @@ public class TagFileMixin {
 	static {
 		Codec<List<TagEntry>> removeEntryCodec = FabricTagEntryImpl.REMOVED_ENTRY_CODEC
 				.listOf()
-				.lenientOptionalFieldOf("c:remove", List.of())
+				.lenientOptionalFieldOf("c:remove", Collections.emptyList())
 				.codec();
 
 		CODEC = new WrapperCodec<>(CODEC, new WrapperCodec.Wrapper<>() {

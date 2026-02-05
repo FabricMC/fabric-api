@@ -22,30 +22,30 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+
 import org.apache.commons.lang3.function.FailableRunnable;
 import org.slf4j.Logger;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-
 public class TagTestUtils {
-	static <T> TagKey<T> tagKey(RegistryKey<? extends Registry<T>> registryRef, String name) {
-		return TagKey.of(registryRef, Identifier.of("fabric-tag-api-v1-testmod", name));
+	static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registryRef, String name) {
+		return TagKey.create(registryRef, Identifier.fromNamespaceAndPath("fabric-tag-api-v1-testmod", name));
 	}
 
-	static RegistryKey<Block> getBlockKey(Block block) {
-		return block.getRegistryEntry().registryKey();
+	static ResourceKey<Block> getBlockKey(Block block) {
+		return block.builtInRegistryHolder().key();
 	}
 
-	static RegistryKey<Item> getItemKey(Item item) {
-		return item.getRegistryEntry().registryKey();
+	static ResourceKey<Item> getItemKey(Item item) {
+		return item.builtInRegistryHolder().key();
 	}
 
 	static void assertThrows(FailableRunnable<AssertionError> action, String message) {
@@ -63,26 +63,26 @@ public class TagTestUtils {
 	}
 
 	@SafeVarargs
-	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Function<T, RegistryKey<T>> keyExtractor, T... expected) {
-		Set<RegistryKey<T>> keys = Arrays.stream(expected)
+	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, Function<T, ResourceKey<T>> keyExtractor, T... expected) {
+		Set<ResourceKey<T>> keys = Arrays.stream(expected)
 				.map(keyExtractor)
 				.collect(Collectors.toSet());
 		assertTagContent(logger, successFmtStr, registries, tags, keys);
 	}
 
 	@SafeVarargs
-	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, RegistryKey<T>... expected) {
+	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, ResourceKey<T>... expected) {
 		assertTagContent(logger, successFmtStr, registries, tags, Set.of(expected));
 	}
 
-	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Set<RegistryKey<T>> expected) {
-		RegistryEntryLookup<T> lookup = registries.getOrThrow(tags.getFirst().registryRef());
+	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, Set<ResourceKey<T>> expected) {
+		HolderLookup<T> lookup = registries.lookupOrThrow(tags.getFirst().registry());
 
 		for (TagKey<T> tag : tags) {
-			RegistryEntryList.Named<T> tagEntryList = lookup.getOrThrow(tag);
-			Set<RegistryKey<T>> actual = tagEntryList.entries
+			HolderSet.Named<T> tagEntryList = lookup.getOrThrow(tag);
+			Set<ResourceKey<T>> actual = tagEntryList.contents
 					.stream()
-					.map(entry -> entry.getKey().orElseThrow())
+					.map(entry -> entry.unwrapKey().orElseThrow())
 					.collect(Collectors.toSet());
 
 			if (!actual.equals(expected)) {
@@ -91,8 +91,8 @@ public class TagTestUtils {
 			}
 		}
 
-		logger.info(successFmtStr, tags.getFirst().registryRef().getValue(), tags.stream()
-				.map(TagKey::id)
+		logger.info(successFmtStr, tags.getFirst().registry().identifier(), tags.stream()
+				.map(TagKey::location)
 				.map(Identifier::toString)
 				.collect(Collectors.joining(", ")));
 	}

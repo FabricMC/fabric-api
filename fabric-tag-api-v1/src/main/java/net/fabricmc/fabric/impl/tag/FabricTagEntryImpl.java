@@ -23,9 +23,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.DynamicOps;
+
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.tag.TagEntry;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.impl.tag.util.WrapperCodec;

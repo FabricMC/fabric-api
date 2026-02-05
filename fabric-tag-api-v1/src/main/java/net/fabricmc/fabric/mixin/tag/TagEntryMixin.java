@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.registry.tag.TagEntry;
+import net.minecraft.tags.TagEntry;
 
 import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
 import net.fabricmc.fabric.impl.tag.FabricTagEntryImpl;
