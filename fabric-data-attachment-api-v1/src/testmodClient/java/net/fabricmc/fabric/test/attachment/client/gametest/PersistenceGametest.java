@@ -83,6 +83,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 				);
 
 				// setting up persistent attachments for second run
+				server.globalAttachments().setAttached(PERSISTENT, "global_data");
 				getSinglePlayer(server).setAttached(PERSISTENT, "player_data");
 				overworld.setAttached(PERSISTENT, "level_data");
 				originChunk.setAttached(PERSISTENT, "chunk_data");
@@ -105,6 +106,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 				ServerLevel overworld = server.overworld();
 				LevelChunk originChunk = overworld.getChunk(0, 0);
 
+				assertAttached(server.globalAttachments(), PERSISTENT, "global_data", "Global attachment did not persist");
 				assertAttached(getSinglePlayer(server), PERSISTENT, "player_data", "Player attachment did not persist");
 				assertAttached(overworld, PERSISTENT, "level_data", "Level attachment did not persist");
 				assertAttached(originChunk, PERSISTENT, "chunk_data", "LevelChunk attachment did not persist");

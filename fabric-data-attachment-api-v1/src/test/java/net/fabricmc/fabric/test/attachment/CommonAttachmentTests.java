@@ -46,6 +46,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.Bootstrap;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
@@ -66,6 +67,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.attachment.v1.GlobalAttachments;
 import net.fabricmc.fabric.impl.attachment.AttachmentSavedData;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
@@ -112,6 +114,7 @@ public class CommonAttachmentTests {
 		 * CALLS_REAL_METHODS makes sense here because AttachmentTarget does not refer to anything in the underlying
 		 * class, and it saves us a lot of pain trying to get the regular constructors for ServerLevel and LevelChunk to work.
 		 */
+		GlobalAttachments globalAttachments = mockAndDisableSync(GlobalAttachments.class);
 		ServerLevel serverLevel = mockAndDisableSync(ServerLevel.class);
 		Entity entity = mockAndDisableSync(Entity.class);
 		BlockEntity blockEntity = mockAndDisableSync(BlockEntity.class);
@@ -121,7 +124,7 @@ public class CommonAttachmentTests {
 
 		ProtoChunk protoChunk = mockAndDisableSync(ProtoChunk.class);
 
-		for (AttachmentTarget target : new AttachmentTarget[]{serverLevel, entity, blockEntity, levelChunk, protoChunk}) {
+		for (AttachmentTarget target : new AttachmentTarget[]{globalAttachments, serverLevel, entity, blockEntity, levelChunk, protoChunk}) {
 			testForTarget(target, basic);
 		}
 	}
@@ -278,7 +281,7 @@ public class CommonAttachmentTests {
 	}
 
 	@Test
-	void testWorldPersistentState() {
+	void testLevelSavedData() {
 		// Trying to simulate actual saving and loading for the world is too hard
 		RegistryAccess ra = mockRA();
 
@@ -301,6 +304,32 @@ public class CommonAttachmentTests {
 		AttachmentSavedData.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
 		assertTrue(level.hasAttached(PERSISTENT));
 		assertEquals(expected, level.getAttached(PERSISTENT));
+	}
+
+	@Test
+	void testGlobalSavedData() {
+		RegistryAccess.Frozen ra = mockRA().freeze();
+
+		MinecraftServer server = mock(MinecraftServer.class);
+		GlobalAttachments globalAttachments = mockAndDisableSync(GlobalAttachments.class);
+		when(server.registryAccess()).thenReturn(ra);
+
+		AttachmentSavedData state = new AttachmentSavedData(globalAttachments);
+		assertFalse(globalAttachments.hasAttached(PERSISTENT));
+		assertFalse(state.isDirty());
+
+		int expected = 1;
+		globalAttachments.setAttached(PERSISTENT, expected);
+		assertTrue(state.isDirty());
+		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(server).encodeStart(RegistryOps.create(NbtOps.INSTANCE, ra), state).getOrThrow();
+		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
+
+		server = mock(MinecraftServer.class);
+		when(server.registryAccess()).thenReturn(ra);
+
+		AttachmentSavedData.codec(server).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
+		assertTrue(globalAttachments.hasAttached(PERSISTENT));
+		assertEquals(expected, globalAttachments.getAttached(PERSISTENT));
 	}
 
 	@Test
