@@ -23,6 +23,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import net.minecraft.world.item.enchantment.Enchantment;
+
+import net.minecraft.world.item.enchantment.Enchantments;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +36,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 public final class TagEntryRemovalTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TagEntryRemovalTest.class);
 
-	private final TagKey<Item> TEST_TAG = TagTestUtils.tagKey(Registries.ITEM, "tag_with_snowballs_but_not_bricks");
+	private final TagKey<Enchantment> TEST_ENCHANTMENT_TAG = TagTestUtils.tagKey(Registries.ENCHANTMENT, "all_enchantments_without_durability_enchantments");
+	private final TagKey<Item> TEST_ITEM_TAG = TagTestUtils.tagKey(Registries.ITEM, "snowballs_but_not_bricks");
 
 	@Override
 	public void onInitialize() {
@@ -42,10 +47,14 @@ public final class TagEntryRemovalTest implements ModInitializer {
 			}
 
 			LOGGER.info("Running tag entry removal tests...");
-			TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} Contains expected entries", registries, List.of(TEST_TAG), TagTestUtils::getItemKey, Items.SNOWBALL);
+			TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ITEM_TAG), TagTestUtils::getItemKey, Items.SNOWBALL);
 			TagTestUtils.assertThrows(
-					() -> TagTestUtils.assertTagContent(LOGGER, "Tag {} Contains expected entries", registries, List.of(TEST_TAG), TagTestUtils::getItemKey, Items.BRICK),
-					"Expected %s not to contain bricks".formatted(TEST_TAG)
+					() -> TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ITEM_TAG), TagTestUtils::getItemKey, Items.BRICK),
+					"Expected %s not to contain bricks".formatted(TEST_ITEM_TAG)
+			);
+			TagTestUtils.assertThrows(
+					() -> TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ENCHANTMENT_TAG), Enchantments.UNBREAKING, Enchantments.MENDING),
+					"Expected %s not to contain Unbreaking or Mending".formatted(TEST_ENCHANTMENT_TAG)
 			);
 			LOGGER.info("Tag entry removal tests completed successfully!");
 		});

@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:dirt",
+      "required": false
+    },
+    {
+      "id": "#minecraft:mud",
+      "required": false
+    }
+  ],
+  "fabric:remove": [
+    "minecraft:dirt",
+    "minecraft:mud"
+  ]
+}

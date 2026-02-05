@@ -1,6 +1,6 @@
 {
   "replace": false,
-  "c:remove": [
+  "fabric:remove": [
     "brick"
   ],
   "values": [

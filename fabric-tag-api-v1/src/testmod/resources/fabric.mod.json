@@ -14,6 +14,7 @@
       "net.fabricmc.fabric.test.tag.TagEntryRemovalTest"
     ],
     "client": [
+      "net.fabricmc.fabric.test.tag.client.v1.ClientTagEntryRemovalTest",
       "net.fabricmc.fabric.test.tag.client.v1.ClientTagTest"
     ]
   }

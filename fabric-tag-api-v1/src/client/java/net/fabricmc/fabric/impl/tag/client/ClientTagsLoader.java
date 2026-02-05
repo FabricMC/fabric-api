@@ -28,6 +28,10 @@ import java.util.Set;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+
+import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
+
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,12 +77,14 @@ public class ClientTagsLoader {
 		}
 
 		HashSet<Identifier> completeIds = new HashSet<>();
+		HashSet<Identifier> removedIds = new HashSet<>();
 		HashSet<Identifier> immediateChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
 		for (TagEntry tagEntry : tags) {
+			boolean remove = ((FabricTagEntry)tagEntry).isRemoved();
 			tagEntry.build(new TagEntry.Lookup<>() {
-				@Nullable
+				@NonNull
 				@Override
 				public Identifier element(Identifier id, boolean required) {
 					immediateChildIds.add(id);
@@ -92,17 +98,20 @@ public class ClientTagsLoader {
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
 				}
-			}, completeIds::add);
+			}, remove
+					? removedIds::add
+					: completeIds::add
+			);
 		}
 
 		// Ensure that the tag does not refer to itself
 		immediateChildTags.remove(tagKey);
 
-		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(immediateChildTags),
+		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(removedIds), Collections.unmodifiableSet(immediateChildTags),
 				Collections.unmodifiableSet(immediateChildIds));
 	}
 
-	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds, Set<Identifier> removedIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
 	}
 
 	/**

@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.test.tag.client.v1;
 
+import net.fabricmc.fabric.test.tag.TagTestUtils;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.block.Block;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +44,8 @@ import net.fabricmc.loader.api.ModContainer;
 
 public class ClientTagTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagTest.class);
-	private static final String MOD_ID = "fabric-tag-api-v1-testmod";
+
+	public static final String MOD_ID = "fabric-tag-api-v1-testmod";
 
 	@Override
 	public void onInitializeClient() {
@@ -52,7 +58,7 @@ public class ClientTagTest implements ClientModInitializer {
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS) == null) {
-				throw new AssertionError("Expected to load c:fortune, but it was not found!");
+				throw new AssertionError("Expected to load c:increase_block_drops, but it was not found!");
 			}
 
 			if (!ClientTags.isInWithLocalFallback(ConventionalBlockTags.ORES, Blocks.DIAMOND_ORE)) {
@@ -64,7 +70,7 @@ public class ClientTagTest implements ClientModInitializer {
 			}
 
 			if (!ClientTags.isInLocal(ConventionalBiomeTags.IS_FOREST, Biomes.FOREST)) {
-				throw new AssertionError("Expected to find forest in c:forest, but it was not found!");
+				throw new AssertionError("Expected to find forest in c:is_forest, but it was not found!");
 			}
 
 			if (ClientTags.isInWithLocalFallback(TagKey.create(BuiltInRegistries.BLOCK.key(),

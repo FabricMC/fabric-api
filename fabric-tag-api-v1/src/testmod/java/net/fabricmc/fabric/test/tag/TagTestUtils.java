@@ -36,7 +36,7 @@ import org.apache.commons.lang3.function.FailableRunnable;
 import org.slf4j.Logger;
 
 public class TagTestUtils {
-	static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registryRef, String name) {
+	public static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registryRef, String name) {
 		return TagKey.create(registryRef, Identifier.fromNamespaceAndPath("fabric-tag-api-v1-testmod", name));
 	}
 

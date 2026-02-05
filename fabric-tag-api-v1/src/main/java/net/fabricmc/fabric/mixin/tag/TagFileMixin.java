@@ -84,7 +84,7 @@ public class TagFileMixin {
 	static {
 		Codec<List<TagEntry>> removeEntryCodec = FabricTagEntryImpl.REMOVED_ENTRY_CODEC
 				.listOf()
-				.lenientOptionalFieldOf("c:remove", Collections.emptyList())
+				.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
 				.codec();
 
 		CODEC = new WrapperCodec<>(CODEC, new WrapperCodec.Wrapper<>() {
