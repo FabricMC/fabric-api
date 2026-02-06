@@ -18,45 +18,24 @@ package net.fabricmc.fabric.impl.client.renderer;
 
 import java.util.ServiceLoader;
 
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
-import net.fabricmc.fabric.api.client.renderer.v1.RendererReadyEntrypoint;
-import net.fabricmc.loader.api.FabricLoader;
 
-public final class RendererManager implements ClientModInitializer {
+public final class RendererManager {
 	private static RendererProvider chosenRendererProvider;
 	private static Renderer activeRenderer;
 
-	public static Renderer getRenderer() {
-		if (activeRenderer == null) {
-			throw new UnsupportedOperationException("Attempted to retrieve active rendering plug-in before one was registered.");
-		}
-
-		return activeRenderer;
+	private RendererManager() {
 	}
 
-	public static void registerRenderer(Renderer renderer) {
-		if (renderer == null) {
-			throw new NullPointerException("Attempted to register a null rendering plug-in. This is not supported.");
-		}
-
+	public static Renderer getRenderer() {
 		if (activeRenderer != null) {
 			throw new UnsupportedOperationException("Attempted to register a second rendering plug-in. Multiple rendering plug-ins are not supported.");
 		}
 
-		activeRenderer = renderer;
-		FabricLoader.getInstance().invokeEntrypoints(
-				"fabric-renderer-ready",
-				RendererReadyEntrypoint.class,
-				RendererReadyEntrypoint::onRendererReady
-		);
-	}
+		activeRenderer = getOrLoadRendererProvider().getRenderer();
 
-	@Override
-	public void onInitializeClient() {
-		// Register the Renderer or load it if it has not yet been
-		registerRenderer(getOrLoadRendererProvider().getRenderer());
+		return activeRenderer;
 	}
 
 	public static RendererProvider getOrLoadRendererProvider() {

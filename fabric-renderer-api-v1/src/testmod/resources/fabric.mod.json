@@ -10,12 +10,10 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.renderer.RendererTest"
-    ],
-    "client": [
+      "net.fabricmc.fabric.test.renderer.RendererTest",
       "net.fabricmc.fabric.test.renderer.client.RendererClientTest"
     ],
-    "fabric-renderer-ready": [
+    "client": [
       "net.fabricmc.fabric.test.renderer.client.RendererClientTest"
     ]
   }

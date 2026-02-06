@@ -33,6 +33,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
@@ -67,6 +68,9 @@ public interface Renderer {
 	/**
 	 * Access to the current {@link Renderer} for creating and retrieving mesh builders
 	 * and materials.
+	 *
+	 * <p><b>**Warning:</b> do not call this method before {@link ModInitializer} has been invoked. Doing
+	 * so will likely crash.
 	 */
 	static Renderer get() {
 		return RendererManager.getRenderer();
