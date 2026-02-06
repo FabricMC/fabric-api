@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 
 /**
@@ -35,6 +37,13 @@ public interface RendererProvider {
 	}
 
 	/**
+	 * @return this renderer's unique ID.
+	 * @implSpec This should be the renderer's mod ID, but that is not guaranteed. Additionally,
+	 * changing this string is considered a breaking change for users of {@link RendererProvider}.
+	 */
+	String id();
+
+	/**
 	 * Get or instantiate an implementation of {@link Renderer}.
 	 *
 	 * @apiNote Do not call this method before the {@link RendererReadyEntrypoint} has been invoked.
@@ -43,14 +52,8 @@ public interface RendererProvider {
 	 * @implSpec This method should instantiate an implementation of {@link Renderer} the first time
 	 * it is invoked and return that instance for any subsequent calls.
 	 */
+	@ApiStatus.OverrideOnly
 	Renderer getRenderer();
-
-	/**
-	 * @return this renderer's unique ID.
-	 * @implSpec This should be the renderer's mod ID, but that is not guaranteed. Additionally,
-	 * changing this string is considered a breaking change for users of {@link RendererProvider}.
-	 */
-	String id();
 
 	/**
 	 * The higher a renderer's priority is, the more likely it is to be loaded. So, the
@@ -61,6 +64,7 @@ public interface RendererProvider {
 	 * However, they may choose any priority or even change priorities based on some conditions.
 	 * Implementors should avoid priorities of {@code 0} or below as that is Indigo's priority.
 	 */
+	@ApiStatus.OverrideOnly
 	default int priority() {
 		return 1000;
 	}
