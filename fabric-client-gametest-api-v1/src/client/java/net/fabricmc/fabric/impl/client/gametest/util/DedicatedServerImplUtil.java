@@ -66,7 +66,7 @@ public final class DedicatedServerImplUtil {
 		setupServer(serverProperties);
 		serverFuture = new CompletableFuture<>();
 
-		new Thread(() -> Main.main(new String[0])).start();
+		new Thread(() -> Main.main(new String[]{"--universe=gametest"})).start();
 
 		DedicatedServer server;
 
