@@ -30,11 +30,10 @@ public final class RendererManager {
 
 	public static Renderer getRenderer() {
 		if (activeRenderer != null) {
-			throw new UnsupportedOperationException("Attempted to register a second rendering plug-in. Multiple rendering plug-ins are not supported.");
+			return activeRenderer;
 		}
 
 		activeRenderer = getOrLoadRendererProvider().getRenderer();
-
 		return activeRenderer;
 	}
 
