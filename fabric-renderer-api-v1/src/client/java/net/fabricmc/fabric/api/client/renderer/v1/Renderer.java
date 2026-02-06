@@ -69,7 +69,7 @@ public interface Renderer {
 	 * Access to the current {@link Renderer} for creating and retrieving mesh builders
 	 * and materials.
 	 *
-	 * <p><b>**Warning:</b> do not call this method before {@link ModInitializer} has been invoked. Doing
+	 * <p><b>Warning:</b> do not call this method before {@link ModInitializer} has been invoked. Doing
 	 * so will likely crash.
 	 */
 	static Renderer get() {
