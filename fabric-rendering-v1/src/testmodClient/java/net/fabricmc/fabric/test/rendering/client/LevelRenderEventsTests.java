@@ -105,11 +105,13 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
 		LevelRenderEvents.END_EXTRACTION.register(LevelRenderEventsTests::assertExtractionContext);
 		LevelRenderEvents.START_MAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
-		LevelRenderEvents.BEFORE_COLLECT_SUBMITS.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
+		LevelRenderEvents.COLLECT_SUBMITS.register(LevelRenderEventsTests::assertRenderContext);
 		LevelRenderEvents.AFTER_SOLID_FEATURES.register(LevelRenderEventsTests::assertRenderContext);
 		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(LevelRenderEventsTests::assertRenderContext);
 		LevelRenderEvents.BEFORE_GIZMOS.register(LevelRenderEventsTests::assertRenderContext);
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
 		LevelRenderEvents.END_MAIN.register(LevelRenderEventsTests::assertRenderContext);
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {

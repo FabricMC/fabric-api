@@ -99,11 +99,26 @@ public final class LevelRenderEvents {
 
 	/**
 	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the appropriate framebuffers,
-	 * and before any submit nodes from entities, block entities, or particles are added to the submit node storage.
+	 * and before any submit nodes are added to the submit node storage.
+	 *
+	 * <p>Use this event to render additional opaque terrain-like geometry.
 	 */
-	public static final Event<BeforeCollectSubmits> BEFORE_COLLECT_SUBMITS = EventFactory.createArrayBacked(BeforeCollectSubmits.class, callbacks -> context -> {
-		for (final BeforeCollectSubmits callback : callbacks) {
-			callback.beforeCollectSubmits(context);
+	public static final Event<AfterOpaqueTerrain> AFTER_OPAQUE_TERRAIN = EventFactory.createArrayBacked(AfterOpaqueTerrain.class, callbacks -> context -> {
+		for (final AfterOpaqueTerrain callback : callbacks) {
+			callback.afterOpaqueTerrain(context);
+		}
+	});
+
+	/**
+	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the appropriate framebuffers
+	 * and all submit nodes from entities, block entities, and particles are added to the submit node storage, and
+	 * before any submit geometry is drawn to the appropriate framebuffers.
+	 *
+	 * <p>Use this event to add additional submits to {@link LevelRenderContext#submitNodeCollector()}.
+	 */
+	public static final Event<CollectSubmits> COLLECT_SUBMITS = EventFactory.createArrayBacked(CollectSubmits.class, callbacks -> context -> {
+		for (final CollectSubmits callback : callbacks) {
+			callback.collectSubmits(context);
 		}
 	});
 
@@ -169,12 +184,24 @@ public final class LevelRenderEvents {
 
 	/**
 	 * Called after opaque terrain, entities, block entities, solid particles, overlays, and gizmos are drawn to the
-	 * appropriate framebuffers, before {@linkplain ChunkSectionLayerGroup#TRANSLUCENT translucent} terrain and
+	 * appropriate framebuffers, and before {@linkplain ChunkSectionLayerGroup#TRANSLUCENT translucent} terrain and
 	 * translucent particles are drawn to the appropriate framebuffers.
 	 */
 	public static final Event<BeforeTranslucentTerrain> BEFORE_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(BeforeTranslucentTerrain.class, callbacks -> context -> {
 		for (final BeforeTranslucentTerrain callback : callbacks) {
 			callback.beforeTranslucentTerrain(context);
+		}
+	});
+
+	/**
+	 * Called after terrain, entities, block entities, solid particles, overlays, and gizmos are drawn to the
+	 * appropriate framebuffers, and before translucent particles are drawn to the appropriate framebuffers.
+	 *
+	 * <p>Use this event to render additional translucent terrain-like geometry.
+	 */
+	public static final Event<AfterTranslucentTerrain> AFTER_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(AfterTranslucentTerrain.class, callbacks -> context -> {
+		for (final AfterTranslucentTerrain callback : callbacks) {
+			callback.afterTranslucentTerrain(context);
 		}
 	});
 
@@ -205,8 +232,13 @@ public final class LevelRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface BeforeCollectSubmits {
-		void beforeCollectSubmits(LevelRenderContext context);
+	public interface AfterOpaqueTerrain {
+		void afterOpaqueTerrain(LevelTerrainRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface CollectSubmits {
+		void collectSubmits(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
@@ -232,6 +264,11 @@ public final class LevelRenderEvents {
 	@FunctionalInterface
 	public interface BeforeTranslucentTerrain {
 		void beforeTranslucentTerrain(LevelRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface AfterTranslucentTerrain {
+		void afterTranslucentTerrain(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
