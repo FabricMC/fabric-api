@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.LevelData;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -120,6 +121,9 @@ public class SyncGametest implements FabricClientGameTest {
 
 				ServerLevel nether = server.getLevel(Level.NETHER);
 				setSyncedWithAll(Objects.requireNonNull(nether));
+
+				// in case world spawn is too far from 0 0
+				server.setRespawnData(LevelData.RespawnData.DEFAULT);
 			});
 
 			LOGGER.info("Joining dedicated server");
