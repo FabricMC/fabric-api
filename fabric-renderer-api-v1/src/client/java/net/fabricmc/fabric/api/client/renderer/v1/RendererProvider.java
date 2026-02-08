@@ -19,29 +19,28 @@ package net.fabricmc.fabric.api.client.renderer.v1;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
+import net.fabricmc.loader.api.FabricLoader;
 
 /**
  * An abstraction for registering {@link Renderer} implementations.
  *
- * @implSpec Before Minecraft is initialized, implementations of {@link RendererProvider} are
- * loaded via {@link java.util.ServiceLoader}, after which {@link #getRenderer()} is called.
+ * <p>Before Minecraft is initialized, implementations of {@link RendererProvider} are
+ * loaded via {@link FabricLoader#getEntrypointContainers(String, Class)}, after which
+ * {@link #getRenderer()} is called.
+ *
+ * @implSpec Renderers are expected to add a {@code fabric-renderer-api-v1:renderer_provider} entrypoint
+ * referencing their implementations of {@link RendererProvider}.
  */
 public interface RendererProvider {
 	/**
-	 * Gets the current, chosen {@link RendererProvider} or finds one if it has not yet been chosen.
+	 * Gets the mod ID of the current, chosen {@link RendererProvider} or finds one if it has not
+	 * yet been chosen.
 	 *
-	 * @return the current {@link RendererProvider}.
+	 * @return the mod ID of the current {@link RendererProvider}.
 	 */
-	static RendererProvider get() {
-		return RendererManager.getOrLoadRendererProvider();
+	static String getId() {
+		return RendererManager.getOrLoadRendererProvider().getProvider().getMetadata().getId();
 	}
-
-	/**
-	 * @return this renderer's unique ID.
-	 * @implSpec This should be the renderer's mod ID, but that is not guaranteed. Additionally,
-	 * changing this string is considered a breaking change for users of {@link RendererProvider}.
-	 */
-	String id();
 
 	/**
 	 * Get or instantiate an implementation of {@link Renderer}.

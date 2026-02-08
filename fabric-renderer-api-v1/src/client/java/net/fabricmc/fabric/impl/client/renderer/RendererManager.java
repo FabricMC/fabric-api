@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.renderer;
 
-import java.util.ServiceLoader;
+import java.util.List;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public final class RendererManager {
-	private static RendererProvider chosenRendererProvider;
+	private static EntrypointContainer<RendererProvider> chosenRendererProvider;
 	private static Renderer activeRenderer;
 
 	private RendererManager() {
@@ -33,25 +35,24 @@ public final class RendererManager {
 			return activeRenderer;
 		}
 
-		activeRenderer = getOrLoadRendererProvider().getRenderer();
+		activeRenderer = getOrLoadRendererProvider().getEntrypoint().getRenderer();
 		return activeRenderer;
 	}
 
-	public static RendererProvider getOrLoadRendererProvider() {
+	public static EntrypointContainer<RendererProvider> getOrLoadRendererProvider() {
 		if (chosenRendererProvider != null) {
 			return chosenRendererProvider;
 		}
 
-		// Because Stream is banned, we have to sort manually even though Stream#reduce would be so
-		// much more readable.
-		ServiceLoader<RendererProvider> serviceLoader = ServiceLoader.load(RendererProvider.class);
+		List<EntrypointContainer<RendererProvider>> entrypoints = FabricLoader.getInstance()
+				.getEntrypointContainers("fabric-renderer-api-v1:renderer_provider", RendererProvider.class);
 		int highestPriority = Integer.MIN_VALUE;
-		RendererProvider rendererProvider = null;
+		EntrypointContainer<RendererProvider> rendererProvider = null;
 
-		for (RendererProvider next : serviceLoader) {
-			if (next.priority() > highestPriority) {
+		for (EntrypointContainer<RendererProvider> next : entrypoints) {
+			if (next.getEntrypoint().priority() > highestPriority) {
 				rendererProvider = next;
-				highestPriority = next.priority();
+				highestPriority = next.getEntrypoint().priority();
 			}
 		}
 

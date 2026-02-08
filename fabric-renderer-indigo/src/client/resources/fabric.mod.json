@@ -28,5 +28,10 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   },
-  "accessWidener" : "fabric-renderer-indigo.classtweaker"
+  "accessWidener" : "fabric-renderer-indigo.classtweaker",
+  "entrypoints": {
+    "fabric-renderer-api-v1:renderer_provider": [
+      "net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRendererProvider"
+    ]
+  }
 }

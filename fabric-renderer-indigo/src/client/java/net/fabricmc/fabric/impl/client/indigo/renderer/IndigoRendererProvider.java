@@ -26,11 +26,6 @@ public class IndigoRendererProvider implements RendererProvider {
 	}
 
 	@Override
-	public String id() {
-		return "fabric-renderer-indigo";
-	}
-
-	@Override
 	public int priority() {
 		return 0; // This ensures other renderers override Indigo
 	}
