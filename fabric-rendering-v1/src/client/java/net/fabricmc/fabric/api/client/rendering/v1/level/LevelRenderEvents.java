@@ -75,7 +75,7 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called after all render states are extracted, before any is drawn.
+	 * Called after all render states are extracted, before any are drawn.
 	 * Use this to extract general custom data needed for rendering.
 	 *
 	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
@@ -88,8 +88,8 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called at the start of the main pass, after the sky is drawn to the framebuffer and all chunks to be rendered are
-	 * uploaded to GPU, and before any chunks are drawn to the framebuffer.
+	 * Called at the start of the main pass, after the sky is drawn to the appropriate framebuffers and all chunks to be
+	 * rendered are uploaded to GPU, and before any chunks are drawn to the appropriate framebuffers.
 	 */
 	public static final Event<StartMain> START_MAIN = EventFactory.createArrayBacked(StartMain.class, callbacks -> context -> {
 		for (final StartMain callback : callbacks) {
@@ -98,8 +98,8 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the framebuffer, and before
-	 * any submit nodes from entities, block entities, or particles are added to the submit node storage.
+	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the appropriate framebuffers,
+	 * and before any submit nodes from entities, block entities, or particles are added to the submit node storage.
 	 */
 	public static final Event<BeforeCollectSubmits> BEFORE_COLLECT_SUBMITS = EventFactory.createArrayBacked(BeforeCollectSubmits.class, callbacks -> context -> {
 		for (final BeforeCollectSubmits callback : callbacks) {
@@ -109,7 +109,7 @@ public final class LevelRenderEvents {
 
 	/**
 	 * Called after the solid geometry of submits collected from entities, block entities, and particles are drawn to
-	 * the framebuffer.
+	 * the appropriate framebuffers.
 	 */
 	public static final Event<AfterSolidFeatures> AFTER_SOLID_FEATURES = EventFactory.createArrayBacked(AfterSolidFeatures.class, callbacks -> context -> {
 		for (final AfterSolidFeatures callback : callbacks) {
@@ -119,7 +119,7 @@ public final class LevelRenderEvents {
 
 	/**
 	 * Called after the translucent geometry of submits collected from entities and block entities are drawn to the
-	 * framebuffer. Note that this excludes translucent particle geometry, which is rendered much later.
+	 * appropriate framebuffers. Note that this excludes translucent particle geometry, which is rendered much later.
 	 */
 	public static final Event<AfterTranslucentFeatures> AFTER_TRANSLUCENT_FEATURES = EventFactory.createArrayBacked(AfterTranslucentFeatures.class, callbacks -> context -> {
 		for (final AfterTranslucentFeatures callback : callbacks) {
@@ -129,7 +129,7 @@ public final class LevelRenderEvents {
 
 	/**
 	 * Called after block outline render checks are made
-	 * and before the default block outline is drawn to the framebuffer.
+	 * and before the default block outline is drawn to the appropriate framebuffers.
 	 * This will NOT be called if the default outline render state
 	 * was set to null in {@link #AFTER_BLOCK_OUTLINE_EXTRACTION}.
 	 *
@@ -159,7 +159,7 @@ public final class LevelRenderEvents {
 	/**
 	 * Called after all geometry of submits collected from entities, block entities, and particles (except translucent
 	 * particle geometry), the block breaking overlay, and the block outline for solid blocks are drawn to the
-	 * framebuffer, and before gizmos are collected.
+	 * appropriate framebuffers, and before gizmos are collected.
 	 */
 	public static final Event<BeforeGizmos> BEFORE_GIZMOS = EventFactory.createArrayBacked(BeforeGizmos.class, callbacks -> context -> {
 		for (final BeforeGizmos callback : callbacks) {
@@ -169,8 +169,8 @@ public final class LevelRenderEvents {
 
 	/**
 	 * Called after opaque terrain, entities, block entities, solid particles, overlays, and gizmos are drawn to the
-	 * framebuffer, before {@linkplain ChunkSectionLayerGroup#TRANSLUCENT translucent} terrain and translucent particles
-	 * are drawn to the framebuffer.
+	 * appropriate framebuffers, before {@linkplain ChunkSectionLayerGroup#TRANSLUCENT translucent} terrain and
+	 * translucent particles are drawn to the appropriate framebuffers.
 	 */
 	public static final Event<BeforeTranslucentTerrain> BEFORE_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(BeforeTranslucentTerrain.class, callbacks -> context -> {
 		for (final BeforeTranslucentTerrain callback : callbacks) {
@@ -180,8 +180,8 @@ public final class LevelRenderEvents {
 
 	/**
 	 * Called at the end of the main render pass, after terrain, entities, block entities, and particles are drawn to
-	 * the framebuffer, and before clouds, weather, and late debug are drawn to the framebuffer and before fabulous
-	 * translucent framebuffers are combined.
+	 * the appropriate framebuffers, and before clouds, weather, and late debug are drawn to the appropriate
+	 * framebuffers and before fabulous translucent framebuffers are combined.
 	 */
 	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
 		for (final EndMain callback : callbacks) {
