@@ -123,7 +123,7 @@ public abstract class LevelRendererMixin {
 	}
 
 	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=solidFeatures"))
-	private void beforeCollectSubmits(CallbackInfo ci) {
+	private void afterCollectSubmits(CallbackInfo ci) {
 		LevelRenderEvents.COLLECT_SUBMITS.invoker().collectSubmits(renderContext);
 	}
 
@@ -146,7 +146,7 @@ public abstract class LevelRendererMixin {
 	}
 
 	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;finalizeGizmoCollection()V"))
-	private void beforeRenderGizmos(CallbackInfo ci) {
+	private void beforeCollectGizmos(CallbackInfo ci) {
 		LevelRenderEvents.BEFORE_GIZMOS.invoker().beforeGizmos(renderContext);
 	}
 
