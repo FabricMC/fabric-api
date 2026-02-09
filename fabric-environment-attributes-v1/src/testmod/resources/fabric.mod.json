@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-environment-attributes-v1-testmod",
+  "name": "Fabric Environment Attributes (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-environment-attributes-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.environment.attribute.FabricEnvironmentAttributesTest"
+    ],
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.environment.attribute.client.FabricEnvironmentAttributesClientTest"
+    ]
+  }
+}
