@@ -15,5 +15,11 @@
     "client": [
       "net.fabricmc.fabric.test.renderer.client.RendererClientTest"
     ]
-  }
+  },
+  "mixins": [
+    {
+      "environment": "client",
+      "config": "fabric-renderer-api-v1-testmod.mixins.json"
+    }
+  ]
 }

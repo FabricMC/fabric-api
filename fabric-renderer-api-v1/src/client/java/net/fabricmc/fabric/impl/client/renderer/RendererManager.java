@@ -16,14 +16,25 @@
 
 package net.fabricmc.fabric.impl.client.renderer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
+import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
+import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public final class RendererManager {
+	public static List<RendererProviderNode> nodes = new ArrayList<>();
+	public static final Map<String, EntrypointContainer<RendererProvider>> entrypoints = new HashMap<>();
+	public static final Map<String, RendererProviderNode> nodeMap = new HashMap<>();
+	public static final Map<String, Collection<String>> overrides = new HashMap<>();
 	private static EntrypointContainer<RendererProvider> chosenRendererProvider;
 	private static Renderer activeRenderer;
 
@@ -46,21 +57,55 @@ public final class RendererManager {
 
 		List<EntrypointContainer<RendererProvider>> entrypoints = FabricLoader.getInstance()
 				.getEntrypointContainers("fabric-renderer-api-v1:renderer_provider", RendererProvider.class);
-		int highestPriority = Integer.MIN_VALUE;
-		EntrypointContainer<RendererProvider> rendererProvider = null;
 
+		// Collect orderings
 		for (EntrypointContainer<RendererProvider> next : entrypoints) {
-			if (next.getEntrypoint().priority() > highestPriority) {
-				rendererProvider = next;
-				highestPriority = next.getEntrypoint().priority();
-			}
+			String id = next.getProvider().getMetadata().getId();
+			RendererManager.entrypoints.put(id, next);
+			RendererProviderNode node = new RendererProviderNode(id, next.getEntrypoint());
+			nodeMap.put(id, node);
+			overrides.put(id, node.rendererProvider.getOverrides());
 		}
 
-		if (rendererProvider != null) {
+		// Sort orderings
+		for (Map.Entry<String, Collection<String>> entry : overrides.entrySet()) {
+			RendererProviderNode providerNode = nodeMap.get(entry.getKey());
+
+			for (String overrideId : entry.getValue()) {
+				RendererProviderNode overrideNode = nodeMap.get(overrideId);
+
+				if (overrideNode == null) {
+					continue;
+				}
+
+				RendererProviderNode.link(providerNode, overrideNode);
+			}
+
+			nodes = new ArrayList<>(nodeMap.values());
+			NodeSorting.sort(nodes, "RendererProvider", Comparator.comparing(RendererProviderNode::getDescription));
+		}
+
+		if (!nodes.isEmpty()) {
+			EntrypointContainer<RendererProvider> rendererProvider = RendererManager.entrypoints.get(nodes.getFirst().id);
 			chosenRendererProvider = rendererProvider;
 			return rendererProvider;
 		} else {
 			throw new NullPointerException("A renderer plug-in has not been provided before Minecraft has loaded. This is unsupported.");
+		}
+	}
+
+	public static class RendererProviderNode extends SortableNode<RendererProviderNode> {
+		public final String id;
+		public final RendererProvider rendererProvider;
+
+		public RendererProviderNode(String id, RendererProvider rendererProvider) {
+			this.id = id;
+			this.rendererProvider = rendererProvider;
+		}
+
+		@Override
+		protected String getDescription() {
+			return id;
 		}
 	}
 }

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.client.renderer",
+  "compatibilityLevel": "JAVA_25",
+  "plugin": "net.fabricmc.fabric.test.renderer.client.TestPrePrePreLaunchMixinConfigPlugin",
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

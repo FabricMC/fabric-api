@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -23,6 +28,7 @@ import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateMo
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.rendering.v1.ChunkSectionLayerMap;
+import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 import net.fabricmc.fabric.test.renderer.Registration;
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
@@ -41,7 +47,33 @@ public final class RendererClientTest implements ClientModInitializer {
 		ChunkSectionLayerMap.putBlock(Registration.FRAME_BLOCK, ChunkSectionLayer.CUTOUT);
 
 		try {
+			// if it crashes, that means the ordering is #*@!ed up.
 			Renderer.get(); // Ensure Renderer can be initialized as early as mod init
+
+			// Print the ordering
+			StringBuilder stringBuilder = new StringBuilder("Renderer ordering: ");
+
+			for (int i = 0; i < RendererManager.nodes.size(); i++) {
+				RendererManager.RendererProviderNode node = RendererManager.nodes.get(i);
+
+				if (i > 0) {
+					stringBuilder.append(", ");
+				}
+
+				stringBuilder.append(node.id);
+			}
+
+			LoggerFactory.getLogger(RendererClientTest.class).info(stringBuilder.toString());
+
+			List<String> overrides = new ArrayList<>();
+
+			for (RendererManager.RendererProviderNode node : RendererManager.nodes) {
+				overrides.add(node.id);
+			}
+
+			if (!overrides.equals(List.of("fabric-renderer-indigo", "g", "i", "j", "h"))) {
+				throw new IllegalStateException("RendererProvider overrides were not ordered correctly");
+			}
 		} catch (Exception e) {
 			throw new RuntimeException("Renderer failed to initialize", e);
 		}

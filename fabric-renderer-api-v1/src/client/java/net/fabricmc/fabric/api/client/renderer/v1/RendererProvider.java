@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
@@ -53,16 +56,18 @@ public interface RendererProvider {
 	Renderer getRenderer();
 
 	/**
-	 * The higher a renderer's priority is, the more likely it is to be loaded. So, the
-	 * {@link RendererProvider} with the highest priority is loaded.
+	 * The higher a renderer's priority is (i.e. the earlier it's listed), the more likely it is to
+	 * be loaded. So, the {@link RendererProvider} with the highest priority is loaded.
 	 *
-	 * @return this renderer's priority.
-	 * @implSpec Implementations of {@link Renderer} should use priority {@code 1000} in most cases.
-	 * However, they may choose any priority or even change priorities based on some conditions.
-	 * Implementors should avoid priorities of {@code 0} or below as that is Indigo's priority.
+	 * @return a collection of {@linkplain #getId() renderer IDs} that this provider has higher
+	 * priority over.
+	 * @implNote Providers with lower priority than this provider will not necessarily be in the order
+	 * defined relative to each other. That is, their priorities relative to each other are unspecified
+	 * by default. If two or more providers with conflicting or cycling priorities are present, the
+	 * order is unspecified.
 	 */
 	@ApiStatus.OverrideOnly
-	default int priority() {
-		return 1000;
+	default Collection<String> getOverrides() {
+		return List.of("fabric-renderer-indigo");
 	}
 }
