@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.test.tag.client.v1;
 
-import net.fabricmc.fabric.test.tag.TagTestUtils;
-
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.block.Block;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biomes;
@@ -73,7 +69,7 @@ public class ClientTagTest implements ClientModInitializer {
 				throw new AssertionError("Expected to find forest in c:is_forest, but it was not found!");
 			}
 
-			if (ClientTags.isInWithLocalFallback(TagKey.create(BuiltInRegistries.BLOCK.key(),
+			if (ClientTags.isInWithLocalFallback(TagKey.create(Registries.BLOCK,
 					Identifier.fromNamespaceAndPath("fabric", "sword_efficient")), Blocks.DIRT)) {
 				throw new AssertionError("Expected not to find dirt in fabric:sword_efficient, but it was found!");
 			}
@@ -88,7 +84,7 @@ public class ClientTagTest implements ClientModInitializer {
 		// That is, fabric:sword_efficient should NOT exist on the server (can be confirmed with F3 on a dirt block),
 		// but the this test should pass as minecraft:sword_efficient will contain dirt on the server
 		ClientTickEvents.END_LEVEL_TICK.register(client -> {
-			if (!ClientTags.isInWithLocalFallback(TagKey.create(BuiltInRegistries.BLOCK.key(),
+			if (!ClientTags.isInWithLocalFallback(TagKey.create(Registries.BLOCK,
 					Identifier.fromNamespaceAndPath("fabric", "sword_efficient")), Blocks.DIRT)) {
 				throw new AssertionError("Expected to find dirt in fabric:sword_efficient, but it was not found!");
 			}
