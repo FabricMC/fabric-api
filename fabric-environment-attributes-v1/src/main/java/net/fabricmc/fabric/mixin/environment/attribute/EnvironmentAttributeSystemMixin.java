@@ -24,8 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.world.attribute.EnvironmentAttributeSystem;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.environment.attribute.v1.AttributeLayerPosition;
-import net.fabricmc.fabric.impl.environment.attribute.EnvironmentAttributeEventsImpl;
+import net.fabricmc.fabric.impl.environment.attribute.AttributeLayerRegistryImpl;
 
 @Mixin(EnvironmentAttributeSystem.class)
 public class EnvironmentAttributeSystemMixin {
@@ -34,7 +33,7 @@ public class EnvironmentAttributeSystemMixin {
 			at = @At(value = "HEAD")
 	)
 	private static void addLayersBeforeAll(EnvironmentAttributeSystem.Builder builder, Level level, CallbackInfo ci) {
-		EnvironmentAttributeEventsImpl.insertLayers(AttributeLayerPosition.BEFORE_ALL, builder, level);
+		AttributeLayerRegistryImpl.addPreEverythingLayers(builder, level);
 	}
 
 	@Inject(
@@ -42,7 +41,7 @@ public class EnvironmentAttributeSystemMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/attribute/EnvironmentAttributeSystem;addBiomeLayer(Lnet/minecraft/world/attribute/EnvironmentAttributeSystem$Builder;Lnet/minecraft/core/HolderLookup;Lnet/minecraft/world/level/biome/BiomeManager;)V")
 	)
 	private static void addLayersAfterDimension(EnvironmentAttributeSystem.Builder builder, Level level, CallbackInfo ci) {
-		EnvironmentAttributeEventsImpl.insertLayers(AttributeLayerPosition.BETWEEN_DIMENSION_AND_BIOMES, builder, level);
+		AttributeLayerRegistryImpl.addPostDimensionLayers(builder, level);
 	}
 
 	@Inject(
@@ -50,7 +49,7 @@ public class EnvironmentAttributeSystemMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;dimensionType()Lnet/minecraft/world/level/dimension/DimensionType;")
 	)
 	private static void addLayersAfterBiomes(EnvironmentAttributeSystem.Builder builder, Level level, CallbackInfo ci) {
-		EnvironmentAttributeEventsImpl.insertLayers(AttributeLayerPosition.BETWEEN_BIOMES_AND_TIMELINES, builder, level);
+		AttributeLayerRegistryImpl.addPostBiomesLayers(builder, level);
 	}
 
 	@Inject(
@@ -58,14 +57,14 @@ public class EnvironmentAttributeSystemMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;canHaveWeather()Z")
 	)
 	private static void addLayersAfterTimelines(EnvironmentAttributeSystem.Builder builder, Level level, CallbackInfo ci) {
-		EnvironmentAttributeEventsImpl.insertLayers(AttributeLayerPosition.BETWEEN_TIMELINES_AND_WEATHER, builder, level);
+		AttributeLayerRegistryImpl.addPostTimelinesLayers(builder, level);
 	}
 
 	@Inject(
 			method = "addDefaultLayers",
 			at = @At(value = "TAIL")
 	)
-	private static void addLayersAfterAll(EnvironmentAttributeSystem.Builder builder, Level level, CallbackInfo ci) {
-		EnvironmentAttributeEventsImpl.insertLayers(AttributeLayerPosition.AFTER_ALL, builder, level);
+	private static void addLayersAfterWeather(EnvironmentAttributeSystem.Builder builder, Level level, CallbackInfo ci) {
+		AttributeLayerRegistryImpl.addPostWeatherLayers(builder, level);
 	}
 }

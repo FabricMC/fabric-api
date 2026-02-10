@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.environment.attribute.client;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.Level;
@@ -24,16 +25,19 @@ import net.minecraft.world.level.Level;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.fabricmc.fabric.api.environment.attribute.v1.AttributeLayerPosition;
-import net.fabricmc.fabric.api.environment.attribute.v1.EnvironmentAttributeEvents;
+import net.fabricmc.fabric.api.environment.attribute.v1.AttributeLayerProvider;
+import net.fabricmc.fabric.api.environment.attribute.v1.AttributeLayerRegistry;
 import net.fabricmc.fabric.test.environment.attribute.FabricEnvironmentAttributesTest;
 
 public class FabricEnvironmentAttributesClientTest implements FabricClientGameTest {
 	public static final int TEST_COLOR = 0xFFFF00FF;
 
+	private static final Identifier BEFORE_ALL = Identifier.fromNamespaceAndPath("fabric", "before_all");
+	private static final Identifier AFTER_ALL = Identifier.fromNamespaceAndPath("fabric", "after_all");
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
-		EnvironmentAttributeEvents.insertLayersEvent(AttributeLayerPosition.BEFORE_ALL).register((systemBuilder, level) -> {
+		AttributeLayerRegistry.registerLayerProvider(BEFORE_ALL, (systemBuilder, level) -> {
 			// Test color is not overridden in any way, we should see the layer
 			systemBuilder.addConstantLayer(FabricEnvironmentAttributesTest.TEST_COLOR, base -> TEST_COLOR);
 
@@ -41,9 +45,12 @@ public class FabricEnvironmentAttributesClientTest implements FabricClientGameTe
 			systemBuilder.addConstantLayer(EnvironmentAttributes.CLOUD_COLOR, base -> TEST_COLOR);
 		});
 
-		EnvironmentAttributeEvents.insertLayersEvent(AttributeLayerPosition.AFTER_ALL).register((systemBuilder, level) -> {
+		AttributeLayerRegistry.registerLayerProvider(AFTER_ALL, (systemBuilder, level) -> {
 			systemBuilder.addConstantLayer(EnvironmentAttributes.SKY_COLOR, base -> TEST_COLOR);
 		});
+
+		AttributeLayerRegistry.addLayerOrdering(BEFORE_ALL, AttributeLayerProvider.FIRST_VANILLA_PHASE);
+		AttributeLayerRegistry.addLayerOrdering(AttributeLayerProvider.LAST_VANILLA_PHASE, AFTER_ALL);
 
 		try (TestSingleplayerContext spContext = context.worldBuilder().create()) {
 			spContext.getServer().runOnServer(server -> {
