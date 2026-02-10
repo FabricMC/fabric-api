@@ -25,19 +25,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.RunningOnDifferentThreadException;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
 @Mixin(ClientCommonPacketListenerImpl.class)
-public abstract class ClientCommonPacketListenerImplMixin implements PacketListenerExtensions {
+public abstract class ClientCommonPacketListenerImplMixin implements PacketListenerExtensions, PacketContextProvider {
 	@Shadow
 	@Final
 	protected Minecraft minecraft;
+
+	@Shadow
+	@Final
+	protected Connection connection;
 
 	@Inject(method = "handleCustomPayload(Lnet/minecraft/network/protocol/common/ClientboundCustomPayloadPacket;)V", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(ClientboundCustomPayloadPacket packet, CallbackInfo ci) {
@@ -61,5 +68,10 @@ public abstract class ClientCommonPacketListenerImplMixin implements PacketListe
 			this.minecraft.packetProcessor().scheduleIfPossible((ClientCommonPacketListenerImpl) (Object) this, packet);
 			ci.cancel();
 		}
+	}
+
+	@Override
+	public PacketContext getPacketContext() {
+		return this.connection.getPacketContext();
 	}
 }

@@ -35,6 +35,6 @@ abstract class MushroomCowMushroomLayerMixin {
 	// Fix tinted quads being rendered completely black and provide the BlockState as context.
 	@Redirect(method = "submitMushroomBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
 	private void renderProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, RenderType renderType, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local(argsOnly = true) BlockState blockState) {
-		submitNodeCollector.submitBlockStateModel(poseStack, _ -> renderType, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
+		submitNodeCollector.submitBlockModel(poseStack, _ -> renderType, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
 	}
 }

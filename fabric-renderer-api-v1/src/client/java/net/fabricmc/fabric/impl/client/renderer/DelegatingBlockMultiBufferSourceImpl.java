@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.client.renderer;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -26,12 +27,23 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 
-public class DelegatingBlockMultiBufferSourceImpl implements BlockMultiBufferSource {
+public class DelegatingBlockMultiBufferSourceImpl implements BlockMultiBufferSource, Predicate<ChunkSectionLayer> {
+	public final boolean translucent;
+
 	public MultiBufferSource multiBufferSource;
 	public Function<ChunkSectionLayer, RenderType> renderTypeFunction;
+
+	public DelegatingBlockMultiBufferSourceImpl(boolean translucent) {
+		this.translucent = translucent;
+	}
 
 	@Override
 	public VertexConsumer getBuffer(ChunkSectionLayer layer) {
 		return multiBufferSource.getBuffer(renderTypeFunction.apply(layer));
+	}
+
+	@Override
+	public boolean test(ChunkSectionLayer layer) {
+		return renderTypeFunction.apply(layer).hasBlending() == translucent;
 	}
 }
