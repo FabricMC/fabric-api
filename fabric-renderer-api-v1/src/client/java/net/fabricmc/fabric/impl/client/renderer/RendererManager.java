@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.VisibleForTesting;
+
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
@@ -31,9 +33,13 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public final class RendererManager {
+	@VisibleForTesting
 	public static List<RendererProviderNode> nodes = new ArrayList<>();
+	@VisibleForTesting
 	public static final Map<String, EntrypointContainer<RendererProvider>> entrypoints = new HashMap<>();
+	@VisibleForTesting
 	public static final Map<String, RendererProviderNode> nodeMap = new HashMap<>();
+	@VisibleForTesting
 	public static final Map<String, Collection<String>> overrides = new HashMap<>();
 	private static EntrypointContainer<RendererProvider> chosenRendererProvider;
 	private static Renderer activeRenderer;
@@ -67,6 +73,19 @@ public final class RendererManager {
 			overrides.put(id, node.rendererProvider.getOverrides());
 		}
 
+		sortOverrides();
+
+		if (!nodes.isEmpty()) {
+			EntrypointContainer<RendererProvider> rendererProvider = RendererManager.entrypoints.get(nodes.getFirst().id);
+			chosenRendererProvider = rendererProvider;
+			return rendererProvider;
+		} else {
+			throw new NullPointerException("A renderer plug-in has not been provided before Minecraft has loaded. This is unsupported.");
+		}
+	}
+
+	@VisibleForTesting
+	public static void sortOverrides() {
 		// Sort orderings
 		for (Map.Entry<String, Collection<String>> entry : overrides.entrySet()) {
 			RendererProviderNode providerNode = nodeMap.get(entry.getKey());
@@ -84,16 +103,9 @@ public final class RendererManager {
 			nodes = new ArrayList<>(nodeMap.values());
 			NodeSorting.sort(nodes, "RendererProvider", Comparator.comparing(RendererProviderNode::getDescription));
 		}
-
-		if (!nodes.isEmpty()) {
-			EntrypointContainer<RendererProvider> rendererProvider = RendererManager.entrypoints.get(nodes.getFirst().id);
-			chosenRendererProvider = rendererProvider;
-			return rendererProvider;
-		} else {
-			throw new NullPointerException("A renderer plug-in has not been provided before Minecraft has loaded. This is unsupported.");
-		}
 	}
 
+	@VisibleForTesting
 	public static class RendererProviderNode extends SortableNode<RendererProviderNode> {
 		public final String id;
 		public final RendererProvider rendererProvider;
