@@ -30,13 +30,13 @@ import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.RegistryLayer;
+import net.minecraft.util.datafix.DataFixers;
+import net.minecraft.world.level.gamerules.GameRuleMap;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.PrimaryLevelData;
+import net.minecraft.world.level.storage.SavedDataStorage;
 
 import net.fabricmc.fabric.impl.client.gametest.util.ClientGameTestImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
@@ -44,26 +44,23 @@ import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
 @Mixin(CreateWorldScreen.class)
 public class CreateWorldScreenMixin {
 	@Inject(method = "onCreate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/WorldOpenFlows;confirmWorldCreation(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;Lcom/mojang/serialization/Lifecycle;Ljava/lang/Runnable;Z)V"), cancellable = true)
-	private void createLevelDataForServers(CallbackInfo ci, @Local(name = "finalLayers") LayeredRegistryAccess<RegistryLayer> finalLayers, @Local(name = "worldData") PrimaryLevelData worldData, @Local(name = "worldGenSettings") WorldGenSettings worldGenSettings) {
+	private void createLevelDataForServers(CallbackInfo ci, @Local(name = "finalLayers") LayeredRegistryAccess<RegistryLayer> finalLayers, @Local(name = "worldData") PrimaryLevelData worldData, @Local(name = "worldGenSettings") WorldGenSettings worldGenSettings, @Local(name = "gameRules") GameRules gameRules) {
 		if (DedicatedServerImplUtil.saveLevelDataTo != null) {
-			CompoundTag levelDatInner = worldData.createTag(null);
-			CompoundTag levelDat = new CompoundTag();
-			levelDat.put("Data", levelDatInner);
-
 			try {
-				Files.createDirectories(DedicatedServerImplUtil.saveLevelDataTo);
-				NbtIo.writeCompressed(levelDat, DedicatedServerImplUtil.saveLevelDataTo.resolve("level.dat"));
+				Path worldPath = DedicatedServerImplUtil.saveLevelDataTo;
 
-				// Save WorldGenSettings as SavedData (world_gen_settings.dat)
-				Path dataDir = DedicatedServerImplUtil.saveLevelDataTo.resolve("data").resolve("minecraft");
-				Files.createDirectories(dataDir);
+				CompoundTag levelDatInner = worldData.createTag(null);
+				var levelDat = new CompoundTag();
+				levelDat.put("Data", levelDatInner);
 
-				RegistryOps<Tag> ops = finalLayers.compositeAccess().createSerializationContext(NbtOps.INSTANCE);
-				CompoundTag worldGenTag = new CompoundTag();
-				worldGenTag.put("data", WorldGenSettings.CODEC.encodeStart(ops, worldGenSettings).getOrThrow());
-				NbtUtils.addCurrentDataVersion(worldGenTag);
+				Files.createDirectories(worldPath);
+				NbtIo.writeCompressed(levelDat, worldPath.resolve("level.dat"));
 
-				NbtIo.writeCompressed(worldGenTag, dataDir.resolve("world_gen_settings.dat"));
+				try (var savedDataStorage = new SavedDataStorage(worldPath.resolve("data"), DataFixers.getDataFixer(), finalLayers.compositeAccess())) {
+					savedDataStorage.set(WorldGenSettings.TYPE, worldGenSettings);
+					savedDataStorage.set(GameRuleMap.TYPE, ((GameRulesAccessor) gameRules).getRules());
+					savedDataStorage.saveAndJoin();
+				}
 			} catch (IOException e) {
 				ClientGameTestImpl.LOGGER.error("Failed to save dedicated server level data", e);
 			}

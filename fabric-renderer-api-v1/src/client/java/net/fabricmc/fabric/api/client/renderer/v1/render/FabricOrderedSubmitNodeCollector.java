@@ -61,7 +61,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b> <b>Must not be mutated after calling this method.</b>
 	 *
-	 * @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
+	 * @see FabricBlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	default void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
 		((OrderedSubmitNodeCollector) this).submitBlock(poseStack, state, light, overlay, outlineColor);
@@ -95,9 +95,9 @@ public interface FabricOrderedSubmitNodeCollector {
 	 *            </b> <b>Must not be mutated after calling this method.</b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
-	 * @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricModelBlockRenderer#renderModel(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	default void submitBlockStateModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	default void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, renderTypeFunction.apply(ItemBlockRenderTypes.getChunkRenderType(state)), model, r, g, b, light, overlay, outlineColor);
 	}
 }

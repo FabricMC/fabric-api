@@ -28,13 +28,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
+import net.minecraft.network.protocol.login.ClientboundLoginFinishedPacket;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
+import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
 import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequestPayload;
 
 @Mixin(ClientHandshakePacketListenerImpl.class)
-abstract class ClientHandshakePacketListenerImplMixin implements PacketListenerExtensions {
+abstract class ClientHandshakePacketListenerImplMixin implements PacketListenerExtensions, PacketContextProvider {
 	@Shadow
 	@Final
 	private Minecraft minecraft;
@@ -64,8 +68,18 @@ abstract class ClientHandshakePacketListenerImplMixin implements PacketListenerE
 		}
 	}
 
+	@Inject(method = "handleLoginFinished", at = @At("HEAD"))
+	private void setGameProfileContext(ClientboundLoginFinishedPacket packet, CallbackInfo ci) {
+		this.connection.getPacketContext().set(PacketContextImpl.GAME_PROFILE, packet.gameProfile());
+	}
+
 	@Override
 	public ClientLoginNetworkAddon getAddon() {
 		return this.addon;
+	}
+
+	@Override
+	public PacketContext getPacketContext() {
+		return this.connection.getPacketContext();
 	}
 }
