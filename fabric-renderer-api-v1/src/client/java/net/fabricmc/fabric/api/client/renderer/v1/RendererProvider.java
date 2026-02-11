@@ -59,14 +59,15 @@ public interface RendererProvider {
 	Renderer getRenderer();
 
 	/**
-	 * The higher a renderer's priority is (i.e. the earlier it's listed), the more likely it is to
-	 * be loaded. So, the {@link RendererProvider} with the highest priority is loaded.
+	 * When a {@link RendererProvider} declares another mod implementation {@link RendererProvider}
+	 * overridden, this {@link RendererProvider} is loaded instead.
+	 *
+	 * <p>By default, this method returns a list with {@code fabric-renderer-indigo}, and in general,
+	 * renderers should always override {@code fabric-renderer-indigo}.
 	 *
 	 * @return a collection of {@linkplain #getModId() mod IDs} that this provider has higher
 	 * priority over.
-	 * @apiNote Providers with lower priority than this provider will not necessarily be in the order
-	 * defined relative to each other. That is, their priorities relative to each other are unspecified
-	 * by default. If two or more providers with conflicting or cycling priorities are present, the
+	 * @apiNote When providers have two or more conflicting or cycling overrides present, their load
 	 * order is unspecified.
 	 */
 	@ApiStatus.OverrideOnly
