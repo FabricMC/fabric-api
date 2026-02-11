@@ -39,9 +39,11 @@ public interface RendererProvider {
 	 * Gets the mod ID of the current, chosen {@link RendererProvider} or finds one if it has not
 	 * yet been chosen.
 	 *
+	 * <p>This method may be called at any time unlike {@link Renderer#get()}.
+	 *
 	 * @return the mod ID of the current {@link RendererProvider}.
 	 */
-	static String getId() {
+	static String getModId() {
 		return RendererManager.getOrLoadRendererProvider().getProvider().getMetadata().getId();
 	}
 
@@ -59,7 +61,7 @@ public interface RendererProvider {
 	 * The higher a renderer's priority is (i.e. the earlier it's listed), the more likely it is to
 	 * be loaded. So, the {@link RendererProvider} with the highest priority is loaded.
 	 *
-	 * @return a collection of {@linkplain #getId() renderer IDs} that this provider has higher
+	 * @return a collection of {@linkplain #getModId() renderer IDs} that this provider has higher
 	 * priority over.
 	 * @implNote Providers with lower priority than this provider will not necessarily be in the order
 	 * defined relative to each other. That is, their priorities relative to each other are unspecified
