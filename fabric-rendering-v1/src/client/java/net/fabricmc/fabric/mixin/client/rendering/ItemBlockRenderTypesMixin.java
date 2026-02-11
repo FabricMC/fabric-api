@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.impl.client.rendering.ChunkSectionLayerMapImpl;
@@ -36,13 +35,10 @@ import net.fabricmc.fabric.impl.client.rendering.ChunkSectionLayerMapImpl;
 abstract class ItemBlockRenderTypesMixin {
 	@Shadow
 	@Final
-	private static Map<Block, ChunkSectionLayer> TYPE_BY_BLOCK;
-	@Shadow
-	@Final
 	private static Map<Fluid, ChunkSectionLayer> LAYER_BY_FLUID;
 
 	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onInitialize(CallbackInfo ci) {
-		ChunkSectionLayerMapImpl.setup(TYPE_BY_BLOCK::put, LAYER_BY_FLUID::put);
+		ChunkSectionLayerMapImpl.setup(LAYER_BY_FLUID::put);
 	}
 }
