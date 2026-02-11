@@ -36,11 +36,11 @@ public final class RendererManager {
 	@VisibleForTesting
 	public static List<RendererProviderNode> nodes = new ArrayList<>();
 	@VisibleForTesting
-	public static final Map<String, EntrypointContainer<RendererProvider>> entrypoints = new HashMap<>();
+	public static final Map<String, EntrypointContainer<RendererProvider>> ENTRYPOINTS = new HashMap<>();
 	@VisibleForTesting
-	public static final Map<String, RendererProviderNode> nodeMap = new HashMap<>();
+	public static final Map<String, RendererProviderNode> NODE_MAP = new HashMap<>();
 	@VisibleForTesting
-	public static final Map<String, Collection<String>> overrides = new HashMap<>();
+	public static final Map<String, Collection<String>> OVERRIDES = new HashMap<>();
 	private static EntrypointContainer<RendererProvider> chosenRendererProvider;
 	private static Renderer activeRenderer;
 
@@ -67,16 +67,16 @@ public final class RendererManager {
 		// Collect orderings
 		for (EntrypointContainer<RendererProvider> next : entrypoints) {
 			String id = next.getProvider().getMetadata().getId();
-			RendererManager.entrypoints.put(id, next);
+			RendererManager.ENTRYPOINTS.put(id, next);
 			RendererProviderNode node = new RendererProviderNode(id, next.getEntrypoint());
-			nodeMap.put(id, node);
-			overrides.put(id, node.rendererProvider.getOverrides());
+			NODE_MAP.put(id, node);
+			OVERRIDES.put(id, node.rendererProvider.getOverrides());
 		}
 
 		sortOverrides();
 
 		if (!nodes.isEmpty()) {
-			EntrypointContainer<RendererProvider> rendererProvider = RendererManager.entrypoints.get(nodes.getFirst().id);
+			EntrypointContainer<RendererProvider> rendererProvider = RendererManager.ENTRYPOINTS.get(nodes.getFirst().id);
 			chosenRendererProvider = rendererProvider;
 			return rendererProvider;
 		} else {
@@ -87,11 +87,11 @@ public final class RendererManager {
 	@VisibleForTesting
 	public static void sortOverrides() {
 		// Sort orderings
-		for (Map.Entry<String, Collection<String>> entry : overrides.entrySet()) {
-			RendererProviderNode providerNode = nodeMap.get(entry.getKey());
+		for (Map.Entry<String, Collection<String>> entry : OVERRIDES.entrySet()) {
+			RendererProviderNode providerNode = NODE_MAP.get(entry.getKey());
 
 			for (String overrideId : entry.getValue()) {
-				RendererProviderNode overrideNode = nodeMap.get(overrideId);
+				RendererProviderNode overrideNode = NODE_MAP.get(overrideId);
 
 				if (overrideNode == null) {
 					continue;
@@ -100,7 +100,7 @@ public final class RendererManager {
 				RendererProviderNode.link(providerNode, overrideNode);
 			}
 
-			nodes = new ArrayList<>(nodeMap.values());
+			nodes = new ArrayList<>(NODE_MAP.values());
 			NodeSorting.sort(nodes, "RendererProvider", Comparator.comparing(RendererProviderNode::getDescription));
 		}
 	}

@@ -32,16 +32,16 @@ public final class RendererProviderOverrideTest {
 		RendererManager.RendererProviderNode j = new RendererManager.RendererProviderNode("j", null);
 		RendererManager.RendererProviderNode i0 = new RendererManager.RendererProviderNode("i", null);
 		RendererManager.RendererProviderNode indigo = new RendererManager.RendererProviderNode("fabric-renderer-indigo", null);
-		RendererManager.nodeMap.put("g", g);
-		RendererManager.nodeMap.put("h", h);
-		RendererManager.nodeMap.put("j", j);
-		RendererManager.nodeMap.put("i", i0);
-		RendererManager.nodeMap.put("fabric-renderer-indigo", indigo);
-		RendererManager.overrides.put("g", List.of("j"));
-		RendererManager.overrides.put("h", List.of());
-		RendererManager.overrides.put("j", List.of("h"));
-		RendererManager.overrides.put("i", List.of());
-		RendererManager.overrides.put("fabric-renderer-indigo", List.of());
+		RendererManager.NODE_MAP.put("g", g);
+		RendererManager.NODE_MAP.put("h", h);
+		RendererManager.NODE_MAP.put("j", j);
+		RendererManager.NODE_MAP.put("i", i0);
+		RendererManager.NODE_MAP.put("fabric-renderer-indigo", indigo);
+		RendererManager.OVERRIDES.put("g", List.of("j"));
+		RendererManager.OVERRIDES.put("h", List.of());
+		RendererManager.OVERRIDES.put("j", List.of("h"));
+		RendererManager.OVERRIDES.put("i", List.of());
+		RendererManager.OVERRIDES.put("fabric-renderer-indigo", List.of());
 		RendererManager.sortOverrides();
 
 		// Print the ordering
