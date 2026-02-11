@@ -61,7 +61,7 @@ public interface RendererProvider {
 	 * The higher a renderer's priority is (i.e. the earlier it's listed), the more likely it is to
 	 * be loaded. So, the {@link RendererProvider} with the highest priority is loaded.
 	 *
-	 * @return a collection of {@linkplain #getModId() renderer IDs} that this provider has higher
+	 * @return a collection of {@linkplain #getModId() mod IDs} that this provider has higher
 	 * priority over.
 	 * @implNote Providers with lower priority than this provider will not necessarily be in the order
 	 * defined relative to each other. That is, their priorities relative to each other are unspecified
