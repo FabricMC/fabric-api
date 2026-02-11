@@ -237,7 +237,7 @@ transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerato
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createPassiveRail	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createActiveRail	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createAirLikeBlock	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/item/Item;)V
-transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createAirLikeBlock	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;)V
+transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createAirLikeBlock	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/renderer/block/model/Material;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createParticleOnlyBlockModel	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/client/data/models/MultiVariant;
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createParticleOnlyBlock	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createFullAndCarpetBlocks	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
@@ -377,9 +377,9 @@ transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerator
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateStandardCompassItem	(Lnet/minecraft/world/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateRecoveryCompassItem	(Lnet/minecraft/world/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateClockItem	(Lnet/minecraft/world/item/Item;)V
-transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateLayeredItem	(Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;
-transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateLayeredItem	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;
-transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateLayeredItem	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)V
+transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateLayeredItem	(Lnet/minecraft/world/item/Item;Lnet/minecraft/client/renderer/block/model/Material;Lnet/minecraft/client/renderer/block/model/Material;)Lnet/minecraft/resources/Identifier;
+transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateLayeredItem	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/renderer/block/model/Material;Lnet/minecraft/client/renderer/block/model/Material;)Lnet/minecraft/resources/Identifier;
+transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateLayeredItem	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/renderer/block/model/Material;Lnet/minecraft/client/renderer/block/model/Material;Lnet/minecraft/client/renderer/block/model/Material;)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateTrimmableItem	(Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/Identifier;Z)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateBundleModels	(Lnet/minecraft/world/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateBundleCoverModel	(Lnet/minecraft/world/item/Item;Lnet/minecraft/client/data/models/model/ModelTemplate;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;

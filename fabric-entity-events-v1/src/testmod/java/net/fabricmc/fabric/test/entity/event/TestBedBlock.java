@@ -50,7 +50,7 @@ public class TestBedBlock extends Block {
 	@Override
 	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (state.getValue(OCCUPIED)) {
-			player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"), true);
+			player.sendOverlayMessage(Component.translatable("block.minecraft.bed.occupied"));
 			return InteractionResult.CONSUME;
 		}
 
@@ -62,7 +62,7 @@ public class TestBedBlock extends Block {
 					Component message = sleepFailureReason.message();
 
 					if (message != null) {
-						player.displayClientMessage(message, true);
+						player.sendOverlayMessage(message);
 					}
 				});
 			}
