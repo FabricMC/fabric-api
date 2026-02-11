@@ -50,9 +50,10 @@ public interface RendererProvider {
 	/**
 	 * Get or instantiate an implementation of {@link Renderer}.
 	 *
-	 * @return an instance of the {@link Renderer} to be registered.
-	 * @implSpec This method should instantiate an implementation of {@link Renderer} the first time
+	 * <p>This method should instantiate an implementation of {@link Renderer} the first time
 	 * it is invoked and return that instance for any subsequent calls.
+	 *
+	 * @return an instance of the {@link Renderer} to be registered.
 	 */
 	@ApiStatus.OverrideOnly
 	Renderer getRenderer();
@@ -63,7 +64,7 @@ public interface RendererProvider {
 	 *
 	 * @return a collection of {@linkplain #getModId() mod IDs} that this provider has higher
 	 * priority over.
-	 * @implNote Providers with lower priority than this provider will not necessarily be in the order
+	 * @apiNote Providers with lower priority than this provider will not necessarily be in the order
 	 * defined relative to each other. That is, their priorities relative to each other are unspecified
 	 * by default. If two or more providers with conflicting or cycling priorities are present, the
 	 * order is unspecified.
