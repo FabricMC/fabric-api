@@ -36,6 +36,7 @@ public final class ConventionalEntityTypeTags {
 
 	public static final TagKey<EntityType<?>> MINECARTS = register("minecarts");
 	public static final TagKey<EntityType<?>> BOATS = register("boats");
+	public static final TagKey<EntityType<?>> ITEM_FRAMES = register("item_frames");
 
 	/**
 	 * Entities should be included in this tag if they are not allowed to be picked up by items or grabbed in a way

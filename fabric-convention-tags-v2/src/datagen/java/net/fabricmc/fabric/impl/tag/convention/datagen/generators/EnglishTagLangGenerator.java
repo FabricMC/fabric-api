@@ -436,6 +436,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalEntityTypeTags.BOSSES, "Bosses");
 		translationBuilder.add(ConventionalEntityTypeTags.MINECARTS, "Minecarts");
 		translationBuilder.add(ConventionalEntityTypeTags.BOATS, "Boats");
+		translationBuilder.add(ConventionalEntityTypeTags.ITEM_FRAMES, "Item Frames");
 		translationBuilder.add(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED, "Capturing Not Supported");
 		translationBuilder.add(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED, "Teleporting Not Supported");
 
