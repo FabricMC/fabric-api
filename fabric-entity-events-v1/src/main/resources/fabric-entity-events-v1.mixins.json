@@ -1,27 +1,28 @@
 {
-  "required": true,
-  "package": "net.fabricmc.fabric.mixin.entity.event",
-  "compatibilityLevel": "JAVA_25",
-  "mixinextras": {
-    "minVersion": "0.5.0"
-  },
-  "mixins": [
-    "EntityMixin",
-    "LivingEntityMixin",
-    "MobMixin",
-    "PlayerListMixin",
-    "PlayerMixin",
-    "ServerPlayerMixin",
-    "effect.BuildContextsAccessor",
-    "effect.CommandQueueEntryMixin",
-    "effect.ContextChainAccessor",
-    "effect.ContextChainMixin",
-    "effect.LivingEntityMixin",
-    "effect.MobEffectMixin",
-    "elytra.LivingEntityMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1,
-    "maxShiftBy": 3
+    "required": true,
+    "package": "net.fabricmc.fabric.mixin.entity.event",
+    "compatibilityLevel": "JAVA_25",
+    "mixinextras": {
+        "minVersion": "0.5.0"
+    },
+    "mixins": [
+        "EntityMixin",
+        "LivingEntityMixin",
+        "MobMixin",
+        "PlayerListMixin",
+        "PlayerMixin",
+        "ServerLevelMixin",
+        "ServerPlayerMixin",
+        "effect.BuildContextsAccessor",
+        "effect.CommandQueueEntryMixin",
+        "effect.ContextChainAccessor",
+        "effect.ContextChainMixin",
+        "effect.LivingEntityMixin",
+        "effect.MobEffectMixin",
+        "elytra.LivingEntityMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1,
+        "maxShiftBy": 3
   }
 }

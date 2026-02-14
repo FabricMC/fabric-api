@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.LivingEntity;
@@ -106,6 +107,15 @@ public final class ServerLivingEntityEvents {
 		}
 	});
 
+	/**
+	 * An event that is called right after a living entity added to level.
+	 */
+	public static final Event<AfterAdd> AFTER_ADD = EventFactory.createArrayBacked(AfterAdd.class, callbacks -> (entity, level) -> {
+		for (AfterAdd callback : callbacks) {
+			callback.afterAdd(entity, level);
+		}
+	});
+
 	@FunctionalInterface
 	public interface AllowDamage {
 		/**
@@ -170,6 +180,17 @@ public final class ServerLivingEntityEvents {
 		 * @param conversionContext the context used for the conversion
 		 */
 		void onConversion(Mob previous, Mob converted, ConversionParams conversionContext);
+	}
+
+	@FunctionalInterface
+	public interface AfterAdd {
+		/**
+		 * Called right after a living entity added to level.
+		 *
+		 * @param entity the entity
+		 * @param level the level where entity was added
+		 */
+		void afterAdd(LivingEntity entity, ServerLevel level);
 	}
 
 	private ServerLivingEntityEvents() {
