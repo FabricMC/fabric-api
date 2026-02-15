@@ -23,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.block.model.multipart.MultiPartModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -122,7 +123,7 @@ public interface FabricBlockStateModel {
 	}
 
 	/**
-	 * Extension of {@link BlockStateModel#particleIcon()} that accepts level state. This method will be invoked most
+	 * Extension of {@link BlockStateModel#particleMaterial()} that accepts level state. This method will be invoked most
 	 * of the time, but the vanilla method may still be invoked when no level context is available.
 	 *
 	 * <p><b>If your model delegates to other {@link BlockStateModel}s, ensure that it also delegates invocations of
@@ -130,11 +131,11 @@ public interface FabricBlockStateModel {
 	 *
 	 * @param level The level in which the block exists.
 	 * @param pos The position of the block in the level.
-	 * @param state The block state whose model was queried for the particle sprite. <b>This is not guaranteed to be the
+	 * @param state The block state whose model was queried for the particle material. <b>This is not guaranteed to be the
 	 *              state corresponding to {@code this} model!</b>
-	 * @return the particle sprite
+	 * @return the particle material
 	 */
-	default TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		return ((BlockStateModel) this).particleIcon();
+	default Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return ((BlockStateModel) this).particleMaterial();
 	}
 }

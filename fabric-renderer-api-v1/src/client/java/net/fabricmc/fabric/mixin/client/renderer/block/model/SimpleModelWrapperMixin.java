@@ -65,7 +65,7 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 						forbiddenSpritesRef.set(forbiddenSprites);
 					}
 
-					TextureAtlasSprite sprite = modelBakery.sprites().spriteFinder(quad.atlas()).find(quad);
+					TextureAtlasSprite sprite = modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
 					forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
 				}
 			});

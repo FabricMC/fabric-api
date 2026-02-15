@@ -55,7 +55,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private int light;
 	private int[] tints;
 
-	private RenderType defaultRenderType;
+	private RenderType defaultRenderType; // FIXME: delete this, use QuadView#itemRenderType
 	@Nullable
 	private ItemRenderTypeGetter renderTypeGetter;
 	private ItemStackRenderState.FoilType defaultFoilType;
@@ -75,7 +75,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 			int[] tints,
 			List<BakedQuad> vanillaQuads,
 			MeshView mesh,
-			RenderType renderType,
 			@Nullable ItemRenderTypeGetter renderTypeGetter,
 			ItemStackRenderState.FoilType foilType,
 			boolean ignoreQuadFoilType,
@@ -88,7 +87,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		this.overlay = overlay;
 		this.tints = tints;
 
-		defaultRenderType = renderType;
+		defaultRenderType = Sheets.translucentItemSheet();
 		this.renderTypeGetter = renderTypeGetter;
 		defaultFoilType = foilType;
 		this.ignoreQuadFoilType = ignoreQuadFoilType;

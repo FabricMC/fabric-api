@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,15 +38,15 @@ abstract class ScreenEffectRendererMixin {
 	@Nullable
 	private static BlockPos pos;
 
-	@Redirect(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getParticleIcon(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
-	private static TextureAtlasSprite getParticleIconProxy(BlockModelShaper models, BlockState state, @Local(name = "player") Player player) {
+	@Redirect(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getParticleMaterial(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/block/model/Material$Baked;"))
+	private static Material.Baked getParticleMaterialProxy(BlockModelShaper models, BlockState state, @Local(name = "player") Player player) {
 		if (pos != null) {
-			TextureAtlasSprite sprite = models.getParticleIcon(state, player.level(), pos);
+			Material.Baked material = models.getParticleMaterial(state, player.level(), pos);
 			pos = null;
-			return sprite;
+			return material;
 		}
 
-		return models.getParticleIcon(state);
+		return models.getParticleMaterial(state);
 	}
 
 	@Inject(method = "getViewBlockingState", at = @At("RETURN"))

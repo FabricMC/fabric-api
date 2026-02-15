@@ -26,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -129,20 +130,25 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon() {
-		return frameModel.particleIcon();
+	public Material.Baked particleMaterial() {
+		return frameModel.particleMaterial();
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public boolean hasTranslucency() {
+		return false;
+	}
+
+	@Override
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
 		if (!(((FabricBlockGetter) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
-			return frameModel.particleIcon(level, pos, state); // No inner block to render, or data of wrong type
+			return frameModel.particleMaterial(level, pos, state); // No inner block to render, or data of wrong type
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
 		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
-		return innerModel.particleIcon(level, pos, state);
+		return innerModel.particleMaterial(level, pos, state);
 	}
 
 	public record Unbaked(BlockStateModel.Unbaked frameModel) implements CustomUnbakedBlockStateModel {

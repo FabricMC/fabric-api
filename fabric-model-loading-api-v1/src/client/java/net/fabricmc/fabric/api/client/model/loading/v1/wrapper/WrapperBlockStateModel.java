@@ -23,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,8 +58,8 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon() {
-		return wrapped.particleIcon();
+	public Material.Baked particleMaterial() {
+		return wrapped.particleMaterial();
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		return wrapped.particleIcon(level, pos, state);
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return wrapped.particleMaterial(level, pos, state);
 	}
 }

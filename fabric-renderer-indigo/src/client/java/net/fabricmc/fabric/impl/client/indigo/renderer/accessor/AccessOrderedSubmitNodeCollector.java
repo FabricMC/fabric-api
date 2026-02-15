@@ -38,7 +38,6 @@ public interface AccessOrderedSubmitNodeCollector {
 			int outlineColors,
 			int[] tintLayers,
 			List<BakedQuad> quads,
-			RenderType renderType,
 			ItemStackRenderState.FoilType foilType,
 			MeshView mesh,
 			@Nullable ItemRenderTypeGetter renderTypeGetter

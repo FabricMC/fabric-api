@@ -37,7 +37,6 @@ public record MeshItemSubmit(
 		int outlineColor,
 		int[] tintLayers,
 		List<BakedQuad> quads,
-		RenderType renderType,
 		ItemStackRenderState.FoilType foilType,
 		MeshView mesh,
 		@Nullable ItemRenderTypeGetter renderTypeGetter

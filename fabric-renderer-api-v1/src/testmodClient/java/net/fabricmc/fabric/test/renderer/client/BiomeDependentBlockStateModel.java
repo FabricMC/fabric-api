@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.BlockPos;
@@ -77,16 +78,16 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon() {
-		return regularModel.particleIcon();
+	public Material.Baked particleMaterial() {
+		return regularModel.particleMaterial();
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		if (((FabricBlockGetter) level).hasBiomes() && ((FabricBlockGetter) level).getBiomeFabric(pos).is(biomeTag)) {
-			return biomeModel.particleIcon(level, pos, state);
+			return biomeModel.particleMaterial(level, pos, state);
 		} else {
-			return regularModel.particleIcon(level, pos, state);
+			return regularModel.particleMaterial(level, pos, state);
 		}
 	}
 

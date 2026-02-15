@@ -44,7 +44,6 @@ abstract class SubmitNodeStorageMixin implements SubmitNodeCollector, AccessOrde
 			int outlineColors,
 			int[] tintLayers,
 			List<BakedQuad> quads,
-			RenderType renderType,
 			ItemStackRenderState.FoilType foilType,
 			MeshView mesh,
 			ItemRenderTypeGetter renderTypeGetter
@@ -53,11 +52,9 @@ abstract class SubmitNodeStorageMixin implements SubmitNodeCollector, AccessOrde
 
 		if (nodeCollector instanceof AccessOrderedSubmitNodeCollector access) {
 			access.fabric_submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
-					renderType,
 					foilType, mesh, renderTypeGetter);
 		} else {
 			nodeCollector.submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
-					renderType,
 					foilType
 			);
 		}
