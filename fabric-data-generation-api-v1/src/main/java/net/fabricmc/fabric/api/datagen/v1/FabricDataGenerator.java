@@ -16,9 +16,16 @@
 
 package net.fabricmc.fabric.api.datagen.v1;
 
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -128,6 +135,17 @@ public final class FabricDataGenerator extends DataGenerator.Uncached {
 	@Deprecated
 	public DataGenerator.PackGenerator getBuiltinDatapack(boolean shouldRun, String packName) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void run() throws IOException {
+		Path output = vanillaPackOutput.getOutputFolder();
+
+		if (Files.exists(output)) {
+			FabricDataGenHelper.deleteDirectory(output);
+		}
+
+		super.run();
 	}
 
 	/**
