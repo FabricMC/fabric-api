@@ -91,12 +91,4 @@ public class IndigoRenderer implements Renderer {
 	public QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer) {
 		return ((AccessLayerRenderState) layer).fabric_getMutableMesh().emitter();
 	}
-
-	@Override
-	public void setLayerRenderTypeGetter(
-			ItemStackRenderState.LayerRenderState layer,
-			ItemRenderTypeGetter renderTypeGetter
-	) {
-		((AccessLayerRenderState) layer).fabric_setRenderTypeGetter(renderTypeGetter);
-	}
 }

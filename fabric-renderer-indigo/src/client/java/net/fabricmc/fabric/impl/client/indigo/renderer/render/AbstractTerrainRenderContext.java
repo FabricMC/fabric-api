@@ -70,7 +70,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			return;
 		}
 
-		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveChunkLayer(quad.chunkLayer()));
+		final VertexConsumer vertexConsumer = getVertexConsumer(quad.chunkLayerOrDefault());
 
 		if (vertexConsumer == null) {
 			return;

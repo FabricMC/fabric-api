@@ -16,19 +16,25 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import java.util.Objects;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -161,6 +167,44 @@ public interface QuadView {
 	ChunkSectionLayer chunkLayer();
 
 	/**
+	 * @return this quad's {@link ChunkSectionLayer} or a default determined by the sprite's
+	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
+	 * @see #chunkLayer()
+	 */
+	default ChunkSectionLayer chunkLayerOrDefault() {
+		if (this.chunkLayer() == null) {
+			SpriteFinder spriteFinder = Minecraft.getInstance()
+					.getAtlasManager()
+					.spriteFinder(this.atlas());
+			return ModelHelper.getSpriteInfo(spriteFinder.find(this)).layer();
+		}
+
+		return this.chunkLayer();
+	}
+
+	/**
+	 * @see MutableQuadView#itemRenderType(RenderType)
+	 */
+	@Nullable
+	RenderType itemRenderType();
+
+	/**
+	 * @return this quad's {@linkplain RenderType item RenderType} or a default determined by the sprite's
+	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
+	 * @see #itemRenderType()
+	 */
+	default RenderType itemRenderTypeOrDefault() {
+		if (this.itemRenderType() == null) {
+			SpriteFinder spriteFinder = Minecraft.getInstance()
+					.getAtlasManager()
+					.spriteFinder(this.atlas());
+			return ModelHelper.getSpriteInfo(spriteFinder.find(this)).itemRenderType();
+		}
+
+		return this.itemRenderType();
+	}
+
+	/**
 	 * @see MutableQuadView#emissive(boolean)
 	 */
 	boolean emissive();
@@ -210,7 +254,7 @@ public interface QuadView {
 	 * @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
 	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
-	default BakedQuad toBakedQuad(BakedQuad.SpriteInfo sprite) {
+	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
 		Vector3f position0 = copyPos(0, null);
 		Vector3f position1 = copyPos(1, null);
 		Vector3f position2 = copyPos(2, null);
@@ -239,6 +283,22 @@ public interface QuadView {
 			}
 		}
 
+		BakedQuad.SpriteInfo spriteInfo = ModelHelper.getSpriteInfo(sprite);
+
+		if (this.chunkLayer() != null && this.itemRenderType() == null) {
+			spriteInfo = new BakedQuad.SpriteInfo(
+					sprite,
+					Objects.requireNonNull(this.chunkLayer()),
+					spriteInfo.itemRenderType()
+			); // We must create another object.
+		} else if (this.itemRenderType() != null && this.chunkLayer() == null) {
+			spriteInfo = new BakedQuad.SpriteInfo(
+					sprite,
+					spriteInfo.layer(),
+					Objects.requireNonNull(this.itemRenderType())
+			);
+		}
+
 		return new BakedQuad(
 				position0,
 				position1,
@@ -250,7 +310,7 @@ public interface QuadView {
 				packedUV3,
 				tintIndex(),
 				lightFace(),
-				sprite,
+				spriteInfo,
 				diffuseShade(),
 				lightEmission
 		);

@@ -39,10 +39,10 @@ abstract class SubmitNodeStorageMixin implements SubmitNodeCollector {
 	}
 
 	@Override
-	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int tint, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		order(0).submitBlockModel(
 				poseStack,
-				renderTypeFunction, model, r, g, b, light, overlay, outlineColor,
+				renderTypeFunction, model, tint, light, overlay, outlineColor,
 				level, pos, state);
 	}
 }

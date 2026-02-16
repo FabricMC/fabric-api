@@ -19,11 +19,13 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
@@ -55,6 +57,7 @@ public final class EncodingFormat {
 	static final int VERTEX_V;
 	static final int VERTEX_LIGHTMAP;
 	static final int VERTEX_NORMAL;
+	private static final int INDIGO_VERTICES_AND_PADDING = VertexFormatElement.NORMAL.byteSize() + 1;
 	public static final int VERTEX_STRIDE;
 
 	public static final int QUAD_STRIDE;
@@ -71,7 +74,7 @@ public final class EncodingFormat {
 		VERTEX_V = VERTEX_U + 1;
 		VERTEX_LIGHTMAP = HEADER_STRIDE + 6;
 		VERTEX_NORMAL = HEADER_STRIDE + 7;
-		VERTEX_STRIDE = format.getVertexSize() / 4;
+		VERTEX_STRIDE = (format.getVertexSize() + INDIGO_VERTICES_AND_PADDING) / 4;
 		QUAD_STRIDE = VERTEX_STRIDE * 4;
 		QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
 		TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;
@@ -90,6 +93,8 @@ public final class EncodingFormat {
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
 	private static final QuadAtlas[] QUAD_ATLASES = QuadAtlas.values();
 	private static final int QUAD_ATLAS_COUNT = QUAD_ATLASES.length;
+	private static final @Nullable ItemRenderType[] ITEM_RENDER_TYPES = ArrayUtils.add(ItemRenderType.values(), null);
+	private static final int ITEM_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
 
 	private static final int NULL_CHUNK_LAYER_INDEX = NULLABLE_CHUNK_SECTION_LAYER_COUNT - 1;
 	private static final int NULL_FOIL_TYPE_INDEX = NULLABLE_FOIL_TYPE_COUNT - 1;
@@ -107,6 +112,7 @@ public final class EncodingFormat {
 			NULLABLE_FOIL_TYPE_COUNT);
 	private static final int SHADE_MODE_BIT_LENGTH = Mth.ceillog2(SHADE_MODE_COUNT);
 	private static final int QUAD_ATLAS_BIT_LENGTH = Mth.ceillog2(QUAD_ATLAS_COUNT);
+	private static final int ITEM_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(ITEM_RENDER_TYPE_COUNT);
 
 	private static final int CULL_BIT_OFFSET = 0;
 	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
@@ -119,7 +125,8 @@ public final class EncodingFormat {
 	private static final int FOIL_TYPE_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
 	private static final int SHADE_MODE_BIT_OFFSET = FOIL_TYPE_BIT_OFFSET + FOIL_TYPE_BIT_LENGTH;
 	private static final int QUAD_ATLAS_BIT_OFFSET = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
-	private static final int TOTAL_BIT_LENGTH = QUAD_ATLAS_BIT_OFFSET + QUAD_ATLAS_BIT_LENGTH;
+	private static final int ITEM_RENDER_TYPE_BIT_OFFSET = QUAD_ATLAS_BIT_OFFSET + QUAD_ATLAS_BIT_LENGTH;
+	private static final int TOTAL_BIT_LENGTH = ITEM_RENDER_TYPE_BIT_OFFSET + ITEM_RENDER_TYPE_BIT_LENGTH;
 
 	private static final int CULL_MASK = bitMask(CULL_BIT_LENGTH, CULL_BIT_OFFSET);
 	private static final int LIGHT_MASK = bitMask(LIGHT_BIT_LENGTH, LIGHT_BIT_OFFSET);
@@ -137,6 +144,7 @@ public final class EncodingFormat {
 	);
 	private static final int SHADE_MODE_MASK = bitMask(SHADE_MODE_BIT_LENGTH, SHADE_MODE_BIT_OFFSET);
 	private static final int QUAD_ATLAS_MASK = bitMask(QUAD_ATLAS_BIT_LENGTH, QUAD_ATLAS_BIT_OFFSET);
+	private static final int ITEM_RENDER_TYPE_MASK = bitMask(ITEM_RENDER_TYPE_BIT_LENGTH, ITEM_RENDER_TYPE_BIT_OFFSET);
 
 	static {
 		Preconditions.checkArgument(TOTAL_BIT_LENGTH <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
@@ -237,5 +245,16 @@ public final class EncodingFormat {
 
 	static int quadAtlas(int bits, QuadAtlas quadAtlas) {
 		return (bits & ~QUAD_ATLAS_MASK) | (quadAtlas.ordinal() << QUAD_ATLAS_BIT_OFFSET);
+	}
+
+	static RenderType itemRenderType(int bits) {
+		ItemRenderType itemRenderType =
+				ITEM_RENDER_TYPES[(bits & ITEM_RENDER_TYPE_MASK) >>> ITEM_RENDER_TYPE_BIT_OFFSET];
+		return (itemRenderType != null ? itemRenderType : ItemRenderType.CUTOUT_BLOCK).renderType;
+	}
+
+	static int itemRenderType(int bits, RenderType renderType) {
+		ItemRenderType itemRenderType = ItemRenderType.RENDER_TYPE_2_ENUM.getOrDefault(renderType, ItemRenderType.CUTOUT_BLOCK);
+		return (bits & ~ITEM_RENDER_TYPE_MASK) | (itemRenderType.ordinal() << ITEM_RENDER_TYPE_BIT_OFFSET);
 	}
 }

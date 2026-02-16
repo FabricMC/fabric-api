@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 
@@ -125,6 +126,9 @@ public interface QuadEmitter extends MutableQuadView {
 
 	@Override
 	QuadEmitter chunkLayer(@Nullable ChunkSectionLayer layer);
+
+	@Override
+	QuadEmitter itemRenderType(@Nullable RenderType renderType);
 
 	@Override
 	QuadEmitter emissive(boolean emissive);

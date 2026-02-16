@@ -59,7 +59,6 @@ abstract class ItemFeatureRendererMixin {
 					submit.tintLayers(),
 					submit.quads(),
 					submit.mesh(),
-					submit.renderTypeGetter(),
 					submit.foilType(),
 					false,
 					false
@@ -76,7 +75,6 @@ abstract class ItemFeatureRendererMixin {
 						submit.tintLayers(),
 						submit.quads(),
 						submit.mesh(),
-						submit.renderTypeGetter(),
 						ItemStackRenderState.FoilType.NONE,
 						true,
 						false
@@ -102,7 +100,6 @@ abstract class ItemFeatureRendererMixin {
 					submit.tintLayers(),
 					submit.quads(),
 					submit.mesh(),
-					submit.renderTypeGetter(),
 					submit.foilType(),
 					false,
 					true
@@ -119,7 +116,6 @@ abstract class ItemFeatureRendererMixin {
 						submit.tintLayers(),
 						submit.quads(),
 						submit.mesh(),
-						submit.renderTypeGetter(),
 						ItemStackRenderState.FoilType.NONE,
 						true,
 						true

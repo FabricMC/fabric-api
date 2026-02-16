@@ -27,7 +27,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -36,10 +35,8 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
@@ -55,9 +52,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private int light;
 	private int[] tints;
 
-	private RenderType defaultRenderType; // FIXME: delete this, use QuadView#itemRenderType
-	@Nullable
-	private ItemRenderTypeGetter renderTypeGetter;
 	private ItemStackRenderState.FoilType defaultFoilType;
 	private boolean ignoreQuadFoilType;
 	private boolean translucent;
@@ -75,7 +69,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 			int[] tints,
 			List<BakedQuad> vanillaQuads,
 			MeshView mesh,
-			@Nullable ItemRenderTypeGetter renderTypeGetter,
 			ItemStackRenderState.FoilType foilType,
 			boolean ignoreQuadFoilType,
 			boolean translucent
@@ -87,8 +80,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 		this.overlay = overlay;
 		this.tints = tints;
 
-		defaultRenderType = Sheets.translucentItemSheet();
-		this.renderTypeGetter = renderTypeGetter;
 		defaultFoilType = foilType;
 		this.ignoreQuadFoilType = ignoreQuadFoilType;
 		this.translucent = translucent;
@@ -98,9 +89,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 		pose = null;
 		this.bufferSource = null;
 		this.tints = null;
-
-		defaultRenderType = null;
-		this.renderTypeGetter = null;
 
 		specialFoilPose = null;
 		Arrays.fill(vertexConsumerCache, null);
@@ -122,7 +110,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final RenderType renderType = getRenderType(quad.atlas(), quad.chunkLayer());
+		final RenderType renderType = quad.itemRenderTypeOrDefault();
 
 		if (renderType.hasBlending() != translucent) {
 			return;
@@ -159,22 +147,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 				quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), light));
 			}
 		}
-	}
-
-	private RenderType getRenderType(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer quadLayer) {
-		RenderType renderType;
-
-		if (renderTypeGetter != null) {
-			renderType = renderTypeGetter.renderType(quadAtlas, quadLayer);
-
-			if (renderType == null) {
-				renderType = defaultRenderType;
-			}
-		} else {
-			renderType = defaultRenderType;
-		}
-
-		return renderType;
 	}
 
 	private VertexConsumer getVertexConsumer(RenderType renderType, ItemStackRenderState.@Nullable FoilType quadFoilType) {

@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
@@ -83,9 +84,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param renderTypeFunction The function to use to convert {@link ChunkSectionLayer}s to {@link RenderType}s.
 	 *                            <b>Must not be mutated after calling this method.</b>
 	 * @param model The model to render.
-	 * @param r The red component of the tint color.
-	 * @param g The green component of the tint color.
-	 * @param b The blue component of the tint color.
+	 * @param tint The tint color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param outlineColor The outline color.
@@ -97,7 +96,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 *
 	 * @see FabricModelBlockRenderer#renderModel(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	default void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, renderTypeFunction.apply(ItemBlockRenderTypes.getChunkRenderType(state)), model, r, g, b, light, overlay, outlineColor);
+	default void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int tint, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, ItemBlockRenderTypes.getBlockModelRenderType(model), model, tint, light, overlay, outlineColor);
 	}
 }

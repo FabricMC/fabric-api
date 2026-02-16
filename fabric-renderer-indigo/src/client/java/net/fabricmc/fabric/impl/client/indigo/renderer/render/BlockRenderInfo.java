@@ -20,8 +20,6 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -44,7 +42,6 @@ public class BlockRenderInfo {
 
 	private boolean useAo;
 	private boolean defaultAo;
-	private ChunkSectionLayer defaultLayer;
 
 	private boolean enableCulling;
 	private int cullCompletionFlags;
@@ -61,8 +58,6 @@ public class BlockRenderInfo {
 
 		useAo = Minecraft.useAmbientOcclusion();
 		defaultAo = useAo && blockState.getLightEmission() == 0;
-
-		defaultLayer = ItemBlockRenderTypes.getChunkRenderType(blockState);
 
 		cullCompletionFlags = 0;
 		cullResultFlags = 0;
@@ -81,10 +76,6 @@ public class BlockRenderInfo {
 
 	public boolean effectiveAo(TriState aoMode) {
 		return useAo && aoMode.orElse(defaultAo);
-	}
-
-	public ChunkSectionLayer effectiveChunkLayer(@Nullable ChunkSectionLayer quadLayer) {
-		return quadLayer == null ? defaultLayer : quadLayer;
 	}
 
 	public boolean shouldDrawSide(@Nullable Direction side) {

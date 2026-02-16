@@ -37,6 +37,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
@@ -243,6 +244,11 @@ public class QuadViewImpl implements QuadView {
 	@Nullable
 	public ChunkSectionLayer chunkLayer() {
 		return EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	public @Nullable RenderType itemRenderType() {
+		return EncodingFormat.itemRenderType(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override

@@ -35,6 +35,7 @@ import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 
@@ -176,9 +177,13 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl chunkLayer(@Nullable ChunkSectionLayer layer) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS],
-				layer
-		);
+		data[baseIndex + HEADER_BITS] = EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS], layer);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl itemRenderType(@Nullable RenderType renderType) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.itemRenderType(data[baseIndex + HEADER_BITS], renderType);
 		return this;
 	}
 
@@ -275,7 +280,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		nominalFace(quad.direction());
 		emissive(lightEmission == 15);
 		diffuseShade(quad.shade());
-		QuadAtlas atlas = QuadAtlas.of(quad.sprite().atlasLocation());
+		QuadAtlas atlas = QuadAtlas.of(quad.spriteInfo().sprite().atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;

@@ -17,17 +17,25 @@
 package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.Transparency;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 
 /**
@@ -37,10 +45,42 @@ public final class ModelHelper {
 	/** @see #faceFromIndex(int) */
 	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
+	private static final Map<TextureAtlasSprite, BakedQuad.SpriteInfo> SPRITE_INFOS = new HashMap<>();
+
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
 	public static final int NULL_FACE_ID = 6;
 
 	private ModelHelper() { }
+
+	/**
+	 * Gets or computes a {@link BakedQuad.SpriteInfo} for a {@link TextureAtlasSprite}.
+	 *
+	 * <p>This method checks the entire sprite's {@linkplain Transparency transparency} instead of
+	 * only what a quad uses.
+	 */
+	public static BakedQuad.SpriteInfo getSpriteInfo(TextureAtlasSprite sprite) {
+		return SPRITE_INFOS.computeIfAbsent(sprite, _ -> {
+			Transparency transparency = sprite
+					.contents()
+					.computeTransparency(0.0f, 0.0f, 1.0f, 1.0f);
+			ChunkSectionLayer chunkLayer = ChunkSectionLayer.byTransparency(transparency);
+			RenderType itemRenderType;
+
+			if (sprite.atlasLocation().equals(QuadAtlas.BLOCK.getTextureId())) {
+				itemRenderType = switch (chunkLayer) {
+				case SOLID, CUTOUT -> Sheets.cutoutBlockItemSheet();
+				case TRANSLUCENT -> Sheets.translucentBlockItemSheet();
+				};
+			} else {
+				itemRenderType = switch (chunkLayer) {
+				case SOLID, CUTOUT -> Sheets.cutoutItemSheet();
+				case TRANSLUCENT -> Sheets.translucentItemSheet();
+				};
+			}
+
+			return new BakedQuad.SpriteInfo(sprite, chunkLayer, itemRenderType);
+		});
+	}
 
 	/**
 	 * Convenient way to encode faces that may be null.

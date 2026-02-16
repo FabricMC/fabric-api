@@ -28,16 +28,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.world.entity.ItemOwner;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -58,32 +54,6 @@ abstract class BlockModelWrapperMixin implements ItemModel, BlockModelWrapperExt
 	@Inject(method = "update", at = @At("RETURN"))
 	private void onReturnUpdate(final ItemStackRenderState output, final ItemStack item, final ItemModelResolver resolver, final ItemDisplayContext displayContext, final @Nullable ClientLevel level, final @Nullable ItemOwner owner, final int seed, CallbackInfo ci, @Local(name = "layer") ItemStackRenderState.LayerRenderState layer) {
 		if (mesh != null) {
-			// This logic matches that of ITEM_RENDER_TYPE_GETTER and BLOCK_RENDER_TYPE_GETTER
-			ChunkSectionLayer defaultSectionLayer;
-
-			if (item.getItem() instanceof BlockItem blockItem) {
-				defaultSectionLayer = ItemBlockRenderTypes.getChunkRenderType(blockItem.getBlock().defaultBlockState());
-			} else {
-				defaultSectionLayer = ChunkSectionLayer.TRANSLUCENT;
-			}
-
-			layer.setRenderTypeGetter((quadAtlas, sectionLayer) -> {
-				return switch (quadAtlas) {
-				case BLOCK -> {
-					if (sectionLayer == null) {
-						sectionLayer = defaultSectionLayer;
-					}
-
-					if (sectionLayer != ChunkSectionLayer.TRANSLUCENT) {
-						yield Sheets.cutoutBlockSheet();
-					}
-
-					yield Sheets.translucentBlockItemSheet();
-				}
-				case ITEM -> Sheets.translucentItemSheet();
-				};
-			});
-
 			mesh.outputTo(layer.emitter());
 		}
 	}

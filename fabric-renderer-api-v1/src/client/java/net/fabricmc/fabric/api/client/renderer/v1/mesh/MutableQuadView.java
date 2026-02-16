@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.api.util.TriState;
@@ -278,17 +279,24 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView cullFace(@Nullable Direction face);
 
 	/**
-	 * Controls how this quad's pixels should be blended with the scene.
+	 * Controls how this quad's pixels should be blended with the scene in block form.
 	 *
-	 * <p>If set to {@code null}, {@link ItemBlockRenderTypes#getChunkRenderType(BlockState)} will be used to retrieve
-	 * the {@linkplain ChunkSectionLayer chunk layer} in block contexts. Set to another value to override this behavior.
-	 *
-	 * <p>In block contexts, a non-null value will be used directly. In item contexts, any value will be converted to a
-	 * {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
+	 * <p>If set to {@code null}, {@link ModelHelper#getSpriteInfo(TextureAtlasSprite)} will be used to retrieve
+	 * the {@linkplain ChunkSectionLayer chunk layer}. Set to another value to override this behavior.
 	 *
 	 * <p>The default value is {@code null}.
 	 */
 	MutableQuadView chunkLayer(@Nullable ChunkSectionLayer layer);
+
+	/**
+	 * Controls how this quad should be rendered in item form.
+	 *
+	 * <p>If set to {@code null}, {@link ModelHelper#getSpriteInfo(TextureAtlasSprite)} will be used to retrieve
+	 * the {@linkplain RenderType item RenderType}. Set to another value to override this behavior.
+	 *
+	 * <p>The default value is {@code null}.
+	 */
+	MutableQuadView itemRenderType(@Nullable RenderType renderType);
 
 	/**
 	 * When true, this quad will be rendered at full brightness.
@@ -358,7 +366,7 @@ public interface MutableQuadView extends QuadView {
 	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
 	 *
 	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
-	 * converted to a {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
+	 * converted to a {@link RenderType} using {@link #itemRenderTypeOrDefault()}.
 	 *
 	 * <p>The default value is {@link QuadAtlas#BLOCK}.
 	 *
