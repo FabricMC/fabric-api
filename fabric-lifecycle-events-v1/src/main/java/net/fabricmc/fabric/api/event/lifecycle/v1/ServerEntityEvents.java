@@ -41,6 +41,19 @@ public final class ServerEntityEvents {
 	});
 
 	/**
+	 * Called when an Entity is first loaded into a ServerLevel.
+	 *
+	 * <p>In other words, this event calls when an Entity is added to a server.</p>
+	 *
+	 * <p>When this event is called, the entity is already in the level.</p>
+	 */
+	public static final Event<ServerEntityEvents.FreshLoad> FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.FreshLoad.class, callbacks -> (entity, level) -> {
+		for (FreshLoad callback : callbacks) {
+			callback.onFreshLoad(entity, level);
+		}
+	});
+
+	/**
 	 * Called when an Entity is unloaded from a ServerLevel.
 	 *
 	 * <p>This event is called before the entity is removed from the level.
@@ -66,6 +79,11 @@ public final class ServerEntityEvents {
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerLevel level);
+	}
+
+	@FunctionalInterface
+	public interface FreshLoad {
+		void onFreshLoad(Entity entity, ServerLevel level);
 	}
 
 	@FunctionalInterface

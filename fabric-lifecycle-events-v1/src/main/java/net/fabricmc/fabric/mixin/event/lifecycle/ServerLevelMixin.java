@@ -18,6 +18,11 @@ package net.fabricmc.fabric.mixin.event.lifecycle;
 
 import java.util.function.BooleanSupplier;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,5 +44,16 @@ public abstract class ServerLevelMixin {
 	@Inject(method = "tick", at = @At(value = "TAIL"))
 	private void endLevelTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		ServerTickEvents.END_LEVEL_TICK.invoker().onEndTick((ServerLevel) (Object) this);
+	}
+
+	@WrapOperation(method = "addFreshEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addEntity(Lnet/minecraft/world/entity/Entity;)Z"))
+	private boolean afterEntityFreshLoad(ServerLevel instance, Entity entity, Operation<Boolean> original) {
+		boolean result = original.call(instance, entity);
+
+		if (result && entity instanceof LivingEntity livingEntity) {
+			ServerEntityEvents.FRESH_LOAD.invoker().onFreshLoad(livingEntity, (ServerLevel) (Object) this);
+		}
+
+		return result;
 	}
 }

@@ -11,7 +11,6 @@
         "MobMixin",
         "PlayerListMixin",
         "PlayerMixin",
-        "ServerLevelMixin",
         "ServerPlayerMixin",
         "effect.BuildContextsAccessor",
         "effect.CommandQueueEntryMixin",

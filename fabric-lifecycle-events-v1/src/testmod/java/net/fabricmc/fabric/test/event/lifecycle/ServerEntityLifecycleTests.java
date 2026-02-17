@@ -50,6 +50,12 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			}
 		});
 
+		ServerEntityEvents.FRESH_LOAD.register((entity, level) -> {
+			if (PRINT_SERVER_ENTITY_MESSAGES) {
+                logger.info("[SERVER] FRESH LOADED {} IN {}", entity, level);
+			}
+		});
+
 		ServerEntityEvents.ENTITY_UNLOAD.register((entity, level) -> {
 			this.serverEntities.remove(entity);
 
