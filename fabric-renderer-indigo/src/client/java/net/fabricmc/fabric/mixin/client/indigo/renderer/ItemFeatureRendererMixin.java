@@ -45,40 +45,87 @@ abstract class ItemFeatureRendererMixin {
 	private final ItemRenderContext itemRenderContext = new ItemRenderContext();
 
 	@Inject(method = "renderSolid", at = @At("RETURN"))
-	private void onReturnRender(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
-		for (MeshItemSubmit itemSubmit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
+	private void onReturnRenderSolid(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
+		for (MeshItemSubmit submit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
 			poseStack.pushPose();
-			poseStack.last().set(itemSubmit.positionMatrix());
+			poseStack.last().set(submit.pose());
 
 			itemRenderContext.renderItem(
-					itemSubmit.displayContext(),
+					submit.displayContext(),
 					poseStack,
 					bufferSource,
-					itemSubmit.lightCoords(),
-					itemSubmit.overlayCoords(),
-					itemSubmit.tintLayers(),
-					itemSubmit.quads(),
-					itemSubmit.mesh(),
-					itemSubmit.renderType(),
-					itemSubmit.renderTypeGetter(),
-					itemSubmit.foilType(),
+					submit.lightCoords(),
+					submit.overlayCoords(),
+					submit.tintLayers(),
+					submit.quads(),
+					submit.mesh(),
+					submit.renderType(),
+					submit.renderTypeGetter(),
+					submit.foilType(),
+					false,
 					false
 			);
 
-			if (itemSubmit.outlineColor() != 0) {
-				outlineBufferSource.setColor(itemSubmit.outlineColor());
+			if (submit.outlineColor() != 0) {
+				outlineBufferSource.setColor(submit.outlineColor());
 				itemRenderContext.renderItem(
-						itemSubmit.displayContext(),
+						submit.displayContext(),
 						poseStack,
 						outlineBufferSource,
-						itemSubmit.lightCoords(),
-						itemSubmit.overlayCoords(),
-						itemSubmit.tintLayers(),
-						itemSubmit.quads(),
-						itemSubmit.mesh(),
-						itemSubmit.renderType(),
-						itemSubmit.renderTypeGetter(),
+						submit.lightCoords(),
+						submit.overlayCoords(),
+						submit.tintLayers(),
+						submit.quads(),
+						submit.mesh(),
+						submit.renderType(),
+						submit.renderTypeGetter(),
 						ItemStackRenderState.FoilType.NONE,
+						true,
+						false
+				);
+			}
+
+			poseStack.popPose();
+		}
+	}
+
+	@Inject(method = "renderTranslucent", at = @At("RETURN"))
+	private void onReturnRenderTranslucent(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
+		for (MeshItemSubmit submit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
+			poseStack.pushPose();
+			poseStack.last().set(submit.pose());
+
+			itemRenderContext.renderItem(
+					submit.displayContext(),
+					poseStack,
+					bufferSource,
+					submit.lightCoords(),
+					submit.overlayCoords(),
+					submit.tintLayers(),
+					submit.quads(),
+					submit.mesh(),
+					submit.renderType(),
+					submit.renderTypeGetter(),
+					submit.foilType(),
+					false,
+					true
+			);
+
+			if (submit.outlineColor() != 0) {
+				outlineBufferSource.setColor(submit.outlineColor());
+				itemRenderContext.renderItem(
+						submit.displayContext(),
+						poseStack,
+						outlineBufferSource,
+						submit.lightCoords(),
+						submit.overlayCoords(),
+						submit.tintLayers(),
+						submit.quads(),
+						submit.mesh(),
+						submit.renderType(),
+						submit.renderTypeGetter(),
+						ItemStackRenderState.FoilType.NONE,
+						true,
 						true
 				);
 			}

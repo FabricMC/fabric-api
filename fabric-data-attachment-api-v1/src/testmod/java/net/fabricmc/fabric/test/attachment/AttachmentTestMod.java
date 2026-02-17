@@ -124,7 +124,7 @@ public class AttachmentTestMod implements ModInitializer {
 
 				if (blockEntity != null) {
 					blockEntity.setAttached(SYNCED_WITH_ALL, true);
-					player.displayClientMessage(Component.literal("Attached"), false);
+					player.sendSystemMessage(Component.literal("Attached"));
 					return InteractionResult.SUCCESS;
 				}
 			} else if (player.getItemInHand(hand).getItem() == Items.GOLDEN_CARROT) {
@@ -132,7 +132,7 @@ public class AttachmentTestMod implements ModInitializer {
 
 				if (blockEntity != null) {
 					blockEntity.getAttachedOrCreate(SYNCED_LARGE);
-					player.displayClientMessage(Component.literal("Attached LARGE"), false);
+					player.sendSystemMessage(Component.literal("Attached LARGE"));
 					return InteractionResult.SUCCESS;
 				}
 			}

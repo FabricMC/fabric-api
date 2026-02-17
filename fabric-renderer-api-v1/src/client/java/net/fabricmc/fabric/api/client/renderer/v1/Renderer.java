@@ -17,15 +17,18 @@
 package net.fabricmc.fabric.api.client.renderer.v1;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.BlockPos;
@@ -33,6 +36,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
@@ -67,20 +71,13 @@ public interface Renderer {
 	/**
 	 * Access to the current {@link Renderer} for creating and retrieving mesh builders
 	 * and materials.
+	 *
+	 * <p><b>Warning:</b> do not call this method before {@link ModInitializer} has been invoked. Doing
+	 * so will likely crash. If you need to determine which renderer is chosen, use
+	 * {@link RendererProvider#getModId()}.
 	 */
 	static Renderer get() {
 		return RendererManager.getRenderer();
-	}
-
-	/**
-	 * Rendering extension mods must implement {@link Renderer} and
-	 * call this method during initialization.
-	 *
-	 * <p>Only one {@link Renderer} plug-in can be active in any game instance.
-	 * If a second mod attempts to register, this method will throw an UnsupportedOperationException.
-	 */
-	static void register(Renderer renderer) {
-		RendererManager.registerRenderer(renderer);
 	}
 
 	/**
@@ -93,22 +90,22 @@ public interface Renderer {
 	MutableMesh mutableMesh();
 
 	/**
-	 * @see FabricModelBlockRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, boolean, long, int)
+	 * @see FabricModelBlockRenderer#tesselateBlock(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, Predicate, boolean, long, int)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay);
+	void tesselateBlock(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, boolean cull, long seed, int overlay);
 
 	/**
-	 * @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricModelBlockRenderer#renderModel(PoseStack.Pose, BlockMultiBufferSource, Predicate, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
+	void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
 	/**
-	 * @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
+	 * @see FabricBlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, Predicate, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	@ApiStatus.OverrideOnly
-	void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
+	void renderSingleBlock(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
 
 	/**
 	 * @see FabricLayerRenderState#emitter()

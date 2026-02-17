@@ -37,6 +37,6 @@ abstract class ItemFrameRendererMixin {
 	private void renderProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, RenderType renderType, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local(name = "fakeBlockState") BlockState fakeBlockState) {
 		// The vertex consumer is for a special layer that renders solid, but vanilla has no equivalent
 		// cutout/translucent layers that we can use here without risking compatibility.
-		submitNodeCollector.submitBlockStateModel(poseStack, blockLayer -> renderType, model, r, g, b, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, fakeBlockState);
+		submitNodeCollector.submitBlockModel(poseStack, blockLayer -> renderType, model, r, g, b, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, fakeBlockState);
 	}
 }

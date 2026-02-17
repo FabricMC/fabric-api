@@ -44,19 +44,19 @@ public class KeyMappingsTest implements ClientModInitializer {
 			if (client.player == null) return;
 
 			while (binding1.consumeClick()) {
-				client.player.displayClientMessage(Component.literal("Key 1 was pressed!"), false);
+				client.player.sendSystemMessage(Component.literal("Key 1 was pressed!"));
 			}
 
 			while (binding2.consumeClick()) {
-				client.player.displayClientMessage(Component.literal("Key 2 was pressed!"), false);
+				client.player.sendSystemMessage(Component.literal("Key 2 was pressed!"));
 			}
 
 			if (stickyBinding.isDown()) {
-				client.player.displayClientMessage(Component.literal("Sticky Key was pressed!"), false);
+				client.player.sendSystemMessage(Component.literal("Sticky Key was pressed!"));
 			}
 
 			while (duplicateBinding.consumeClick()) {
-				client.player.displayClientMessage(Component.literal("Duplicate Key was pressed!"), false);
+				client.player.sendSystemMessage(Component.literal("Duplicate Key was pressed!"));
 			}
 		});
 	}

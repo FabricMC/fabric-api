@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.recipe.ingredient;
+package net.fabricmc.fabric.impl.networking.context;
 
-import java.util.Set;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 
-import net.minecraft.network.Connection;
-import net.minecraft.resources.Identifier;
-
-/**
- * Implemented on {@link Connection} to store which custom ingredients the client supports.
- */
-public interface SupportedIngredientsConnection {
-	void fabric_setSupportedCustomIngredients(Set<Identifier> supportedCustomIngredients);
-
-	Set<Identifier> fabric_getSupportedCustomIngredients();
+public interface PacketContextSetter {
+	void fabric_setPacketContext(PacketContext context);
 }

@@ -22,6 +22,7 @@ import java.util.function.Function;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jspecify.annotations.NonNull;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -59,6 +60,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	}
 
 	@Override
+	@NonNull
 	protected VertexConsumer getVertexConsumer(ChunkSectionLayer layer) {
 		return bufferFunc.apply(layer);
 	}

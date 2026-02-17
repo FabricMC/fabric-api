@@ -210,7 +210,7 @@ public interface QuadView {
 	 * @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
 	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
-	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
+	default BakedQuad toBakedQuad(BakedQuad.SpriteInfo sprite) {
 		Vector3f position0 = copyPos(0, null);
 		Vector3f position1 = copyPos(1, null);
 		Vector3f position2 = copyPos(2, null);

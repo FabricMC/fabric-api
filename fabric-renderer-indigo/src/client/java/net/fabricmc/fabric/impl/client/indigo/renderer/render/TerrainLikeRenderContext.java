@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import java.util.function.Predicate;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -43,6 +46,8 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
 	private BlockMultiBufferSource bufferSource;
+	@Nullable
+	private Predicate<ChunkSectionLayer> layerFilter;
 
 	@Override
 	protected LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo) {
@@ -61,11 +66,16 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 	}
 
 	@Override
+	@Nullable
 	protected VertexConsumer getVertexConsumer(ChunkSectionLayer layer) {
+		if (layerFilter != null && !layerFilter.test(layer)) {
+			return null;
+		}
+
 		return bufferSource.getBuffer(layer);
 	}
 
-	public void bufferModel(BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
+	public void bufferModel(BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, boolean cull, long seed, int overlay) {
 		try {
 			Vec3 offset = state.getOffset(pos);
 			poseStack.translate(offset.x, offset.y, offset.z);
@@ -73,6 +83,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 			this.overlay = overlay;
 
 			this.bufferSource = bufferSource;
+			this.layerFilter = layerFilter;
 
 			blockInfo.prepareForLevel(level, cull);
 			random.setSeed(seed);
@@ -89,6 +100,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 			blockInfo.release();
 			pose = null;
 			this.bufferSource = null;
+			this.layerFilter = null;
 		}
 	}
 }

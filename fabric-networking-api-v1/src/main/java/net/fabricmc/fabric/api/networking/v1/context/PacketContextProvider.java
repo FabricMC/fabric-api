@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.block.client;
+package net.fabricmc.fabric.api.networking.v1.context;
 
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.ChunkSectionLayerMap;
-import net.fabricmc.fabric.test.block.ClimbableTrapdoorTest;
+import net.minecraft.network.Connection;
 
-public final class ClimbableTrapdoorClientTest implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
-		ChunkSectionLayerMap.putBlocks(
-				ChunkSectionLayer.CUTOUT,
-				ClimbableTrapdoorTest.customLadderBlock,
-				ClimbableTrapdoorTest.customNonLadderBlock
-		);
+/**
+ * This interface is used as a way to retrieve {@link PacketContext} from Connection and PacketListeners.
+ *
+ * <p>Note: This interface is automatically implemented on {@link Connection} and vanilla PacketListeners via Mixin and interface injection.
+ */
+@ApiStatus.NonExtendable
+public interface PacketContextProvider {
+	default PacketContext getPacketContext() {
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }

@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ServerboundPongPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -30,14 +31,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.RunningOnDifferentThreadException;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
 @Mixin(ServerCommonPacketListenerImpl.class)
-public abstract class ServerCommonPacketListenerImplMixin implements PacketListenerExtensions {
+public abstract class ServerCommonPacketListenerImplMixin implements PacketListenerExtensions, PacketContextProvider {
 	@Shadow
 	@Final
 	protected MinecraftServer server;
+
+	@Shadow
+	@Final
+	protected Connection connection;
 
 	@Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
@@ -67,5 +74,10 @@ public abstract class ServerCommonPacketListenerImplMixin implements PacketListe
 		if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
 			addon.onPong(packet.getId());
 		}
+	}
+
+	@Override
+	public PacketContext getPacketContext() {
+		return this.connection.getPacketContext();
 	}
 }

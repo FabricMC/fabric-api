@@ -43,7 +43,7 @@ public class InspectorBlock extends Block {
 
 		if (inspectable != null) {
 			if (!level.isClientSide()) {
-				player.displayClientMessage(inspectable.inspect(), true);
+				player.sendOverlayMessage(inspectable.inspect());
 			}
 
 			return InteractionResult.SUCCESS;
@@ -59,7 +59,7 @@ public class InspectorBlock extends Block {
 
 			if (inspectable != null) {
 				for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
-					player.displayClientMessage(inspectable.inspect(), true);
+					player.sendOverlayMessage(inspectable.inspect());
 				}
 			}
 		}
