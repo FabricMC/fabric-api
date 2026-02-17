@@ -41,15 +41,26 @@ public final class ServerEntityEvents {
 	});
 
 	/**
-	 * Called when an Entity is first loaded into a ServerLevel.
+	 * Called before an Entity is added to a ServerLevel.
 	 *
-	 * <p>In other words, this event calls when an Entity is added to a server.</p>
-	 *
-	 * <p>When this event is called, the entity is already in the level.</p>
+	 * <p>If return value is {@code false} entity will not be added to a server.</p>
 	 */
-	public static final Event<ServerEntityEvents.FreshLoad> FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.FreshLoad.class, callbacks -> (entity, level) -> {
-		for (FreshLoad callback : callbacks) {
-			callback.onFreshLoad(entity, level);
+	public static final Event<ServerEntityEvents.AllowFreshLoad> ALLOW_FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AllowFreshLoad.class, callbacks -> (entity, level) -> {
+		boolean bl = true;
+		for (AllowFreshLoad callback : callbacks) {
+			bl = bl && callback.onFreshLoad(entity, level);
+		}
+		return bl;
+	});
+
+	/**
+	 * Called when an Entity is added to a ServerLevel.
+	 *
+	 * <p>When this event is called, the entity is already in the level.
+	 */
+	public static final Event<ServerEntityEvents.AfterFreshLoad> AFTER_FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AfterFreshLoad.class, callbacks -> (entity, level) -> {
+		for (AfterFreshLoad callback : callbacks) {
+			callback.afterFreshLoad(entity, level);
 		}
 	});
 
@@ -82,8 +93,13 @@ public final class ServerEntityEvents {
 	}
 
 	@FunctionalInterface
-	public interface FreshLoad {
-		void onFreshLoad(Entity entity, ServerLevel level);
+	public interface AllowFreshLoad {
+		boolean onFreshLoad(Entity entity, ServerLevel level);
+	}
+
+	@FunctionalInterface
+	public interface AfterFreshLoad {
+		void afterFreshLoad(Entity entity, ServerLevel level);
 	}
 
 	@FunctionalInterface

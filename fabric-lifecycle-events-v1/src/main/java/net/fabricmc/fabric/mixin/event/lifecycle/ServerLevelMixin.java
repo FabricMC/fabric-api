@@ -48,10 +48,13 @@ public abstract class ServerLevelMixin {
 
 	@WrapOperation(method = "addFreshEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;addEntity(Lnet/minecraft/world/entity/Entity;)Z"))
 	private boolean afterEntityFreshLoad(ServerLevel instance, Entity entity, Operation<Boolean> original) {
+		ServerLevel serverLevel = (ServerLevel) (Object) this;
+		if (!ServerEntityEvents.ALLOW_FRESH_LOAD.invoker().onFreshLoad(entity, serverLevel)) return false;
+
 		boolean result = original.call(instance, entity);
 
-		if (result && entity instanceof LivingEntity livingEntity) {
-			ServerEntityEvents.FRESH_LOAD.invoker().onFreshLoad(livingEntity, (ServerLevel) (Object) this);
+		if (result) {
+			ServerEntityEvents.AFTER_FRESH_LOAD.invoker().afterFreshLoad(entity, serverLevel);
 		}
 
 		return result;
