@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
+import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
 import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequestPayload;
 
@@ -60,7 +61,9 @@ abstract class ClientHandshakePacketListenerImplMixin implements PacketListenerE
 	@Inject(method = "handleCustomQuery", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void handleQueryRequest(ClientboundCustomQueryPacket packet, CallbackInfo ci) {
 		if (packet.payload() instanceof FriendlyByteBufLoginQueryRequestPayload payload) {
-			if (this.addon.handlePacket(packet)) {
+			boolean handled = ScopedValue.where(ClientNetworkingImpl.CONNECTION_SCOPED_VALUE, this.connection).call(() -> addon.handlePacket(packet));
+
+			if (handled) {
 				ci.cancel();
 			} else {
 				payload.data().skipBytes(payload.data().readableBytes());

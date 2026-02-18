@@ -54,6 +54,8 @@ public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>> CONFIGURATION = new GlobalReceiverRegistry<>(PacketFlow.CLIENTBOUND, ConnectionProtocol.CONFIGURATION, PayloadTypeRegistryImpl.CLIENTBOUND_CONFIGURATION);
 	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayPayloadHandler<?>> PLAY = new GlobalReceiverRegistry<>(PacketFlow.CLIENTBOUND, ConnectionProtocol.PLAY, PayloadTypeRegistryImpl.CLIENTBOUND_PLAY);
 
+	public static final ScopedValue<Connection> CONNECTION_SCOPED_VALUE = ScopedValue.newInstance();
+
 	private static ClientPlayNetworkAddon currentPlayAddon;
 	private static ClientConfigurationNetworkAddon currentConfigurationAddon;
 
@@ -86,12 +88,10 @@ public final class ClientNetworkingImpl {
 		// Check if we are connecting to an integrated server. This will set the field on Minecraft
 		if (connection != null) {
 			return connection;
-		} else {
-			// We are probably connecting to a remote server.
-			// Check if the ConnectScreen is the currentScreen to determine that:
-			if (Minecraft.getInstance().screen instanceof ConnectScreen) {
-				return ((ConnectScreenAccessor) Minecraft.getInstance().screen).getConnection();
-			}
+		} else if (CONNECTION_SCOPED_VALUE.isBound()) {
+			return CONNECTION_SCOPED_VALUE.get();
+		} else if (Minecraft.getInstance().screen instanceof ConnectScreen) {
+			return ((ConnectScreenAccessor) Minecraft.getInstance().screen).getConnection();
 		}
 
 		// We are not connected to a server at all.
