@@ -1,5 +1,8 @@
 # Fabric API
 
+> [!NOTE]
+> If you're looking for Microsoft Fabric REST APIs, go to the [Microsoft Fabric REST API documentation page](https://learn.microsoft.com/en-us/rest/api/fabric/articles/).
+
 Essential hooks for modding with Fabric.
 
 Fabric API is the library for essential hooks and interoperability mechanisms for Fabric mods. Examples include:
