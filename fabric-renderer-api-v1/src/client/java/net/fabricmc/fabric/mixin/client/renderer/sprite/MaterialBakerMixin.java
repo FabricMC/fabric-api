@@ -18,10 +18,10 @@ package net.fabricmc.fabric.mixin.client.renderer.sprite;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.MaterialBaker;
 
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricSpriteGetter;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricMaterialBaker;
 
-@Mixin(SpriteGetter.class)
-interface SpriteGetterMixin extends FabricSpriteGetter {
+@Mixin(MaterialBaker.class)
+interface MaterialBakerMixin extends FabricMaterialBaker {
 }

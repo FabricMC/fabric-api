@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModel;
  * finding the sprite for use in {@link QuadView#toBakedQuad(TextureAtlasSprite)}.
  *
  * <p>A sprite finder can be retrieved from various vanilla objects. Always use
- * {@link FabricSpriteGetter#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
+ * {@link FabricMaterialBaker#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
  * whenever an applicable instance is available. For example, model baking is supplied with a
  * {@link SpriteGetter}, so it should be used to retrieve the sprite finder. In most other cases, it is
  * safe to use {@link FabricTextureAtlas#spriteFinder()}.

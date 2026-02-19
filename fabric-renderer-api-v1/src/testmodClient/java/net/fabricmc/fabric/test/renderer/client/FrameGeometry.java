@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
+import java.util.Objects;
+
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -37,9 +39,11 @@ public record FrameGeometry(boolean emissive) implements UnbakedGeometry {
 	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.sprites()));
+		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.materials()));
 
-		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("frame"), model);
+		TextureAtlasSprite sprite = baker.materials()
+				.get(Objects.requireNonNull(textures.getMaterial("frame")), model)
+				.sprite();
 
 		for (Direction direction : Direction.values()) {
 			// Draw outer frame

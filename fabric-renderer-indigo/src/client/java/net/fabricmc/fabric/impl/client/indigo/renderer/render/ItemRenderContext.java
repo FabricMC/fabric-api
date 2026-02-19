@@ -24,6 +24,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.MatrixUtil;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -37,6 +38,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
@@ -110,7 +112,11 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final RenderType renderType = quad.itemRenderTypeOrDefault();
+		final SpriteFinder spriteFinder = Minecraft.getInstance()
+				.getAtlasManager()
+				.getAtlasOrThrow(quad.atlas().getTextureId())
+				.spriteFinder();
+		final RenderType renderType = quad.itemRenderTypeOrDefault(spriteFinder);
 
 		if (renderType.hasBlending() != translucent) {
 			return;

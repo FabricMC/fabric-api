@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 /**
  * Note: This interface is automatically implemented on {@link SpriteGetter} via Mixin and interface injection.
  */
-public interface FabricSpriteGetter extends SpriteFinderGetter {
+public interface FabricMaterialBaker extends SpriteFinderGetter {
 	/**
 	 * {@return the sprite finder for the given atlas texture ID}
 	 */

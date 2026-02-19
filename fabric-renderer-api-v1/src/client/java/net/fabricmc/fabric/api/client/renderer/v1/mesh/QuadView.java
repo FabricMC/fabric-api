@@ -23,7 +23,6 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -171,11 +170,8 @@ public interface QuadView {
 	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
 	 * @see #chunkLayer()
 	 */
-	default ChunkSectionLayer chunkLayerOrDefault() {
+	default ChunkSectionLayer chunkLayerOrDefault(SpriteFinder spriteFinder) {
 		if (this.chunkLayer() == null) {
-			SpriteFinder spriteFinder = Minecraft.getInstance()
-					.getAtlasManager()
-					.spriteFinder(this.atlas());
 			return ModelHelper.getSpriteInfo(spriteFinder.find(this)).layer();
 		}
 
@@ -193,11 +189,8 @@ public interface QuadView {
 	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
 	 * @see #itemRenderType()
 	 */
-	default RenderType itemRenderTypeOrDefault() {
+	default RenderType itemRenderTypeOrDefault(SpriteFinder spriteFinder) {
 		if (this.itemRenderType() == null) {
-			SpriteFinder spriteFinder = Minecraft.getInstance()
-					.getAtlasManager()
-					.spriteFinder(this.atlas());
 			return ModelHelper.getSpriteInfo(spriteFinder.find(this)).itemRenderType();
 		}
 

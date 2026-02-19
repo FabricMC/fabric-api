@@ -22,7 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
@@ -34,6 +34,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
@@ -45,7 +46,6 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	private BlockMultiBufferSource bufferSource;
 	@Nullable
 	private Predicate<ChunkSectionLayer> layerFilter;
-	private ChunkSectionLayer defaultChunkLayer;
 	private float red;
 	private float green;
 	private float blue;
@@ -58,8 +58,11 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final ChunkSectionLayer quadLayer = quad.chunkLayer();
-		final ChunkSectionLayer layer = quadLayer == null ? defaultChunkLayer : quadLayer;
+		final SpriteFinder spriteFinder = Minecraft.getInstance()
+				.getAtlasManager()
+				.getAtlasOrThrow(quad.atlas().getTextureId())
+				.spriteFinder();
+		final ChunkSectionLayer layer = quad.chunkLayerOrDefault(spriteFinder);
 
 		if (layerFilter != null && !layerFilter.test(layer)) {
 			return;
@@ -111,7 +114,6 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 		this.bufferSource = bufferSource;
 		this.layerFilter = layerFilter;
-		this.defaultChunkLayer = ItemBlockRenderTypes.getChunkRenderType(state);
 		this.red = Mth.clamp(red, 0, 1);
 		this.green = Mth.clamp(green, 0, 1);
 		this.blue = Mth.clamp(blue, 0, 1);

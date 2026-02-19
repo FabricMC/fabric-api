@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +32,7 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
@@ -70,7 +72,11 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			return;
 		}
 
-		final VertexConsumer vertexConsumer = getVertexConsumer(quad.chunkLayerOrDefault());
+		final SpriteFinder spriteFinder = Minecraft.getInstance()
+				.getAtlasManager()
+				.getAtlasOrThrow(quad.atlas().getTextureId())
+				.spriteFinder();
+		final VertexConsumer vertexConsumer = getVertexConsumer(quad.chunkLayerOrDefault(spriteFinder));
 
 		if (vertexConsumer == null) {
 			return;

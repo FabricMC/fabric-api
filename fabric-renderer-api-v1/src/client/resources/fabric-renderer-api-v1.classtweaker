@@ -11,3 +11,4 @@ transitive-inject-interface	net/minecraft/client/renderer/OrderedSubmitNodeColle
 transitive-inject-interface	net/minecraft/client/resources/model/SpriteGetter	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricSpriteGetter
 transitive-inject-interface	net/minecraft/client/renderer/texture/TextureAtlas	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricTextureAtlas
 transitive-inject-interface	net/minecraft/client/renderer/texture/SpriteLoader$Preparations	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricPreparations
+transitive-inject-interface	net/minecraft/client/resources/model/MaterialBaker	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricMaterialBaker

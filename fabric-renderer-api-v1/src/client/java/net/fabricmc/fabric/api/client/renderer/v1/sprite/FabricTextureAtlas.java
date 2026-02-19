@@ -31,7 +31,7 @@ public interface FabricTextureAtlas {
 	 *
 	 * <p><b>This method should not be used during a resource reload</b> as this atlas will only be populated with new
 	 * sprites towards the end of the resource reload. In this case, use
-	 * {@link FabricSpriteGetter#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
+	 * {@link FabricMaterialBaker#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
 	 * instead.
 	 *
 	 * @return the sprite finder for this atlas
