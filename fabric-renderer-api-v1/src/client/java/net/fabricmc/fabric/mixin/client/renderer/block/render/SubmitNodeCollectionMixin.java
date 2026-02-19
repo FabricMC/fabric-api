@@ -72,8 +72,8 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 		wasUsed = true;
 		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(
 				poseStack.last().copy(),
-				renderTypeFunction, model, r, g, b, light, overlay, outlineColor,
-				level, pos, state));
+				renderTypeFunction, model, tint,
+				light, overlay, outlineColor, level, pos, state));
 	}
 
 	@Override

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.function.BiFunction;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.block.model.SingleVariant;
@@ -25,6 +26,7 @@ import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.resources.Identifier;
 
@@ -76,10 +78,27 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelState settings) {
 		return new SimpleUnbakedExtraModel<>(model, (baked, baker) -> {
 			TextureSlots textures = baked.getTopTextureSlots();
+			QuadCollection quads = baked.bakeTopGeometry(
+					textures,
+					baker,
+					settings
+			);
+
+			boolean hasTranslucency = false;
+
+			// SimpleModelWrapper#bake does this as well
+			for (BakedQuad quad : quads.getAll()) {
+				if (quad.spriteInfo().layer().translucent()) {
+					hasTranslucency = true;
+					break;
+				}
+			}
+
 			return new SingleVariant(new SimpleModelWrapper(
-					baked.bakeTopGeometry(textures, baker, settings),
+					quads,
 					baked.getTopAmbientOcclusion(),
-					baked.resolveParticleSprite(textures, baker)
+					baked.resolveParticleMaterial(textures, baker),
+					hasTranslucency
 			));
 		});
 	}

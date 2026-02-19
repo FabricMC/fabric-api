@@ -32,12 +32,12 @@ import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinderGetter;
 import net.fabricmc.fabric.impl.client.renderer.BlockModelWrapperExtension;
 
 @Mixin(BlockModelWrapper.class)
@@ -59,7 +59,7 @@ abstract class BlockModelWrapperMixin implements ItemModel, BlockModelWrapperExt
 	}
 
 	@Override
-	public void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter) {
+	public void fabric_setMesh(Mesh mesh, SpriteFinderGetter spriteFinderGetter) {
 		this.mesh = mesh;
 
 		if (!animated) {
@@ -71,7 +71,7 @@ abstract class BlockModelWrapperMixin implements ItemModel, BlockModelWrapperExt
 				ItemStackRenderState.FoilType glint = quad.foilType();
 
 				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE)
-						|| spriteGetter.spriteFinder(quad.atlas().getTextureId()).find(quad).contents().isAnimated()) {
+						|| spriteFinderGetter.spriteFinder(quad.atlas()).find(quad).contents().isAnimated()) {
 					animated = true;
 				}
 			});

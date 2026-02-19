@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.sprite;
 
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.MaterialBaker;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 
 /**
- * Note: This interface is automatically implemented on {@link SpriteGetter} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link MaterialBaker} via Mixin and interface injection.
  */
 public interface FabricMaterialBaker extends SpriteFinderGetter {
 	/**
@@ -34,6 +34,6 @@ public interface FabricMaterialBaker extends SpriteFinderGetter {
 
 	@Override
 	default SpriteFinder spriteFinder(QuadAtlas quadAtlas) {
-		return spriteFinder(quadAtlas.getTextureId());
+		return spriteFinder(quadAtlas.getId());
 	}
 }

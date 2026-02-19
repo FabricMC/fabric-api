@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,9 +45,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	private BlockMultiBufferSource bufferSource;
 	@Nullable
 	private Predicate<ChunkSectionLayer> layerFilter;
-	private float red;
-	private float green;
-	private float blue;
+	private int tint;
 	private int light;
 
 	@Nullable
@@ -60,7 +57,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	protected void bufferQuad(MutableQuadViewImpl quad) {
 		final SpriteFinder spriteFinder = Minecraft.getInstance()
 				.getAtlasManager()
-				.getAtlasOrThrow(quad.atlas().getTextureId())
+				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
 		final ChunkSectionLayer layer = quad.chunkLayerOrDefault(spriteFinder);
 
@@ -84,12 +81,8 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	private void tintQuad(MutableQuadViewImpl quad) {
 		if (quad.tintIndex() != -1) {
-			final float red = this.red;
-			final float green = this.green;
-			final float blue = this.blue;
-
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, ARGB.scaleRGB(quad.color(i), red, green, blue));
+				quad.color(i, ARGB.scaleRGB(quad.color(i), this.tint));
 			}
 		}
 	}
@@ -108,15 +101,13 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		this.pose = pose;
 		this.overlay = overlay;
 
 		this.bufferSource = bufferSource;
 		this.layerFilter = layerFilter;
-		this.red = Mth.clamp(red, 0, 1);
-		this.green = Mth.clamp(green, 0, 1);
-		this.blue = Mth.clamp(blue, 0, 1);
+		this.tint = tint;
 		this.light = light;
 
 		random.setSeed(42L);

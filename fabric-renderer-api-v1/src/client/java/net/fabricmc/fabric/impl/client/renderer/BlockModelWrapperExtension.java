@@ -16,10 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.renderer;
 
-import net.minecraft.client.resources.model.SpriteGetter;
-
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinderGetter;
 
 public interface BlockModelWrapperExtension {
-	void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter);
+	void fabric_setMesh(Mesh mesh, SpriteFinderGetter spriteFinderGetter);
 }

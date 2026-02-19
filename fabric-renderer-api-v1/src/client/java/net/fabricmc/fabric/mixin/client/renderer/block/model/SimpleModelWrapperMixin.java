@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -66,7 +65,7 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 						forbiddenSpritesRef.set(forbiddenSprites);
 					}
 
-					TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().spriteFinder(quad.atlas()).find(quad);
+					TextureAtlasSprite sprite = modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
 					forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
 				}
 			});

@@ -99,10 +99,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private void bufferQuads(List<BakedQuad> vanillaQuads, MeshView mesh) {
 		QuadEmitter emitter = getEmitter();
 
-		final int vanillaQuadCount = vanillaQuads.size();
-
-		for (int i = 0; i < vanillaQuadCount; i++) {
-			final BakedQuad q = vanillaQuads.get(i);
+		for (final BakedQuad q : vanillaQuads) {
 			emitter.fromBakedQuad(q);
 			emitter.emit();
 		}
@@ -114,7 +111,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 	protected void bufferQuad(MutableQuadViewImpl quad) {
 		final SpriteFinder spriteFinder = Minecraft.getInstance()
 				.getAtlasManager()
-				.getAtlasOrThrow(quad.atlas().getTextureId())
+				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
 		final RenderType renderType = quad.itemRenderTypeOrDefault(spriteFinder);
 
@@ -199,7 +196,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 				}
 			}
 
-			return ItemRendererAccessor.fabric_getSpecialFoilBuffer(
+			return ItemRendererAccessor.fabric_getFoilBuffer(
 					bufferSource,
 					renderType,
 					specialFoilPose

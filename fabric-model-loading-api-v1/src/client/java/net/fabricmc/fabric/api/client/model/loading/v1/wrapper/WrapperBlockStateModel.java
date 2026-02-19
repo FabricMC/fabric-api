@@ -24,7 +24,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -76,5 +75,10 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	@Override
 	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return wrapped.particleMaterial(level, pos, state);
+	}
+
+	@Override
+	public boolean hasTranslucency() {
+		return wrapped.hasTranslucency();
 	}
 }

@@ -38,7 +38,6 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderContext;
@@ -65,9 +64,9 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		SimpleBlockRenderContext.POOL.get().bufferModel(
-				pose, bufferSource, layerFilter, model, red, green, blue, light, overlay, level, pos, state);
+				pose, bufferSource, layerFilter, model, tint, light, overlay, level, pos, state);
 	}
 
 	@Override
@@ -77,12 +76,9 @@ public class IndigoRenderer implements Renderer {
 		if (renderShape != RenderShape.INVISIBLE) {
 			BlockStateModel model = renderDispatcher.getBlockModel(state);
 			int tint = ((BlockRenderDispatcherAccessor) renderDispatcher).getBlockColors().getColor(state, null, null, 0);
-			float red = (tint >> 16 & 255) / 255.0F;
-			float green = (tint >> 8 & 255) / 255.0F;
-			float blue = (tint & 255) / 255.0F;
 			FabricModelBlockRenderer.renderModel(
 					poseStack.last(), ChunkSectionLayerHelper.entityDelegate(
-							bufferSource), layerFilter, model, red, green, blue, light, overlay,
+							bufferSource), layerFilter, model, tint, light, overlay,
 					level, pos, state);
 		}
 	}

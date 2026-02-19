@@ -58,7 +58,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
  * numbers. It also allows for a consistent interface for those transformations.
  */
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
-	private static final QuadTransform NO_TRANSFORM = q -> true;
+	private static final QuadTransform NO_TRANSFORM = _ -> true;
 
 	private static final int[] DEFAULT_QUAD_DATA = new int[EncodingFormat.TOTAL_STRIDE];
 
@@ -280,7 +280,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		nominalFace(quad.direction());
 		emissive(lightEmission == 15);
 		diffuseShade(quad.shade());
-		QuadAtlas atlas = QuadAtlas.of(quad.spriteInfo().sprite().atlasLocation());
+		QuadAtlas atlas = QuadAtlas.ofLocation(quad.spriteInfo().sprite().atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;

@@ -46,7 +46,7 @@ abstract class BlockModelWrapperUnbakedMixin {
 		Mesh mesh = meshRef.get();
 
 		if (mesh != null) {
-			((BlockModelWrapperExtension) model).fabric_setMesh(mesh, context.blockModelBaker().sprites());
+			((BlockModelWrapperExtension) model).fabric_setMesh(mesh, context.blockModelBaker().materials());
 		}
 
 		return model;

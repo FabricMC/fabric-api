@@ -27,8 +27,8 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 
 @Mixin(ItemRenderer.class)
 public interface ItemRendererAccessor {
-	@Invoker("getSpecialFoilBuffer")
-	static VertexConsumer fabric_getSpecialFoilBuffer(MultiBufferSource bufferSource, RenderType renderType, PoseStack.Pose pose) {
+	@Invoker("getFoilBuffer")
+	static VertexConsumer fabric_getFoilBuffer(MultiBufferSource bufferSource, RenderType renderType, PoseStack.Pose pose) {
 		throw new AssertionError();
 	}
 }

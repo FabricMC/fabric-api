@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Transparency;
@@ -45,7 +45,7 @@ public final class ModelHelper {
 	/** @see #faceFromIndex(int) */
 	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
-	private static final Map<TextureAtlasSprite, BakedQuad.SpriteInfo> SPRITE_INFOS = new HashMap<>();
+	private static final Map<TextureAtlasSprite, BakedQuad.SpriteInfo> SPRITE_INFOS = new ConcurrentHashMap<>();
 
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
 	public static final int NULL_FACE_ID = 6;
@@ -66,7 +66,7 @@ public final class ModelHelper {
 			ChunkSectionLayer chunkLayer = ChunkSectionLayer.byTransparency(transparency);
 			RenderType itemRenderType;
 
-			if (sprite.atlasLocation().equals(QuadAtlas.BLOCK.getTextureId())) {
+			if (sprite.atlasLocation().equals(QuadAtlas.BLOCK.getTextureLocation())) {
 				itemRenderType = switch (chunkLayer) {
 				case SOLID, CUTOUT -> Sheets.cutoutBlockItemSheet();
 				case TRANSLUCENT -> Sheets.translucentBlockItemSheet();

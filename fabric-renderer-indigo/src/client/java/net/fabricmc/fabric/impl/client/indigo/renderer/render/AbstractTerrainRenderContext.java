@@ -74,7 +74,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 		final SpriteFinder spriteFinder = Minecraft.getInstance()
 				.getAtlasManager()
-				.getAtlasOrThrow(quad.atlas().getTextureId())
+				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
 		final VertexConsumer vertexConsumer = getVertexConsumer(quad.chunkLayerOrDefault(spriteFinder));
 

@@ -28,7 +28,8 @@
     "item.ItemStackRenderStateLayerRenderStateMixin",
     "sprite.ModelManager1Mixin",
     "sprite.SpriteLoaderPreparationsMixin",
-    "sprite.TextureAtlasMixin"
+    "sprite.TextureAtlasMixin",
+    "sprite.MaterialBakerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

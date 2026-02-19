@@ -23,7 +23,6 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -33,8 +32,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.renderer.QuadSpriteBaker;
 
@@ -189,7 +187,7 @@ public interface MutableQuadView extends QuadView {
 	 */
 	default MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
 		QuadSpriteBaker.bakeSprite(this, sprite, bakeFlags);
-		QuadAtlas atlas = QuadAtlas.of(sprite.atlasLocation());
+		QuadAtlas atlas = QuadAtlas.ofLocation(sprite.atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;
@@ -366,7 +364,7 @@ public interface MutableQuadView extends QuadView {
 	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
 	 *
 	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
-	 * converted to a {@link RenderType} using {@link #itemRenderTypeOrDefault()}.
+	 * converted to a {@link RenderType} using {@link #itemRenderTypeOrDefault(SpriteFinder)}.
 	 *
 	 * <p>The default value is {@link QuadAtlas#BLOCK}.
 	 *

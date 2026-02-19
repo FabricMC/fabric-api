@@ -26,7 +26,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -80,6 +79,11 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	@Override
 	public Material.Baked particleMaterial() {
 		return regularModel.particleMaterial();
+	}
+
+	@Override
+	public boolean hasTranslucency() {
+		return this.regularModel.hasTranslucency() || this.biomeModel.hasTranslucency();
 	}
 
 	@Override

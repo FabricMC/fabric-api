@@ -46,10 +46,22 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	private final BlockStateModel[] models;
 	@UnmodifiableView
 	private final List<BlockStateModel> modelsView;
+	private final boolean hasTranslucency;
 
 	public CompositeBlockStateModelImpl(BlockStateModel[] models) {
 		this.models = models;
 		modelsView = Arrays.asList(models);
+
+		boolean hasTranslucency = false;
+
+		for (BlockStateModel model : this.models) {
+			if (model.hasTranslucency()) {
+				hasTranslucency = true;
+				break;
+			}
+		}
+
+		this.hasTranslucency = hasTranslucency;
 	}
 
 	public static CompositeBlockStateModelImpl of(List<BlockStateModel> models) {
@@ -120,6 +132,11 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	@Override
 	public Material.Baked particleMaterial() {
 		return models[0].particleMaterial();
+	}
+
+	@Override
+	public boolean hasTranslucency() {
+		return this.hasTranslucency;
 	}
 
 	@Override
