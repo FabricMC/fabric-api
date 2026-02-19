@@ -131,6 +131,7 @@
   "tag.entity_type.c.boats": "Boats",
   "tag.entity_type.c.bosses": "Bosses",
   "tag.entity_type.c.capturing_not_supported": "Capturing Not Supported",
+  "tag.entity_type.c.item_frames": "Item Frames",
   "tag.entity_type.c.minecarts": "Minecarts",
   "tag.entity_type.c.teleporting_not_supported": "Teleporting Not Supported",
   "tag.fluid.c.beetroot_soup": "Beetroot Soup",

@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.recipe.ingredient;
+package net.fabricmc.fabric.impl.client.indigo.renderer;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 
-import net.minecraft.network.Connection;
-import net.minecraft.resources.Identifier;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
 
-/**
- * Implemented on {@link Connection} to store which custom ingredients the client supports.
- */
-public interface SupportedIngredientsConnection {
-	void fabric_setSupportedCustomIngredients(Set<Identifier> supportedCustomIngredients);
+public class IndigoRendererProvider implements RendererProvider {
+	@Override
+	public Renderer getRenderer() {
+		return IndigoRenderer.getOrCreateInstance();
+	}
 
-	Set<Identifier> fabric_getSupportedCustomIngredients();
+	@Override
+	public Collection<String> getOverrides() {
+		return List.of();
+	}
 }

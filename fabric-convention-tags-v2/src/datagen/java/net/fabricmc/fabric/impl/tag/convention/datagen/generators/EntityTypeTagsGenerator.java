@@ -56,6 +56,9 @@ public final class EntityTypeTagsGenerator extends FabricTagsProvider.EntityType
 				.add(EntityType.DARK_OAK_CHEST_BOAT)
 				.add(EntityType.MANGROVE_CHEST_BOAT)
 				.add(EntityType.BAMBOO_CHEST_RAFT);
+		valueLookupBuilder(ConventionalEntityTypeTags.ITEM_FRAMES)
+				.add(EntityType.ITEM_FRAME)
+				.add(EntityType.GLOW_ITEM_FRAME);
 		valueLookupBuilder(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
 		valueLookupBuilder(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED);
 	}

@@ -122,7 +122,7 @@ public final class ContentRegistryTest implements ModInitializer {
 			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
 		});
 
-		LandPathTypeRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGE_OTHER, PathType.DANGER_OTHER);
+		LandPathTypeRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGING, PathType.DAMAGING_IN_NEIGHBOR);
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 		StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.TNT);
 		StrippableBlockRegistry.registerCopyState(Blocks.OAK_STAIRS, Blocks.SPRUCE_STAIRS);

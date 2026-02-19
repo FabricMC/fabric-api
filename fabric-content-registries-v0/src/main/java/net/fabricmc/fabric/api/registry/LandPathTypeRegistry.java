@@ -185,9 +185,9 @@ public final class LandPathTypeRegistry {
 		 * <p>You can specify what to return if the block state is a direct target of an entity path,
 		 * or a neighbor block of the entity path.
 		 *
-		 * <p>For example, for a cactus-like block you should use {@link PathType#DAMAGE_OTHER} if the block
+		 * <p>For example, for a cactus-like block you should use {@link PathType#DAMAGING} if the block
 		 * is a direct target in the entity path ({@code neighbor == false}) to specify that an entity should not pass
-		 * through or above the block because it will cause damage, and you should use {@link PathType#DANGER_OTHER}
+		 * through or above the block because it will cause damage, and you should use {@link PathType#DAMAGING_IN_NEIGHBOR}
 		 * if the block is a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity
 		 * should not get close to the block because it is dangerous.
 		 *
@@ -211,9 +211,9 @@ public final class LandPathTypeRegistry {
 		 * <p>You can specify what to return if the block state is a direct target of an entity path,
 		 * or a neighbor block of the entity path.
 		 *
-		 * <p>For example, for a cactus-like block you should specify {@link PathType#DAMAGE_OTHER} if the block
+		 * <p>For example, for a cactus-like block you should specify {@link PathType#DAMAGING} if the block
 		 * is a direct target ({@code neighbor == false}) to specify that an entity should not pass through or above
-		 * the block because it will cause damage, and {@link PathType#DANGER_OTHER} if the cactus will be found
+		 * the block because it will cause damage, and {@link PathType#DAMAGING_IN_NEIGHBOR} if the cactus will be found
 		 * as a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity should not get
 		 * close to the block because is dangerous.
 		 *

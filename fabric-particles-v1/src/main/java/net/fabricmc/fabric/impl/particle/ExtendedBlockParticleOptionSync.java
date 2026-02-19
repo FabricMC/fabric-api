@@ -16,34 +16,37 @@
 
 package net.fabricmc.fabric.impl.particle;
 
-import java.util.Set;
-
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.impl.networking.FabricRegistryFriendlyByteBuf;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 
 public class ExtendedBlockParticleOptionSync implements ModInitializer {
+	private static final PacketContext.Key<Boolean> ENCODE_FALLBACK = PacketContext.key(Identifier.fromNamespaceAndPath("fabric", "extended_block_particle_fallback"));
 	private static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "extended_block_particle_option_sync");
 
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.clientboundConfiguration().register(DummyPayload.ID, DummyPayload.CODEC);
+		ServerConfigurationConnectionEvents.CONFIGURE.register((listener, _) -> {
+			listener.getPacketContext().set(ENCODE_FALLBACK, !ServerConfigurationNetworking.canSend(listener, PACKET_ID));
+		});
 	}
 
-	public static boolean shouldEncodeFallback(RegistryFriendlyByteBuf buf) {
-		Set<Identifier> channels = ((FabricRegistryFriendlyByteBuf) buf).fabric_getSendableConfigurationChannels();
+	public static boolean shouldEncodeFallback() {
+		PacketContext context = PacketContext.get();
 
-		if (channels == null) {
+		if (context == null) {
 			return true;
 		}
 
-		return !channels.contains(ExtendedBlockParticleOptionSync.PACKET_ID);
+		return context.orElse(ENCODE_FALLBACK, true);
 	}
 
 	public record DummyPayload() implements CustomPacketPayload {

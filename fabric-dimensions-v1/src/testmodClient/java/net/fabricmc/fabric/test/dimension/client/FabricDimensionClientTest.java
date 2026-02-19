@@ -47,7 +47,7 @@ public class FabricDimensionClientTest implements FabricClientGameTest {
 			spContext.getServer().runOnServer(server -> {
 				ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 				Optional<Holder<WorldClock>> defaultClock = overworld.dimensionType().defaultClock();
-				overworld.getServer().clockManager().skipToTimeMarker(defaultClock.get(), ClockTimeMarkers.NOON);
+				overworld.getServer().clockManager().moveToTimeMarker(defaultClock.get(), ClockTimeMarkers.NOON);
 				int overworldCloudColor = overworld.environmentAttributes().getValue(EnvironmentAttributes.CLOUD_COLOR, BlockPos.ZERO);
 
 				if (overworldCloudColor != PURPLE) {

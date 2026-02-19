@@ -92,7 +92,7 @@ abstract class MinecraftMixin {
 		ScreenEvents.beforeTick(this.tickingScreen).invoker().beforeTick(this.tickingScreen);
 	}
 
-	@Inject(method = "doWorldLoad", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(ZZ)V"))
+	@Inject(method = "doWorldLoad", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(Z)V"))
 	private void afterLoadingScreenTick(CallbackInfo ci) {
 		ScreenEvents.afterTick(this.tickingScreen).invoker().afterTick(this.tickingScreen);
 		// Finally set the currently ticking screen to null
