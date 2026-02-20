@@ -76,7 +76,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 				.getAtlasManager()
 				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
-		final VertexConsumer vertexConsumer = getVertexConsumer(quad.chunkLayerOrDefault(spriteFinder));
+		final VertexConsumer vertexConsumer = getVertexConsumer(quad.getOrResolveChunkLayer(spriteFinder));
 
 		if (vertexConsumer == null) {
 			return;

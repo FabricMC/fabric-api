@@ -30,6 +30,9 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
+
 /**
  * A {@link UnbakedExtraModel} that loads a single model.
  *
@@ -84,13 +87,20 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 					settings
 			);
 
-			boolean hasTranslucency = false;
+			final boolean[] hasTranslucency = {false};
 
-			// SimpleModelWrapper#bake does this as well
-			for (BakedQuad quad : quads.getAll()) {
-				if (quad.spriteInfo().layer().translucent()) {
-					hasTranslucency = true;
-					break;
+			if (quads instanceof MeshQuadCollection meshQuads) {
+				meshQuads.getMesh().forEach(quad -> {
+					SpriteFinder spriteFinder = baker.materials().spriteFinder(quad.atlas());
+					hasTranslucency[0] |= quad.getOrResolveChunkLayer(spriteFinder).translucent();
+				});
+			} else {
+				// SimpleModelWrapper#bake does this as well
+				for (BakedQuad quad : quads.getAll()) {
+					if (quad.spriteInfo().layer().translucent()) {
+						hasTranslucency[0] = true;
+						break;
+					}
 				}
 			}
 
@@ -98,7 +108,7 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 					quads,
 					baked.getTopAmbientOcclusion(),
 					baked.resolveParticleMaterial(textures, baker),
-					hasTranslucency
+					hasTranslucency[0]
 			));
 		});
 	}

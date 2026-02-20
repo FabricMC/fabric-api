@@ -51,11 +51,9 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	// alone, bottom, middle, top
 	private final Material.Baked[] materials;
-	private final boolean hasTranslucency;
 
-	public PillarBlockStateModel(Material.Baked[] materials, boolean hasTranslucency) {
+	public PillarBlockStateModel(Material.Baked[] materials) {
 		this.materials = materials;
-		this.hasTranslucency = hasTranslucency;
 	}
 
 	@Override
@@ -125,7 +123,7 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	@Override
 	public boolean hasTranslucency() {
-		return this.hasTranslucency;
+		return false;
 	}
 
 	public record Unbaked() implements CustomUnbakedBlockStateModel, ModelDebugName {
@@ -147,19 +145,14 @@ public class PillarBlockStateModel implements BlockStateModel {
 		@Override
 		public BlockStateModel bake(ModelBaker baker) {
 			Material.Baked[] materials = new Material.Baked[MATERIALS.size()];
-			boolean hasTranslucency = false;
 
 			for (int i = 0; i < materials.length; ++i) {
 				Material.Baked material = baker.materials()
 						.get(MATERIALS.get(i), this);
 				materials[i] = material;
-				hasTranslucency |= material.forceTranslucent() || material.sprite()
-						.contents()
-						.computeTransparency(0.0f, 0.0f, 1.0f, 1.0f)
-						.hasTranslucent();
 			}
 
-			return new PillarBlockStateModel(materials, hasTranslucency);
+			return new PillarBlockStateModel(materials);
 		}
 
 		@Override

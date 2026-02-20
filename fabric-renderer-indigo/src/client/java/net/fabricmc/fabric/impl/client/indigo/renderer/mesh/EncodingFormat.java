@@ -17,9 +17,6 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.Nullable;
 
@@ -57,24 +54,36 @@ public final class EncodingFormat {
 	static final int VERTEX_V;
 	static final int VERTEX_LIGHTMAP;
 	static final int VERTEX_NORMAL;
-	private static final int INDIGO_VERTICES_AND_PADDING = VertexFormatElement.NORMAL.byteSize() + 1;
-	public static final int VERTEX_STRIDE;
+	private static final int VERTEX_POSITION_BYTES = Float.BYTES;
+	private static final int VERTEX_COLOR_BYTES = Integer.BYTES;
+	private static final int VERTEX_UV_BYTES = Float.BYTES;
+	private static final int VERTEX_LIGHTMAP_BYTES = Integer.BYTES;
+	private static final int VERTEX_NORMAL_BYTES = Integer.BYTES;
+	private static final int VERTEX_COLOR_SIZE = VERTEX_COLOR_BYTES / 4;
+	private static final int VERTEX_UV_SIZE = VERTEX_UV_BYTES / 4;
+	private static final int VERTEX_LIGHTMAP_SIZE = VERTEX_LIGHTMAP_BYTES / 4;
+	private static final int VERTEX_NORMAL_SIZE = VERTEX_NORMAL_BYTES / 4;
+	private static final int VERTEX_POSITION_SIZE = VERTEX_POSITION_BYTES / 4;
+	public static final int VERTEX_STRIDE =
+			3 * VERTEX_POSITION_SIZE
+			+ VERTEX_COLOR_SIZE
+			+ 2 * VERTEX_UV_SIZE
+			+ VERTEX_LIGHTMAP_SIZE
+			+ VERTEX_NORMAL_SIZE;
 
 	public static final int QUAD_STRIDE;
 	public static final int QUAD_STRIDE_BYTES;
 	public static final int TOTAL_STRIDE;
 
 	static {
-		final VertexFormat format = DefaultVertexFormat.BLOCK;
 		VERTEX_X = HEADER_STRIDE + 0;
-		VERTEX_Y = HEADER_STRIDE + 1;
-		VERTEX_Z = HEADER_STRIDE + 2;
-		VERTEX_COLOR = HEADER_STRIDE + 3;
-		VERTEX_U = HEADER_STRIDE + 4;
-		VERTEX_V = VERTEX_U + 1;
-		VERTEX_LIGHTMAP = HEADER_STRIDE + 6;
-		VERTEX_NORMAL = HEADER_STRIDE + 7;
-		VERTEX_STRIDE = (format.getVertexSize() + INDIGO_VERTICES_AND_PADDING) / 4;
+		VERTEX_Y = VERTEX_X + VERTEX_POSITION_SIZE;
+		VERTEX_Z = VERTEX_Y + VERTEX_POSITION_SIZE;
+		VERTEX_COLOR = VERTEX_Z + VERTEX_COLOR_SIZE;
+		VERTEX_U = VERTEX_COLOR + VERTEX_UV_SIZE;
+		VERTEX_V = VERTEX_U + VERTEX_UV_SIZE;
+		VERTEX_LIGHTMAP = VERTEX_V + VERTEX_LIGHTMAP_SIZE;
+		VERTEX_NORMAL = VERTEX_LIGHTMAP + VERTEX_NORMAL_SIZE;
 		QUAD_STRIDE = VERTEX_STRIDE * 4;
 		QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
 		TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;

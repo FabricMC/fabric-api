@@ -99,7 +99,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private void bufferQuads(List<BakedQuad> vanillaQuads, MeshView mesh) {
 		QuadEmitter emitter = getEmitter();
 
-		for (final BakedQuad q : vanillaQuads) {
+		//noinspection ForLoopReplaceableByForEach
+		for (int i = 0; i < vanillaQuads.size(); i++) {
+			final BakedQuad q = vanillaQuads.get(i);
 			emitter.fromBakedQuad(q);
 			emitter.emit();
 		}
@@ -113,7 +115,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 				.getAtlasManager()
 				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
-		final RenderType renderType = quad.itemRenderTypeOrDefault(spriteFinder);
+		final RenderType renderType = quad.getOrResolveItemRenderType(spriteFinder);
 
 		if (renderType.hasBlending() != translucent) {
 			return;

@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Transparency;
@@ -36,6 +34,7 @@ import net.minecraft.data.AtlasIds;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 
 /**
@@ -45,41 +44,80 @@ public final class ModelHelper {
 	/** @see #faceFromIndex(int) */
 	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
-	private static final Map<TextureAtlasSprite, BakedQuad.SpriteInfo> SPRITE_INFOS = new ConcurrentHashMap<>();
-
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
 	public static final int NULL_FACE_ID = 6;
 
 	private ModelHelper() { }
 
 	/**
-	 * Gets or computes a {@link BakedQuad.SpriteInfo} for a {@link TextureAtlasSprite}.
+	 * Computes a {@link BakedQuad.SpriteInfo} for a {@link TextureAtlasSprite}.
 	 *
-	 * <p>This method checks the entire sprite's {@linkplain Transparency transparency} instead of
-	 * only what a quad uses.
+	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
+	 * This method is meant primarily for baking.
 	 */
-	public static BakedQuad.SpriteInfo getSpriteInfo(TextureAtlasSprite sprite) {
-		return SPRITE_INFOS.computeIfAbsent(sprite, _ -> {
-			Transparency transparency = sprite
-					.contents()
-					.computeTransparency(0.0f, 0.0f, 1.0f, 1.0f);
-			ChunkSectionLayer chunkLayer = ChunkSectionLayer.byTransparency(transparency);
-			RenderType itemRenderType;
+	public static BakedQuad.SpriteInfo computeSpriteInfo(TextureAtlasSprite sprite, QuadView quad) {
+		Transparency transparency = computeTransparency(sprite, quad);
+		ChunkSectionLayer chunkLayer = ChunkSectionLayer.byTransparency(transparency);
+		RenderType itemRenderType;
 
-			if (sprite.atlasLocation().equals(QuadAtlas.BLOCK.getTextureLocation())) {
-				itemRenderType = switch (chunkLayer) {
-				case SOLID, CUTOUT -> Sheets.cutoutBlockItemSheet();
-				case TRANSLUCENT -> Sheets.translucentBlockItemSheet();
-				};
-			} else {
-				itemRenderType = switch (chunkLayer) {
-				case SOLID, CUTOUT -> Sheets.cutoutItemSheet();
-				case TRANSLUCENT -> Sheets.translucentItemSheet();
-				};
+		if (sprite.atlasLocation().equals(QuadAtlas.BLOCK.getTextureLocation())) {
+			itemRenderType = switch (chunkLayer) {
+			case SOLID, CUTOUT -> Sheets.cutoutBlockItemSheet();
+			case TRANSLUCENT -> Sheets.translucentBlockItemSheet();
+			};
+		} else {
+			itemRenderType = switch (chunkLayer) {
+			case SOLID, CUTOUT -> Sheets.cutoutItemSheet();
+			case TRANSLUCENT -> Sheets.translucentItemSheet();
+			};
+		}
+
+		// TODO: Consider interning or some other caching scheme to reduce object churn
+		return new BakedQuad.SpriteInfo(sprite, chunkLayer, itemRenderType);
+	}
+
+	/**
+	 * Computes {@link Transparency} for a {@link TextureAtlasSprite}.
+	 *
+	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
+	 * This method is meant primarily for baking.
+	 */
+	public static Transparency computeTransparency(TextureAtlasSprite sprite, QuadView quad) {
+		// Find the minimum and maximum UV's.
+		// A simulation of the algorithm is provided in comments below.
+		float minU = Float.MAX_VALUE; // 7, 7, 5, 3
+		float minV = Float.MAX_VALUE; // 9, 8, 8, 8
+		float maxU = 0; // 7, 12, 12, 12
+		float maxV = 0; // 9, 9,  10, 13
+
+		// u, v
+		// 7, 9
+		// 12,8
+		// 5, 10
+		// 3, 13
+
+		for (int i = 0; i < 4; i++) {
+			if (quad.u(i) < minU) {
+				minU = quad.u(i);
 			}
 
-			return new BakedQuad.SpriteInfo(sprite, chunkLayer, itemRenderType);
-		});
+			if (quad.u(i) > maxU) {
+				maxU = quad.u(i);
+			}
+
+			if (quad.v(i) < minV) {
+				minV = quad.v(i);
+			}
+
+			if (quad.v(i) > maxV) {
+				maxV = quad.v(i);
+			}
+		}
+
+		// See FaceBakery#computeMaterialTransparency
+		return sprite
+				.contents()
+				.computeTransparency(minU, minV, maxU, maxV);
 	}
 
 	/**

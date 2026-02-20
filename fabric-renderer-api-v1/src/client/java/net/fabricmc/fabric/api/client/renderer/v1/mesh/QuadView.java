@@ -166,13 +166,22 @@ public interface QuadView {
 	ChunkSectionLayer chunkLayer();
 
 	/**
+	 * When computing a value, this method also sets the {@link #chunkLayer()} value.
+	 *
 	 * @return this quad's {@link ChunkSectionLayer} or a default determined by the sprite's
 	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
 	 * @see #chunkLayer()
 	 */
-	default ChunkSectionLayer chunkLayerOrDefault(SpriteFinder spriteFinder) {
+	default ChunkSectionLayer getOrResolveChunkLayer(SpriteFinder spriteFinder) {
 		if (this.chunkLayer() == null) {
-			return ModelHelper.getSpriteInfo(spriteFinder.find(this)).layer();
+			ChunkSectionLayer layer = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
+					.layer();
+
+			if (this instanceof MutableQuadView self) {
+				self.chunkLayer(layer);
+			}
+
+			return layer;
 		}
 
 		return this.chunkLayer();
@@ -185,13 +194,22 @@ public interface QuadView {
 	RenderType itemRenderType();
 
 	/**
+	 * When computing a value, this method also sets the {@link #itemRenderType()} value.
+	 *
 	 * @return this quad's {@linkplain RenderType item RenderType} or a default determined by the sprite's
 	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
 	 * @see #itemRenderType()
 	 */
-	default RenderType itemRenderTypeOrDefault(SpriteFinder spriteFinder) {
+	default RenderType getOrResolveItemRenderType(SpriteFinder spriteFinder) {
 		if (this.itemRenderType() == null) {
-			return ModelHelper.getSpriteInfo(spriteFinder.find(this)).itemRenderType();
+			RenderType renderType = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
+					.itemRenderType();
+
+			if (this instanceof MutableQuadView self) {
+				self.itemRenderType(renderType);
+			}
+
+			return renderType;
 		}
 
 		return this.itemRenderType();
@@ -276,7 +294,7 @@ public interface QuadView {
 			}
 		}
 
-		BakedQuad.SpriteInfo spriteInfo = ModelHelper.getSpriteInfo(sprite);
+		BakedQuad.SpriteInfo spriteInfo = ModelHelper.computeSpriteInfo(sprite, this);
 
 		if (this.chunkLayer() != null && this.itemRenderType() == null) {
 			spriteInfo = new BakedQuad.SpriteInfo(

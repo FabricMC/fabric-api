@@ -59,7 +59,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 				.getAtlasManager()
 				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
-		final ChunkSectionLayer layer = quad.chunkLayerOrDefault(spriteFinder);
+		final ChunkSectionLayer layer = quad.getOrResolveChunkLayer(spriteFinder);
 
 		if (layerFilter != null && !layerFilter.test(layer)) {
 			return;
@@ -81,8 +81,10 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	private void tintQuad(MutableQuadViewImpl quad) {
 		if (quad.tintIndex() != -1) {
+			int tint = this.tint;
+
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, ARGB.scaleRGB(quad.color(i), this.tint));
+				quad.color(i, ARGB.scaleRGB(quad.color(i), tint));
 			}
 		}
 	}

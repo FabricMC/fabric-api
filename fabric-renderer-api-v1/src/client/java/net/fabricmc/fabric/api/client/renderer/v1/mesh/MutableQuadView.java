@@ -279,20 +279,24 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Controls how this quad's pixels should be blended with the scene in block form.
 	 *
-	 * <p>If set to {@code null}, {@link ModelHelper#getSpriteInfo(TextureAtlasSprite)} will be used to retrieve
+	 * <p>If set to {@code null}, {@link ModelHelper#computeSpriteInfo(TextureAtlasSprite)} will be used to retrieve
 	 * the {@linkplain ChunkSectionLayer chunk layer}. Set to another value to override this behavior.
 	 *
 	 * <p>The default value is {@code null}.
+	 *
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
 	 */
 	MutableQuadView chunkLayer(@Nullable ChunkSectionLayer layer);
 
 	/**
 	 * Controls how this quad should be rendered in item form.
 	 *
-	 * <p>If set to {@code null}, {@link ModelHelper#getSpriteInfo(TextureAtlasSprite)} will be used to retrieve
+	 * <p>If set to {@code null}, {@link ModelHelper#computeSpriteInfo(TextureAtlasSprite)} will be used to retrieve
 	 * the {@linkplain RenderType item RenderType}. Set to another value to override this behavior.
 	 *
 	 * <p>The default value is {@code null}.
+	 *
+	 * <p>This property is respected only in item contexts. It will not have an effect in other contexts.
 	 */
 	MutableQuadView itemRenderType(@Nullable RenderType renderType);
 
@@ -364,7 +368,7 @@ public interface MutableQuadView extends QuadView {
 	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
 	 *
 	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
-	 * converted to a {@link RenderType} using {@link #itemRenderTypeOrDefault(SpriteFinder)}.
+	 * converted to a {@link RenderType} using {@link #getOrResolveItemRenderType(SpriteFinder)}.
 	 *
 	 * <p>The default value is {@link QuadAtlas#BLOCK}.
 	 *

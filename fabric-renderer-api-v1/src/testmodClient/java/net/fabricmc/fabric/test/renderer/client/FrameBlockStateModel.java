@@ -135,7 +135,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 
 	@Override
 	public boolean hasTranslucency() {
-		return false;
+		return true;
 	}
 
 	@Override
