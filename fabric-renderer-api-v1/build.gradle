@@ -14,7 +14,8 @@ testDependencies(project, [
 	':fabric-particles-v1',
 	':fabric-renderer-indigo',
 	':fabric-rendering-v1',
-	':fabric-resource-loader-v1'
+	':fabric-resource-loader-v1',
+	':fabric-lifecycle-events-v1'
 ])
 
 loom {

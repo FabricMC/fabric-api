@@ -36,6 +36,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
@@ -70,20 +71,13 @@ public interface Renderer {
 	/**
 	 * Access to the current {@link Renderer} for creating and retrieving mesh builders
 	 * and materials.
+	 *
+	 * <p><b>Warning:</b> do not call this method before {@link ModInitializer} has been invoked. Doing
+	 * so will likely crash. If you need to determine which renderer is chosen, use
+	 * {@link RendererProvider#getModId()}.
 	 */
 	static Renderer get() {
 		return RendererManager.getRenderer();
-	}
-
-	/**
-	 * Rendering extension mods must implement {@link Renderer} and
-	 * call this method during initialization.
-	 *
-	 * <p>Only one {@link Renderer} plug-in can be active in any game instance.
-	 * If a second mod attempts to register, this method will throw an UnsupportedOperationException.
-	 */
-	static void register(Renderer renderer) {
-		RendererManager.registerRenderer(renderer);
 	}
 
 	/**

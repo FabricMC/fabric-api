@@ -5,8 +5,6 @@
   "mixins": [
     "RecipeAccessMixin",
     "RecipeManagerMixin",
-    "ingredient.ConnectionMixin",
-    "ingredient.PacketEncoderMixin",
     "ingredient.IngredientMixin",
     "ingredient.ShapelessRecipeMixin",
     "sync.ConnectionMixin",
