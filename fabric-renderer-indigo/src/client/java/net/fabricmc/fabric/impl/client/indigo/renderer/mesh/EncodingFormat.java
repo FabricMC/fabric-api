@@ -260,7 +260,7 @@ public final class EncodingFormat {
 	static @Nullable RenderType itemRenderType(int bits) {
 		ItemRenderType itemRenderType =
 				NULLABLE_ITEM_RENDER_TYPES[(bits & ITEM_RENDER_TYPE_MASK) >>> ITEM_RENDER_TYPE_BIT_OFFSET];
-		return (itemRenderType != null ? itemRenderType : ItemRenderType.CUTOUT_BLOCK).renderType;
+		return itemRenderType != null ? itemRenderType.renderType : null;
 	}
 
 	static int itemRenderType(int bits, @Nullable RenderType renderType) {
