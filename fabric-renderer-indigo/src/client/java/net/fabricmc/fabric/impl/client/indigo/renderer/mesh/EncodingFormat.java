@@ -102,8 +102,8 @@ public final class EncodingFormat {
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
 	private static final QuadAtlas[] QUAD_ATLASES = QuadAtlas.values();
 	private static final int QUAD_ATLAS_COUNT = QUAD_ATLASES.length;
-	private static final @Nullable ItemRenderType[] ITEM_RENDER_TYPES = ArrayUtils.add(ItemRenderType.values(), null);
-	private static final int NULLABLE_ITEM_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
+	private static final @Nullable ItemRenderType[] NULLABLE_ITEM_RENDER_TYPES = ArrayUtils.add(ItemRenderType.values(), null);
+	private static final int NULLABLE_ITEM_RENDER_TYPE_COUNT = NULLABLE_ITEM_RENDER_TYPES.length;
 
 	private static final int NULL_CHUNK_LAYER_INDEX = NULLABLE_CHUNK_SECTION_LAYER_COUNT - 1;
 	private static final int NULL_FOIL_TYPE_INDEX = NULLABLE_FOIL_TYPE_COUNT - 1;
@@ -257,14 +257,14 @@ public final class EncodingFormat {
 		return (bits & ~QUAD_ATLAS_MASK) | (quadAtlas.ordinal() << QUAD_ATLAS_BIT_OFFSET);
 	}
 
-	static RenderType itemRenderType(int bits) {
+	static @Nullable RenderType itemRenderType(int bits) {
 		ItemRenderType itemRenderType =
-				ITEM_RENDER_TYPES[(bits & ITEM_RENDER_TYPE_MASK) >>> ITEM_RENDER_TYPE_BIT_OFFSET];
+				NULLABLE_ITEM_RENDER_TYPES[(bits & ITEM_RENDER_TYPE_MASK) >>> ITEM_RENDER_TYPE_BIT_OFFSET];
 		return (itemRenderType != null ? itemRenderType : ItemRenderType.CUTOUT_BLOCK).renderType;
 	}
 
-	static int itemRenderType(int bits, RenderType renderType) {
-		int index = renderType == null ? NULL_ITEM_RENDER_TYPE_INDEX : ItemRenderType.RENDER_TYPE_2_ENUM.getOrDefault(renderType, ItemRenderType.CUTOUT_BLOCK).ordinal();
+	static int itemRenderType(int bits, @Nullable RenderType renderType) {
+		int index = renderType == null ? NULL_ITEM_RENDER_TYPE_INDEX : ItemRenderType.RENDER_TYPE_2_ENUM.get(renderType).ordinal();
 		return (bits & ~ITEM_RENDER_TYPE_MASK) | (index << ITEM_RENDER_TYPE_BIT_OFFSET);
 	}
 }
