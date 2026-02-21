@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,7 +34,6 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessOrderedSubmitNodeCollector;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessSubmitNodeCollection;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemSubmit;
@@ -63,8 +61,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 			int[] tintLayers,
 			List<BakedQuad> quads,
 			ItemStackRenderState.FoilType foilType,
-			MeshView mesh,
-			@Nullable ItemRenderTypeGetter renderTypeGetter
+			MeshView mesh
 	) {
 		wasUsed = true;
 		meshItemSubmits.add(new MeshItemSubmit(
@@ -76,8 +73,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 				tintLayers,
 				quads,
 				foilType,
-				mesh,
-				renderTypeGetter
+				mesh
 		));
 	}
 

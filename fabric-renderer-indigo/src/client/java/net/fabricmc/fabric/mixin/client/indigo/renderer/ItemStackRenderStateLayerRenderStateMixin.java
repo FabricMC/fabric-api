@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.client.indigo.renderer;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,7 +32,6 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessOrderedSubmitNodeCollector;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
@@ -43,14 +41,9 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 	@Unique
 	private final MutableMeshImpl mutableMesh = new MutableMeshImpl();
 
-	@Unique
-	@Nullable
-	private ItemRenderTypeGetter renderTypeGetter = null;
-
 	@Inject(method = "clear()V", at = @At("RETURN"))
 	private void onReturnClear(CallbackInfo ci) {
 		mutableMesh.clear();
-		renderTypeGetter = null;
 	}
 
 	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"))
@@ -68,7 +61,7 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 		if (mutableMesh.size() > 0 && submitNodeCollector instanceof AccessOrderedSubmitNodeCollector access) {
 			// We don't have to copy the mesh here because vanilla doesn't copy the tint array or quad list either.
 			access.fabric_submitItem(poseStack, displayContext, light, overlay, outlineColor, tints, quads,
-					foilType, mutableMesh, renderTypeGetter);
+					foilType, mutableMesh);
 		} else {
 			submitNodeCollector.submitItem(poseStack, displayContext, light, overlay, outlineColor, tints, quads,
 					foilType
@@ -79,10 +72,5 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 	@Override
 	public MutableMeshImpl fabric_getMutableMesh() {
 		return mutableMesh;
-	}
-
-	@Override
-	public void fabric_setRenderTypeGetter(ItemRenderTypeGetter renderTypeGetter) {
-		this.renderTypeGetter = renderTypeGetter;
 	}
 }

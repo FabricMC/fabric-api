@@ -29,7 +29,6 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessOrderedSubmitNodeCollector;
 
 @Mixin(SubmitNodeStorage.class)
@@ -44,14 +43,13 @@ abstract class SubmitNodeStorageMixin implements SubmitNodeCollector, AccessOrde
 			int[] tintLayers,
 			List<BakedQuad> quads,
 			ItemStackRenderState.FoilType foilType,
-			MeshView mesh,
-			ItemRenderTypeGetter renderTypeGetter
+			MeshView mesh
 	) {
 		OrderedSubmitNodeCollector nodeCollector = order(0);
 
 		if (nodeCollector instanceof AccessOrderedSubmitNodeCollector access) {
 			access.fabric_submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
-					foilType, mesh, renderTypeGetter);
+					foilType, mesh);
 		} else {
 			nodeCollector.submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
 					foilType

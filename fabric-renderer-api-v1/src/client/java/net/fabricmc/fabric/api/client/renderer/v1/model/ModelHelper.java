@@ -119,7 +119,7 @@ public final class ModelHelper {
 
 		// Normalize UVs
 		// Inverse linear interpolation
-		// `(u_q - u_0)/Δt` where `u_q` is the value and `t` is `u` or `v`
+		// `(t_q - t_0)/Δt` where `t_q` is the value and `t` is `u` or `v`
 		final float width = 1.0f / (sprite.getU1() - sprite.getU0());
 		final float height = 1.0f / (sprite.getV1() - sprite.getV0());
 		minU = (minU - sprite.getU0()) * width;
