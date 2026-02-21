@@ -144,7 +144,7 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model. It can be used to
-			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
+			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#materials get materials}. Note
 			 * that retrieving a model which was not previously
 			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			 * model.
@@ -182,7 +182,7 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model. It can be used to
-			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
+			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#materials get materials}. Note
 			 * that retrieving a model which was not previously
 			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			 * model.
