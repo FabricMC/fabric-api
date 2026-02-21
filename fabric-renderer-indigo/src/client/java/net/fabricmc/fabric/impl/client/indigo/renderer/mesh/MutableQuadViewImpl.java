@@ -288,6 +288,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		}
 
 		atlas(atlas);
+		chunkLayer(quad.spriteInfo().layer());
+		itemRenderType(quad.spriteInfo().itemRenderType());
 		tintIndex(quad.tintIndex());
 		return this;
 	}
