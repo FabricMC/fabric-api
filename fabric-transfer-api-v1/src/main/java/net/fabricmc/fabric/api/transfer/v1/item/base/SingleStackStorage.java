@@ -69,12 +69,12 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	 *
 	 * <p>If the capacity should be limited by the max count of the item, this function must take it into account.
 	 * For example, a storage with a maximum count of 4, or less for items that have a smaller max count,
-	 * should override this to return {@code Math.min(itemVariant.getItem().getMaxCount(), 4);}.
+	 * should override this to return {@code Math.min(itemVariant.toStack().getMaxCount(), 4);}.
 	 *
 	 * @return The maximum capacity of this storage for the passed item variant.
 	 */
 	protected int getCapacity(ItemVariant itemVariant) {
-		return itemVariant.getItem().getMaxCount();
+		return itemVariant.toStack().getMaxCount();
 	}
 
 	@Override
