@@ -121,7 +121,7 @@ class InventorySlotWrapper extends SingleStackStorage {
 			return 1;
 		}
 
-		return Math.min(storage.inventory.getMaxCountPerStack(), variant.toStack().getMaxCount());
+		return Math.min(storage.inventory.getMaxCountPerStack(), ItemVariantImpl.getMaxStackSize(variant));
 	}
 
 	// We override updateSnapshots to also schedule a markDirty call for the backing inventory.

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -106,6 +107,14 @@ public class ItemVariantImpl implements ItemVariant {
 	@Override
 	public int hashCode() {
 		return hashCode;
+	}
+
+	/**
+	 * Return the max stack size for this variant, respecting component overrides such as
+	 * {@link DataComponentTypes#MAX_STACK_SIZE}.
+	 */
+	public static int getMaxStackSize(ItemVariant variant) {
+		return variant.getComponentMap().getOrDefault(DataComponentTypes.MAX_STACK_SIZE, variant.getItem().getMaxCount());
 	}
 
 	public ItemStack getCachedStack() {
