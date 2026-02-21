@@ -19,11 +19,15 @@ package net.fabricmc.fabric.api.client.renderer.v1.render;
 import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BakedQuadOutput;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -37,6 +41,24 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
  * Note: This interface is automatically implemented on {@link BlockRenderDispatcher} via Mixin and interface injection.
  */
 public interface FabricBlockRenderDispatcher {
+	/**
+	 * Alternative for
+	 * {@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput)}
+	 * that accepts a {@link VertexConsumer} instead of a {@link BakedQuadOutput}. <b>Use this method
+	 * instead of the vanilla alternative to correctly provide the model with a {@link VertexConsumer}.</b>
+	 *
+	 * @param state The block state.
+	 * @param pos The block position.
+	 * @param level The level in which to render the breaking texture. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param poseStack The pose stack.
+	 * @param vertexConsumer The vertex consumer. <b>Consider using {@link SheetedDecalTextureGenerator} in
+	 * conjunction with one of {@link ModelBakery#DESTROY_TYPES} where the index is the breaking progress.</b>
+	 */
+	default void renderBreakingTexture(BlockState state, BlockPos pos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer) {
+		Renderer.get().renderBreakingTexture(((BlockRenderDispatcher) this),
+				state, pos, level, poseStack, vertexConsumer);
+	}
+
 	/**
 	 * Alternative for
 	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that

@@ -97,22 +97,35 @@ public final class ModelHelper {
 		// 3, 13
 
 		for (int i = 0; i < 4; i++) {
-			if (quad.u(i) < minU) {
-				minU = quad.u(i);
+			float u = quad.u(i);
+			float v = quad.v(i);
+
+			if (u < minU) {
+				minU = u;
 			}
 
-			if (quad.u(i) > maxU) {
-				maxU = quad.u(i);
+			if (u > maxU) {
+				maxU = u;
 			}
 
-			if (quad.v(i) < minV) {
-				minV = quad.v(i);
+			if (v < minV) {
+				minV = v;
 			}
 
-			if (quad.v(i) > maxV) {
-				maxV = quad.v(i);
+			if (v > maxV) {
+				maxV = v;
 			}
 		}
+
+		// Normalize UVs
+		// Inverse linear interpolation
+		// `(u_q - u_0)/Δt` where `u_q` is the value and `t` is `u` or `v`
+		final float width = 1.0f / (sprite.getU1() - sprite.getU0());
+		final float height = 1.0f / (sprite.getV1() - sprite.getV0());
+		minU = (minU - sprite.getU0()) * width;
+		minV = (minV - sprite.getV0()) * height;
+		maxU = (maxU - sprite.getU0()) * width;
+		maxV = (maxV - sprite.getV0()) * height;
 
 		// See FaceBakery#computeMaterialTransparency
 		return sprite

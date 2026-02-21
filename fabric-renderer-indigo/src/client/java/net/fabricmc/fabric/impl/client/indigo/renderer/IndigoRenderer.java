@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer;
 import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,6 +28,7 @@ import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
@@ -76,6 +78,23 @@ public class IndigoRenderer implements Renderer {
 	public void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		SimpleBlockRenderContext.POOL.get().bufferModel(
 				pose, bufferSource, layerFilter, model, tint, light, overlay, level, pos, state);
+	}
+
+	@Override
+	public void renderBreakingTexture(
+			BlockRenderDispatcher renderDispatcher,
+			BlockState state,
+			BlockPos pos,
+			BlockAndTintGetter level,
+			PoseStack poseStack,
+			VertexConsumer vertexConsumer
+	) {
+		if (state.getRenderShape() == RenderShape.MODEL) {
+			BlockStateModel model = renderDispatcher.getBlockModel(state);
+			TerrainLikeRenderContext.POOL.get()
+					.bufferModel(level, model, state, pos, poseStack, _ -> vertexConsumer,
+							null, true, state.getSeed(pos), OverlayTexture.NO_OVERLAY);
+		}
 	}
 
 	@Override

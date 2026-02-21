@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.block.BakedQuadOutput;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -42,9 +43,9 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 public interface FabricModelBlockRenderer {
 	/**
 	 * Alternative for
-	 * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, VertexConsumer, boolean, int)}
+	 * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, BakedQuadOutput, boolean, int)}
 	 * and
-	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
+	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput, boolean, List)}
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
 	 * {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
 	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
@@ -75,11 +76,11 @@ public interface FabricModelBlockRenderer {
 
 	/**
 	 * Alternative for
-	 * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, VertexConsumer, boolean, int)}
+	 * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, BakedQuadOutput, boolean, int)}
 	 * and
-	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
+	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput, boolean, List)}
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
-	 * {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
+	 * {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the random seed. <b>Prefer
 	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
 	 * and to correctly buffer models that have geometry on multiple {@linkplain ChunkSectionLayer chunk layers}.</b>
@@ -106,8 +107,8 @@ public interface FabricModelBlockRenderer {
 
 	/**
 	 * Alternative for
-	 * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
-	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the
+	 * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, BakedQuadOutput, BlockStateModel, int, int, int)}
+	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
 	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
@@ -129,7 +130,7 @@ public interface FabricModelBlockRenderer {
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
-	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, float, float, float, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		Renderer.get().renderModel(
@@ -138,8 +139,8 @@ public interface FabricModelBlockRenderer {
 
 	/**
 	 * Alternative for
-	 * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
-	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the
+	 * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, BakedQuadOutput, BlockStateModel, int, int, int)}
+	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
 	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
@@ -159,7 +160,7 @@ public interface FabricModelBlockRenderer {
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
-	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, float, float, float, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		Renderer.get().renderModel(
