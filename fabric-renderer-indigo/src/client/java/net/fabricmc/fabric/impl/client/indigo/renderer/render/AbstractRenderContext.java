@@ -22,7 +22,12 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
@@ -31,6 +36,19 @@ public abstract class AbstractRenderContext {
 		{
 			data = new int[EncodingFormat.TOTAL_STRIDE];
 			clear();
+		}
+
+		// TODO: Please cache these. Recalculating every buffer (potentially every frame!) is *highly* inefficient
+		@Override
+		public ChunkSectionLayer getOrResolveChunkLayer(SpriteFinder spriteFinder) {
+			return ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
+					.layer();
+		}
+
+		@Override
+		public RenderType getOrResolveItemRenderType(SpriteFinder spriteFinder) {
+			return ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
+					.itemRenderType();
 		}
 
 		@Override

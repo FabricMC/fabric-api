@@ -103,10 +103,11 @@ public final class EncodingFormat {
 	private static final QuadAtlas[] QUAD_ATLASES = QuadAtlas.values();
 	private static final int QUAD_ATLAS_COUNT = QUAD_ATLASES.length;
 	private static final @Nullable ItemRenderType[] ITEM_RENDER_TYPES = ArrayUtils.add(ItemRenderType.values(), null);
-	private static final int ITEM_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
+	private static final int NULLABLE_ITEM_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
 
 	private static final int NULL_CHUNK_LAYER_INDEX = NULLABLE_CHUNK_SECTION_LAYER_COUNT - 1;
 	private static final int NULL_FOIL_TYPE_INDEX = NULLABLE_FOIL_TYPE_COUNT - 1;
+	private static final int NULL_ITEM_RENDER_TYPE_INDEX = NULLABLE_ITEM_RENDER_TYPE_COUNT - 1;
 
 	private static final int CULL_BIT_LENGTH = Mth.ceillog2(NULLABLE_DIRECTION_COUNT);
 	private static final int LIGHT_BIT_LENGTH = Mth.ceillog2(DIRECTION_COUNT);
@@ -121,7 +122,7 @@ public final class EncodingFormat {
 			NULLABLE_FOIL_TYPE_COUNT);
 	private static final int SHADE_MODE_BIT_LENGTH = Mth.ceillog2(SHADE_MODE_COUNT);
 	private static final int QUAD_ATLAS_BIT_LENGTH = Mth.ceillog2(QUAD_ATLAS_COUNT);
-	private static final int ITEM_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(ITEM_RENDER_TYPE_COUNT);
+	private static final int ITEM_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(NULLABLE_ITEM_RENDER_TYPE_COUNT);
 
 	private static final int CULL_BIT_OFFSET = 0;
 	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
@@ -263,7 +264,7 @@ public final class EncodingFormat {
 	}
 
 	static int itemRenderType(int bits, RenderType renderType) {
-		ItemRenderType itemRenderType = ItemRenderType.RENDER_TYPE_2_ENUM.getOrDefault(renderType, ItemRenderType.CUTOUT_BLOCK);
-		return (bits & ~ITEM_RENDER_TYPE_MASK) | (itemRenderType.ordinal() << ITEM_RENDER_TYPE_BIT_OFFSET);
+		int index = renderType == null ? NULL_ITEM_RENDER_TYPE_INDEX : ItemRenderType.RENDER_TYPE_2_ENUM.getOrDefault(renderType, ItemRenderType.CUTOUT_BLOCK).ordinal();
+		return (bits & ~ITEM_RENDER_TYPE_MASK) | (index << ITEM_RENDER_TYPE_BIT_OFFSET);
 	}
 }

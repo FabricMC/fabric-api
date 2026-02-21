@@ -76,6 +76,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		quad.color(-1, -1, -1, -1);
 		quad.cullFace(null);
 		quad.chunkLayer(null);
+		quad.itemRenderType(null);
 		quad.diffuseShade(true);
 		quad.ambientOcclusion(TriState.DEFAULT);
 		quad.foilType(null);
