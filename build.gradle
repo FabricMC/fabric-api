@@ -406,6 +406,15 @@ loom {
 	}
 }
 
+if (providers.environmentVariable("ENABLE_TRACY").getOrNull() == "true") {
+	tasks.named("runClientGametest") {
+		tracy {
+			tracyCapture = file("tracy-capture")
+			output = file("profile.tracy")
+		}
+	}
+}
+
 runGametest {
 	outputs.file project.layout.buildDirectory.file("junit.xml")
 }
