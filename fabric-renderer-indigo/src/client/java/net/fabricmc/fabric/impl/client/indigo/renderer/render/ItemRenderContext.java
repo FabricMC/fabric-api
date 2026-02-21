@@ -37,6 +37,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
@@ -115,7 +116,8 @@ public class ItemRenderContext extends AbstractRenderContext {
 				.getAtlasManager()
 				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
-		final RenderType renderType = quad.getOrResolveItemRenderType(spriteFinder);
+		final RenderType renderType = ModelHelper.computeSpriteInfo(spriteFinder.find(quad), quad)
+				.itemRenderType();
 
 		if (renderType.hasBlending() != translucent) {
 			return;

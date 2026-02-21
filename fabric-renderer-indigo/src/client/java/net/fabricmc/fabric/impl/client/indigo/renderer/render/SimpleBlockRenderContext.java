@@ -32,6 +32,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
@@ -59,7 +60,8 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 				.getAtlasManager()
 				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
-		final ChunkSectionLayer layer = quad.getOrResolveChunkLayer(spriteFinder);
+		final ChunkSectionLayer layer = ModelHelper.computeSpriteInfo(spriteFinder.find(quad), quad)
+				.layer();
 
 		if (layerFilter != null && !layerFilter.test(layer)) {
 			return;

@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
@@ -166,54 +165,10 @@ public interface QuadView {
 	ChunkSectionLayer chunkLayer();
 
 	/**
-	 * When computing a value, this method also sets the {@link #chunkLayer()} value.
-	 *
-	 * @return this quad's {@link ChunkSectionLayer} or a default determined by the sprite's
-	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
-	 * @see #chunkLayer()
-	 */
-	default ChunkSectionLayer getOrResolveChunkLayer(SpriteFinder spriteFinder) {
-		if (this.chunkLayer() == null) {
-			ChunkSectionLayer layer = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
-					.layer();
-
-			if (this instanceof MutableQuadView self) {
-				self.chunkLayer(layer);
-			}
-
-			return layer;
-		}
-
-		return this.chunkLayer();
-	}
-
-	/**
 	 * @see MutableQuadView#itemRenderType(RenderType)
 	 */
 	@Nullable
 	RenderType itemRenderType();
-
-	/**
-	 * When computing a value, this method also sets the {@link #itemRenderType()} value.
-	 *
-	 * @return this quad's {@linkplain RenderType item RenderType} or a default determined by the sprite's
-	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
-	 * @see #itemRenderType()
-	 */
-	default RenderType getOrResolveItemRenderType(SpriteFinder spriteFinder) {
-		if (this.itemRenderType() == null) {
-			RenderType renderType = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
-					.itemRenderType();
-
-			if (this instanceof MutableQuadView self) {
-				self.itemRenderType(renderType);
-			}
-
-			return renderType;
-		}
-
-		return this.itemRenderType();
-	}
 
 	/**
 	 * @see MutableQuadView#emissive(boolean)

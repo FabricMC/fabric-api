@@ -32,6 +32,7 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
@@ -76,7 +77,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 				.getAtlasManager()
 				.getAtlasOrThrow(quad.atlas().getId())
 				.spriteFinder();
-		final VertexConsumer vertexConsumer = getVertexConsumer(quad.getOrResolveChunkLayer(spriteFinder));
+		final VertexConsumer vertexConsumer = getVertexConsumer(ModelHelper.computeSpriteInfo(spriteFinder.find(quad), quad).layer());
 
 		if (vertexConsumer == null) {
 			return;

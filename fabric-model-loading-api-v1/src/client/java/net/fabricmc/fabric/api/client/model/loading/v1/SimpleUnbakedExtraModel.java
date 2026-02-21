@@ -31,6 +31,7 @@ import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 
 /**
@@ -92,7 +93,9 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 			if (quads instanceof MeshQuadCollection meshQuads) {
 				meshQuads.getMesh().forEach(quad -> {
 					SpriteFinder spriteFinder = baker.materials().spriteFinder(quad.atlas());
-					hasTranslucency[0] |= quad.getOrResolveChunkLayer(spriteFinder).translucent();
+					hasTranslucency[0] |= ModelHelper.computeSpriteInfo(spriteFinder.find(quad), quad)
+							.layer()
+							.translucent();
 				});
 			} else {
 				// SimpleModelWrapper#bake does this as well
