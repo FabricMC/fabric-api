@@ -20,10 +20,10 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 /**
  * An item variant storage backed by an {@link ItemStack}.
