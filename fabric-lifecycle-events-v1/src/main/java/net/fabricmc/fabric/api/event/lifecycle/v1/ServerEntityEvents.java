@@ -47,9 +47,11 @@ public final class ServerEntityEvents {
 	 */
 	public static final Event<ServerEntityEvents.AllowFreshLoad> ALLOW_FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AllowFreshLoad.class, callbacks -> (entity, level) -> {
 		boolean bl = true;
+
 		for (AllowFreshLoad callback : callbacks) {
 			bl = bl && callback.onFreshLoad(entity, level);
 		}
+
 		return bl;
 	});
 
