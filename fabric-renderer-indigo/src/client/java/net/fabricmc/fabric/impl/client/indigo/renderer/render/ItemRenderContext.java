@@ -21,14 +21,10 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.MatrixUtil;
-import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.ARGB;
@@ -38,7 +34,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
@@ -58,9 +53,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private boolean ignoreQuadFoilType;
 	private boolean translucent;
 
-	private PoseStack.Pose specialFoilPose;
+	private PoseStack.Pose foilDecalPose;
 	// TODO: reuse this between submits
-	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * FOIL_TYPE_COUNT];
+	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[4 * FOIL_TYPE_COUNT];
 
 	public void renderItem(
 			ItemDisplayContext displayContext,
@@ -92,7 +87,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		this.bufferSource = null;
 		this.tints = null;
 
-		specialFoilPose = null;
+		foilDecalPose = null;
 		Arrays.fill(vertexConsumerCache, null);
 	}
 
@@ -111,20 +106,30 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final SpriteFinder spriteFinder = Minecraft.getInstance()
-				.getAtlasManager()
-				.getAtlasOrThrow(quad.atlas().getId())
-				.spriteFinder();
-		final RenderType renderType = quad.getOrResolveItemRenderType(spriteFinder);
+		final RenderType renderType = quad.itemRenderType();
 
 		if (renderType.hasBlending() != translucent) {
 			return;
 		}
 
-		final VertexConsumer vertexConsumer = getVertexConsumer(renderType, quad.foilType());
-
 		tintQuad(quad);
 		shadeQuad(quad, quad.emissive());
+
+		final ItemStackRenderState.FoilType quadFoilType = quad.foilType();
+		ItemStackRenderState.FoilType foilType;
+
+		if (ignoreQuadFoilType || quadFoilType == null) {
+			foilType = defaultFoilType;
+		} else {
+			foilType = quadFoilType;
+		}
+
+		if (foilType != ItemStackRenderState.FoilType.NONE) {
+			final VertexConsumer foilBuffer = getVertexConsumer(renderType, quad.foilType());
+			bufferQuad(quad, foilBuffer);
+		}
+
+		final VertexConsumer vertexConsumer = getVertexConsumer(renderType, ItemStackRenderState.FoilType.NONE);
 		bufferQuad(quad, vertexConsumer);
 	}
 
@@ -154,23 +159,17 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(RenderType renderType, ItemStackRenderState.@Nullable FoilType quadFoilType) {
-		ItemStackRenderState.FoilType foilType;
-
-		if (ignoreQuadFoilType || quadFoilType == null) {
-			foilType = defaultFoilType;
-		} else {
-			foilType = quadFoilType;
-		}
-
+	private VertexConsumer getVertexConsumer(RenderType renderType, ItemStackRenderState.FoilType foilType) {
 		int cacheIndex;
 
-		if (renderType == Sheets.translucentItemSheet()) {
+		if (renderType == Sheets.cutoutItemSheet()) {
 			cacheIndex = 0;
-		} else if (renderType == Sheets.cutoutBlockSheet()) {
+		} else if (renderType == Sheets.translucentItemSheet()) {
 			cacheIndex = FOIL_TYPE_COUNT;
-		} else if (renderType == Sheets.translucentBlockItemSheet()) {
+		} else if (renderType == Sheets.cutoutBlockItemSheet()) {
 			cacheIndex = 2 * FOIL_TYPE_COUNT;
+		} else if (renderType == Sheets.translucentBlockItemSheet()) {
+			cacheIndex = 3 * FOIL_TYPE_COUNT;
 		} else {
 			return createVertexConsumer(renderType, foilType);
 		}
@@ -187,26 +186,14 @@ public class ItemRenderContext extends AbstractRenderContext {
 	}
 
 	private VertexConsumer createVertexConsumer(RenderType renderType, ItemStackRenderState.FoilType foilType) {
-		if (foilType == ItemStackRenderState.FoilType.SPECIAL) {
-			if (specialFoilPose == null) {
-				specialFoilPose = pose.copy();
-
-				if (displayContext == ItemDisplayContext.GUI) {
-					MatrixUtil.mulComponentWise(specialFoilPose.pose(), 0.5F);
-				} else if (displayContext.firstPerson()) {
-					MatrixUtil.mulComponentWise(specialFoilPose.pose(), 0.75F);
-				}
+		if (foilType != ItemStackRenderState.FoilType.NONE) {
+			if (foilType == ItemStackRenderState.FoilType.SPECIAL && foilDecalPose == null) {
+				foilDecalPose = ItemRendererAccessor.fabric_computeFoilDecalPose(displayContext, pose);
 			}
 
-			return ItemRendererAccessor.fabric_getFoilBuffer(
-					bufferSource,
-					renderType,
-					specialFoilPose
-			);
+			return ItemRendererAccessor.fabric_getFoilBuffer(bufferSource, renderType, foilDecalPose);
 		}
 
-		return ItemRenderer.getFoilBuffer(
-				bufferSource,
-				renderType, true, foilType != ItemStackRenderState.FoilType.NONE);
+		return bufferSource.getBuffer(renderType);
 	}
 }

@@ -24,12 +24,8 @@ import com.mojang.blaze3d.platform.Transparency;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.Material;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
@@ -62,27 +58,6 @@ public final class ModelHelper {
 		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : computeTransparency(material.sprite(), quad);
 		// TODO: Consider interning or some other caching scheme to reduce object churn
 		return BakedQuad.SpriteInfo.of(material, transparency);
-	}
-
-	/**
-	 * Computes a {@link BakedQuad.SpriteInfo} for a {@link TextureAtlasSprite}.
-	 *
-	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
-	 * This method is meant primarily for baking.
-	 */
-	public static BakedQuad.SpriteInfo computeSpriteInfo(TextureAtlasSprite sprite, QuadView quad) {
-		Transparency transparency = computeTransparency(sprite, quad);
-		ChunkSectionLayer chunkLayer = ChunkSectionLayer.byTransparency(transparency);
-		RenderType itemRenderType;
-
-		if (sprite.atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
-			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
-		} else {
-			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentItemSheet() : Sheets.cutoutItemSheet();
-		}
-
-		// TODO: Consider interning or some other caching scheme to reduce object churn
-		return new BakedQuad.SpriteInfo(sprite, chunkLayer, itemRenderType);
 	}
 
 	/**

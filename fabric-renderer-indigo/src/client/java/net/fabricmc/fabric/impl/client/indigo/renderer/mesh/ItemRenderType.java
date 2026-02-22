@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import net.minecraft.client.renderer.Sheets;
@@ -26,25 +27,30 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 /**
  * Allowed values for {@link MutableQuadView#itemRenderType(RenderType)}.
  */
-public enum ItemRenderType {
+enum ItemRenderType {
 	CUTOUT(Sheets.cutoutItemSheet()),
 	TRANSLUCENT(Sheets.translucentItemSheet()),
 	CUTOUT_BLOCK(Sheets.cutoutBlockItemSheet()),
 	TRANSLUCENT_BLOCK(Sheets.translucentBlockItemSheet());
 
-	final RenderType renderType;
+	static final RenderType[] RENDER_TYPES = Arrays.stream(ItemRenderType.values()).map(t -> t.renderType).toArray(RenderType[]::new);
 	static final Map<RenderType, ItemRenderType> RENDER_TYPE_2_ENUM;
-
-	ItemRenderType(RenderType renderType) {
-		this.renderType = renderType;
-	}
 
 	static {
 		RENDER_TYPE_2_ENUM = Map.of(
-				Sheets.cutoutItemSheet(), CUTOUT,
-				Sheets.translucentItemSheet(), TRANSLUCENT,
-				Sheets.cutoutBlockItemSheet(), CUTOUT_BLOCK,
-				Sheets.translucentBlockItemSheet(), TRANSLUCENT_BLOCK
+				CUTOUT.renderType, CUTOUT,
+				TRANSLUCENT.renderType, TRANSLUCENT,
+				CUTOUT_BLOCK.renderType, CUTOUT_BLOCK,
+				TRANSLUCENT_BLOCK.renderType, TRANSLUCENT_BLOCK
 		);
+	}
+
+	// The atlas of the default render type should match the default QuadAtlas, which is currently BLOCK.
+	static final ItemRenderType DEFAULT = ItemRenderType.CUTOUT_BLOCK;
+
+	final RenderType renderType;
+
+	ItemRenderType(RenderType renderType) {
+		this.renderType = renderType;
 	}
 }

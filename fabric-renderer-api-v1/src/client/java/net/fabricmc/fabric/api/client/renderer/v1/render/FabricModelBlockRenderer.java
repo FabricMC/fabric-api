@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
+// TODO 26.1: update docs
 /**
  * Note: This interface is automatically implemented on {@link ModelBlockRenderer} via Mixin and interface injection.
  */
@@ -49,8 +50,8 @@ public interface FabricModelBlockRenderer {
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
 	 * {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
 	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * and to correctly buffer models that have geometry on multiple {@linkplain ChunkSectionLayer chunk layers}.</b>
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}.
+	 * </b>
 	 *
 	 * <p>This method allows buffering a block model in a terrain-like context, which usually includes stages like
 	 * culling, dynamic tinting, shading, and flat/smooth lighting.
@@ -83,7 +84,7 @@ public interface FabricModelBlockRenderer {
 	 * {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the random seed. <b>Prefer
 	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * and to correctly buffer models that have geometry on multiple {@linkplain ChunkSectionLayer chunk layers}.</b>
+	 * </b>
 	 *
 	 * <p>This method allows buffering a block model in a terrain-like context, which usually includes stages like
 	 * culling, dynamic tinting, shading, and flat/smooth lighting.
@@ -111,8 +112,8 @@ public interface FabricModelBlockRenderer {
 	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
-	 * geometry on multiple chunk layers and to provide the model with additional context.</b>
+	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.
@@ -122,7 +123,7 @@ public interface FabricModelBlockRenderer {
 	 * @param layerFilter Specifies the chunk layers for which geometry should be buffered ({@code true}) or discarded
 	 *                    ({@code false}).
 	 * @param model The model to render.
-	 * @param tint The tint color.
+	 * @param tintColor The tintColor color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
@@ -132,9 +133,9 @@ public interface FabricModelBlockRenderer {
 	 *
 	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		Renderer.get().renderModel(
-				pose, bufferSource, layerFilter, model, tint, light, overlay, level, pos, state);
+				pose, bufferSource, layerFilter, model, tintColor, light, overlay, level, pos, state);
 	}
 
 	/**
@@ -143,8 +144,8 @@ public interface FabricModelBlockRenderer {
 	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
-	 * geometry on multiple chunk layers and to provide the model with additional context.</b>
+	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.
@@ -152,7 +153,7 @@ public interface FabricModelBlockRenderer {
 	 * @param pose The pose.
 	 * @param bufferSource The buffer source.
 	 * @param model The model to render.
-	 * @param tint The tint color.
+	 * @param tint The tintColor color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>

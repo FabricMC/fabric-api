@@ -59,7 +59,7 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 			ItemStackRenderState.FoilType foilType
 	) {
 		if (mutableMesh.size() > 0 && submitNodeCollector instanceof AccessOrderedSubmitNodeCollector access) {
-			// We don't have to copy the mesh here because vanilla doesn't copy the tint array or quad list either.
+			// We don't have to copy the mesh here because vanilla doesn't copy the tintColor array or quad list either.
 			access.fabric_submitItem(poseStack, displayContext, light, overlay, outlineColor, tints, quads,
 					foilType, mutableMesh);
 		} else {

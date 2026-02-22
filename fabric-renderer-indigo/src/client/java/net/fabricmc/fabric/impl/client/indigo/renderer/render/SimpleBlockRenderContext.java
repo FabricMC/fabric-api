@@ -22,7 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
@@ -33,7 +33,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
@@ -45,7 +44,8 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	private BlockMultiBufferSource bufferSource;
 	@Nullable
 	private Predicate<ChunkSectionLayer> layerFilter;
-	private int tint;
+	private boolean forceOpaque;
+	private int tintColor;
 	private int light;
 
 	@Nullable
@@ -55,11 +55,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final SpriteFinder spriteFinder = Minecraft.getInstance()
-				.getAtlasManager()
-				.getAtlasOrThrow(quad.atlas().getId())
-				.spriteFinder();
-		final ChunkSectionLayer layer = quad.getOrResolveChunkLayer(spriteFinder);
+		final ChunkSectionLayer layer = forceOpaque ? ChunkSectionLayer.SOLID : quad.chunkLayer();
 
 		if (layerFilter != null && !layerFilter.test(layer)) {
 			return;
@@ -81,10 +77,10 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	private void tintQuad(MutableQuadViewImpl quad) {
 		if (quad.tintIndex() != -1) {
-			int tint = this.tint;
+			int tint = 0xFF000000 | this.tintColor;
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, ARGB.scaleRGB(quad.color(i), tint));
+				quad.color(i, ARGB.multiply(quad.color(i), tint));
 			}
 		}
 	}
@@ -103,13 +99,14 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		this.pose = pose;
 		this.overlay = overlay;
 
 		this.bufferSource = bufferSource;
 		this.layerFilter = layerFilter;
-		this.tint = tint;
+		forceOpaque = ItemBlockRenderTypes.forceOpaque(state);
+		this.tintColor = tintColor;
 		this.light = light;
 
 		random.setSeed(42L);

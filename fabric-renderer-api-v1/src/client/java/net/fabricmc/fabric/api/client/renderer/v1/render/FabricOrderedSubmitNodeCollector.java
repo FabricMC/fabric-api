@@ -83,7 +83,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param renderTypeFunction The function to use to convert {@link ChunkSectionLayer}s to {@link RenderType}s.
 	 *                            <b>Must not be mutated after calling this method.</b>
 	 * @param model The model to render.
-	 * @param tint The tint color.
+	 * @param tint The tintColor color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param outlineColor The outline color.

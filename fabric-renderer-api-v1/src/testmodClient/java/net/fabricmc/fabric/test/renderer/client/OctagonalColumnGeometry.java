@@ -21,7 +21,6 @@ import java.util.Objects;
 import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ModelState;
@@ -35,7 +34,6 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
-import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.model.ModelStateHelper;
 
 public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeometry {
@@ -52,7 +50,6 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 
 		Material.Baked material = baker.materials()
 				.get(Objects.requireNonNull(textures.getMaterial("column")), model);
-		TextureAtlasSprite sprite = material.sprite();
 
 		// up
 
@@ -61,9 +58,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 1, 1, A);
 		emitter.pos(3, B, 1, 0);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		emitter.pos(0, 0, 1, A);
@@ -71,9 +67,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 0.5f, 1, 0.5f);
 		emitter.pos(3, A, 1, 0);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		emitter.pos(0, 0, 1, B);
@@ -81,9 +76,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, B, 1, 1);
 		emitter.pos(3, 0.5f, 1, 0.5f);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		emitter.pos(0, 0.5f, 1, 0.5f);
@@ -91,9 +85,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 1, 1, B);
 		emitter.pos(3, 1, 1, A);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// down
@@ -103,9 +96,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 1, 0, B);
 		emitter.pos(3, B, 0, 1);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		emitter.pos(0, 0, 0, B);
@@ -113,9 +105,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 0.5f, 0, 0.5f);
 		emitter.pos(3, A, 0, 1);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		emitter.pos(0, 0, 0, A);
@@ -123,9 +114,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, B, 0, 0);
 		emitter.pos(3, 0.5f, 0, 0.5f);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		emitter.pos(0, 0.5f, 0, 0.5f);
@@ -133,9 +123,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 1, 0, A);
 		emitter.pos(3, 1, 0, B);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// north
@@ -144,10 +133,9 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, A, 0, 0);
 		emitter.pos(3, A, 1, 0);
 		emitter.cullFace(Direction.NORTH);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// northwest
@@ -155,10 +143,9 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(1, A, 0, 0);
 		emitter.pos(2, 0, 0, A);
 		emitter.pos(3, 0, 1, A);
-		cornerSprite(emitter, sprite);
+		cornerSprite(emitter, material);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// west
@@ -167,10 +154,9 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 0, 0, B);
 		emitter.pos(3, 0, 1, B);
 		emitter.cullFace(Direction.WEST);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// southwest
@@ -178,10 +164,9 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(1, 0, 0, B);
 		emitter.pos(2, A, 0, 1);
 		emitter.pos(3, A, 1, 1);
-		cornerSprite(emitter, sprite);
+		cornerSprite(emitter, material);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// south
@@ -190,10 +175,9 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, B, 0, 1);
 		emitter.pos(3, B, 1, 1);
 		emitter.cullFace(Direction.SOUTH);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// southeast
@@ -201,10 +185,9 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(1, B, 0, 1);
 		emitter.pos(2, 1, 0, B);
 		emitter.pos(3, 1, 1, B);
-		cornerSprite(emitter, sprite);
+		cornerSprite(emitter, material);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// east
@@ -213,10 +196,9 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(2, 1, 0, A);
 		emitter.pos(3, 1, 1, A);
 		emitter.cullFace(Direction.EAST);
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		// northeast
@@ -224,22 +206,21 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(1, 1, 0, A);
 		emitter.pos(2, B, 0, 0);
 		emitter.pos(3, B, 1, 0);
-		cornerSprite(emitter, sprite);
+		cornerSprite(emitter, material);
 		emitter.shadeMode(shadeMode);
 		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		ModelHelper.setSpriteInfo(emitter, material);
 		emitter.emit();
 
 		return new MeshQuadCollection(builder.immutableCopy());
 	}
 
-	private static void cornerSprite(QuadEmitter emitter, TextureAtlasSprite sprite) {
+	private static void cornerSprite(QuadEmitter emitter, Material.Baked material) {
 		// Assign uvs for a corner face in such a way that the texture is not stretched, using coordinates in [0, 1].
 		emitter.uv(0, A, 0);
 		emitter.uv(1, A, 1);
 		emitter.uv(2, B, 1);
 		emitter.uv(3, B, 0);
 		// Map [0, 1] coordinates to sprite atlas coordinates. spriteBake assumes [0, 16] unless we pass the BAKE_NORMALIZED flag.
-		emitter.spriteBake(sprite, MutableQuadView.BAKE_NORMALIZED);
+		emitter.materialBake(material, MutableQuadView.BAKE_NORMALIZED);
 	}
 }

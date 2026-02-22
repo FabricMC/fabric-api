@@ -51,9 +51,21 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	// alone, bottom, middle, top
 	private final Material.Baked[] materials;
+	private final boolean hasTranslucency;
 
 	public PillarBlockStateModel(Material.Baked[] materials) {
 		this.materials = materials;
+
+		boolean hasTranslucency = false;
+
+		for (Material.Baked material : materials) {
+			hasTranslucency |= material.forceTranslucent() || material.sprite()
+					.contents()
+					.computeTransparency(0.0f, 0.0f, 1.0f, 1.0f)
+					.hasTranslucent();
+		}
+
+		this.hasTranslucency = hasTranslucency;
 	}
 
 	@Override
@@ -61,7 +73,7 @@ public class PillarBlockStateModel implements BlockStateModel {
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = getConnectedTexture(level, pos, state, side);
 			emitter.square(side, 0, 0, 1, 1, 0);
-			emitter.spriteBake(materials[texture.ordinal()].sprite(), MutableQuadView.BAKE_LOCK_UV);
+			emitter.materialBake(materials[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
 			emitter.emit();
 		}
 	}
@@ -123,7 +135,7 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	@Override
 	public boolean hasTranslucency() {
-		return false;
+		return hasTranslucency;
 	}
 
 	public record Unbaked() implements CustomUnbakedBlockStateModel, ModelDebugName {

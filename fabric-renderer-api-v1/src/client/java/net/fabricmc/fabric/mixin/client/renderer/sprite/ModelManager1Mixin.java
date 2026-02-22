@@ -48,10 +48,10 @@ abstract class ModelManager1Mixin implements FabricMaterialBaker {
 	private volatile MissingSpriteFinderImpl missingSpriteFinder;
 
 	@Override
-	public SpriteFinder spriteFinder(Identifier atlasTextureId) {
-		if (atlasTextureId.equals(AtlasIds.BLOCKS)) {
+	public SpriteFinder spriteFinder(Identifier atlasId) {
+		if (atlasId.equals(AtlasIds.BLOCKS)) {
 			return val$blockAtlas.spriteFinder();
-		} else if (atlasTextureId.equals(AtlasIds.ITEMS)) {
+		} else if (atlasId.equals(AtlasIds.ITEMS)) {
 			return val$itemAtlas.spriteFinder();
 		}
 

@@ -92,8 +92,10 @@ public final class EncodingFormat {
 	private static final int DIRECTION_COUNT = Direction.values().length;
 	private static final int NULLABLE_DIRECTION_COUNT = DIRECTION_COUNT + 1;
 
-	private static final @Nullable ChunkSectionLayer[] NULLABLE_CHUNK_SECTION_LAYERS = ArrayUtils.add(ChunkSectionLayer.values(), null);
-	private static final int NULLABLE_CHUNK_SECTION_LAYER_COUNT = NULLABLE_CHUNK_SECTION_LAYERS.length;
+	private static final ChunkSectionLayer[] CHUNK_SECTION_LAYERS = ChunkSectionLayer.values();
+	private static final int CHUNK_SECTION_LAYER_COUNT = CHUNK_SECTION_LAYERS.length;
+	private static final RenderType[] ITEM_RENDER_TYPES = ItemRenderType.RENDER_TYPES;
+	private static final int ITEM_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
 	private static final TriState[] TRI_STATES = TriState.values();
 	private static final int TRI_STATE_COUNT = TRI_STATES.length;
 	private static final ItemStackRenderState.@Nullable FoilType[] NULLABLE_FOIL_TYPES = ArrayUtils.add(ItemStackRenderState.FoilType.values(), null);
@@ -102,50 +104,47 @@ public final class EncodingFormat {
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
 	private static final QuadAtlas[] QUAD_ATLASES = QuadAtlas.values();
 	private static final int QUAD_ATLAS_COUNT = QUAD_ATLASES.length;
-	private static final @Nullable ItemRenderType[] NULLABLE_ITEM_RENDER_TYPES = ArrayUtils.add(ItemRenderType.values(), null);
-	private static final int NULLABLE_ITEM_RENDER_TYPE_COUNT = NULLABLE_ITEM_RENDER_TYPES.length;
 
-	private static final int NULL_CHUNK_LAYER_INDEX = NULLABLE_CHUNK_SECTION_LAYER_COUNT - 1;
 	private static final int NULL_FOIL_TYPE_INDEX = NULLABLE_FOIL_TYPE_COUNT - 1;
-	private static final int NULL_ITEM_RENDER_TYPE_INDEX = NULLABLE_ITEM_RENDER_TYPE_COUNT - 1;
 
 	private static final int CULL_BIT_LENGTH = Mth.ceillog2(NULLABLE_DIRECTION_COUNT);
 	private static final int LIGHT_BIT_LENGTH = Mth.ceillog2(DIRECTION_COUNT);
 	private static final int NORMALS_BIT_LENGTH = 4;
 	private static final int GEOMETRY_BIT_LENGTH = GeometryHelper.FLAG_BIT_COUNT;
-	private static final int CHUNK_LAYER_BIT_LENGTH = Mth.ceillog2(
-			NULLABLE_CHUNK_SECTION_LAYER_COUNT);
+	private static final int QUAD_ATLAS_BIT_LENGTH = Mth.ceillog2(QUAD_ATLAS_COUNT);
+	private static final int CHUNK_LAYER_BIT_LENGTH = Mth.ceillog2(CHUNK_SECTION_LAYER_COUNT);
+	private static final int ITEM_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(ITEM_RENDER_TYPE_COUNT);
 	private static final int EMISSIVE_BIT_LENGTH = 1;
 	private static final int DIFFUSE_BIT_LENGTH = 1;
 	private static final int AO_BIT_LENGTH = Mth.ceillog2(TRI_STATE_COUNT);
 	private static final int FOIL_TYPE_BIT_LENGTH = Mth.ceillog2(
 			NULLABLE_FOIL_TYPE_COUNT);
 	private static final int SHADE_MODE_BIT_LENGTH = Mth.ceillog2(SHADE_MODE_COUNT);
-	private static final int QUAD_ATLAS_BIT_LENGTH = Mth.ceillog2(QUAD_ATLAS_COUNT);
-	private static final int ITEM_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(NULLABLE_ITEM_RENDER_TYPE_COUNT);
 
 	private static final int CULL_BIT_OFFSET = 0;
 	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
 	private static final int NORMALS_BIT_OFFSET = LIGHT_BIT_OFFSET + LIGHT_BIT_LENGTH;
 	private static final int GEOMETRY_BIT_OFFSET = NORMALS_BIT_OFFSET + NORMALS_BIT_LENGTH;
-	private static final int CHUNK_LAYER_BIT_OFFSET = GEOMETRY_BIT_OFFSET + GEOMETRY_BIT_LENGTH;
-	private static final int EMISSIVE_BIT_OFFSET = CHUNK_LAYER_BIT_OFFSET + CHUNK_LAYER_BIT_LENGTH;
+	private static final int QUAD_ATLAS_BIT_OFFSET = GEOMETRY_BIT_OFFSET + GEOMETRY_BIT_LENGTH;
+	private static final int CHUNK_LAYER_BIT_OFFSET = QUAD_ATLAS_BIT_OFFSET + QUAD_ATLAS_BIT_LENGTH;
+	private static final int ITEM_RENDER_TYPE_BIT_OFFSET = CHUNK_LAYER_BIT_OFFSET + CHUNK_LAYER_BIT_LENGTH;
+	private static final int EMISSIVE_BIT_OFFSET = ITEM_RENDER_TYPE_BIT_OFFSET + ITEM_RENDER_TYPE_BIT_LENGTH;
 	private static final int DIFFUSE_BIT_OFFSET = EMISSIVE_BIT_OFFSET + EMISSIVE_BIT_LENGTH;
 	private static final int AO_BIT_OFFSET = DIFFUSE_BIT_OFFSET + DIFFUSE_BIT_LENGTH;
 	private static final int FOIL_TYPE_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
 	private static final int SHADE_MODE_BIT_OFFSET = FOIL_TYPE_BIT_OFFSET + FOIL_TYPE_BIT_LENGTH;
-	private static final int QUAD_ATLAS_BIT_OFFSET = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
-	private static final int ITEM_RENDER_TYPE_BIT_OFFSET = QUAD_ATLAS_BIT_OFFSET + QUAD_ATLAS_BIT_LENGTH;
-	private static final int TOTAL_BIT_LENGTH = ITEM_RENDER_TYPE_BIT_OFFSET + ITEM_RENDER_TYPE_BIT_LENGTH;
+	private static final int TOTAL_BIT_LENGTH = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
 
 	private static final int CULL_MASK = bitMask(CULL_BIT_LENGTH, CULL_BIT_OFFSET);
 	private static final int LIGHT_MASK = bitMask(LIGHT_BIT_LENGTH, LIGHT_BIT_OFFSET);
 	private static final int NORMALS_MASK = bitMask(NORMALS_BIT_LENGTH, NORMALS_BIT_OFFSET);
 	private static final int GEOMETRY_MASK = bitMask(GEOMETRY_BIT_LENGTH, GEOMETRY_BIT_OFFSET);
+	private static final int QUAD_ATLAS_MASK = bitMask(QUAD_ATLAS_BIT_LENGTH, QUAD_ATLAS_BIT_OFFSET);
 	private static final int CHUNK_LAYER_MASK = bitMask(
 			CHUNK_LAYER_BIT_LENGTH,
 			CHUNK_LAYER_BIT_OFFSET
 	);
+	private static final int ITEM_RENDER_TYPE_MASK = bitMask(ITEM_RENDER_TYPE_BIT_LENGTH, ITEM_RENDER_TYPE_BIT_OFFSET);
 	private static final int EMISSIVE_MASK = bitMask(EMISSIVE_BIT_LENGTH, EMISSIVE_BIT_OFFSET);
 	private static final int DIFFUSE_MASK = bitMask(DIFFUSE_BIT_LENGTH, DIFFUSE_BIT_OFFSET);
 	private static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
@@ -153,8 +152,6 @@ public final class EncodingFormat {
 			FOIL_TYPE_BIT_OFFSET
 	);
 	private static final int SHADE_MODE_MASK = bitMask(SHADE_MODE_BIT_LENGTH, SHADE_MODE_BIT_OFFSET);
-	private static final int QUAD_ATLAS_MASK = bitMask(QUAD_ATLAS_BIT_LENGTH, QUAD_ATLAS_BIT_OFFSET);
-	private static final int ITEM_RENDER_TYPE_MASK = bitMask(ITEM_RENDER_TYPE_BIT_LENGTH, ITEM_RENDER_TYPE_BIT_OFFSET);
 
 	static {
 		Preconditions.checkArgument(TOTAL_BIT_LENGTH <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
@@ -198,14 +195,28 @@ public final class EncodingFormat {
 		return (bits & ~GEOMETRY_MASK) | ((geometryFlags << GEOMETRY_BIT_OFFSET) & GEOMETRY_MASK);
 	}
 
-	@Nullable
-	static ChunkSectionLayer chunkLayer(int bits) {
-		return NULLABLE_CHUNK_SECTION_LAYERS[(bits & CHUNK_LAYER_MASK) >>> CHUNK_LAYER_BIT_OFFSET];
+	static QuadAtlas quadAtlas(int bits) {
+		return QUAD_ATLASES[(bits & QUAD_ATLAS_MASK) >>> QUAD_ATLAS_BIT_OFFSET];
 	}
 
-	static int chunkLayer(int bits, @Nullable ChunkSectionLayer layer) {
-		int index = layer == null ? NULL_CHUNK_LAYER_INDEX : layer.ordinal();
-		return (bits & ~CHUNK_LAYER_MASK) | (index << CHUNK_LAYER_BIT_OFFSET);
+	static int quadAtlas(int bits, QuadAtlas quadAtlas) {
+		return (bits & ~QUAD_ATLAS_MASK) | (quadAtlas.ordinal() << QUAD_ATLAS_BIT_OFFSET);
+	}
+
+	static ChunkSectionLayer chunkLayer(int bits) {
+		return CHUNK_SECTION_LAYERS[(bits & CHUNK_LAYER_MASK) >>> CHUNK_LAYER_BIT_OFFSET];
+	}
+
+	static int chunkLayer(int bits, ChunkSectionLayer layer) {
+		return (bits & ~CHUNK_LAYER_MASK) | (layer.ordinal() << CHUNK_LAYER_BIT_OFFSET);
+	}
+
+	static RenderType itemRenderType(int bits) {
+		return ITEM_RENDER_TYPES[(bits & ITEM_RENDER_TYPE_MASK) >>> ITEM_RENDER_TYPE_BIT_OFFSET];
+	}
+
+	static int itemRenderType(int bits, ItemRenderType renderType) {
+		return (bits & ~ITEM_RENDER_TYPE_MASK) | (renderType.ordinal() << ITEM_RENDER_TYPE_BIT_OFFSET);
 	}
 
 	static boolean emissive(int bits) {
@@ -247,25 +258,5 @@ public final class EncodingFormat {
 
 	static int shadeMode(int bits, ShadeMode mode) {
 		return (bits & ~SHADE_MODE_MASK) | (mode.ordinal() << SHADE_MODE_BIT_OFFSET);
-	}
-
-	static QuadAtlas quadAtlas(int bits) {
-		return QUAD_ATLASES[(bits & QUAD_ATLAS_MASK) >>> QUAD_ATLAS_BIT_OFFSET];
-	}
-
-	static int quadAtlas(int bits, QuadAtlas quadAtlas) {
-		return (bits & ~QUAD_ATLAS_MASK) | (quadAtlas.ordinal() << QUAD_ATLAS_BIT_OFFSET);
-	}
-
-	static @Nullable RenderType itemRenderType(int bits) {
-		ItemRenderType itemRenderType =
-				NULLABLE_ITEM_RENDER_TYPES[(bits & ITEM_RENDER_TYPE_MASK) >>> ITEM_RENDER_TYPE_BIT_OFFSET];
-		return itemRenderType != null ? itemRenderType.renderType : null;
-	}
-
-	static int itemRenderType(int bits, @Nullable RenderType renderType) {
-		// FIXME: if the given renderType is unexpected, this will NPE
-		int index = renderType == null ? NULL_ITEM_RENDER_TYPE_INDEX : ItemRenderType.RENDER_TYPE_2_ENUM.get(renderType).ordinal();
-		return (bits & ~ITEM_RENDER_TYPE_MASK) | (index << ITEM_RENDER_TYPE_BIT_OFFSET);
 	}
 }

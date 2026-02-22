@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.entity.layers.SnowGolemHeadLayer;
@@ -30,8 +31,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-
-import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
 
 @Mixin(SnowGolemHeadLayer.class)
 abstract class SnowGolemHeadLayerMixin {
@@ -43,7 +42,7 @@ abstract class SnowGolemHeadLayerMixin {
 			submitNodeCollector.submitBlockModel(poseStack, _ -> renderType, model, -1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, pumpkinBlockState);
 		} else {
 			// Support multi-chunk layer models, fix tinted quads being rendered completely black, and provide the BlockState as context.
-			submitNodeCollector.submitBlockModel(poseStack, ChunkSectionLayerHelper::getEntityBlockLayer, model, -1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, pumpkinBlockState);
+			submitNodeCollector.submitBlockModel(poseStack, ItemBlockRenderTypes::getRenderType, model, -1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, pumpkinBlockState);
 		}
 	}
 }

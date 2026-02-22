@@ -23,10 +23,10 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.util.TriState;
@@ -81,8 +81,8 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	default QuadEmitter spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
-		MutableQuadView.super.spriteBake(sprite, bakeFlags);
+	default QuadEmitter materialBake(Material.Baked material, int bakeFlags) {
+		MutableQuadView.super.materialBake(material, bakeFlags);
 		return this;
 	}
 
@@ -125,10 +125,13 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter cullFace(@Nullable Direction face);
 
 	@Override
-	QuadEmitter chunkLayer(@Nullable ChunkSectionLayer layer);
+	QuadEmitter atlas(QuadAtlas quadAtlas);
 
 	@Override
-	QuadEmitter itemRenderType(@Nullable RenderType renderType);
+	QuadEmitter chunkLayer(ChunkSectionLayer layer);
+
+	@Override
+	QuadEmitter itemRenderType(RenderType renderType);
 
 	@Override
 	QuadEmitter emissive(boolean emissive);
@@ -144,9 +147,6 @@ public interface QuadEmitter extends MutableQuadView {
 
 	@Override
 	QuadEmitter shadeMode(ShadeMode mode);
-
-	@Override
-	QuadEmitter atlas(QuadAtlas quadAtlas);
 
 	@Override
 	QuadEmitter tintIndex(int tintIndex);

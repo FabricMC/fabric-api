@@ -75,9 +75,9 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		SimpleBlockRenderContext.POOL.get().bufferModel(
-				pose, bufferSource, layerFilter, model, tint, light, overlay, level, pos, state);
+				pose, bufferSource, layerFilter, model, tintColor, light, overlay, level, pos, state);
 	}
 
 	@Override

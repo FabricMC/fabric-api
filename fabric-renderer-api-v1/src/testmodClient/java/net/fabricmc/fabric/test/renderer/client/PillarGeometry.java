@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ModelState;
@@ -33,7 +32,6 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
-import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.model.ModelStateHelper;
 
 public record PillarGeometry() implements UnbakedGeometry {
@@ -45,12 +43,10 @@ public record PillarGeometry() implements UnbakedGeometry {
 
 		Material.Baked material = baker.materials()
 				.get(Objects.requireNonNull(textures.getMaterial("pillar")), model);
-		TextureAtlasSprite sprite = material.sprite();
 
 		for (Direction side : Direction.values()) {
 			emitter.square(side, 0, 0, 1, 1, 0);
-			emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
 			emitter.emit();
 		}
 

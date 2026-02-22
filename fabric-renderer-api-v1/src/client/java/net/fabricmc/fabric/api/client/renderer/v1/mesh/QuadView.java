@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
-
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -31,7 +30,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 
-import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -158,15 +156,18 @@ public interface QuadView {
 	Direction cullFace();
 
 	/**
+	 * @see MutableQuadView#atlas(QuadAtlas)
+	 */
+	QuadAtlas atlas();
+
+	/**
 	 * @see MutableQuadView#chunkLayer(ChunkSectionLayer)
 	 */
-	@Nullable
 	ChunkSectionLayer chunkLayer();
 
 	/**
 	 * @see MutableQuadView#itemRenderType(RenderType)
 	 */
-	@Nullable
 	RenderType itemRenderType();
 
 	/**
@@ -197,11 +198,6 @@ public interface QuadView {
 	ShadeMode shadeMode();
 
 	/**
-	 * @see MutableQuadView#atlas(QuadAtlas)
-	 */
-	QuadAtlas atlas();
-
-	/**
 	 * This method is equivalent to {@link BakedQuad#tintIndex()}.
 	 *
 	 * @see MutableQuadView#tintIndex(int)
@@ -229,6 +225,8 @@ public interface QuadView {
 		long packedUV2 = UVPair.pack(u(2), v(2));
 		long packedUV3 = UVPair.pack(u(3), v(3));
 
+		BakedQuad.SpriteInfo spriteInfo = new BakedQuad.SpriteInfo(sprite, chunkLayer(), itemRenderType());
+
 		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
 		// values and all four block light values.
 		int lightEmission = 15;
@@ -245,28 +243,6 @@ public interface QuadView {
 				int blockLight = LightCoordsUtil.block(lightmap);
 				int skyLight = LightCoordsUtil.sky(lightmap);
 				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
-			}
-		}
-
-		BakedQuad.SpriteInfo spriteInfo;
-
-		if (chunkLayer() != null && itemRenderType() != null) {
-			spriteInfo = new BakedQuad.SpriteInfo(sprite, chunkLayer(), itemRenderType());
-		} else {
-			spriteInfo = ModelHelper.computeSpriteInfo(sprite, this);
-
-			if (chunkLayer() != null) {
-				spriteInfo = new BakedQuad.SpriteInfo(
-						sprite,
-						chunkLayer(),
-						spriteInfo.itemRenderType()
-				);
-			} else if (itemRenderType() != null) {
-				spriteInfo = new BakedQuad.SpriteInfo(
-						sprite,
-						spriteInfo.layer(),
-						itemRenderType()
-				);
 			}
 		}
 

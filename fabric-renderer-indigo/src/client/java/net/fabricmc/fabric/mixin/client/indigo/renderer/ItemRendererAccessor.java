@@ -18,17 +18,24 @@ package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.world.item.ItemDisplayContext;
 
 @Mixin(ItemRenderer.class)
 public interface ItemRendererAccessor {
 	@Invoker("getFoilBuffer")
-	static VertexConsumer fabric_getFoilBuffer(MultiBufferSource bufferSource, RenderType renderType, PoseStack.Pose pose) {
+	static VertexConsumer fabric_getFoilBuffer(MultiBufferSource bufferSource, RenderType renderType, PoseStack.@Nullable Pose foilDecalPose) {
+		throw new AssertionError();
+	}
+
+	@Invoker("computeFoilDecalPose")
+	static PoseStack.Pose fabric_computeFoilDecalPose(ItemDisplayContext type, PoseStack.Pose pose) {
 		throw new AssertionError();
 	}
 }

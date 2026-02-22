@@ -26,9 +26,9 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
  */
 public interface FabricMaterialBaker extends SpriteFinderGetter {
 	/**
-	 * {@return the sprite finder for the given atlas texture ID}
+	 * {@return the sprite finder for the given atlas ID}
 	 */
-	default SpriteFinder spriteFinder(Identifier atlasTextureId) {
+	default SpriteFinder spriteFinder(Identifier atlasId) {
 		throw new UnsupportedOperationException();
 	}
 

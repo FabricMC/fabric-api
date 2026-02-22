@@ -241,13 +241,17 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	@Nullable
+	public QuadAtlas atlas() {
+		return EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
 	public ChunkSectionLayer chunkLayer() {
 		return EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
-	public @Nullable RenderType itemRenderType() {
+	public RenderType itemRenderType() {
 		return EncodingFormat.itemRenderType(data[baseIndex + HEADER_BITS]);
 	}
 
@@ -274,11 +278,6 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public ShadeMode shadeMode() {
 		return EncodingFormat.shadeMode(data[baseIndex + HEADER_BITS]);
-	}
-
-	@Override
-	public QuadAtlas atlas() {
-		return EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override

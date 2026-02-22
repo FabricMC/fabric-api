@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
+// TODO 26.1: update docs
 /**
  * Note: This interface is automatically implemented on {@link BlockRenderDispatcher} via Mixin and interface injection.
  */
@@ -44,8 +45,8 @@ public interface FabricBlockRenderDispatcher {
 	/**
 	 * Alternative for
 	 * {@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput)}
-	 * that accepts a {@link VertexConsumer} instead of a {@link BakedQuadOutput}. <b>Use this method
-	 * instead of the vanilla alternative to correctly provide the model with a {@link VertexConsumer}.</b>
+	 * that accepts a {@link VertexConsumer} instead of a {@link BakedQuadOutput}. <b>Use this method instead of the
+	 * vanilla alternative to correctly provide the model with a {@link VertexConsumer}.</b>
 	 *
 	 * @param state The block state.
 	 * @param pos The block position.
@@ -55,7 +56,7 @@ public interface FabricBlockRenderDispatcher {
 	 * conjunction with one of {@link ModelBakery#DESTROY_TYPES} where the index is the breaking progress.</b>
 	 */
 	default void renderBreakingTexture(BlockState state, BlockPos pos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer) {
-		Renderer.get().renderBreakingTexture(((BlockRenderDispatcher) this),
+		Renderer.get().renderBreakingTexture((BlockRenderDispatcher) this,
 				state, pos, level, poseStack, vertexConsumer);
 	}
 
@@ -64,8 +65,8 @@ public interface FabricBlockRenderDispatcher {
 	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
-	 * geometry on multiple chunk layers and to provide the model with additional context.</b>
+	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.
@@ -94,8 +95,8 @@ public interface FabricBlockRenderDispatcher {
 	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
-	 * geometry on multiple chunk layers and to provide the model with additional context.</b>
+	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.

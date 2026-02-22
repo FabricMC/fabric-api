@@ -55,14 +55,14 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * {@link SectionCompiler} in vanilla; this code is not patched automatically. Renderers must also ensure that the
  * following vanilla methods support {@link BlockStateModel#emitQuads}; these methods are not patched automatically.
  *
- * <ul><li>{@link ModelBlockRenderer#renderModel(PoseStack.Pose, BakedQuadOutput, BlockStateModel, int, int, int)}
- *
- * <li>{@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)}
- *
- * <li>{@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
+ * <ul><li>{@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
  *
  * <p>All other places in vanilla code that invoke {@link BlockStateModel#collectParts(RandomSource, List)},
- * {@link BlockStateModel#collectParts(RandomSource)}, or
+ * {@link BlockStateModel#collectParts(RandomSource)},
+ * {@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput)},
+ * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput, boolean, List)},
+ * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, BakedQuadOutput, boolean, int)},
+ * or
  * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, BakedQuadOutput, BlockStateModel, int, int, int)}
  * are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
  * {@link FabricModelBlockRenderer} or {@link FabricBlockRenderDispatcher}.
@@ -99,7 +99,7 @@ public interface Renderer {
 	 * @see FabricModelBlockRenderer#renderModel(PoseStack.Pose, BlockMultiBufferSource, Predicate, BlockStateModel, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	@ApiStatus.OverrideOnly
-	void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
+	void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
 	/**
 	 * @see FabricBlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)

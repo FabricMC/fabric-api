@@ -18,22 +18,17 @@ package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
 import java.util.function.Predicate;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.block.BakedQuadOutput;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -45,7 +40,6 @@ import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
@@ -114,38 +108,42 @@ abstract class BlockFeatureRendererMixin {
 		}
 	}
 
-	// Support ExtendedBlockModelSubmit.
-	@Inject(method = "renderBlockModelSubmits", at = @At("RETURN"))
-	private void onReturnRenderBlockModelSubmits(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, boolean translucent, CallbackInfo ci) {
+	// Support FRAPI models in BlockModelSubmit and support ExtendedBlockModelSubmit.
+	@Overwrite
+	private void renderBlockModelSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource, final OutlineBufferSource outlineBufferSource, final boolean translucent) {
+		for (SubmitNodeStorage.BlockModelSubmit submit : nodeCollection.getBlockModelSubmits()) {
+			if (submit.renderType().hasBlending() == translucent) {
+				VertexConsumer buffer = bufferSource.getBuffer(submit.renderType());
+				FabricModelBlockRenderer.renderModel(
+						submit.pose(), _ -> buffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO,
+						Blocks.AIR.defaultBlockState());
+
+				if (submit.outlineColor() != 0) {
+					outlineBufferSource.setColor(submit.outlineColor());
+					VertexConsumer outlineBuffer = outlineBufferSource.getBuffer(submit.renderType());
+					FabricModelBlockRenderer.renderModel(
+							submit.pose(), _ -> outlineBuffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO,
+							Blocks.AIR.defaultBlockState());
+				}
+			}
+		}
+
 		DelegatingBlockMultiBufferSourceImpl blockMultiBufferSource = new DelegatingBlockMultiBufferSourceImpl(translucent);
 
 		for (ExtendedBlockModelSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockModelSubmits()) {
 			blockMultiBufferSource.renderTypeFunction = submit.renderTypeFunction();
 			blockMultiBufferSource.multiBufferSource = bufferSource;
 			FabricModelBlockRenderer.renderModel(
-					submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.tint(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
+					submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
 					submit.state());
 
 			if (submit.outlineColor() != 0) {
 				outlineBufferSource.setColor(submit.outlineColor());
 				blockMultiBufferSource.multiBufferSource = outlineBufferSource;
 				FabricModelBlockRenderer.renderModel(
-						submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.tint(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
+						submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
 						submit.state());
 			}
 		}
-	}
-
-	@Redirect(method = "renderBlockModelSubmits", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/ModelBlockRenderer;renderModel(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/BakedQuadOutput;Lnet/minecraft/client/renderer/block/model/BlockStateModel;III)V"))
-	private void redirectRenderModel(
-			PoseStack.Pose pose,
-			BakedQuadOutput output,
-			BlockStateModel model,
-			int tintColor,
-			int lightCoords,
-			int overlayCoords,
-			@Local(name = "bufferSource") MultiBufferSource.BufferSource bufferSource
-	) {
-		Renderer.get().renderModel(pose, ChunkSectionLayerHelper.entityDelegate(bufferSource), null, model, tintColor, lightCoords, overlayCoords, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
 	}
 }

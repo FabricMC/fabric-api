@@ -23,11 +23,12 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,25 +55,25 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * When enabled, causes texture to appear with no rotation. This is the default and does not have to be specified
 	 * explicitly. Can be overridden by other rotation flags.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_NONE = 0;
 
 	/**
 	 * When enabled, causes texture to appear rotated 90 degrees clockwise.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_90 = 1;
 
 	/**
 	 * When enabled, causes texture to appear rotated 180 degrees.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_180 = 2;
 
 	/**
 	 * When enabled, causes texture to appear rotated 270 degrees clockwise.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_270 = 3;
 
@@ -80,7 +81,7 @@ public interface MutableQuadView extends QuadView {
 	 * When enabled, texture coordinates are assigned based on vertex positions and the
 	 * {@linkplain #nominalFace() nominal face}.
 	 * Any existing UV coordinates will be replaced and the {@link #BAKE_NORMALIZED} flag will be ignored.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 *
 	 * <p>UV lock derives texture coordinates based on {@linkplain #nominalFace() nominal face} by projecting the quad
 	 * onto it, even when the quad is not co-planar with it. This flag is ignored if the normal face is {@code null}.
@@ -93,7 +94,7 @@ public interface MutableQuadView extends QuadView {
 	 * and texture mapping scenarios. Results are different from what
 	 * can be obtained via rotation and both can be applied. Any
 	 * rotation is applied before this flag.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_FLIP_U = 8;
 
@@ -107,7 +108,7 @@ public interface MutableQuadView extends QuadView {
 	 * with conventional Minecraft model format. This is scaled to 0-1 during
 	 * baking before interpolation. Model loaders that already have 0-1 coordinates
 	 * can avoid wasteful multiplication/division by passing 0-1 coordinates directly.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_NORMALIZED = 32;
 
@@ -182,19 +183,25 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Sets the texture coordinates for all vertices using the given sprite. Also sets this quad's atlas to the given
-	 * sprite's atlas. Can handle UV locking, rotation, interpolation, etc. Control this behavior by passing additive
-	 * combinations of the BAKE_ flags defined in this interface.
+	 * Sets the texture coordinates for all vertices using the given material's sprite. Also sets this quad's
+	 * {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer}, and
+	 * {@linkplain #itemRenderType(RenderType) item render type} to appropriate values based on the given material. Can
+	 * handle UV locking, rotation, interpolation, etc. Control this behavior by passing additive combinations of the
+	 * BAKE_ flags defined in this interface.
 	 */
-	default MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
-		QuadSpriteBaker.bakeSprite(this, sprite, bakeFlags);
-		QuadAtlas atlas = QuadAtlas.ofLocation(sprite.atlasLocation());
+	default MutableQuadView materialBake(Material.Baked material, int bakeFlags) {
+		QuadSpriteBaker.bakeSprite(this, material.sprite(), bakeFlags);
+		QuadAtlas atlas = QuadAtlas.ofLocation(material.sprite().atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;
 		}
 
 		atlas(atlas);
+		// TODO 26.1: allow invoking this separately as a method in this interface
+		BakedQuad.SpriteInfo spriteInfo = ModelHelper.computeSpriteInfo(material, this);
+		chunkLayer(spriteInfo.layer());
+		itemRenderType(spriteInfo.itemRenderType());
 		return this;
 	}
 
@@ -252,7 +259,7 @@ public interface MutableQuadView extends QuadView {
 	 * but if set, should be the expected value of {@link #lightFace()}. It may be used to shortcut geometric analysis,
 	 * if the provided value was correct; otherwise, it is ignored.
 	 *
-	 * <p>The nominal face is also used for {@link #spriteBake(TextureAtlasSprite, int)} with {@link #BAKE_LOCK_UV}.
+	 * <p>The nominal face is also used for {@link #materialBake(Material.Baked, int)} with {@link #BAKE_LOCK_UV}.
 	 *
 	 * <p>When {@link #cullFace(Direction)} is called, it also sets the nominal face.
 	 *
@@ -278,64 +285,46 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView cullFace(@Nullable Direction face);
 
 	/**
-	 * Controls how this quad's pixels should be blended with the scene in block form.
+	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad. This property is mainly used to retrieve this
+	 * quad's {@linkplain TextureAtlasSprite sprite} via the appropriate atlas' {@link SpriteFinder}.
 	 *
-	 * <p>If set to {@code null}, {@link ModelHelper#computeSpriteInfo(TextureAtlasSprite, QuadView)} will be used to retrieve
-	 * the {@linkplain ChunkSectionLayer chunk layer}. Set to another value to override this behavior.
+	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}.
 	 *
-	 * <p>The default value is {@code null}.
+	 * <p>The default value is {@link QuadAtlas#BLOCK}.
+	 *
+	 * @see QuadAtlas
+	 */
+	MutableQuadView atlas(QuadAtlas quadAtlas);
+
+	/**
+	 * Controls how this quad should be rendered after buffering in block contexts.
+	 *
+	 * <p>The default value is {@link ChunkSectionLayer#CUTOUT}.
 	 *
 	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
 	 */
-	MutableQuadView chunkLayer(@Nullable ChunkSectionLayer layer);
+	MutableQuadView chunkLayer(ChunkSectionLayer layer);
 
+	// TODO 26.1: allow using any RenderType
 	/**
-	 * When computing a value, this method also sets the {@link #chunkLayer()} value.
+	 * Controls how this quad should be rendered after buffering in item contexts. The atlas texture used by the set
+	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
 	 *
-	 * @return this quad's {@link ChunkSectionLayer} or a default determined by the sprite's
-	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
-	 * @see #chunkLayer()
-	 */
-	default ChunkSectionLayer getOrResolveChunkLayer(SpriteFinder spriteFinder) {
-		if (chunkLayer() == null) {
-			ChunkSectionLayer layer = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
-					.layer();
-			chunkLayer(layer);
-			return layer;
-		}
-
-		return chunkLayer();
-	}
-
-	/**
-	 * Controls how this quad should be rendered in item form.
+	 * <p>Only the following values are allowed:
+	 * <ul>
+	 *     <li>{@link Sheets#cutoutItemSheet()}
+	 *     <li>{@link Sheets#translucentItemSheet()}
+	 *     <li>{@link Sheets#cutoutBlockItemSheet()}
+	 *     <li>{@link Sheets#translucentBlockItemSheet()}
+	 * </ul>
 	 *
-	 * <p>If set to {@code null}, {@link ModelHelper#computeSpriteInfo(TextureAtlasSprite, QuadView)} will be used to retrieve
-	 * the {@linkplain RenderType item RenderType}. Set to another value to override this behavior.
+	 * <p>If this method is invoked with any value not in the above list, it will no-op.
 	 *
-	 * <p>The default value is {@code null}.
+	 * <p>The default value is {@link Sheets#cutoutBlockItemSheet()}.
 	 *
 	 * <p>This property is respected only in item contexts. It will not have an effect in other contexts.
 	 */
-	MutableQuadView itemRenderType(@Nullable RenderType renderType);
-
-	/**
-	 * When computing a value, this method also sets the {@link #itemRenderType()} value.
-	 *
-	 * @return this quad's {@linkplain RenderType item RenderType} or a default determined by the sprite's
-	 * {@linkplain SpriteContents#computeTransparency(float, float, float, float) transparency}.
-	 * @see #itemRenderType()
-	 */
-	default RenderType getOrResolveItemRenderType(SpriteFinder spriteFinder) {
-		if (itemRenderType() == null) {
-			RenderType renderType = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
-					.itemRenderType();
-			itemRenderType(renderType);
-			return renderType;
-		}
-
-		return itemRenderType();
-	}
+	MutableQuadView itemRenderType(RenderType renderType);
 
 	/**
 	 * When true, this quad will be rendered at full brightness.
@@ -402,19 +391,7 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView shadeMode(ShadeMode mode);
 
 	/**
-	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
-	 *
-	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
-	 * converted to a {@link RenderType} using {@link #getOrResolveItemRenderType(SpriteFinder)}.
-	 *
-	 * <p>The default value is {@link QuadAtlas#BLOCK}.
-	 *
-	 * @see QuadAtlas
-	 */
-	MutableQuadView atlas(QuadAtlas quadAtlas);
-
-	/**
-	 * Sets the tint index, which is used to retrieve the tint color.
+	 * Sets the tintColor index, which is used to retrieve the tintColor color.
 	 *
 	 * <p>The default value is {@code -1}.
 	 */
