@@ -391,7 +391,7 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView shadeMode(ShadeMode mode);
 
 	/**
-	 * Sets the tintColor index, which is used to retrieve the tintColor color.
+	 * Sets the tint index, which is used to retrieve the tint color.
 	 *
 	 * <p>The default value is {@code -1}.
 	 */

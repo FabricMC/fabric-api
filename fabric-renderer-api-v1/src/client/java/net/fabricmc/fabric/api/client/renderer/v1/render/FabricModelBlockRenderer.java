@@ -123,7 +123,7 @@ public interface FabricModelBlockRenderer {
 	 * @param layerFilter Specifies the chunk layers for which geometry should be buffered ({@code true}) or discarded
 	 *                    ({@code false}).
 	 * @param model The model to render.
-	 * @param tintColor The tintColor color.
+	 * @param tintColor The tint color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
@@ -153,7 +153,7 @@ public interface FabricModelBlockRenderer {
 	 * @param pose The pose.
 	 * @param bufferSource The buffer source.
 	 * @param model The model to render.
-	 * @param tint The tintColor color.
+	 * @param tintColor The tint color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
@@ -163,8 +163,8 @@ public interface FabricModelBlockRenderer {
 	 *
 	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, int tint, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		Renderer.get().renderModel(
-				pose, bufferSource, null, model, tint, light, overlay, level, pos, state);
+				pose, bufferSource, null, model, tintColor, light, overlay, level, pos, state);
 	}
 }
