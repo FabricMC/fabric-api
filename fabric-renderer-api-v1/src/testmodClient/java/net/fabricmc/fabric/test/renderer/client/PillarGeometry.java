@@ -45,9 +45,9 @@ public record PillarGeometry() implements UnbakedGeometry {
 				.get(Objects.requireNonNull(textures.getMaterial("pillar")), model);
 
 		for (Direction side : Direction.values()) {
-			emitter.square(side, 0, 0, 1, 1, 0);
-			emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-			emitter.emit();
+			emitter.square(side, 0, 0, 1, 1, 0)
+					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+					.emit();
 		}
 
 		return new MeshQuadCollection(builder.immutableCopy());

@@ -72,9 +72,9 @@ public class PillarBlockStateModel implements BlockStateModel {
 	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = getConnectedTexture(level, pos, state, side);
-			emitter.square(side, 0, 0, 1, 1, 0);
-			emitter.materialBake(materials[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
-			emitter.emit();
+			emitter.square(side, 0, 0, 1, 1, 0)
+					.materialBake(materials[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV)
+					.emit();
 		}
 	}
 

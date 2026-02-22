@@ -48,44 +48,44 @@ public record FrameGeometry(boolean emissive) implements UnbakedGeometry {
 			// Draw outer frame
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.0F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.0F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.0F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.0F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 
 			// Draw inner frame - inset by 0.9 so the frame looks like an actual mesh
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.9F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.9F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.9F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.9F)
 					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive);
-			emitter.emit();
+					.emissive(emissive)
+					.emit();
 		}
 
 		return new MeshQuadCollection(builder.immutableCopy());

@@ -53,173 +53,173 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 
 		// up
 
-		emitter.pos(0, A, 1, 0);
-		emitter.pos(1, 0.5f, 1, 0.5f);
-		emitter.pos(2, 1, 1, A);
-		emitter.pos(3, B, 1, 0);
-		emitter.cullFace(Direction.UP);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, A, 1, 0)
+				.pos(1, 0.5f, 1, 0.5f)
+				.pos(2, 1, 1, A)
+				.pos(3, B, 1, 0)
+				.cullFace(Direction.UP)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
-		emitter.pos(0, 0, 1, A);
-		emitter.pos(1, 0, 1, B);
-		emitter.pos(2, 0.5f, 1, 0.5f);
-		emitter.pos(3, A, 1, 0);
-		emitter.cullFace(Direction.UP);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, 0, 1, A)
+				.pos(1, 0, 1, B)
+				.pos(2, 0.5f, 1, 0.5f)
+				.pos(3, A, 1, 0)
+				.cullFace(Direction.UP)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
-		emitter.pos(0, 0, 1, B);
-		emitter.pos(1, A, 1, 1);
-		emitter.pos(2, B, 1, 1);
-		emitter.pos(3, 0.5f, 1, 0.5f);
-		emitter.cullFace(Direction.UP);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, 0, 1, B)
+				.pos(1, A, 1, 1)
+				.pos(2, B, 1, 1)
+				.pos(3, 0.5f, 1, 0.5f)
+				.cullFace(Direction.UP)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
-		emitter.pos(0, 0.5f, 1, 0.5f);
-		emitter.pos(1, B, 1, 1);
-		emitter.pos(2, 1, 1, B);
-		emitter.pos(3, 1, 1, A);
-		emitter.cullFace(Direction.UP);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, 0.5f, 1, 0.5f)
+				.pos(1, B, 1, 1)
+				.pos(2, 1, 1, B)
+				.pos(3, 1, 1, A)
+				.cullFace(Direction.UP)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
 		// down
 
-		emitter.pos(0, A, 0, 1);
-		emitter.pos(1, 0.5f, 0, 0.5f);
-		emitter.pos(2, 1, 0, B);
-		emitter.pos(3, B, 0, 1);
-		emitter.cullFace(Direction.DOWN);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, A, 0, 1)
+				.pos(1, 0.5f, 0, 0.5f)
+				.pos(2, 1, 0, B)
+				.pos(3, B, 0, 1)
+				.cullFace(Direction.DOWN)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
-		emitter.pos(0, 0, 0, B);
-		emitter.pos(1, 0, 0, A);
-		emitter.pos(2, 0.5f, 0, 0.5f);
-		emitter.pos(3, A, 0, 1);
-		emitter.cullFace(Direction.DOWN);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, 0, 0, B)
+				.pos(1, 0, 0, A)
+				.pos(2, 0.5f, 0, 0.5f)
+				.pos(3, A, 0, 1)
+				.cullFace(Direction.DOWN)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
-		emitter.pos(0, 0, 0, A);
-		emitter.pos(1, A, 0, 0);
-		emitter.pos(2, B, 0, 0);
-		emitter.pos(3, 0.5f, 0, 0.5f);
-		emitter.cullFace(Direction.DOWN);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, 0, 0, A)
+				.pos(1, A, 0, 0)
+				.pos(2, B, 0, 0)
+				.pos(3, 0.5f, 0, 0.5f)
+				.cullFace(Direction.DOWN)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
-		emitter.pos(0, 0.5f, 0, 0.5f);
-		emitter.pos(1, B, 0, 0);
-		emitter.pos(2, 1, 0, A);
-		emitter.pos(3, 1, 0, B);
-		emitter.cullFace(Direction.DOWN);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.emit();
+		emitter.pos(0, 0.5f, 0, 0.5f)
+				.pos(1, B, 0, 0)
+				.pos(2, 1, 0, A)
+				.pos(3, 1, 0, B)
+				.cullFace(Direction.DOWN)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.emit();
 
 		// north
-		emitter.pos(0, B, 1, 0);
-		emitter.pos(1, B, 0, 0);
-		emitter.pos(2, A, 0, 0);
-		emitter.pos(3, A, 1, 0);
-		emitter.cullFace(Direction.NORTH);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.pos(0, B, 1, 0)
+				.pos(1, B, 0, 0)
+				.pos(2, A, 0, 0)
+				.pos(3, A, 1, 0)
+				.cullFace(Direction.NORTH)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		// northwest
-		emitter.pos(0, A, 1, 0);
-		emitter.pos(1, A, 0, 0);
-		emitter.pos(2, 0, 0, A);
-		emitter.pos(3, 0, 1, A);
+		emitter.pos(0, A, 1, 0)
+				.pos(1, A, 0, 0)
+				.pos(2, 0, 0, A)
+				.pos(3, 0, 1, A);
 		cornerSprite(emitter, material);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		// west
-		emitter.pos(0, 0, 1, A);
-		emitter.pos(1, 0, 0, A);
-		emitter.pos(2, 0, 0, B);
-		emitter.pos(3, 0, 1, B);
-		emitter.cullFace(Direction.WEST);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.pos(0, 0, 1, A)
+				.pos(1, 0, 0, A)
+				.pos(2, 0, 0, B)
+				.pos(3, 0, 1, B)
+				.cullFace(Direction.WEST)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		// southwest
-		emitter.pos(0, 0, 1, B);
-		emitter.pos(1, 0, 0, B);
-		emitter.pos(2, A, 0, 1);
-		emitter.pos(3, A, 1, 1);
+		emitter.pos(0, 0, 1, B)
+				.pos(1, 0, 0, B)
+				.pos(2, A, 0, 1)
+				.pos(3, A, 1, 1);
 		cornerSprite(emitter, material);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		// south
-		emitter.pos(0, A, 1, 1);
-		emitter.pos(1, A, 0, 1);
-		emitter.pos(2, B, 0, 1);
-		emitter.pos(3, B, 1, 1);
-		emitter.cullFace(Direction.SOUTH);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.pos(0, A, 1, 1)
+				.pos(1, A, 0, 1)
+				.pos(2, B, 0, 1)
+				.pos(3, B, 1, 1)
+				.cullFace(Direction.SOUTH)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		// southeast
-		emitter.pos(0, B, 1, 1);
-		emitter.pos(1, B, 0, 1);
-		emitter.pos(2, 1, 0, B);
-		emitter.pos(3, 1, 1, B);
+		emitter.pos(0, B, 1, 1)
+				.pos(1, B, 0, 1)
+				.pos(2, 1, 0, B)
+				.pos(3, 1, 1, B);
 		cornerSprite(emitter, material);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		// east
-		emitter.pos(0, 1, 1, B);
-		emitter.pos(1, 1, 0, B);
-		emitter.pos(2, 1, 0, A);
-		emitter.pos(3, 1, 1, A);
-		emitter.cullFace(Direction.EAST);
-		emitter.materialBake(material, MutableQuadView.BAKE_LOCK_UV);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.pos(0, 1, 1, B)
+				.pos(1, 1, 0, B)
+				.pos(2, 1, 0, A)
+				.pos(3, 1, 1, A)
+				.cullFace(Direction.EAST)
+				.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+				.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		// northeast
-		emitter.pos(0, 1, 1, A);
-		emitter.pos(1, 1, 0, A);
-		emitter.pos(2, B, 0, 0);
-		emitter.pos(3, B, 1, 0);
+		emitter.pos(0, 1, 1, A)
+				.pos(1, 1, 0, A)
+				.pos(2, B, 0, 0)
+				.pos(3, B, 1, 0);
 		cornerSprite(emitter, material);
-		emitter.shadeMode(shadeMode);
-		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
-		emitter.emit();
+		emitter.shadeMode(shadeMode)
+				.foilType(ItemStackRenderState.FoilType.STANDARD)
+				.emit();
 
 		return new MeshQuadCollection(builder.immutableCopy());
 	}
 
 	private static void cornerSprite(QuadEmitter emitter, Material.Baked material) {
 		// Assign uvs for a corner face in such a way that the texture is not stretched, using coordinates in [0, 1].
-		emitter.uv(0, A, 0);
-		emitter.uv(1, A, 1);
-		emitter.uv(2, B, 1);
-		emitter.uv(3, B, 0);
+		emitter.uv(0, A, 0)
+				.uv(1, A, 1)
+				.uv(2, B, 1)
+				.uv(3, B, 0);
 		// Map [0, 1] coordinates to sprite atlas coordinates. spriteBake assumes [0, 16] unless we pass the BAKE_NORMALIZED flag.
 		emitter.materialBake(material, MutableQuadView.BAKE_NORMALIZED);
 	}
