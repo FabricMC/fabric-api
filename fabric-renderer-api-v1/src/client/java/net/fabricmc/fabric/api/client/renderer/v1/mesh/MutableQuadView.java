@@ -297,18 +297,14 @@ public interface MutableQuadView extends QuadView {
 	 * @see #chunkLayer()
 	 */
 	default ChunkSectionLayer getOrResolveChunkLayer(SpriteFinder spriteFinder) {
-		if (this.chunkLayer() == null) {
+		if (chunkLayer() == null) {
 			ChunkSectionLayer layer = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
 					.layer();
-
-			if (this instanceof MutableQuadView self) {
-				self.chunkLayer(layer);
-			}
-
+			chunkLayer(layer);
 			return layer;
 		}
 
-		return this.chunkLayer();
+		return chunkLayer();
 	}
 
 	/**
@@ -331,18 +327,14 @@ public interface MutableQuadView extends QuadView {
 	 * @see #itemRenderType()
 	 */
 	default RenderType getOrResolveItemRenderType(SpriteFinder spriteFinder) {
-		if (this.itemRenderType() == null) {
+		if (itemRenderType() == null) {
 			RenderType renderType = ModelHelper.computeSpriteInfo(spriteFinder.find(this), this)
 					.itemRenderType();
-
-			if (this instanceof MutableQuadView self) {
-				self.itemRenderType(renderType);
-			}
-
+			itemRenderType(renderType);
 			return renderType;
 		}
 
-		return this.itemRenderType();
+		return itemRenderType();
 	}
 
 	/**
@@ -413,7 +405,7 @@ public interface MutableQuadView extends QuadView {
 	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
 	 *
 	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
-	 * converted to a {@link RenderType} using {@link MutableQuadView#getOrResolveItemRenderType(SpriteFinder)}.
+	 * converted to a {@link RenderType} using {@link #getOrResolveItemRenderType(SpriteFinder)}.
 	 *
 	 * <p>The default value is {@link QuadAtlas#BLOCK}.
 	 *

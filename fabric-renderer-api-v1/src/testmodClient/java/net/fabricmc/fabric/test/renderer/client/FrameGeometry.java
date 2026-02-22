@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.Objects;
 
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -32,6 +33,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.model.ModelStateHelper;
 
 public record FrameGeometry(boolean emissive) implements UnbakedGeometry {
@@ -41,52 +43,60 @@ public record FrameGeometry(boolean emissive) implements UnbakedGeometry {
 		QuadEmitter emitter = builder.emitter();
 		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.materials()));
 
-		TextureAtlasSprite sprite = baker.materials()
-				.get(Objects.requireNonNull(textures.getMaterial("frame")), model)
-				.sprite();
+		Material.Baked material = baker.materials()
+				.get(Objects.requireNonNull(textures.getMaterial("frame")), model);
+		TextureAtlasSprite sprite = material.sprite();
 
 		for (Direction direction : Direction.values()) {
 			// Draw outer frame
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.0F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.0F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.0F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.0F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 
 			// Draw inner frame - inset by 0.9 so the frame looks like an actual mesh
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.9F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.9F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.9F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.9F)
 					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
-					.emissive(emissive)
-					.emit();
+					.emissive(emissive);
+			ModelHelper.setSpriteInfo(emitter, material);
+			emitter.emit();
 		}
 
 		return new MeshQuadCollection(builder.immutableCopy());

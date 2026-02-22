@@ -264,6 +264,7 @@ public final class EncodingFormat {
 	}
 
 	static int itemRenderType(int bits, @Nullable RenderType renderType) {
+		// FIXME: if the given renderType is unexpected, this will NPE
 		int index = renderType == null ? NULL_ITEM_RENDER_TYPE_INDEX : ItemRenderType.RENDER_TYPE_2_ENUM.get(renderType).ordinal();
 		return (bits & ~ITEM_RENDER_TYPE_MASK) | (index << ITEM_RENDER_TYPE_BIT_OFFSET);
 	}

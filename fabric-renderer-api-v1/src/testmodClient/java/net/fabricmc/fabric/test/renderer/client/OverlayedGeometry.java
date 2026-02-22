@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.renderer.client;
 import java.util.Objects;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -46,9 +47,9 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 
 		ResolvedModel parentModel = modelBaker.getModel(parentId);
 		QuadCollection parentQuads = parentModel.bakeTopGeometry(parentModel.getTopTextureSlots(), modelBaker, modelState);
-		TextureAtlasSprite overlaySprite = modelBaker.materials()
-				.get(Objects.requireNonNull(textures.getMaterial("overlay")), name)
-				.sprite();
+		Material.Baked overlayMaterial = modelBaker.materials()
+				.get(Objects.requireNonNull(textures.getMaterial("overlay")), name);
+		TextureAtlasSprite overlaySprite = overlayMaterial.sprite();
 		QuadAtlas overlayAtlas = QuadAtlas.ofLocation(overlaySprite.atlasLocation());
 
 		if (overlayAtlas == null) {
@@ -59,7 +60,6 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 			meshQuadCollection.getMesh().forEach(quad -> {
 				emitter.copyFrom(quad).emit();
 				emitter.copyFrom(quad);
-				emitter.atlas(overlayAtlas);
 
 				TextureAtlasSprite sprite = modelBaker.materials().spriteFinder(emitter.atlas()).find(emitter);
 
@@ -71,6 +71,7 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 					);
 				}
 
+				ModelHelper.setSpriteInfo(emitter, overlayMaterial);
 				emitter.emit();
 			});
 		} else {
@@ -80,7 +81,6 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 				for (BakedQuad bakedQuad : parentQuads.getQuads(cullFace)) {
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace).emit();
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace);
-					emitter.atlas(overlayAtlas);
 
 					TextureAtlasSprite sprite = bakedQuad.spriteInfo().sprite();
 
@@ -92,6 +92,7 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 						);
 					}
 
+					ModelHelper.setSpriteInfo(emitter, overlayMaterial);
 					emitter.emit();
 				}
 			}

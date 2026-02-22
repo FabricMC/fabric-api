@@ -26,13 +26,16 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
@@ -50,6 +53,18 @@ public final class ModelHelper {
 	private ModelHelper() { }
 
 	/**
+	 * Computes a {@link BakedQuad.SpriteInfo} for a {@link Material.Baked}.
+	 *
+	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
+	 * This method is meant primarily for baking.
+	 */
+	public static BakedQuad.SpriteInfo computeSpriteInfo(Material.Baked material, QuadView quad) {
+		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : computeTransparency(material.sprite(), quad);
+		// TODO: Consider interning or some other caching scheme to reduce object churn
+		return BakedQuad.SpriteInfo.of(material, transparency);
+	}
+
+	/**
 	 * Computes a {@link BakedQuad.SpriteInfo} for a {@link TextureAtlasSprite}.
 	 *
 	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
@@ -60,16 +75,10 @@ public final class ModelHelper {
 		ChunkSectionLayer chunkLayer = ChunkSectionLayer.byTransparency(transparency);
 		RenderType itemRenderType;
 
-		if (sprite.atlasLocation().equals(QuadAtlas.BLOCK.getTextureLocation())) {
-			itemRenderType = switch (chunkLayer) {
-			case SOLID, CUTOUT -> Sheets.cutoutBlockItemSheet();
-			case TRANSLUCENT -> Sheets.translucentBlockItemSheet();
-			};
+		if (sprite.atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
+			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
 		} else {
-			itemRenderType = switch (chunkLayer) {
-			case SOLID, CUTOUT -> Sheets.cutoutItemSheet();
-			case TRANSLUCENT -> Sheets.translucentItemSheet();
-			};
+			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentItemSheet() : Sheets.cutoutItemSheet();
 		}
 
 		// TODO: Consider interning or some other caching scheme to reduce object churn
@@ -131,6 +140,18 @@ public final class ModelHelper {
 		return sprite
 				.contents()
 				.computeTransparency(minU, minV, maxU, maxV);
+	}
+
+	public static void setSpriteInfo(MutableQuadView quad, Material.Baked material) {
+		QuadAtlas atlas = QuadAtlas.ofLocation(material.sprite().atlasLocation());
+
+		if (atlas != null) {
+			quad.atlas(atlas);
+		}
+
+		BakedQuad.SpriteInfo spriteInfo = computeSpriteInfo(material, quad);
+		quad.chunkLayer(spriteInfo.layer());
+		quad.itemRenderType(spriteInfo.itemRenderType());
 	}
 
 	/**

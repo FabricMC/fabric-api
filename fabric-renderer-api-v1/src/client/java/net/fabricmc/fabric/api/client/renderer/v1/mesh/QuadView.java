@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
-import java.util.Objects;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -249,20 +248,26 @@ public interface QuadView {
 			}
 		}
 
-		BakedQuad.SpriteInfo spriteInfo = ModelHelper.computeSpriteInfo(sprite, this);
+		BakedQuad.SpriteInfo spriteInfo;
 
-		if (this.chunkLayer() != null && this.itemRenderType() == null) {
-			spriteInfo = new BakedQuad.SpriteInfo(
-					sprite,
-					Objects.requireNonNull(this.chunkLayer()),
-					spriteInfo.itemRenderType()
-			); // We must create another object.
-		} else if (this.itemRenderType() != null && this.chunkLayer() == null) {
-			spriteInfo = new BakedQuad.SpriteInfo(
-					sprite,
-					spriteInfo.layer(),
-					Objects.requireNonNull(this.itemRenderType())
-			);
+		if (chunkLayer() != null && itemRenderType() != null) {
+			spriteInfo = new BakedQuad.SpriteInfo(sprite, chunkLayer(), itemRenderType());
+		} else {
+			spriteInfo = ModelHelper.computeSpriteInfo(sprite, this);
+
+			if (chunkLayer() != null) {
+				spriteInfo = new BakedQuad.SpriteInfo(
+						sprite,
+						chunkLayer(),
+						spriteInfo.itemRenderType()
+				);
+			} else if (itemRenderType() != null) {
+				spriteInfo = new BakedQuad.SpriteInfo(
+						sprite,
+						spriteInfo.layer(),
+						itemRenderType()
+				);
+			}
 		}
 
 		return new BakedQuad(
