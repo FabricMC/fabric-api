@@ -131,6 +131,7 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 
 		for (BakedQuad bakedQuad : geometry.getAll()) {
 			TextureAtlasSprite sprite = bakedQuad.spriteInfo().sprite();
+
 			if (!sprite.atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
 				if (forbiddenSprites == null) {
 					forbiddenSprites = HashMultimap.create();

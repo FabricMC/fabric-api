@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
@@ -63,7 +64,7 @@ public interface SpriteFinder {
 	 * Alternative to {@link #find(QuadView)} when vertex centroid is already
 	 * known or unsuitable.  Expects normalized (0-1) coordinates on the atlas texture,
 	 * which should already be the case for u,v values in vanilla baked quads and in
-	 * {@link QuadView} after calling {@link MutableQuadView#materialBake(TextureAtlasSprite, int)}.
+	 * {@link QuadView} after calling {@link MutableQuadView#materialBake(Material.Baked, int)}.
 	 *
 	 * <p>Coordinates must be in the sprite interior for reliable results. Generally will
 	 * be easier to use {@link #find(QuadView)} unless you know the vertex
