@@ -65,7 +65,7 @@ public interface FabricBlockRenderDispatcher {
 	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * when necessary. <b>Use this method instead of the vanilla alternative to provide the model with additional
 	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
@@ -95,7 +95,7 @@ public interface FabricBlockRenderDispatcher {
 	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * when necessary. <b>Use this method instead of the vanilla alternative to provide the model with additional
 	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by

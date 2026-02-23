@@ -48,8 +48,8 @@ public interface FabricModelBlockRenderer {
 	 * and
 	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput, boolean, List)}
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
-	 * {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
-	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
+	 * {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Use this method
+	 * instead of the vanilla alternative to correctly retrieve geometry from models that implement
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}.
 	 * </b>
 	 *
@@ -81,8 +81,8 @@ public interface FabricModelBlockRenderer {
 	 * and
 	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput, boolean, List)}
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
-	 * {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the random seed. <b>Prefer
-	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
+	 * {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the random seed. <b>Use this
+	 * method instead of the vanilla alternative to correctly retrieve geometry from models that implement
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
 	 * </b>
 	 *
@@ -112,7 +112,7 @@ public interface FabricModelBlockRenderer {
 	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * when necessary. <b>Use this method instead of the vanilla alternative to provide the model with additional
 	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
@@ -144,7 +144,7 @@ public interface FabricModelBlockRenderer {
 	 * that accepts a {@link BlockMultiBufferSource} instead of a {@link BakedQuadOutput}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * when necessary. <b>Prefer using this method over the vanilla alternative to provide the model with additional
+	 * when necessary. <b>Use this method instead of the vanilla alternative to provide the model with additional
 	 * context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
