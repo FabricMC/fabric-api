@@ -17,7 +17,8 @@
 package net.fabricmc.fabric.impl.attachment.sync;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -58,7 +59,7 @@ public class AttachmentSync implements ModInitializer {
 	public static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + MAX_IDENTIFIER_SIZE;
 	public static final int DEFAULT_MAX_DATA_SIZE;
 	public static final int DEFAULT_ATTACHMENT_SYNC_PACKET_SIZE;
-	public static final Set<ServerGamePacketListenerImpl> packetListeners = new HashSet<>();
+	private static final Set<ServerGamePacketListenerImpl> playerConnections = Collections.newSetFromMap(new IdentityHashMap<>());
 
 	static {
 		// ensure no splitting by default
@@ -123,6 +124,10 @@ public class AttachmentSync implements ModInitializer {
 		return atts;
 	}
 
+	public static Set<ServerGamePacketListenerImpl> getPlayerConnections() {
+		return Collections.unmodifiableSet(playerConnections);
+	}
+
 	@Override
 	public void onInitialize() {
 		// Config
@@ -155,7 +160,7 @@ public class AttachmentSync implements ModInitializer {
 				ClientboundAttachmentSyncPayload.TYPE, ClientboundAttachmentSyncPayload.CODEC, AttachmentRegistryImpl::getMaxSyncPacketSize);
 
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
-			packetListeners.add(listener);
+			playerConnections.add(listener);
 
 			// player may not be fully loaded yet, but since these are global attachments it doesn't really matter.
 			List<AttachmentChange> changes = new ArrayList<>();
@@ -167,7 +172,7 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		ServerPlayConnectionEvents.DISCONNECT.register((listener, server) -> {
-			packetListeners.remove(listener);
+			playerConnections.remove(listener);
 		});
 
 		ServerPlayerEvents.JOIN.register((player) -> {

@@ -41,8 +41,7 @@ public class GlobalAttachmentsImpl implements GlobalAttachments, AttachmentTarge
 			// We don't use PlayerLookup.all() because when a player respawns,
 			// there is a brief period where said player will not be in the server player list.
 			// If a global attachment is set then, the respawning player will never receive the update.
-			// Though that is quite an edge case and idk if this is really worth it.
-			AttachmentSync.packetListeners.forEach(serverGamePacketListener -> {
+			AttachmentSync.getPlayerConnections().forEach(serverGamePacketListener -> {
 				if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, serverGamePacketListener.player)) {
 					AttachmentSync.trySync(change, serverGamePacketListener.player);
 				}
