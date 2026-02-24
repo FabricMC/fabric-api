@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import com.mojang.authlib.GameProfile;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,22 +26,29 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
 import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
+import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
 import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
-abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExtensions, PacketCallbackListener {
+abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExtensions, PacketCallbackListener, PacketContextProvider {
 	@Shadow
 	protected abstract void verifyLoginAndFinishConnectionSetup(GameProfile gameProfile);
 
+	@Shadow
+	@Final
+	private Connection connection;
 	@Unique
 	private ServerLoginNetworkAddon addon;
 
@@ -76,6 +84,11 @@ abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExten
 		return -1;
 	}
 
+	@Inject(method = "finishLoginAndWaitForClient", at = @At("HEAD"))
+	private void storeGameProfileContext(GameProfile gameProfile, CallbackInfo ci) {
+		this.getPacketContext().set(PacketContextImpl.GAME_PROFILE, gameProfile);
+	}
+
 	@Override
 	public void sent(Packet<?> packet) {
 		if (packet instanceof ClientboundCustomQueryPacket) {
@@ -86,5 +99,10 @@ abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExten
 	@Override
 	public ServerLoginNetworkAddon getAddon() {
 		return this.addon;
+	}
+
+	@Override
+	public PacketContext getPacketContext() {
+		return this.connection.getPacketContext();
 	}
 }

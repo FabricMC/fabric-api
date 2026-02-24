@@ -28,7 +28,8 @@
     "threading.MinecraftMixin",
     "threading.MinecraftServerMixin",
     "threading.BlockableEventLoopMixin",
-    "world.CreateWorldScreenMixin"
+    "world.CreateWorldScreenMixin",
+    "world.GameRulesAccessor"
   ],
   "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
   "injectors": {

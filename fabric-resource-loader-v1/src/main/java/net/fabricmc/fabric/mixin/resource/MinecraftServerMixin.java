@@ -63,7 +63,7 @@ public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKn
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Optional<GameRules> gameRules, Proxy proxy, DataFixer dataFixer, Services apiServices, LevelLoadListener chunkLoadProgress, CallbackInfo ci) {
+	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Optional<GameRules> gameRules, Proxy proxy, DataFixer dataFixer, Services apiServices, LevelLoadListener chunkLoadProgress, boolean propagatesCrashes, CallbackInfo ci) {
 		this.originalKnownPacks = worldStem.resourceManager().listPacks().flatMap(pack -> pack.location().knownPackInfo().stream()).toList();
 	}
 

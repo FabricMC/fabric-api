@@ -25,6 +25,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
@@ -79,9 +80,15 @@ public class CustomIngredientStreamCodec implements StreamCodec<RegistryFriendly
 			return true;
 		}
 
+		PacketContext context = PacketContext.get();
+
 		// Can be null if we're not writing a packet from the StreamEncoder; in that case, always write the full ingredient.
 		// Chances are this is a mod's doing and the client has the Ingredient API with the relevant ingredients.
-		Set<Identifier> supportedIngredients = CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.get();
-		return supportedIngredients != null && !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier());
+		if (context == null) {
+			return false;
+		}
+
+		Set<Identifier> supportedIngredients = context.orElse(CustomIngredientSync.SUPPORTED_CUSTOM_INGREDIENTS, Set.of());
+		return !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier());
 	}
 }

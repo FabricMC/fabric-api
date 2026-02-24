@@ -44,21 +44,28 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.impl.networking.VanillaPacketTypes;
+import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
+import net.fabricmc.fabric.impl.networking.context.PacketContextSetter;
 import net.fabricmc.fabric.impl.networking.splitter.FabricPacketMerger;
 import net.fabricmc.fabric.impl.networking.splitter.FabricPacketSplitter;
 
 @Mixin(Connection.class)
-abstract class ConnectionMixin implements ChannelInfoHolder {
+abstract class ConnectionMixin implements ChannelInfoHolder, PacketContextProvider {
 	@Shadow
 	private PacketListener packetListener;
 
 	@Unique
 	private Map<ConnectionProtocol, Collection<Identifier>> playChannels;
+
+	@Unique
+	private final PacketContextImpl packetContext = new PacketContextImpl((Connection) (Object) this);
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddedFields(PacketFlow flow, CallbackInfo ci) {
@@ -95,6 +102,12 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 
 	@ModifyArg(method = "setupInboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
 	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
+		transitioner = ((UnconfiguredPipelineHandler.InboundConfigurationTask) transitioner).andThen((context) -> {
+			if (context.pipeline().get("decoder") instanceof PacketContextSetter setter) {
+				setter.fabric_setPacketContext(this.packetContext);
+			}
+		});
+
 		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
 
 		if (payloadTypeRegistry == null) {
@@ -109,6 +122,12 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 
 	@ModifyArg(method = "setupOutboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
 	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
+		transitioner = ((UnconfiguredPipelineHandler.OutboundConfigurationTask) transitioner).andThen((context) -> {
+			if (context.pipeline().get("encoder") instanceof PacketContextSetter setter) {
+				setter.fabric_setPacketContext(this.packetContext);
+			}
+		});
+
 		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
 
 		if (payloadTypeRegistry == null) {
@@ -124,5 +143,10 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	@Override
 	public Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol protocol) {
 		return this.playChannels.computeIfAbsent(protocol, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
+	}
+
+	@Override
+	public PacketContext getPacketContext() {
+		return this.packetContext;
 	}
 }

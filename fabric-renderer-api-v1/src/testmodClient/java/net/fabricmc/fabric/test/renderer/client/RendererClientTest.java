@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.rendering.v1.ChunkSectionLayerMap;
 import net.fabricmc.fabric.test.renderer.Registration;
 import net.fabricmc.fabric.test.renderer.RendererTest;
@@ -38,5 +39,12 @@ public final class RendererClientTest implements ClientModInitializer {
 		// We don't specify a material for the frame mesh,
 		// so it will use the default material, i.e. the one from ChunkSectionLayers.
 		ChunkSectionLayerMap.putBlock(Registration.FRAME_BLOCK, ChunkSectionLayer.CUTOUT);
+
+		try {
+			// if it crashes, that means the ordering is #*@!ed up.
+			Renderer.get(); // Ensure Renderer can be initialized as early as mod init
+		} catch (Exception e) {
+			throw new RuntimeException("Renderer failed to initialize", e);
+		}
 	}
 }

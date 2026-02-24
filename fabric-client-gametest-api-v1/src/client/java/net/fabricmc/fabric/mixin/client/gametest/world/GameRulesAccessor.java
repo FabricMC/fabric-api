@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.attachment.sync;
+package net.fabricmc.fabric.mixin.client.gametest.world;
 
-import java.util.Set;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.network.Connection;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.gamerules.GameRuleMap;
+import net.minecraft.world.level.gamerules.GameRules;
 
-/**
- * Implemented on {@link Connection} to store which attachments the client supports.
- */
-public interface SupportedAttachmentsConnection {
-	void fabric_setSupportedAttachments(Set<Identifier> supportedAttachments);
-
-	Set<Identifier> fabric_getSupportedAttachments();
+@Mixin(GameRules.class)
+public interface GameRulesAccessor {
+	@Accessor
+	GameRuleMap getRules();
 }

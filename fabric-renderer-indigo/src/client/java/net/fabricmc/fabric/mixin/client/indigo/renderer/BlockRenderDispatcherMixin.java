@@ -48,14 +48,14 @@ abstract class BlockRenderDispatcherMixin {
 
 	@Inject(method = "renderBreakingTexture(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/BlockAndTintGetter;Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;)V", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getBlockModel(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/block/model/BlockStateModel;"), cancellable = true)
 	private void afterGetModel(BlockState blockState, BlockPos blockPos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer, CallbackInfo ci, @Local(name = "model") BlockStateModel model) {
-		modelRenderer.render(level, model, blockState, blockPos,
+		modelRenderer.tesselateBlock(level, model, blockState, blockPos,
 				poseStack, layer -> vertexConsumer, true, blockState.getSeed(blockPos), OverlayTexture.NO_OVERLAY);
 		ci.cancel();
 	}
 
 	@Redirect(method = "renderSingleBlock(Lnet/minecraft/world/level/block/state/BlockState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/ModelBlockRenderer;renderModel(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFII)V"))
 	private void renderProxy(PoseStack.Pose pose, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light1, int overlay1) {
-		FabricModelBlockRenderer.render(pose, ChunkSectionLayerHelper.entityDelegate(
+		FabricModelBlockRenderer.renderModel(pose, ChunkSectionLayerHelper.entityDelegate(
 				bufferSource), model, red, green, blue, light, overlay, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, state);
 	}
 }

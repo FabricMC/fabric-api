@@ -63,7 +63,6 @@ import net.fabricmc.fabric.api.event.Event;
  * be saved. The {@link #setAttached(AttachmentType, Object)} method will log a warning when this is attempted.
  * </p>
  */
-@ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface AttachmentTarget {
 	String NBT_ATTACHMENT_KEY = "fabric:attachments";

@@ -283,7 +283,7 @@ public final class TestInputImpl implements TestInput {
 	public void typeChar(int codePoint) {
 		ThreadingImpl.checkOnGametestThread("typeChar");
 
-		context.runOnClient(client -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeCharTyped(client.getWindow().handle(), new CharacterEvent(codePoint, 0)));
+		context.runOnClient(client -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeCharTyped(client.getWindow().handle(), new CharacterEvent(codePoint)));
 	}
 
 	@Override
@@ -292,7 +292,7 @@ public final class TestInputImpl implements TestInput {
 
 		context.runOnClient(client -> {
 			chars.chars().forEach(codePoint -> {
-				((KeyboardHandlerAccessor) client.keyboardHandler).invokeCharTyped(client.getWindow().handle(), new CharacterEvent(codePoint, 0));
+				((KeyboardHandlerAccessor) client.keyboardHandler).invokeCharTyped(client.getWindow().handle(), new CharacterEvent(codePoint));
 			});
 		});
 	}

@@ -77,7 +77,7 @@ public class MinecraftMixin {
 		deregisterClient();
 	}
 
-	@ModifyExpressionValue(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/DeltaTracker$Timer;advanceTime(JZ)I"))
+	@ModifyExpressionValue(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/DeltaTracker$Timer;advanceGameTime(J)I"))
 	private int captureTicksPerFrame(int capturedTicksPerFrame, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
 		// limit the number of ticks in a single frame to 1 (disable the "catch-up" mechanism)
 		if (capturedTicksPerFrame > 1) {
@@ -140,7 +140,7 @@ public class MinecraftMixin {
 		NetworkSynchronizer.CLIENTBOUND.reset();
 	}
 
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(ZZ)V", shift = At.Shift.AFTER))
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(Z)V", shift = At.Shift.AFTER))
 	private void onDisconnectBusyWait(CallbackInfo ci) {
 		// give the server a chance to tick too
 		preRunTasks();

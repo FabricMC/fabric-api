@@ -50,9 +50,8 @@ public class ExtractStickItem extends Item {
 
 			if (!requireExact || extracted == FluidConstants.BUCKET) {
 				if (context.getPlayer() != null) {
-					context.getPlayer().displayClientMessage(
-							Component.literal("Extracted some ").append(FluidVariantAttributes.getName(stored)).append("."),
-							true);
+					context.getPlayer().sendOverlayMessage(
+							Component.literal("Extracted some ").append(FluidVariantAttributes.getName(stored)).append("."));
 				}
 
 				transaction.commit();

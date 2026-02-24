@@ -58,7 +58,6 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
-import net.minecraft.references.Blocks;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
@@ -71,7 +70,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -485,9 +484,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(BiConsumer<Identifier, LootItemCondition> provider, HolderLookup.Provider registryLookup) {
-			HolderGetter<Block> blocks = registryLookup.lookupOrThrow(Registries.BLOCK);
 			provider.accept(Identifier.fromNamespaceAndPath(MOD_ID, "predicate_test"), LootItemBlockStatePropertyCondition.hasBlockStateProperties(
-					blocks.getOrThrow(Blocks.MELON).value()).build()); // Pretend this actually does something and we cannot access the blocks directly
+					Blocks.MELON).build()); // Pretend this actually does something and we cannot access the blocks directly
 		}
 
 		@Override

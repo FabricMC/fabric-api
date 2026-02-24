@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import java.util.function.Predicate;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
@@ -41,6 +43,8 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
 	private BlockMultiBufferSource bufferSource;
+	@Nullable
+	private Predicate<ChunkSectionLayer> layerFilter;
 	private ChunkSectionLayer defaultChunkLayer;
 	private float red;
 	private float green;
@@ -56,6 +60,11 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	protected void bufferQuad(MutableQuadViewImpl quad) {
 		final ChunkSectionLayer quadLayer = quad.chunkLayer();
 		final ChunkSectionLayer layer = quadLayer == null ? defaultChunkLayer : quadLayer;
+
+		if (layerFilter != null && !layerFilter.test(layer)) {
+			return;
+		}
+
 		final VertexConsumer vertexConsumer;
 
 		if (layer == lastChunkLayer) {
@@ -96,11 +105,12 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		this.pose = pose;
 		this.overlay = overlay;
 
 		this.bufferSource = bufferSource;
+		this.layerFilter = layerFilter;
 		this.defaultChunkLayer = ItemBlockRenderTypes.getChunkRenderType(state);
 		this.red = Mth.clamp(red, 0, 1);
 		this.green = Mth.clamp(green, 0, 1);
@@ -113,6 +123,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 		this.pose = null;
 		this.bufferSource = null;
+		this.layerFilter = null;
 		lastChunkLayer = null;
 		lastVertexConsumer = null;
 	}

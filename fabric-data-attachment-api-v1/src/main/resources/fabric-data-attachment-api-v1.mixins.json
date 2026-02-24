@@ -8,8 +8,6 @@
     "BlockEntityMixin",
     "ChunkAccessMixin",
     "ChunkHolderMixin",
-    "ClientboundCustomPayloadPacketAccessor",
-    "ConnectionMixin",
     "DimensionStorageFileFixMixin",
     "EntityMixin",
     "ImposterProtoChunkMixin",
