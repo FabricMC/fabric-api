@@ -30,6 +30,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.storage.WritableLevelData;
 
 import net.fabricmc.fabric.api.attachment.v1.GlobalAttachments;
+import net.fabricmc.fabric.api.attachment.v1.GlobalAttachmentsProvider;
 
 @Mixin(ClientLevel.class)
 abstract class ClientLevelMixin extends Level {
@@ -43,6 +44,6 @@ abstract class ClientLevelMixin extends Level {
 
 	@Override
 	public GlobalAttachments globalAttachments() {
-		return connection.globalAttachments();
+		return ((GlobalAttachmentsProvider) connection).globalAttachments();
 	}
 }
