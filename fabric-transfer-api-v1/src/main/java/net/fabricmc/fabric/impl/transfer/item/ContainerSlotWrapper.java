@@ -123,7 +123,7 @@ class ContainerSlotWrapper extends SingleStackStorage {
 			return 1;
 		}
 
-		return Math.min(storage.container.getMaxStackSize(), variant.getItem().getDefaultMaxStackSize());
+		return Math.min(storage.container.getMaxStackSize(), ItemVariantImpl.getMaxStackSize(variant));
 	}
 
 	// We override updateSnapshots to also schedule a setChanged call for the backing inventory.
