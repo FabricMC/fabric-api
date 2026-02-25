@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.api.attachment.v1;
 
+/**
+ * Interface to obtain {@link GlobalAttachments} from {@link net.minecraft.world.level.Level Level}
+ * and {@link net.minecraft.server.MinecraftServer MinecraftServer}.
+ */
+// Internally, also implemented on ClientPacketListener for use in ClientLevelMixin.
 public interface GlobalAttachmentsProvider {
 	default GlobalAttachments globalAttachments() {
 		throw new UnsupportedOperationException("Implemented via mixin!");

@@ -16,5 +16,20 @@
 
 package net.fabricmc.fabric.api.attachment.v1;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
+
+/**
+ * An {@link AttachmentTarget} representing global (server-wide) data attachments that are not tied
+ * to any specific {@link Level Level}.
+ *
+ * <p>This target can be obtained via {@link Level#globalAttachments()}, which returns the appropriate instance
+ * on either side. Additionally, {@link MinecraftServer#globalAttachments()} can be used on the server-side
+ * for convenience.
+ *
+ * <p>On the server, the lifecycle of this target is bound to the lifecycle of the {@link MinecraftServer}
+ * while on the client it is bound to {@code ClientPacketListener} and should only be accessed when in a world
+ * (when {@code Minecraft.getInstance().level} is not null).
+ */
 public interface GlobalAttachments extends AttachmentTarget {
 }
