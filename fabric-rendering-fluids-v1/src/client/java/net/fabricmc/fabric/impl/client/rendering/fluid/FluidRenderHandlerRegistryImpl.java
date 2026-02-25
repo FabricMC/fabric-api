@@ -92,8 +92,17 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 
 		Map<Fluid, ChunkSectionLayer> fluidChunkSectionLayers = new IdentityHashMap<>();
 
+		// Multiple fluids may share the same handler, so we need to avoid reloading the same handler multiple times.
+		Map<FluidRenderHandler, ChunkSectionLayer> loadedHandlers = new IdentityHashMap<>();
+
 		for (Map.Entry<Fluid, FluidRenderHandler> entry : handlers.entrySet()) {
-			ChunkSectionLayer chunkSectionLayer = entry.getValue().reloadTextures(spriteGetter);
+			ChunkSectionLayer chunkSectionLayer = loadedHandlers.get(entry.getValue());
+
+			if (chunkSectionLayer == null) {
+				chunkSectionLayer = entry.getValue().reloadTextures(spriteGetter);
+				loadedHandlers.put(entry.getValue(), chunkSectionLayer);
+			}
+
 			fluidChunkSectionLayers.put(entry.getKey(), chunkSectionLayer);
 		}
 
