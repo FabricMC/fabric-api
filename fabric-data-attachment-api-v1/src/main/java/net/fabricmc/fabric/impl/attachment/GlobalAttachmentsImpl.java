@@ -20,6 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.attachment.v1.GlobalAttachments;
@@ -41,9 +42,13 @@ public class GlobalAttachmentsImpl implements GlobalAttachments, AttachmentTarge
 			// We don't use PlayerLookup.all() because when a player respawns,
 			// there is a brief period where said player will not be in the server player list.
 			// If a global attachment is set then, the respawning player will never receive the update.
-			AttachmentSync.getPlayerConnections().forEach(serverGamePacketListener -> {
-				if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, serverGamePacketListener.player)) {
-					AttachmentSync.trySync(change, serverGamePacketListener.player);
+			server.getConnection().getConnections().forEach(connection -> {
+				// if packet listener is not ServerGamePacketListenerImpl, then player is not in PLAY phase yet
+				// initial sync will handle it
+				if (connection.getPacketListener() instanceof ServerGamePacketListenerImpl serverGamePacketListener) {
+					if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, serverGamePacketListener.player)) {
+						AttachmentSync.trySync(change, serverGamePacketListener.player);
+					}
 				}
 			});
 		}
