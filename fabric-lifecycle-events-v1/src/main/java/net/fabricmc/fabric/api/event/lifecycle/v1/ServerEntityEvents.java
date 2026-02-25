@@ -44,6 +44,19 @@ public final class ServerEntityEvents {
 	 * Called before an Entity is added to a ServerLevel.
 	 *
 	 * <p>If return value is {@code false} entity will not be added to a server.</p>
+	 *
+	 * <p>Should be used when you want to add another entity instead of added or to block adding specific entities.</p>
+	 *
+	 * {@snippet :
+	 * ServerEntityEvents.ALLOW_FRESH_LOAD.register((entity, level) -> {
+	 * 	// Spawn with 25% chance zombie instead of creeper
+	 * 	if (entity instanceof Creeper && level.getRandom().nextFloat() <= 0.25f) {
+	 * 	 var zombie = EntityType.ZOMBIE.create(level, null, entity.blockPosition(), EntitySpawnReason.EVENT, true, false);
+	 * 	 if (zombie != null) return !level.addFreshEntity(zombie);
+	 * 	}
+	 * 	return true;
+	 * });
+	 * }
 	 */
 	public static final Event<ServerEntityEvents.AllowFreshLoad> ALLOW_FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AllowFreshLoad.class, callbacks -> (entity, level) -> {
 		boolean bl = true;
@@ -58,7 +71,18 @@ public final class ServerEntityEvents {
 	/**
 	 * Called when an Entity is added to a ServerLevel.
 	 *
-	 * <p>When this event is called, the entity is already in the level.
+	 * <p>When this event is called, the entity is already in the level.</p>
+	 *
+	 * <p>Should be used when you need to do something after entity summon, naturally spawn or any other add reason.</p>
+	 * <p>If you need to do something after entity every entity load (not the first one) use ENTITY_LOAD event.</p>
+	 *
+	 * {@snippet :
+	 * ServerEntityEvents.AFTER_FRESH_LOAD.register((entity, level) -> {
+	 * 	if (entity instanceof Creeper) {
+	 * 	 level.players().forEach(player -> player.sendSystemMessage(Component.literal("Creeper was added")));
+	 * 	}
+	 * });
+	 * }
 	 */
 	public static final Event<ServerEntityEvents.AfterFreshLoad> AFTER_FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AfterFreshLoad.class, callbacks -> (entity, level) -> {
 		for (AfterFreshLoad callback : callbacks) {
