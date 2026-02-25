@@ -52,7 +52,8 @@ public class LevelExtractionContextImpl implements LevelExtractionContext {
 			boolean blockOutlines,
 			Camera camera,
 			Matrix4f viewMatrix,
-			Matrix4f cullProjectionMatrix
+			Matrix4f cullProjectionMatrix,
+			@Nullable Frustum frustum
 	) {
 		this.gameRenderer = gameRenderer;
 		this.levelRenderer = levelRenderer;
@@ -64,11 +65,6 @@ public class LevelExtractionContextImpl implements LevelExtractionContext {
 		this.camera = camera;
 		this.viewMatrix = viewMatrix;
 		this.cullProjectionMatrix = cullProjectionMatrix;
-
-		frustum = null;
-	}
-
-	public void setFrustum(@Nullable Frustum frustum) {
 		this.frustum = frustum;
 	}
 

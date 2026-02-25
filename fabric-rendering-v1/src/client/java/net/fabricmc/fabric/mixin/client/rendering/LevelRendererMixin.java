@@ -50,11 +50,12 @@ import net.minecraft.client.renderer.state.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelExtractionContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelRenderContextImpl;
 
 @Mixin(LevelRenderer.class)
-public abstract class LevelRendererMixin {
+public abstract class LevelRendererMixin implements LevelRendererExtensions {
 	@Shadow
 	@Final
 	private Minecraft minecraft;
@@ -76,11 +77,23 @@ public abstract class LevelRendererMixin {
 	@Unique
 	private final LevelExtractionContextImpl extractionContext = new LevelExtractionContextImpl();
 
+	@Override
+	public void fabric_prepareLevelExtractionContext(DeltaTracker deltaTracker, boolean renderBlockOutline, Matrix4f viewMatrix, CameraRenderState cameraState) {
+		extractionContext.prepare(
+				minecraft.gameRenderer,
+				minecraft.levelRenderer,
+				levelRenderState,
+				level,
+				deltaTracker,
+				renderBlockOutline,
+				minecraft.gameRenderer.getMainCamera(),
+				viewMatrix,
+				viewMatrix,
+				cameraState.cullFrustum);
+	}
+
 	@Inject(method = "renderLevel", at = @At("HEAD"))
 	private void beforeRender(GraphicsResourceAllocator allocator, DeltaTracker deltaTracker, boolean renderBlockOutline, CameraRenderState cameraState, Matrix4f viewMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, ChunkSectionsToRender chunkSectionsToRender, CallbackInfo ci) {
-		extractionContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, level,
-				deltaTracker, renderBlockOutline, minecraft.gameRenderer.getMainCamera(), viewMatrix, viewMatrix);
-		extractionContext.setFrustum(cameraState.cullFrustum);
 		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, chunkSectionsToRender, submitNodeStorage, renderBuffers.bufferSource());
 	}
 

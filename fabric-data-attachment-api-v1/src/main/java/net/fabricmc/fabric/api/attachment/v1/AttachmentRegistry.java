@@ -41,7 +41,6 @@ import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
  * <p>For finer control over the attachment type and its properties, use {@link #create(Identifier, Consumer)} to
  * get and configure a {@link Builder} instance.</p>
  */
-@ApiStatus.Experimental
 public final class AttachmentRegistry {
 	private AttachmentRegistry() {
 	}

@@ -21,7 +21,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.Blocks;
@@ -63,10 +62,12 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 			poseStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
 			poseStack.scale(0.5f, 0.5f, 0.5f);
 
+			/* TODO 26.1
 			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
 					Blocks.DIAMOND_BLOCK.defaultBlockState(),
 					poseStack, context.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY
 			);
+			 */
 
 			poseStack.popPose();
 		}

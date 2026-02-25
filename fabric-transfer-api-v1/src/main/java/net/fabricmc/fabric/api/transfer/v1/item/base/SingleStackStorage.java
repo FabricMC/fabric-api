@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
 /**
  * An item variant storage backed by an {@link ItemStack}.
@@ -69,12 +70,12 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	 *
 	 * <p>If the capacity should be limited by the max count of the item, this function must take it into account.
 	 * For example, a storage with a maximum count of 4, or less for items that have a smaller max count,
-	 * should override this to return {@code Math.min(itemVariant.getItem().getMaxCount(), 4);}.
+	 * should override this to return {@code Math.min(super.getCapacity(itemVariant), 4);}.
 	 *
 	 * @return The maximum capacity of this storage for the passed item variant.
 	 */
 	protected int getCapacity(ItemVariant itemVariant) {
-		return itemVariant.getItem().getDefaultMaxStackSize();
+		return ItemVariantImpl.getMaxStackSize(itemVariant);
 	}
 
 	@Override

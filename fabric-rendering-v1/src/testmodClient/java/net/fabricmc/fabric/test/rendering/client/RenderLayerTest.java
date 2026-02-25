@@ -26,10 +26,8 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
@@ -79,7 +77,8 @@ public final class RenderLayerTest implements ClientModInitializer {
 			// Translate to center above the player's head
 			poseStack.translate(-0.5F, -state.boundingBoxHeight + 0.25F, -0.5F);
 			// Render a diamond block above the player's head
-			nodeCollector.order(0).submitBlock(poseStack, Blocks.DIAMOND_BLOCK.defaultBlockState(), light, OverlayTexture.NO_OVERLAY, 0);
+			// TODO 26.1
+			// nodeCollector.order(0).submitBlock(poseStack, Blocks.DIAMOND_BLOCK.defaultBlockState(), light, OverlayTexture.NO_OVERLAY, 0);
 
 			poseStack.popPose();
 		}
