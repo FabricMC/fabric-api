@@ -136,7 +136,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 			sprites[2] = spriteGetter.get(overlayTexture);
 		}
 
-		return ChunkSectionLayer.byTransparency(sprites[0].transparency());
+		return ChunkSectionLayer.byTransparency(sprites[0].transparency().or(sprites[1].transparency()));
 	}
 
 	/**

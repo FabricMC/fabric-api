@@ -23,12 +23,12 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -85,7 +85,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		return transparencyForOverlay.getOrDefault(block, block instanceof HalfTransparentBlock || block instanceof LeavesBlock);
 	}
 
-	public void onFluidRendererReload(LiquidBlockRenderer renderer, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
+	public void onFluidRendererReload(SpriteGetter spriteGetter, LiquidBlockRenderer renderer, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
 		FluidRenderingImpl.setVanillaRenderer(renderer);
 
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);
@@ -94,11 +94,8 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		fluidChunkSectionLayers.clear();
 
 		for (Map.Entry<Fluid, FluidRenderHandler> entry : handlers.entrySet()) {
-			ChunkSectionLayer chunkSectionLayer = entry.getValue().reloadTextures(Minecraft.getInstance().getAtlasManager());
-
-			if (chunkSectionLayer != null) {
-				fluidChunkSectionLayers.put(entry.getKey(), chunkSectionLayer);
-			}
+			ChunkSectionLayer chunkSectionLayer = entry.getValue().reloadTextures(spriteGetter);
+			fluidChunkSectionLayers.put(entry.getKey(), chunkSectionLayer);
 		}
 	}
 
