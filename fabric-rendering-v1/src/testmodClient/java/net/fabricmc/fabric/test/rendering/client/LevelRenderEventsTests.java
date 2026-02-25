@@ -19,12 +19,9 @@ package net.fabricmc.fabric.test.rendering.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.Blocks;
@@ -37,44 +34,27 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.level.AbstractLevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
-import net.fabricmc.fabric.test.rendering.client.mixin.MinecraftAccessor;
 
 public class LevelRenderEventsTests implements ClientModInitializer, FabricClientGameTest {
-	public static RenderStateDataKey<BlockModelRenderState> DIAMOND_BLOCK = RenderStateDataKey.create(() -> "fabric api test mod diamond block render state");
-
+	private static final RenderStateDataKey<Boolean> DIAMOND_BLOCK_OUTLINE = RenderStateDataKey.create(() -> "fabric api test mod block outline diamond block");
 	@Nullable
 	private static BlockModelResolver blockModelResolver = null;
 
 	private static void extractBlockOutline(LevelExtractionContext context, HitResult hitResult) {
-		BlockOutlineRenderState state = context.levelState().blockOutlineRenderState;
-		BlockModelRenderState blockRenderState = state == null ? null : state.getData(RenderLayerTest.DIAMOND_BLOCK);
-
 		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.level().getBlockState(blockHitResult.getBlockPos()).is(Blocks.DIAMOND_BLOCK)) {
-			if (blockRenderState == null) {
-				blockRenderState = new BlockModelRenderState();
-				state.setData(RenderLayerTest.DIAMOND_BLOCK, blockRenderState);
-			}
-
-			if (blockModelResolver == null) {
-				blockModelResolver = ((MinecraftAccessor) Minecraft.getInstance()).getBlockModelResolver();
-			}
-
-			blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState());
-		} else if (blockRenderState != null) {
-			blockRenderState.clear();
+			context.levelState().blockOutlineRenderState.setData(DIAMOND_BLOCK_OUTLINE, true);
 		}
 	}
 
 	private static boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState) {
-		BlockModelRenderState blockRenderState = outlineRenderState.getData(RenderLayerTest.DIAMOND_BLOCK);
-
-		if (blockRenderState != null && !blockRenderState.isEmpty()) {
+		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
 			PoseStack poseStack = context.poseStack();
 			poseStack.pushPose();
 			Vec3 cameraPos = context.levelState().cameraRenderState.pos;
@@ -83,8 +63,10 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
 			poseStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
-			poseStack.scale(0.5f, 5.5f, 0.5f);
-			blockRenderState.submit(poseStack, context.submitNodeCollector(), 15728880, OverlayTexture.NO_OVERLAY, 0);
+			poseStack.scale(0.5f, 0.5f, 0.5f);
+			AABB box = new AABB(0, 0, 0, 1, 1, 1);
+			int green = ARGB.colorFromFloat(1.0f, 0, 1, 0);
+			TestRenderUtils.drawFilledBox(poseStack, context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, green);
 			poseStack.popPose();
 		}
 
@@ -137,9 +119,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 			singleplayer.getServer().runCommand("/tp @a 0 100 -3");
 			singleplayer.getServer().runCommand("/setblock 0 101 0 minecraft:diamond_block");
 			singleplayer.getClientLevel().waitForChunksRender();
-
-			// TODO fixme 26.1
-			// context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("level_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("level_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
 		}
 	}
 
