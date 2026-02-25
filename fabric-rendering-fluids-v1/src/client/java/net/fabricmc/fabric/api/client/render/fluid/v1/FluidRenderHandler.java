@@ -97,6 +97,7 @@ public interface FluidRenderHandler {
 	 * which may come in handy here.
 	 *
 	 * @param spriteGetter The {@link SpriteGetter} to look up sprites.
+	 * @return An nullable {@link ChunkSectionLayer} to indicate the transparency of the fluid. If null is returned, the fluid will be rendered as solid.
 	 */
 	@Nullable
 	default ChunkSectionLayer reloadTextures(SpriteGetter spriteGetter) {
