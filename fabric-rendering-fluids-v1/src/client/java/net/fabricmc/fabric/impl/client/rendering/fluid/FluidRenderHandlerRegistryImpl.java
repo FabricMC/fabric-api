@@ -27,10 +27,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
@@ -45,6 +44,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
+	private final Map<Fluid, ChunkSectionLayer> fluidChunkSectionLayers = new IdentityHashMap<>();
 	private final Object2BooleanMap<Block> transparencyForOverlay = new Object2BooleanOpenHashMap<>();
 
 	{
@@ -91,13 +91,23 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);
 		LavaRenderHandler.INSTANCE.updateSprites(lavaSprites);
 
-		TextureAtlas texture = Minecraft.getInstance()
-				.getAtlasManager()
-				.getAtlasOrThrow(AtlasIds.BLOCKS);
+		fluidChunkSectionLayers.clear();
 
-		for (FluidRenderHandler handler : handlers.values()) {
-			handler.reloadTextures(texture);
+		for (Map.Entry<Fluid, FluidRenderHandler> entry : handlers.entrySet()) {
+			ChunkSectionLayer chunkSectionLayer = entry.getValue().reloadTextures(Minecraft.getInstance().getAtlasManager());
+
+			if (chunkSectionLayer != null) {
+				fluidChunkSectionLayers.put(entry.getKey(), chunkSectionLayer);
+			}
 		}
+	}
+
+	/**
+	 * Not to be used by mods, use {@link LiquidBlockRenderer#getRenderLayer(FluidState)} to also get the render layer for vanilla fluids.
+	 */
+	@Nullable
+	public ChunkSectionLayer getFluidChunkSectionLayer(Fluid fluid) {
+		return fluidChunkSectionLayers.get(fluid);
 	}
 
 	private static class WaterRenderHandler implements FluidRenderHandler {

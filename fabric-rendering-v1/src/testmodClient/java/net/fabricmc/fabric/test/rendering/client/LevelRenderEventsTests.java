@@ -17,10 +17,14 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.Blocks;
@@ -40,35 +44,48 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
+import net.fabricmc.fabric.test.rendering.client.mixin.MinecraftAccessor;
 
 public class LevelRenderEventsTests implements ClientModInitializer, FabricClientGameTest {
-	private static final RenderStateDataKey<Boolean> DIAMOND_BLOCK_OUTLINE = RenderStateDataKey.create(() -> "fabric api test mod block outline diamond block");
+	public static RenderStateDataKey<BlockModelRenderState> DIAMOND_BLOCK = RenderStateDataKey.create(() -> "fabric api test mod diamond block render state");
+
+	@Nullable
+	private static BlockModelResolver blockModelResolver = null;
 
 	private static void extractBlockOutline(LevelExtractionContext context, HitResult hitResult) {
+		BlockOutlineRenderState state = context.levelState().blockOutlineRenderState;
+		BlockModelRenderState blockRenderState = state == null ? null : state.getData(RenderLayerTest.DIAMOND_BLOCK);
+
 		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.level().getBlockState(blockHitResult.getBlockPos()).is(Blocks.DIAMOND_BLOCK)) {
-			context.levelState().blockOutlineRenderState.setData(DIAMOND_BLOCK_OUTLINE, true);
+			if (blockRenderState == null) {
+				blockRenderState = new BlockModelRenderState();
+				state.setData(RenderLayerTest.DIAMOND_BLOCK, blockRenderState);
+			}
+
+			if (blockModelResolver == null) {
+				blockModelResolver = ((MinecraftAccessor) Minecraft.getInstance()).getBlockModelResolver();
+			}
+
+			blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState());
+		} else if (blockRenderState != null) {
+			blockRenderState.clear();
 		}
 	}
 
 	private static boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState) {
-		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
-			PoseStack poseStack = new PoseStack();
+		BlockModelRenderState blockRenderState = outlineRenderState.getData(RenderLayerTest.DIAMOND_BLOCK);
+
+		if (blockRenderState != null && !blockRenderState.isEmpty()) {
+			PoseStack poseStack = context.poseStack();
 			poseStack.pushPose();
-			Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().position();
+			Vec3 cameraPos = context.levelState().cameraRenderState.pos;
 			BlockPos pos = outlineRenderState.pos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
 			poseStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
-			poseStack.scale(0.5f, 0.5f, 0.5f);
-
-			/* TODO 26.1
-			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-					Blocks.DIAMOND_BLOCK.defaultBlockState(),
-					poseStack, context.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY
-			);
-			 */
-
+			poseStack.scale(0.5f, 5.5f, 0.5f);
+			blockRenderState.submit(poseStack, context.submitNodeCollector(), 15728880, OverlayTexture.NO_OVERLAY, 0);
 			poseStack.popPose();
 		}
 

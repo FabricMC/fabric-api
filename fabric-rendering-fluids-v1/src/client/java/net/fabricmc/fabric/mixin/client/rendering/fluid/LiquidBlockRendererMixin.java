@@ -33,9 +33,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
@@ -74,6 +76,15 @@ public class LiquidBlockRendererMixin {
 	public void onResourceReloadReturn(CallbackInfo info) {
 		LiquidBlockRenderer self = (LiquidBlockRenderer) (Object) this;
 		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(self, new TextureAtlasSprite[]{waterStill, waterFlowing, waterOverlay}, new TextureAtlasSprite[]{lavaStill, lavaFlowing}, waterOverlay);
+	}
+
+	@Inject(method = "getRenderLayer", at = @At("HEAD"), cancellable = true)
+	public void getRenderLayer(FluidState state, CallbackInfoReturnable<ChunkSectionLayer> cir) {
+		ChunkSectionLayer fluidChunkSectionLayer = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).getFluidChunkSectionLayer(state.getType());
+
+		if (fluidChunkSectionLayer != null) {
+			cir.setReturnValue(fluidChunkSectionLayer);
+		}
 	}
 
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)

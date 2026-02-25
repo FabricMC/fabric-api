@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 
@@ -41,20 +42,20 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
-				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
+				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_still")),
+				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_flowing")),
 				0xFF5555
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still"),
-				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing"),
-				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay"),
+				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_still")),
+				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_flowing")),
+				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_overlay")),
 				0x5555FF
 		));
 
 		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
-				Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")
+				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_overlay"))
 		));
 	}
 }

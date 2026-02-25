@@ -16,23 +16,30 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import java.util.Objects;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
 public final class RenderLayerTest implements ClientModInitializer {
+	public static RenderStateDataKey<BlockModelRenderState> DIAMOND_BLOCK = RenderStateDataKey.create(() -> "fabric api test mod diamond block render state");
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(RenderLayerTest.class);
 	private int playerRegistrations = 0;
 
@@ -73,13 +80,12 @@ public final class RenderLayerTest implements ClientModInitializer {
 		@Override
 		public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
 			poseStack.pushPose();
-
 			// Translate to center above the player's head
 			poseStack.translate(-0.5F, -state.boundingBoxHeight + 0.25F, -0.5F);
-			// Render a diamond block above the player's head
-			// TODO 26.1
-			// nodeCollector.order(0).submitBlock(poseStack, Blocks.DIAMOND_BLOCK.defaultBlockState(), light, OverlayTexture.NO_OVERLAY, 0);
 
+			BlockModelRenderState blockRenderState = state.getData(RenderLayerTest.DIAMOND_BLOCK);
+			Objects.requireNonNull(blockRenderState);
+			blockRenderState.submit(poseStack, nodeCollector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
 			poseStack.popPose();
 		}
 	}
