@@ -44,7 +44,6 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistry {
 	private final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private final Map<Fluid, FluidRenderHandler> modHandlers = new IdentityHashMap<>();
-	private final Map<Fluid, ChunkSectionLayer> fluidChunkSectionLayers = new IdentityHashMap<>();
 	private final Object2BooleanMap<Block> transparencyForOverlay = new Object2BooleanOpenHashMap<>();
 
 	{
@@ -85,26 +84,20 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		return transparencyForOverlay.getOrDefault(block, block instanceof HalfTransparentBlock || block instanceof LeavesBlock);
 	}
 
-	public void onFluidRendererReload(SpriteGetter spriteGetter, LiquidBlockRenderer renderer, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
+	public Map<Fluid, ChunkSectionLayer> onFluidRendererReload(SpriteGetter spriteGetter, LiquidBlockRenderer renderer, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
 		FluidRenderingImpl.setVanillaRenderer(renderer);
 
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);
 		LavaRenderHandler.INSTANCE.updateSprites(lavaSprites);
 
-		fluidChunkSectionLayers.clear();
+		Map<Fluid, ChunkSectionLayer> fluidChunkSectionLayers = new IdentityHashMap<>();
 
 		for (Map.Entry<Fluid, FluidRenderHandler> entry : handlers.entrySet()) {
 			ChunkSectionLayer chunkSectionLayer = entry.getValue().reloadTextures(spriteGetter);
 			fluidChunkSectionLayers.put(entry.getKey(), chunkSectionLayer);
 		}
-	}
 
-	/**
-	 * Not to be used by mods, use {@link LiquidBlockRenderer#getRenderLayer(FluidState)} to also get the render layer for vanilla fluids.
-	 */
-	@Nullable
-	public ChunkSectionLayer getFluidChunkSectionLayer(Fluid fluid) {
-		return fluidChunkSectionLayers.get(fluid);
+		return fluidChunkSectionLayers;
 	}
 
 	private static class WaterRenderHandler implements FluidRenderHandler {
