@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.client.rendering.fluid;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -26,6 +29,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,12 +38,15 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -70,10 +77,19 @@ public class LiquidBlockRendererMixin {
 	@Final
 	private TextureAtlasSprite lavaFlowing;
 
+	@Shadow
+	@Final
+	@Mutable
+	private Map<Fluid, ChunkSectionLayer> layerByFluid;
+
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void onResourceReloadReturn(CallbackInfo info) {
+	public void onResourceReloadReturn(SpriteGetter sprites, CallbackInfo info) {
 		LiquidBlockRenderer self = (LiquidBlockRenderer) (Object) this;
-		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(self, new TextureAtlasSprite[]{waterStill, waterFlowing, waterOverlay}, new TextureAtlasSprite[]{lavaStill, lavaFlowing}, waterOverlay);
+		Map<Fluid, ChunkSectionLayer> moddedLayers = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(sprites, self, new TextureAtlasSprite[]{waterStill, waterFlowing, waterOverlay}, new TextureAtlasSprite[]{lavaStill, lavaFlowing}, waterOverlay);
+
+		Map<Fluid, ChunkSectionLayer> layers = new IdentityHashMap<>(this.layerByFluid);
+		layers.putAll(moddedLayers);
+		this.layerByFluid = Map.copyOf(layers);
 	}
 
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
@@ -126,8 +142,8 @@ public class LiquidBlockRendererMixin {
 	@ModifyExpressionValue(
 			method = "tesselate",
 			at = {
-					@At(value = "CONSTANT", args = "intValue=" + 0xffffff),
-					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/BiomeColors;getAverageWaterColor(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I")
+					@At(value = "CONSTANT", args = "intValue=-1"),
+					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/BiomeColors;getAverageWaterColor(Lnet/minecraft/client/renderer/block/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I")
 			}
 	)
 	public int modTintColor(int original, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {

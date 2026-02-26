@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -95,14 +95,14 @@ public interface FabricBlock {
 	 * }</pre>
 	 *
 	 * @param state       			state of this block, whose appearance is being queried
-	 * @param blockAndTintGetter  	the level this block is in
+	 * @param blockAndLightGetter  	the level this block is in
 	 * @param pos			        position of this block, whose appearance is being queried
 	 * @param side       			the side for which the appearance is being queried
 	 * @param sourceState 			(optional) state of the block that is querying the appearance, or null if unknown
 	 * @param sourcePos   			(optional) position of the block that is querying the appearance, or null if unknown
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 */
-	default BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	default BlockState getAppearance(BlockState state, BlockAndLightGetter blockAndLightGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
 	}
 

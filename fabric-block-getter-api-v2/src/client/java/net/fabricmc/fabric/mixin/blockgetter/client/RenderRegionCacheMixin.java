@@ -32,11 +32,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.chunk.RenderRegionCache;
 import net.minecraft.client.renderer.chunk.RenderSectionRegion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
@@ -50,7 +50,7 @@ public abstract class RenderRegionCacheMixin {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RenderRegionCacheMixin.class);
 
 	@Inject(method = "createRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderRegionCache;getSectionDataCopy(Lnet/minecraft/world/level/Level;III)Lnet/minecraft/client/renderer/chunk/SectionCopy;"))
-	private void copyDataForChunk(Level level, long packedChunkPos, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef, @Local(name = "regionSectionX") int regionSectionX, @Local(name = "regionSectionY") int regionSectionY, @Local(name = "regionSectionZ") int regionSectionZ) {
+	private void copyDataForChunk(ClientLevel level, long sectionNode, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef, @Local(name = "regionSectionX") int regionSectionX, @Local(name = "regionSectionY") int regionSectionY, @Local(name = "regionSectionZ") int regionSectionZ) {
 		// Hash maps in chunks should generally not be modified outside of client thread
 		// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing
 		// CMEs when we iterate the map. (Vanilla does not iterate these maps when it builds
@@ -59,7 +59,7 @@ public abstract class RenderRegionCacheMixin {
 		// We handle this simply by retrying until it works. Ugly but effective.
 		while (true) {
 			try {
-				mapRef.set(mapChunk(level.getChunk(regionSectionX, regionSectionZ), SectionPos.of(packedChunkPos), mapRef.get()));
+				mapRef.set(mapChunk(level.getChunk(regionSectionX, regionSectionZ), SectionPos.of(sectionNode), mapRef.get()));
 				break;
 			} catch (ConcurrentModificationException e) {
 				final int count = ERROR_COUNTER.incrementAndGet();
@@ -76,7 +76,7 @@ public abstract class RenderRegionCacheMixin {
 	}
 
 	@Inject(method = "createRegion", at = @At(value = "RETURN"))
-	private void createDataMap(Level level, long l, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef) {
+	private void createDataMap(ClientLevel level, long l, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef) {
 		RenderSectionRegion rendererRegion = cir.getReturnValue();
 		Long2ObjectOpenHashMap<Object> map = mapRef.get();
 

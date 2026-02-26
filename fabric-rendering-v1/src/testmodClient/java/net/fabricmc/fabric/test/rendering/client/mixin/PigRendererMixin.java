@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.entity.PigRenderer;
@@ -49,11 +50,13 @@ public class PigRendererMixin {
 
 		if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
 			MovingBlockRenderState movingBlockRenderState = new MovingBlockRenderState();
+			ClientLevel clientLevel = (ClientLevel) entity.level();
 			movingBlockRenderState.randomSeedPos = entity.getOnPos();
 			movingBlockRenderState.blockPos = entity.blockPosition();
 			movingBlockRenderState.blockState = entity.getBlockStateOn();
 			movingBlockRenderState.biome = entity.level().getBiome(entity.blockPosition());
-			movingBlockRenderState.level = entity.level();
+			movingBlockRenderState.cardinalLighting = clientLevel.cardinalLighting();
+			movingBlockRenderState.lightEngine = clientLevel.getLightEngine();
 			state.setData(MOVING_BLOCK, movingBlockRenderState);
 		}
 	}

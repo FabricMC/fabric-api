@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.blockgetter;
+package net.fabricmc.fabric.test.rendering.client.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.world.level.BlockAndLightGetter;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockModelResolver;
 
-@Mixin(LevelReader.class)
-public interface LevelReaderMixin extends BlockAndLightGetter {
-	@Shadow
-	Holder<Biome> getBiome(BlockPos pos);
-
-	@Override
-	default boolean hasBiomes() {
-		return true;
-	}
-
-	@Override
-	default Holder<Biome> getBiomeFabric(BlockPos pos) {
-		return getBiome(pos);
-	}
+@Mixin(Minecraft.class)
+public interface MinecraftAccessor {
+	@Accessor
+	BlockModelResolver getBlockModelResolver();
 }
