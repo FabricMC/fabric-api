@@ -54,5 +54,8 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+    "renderstate.extractors.EntityRendererMixin"
+  ]
 }
