@@ -42,6 +42,7 @@
     "advancement.AdvancementWidgetAccessor",
     "advancement.AdvancementWidgetMixin",
     "advancement.ClientAdvancementsAccessor",
+    "renderstate.extractors.EntityRendererMixin",
     "renderstate.ItemStackRenderStateLayerRenderStateMixin",
     "renderstate.ItemStackRenderStateMixin",
     "renderstate.LevelRenderStateMixin",
@@ -54,8 +55,5 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  },
-  "mixins": [
-    "renderstate.extractors.EntityRendererMixin"
-  ]
+  }
 }
