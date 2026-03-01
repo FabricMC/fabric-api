@@ -34,8 +34,9 @@ public final class RenderStateDataExtractionRegistryImpl {
 	public static void processExtractors(Class<?> rendererClass, Object subject, FabricRenderState state) {
 		List<RenderStateDataExtractor<?, ?>> extractors = EXTRACTORS.get(rendererClass);
 		if (extractors == null) return;
-		for (RenderStateDataExtractor<?, ?> extractor : extractors)
+		for (RenderStateDataExtractor<?, ?> extractor : extractors) {
 			processExtractor(extractor, subject, state);
+		}
 	}
 
 	private static <S, T> void processExtractor(RenderStateDataExtractor<S, T> extractor, Object subject, FabricRenderState state) {

@@ -33,7 +33,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.impl.client.rendering.RenderStateDataExtractionRegistryImpl;
 
 public class RenderStateDataExtractorTest {
-
 	private static final RenderStateDataKey<Character> DEBUG_KEY =
 			RenderStateDataKey.create(() -> "DebugKey");
 	private static final RenderStateDataExtractorCallback<String, Character> DEBUG_CALLBACK =

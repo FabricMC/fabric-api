@@ -28,7 +28,8 @@
       "net.fabricmc.fabric.test.rendering.client.LevelRenderEventsTests",
       "net.fabricmc.fabric.test.rendering.client.gui.PictureInPictureRendererTest",
       "net.fabricmc.fabric.test.rendering.client.gui.PictureInPictureRendererTestWithNewGuiRenderer",
-      "net.fabricmc.fabric.test.rendering.client.gui.GuiRendererNonQuadsTest"
+      "net.fabricmc.fabric.test.rendering.client.gui.GuiRendererNonQuadsTest",
+      "net.fabricmc.fabric.test.rendering.client.RenderStateDataExtractionTest"
     ],
     "fabric-client-gametest": [
       "net.fabricmc.fabric.test.rendering.client.HudTests",
