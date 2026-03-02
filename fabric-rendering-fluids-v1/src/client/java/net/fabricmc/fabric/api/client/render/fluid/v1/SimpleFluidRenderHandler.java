@@ -21,10 +21,12 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.SpriteId;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.FluidState;
 
 /**
@@ -39,34 +41,9 @@ import net.minecraft.world.level.material.FluidState;
  * that.
  */
 public class SimpleFluidRenderHandler implements FluidRenderHandler {
-	/**
-	 * The vanilla still water texture identifier.
-	 */
-	public static final Identifier WATER_STILL = Identifier.withDefaultNamespace("block/water_still");
-
-	/**
-	 * The vanilla flowing water texture identifier.
-	 */
-	public static final Identifier WATER_FLOWING = Identifier.withDefaultNamespace("block/water_flow");
-
-	/**
-	 * The vanilla water overlay texture identifier.
-	 */
-	public static final Identifier WATER_OVERLAY = Identifier.withDefaultNamespace("block/water_overlay");
-
-	/**
-	 * The vanilla still lava texture identifier.
-	 */
-	public static final Identifier LAVA_STILL = Identifier.withDefaultNamespace("block/lava_still");
-
-	/**
-	 * The vanilla flowing lava texture identifier.
-	 */
-	public static final Identifier LAVA_FLOWING = Identifier.withDefaultNamespace("block/lava_flow");
-
-	protected final Identifier stillTexture;
-	protected final Identifier flowingTexture;
-	protected final Identifier overlayTexture;
+	protected final SpriteId stillTexture;
+	protected final SpriteId flowingTexture;
+	protected final SpriteId overlayTexture;
 
 	protected final TextureAtlasSprite[] sprites;
 
@@ -83,7 +60,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * transparent blocks}.
 	 * @param tint The fluid color RGB. Alpha is ignored.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, @Nullable Identifier overlayTexture, int tint) {
+	public SimpleFluidRenderHandler(SpriteId stillTexture, SpriteId flowingTexture, @Nullable SpriteId overlayTexture, int tint) {
 		this.stillTexture = Objects.requireNonNull(stillTexture, "stillTexture");
 		this.flowingTexture = Objects.requireNonNull(flowingTexture, "flowingTexture");
 		this.overlayTexture = overlayTexture;
@@ -100,7 +77,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@linkplain FluidRenderHandlerRegistry#setBlockTransparency registered
 	 * transparent blocks}.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, Identifier overlayTexture) {
+	public SimpleFluidRenderHandler(SpriteId stillTexture, SpriteId flowingTexture, SpriteId overlayTexture) {
 		this(stillTexture, flowingTexture, overlayTexture, -1);
 	}
 
@@ -112,7 +89,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 * @param tint The fluid color RGB. Alpha is ignored.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture, int tint) {
+	public SimpleFluidRenderHandler(SpriteId stillTexture, SpriteId flowingTexture, int tint) {
 		this(stillTexture, flowingTexture, null, tint);
 	}
 
@@ -122,7 +99,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @param stillTexture The texture for still fluid.
 	 * @param flowingTexture The texture for flowing/falling fluid.
 	 */
-	public SimpleFluidRenderHandler(Identifier stillTexture, Identifier flowingTexture) {
+	public SimpleFluidRenderHandler(SpriteId stillTexture, SpriteId flowingTexture) {
 		this(stillTexture, flowingTexture, null, -1);
 	}
 
@@ -131,12 +108,12 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * fixed, custom color.
 	 *
 	 * @param tint The fluid color RGB. Alpha is ignored.
-	 * @see	#WATER_STILL
-	 * @see	#WATER_FLOWING
-	 * @see #WATER_OVERLAY
+	 * @see	ModelBakery#WATER_STILL
+	 * @see	ModelBakery#WATER_FLOW
+	 * @see ModelBakery#WATER_OVERLAY
 	 */
 	public static SimpleFluidRenderHandler coloredWater(int tint) {
-		return new SimpleFluidRenderHandler(WATER_STILL, WATER_FLOWING, WATER_OVERLAY, tint);
+		return new SimpleFluidRenderHandler(ModelBakery.WATER_STILL, ModelBakery.WATER_FLOW, ModelBakery.WATER_OVERLAY, tint);
 	}
 
 	/**
@@ -151,13 +128,15 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void reloadTextures(TextureAtlas textureAtlas) {
-		sprites[0] = textureAtlas.getSprite(stillTexture);
-		sprites[1] = textureAtlas.getSprite(flowingTexture);
+	public ChunkSectionLayer reloadTextures(SpriteGetter spriteGetter) {
+		sprites[0] = spriteGetter.get(stillTexture);
+		sprites[1] = spriteGetter.get(flowingTexture);
 
 		if (overlayTexture != null) {
-			sprites[2] = textureAtlas.getSprite(overlayTexture);
+			sprites[2] = spriteGetter.get(overlayTexture);
 		}
+
+		return ChunkSectionLayer.byTransparency(sprites[0].transparency().or(sprites[1].transparency()));
 	}
 
 	/**

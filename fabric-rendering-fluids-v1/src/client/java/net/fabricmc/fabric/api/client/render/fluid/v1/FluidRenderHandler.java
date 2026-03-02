@@ -21,8 +21,9 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -95,8 +96,10 @@ public interface FluidRenderHandler {
 	 * <p>The "fabric-textures" module contains sprite rendering facilities,
 	 * which may come in handy here.
 	 *
-	 * @param textureAtlas The blocks texture atlas, provided for convenience.
+	 * @param spriteGetter The {@link SpriteGetter} to look up sprites.
+	 * @return A {@link ChunkSectionLayer} to indicate the transparency of the fluid.
 	 */
-	default void reloadTextures(TextureAtlas textureAtlas) {
+	default ChunkSectionLayer reloadTextures(SpriteGetter spriteGetter) {
+		return ChunkSectionLayer.SOLID;
 	}
 }

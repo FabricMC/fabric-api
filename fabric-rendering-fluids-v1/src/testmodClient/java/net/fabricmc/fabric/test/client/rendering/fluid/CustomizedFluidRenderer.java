@@ -20,15 +20,15 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.resources.model.SpriteId;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 
 public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
-	public CustomizedFluidRenderer(Identifier overlayTexture) {
+	public CustomizedFluidRenderer(SpriteId overlayTexture) {
 		super(overlayTexture, overlayTexture, overlayTexture);
 	}
 

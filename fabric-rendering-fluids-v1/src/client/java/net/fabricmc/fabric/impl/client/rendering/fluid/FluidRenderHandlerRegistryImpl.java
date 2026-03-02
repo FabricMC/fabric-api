@@ -23,14 +23,13 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
@@ -85,19 +84,29 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		return transparencyForOverlay.getOrDefault(block, block instanceof HalfTransparentBlock || block instanceof LeavesBlock);
 	}
 
-	public void onFluidRendererReload(LiquidBlockRenderer renderer, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
+	public Map<Fluid, ChunkSectionLayer> onFluidRendererReload(SpriteGetter spriteGetter, LiquidBlockRenderer renderer, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
 		FluidRenderingImpl.setVanillaRenderer(renderer);
 
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);
 		LavaRenderHandler.INSTANCE.updateSprites(lavaSprites);
 
-		TextureAtlas texture = Minecraft.getInstance()
-				.getAtlasManager()
-				.getAtlasOrThrow(AtlasIds.BLOCKS);
+		Map<Fluid, ChunkSectionLayer> fluidChunkSectionLayers = new IdentityHashMap<>();
 
-		for (FluidRenderHandler handler : handlers.values()) {
-			handler.reloadTextures(texture);
+		// Multiple fluids may share the same handler, so we need to avoid reloading the same handler multiple times.
+		Map<FluidRenderHandler, ChunkSectionLayer> loadedHandlers = new IdentityHashMap<>();
+
+		for (Map.Entry<Fluid, FluidRenderHandler> entry : handlers.entrySet()) {
+			ChunkSectionLayer chunkSectionLayer = loadedHandlers.get(entry.getValue());
+
+			if (chunkSectionLayer == null) {
+				chunkSectionLayer = entry.getValue().reloadTextures(spriteGetter);
+				loadedHandlers.put(entry.getValue(), chunkSectionLayer);
+			}
+
+			fluidChunkSectionLayers.put(entry.getKey(), chunkSectionLayer);
 		}
+
+		return fluidChunkSectionLayers;
 	}
 
 	private static class WaterRenderHandler implements FluidRenderHandler {
