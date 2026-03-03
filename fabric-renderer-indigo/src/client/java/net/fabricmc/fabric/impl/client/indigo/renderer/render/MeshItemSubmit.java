@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
 
 public record MeshItemSubmit(
-		PoseStack.Pose positionMatrix,
+		PoseStack.Pose pose,
 		ItemDisplayContext displayContext,
 		int lightCoords,
 		int overlayCoords,

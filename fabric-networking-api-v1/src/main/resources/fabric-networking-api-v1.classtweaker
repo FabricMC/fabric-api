@@ -3,3 +3,9 @@ accessible	field	net/minecraft/network/VarInt	MAX_VARINT_SIZE	I
 accessible	field	net/minecraft/network/protocol/common/ServerboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I
 accessible	field	net/minecraft/network/protocol/common/ClientboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I
 transitive-inject-interface	net/minecraft/server/network/ServerConfigurationPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/FabricServerConfigurationPacketListenerImpl
+transitive-inject-interface	net/minecraft/server/network/ServerCommonPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
+transitive-inject-interface	net/minecraft/server/network/ServerLoginPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
+transitive-inject-interface	net/minecraft/server/network/ServerHandshakePacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
+transitive-inject-interface	net/minecraft/client/multiplayer/ClientHandshakePacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
+transitive-inject-interface	net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
+transitive-inject-interface	net/minecraft/network/Connection	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider

@@ -40,10 +40,10 @@ abstract class SnowGolemHeadLayerMixin {
 		// If true, the chunk layer is an outline chunk layer, and we want all geometry to use this chunk layer.
 		if (renderState.appearsGlowing() && renderState.isInvisible) {
 			// Fix tinted quads being rendered completely black and provide the BlockState as context.
-			submitNodeCollector.submitBlockStateModel(poseStack, _ -> renderType, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, pumpkinBlockState);
+			submitNodeCollector.submitBlockModel(poseStack, _ -> renderType, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, pumpkinBlockState);
 		} else {
 			// Support multi-chunk layer models, fix tinted quads being rendered completely black, and provide the BlockState as context.
-			submitNodeCollector.submitBlockStateModel(poseStack, ChunkSectionLayerHelper::getEntityBlockLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, pumpkinBlockState);
+			submitNodeCollector.submitBlockModel(poseStack, ChunkSectionLayerHelper::getEntityBlockLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, pumpkinBlockState);
 		}
 	}
 }
