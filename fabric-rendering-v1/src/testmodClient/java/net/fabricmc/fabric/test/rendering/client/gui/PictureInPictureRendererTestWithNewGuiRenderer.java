@@ -26,8 +26,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.renderer.fog.FogRenderer;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.world.item.DyeColor;
 
 import net.fabricmc.api.ClientModInitializer;

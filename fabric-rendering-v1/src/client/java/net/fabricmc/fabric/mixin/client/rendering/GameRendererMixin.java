@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,7 +31,6 @@ import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.state.CameraRenderState;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
@@ -58,13 +55,8 @@ public class GameRendererMixin {
 		guiRenderer.fabric_onReady(this.submitNodeStorage);
 	}
 
-	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;extractLevel(Lnet/minecraft/client/DeltaTracker;Lnet/minecraft/client/Camera;F)V"))
-	private void beforeExtract(DeltaTracker deltaTracker, CallbackInfo ci, @Local(name = "renderOutline") boolean renderOutline, @Local(name = "modelViewMatrix") Matrix4f modelViewMatrix, @Local(name = "cameraState") CameraRenderState cameraState) {
-		((LevelRendererExtensions) (Object) minecraft.levelRenderer).fabric_prepareLevelExtractionContext(
-				deltaTracker,
-				renderOutline,
-				modelViewMatrix,
-				cameraState
-		);
+	@Inject(method = "extract", at = @At(value = "HEAD"))
+	private void beforeExtract(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo ci) {
+		((LevelRendererExtensions) (Object) minecraft.levelRenderer).fabric_prepareLevelExtractionContext(deltaTracker);
 	}
 }

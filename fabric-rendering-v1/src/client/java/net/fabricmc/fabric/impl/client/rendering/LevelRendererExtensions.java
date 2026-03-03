@@ -16,11 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
-import org.joml.Matrix4f;
-
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.renderer.state.CameraRenderState;
 
 public interface LevelRendererExtensions {
-	void fabric_prepareLevelExtractionContext(DeltaTracker deltaTracker, boolean renderBlockOutline, Matrix4f viewMatrix, CameraRenderState cameraState);
+	void fabric_prepareLevelExtractionContext(DeltaTracker deltaTracker);
 }

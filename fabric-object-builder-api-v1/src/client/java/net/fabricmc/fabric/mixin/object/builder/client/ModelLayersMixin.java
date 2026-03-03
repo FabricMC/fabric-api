@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.HangingSignBlock;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
 @Mixin(ModelLayers.class)
@@ -46,7 +46,7 @@ public class ModelLayersMixin {
 	}
 
 	@Inject(method = "createHangingSignModelName", at = @At("HEAD"), cancellable = true)
-	private static void createHangingSign(WoodType type, HangingSignRenderer.AttachmentType attachmentType, CallbackInfoReturnable<ModelLayerLocation> cir) {
+	private static void createHangingSign(WoodType type, HangingSignBlock.Attachment attachmentType, CallbackInfoReturnable<ModelLayerLocation> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.parse(type.name());
 			cir.setReturnValue(new ModelLayerLocation(identifier.withPath(path -> {
