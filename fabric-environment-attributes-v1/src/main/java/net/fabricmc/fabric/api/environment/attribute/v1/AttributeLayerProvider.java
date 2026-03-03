@@ -28,7 +28,7 @@ import net.minecraft.world.level.Level;
  * things like weather, location or time. You can set restrictions on when your layer provider should apply in relation
  * to vanilla providers or other modded providers using {@link AttributeLayerRegistry#addProviderOrdering}
  *
- * <h1>Background</h1>
+ * <h2>Background</h2>
  *
  * <p>
  * The {@link EnvironmentAttributeSystem} assigns zero or more layers to every environment attribute. A layer here is
@@ -41,6 +41,8 @@ import net.minecraft.world.level.Level;
  * <p>
  * Minecraft creates an {@link EnvironmentAttributeSystem} for each {@link Level}, both on the client and the server,
  * and adds layers to this system through four different providers:
+ * </p>
+ *
  * <ol>
  * <li>Dimension type overrides: a layer is added for each attribute defined in the dimension type of the {@link Level}.</li>
  * <li>Biome overrides: if one or more biomes define an attribute, a layer is added for that attribute that alters the
@@ -50,11 +52,13 @@ import net.minecraft.world.level.Level;
  * <li>Weather overrides: if the {@link Level} {@linkplain Level#canHaveWeather() has weather}, Minecraft defines some
  * hardcoded weather layers for weather for some attributes.</li>
  * </ol>
+ *
+ * <p>
  * Each layer is given the value outputted by the previous layer, and must modify or replace
  * this value based on some context parameters. The first layer is given the default value of the attribute.
  * </p>
  *
- * <h1>Adding modded layers</h1>
+ * <h2>Adding modded layers</h2>
  *
  * <p>
  * As mentioned, the {@link AttributeLayerProvider} allows you to add modded layers to environment attributes during
@@ -67,6 +71,8 @@ import net.minecraft.world.level.Level;
  * <p>
  * Depending on the type of {@link EnvironmentAttributeLayer}, Minecraft caches values of environment attributes. Minecraft
  * allows three different types of layers:
+ * </p>
+ *
  * <ul>
  * <li>{@linkplain EnvironmentAttributeLayer.Constant Constant layers}: these modify the value in a context-independent
  * manner. Minecraft uses these for dimensions and expects them to be constant - do not depend on external variables
@@ -80,6 +86,8 @@ import net.minecraft.world.level.Level;
  * Minecraft will cache the value per tick, so that if it is sampled multiple times per tick, it is only evaluated once.
  * Minecraft uses time based layers for timelines and weather.</li>
  * </ul>
+ *
+ * <p>
  * It is important that modded implementations take into account the constraints of different layer types, otherwise
  * they may not work properly.
  * </p>
