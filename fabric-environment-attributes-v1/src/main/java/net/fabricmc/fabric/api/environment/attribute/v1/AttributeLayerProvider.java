@@ -35,7 +35,8 @@ import net.minecraft.world.level.Level;
  * represented by a {@link EnvironmentAttributeLayer}. Layers modify or
  * override the value of an environment attribute by some implementation-specific logic. In vanilla Minecraft, defining an
  * environment attribute in a dimension type, biome or timeline will cause a layer for that attribute to be added that
- * modifies the attribute accordingly.
+ * modifies the attribute accordingly. Note that each attribute has its own stack of layers: layers apply to individual
+ * attributes, not to the system as a whole.
  * </p>
  *
  * <p>
