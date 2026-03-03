@@ -49,9 +49,18 @@ import net.fabricmc.fabric.mixin.client.indigo.renderer.BlockRenderDispatcherAcc
  * The Fabric default renderer implementation. Supports all features defined in the API.
  */
 public class IndigoRenderer implements Renderer {
-	public static final IndigoRenderer INSTANCE = new IndigoRenderer();
+	private static IndigoRenderer instance;
 
-	private IndigoRenderer() { }
+	private IndigoRenderer() {
+	}
+
+	static IndigoRenderer getOrCreateInstance() {
+		if (instance == null) {
+			instance = new IndigoRenderer();
+		}
+
+		return instance;
+	}
 
 	@Override
 	public MutableMesh mutableMesh() {

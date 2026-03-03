@@ -115,7 +115,7 @@ public class FabricClientGameTestRunner {
 			}
 
 			if (!(client.screen instanceof TitleScreen)) {
-				throw new AssertionError("Client gametest %s did not finish on the title screen".formatted(currentlyRunningGameTest.getDefinition()));
+				throw new AssertionError("Client gametest %s did not finish on the title screen. Current screen %s".formatted(currentlyRunningGameTest.getDefinition(), client.screen.getClass().getName()));
 			}
 		});
 	}

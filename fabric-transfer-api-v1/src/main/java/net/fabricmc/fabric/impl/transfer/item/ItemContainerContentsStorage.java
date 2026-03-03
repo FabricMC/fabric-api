@@ -168,7 +168,7 @@ public class ItemContainerContentsStorage extends CombinedSlottedStorage<ItemVar
 
 		@Override
 		public long getCapacity() {
-			return getStack().getItem().getDefaultMaxStackSize();
+			return getStack().getMaxStackSize();
 		}
 
 		@Override

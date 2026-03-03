@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.attachment.sync;
+package net.fabricmc.fabric.impl.client.rendering;
 
-import java.util.Set;
+import org.joml.Matrix4f;
 
-import net.minecraft.network.Connection;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.renderer.state.CameraRenderState;
 
-/**
- * Implemented on {@link Connection} to store which attachments the client supports.
- */
-public interface SupportedAttachmentsConnection {
-	void fabric_setSupportedAttachments(Set<Identifier> supportedAttachments);
-
-	Set<Identifier> fabric_getSupportedAttachments();
+public interface LevelRendererExtensions {
+	void fabric_prepareLevelExtractionContext(DeltaTracker deltaTracker, boolean renderBlockOutline, Matrix4f viewMatrix, CameraRenderState cameraState);
 }

@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.block.client;
+package net.fabricmc.fabric.test.rendering.client.mixin;
 
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.ChunkSectionLayerMap;
-import net.fabricmc.fabric.test.block.ClimbableTrapdoorTest;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockModelResolver;
 
-public final class ClimbableTrapdoorClientTest implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
-		ChunkSectionLayerMap.putBlocks(
-				ChunkSectionLayer.CUTOUT,
-				ClimbableTrapdoorTest.customLadderBlock,
-				ClimbableTrapdoorTest.customNonLadderBlock
-		);
-	}
+@Mixin(Minecraft.class)
+public interface MinecraftAccessor {
+	@Accessor
+	BlockModelResolver getBlockModelResolver();
 }

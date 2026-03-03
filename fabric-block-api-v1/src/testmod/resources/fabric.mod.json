@@ -11,9 +11,6 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.block.ClimbableTrapdoorTest"
-    ],
-    "client": [
-      "net.fabricmc.fabric.test.block.client.ClimbableTrapdoorClientTest"
     ]
   }
 }

@@ -69,11 +69,10 @@ public class FluidChuteBlock extends Block implements EntityBlock {
 		if (level.getBlockEntity(pos) instanceof FluidChuteBlockEntity chute) {
 			if (!FluidStorageUtil.interactWithFluidStorage(chute.storage, player, hand)) {
 				if (!level.isClientSide()) {
-					player.displayClientMessage(
+					player.sendSystemMessage(
 							Component.literal("Fluid: ")
 									.append(FluidVariantAttributes.getName(chute.storage.variant))
-									.append(", amount: " + chute.storage.amount),
-							false
+									.append(", amount: " + chute.storage.amount)
 					);
 				}
 

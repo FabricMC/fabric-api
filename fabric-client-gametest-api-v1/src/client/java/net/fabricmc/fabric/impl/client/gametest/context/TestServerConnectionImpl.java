@@ -52,6 +52,7 @@ public class TestServerConnectionImpl implements TestServerConnection {
 		});
 
 		context.waitFor(client -> client.level == null);
+		context.waitTicks(2);
 		context.setScreen(TitleScreen::new);
 	}
 }

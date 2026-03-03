@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.minecraft.network.PacketEncoder;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.ConfigurationTask;
@@ -28,8 +27,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
-import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 
 /**
  * To reasonably support server-side only custom ingredients, we only send custom ingredients to clients that support them.
@@ -38,15 +36,15 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
  *
  * <ul>
  *     <li>Each client sends a packet with the set of custom ingredients it supports.</li>
- *     <li>We store that set inside the {@link PacketEncoder} using {@link PacketEncoderMixin}.</li>
- *     <li>When serializing a custom ingredient, we get access to the current {@link PacketEncoder},
+ *     <li>We store that set inside the {@link PacketContext} using {@link CustomIngredientSync#SUPPORTED_CUSTOM_INGREDIENTS}.</li>
+ *     <li>When serializing a custom ingredient, we get access to {@link PacketContext},
  *     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.</li>
  * </ul>
  */
 public class CustomIngredientSync implements ModInitializer {
 	public static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "custom_ingredient_sync");
 	public static final int PROTOCOL_VERSION_1 = 1;
-	public static final ThreadLocal<Set<Identifier>> CURRENT_SUPPORTED_INGREDIENTS = new ThreadLocal<>();
+	public static final PacketContext.Key<Set<Identifier>> SUPPORTED_CUSTOM_INGREDIENTS = PacketContext.key(Identifier.fromNamespaceAndPath("fabric", "supported_custom_ingredients"));
 
 	public static ServerboundCustomIngredientPayload createResponsePayload(int serverProtocolVersion) {
 		if (serverProtocolVersion < PROTOCOL_VERSION_1) {
@@ -88,7 +86,7 @@ public class CustomIngredientSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(ServerboundCustomIngredientPayload.TYPE, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			((SupportedIngredientsConnection) ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
+			context.packetListener().getPacketContext().set(SUPPORTED_CUSTOM_INGREDIENTS, supportedCustomIngredients);
 			context.packetListener().completeTask(IngredientSyncTask.KEY);
 		});
 	}

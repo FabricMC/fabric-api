@@ -23,6 +23,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -54,7 +55,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 
 			for (FluidVariant variant : variants) {
 				TextureAtlasSprite[] sprites = FluidVariantRendering.getSprites(variant);
-				int color = FluidVariantRendering.getColor(variant, player.level(), player.blockPosition());
+				int color = FluidVariantRendering.getColor(variant, (BlockAndTintGetter) player.level(), player.blockPosition());
 
 				if (sprites != null) {
 					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);

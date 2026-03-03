@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import io.netty.buffer.ByteBufUtil;
 
-import net.minecraft.network.Connection;
 import net.minecraft.network.VarInt;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -41,6 +40,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
@@ -48,13 +48,13 @@ import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundAttachmen
 import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundRequestAcceptedAttachmentsPayload;
 import net.fabricmc.fabric.impl.attachment.sync.serverbound.ServerboundAcceptedAttachmentsPayload;
 import net.fabricmc.fabric.mixin.attachment.ClientboundCustomPayloadPacketAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public class AttachmentSync implements ModInitializer {
 	public static final int MAX_IDENTIFIER_SIZE = 256;
 	public static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + MAX_IDENTIFIER_SIZE;
 	public static final int DEFAULT_MAX_DATA_SIZE;
 	public static final int DEFAULT_ATTACHMENT_SYNC_PACKET_SIZE;
+	private static final PacketContext.Key<Set<Identifier>> SUPPORTED_ATTACHMENTS_KEY = PacketContext.key(Identifier.fromNamespaceAndPath("fabric", "supported_attachments"));
 
 	static {
 		// ensure no splitting by default
@@ -73,8 +73,7 @@ public class AttachmentSync implements ModInitializer {
 			return;
 		}
 
-		Set<Identifier> supported = ((SupportedAttachmentsConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
-				.fabric_getSupportedAttachments();
+		Set<Identifier> supported = player.connection.getPacketContext().orElse(SUPPORTED_ATTACHMENTS_KEY, Set.of());
 
 		if (supported.contains(change.type().identifier())) {
 			ServerPlayNetworking.send(player, new ClientboundAttachmentSyncPayload(change));
@@ -87,8 +86,7 @@ public class AttachmentSync implements ModInitializer {
 			return;
 		}
 
-		Set<Identifier> supported = ((SupportedAttachmentsConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
-				.fabric_getSupportedAttachments();
+		Set<Identifier> supported = player.connection.getPacketContext().orElse(SUPPORTED_ATTACHMENTS_KEY, Set.of());
 
 		List<Packet<? super ClientGamePacketListener>> syncableChanges = new ArrayList<>();
 		changes.forEach(change -> {
@@ -140,8 +138,7 @@ public class AttachmentSync implements ModInitializer {
 		ServerConfigurationNetworking.registerGlobalReceiver(
 				ServerboundAcceptedAttachmentsPayload.ID, (payload, context) -> {
 					Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
-					Connection connection = ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection();
-					((SupportedAttachmentsConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
+					context.packetListener().getPacketContext().set(SUPPORTED_ATTACHMENTS_KEY, supportedAttachments);
 
 					context.packetListener().completeTask(AttachmentSyncTask.KEY);
 				});

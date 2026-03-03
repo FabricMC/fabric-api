@@ -59,7 +59,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  * @see AttachmentRegistry.Builder#syncWith(StreamCodec, AttachmentSyncPredicate)
  */
 @ApiStatus.NonExtendable
-@ApiStatus.Experimental
 public interface AttachmentType<A> {
 	/**
 	 * @return the identifier that uniquely identifies this attachment
