@@ -49,8 +49,8 @@ public class FabricEnvironmentAttributesClientTest implements FabricClientGameTe
 			systemBuilder.addConstantLayer(EnvironmentAttributes.SKY_COLOR, base -> TEST_COLOR);
 		});
 
-		AttributeLayerRegistry.addLayerOrdering(BEFORE_ALL, AttributeLayerProvider.FIRST_VANILLA_PHASE);
-		AttributeLayerRegistry.addLayerOrdering(AttributeLayerProvider.LAST_VANILLA_PHASE, AFTER_ALL);
+		AttributeLayerRegistry.addProviderOrdering(BEFORE_ALL, AttributeLayerProvider.FIRST_VANILLA_PROVIDER);
+		AttributeLayerRegistry.addProviderOrdering(AttributeLayerProvider.LAST_VANILLA_PROVIDER, AFTER_ALL);
 
 		try (TestSingleplayerContext spContext = context.worldBuilder().create()) {
 			spContext.getServer().runOnServer(server -> {

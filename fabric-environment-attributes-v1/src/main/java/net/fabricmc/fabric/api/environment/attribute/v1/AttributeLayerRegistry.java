@@ -22,13 +22,17 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.environment.attribute.AttributeLayerRegistryImpl;
 
+/**
+ * Utility class allowing you to register and reorder {@link AttributeLayerProvider}s.
+ */
 @NullMarked
 public class AttributeLayerRegistry {
 	/**
-	 * Register a {@link AttributeLayerProvider}. If a layer with the given identifier already exists, an exception
+	 * Register a {@link AttributeLayerProvider}. If a layer provider with the given identifier already exists, an exception
 	 * is thrown.
 	 *
-	 * @param id    The identifier of the layer provider. This can be ordered against by other layer providers.
+	 * @param id    The identifier of the layer provider. This identifier can be used to set an ordering via
+	 *              {@link #addProviderOrdering}.   .
 	 * @param layer The layer provider to register.
 	 */
 	public static void registerLayerProvider(Identifier id, AttributeLayerProvider layer) {
@@ -38,13 +42,13 @@ public class AttributeLayerRegistry {
 	/**
 	 * Declares that the layer provider with the first identifier should activate before the layer provider with the
 	 * second identifier. Unless this causes a cyclic dependency, the two layer providers are guaranteed to activate in
-	 * said order. You may use this to order your layer provider against vanilla phases using any of the constants in
+	 * said order. You may use this to order your layer provider against vanilla layer providers using any of the constants in
 	 * {@link AttributeLayerProvider}. If both layer identifiers are the same, then an exception is thrown.
 	 *
-	 * @param firstLayer  The ID of the layer that should activate earlier.
-	 * @param secondLayer The ID of the layer that should activate later.
+	 * @param firstLayer  The ID of the layer provider that should activate earlier.
+	 * @param secondLayer The ID of the layer provider that should activate later.
 	 */
-	public static void addLayerOrdering(Identifier firstLayer, Identifier secondLayer) {
-		AttributeLayerRegistryImpl.addLayerOrdering(firstLayer, secondLayer);
+	public static void addProviderOrdering(Identifier firstLayer, Identifier secondLayer) {
+		AttributeLayerRegistryImpl.addProviderOrdering(firstLayer, secondLayer);
 	}
 }

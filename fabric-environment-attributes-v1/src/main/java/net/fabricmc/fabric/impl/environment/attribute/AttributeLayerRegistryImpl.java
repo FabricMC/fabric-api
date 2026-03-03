@@ -67,14 +67,14 @@ public class AttributeLayerRegistryImpl {
 		}
 
 		// Register vanilla ordering
-		registerLayerProvider(AttributeLayerProvider.DIMENSION, VanillaLayerMarker.DIMENSION);
+		registerLayerProvider(AttributeLayerProvider.DIMENSIONS, VanillaLayerMarker.DIMENSION);
 		registerLayerProvider(AttributeLayerProvider.BIOMES, VanillaLayerMarker.BIOMES);
 		registerLayerProvider(AttributeLayerProvider.TIMELINES, VanillaLayerMarker.TIMELINES);
 		registerLayerProvider(AttributeLayerProvider.WEATHER, VanillaLayerMarker.WEATHER);
 
-		addLayerOrdering(AttributeLayerProvider.DIMENSION, AttributeLayerProvider.BIOMES);
-		addLayerOrdering(AttributeLayerProvider.BIOMES, AttributeLayerProvider.TIMELINES);
-		addLayerOrdering(AttributeLayerProvider.TIMELINES, AttributeLayerProvider.WEATHER);
+		addProviderOrdering(AttributeLayerProvider.DIMENSIONS, AttributeLayerProvider.BIOMES);
+		addProviderOrdering(AttributeLayerProvider.BIOMES, AttributeLayerProvider.TIMELINES);
+		addProviderOrdering(AttributeLayerProvider.TIMELINES, AttributeLayerProvider.WEATHER);
 
 		// Validate cache
 		hasOnlyVanillaLayers = true; // Set to true here because registerLayerProvider used above sets it to false
@@ -96,7 +96,7 @@ public class AttributeLayerRegistryImpl {
 		}
 	}
 
-	public static void addLayerOrdering(Identifier firstLayer, Identifier secondLayer) {
+	public static void addProviderOrdering(Identifier firstLayer, Identifier secondLayer) {
 		Objects.requireNonNull(firstLayer, "The first layer identifier should not be null.");
 		Objects.requireNonNull(secondLayer, "The second layer identifier should not be null.");
 
@@ -237,7 +237,7 @@ public class AttributeLayerRegistryImpl {
 	// Markers for vanilla layers. It's important that these enum constants stay in the order that vanilla layers should appear,
 	// since this order will be used to fix dependency cycles (and we don't want a dependency cycle to mess up the order).
 	private enum VanillaLayerMarker implements AttributeLayerProvider {
-		DIMENSION(AttributeLayerProvider.DIMENSION),
+		DIMENSION(AttributeLayerProvider.DIMENSIONS),
 		BIOMES(AttributeLayerProvider.BIOMES),
 		TIMELINES(AttributeLayerProvider.TIMELINES),
 		WEATHER(AttributeLayerProvider.WEATHER);
