@@ -16,15 +16,17 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockColorRegistryImpl;
 
 /**
- * The registry for {@link BlockColor}s.
+ * The registry for {@link BlockTintSource}s.
  */
 public final class BlockColorRegistry {
 	private BlockColorRegistry() {
@@ -33,13 +35,13 @@ public final class BlockColorRegistry {
 	/**
 	 * Register a block color for one or more blocks. Overriding existing registrations is allowed.
 	 *
-	 * <p>Mods must use this method instead of {@link BlockColors#register(BlockColor, Block...)} during mod
+	 * <p>Mods must use this method instead of {@link BlockColors#register(List, Block...)} during mod
 	 * initialization as it runs before {@link Minecraft#getBlockColors()} is available.
 	 *
-	 * @param color The block color.
+	 * @param layers A list of {@link BlockTintSource}s.
 	 * @param blocks The blocks which should be colored using the given color.
 	 */
-	public static void register(BlockColor color, Block... blocks) {
-		BlockColorRegistryImpl.register(color, blocks);
+	public static void register(List<BlockTintSource> layers, Block... blocks) {
+		BlockColorRegistryImpl.register(layers, blocks);
 	}
 }

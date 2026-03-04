@@ -31,7 +31,6 @@
     "RenderPipelineMixin",
     "RenderPipelineSnippetMixin",
     "RenderStateMixin",
-    "SpecialModelRenderersMixin",
     "SpriteSourcesAccessor",
     "SubtitleOverlayMixin",
     "advancement.AdvancementsScreenMixin",

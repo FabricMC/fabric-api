@@ -25,12 +25,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.gui.render.state.pip.GuiSignRenderState;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
+import net.minecraft.client.renderer.state.gui.pip.GuiSignRenderState;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.PlainSignBlock;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -76,7 +77,7 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 	}
 
 	private static GuiSignRenderState createSignState(int x, WoodType woodType) {
-		Model.Simple signModel = SignRenderer.createSignModel(Minecraft.getInstance().getEntityModels(), woodType, true);
+		Model.Simple signModel = StandingSignRenderer.createSignModel(Minecraft.getInstance().getEntityModels(), woodType, PlainSignBlock.Attachment.WALL);
 		return new GuiSignRenderState(signModel, woodType, x, 0, x + 20, 20, 10f, new ScreenRectangle(x, 0, x + 20, 20));
 	}
 

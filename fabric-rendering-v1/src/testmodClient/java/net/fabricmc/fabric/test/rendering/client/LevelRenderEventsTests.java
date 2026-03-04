@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.Blocks;
@@ -128,10 +128,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		assertAbstractRenderContext(context);
 		assertNotNull(context.level(), "level is null");
 		assertNotNull(context.camera(), "camera is null");
-		assertNotNull(context.frustum(), "frustum is null");
 		assertNotNull(context.deltaTracker(), "deltaTracker is null");
-		assertNotNull(context.viewMatrix(), "viewMatrix is null");
-		assertNotNull(context.cullProjectionMatrix(), "cullProjectionMatrix is null");
 	}
 
 	private static void assertRenderContext(LevelRenderContext context) {

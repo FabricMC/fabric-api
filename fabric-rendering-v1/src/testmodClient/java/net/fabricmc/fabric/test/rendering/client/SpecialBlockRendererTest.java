@@ -22,64 +22,69 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import org.joml.Vector3fc;
-import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.animal.allay.AllayModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.SpecialBlockRendererRegistry;
 
 /**
  * Tests {@link SpecialBlockRendererRegistry} by rendering an allay model above TNT blocks in a minecart.
  */
 public class SpecialBlockRendererTest implements ClientModInitializer {
 	private static final Identifier ALLAY_TEXTURE = Identifier.withDefaultNamespace("textures/entity/allay/allay.png");
+	private static final Identifier RENDERER_ID = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "allay_tnt_renderer");
 
 	@Override
 	public void onInitializeClient() {
-		SpecialBlockRendererRegistry.register(Blocks.TNT, new SpecialModelRenderer.Unbaked() {
-			@Override
-			public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext ctx) {
-				AllayModel allayModel = new AllayModel(ctx.entityModelSet().bakeLayer(ModelLayers.ALLAY));
+		SpecialModelRenderers.ID_MAPPER.put(RENDERER_ID, Unbaked.MAP_CODEC);
+		// TODO 26.1 fix for TNT
+	}
 
-				return new SpecialModelRenderer<>() {
-					@Override
-					public void submit(@Nullable Object data, ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlay, boolean glint, int outlineColor) {
-						poseStack.pushPose();
-						poseStack.translate(0.5f, 0.0f, 0.5f);
-						poseStack.translate(0, 1.46875f, 0);
-						poseStack.scale(1, -1, 1);
-						poseStack.mulPose(Axis.YP.rotation((float) (Util.getMillis() * 0.001)));
-						poseStack.translate(0, -1.46875f, 0);
-						submitNodeCollector.order(0)
-								.submitCustomGeometry(poseStack, RenderTypes.solidMovingBlock(), (matricesEntry, vertexConsumer) -> allayModel.renderToBuffer(poseStack, vertexConsumer, light, overlay));
-						poseStack.popPose();
-					}
+	private static class Renderer implements NoDataSpecialModelRenderer {
+		private final AllayModel allayModel;
 
-					@Override
-					public void getExtents(Consumer<Vector3fc> consumer) { }
+		Renderer(SpecialModelRenderer.BakingContext ctx) {
+			allayModel = new AllayModel(ctx.entityModelSet().bakeLayer(ModelLayers.ALLAY));
+		}
 
-					@Override
-					@Nullable
-					public Object extractArgument(ItemStack stack) {
-						return null;
-					}
-				};
-			}
+		@Override
+		public void submit(ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+			poseStack.pushPose();
+			poseStack.translate(0.5f, 0.0f, 0.5f);
+			poseStack.translate(0, 1.46875f, 0);
+			poseStack.scale(1, -1, 1);
+			poseStack.mulPose(Axis.YP.rotation((float) (Util.getMillis() * 0.001)));
+			poseStack.translate(0, -1.46875f, 0);
+			submitNodeCollector.order(0)
+					.submitCustomGeometry(poseStack, RenderTypes.solidMovingBlock(), (matricesEntry, vertexConsumer) -> allayModel.renderToBuffer(poseStack, vertexConsumer, lightCoords, overlayCoords));
+			poseStack.popPose();
+		}
 
-			@Override
-			public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
-				return null;
-			}
-		});
+		@Override
+		public void getExtents(Consumer<Vector3fc> output) {
+		}
+	}
+
+	private record Unbaked() implements NoDataSpecialModelRenderer.Unbaked {
+		public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
+
+		@Override
+		public MapCodec<Unbaked> type() {
+			return MAP_CODEC;
+		}
+
+		@Override
+		public Renderer bake(final SpecialModelRenderer.BakingContext context) {
+			return new Renderer(context);
+		}
 	}
 }
