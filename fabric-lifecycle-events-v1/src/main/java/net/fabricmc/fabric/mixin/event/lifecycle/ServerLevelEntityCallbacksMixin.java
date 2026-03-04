@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,7 +39,9 @@ abstract class ServerLevelEntityCallbacksMixin {
 
 	@Inject(method = "onTrackingStart(Lnet/minecraft/world/entity/Entity;)V", at = @At("TAIL"))
 	private void invokeEntityLoadEvent(Entity entity, CallbackInfo ci) {
-		ServerEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, this.this$0);
+		ScopedValue.where(ServerEntityEvents.ENTITY_LOAD_REASON, EntitySpawnReason.LOAD).run(() -> {
+			ServerEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, this.this$0);
+		});
 	}
 
 	@Inject(method = "onTrackingEnd(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"))

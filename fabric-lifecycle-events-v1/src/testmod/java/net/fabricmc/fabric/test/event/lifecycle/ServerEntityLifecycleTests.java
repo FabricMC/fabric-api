@@ -50,7 +50,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			}
 		});
 
-		ServerEntityEvents.ALLOW_FRESH_LOAD.register((entity, level) -> {
+		ServerEntityEvents.ALLOW_ADD.register((entity, level) -> {
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
 				logger.info("[SERVER] ALLOW FRESH LOAD {} IN {}", entity, level);
 			}

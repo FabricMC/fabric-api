@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +34,8 @@ public final class ServerEntityEvents {
 	 * Called when an Entity is loaded into a ServerLevel.
 	 *
 	 * <p>When this event is called, the entity is already in the level.
+	 *
+	 * <p>If you want to get load context use ENTITY_LOAD_CONTEXT scoped value</p>
 	 */
 	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
@@ -45,10 +48,10 @@ public final class ServerEntityEvents {
 	 *
 	 * <p>If return value is {@code false} entity will not be added to a server.</p>
 	 *
-	 * <p>Should be used when you want to add another entity instead of added or to block adding specific entities.</p>
+	 * <p>Should be used when you want to add another entity instead of added or to disallow add specific entities.</p>
 	 *
 	 * {@snippet :
-	 * ServerEntityEvents.ALLOW_FRESH_LOAD.register((entity, level) -> {
+	 * ServerEntityEvents.ALLOW_ADD.register((entity, level) -> {
 	 * 	// Spawn with 25% chance zombie instead of creeper
 	 * 	if (entity instanceof Creeper && level.getRandom().nextFloat() <= 0.25f) {
 	 * 	 var zombie = EntityType.ZOMBIE.create(level, null, entity.blockPosition(), EntitySpawnReason.EVENT, true, false);
@@ -56,38 +59,16 @@ public final class ServerEntityEvents {
 	 * 	}
 	 * 	return true;
 	 * });
-	 * }
+	 *}
 	 */
-	public static final Event<ServerEntityEvents.AllowFreshLoad> ALLOW_FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AllowFreshLoad.class, callbacks -> (entity, level) -> {
+	public static final Event<AllowAdd> ALLOW_ADD = EventFactory.createArrayBacked(AllowAdd.class, callbacks -> (entity, level) -> {
 		boolean bl = true;
 
-		for (AllowFreshLoad callback : callbacks) {
-			bl = bl && callback.onFreshLoad(entity, level);
+		for (AllowAdd callback : callbacks) {
+			bl = bl && callback.allowAdd(entity, level);
 		}
 
 		return bl;
-	});
-
-	/**
-	 * Called when an Entity is added to a ServerLevel.
-	 *
-	 * <p>When this event is called, the entity is already in the level.</p>
-	 *
-	 * <p>Should be used when you need to do something after entity summon, naturally spawn or any other add reason.</p>
-	 * <p>If you need to do something after entity every entity load (not the first one) use ENTITY_LOAD event.</p>
-	 *
-	 * {@snippet :
-	 * ServerEntityEvents.AFTER_FRESH_LOAD.register((entity, level) -> {
-	 * 	if (entity instanceof Creeper) {
-	 * 	 level.players().forEach(player -> player.sendSystemMessage(Component.literal("Creeper was added")));
-	 * 	}
-	 * });
-	 * }
-	 */
-	public static final Event<ServerEntityEvents.AfterFreshLoad> AFTER_FRESH_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AfterFreshLoad.class, callbacks -> (entity, level) -> {
-		for (AfterFreshLoad callback : callbacks) {
-			callback.afterFreshLoad(entity, level);
-		}
 	});
 
 	/**
@@ -119,13 +100,8 @@ public final class ServerEntityEvents {
 	}
 
 	@FunctionalInterface
-	public interface AllowFreshLoad {
-		boolean onFreshLoad(Entity entity, ServerLevel level);
-	}
-
-	@FunctionalInterface
-	public interface AfterFreshLoad {
-		void afterFreshLoad(Entity entity, ServerLevel level);
+	public interface AllowAdd {
+		boolean allowAdd(Entity entity, ServerLevel level);
 	}
 
 	@FunctionalInterface
@@ -137,4 +113,6 @@ public final class ServerEntityEvents {
 	public interface EquipmentChange {
 		void onChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack currentStack);
 	}
+
+	public static ScopedValue<EntitySpawnReason> ENTITY_LOAD_REASON = ScopedValue.newInstance();
 }

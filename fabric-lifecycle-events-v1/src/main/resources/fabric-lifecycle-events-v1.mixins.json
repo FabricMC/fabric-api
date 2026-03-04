@@ -6,6 +6,7 @@
     "ChunkHolderMixin",
     "ChunkMapMixin",
     "ChunkStatusTasksMixin",
+    "EntityTypeMixin",
     "LevelMixin",
     "LivingEntityMixin",
     "MinecraftServerMixin",
