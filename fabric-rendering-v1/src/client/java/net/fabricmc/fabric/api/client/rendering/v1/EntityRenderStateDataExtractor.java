@@ -16,16 +16,9 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
-public abstract class RenderStateDataExtractor {
-
-	public RenderStateDataExtractor(EntityRendererProvider.Context context) {
-
-	}
-
-	public abstract void extract(Entity entity, EntityRenderState state);
-
+public interface EntityRenderStateDataExtractor {
+	void extract(Entity entity, EntityRenderState state);
 }

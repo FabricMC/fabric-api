@@ -23,17 +23,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateDataExtractor;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateExtractionCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
@@ -56,6 +64,12 @@ public final class RenderLayerTest implements ClientModInitializer {
 
 			if (entityRenderer instanceof AvatarRenderer) {
 				registrationHelper.register(new TestPlayerRenderLayer((AvatarRenderer) entityRenderer));
+			}
+		});
+
+		EntityRenderStateExtractionCallback.EVENT.register(ctx -> {
+			if (ctx.renderer() instanceof AvatarRenderer) {
+				ctx.renderer().addExtractor(new CustomRenderStateExtractor(ctx.rendererContext()));
 			}
 		});
 
@@ -87,6 +101,30 @@ public final class RenderLayerTest implements ClientModInitializer {
 			Objects.requireNonNull(blockRenderState);
 			blockRenderState.submit(poseStack, nodeCollector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
 			poseStack.popPose();
+		}
+	}
+
+	private static class CustomRenderStateExtractor implements EntityRenderStateDataExtractor {
+		private final BlockModelResolver blockModelResolver;
+
+		CustomRenderStateExtractor(EntityRendererProvider.Context context) {
+			this.blockModelResolver = context.getBlockModelResolver();
+		}
+
+		@Override
+		public void extract(Entity entity, EntityRenderState state) {
+			if (!(entity instanceof LocalPlayer)) {
+				return;
+			}
+
+			BlockModelRenderState blockRenderState = state.getData(RenderLayerTest.DIAMOND_BLOCK);
+
+			if (blockRenderState == null) {
+				blockRenderState = new BlockModelRenderState();
+				state.setData(RenderLayerTest.DIAMOND_BLOCK, blockRenderState);
+			}
+
+			this.blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState());
 		}
 	}
 }
