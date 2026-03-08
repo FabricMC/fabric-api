@@ -35,17 +35,17 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataExtractor;
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> implements FabricEntityRenderer {
 	@Unique
-	private final List<RenderStateDataExtractor<?, ?>> renderStateExtractors = new ArrayList<>();
+	private final List<RenderStateDataExtractor> renderStateExtractors = new ArrayList<>();
 
 	@Inject(method = "extractRenderState", at = @At("TAIL"))
 	private void runRenderStateExtractors(T entity, S state, float partialTicks, CallbackInfo ci) {
-		for (RenderStateDataExtractor<?, ?> extractor : renderStateExtractors) {
-			extractor.extract(entity, state, partialTicks);
+		for (RenderStateDataExtractor extractor : renderStateExtractors) {
+			extractor.extract(entity, state);
 		}
 	}
 
 	@Override
-	public void addExtractor(RenderStateDataExtractor<?, ?> extractor) {
+	public void addExtractor(RenderStateDataExtractor extractor) {
 		renderStateExtractors.add(extractor);
 	}
 }

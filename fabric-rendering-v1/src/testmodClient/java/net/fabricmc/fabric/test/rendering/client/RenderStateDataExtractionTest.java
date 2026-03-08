@@ -17,6 +17,21 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataExtractor;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateExtractionCallback;
+
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
+
+import net.minecraft.world.entity.LivingEntity;
+
 import org.jspecify.annotations.NonNull;
 
 import net.minecraft.client.model.Model;
@@ -40,11 +55,6 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataExtractionRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataExtractor;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
 /**
  * Renders a small red cube in front of the player's chest when in f5. The cube's
@@ -53,7 +63,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
  * <p>
  * Tests:
  * <ul>
- *     <li>{@link RenderStateDataExtractionRegistry}</li>
+ *     <li>{@link RenderStateExtractionCallback}</li>
  * </ul>
  *
  * <p>
@@ -79,10 +89,11 @@ public class RenderStateDataExtractionTest implements ClientModInitializer {
 			}
 		});
 
-		RenderStateDataExtractionRegistry.registerAvatar(
-				RenderStateDataExtractor.createAvatar(PLAYER_HEALTH_PERCENTAGE, (avatar, _) -> {
-					return avatar.getHealth() / avatar.getMaxHealth();
-				}));
+		RenderStateExtractionCallback.EVENT.register(context -> {
+			if (context.renderer() instanceof AvatarRenderer<?>) {
+				context.add(TestExtractor::new);
+			}
+		});
 	}
 
 	public static class TestRenderLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
@@ -115,6 +126,19 @@ public class RenderStateDataExtractionTest implements ClientModInitializer {
 			CubeListBuilder cube = CubeListBuilder.create().addBox(-4, 2, -12, 8, 8, 8);
 			head.addOrReplaceChild("fabric:test_rse_model", cube, PartPose.ZERO);
 			return LayerDefinition.create(mesh, 16, 16);
+		}
+	}
+
+	public static class TestExtractor extends RenderStateDataExtractor {
+
+		public TestExtractor(EntityRendererProvider.Context context) {
+			super(context);
+		}
+
+		@Override
+		public void extract(Entity entity, EntityRenderState state) {
+			LivingEntity livingEntity = (LivingEntity) entity;
+			state.setData(PLAYER_HEALTH_PERCENTAGE, livingEntity.getHealth() / livingEntity.getMaxHealth());
 		}
 	}
 }
