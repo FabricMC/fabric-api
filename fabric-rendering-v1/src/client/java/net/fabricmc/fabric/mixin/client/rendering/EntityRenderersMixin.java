@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -40,9 +41,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateExtractionCallback;
 import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
-import net.fabricmc.fabric.impl.client.rendering.RenderStateDataExtractionRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.RenderStateExtractionCallbackContextImpl;
 
 @Mixin(EntityRenderers.class)
 public abstract class EntityRenderersMixin {
@@ -84,14 +86,16 @@ public abstract class EntityRenderersMixin {
 	@WrapOperation(method = "lambda$createEntityRenderers$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRendererProvider;create(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;)Lnet/minecraft/client/renderer/entity/EntityRenderer;"))
 	private static <T extends Entity> EntityRenderer<T, ?> applyExtractorsToRenderer(EntityRendererProvider<T> instance, EntityRendererProvider.Context context, Operation<EntityRenderer<T, ?>> original, @Local(argsOnly = true) EntityType<T> entityType) {
 		EntityRenderer<T, ?> entityRenderer = original.call(instance, context);
-		RenderStateDataExtractionRegistryImpl.applyExtractors(entityType, entityRenderer);
+		RenderStateExtractionCallbackContextImpl ctx = new RenderStateExtractionCallbackContextImpl(entityType, entityRenderer, context, new ArrayList<>());
+		RenderStateExtractionCallback.EVENT.invoker().onRenderStateExtraction(ctx);
 		return entityRenderer;
 	}
 
 	@WrapOperation(method = "createAvatarRenderers", at = @At(value = "NEW", target = "(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;Z)Lnet/minecraft/client/renderer/entity/player/AvatarRenderer;"))
 	private static AvatarRenderer<?> applyExtractorsToAvatarRenderer(EntityRendererProvider.Context context, boolean slimSteve, Operation<AvatarRenderer<?>> original) {
 		AvatarRenderer<?> entityRenderer = original.call(context, slimSteve);
-		RenderStateDataExtractionRegistryImpl.applyAvatarExtractors(entityRenderer);
+		RenderStateExtractionCallbackContextImpl ctx = new RenderStateExtractionCallbackContextImpl(null, entityRenderer, context, new ArrayList<>());
+		RenderStateExtractionCallback.EVENT.invoker().onRenderStateExtraction(ctx);
 		return entityRenderer;
 	}
 }
