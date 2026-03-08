@@ -21,35 +21,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataExtractor;
 
 public final class RenderStateDataExtractionRegistryImpl {
-	private static final Map<Class<?>, List<RenderStateDataExtractor<?, ?>>> EXTRACTORS = new HashMap<>();
+	private static final Map<EntityType<?>, List<RenderStateDataExtractor<? extends Entity, ?>>> EXTRACTORS = new HashMap<>();
+	private static final List<RenderStateDataExtractor<? extends Avatar, ?>> AVATAR_EXTRACTORS = new ArrayList<>();
 
-	public static void register(Class<?> rendererClass, RenderStateDataExtractor<?, ?> extractor) {
+	public static void applyExtractors(EntityType<?> entityType, EntityRenderer<?, ?> renderer) {
+		List<RenderStateDataExtractor<? extends Entity, ?>> extractors = EXTRACTORS.get(entityType);
+		if (extractors == null) return;
+
+		for (RenderStateDataExtractor<? extends Entity, ?> extractor : extractors) {
+			renderer.addExtractor(extractor);
+		}
+	}
+
+	public static void applyAvatarExtractors(AvatarRenderer<?> renderer) {
+		for (RenderStateDataExtractor<? extends Entity, ?> extractor : AVATAR_EXTRACTORS) {
+			renderer.addExtractor(extractor);
+		}
+	}
+
+	public static <S extends Entity> void register(EntityType<S> rendererClass, RenderStateDataExtractor<S, ?> extractor) {
 		EXTRACTORS.computeIfAbsent(rendererClass, _ -> new ArrayList<>()).add(extractor);
 	}
 
-	public static void processExtractors(Class<?> rendererClass, Object subject, FabricRenderState state) {
-		List<RenderStateDataExtractor<?, ?>> extractors = EXTRACTORS.get(rendererClass);
-		if (extractors == null) return;
-		for (RenderStateDataExtractor<?, ?> extractor : extractors) {
-			processExtractor(extractor, subject, state);
-		}
-	}
-
-	private static <S, T> void processExtractor(RenderStateDataExtractor<S, T> extractor, Object subject, FabricRenderState state) {
-		S castedSubject;
-		try {
-			//The user may provide a subject class type that is different from the actual
-			// subject class, so a cast check is required.
-			castedSubject = extractor.getSubjectClass().cast(subject);
-		} catch (ClassCastException e) {
-			throw new IllegalArgumentException("Subject class " + extractor.getSubjectClass() + " for extractor with " + extractor.getKey() + " is not assignable from " + subject.getClass(), e);
-		}
-
-		T extractedValue = extractor.getCallback().onExtractRenderState(castedSubject);
-		state.setData(extractor.getKey(), extractedValue);
+	public static void registerAvatar(RenderStateDataExtractor<? extends Avatar, ?> extractor) {
+		AVATAR_EXTRACTORS.add(extractor);
 	}
 }

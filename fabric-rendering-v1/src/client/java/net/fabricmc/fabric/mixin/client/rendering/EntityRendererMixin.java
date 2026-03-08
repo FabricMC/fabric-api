@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.rendering.renderstate.extractors;
+package net.fabricmc.fabric.mixin.client.rendering;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,12 +29,23 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
-import net.fabricmc.fabric.impl.client.rendering.RenderStateDataExtractionRegistryImpl;
+import net.fabricmc.fabric.api.client.rendering.v1.FabricEntityRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataExtractor;
 
 @Mixin(EntityRenderer.class)
-public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
+public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> implements FabricEntityRenderer {
+	@Unique
+	private final List<RenderStateDataExtractor<?, ?>> renderStateExtractors = new ArrayList<>();
+
 	@Inject(method = "extractRenderState", at = @At("TAIL"))
 	private void runRenderStateExtractors(T entity, S state, float partialTicks, CallbackInfo ci) {
-		RenderStateDataExtractionRegistryImpl.processExtractors(this.getClass(), entity, state);
+		for (RenderStateDataExtractor<?, ?> extractor : renderStateExtractors) {
+			extractor.extract(entity, state, partialTicks);
+		}
+	}
+
+	@Override
+	public void addExtractor(RenderStateDataExtractor<?, ?> extractor) {
+		renderStateExtractors.add(extractor);
 	}
 }
