@@ -16,18 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.world.entity.Entity;
-
-/**
- * Called when a renderer is extracting data from a subject class to set up a render state.
- */
-@FunctionalInterface
-public interface RenderStateDataExtractorCallback<S extends Entity, T> {
-	/**
-	 * @param subject The subject instance to extract data from.
-	 * @param partialTicks The game time delta partial ticks.
-	 * @return The extracted data value.
-	 * @see RenderStateDataExtractor
-	 * */
-	T onExtractRenderState(S subject, float partialTicks);
+public interface FabricEntityRenderer {
+	default void addExtractor(RenderStateDataExtractor<?, ?> extractor) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
 }

@@ -30,7 +30,6 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -50,11 +49,20 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 /**
  * Renders a small red cube in front of the player's chest when in f5. The cube's
  * transparency is determined by the player's health percentage.
+ *
  * <p>
- * Tests: {@link RenderStateDataExtractionRegistry}
+ * Tests:
+ * <ul>
+ *     <li>{@link RenderStateDataExtractionRegistry}</li>
+ * </ul>
+ *
  * <p>
- * Indirectly tests: {@link ModelLayerRegistry}, {@link RenderStateDataKey},
- * {@link LivingEntityRenderLayerRegistrationCallback}
+ * Assumes the following work as intended:
+ * <ul>
+ *     <li>{@link ModelLayerRegistry}</li>
+ * 	   <li>{@link RenderStateDataKey}</li>
+ *     <li>{@link LivingEntityRenderLayerRegistrationCallback}</li>
+ * </ul>
  */
 public class RenderStateDataExtractionTest implements ClientModInitializer {
 	public static final ModelLayerLocation TEST_MODEL_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath("fabric", "test_rse_model"), "test_rse_model");
@@ -63,18 +71,17 @@ public class RenderStateDataExtractionTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-
 		ModelLayerRegistry.registerModelLayer(TEST_MODEL_LOCATION, TestModel::createLayer);
 
 		LivingEntityRenderLayerRegistrationCallback.EVENT.register((_, entityRenderer, registrationHelper, context) -> {
-			if(entityRenderer instanceof AvatarRenderer avatarRenderer)
+			if (entityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
 				registrationHelper.register(new TestRenderLayer(avatarRenderer, context.getModelSet()));
+			}
 		});
 
-		RenderStateDataExtractionRegistry.register(
-				AvatarRenderer.class,
-				RenderStateDataExtractor.create(LocalPlayer.class, PLAYER_HEALTH_PERCENTAGE, player -> {
-					return player.getHealth() / player.getMaxHealth();
+		RenderStateDataExtractionRegistry.registerAvatar(
+				RenderStateDataExtractor.createAvatar(PLAYER_HEALTH_PERCENTAGE, (avatar, _) -> {
+					return avatar.getHealth() / avatar.getMaxHealth();
 				}));
 	}
 
@@ -96,7 +103,6 @@ public class RenderStateDataExtractionTest implements ClientModInitializer {
 	}
 
 	public static class TestModel extends Model<AvatarRenderState> {
-
 		public TestModel(ModelPart root) {
 			super(root, RenderTypes::entityTranslucent);
 		}
@@ -110,6 +116,5 @@ public class RenderStateDataExtractionTest implements ClientModInitializer {
 			head.addOrReplaceChild("fabric:test_rse_model", cube, PartPose.ZERO);
 			return LayerDefinition.create(mesh, 16, 16);
 		}
-
 	}
 }

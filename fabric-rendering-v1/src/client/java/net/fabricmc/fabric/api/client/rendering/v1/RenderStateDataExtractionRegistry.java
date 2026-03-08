@@ -18,20 +18,34 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Objects;
 
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.Entity;
+
 import net.fabricmc.fabric.impl.client.rendering.RenderStateDataExtractionRegistryImpl;
 
 /**
- * Allows registering {@link RenderStateDataExtractor} which are used as an entrypoint for
- * extracting render state data from a given subject. The extracted data is automatically applied
+ * Allows registering {@link RenderStateDataExtractor} instances which are used as an entrypoint for
+ * extracting render state data from a given entity type. The extracted data is automatically applied
  * to the {@linkplain RenderStateDataKey render state data key} associated with the extractor.
  */
 public final class RenderStateDataExtractionRegistry {
-	/**
-	 * Assigns the given {@link RenderStateDataExtractor} to the given renderer class.
-	 */
-	public static <R, S, T> void register(Class<R> rendererClass, RenderStateDataExtractor<S, T> extractor) {
-		Objects.requireNonNull(rendererClass, "rendererClass");
+	public static <S extends Entity, T> void register(RenderStateDataExtractor<S, T> extractor) {
 		Objects.requireNonNull(extractor, "extractor");
-		RenderStateDataExtractionRegistryImpl.register(rendererClass, extractor);
+
+		if (extractor.getEntityType() == null) {
+			throw new IllegalArgumentException("avatar extractors must be registered through the method \"registerAvatar\"");
+		}
+
+		RenderStateDataExtractionRegistryImpl.register(extractor.getEntityType(), extractor);
+	}
+
+	public static <T> void registerAvatar(RenderStateDataExtractor<Avatar, T> extractor) {
+		Objects.requireNonNull(extractor, "extractor");
+
+		if (extractor.getEntityType() != null) {
+			throw new IllegalArgumentException("non-avatar extractors must be registered through the method \"register\"");
+		}
+
+		RenderStateDataExtractionRegistryImpl.registerAvatar(extractor);
 	}
 }
