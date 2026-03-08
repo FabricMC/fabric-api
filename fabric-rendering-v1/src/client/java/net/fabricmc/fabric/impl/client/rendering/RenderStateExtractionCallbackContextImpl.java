@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -25,9 +28,39 @@ import net.minecraft.world.entity.EntityType;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateDataExtractor;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateExtractionCallback;
 
-public record RenderStateExtractionCallbackContextImpl(@Nullable EntityType<?> type, EntityRenderer<?, ?> renderer, EntityRendererProvider.Context rendererContext) implements EntityRenderStateExtractionCallback.Context {
+public final class RenderStateExtractionCallbackContextImpl implements EntityRenderStateExtractionCallback.Context {
+	private final @Nullable EntityType<?> type;
+	private final EntityRenderer<?, ?> renderer;
+	private final EntityRendererProvider.Context rendererContext;
+	private final List<EntityRenderStateDataExtractor> extractors = new ArrayList<>();
+
+	public RenderStateExtractionCallbackContextImpl(@Nullable EntityType<?> type, EntityRenderer<?, ?> renderer, EntityRendererProvider.Context rendererContext) {
+		this.type = type;
+		this.renderer = renderer;
+		this.rendererContext = rendererContext;
+	}
+
 	@Override
 	public void add(EntityRenderStateDataExtractor extractor) {
-		renderer.addExtractor(extractor);
+		extractors.add(extractor);
+	}
+
+	@Override
+	public @Nullable EntityType<?> type() {
+		return type;
+	}
+
+	@Override
+	public EntityRenderer<?, ?> renderer() {
+		return renderer;
+	}
+
+	@Override
+	public EntityRendererProvider.Context rendererContext() {
+		return rendererContext;
+	}
+
+	public List<EntityRenderStateDataExtractor> extractors() {
+		return extractors;
 	}
 }
