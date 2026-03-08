@@ -69,7 +69,7 @@ public final class RenderLayerTest implements ClientModInitializer {
 
 		EntityRenderStateExtractionCallback.EVENT.register(ctx -> {
 			if (ctx.renderer() instanceof AvatarRenderer) {
-				ctx.renderer().addExtractor(new CustomRenderStateExtractor(ctx.rendererContext()));
+				ctx.add(new CustomRenderStateExtractor(ctx.rendererContext()));
 			}
 		});
 

@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-public interface FabricEntityRenderer {
-	default void addExtractor(EntityRenderStateDataExtractor extractor) {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
+import java.util.List;
+
+public interface EntityRenderStateExtractorHolder {
+
+	void addExtractors(List<EntityRenderStateDataExtractor> extractors);
 }

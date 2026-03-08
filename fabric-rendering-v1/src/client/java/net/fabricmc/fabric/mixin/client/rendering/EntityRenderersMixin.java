@@ -22,6 +22,9 @@ import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateExtractorHolder;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -87,6 +90,7 @@ public abstract class EntityRenderersMixin {
 		EntityRenderer<T, ?> entityRenderer = original.call(instance, context);
 		RenderStateExtractionCallbackContextImpl ctx = new RenderStateExtractionCallbackContextImpl(entityType, entityRenderer, context);
 		EntityRenderStateExtractionCallback.EVENT.invoker().onRenderStateExtraction(ctx);
+		((EntityRenderStateExtractorHolder) entityRenderer).addExtractors(ctx.extractors());
 		return entityRenderer;
 	}
 
@@ -95,6 +99,7 @@ public abstract class EntityRenderersMixin {
 		AvatarRenderer<?> entityRenderer = original.call(context, slimSteve);
 		RenderStateExtractionCallbackContextImpl ctx = new RenderStateExtractionCallbackContextImpl(null, entityRenderer, context);
 		EntityRenderStateExtractionCallback.EVENT.invoker().onRenderStateExtraction(ctx);
+		((EntityRenderStateExtractorHolder) entityRenderer).addExtractors(ctx.extractors());
 		return entityRenderer;
 	}
 }

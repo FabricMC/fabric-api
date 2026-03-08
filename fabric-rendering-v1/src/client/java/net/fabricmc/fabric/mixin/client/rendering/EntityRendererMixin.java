@@ -30,10 +30,10 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateDataExtractor;
-import net.fabricmc.fabric.api.client.rendering.v1.FabricEntityRenderer;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateExtractorHolder;
 
 @Mixin(EntityRenderer.class)
-public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> implements FabricEntityRenderer {
+public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> implements EntityRenderStateExtractorHolder {
 	@Unique
 	private final List<EntityRenderStateDataExtractor> renderStateExtractors = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
 	}
 
 	@Override
-	public void addExtractor(EntityRenderStateDataExtractor extractor) {
-		renderStateExtractors.add(extractor);
+	public void addExtractors(List<EntityRenderStateDataExtractor> extractors) {
+		this.renderStateExtractors.addAll(extractors);
 	}
 }
