@@ -32,6 +32,6 @@ public class FabricEnvironmentAttributesTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		Registry.register(BuiltInRegistries.ENVIRONMENT_ATTRIBUTE, Identifier.fromNamespaceAndPath("fabric_environment_attributes", "test_color"), TEST_COLOR);
+		Registry.register(BuiltInRegistries.ENVIRONMENT_ATTRIBUTE, Identifier.fromNamespaceAndPath("fabric", "test_color"), TEST_COLOR);
 	}
 }
