@@ -29,23 +29,23 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.Entity;
 
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateDataExtractor;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricEntityRenderer;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataExtractor;
 
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> implements FabricEntityRenderer {
 	@Unique
-	private final List<RenderStateDataExtractor> renderStateExtractors = new ArrayList<>();
+	private final List<EntityRenderStateDataExtractor> renderStateExtractors = new ArrayList<>();
 
 	@Inject(method = "extractRenderState", at = @At("TAIL"))
 	private void runRenderStateExtractors(T entity, S state, float partialTicks, CallbackInfo ci) {
-		for (RenderStateDataExtractor extractor : renderStateExtractors) {
+		for (EntityRenderStateDataExtractor extractor : renderStateExtractors) {
 			extractor.extract(entity, state);
 		}
 	}
 
 	@Override
-	public void addExtractor(RenderStateDataExtractor extractor) {
+	public void addExtractor(EntityRenderStateDataExtractor extractor) {
 		renderStateExtractors.add(extractor);
 	}
 }

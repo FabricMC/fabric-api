@@ -14,20 +14,36 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.rendering;
+package net.fabricmc.fabric.api.client.rendering.v1;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.EntityType;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateDataExtractor;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRenderStateExtractionCallback;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
-public record RenderStateExtractionCallbackContextImpl(@Nullable EntityType<?> type, EntityRenderer<?, ?> renderer, EntityRendererProvider.Context rendererContext) implements EntityRenderStateExtractionCallback.Context {
-	@Override
-	public void add(EntityRenderStateDataExtractor extractor) {
-		renderer.addExtractor(extractor);
+public interface EntityRenderStateExtractionCallback {
+	Event<EntityRenderStateExtractionCallback> EVENT = EventFactory.createArrayBacked(
+			EntityRenderStateExtractionCallback.class, listeners -> ctx -> {
+				for (EntityRenderStateExtractionCallback callback : listeners) {
+					callback.onRenderStateExtraction(ctx);
+				}
+			});
+
+	void onRenderStateExtraction(EntityRenderStateExtractionCallback.Context ctx);
+
+	@ApiStatus.NonExtendable
+	interface Context {
+		@Nullable EntityType<?> type();
+
+		EntityRenderer<?, ?> renderer();
+
+		EntityRendererProvider.Context rendererContext();
+
+		void add(EntityRenderStateDataExtractor extractor);
 	}
 }
