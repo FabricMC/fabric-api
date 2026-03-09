@@ -19,6 +19,9 @@ package net.fabricmc.fabric.test.rendering.client;
 import java.util.Objects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +108,7 @@ public final class RenderLayerTest implements ClientModInitializer {
 	}
 
 	private static class CustomRenderStateExtractor implements EntityRenderStateDataExtractor {
+		private static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
 		private final BlockModelResolver blockModelResolver;
 
 		CustomRenderStateExtractor(EntityRendererProvider.Context context) {
@@ -124,7 +128,7 @@ public final class RenderLayerTest implements ClientModInitializer {
 				state.setData(RenderLayerTest.DIAMOND_BLOCK, blockRenderState);
 			}
 
-			this.blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState());
+			this.blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState(), BLOCK_DISPLAY_CONTEXT);
 		}
 	}
 }
