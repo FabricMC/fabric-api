@@ -40,24 +40,24 @@ public class AttributeLayerRegistryImpl {
 	private static final Map<Identifier, VanillaLayerMarker> MARKERS = Map.copyOf(Stream.of(VanillaLayerMarker.values())
 			.collect(Collectors.toMap(marker -> marker.id, marker -> marker)));
 
-	private static final Map<Identifier, AttributeLayerProvider> LAYER_MAP = new HashMap<>();
+	private static final Map<Identifier, AttributeLayerProvider> PROVIDER_MAP = new HashMap<>();
 	private static final Set<Dependency> DEPENDENCIES = new HashSet<>();
 
 	// Lock used to ensure thread safety.
 	private static final Object LOCK = new Object();
 
-	// As long as this is true, we skip sorting and inserting layers all together.
-	// Becomes false once a modded layer is registered.
-	private static volatile boolean hasOnlyVanillaLayers;
+	// As long as this is true, we skip sorting and inserting providers all together.
+	// Becomes false once a modded provider is registered.
+	private static volatile boolean hasOnlyVanillaMarkers;
 
 	// As long as this is true, the ordering in the fields below is valid.
-	// Becomes false once a modded layer is registered or once a depencency order is added.
+	// Becomes false once a modded provider is registered or once a depencency order is added.
 	private static volatile boolean orderValid;
 
-	// Layers that should go before vanilla layers.
+	// Layers that should go before vanilla providers.
 	private static final List<AttributeLayerProvider> FIRST_PHASES = new ArrayList<>();
 
-	// Layers that should go in between or after vanilla layers.
+	// Layers that should go in between or after vanilla providers.
 	private static final Map<VanillaLayerMarker, List<AttributeLayerProvider>> AFTER_VANILLA_PHASES = new EnumMap<>(VanillaLayerMarker.class);
 
 	static {
@@ -77,46 +77,46 @@ public class AttributeLayerRegistryImpl {
 		addProviderOrdering(AttributeLayerProvider.TIMELINES, AttributeLayerProvider.WEATHER);
 
 		// Validate cache
-		hasOnlyVanillaLayers = true; // Set to true here because registerLayerProvider used above sets it to false
-		orderValid = true; // Vanilla layers are not included in sorted phase lists
+		hasOnlyVanillaMarkers = true; // Set to true here because registerLayerProvider used above sets it to false
+		orderValid = true; // Vanilla provider are not included in sorted phase lists
 	}
 
-	public static void registerLayerProvider(Identifier id, AttributeLayerProvider layer) {
+	public static void registerLayerProvider(Identifier id, AttributeLayerProvider provider) {
 		Objects.requireNonNull(id, "The layer identifier should not be null.");
-		Objects.requireNonNull(layer, "The layer should not be null.");
+		Objects.requireNonNull(provider, "The provider should not be null.");
 
-		if (LAYER_MAP.containsKey(id)) {
+		if (PROVIDER_MAP.containsKey(id)) {
 			throw new IllegalArgumentException("Layer with ID %s was already registered.".formatted(id));
 		}
 
 		synchronized (LOCK) {
-			LAYER_MAP.put(id, layer);
+			PROVIDER_MAP.put(id, provider);
 			orderValid = false;
-			hasOnlyVanillaLayers = false;
+			hasOnlyVanillaMarkers = false;
 		}
 	}
 
-	public static void addProviderOrdering(Identifier firstLayer, Identifier secondLayer) {
-		Objects.requireNonNull(firstLayer, "The first layer identifier should not be null.");
-		Objects.requireNonNull(secondLayer, "The second layer identifier should not be null.");
+	public static void addProviderOrdering(Identifier firstProvider, Identifier secondProvider) {
+		Objects.requireNonNull(firstProvider, "The first provider identifier should not be null.");
+		Objects.requireNonNull(secondProvider, "The second provider identifier should not be null.");
 
-		if (firstLayer.equals(secondLayer)) {
-			throw new IllegalArgumentException("Tried to add a layer that depends on itself.");
+		if (firstProvider.equals(secondProvider)) {
+			throw new IllegalArgumentException("Tried to make a provider depend on itself.");
 		}
 
 		synchronized (LOCK) {
-			if (DEPENDENCIES.add(new Dependency(firstLayer, secondLayer))) {
-				// Adding a dependency only affects order if both IDs are associated with registered layers.
+			if (DEPENDENCIES.add(new Dependency(firstProvider, secondProvider))) {
+				// Adding a dependency only affects order if both IDs are associated with registered providers.
 				// Dependencies with missing registrations are simply ignored during sorting.
 
-				if (LAYER_MAP.containsKey(firstLayer) && LAYER_MAP.containsKey(secondLayer)) {
+				if (PROVIDER_MAP.containsKey(firstProvider) && PROVIDER_MAP.containsKey(secondProvider)) {
 					orderValid = false;
 				}
 			}
 		}
 	}
 
-	private static void addLayers(List<AttributeLayerProvider> providers, EnvironmentAttributeSystem.Builder systemBuilder, Level level) {
+	private static void insertModdedLayers(List<AttributeLayerProvider> providers, EnvironmentAttributeSystem.Builder systemBuilder, Level level) {
 		synchronized (LOCK) {
 			for (AttributeLayerProvider provider : providers) {
 				provider.addAttributeLayers(systemBuilder, level);
@@ -125,42 +125,42 @@ public class AttributeLayerRegistryImpl {
 	}
 
 	public static void addPreEverythingLayers(EnvironmentAttributeSystem.Builder systemBuilder, Level level) {
-		if (!hasOnlyVanillaLayers) {
+		if (!hasOnlyVanillaMarkers) {
 			sortIfNeeded();
-			addLayers(FIRST_PHASES, systemBuilder, level);
+			insertModdedLayers(FIRST_PHASES, systemBuilder, level);
 		}
 	}
 
 	public static void addPostDimensionLayers(EnvironmentAttributeSystem.Builder systemBuilder, Level level) {
-		if (!hasOnlyVanillaLayers) {
+		if (!hasOnlyVanillaMarkers) {
 			sortIfNeeded();
-			addLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.DIMENSION), systemBuilder, level);
+			insertModdedLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.DIMENSION), systemBuilder, level);
 		}
 	}
 
 	public static void addPostBiomesLayers(EnvironmentAttributeSystem.Builder systemBuilder, Level level) {
-		if (!hasOnlyVanillaLayers) {
+		if (!hasOnlyVanillaMarkers) {
 			sortIfNeeded();
-			addLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.BIOMES), systemBuilder, level);
+			insertModdedLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.BIOMES), systemBuilder, level);
 		}
 	}
 
 	public static void addPostTimelinesLayers(EnvironmentAttributeSystem.Builder systemBuilder, Level level) {
-		if (!hasOnlyVanillaLayers) {
+		if (!hasOnlyVanillaMarkers) {
 			sortIfNeeded();
-			addLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.TIMELINES), systemBuilder, level);
+			insertModdedLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.TIMELINES), systemBuilder, level);
 		}
 	}
 
 	public static void addPostWeatherLayers(EnvironmentAttributeSystem.Builder systemBuilder, Level level) {
-		if (!hasOnlyVanillaLayers) {
+		if (!hasOnlyVanillaMarkers) {
 			sortIfNeeded();
-			addLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.WEATHER), systemBuilder, level);
+			insertModdedLayers(AFTER_VANILLA_PHASES.get(VanillaLayerMarker.WEATHER), systemBuilder, level);
 		}
 	}
 
 	private static void sortIfNeeded() {
-		Map<Identifier, Layer> layers;
+		Map<Identifier, LayerProvider> providersById;
 
 		// Collect sorting data from registry
 		synchronized (LOCK) {
@@ -168,25 +168,25 @@ public class AttributeLayerRegistryImpl {
 				return;
 			}
 
-			layers = new HashMap<>();
+			providersById = new HashMap<>();
 
-			for (Map.Entry<Identifier, AttributeLayerProvider> entry : LAYER_MAP.entrySet()) {
-				layers.put(entry.getKey(), new Layer(entry.getKey(), entry.getValue()));
+			for (Map.Entry<Identifier, AttributeLayerProvider> entry : PROVIDER_MAP.entrySet()) {
+				providersById.put(entry.getKey(), new LayerProvider(entry.getKey(), entry.getValue()));
 			}
 
 			for (Dependency dependency : DEPENDENCIES) {
-				Layer firstLayer = layers.get(dependency.firstLayer());
-				Layer secondLayer = layers.get(dependency.secondLayer());
+				LayerProvider firstLayerProvider = providersById.get(dependency.first());
+				LayerProvider secondLayerProvider = providersById.get(dependency.second());
 
-				if (firstLayer != null && secondLayer != null) {
-					Layer.link(firstLayer, secondLayer);
+				if (firstLayerProvider != null && secondLayerProvider != null) {
+					LayerProvider.link(firstLayerProvider, secondLayerProvider);
 				}
 			}
 		}
 
-		// Sort layers
-		List<Layer> sorted = new ArrayList<>(layers.values());
-		NodeSorting.sort(sorted, "environment attribute layers", AttributeLayerRegistryImpl::compareIds);
+		// Sort providers
+		List<LayerProvider> sorted = new ArrayList<>(providersById.values());
+		NodeSorting.sort(sorted, "environment attribute providers", AttributeLayerRegistryImpl::compareIds);
 
 		// Categorize layer providers into vanilla phases
 		synchronized (LOCK) {
@@ -195,8 +195,8 @@ public class AttributeLayerRegistryImpl {
 
 			List<AttributeLayerProvider> phase = FIRST_PHASES;
 
-			for (Layer layer : sorted) {
-				AttributeLayerProvider provider = layer.provider;
+			for (LayerProvider layerProvider : sorted) {
+				AttributeLayerProvider provider = layerProvider.provider;
 
 				if (provider instanceof VanillaLayerMarker marker) {
 					phase = AFTER_VANILLA_PHASES.get(marker);
@@ -207,16 +207,16 @@ public class AttributeLayerRegistryImpl {
 		}
 	}
 
-	// Tiebreaker: put vanilla layers before others, and otherwise sort by lexicographic ordering
-	// This also makes sure that layers that were not tied to vanilla ordering will come last in the ordering
-	private static int compareIds(Layer a, Layer b) {
+	// Tiebreaker: put vanilla providers before others, and otherwise sort by lexicographic ordering
+	// This also makes sure that providers that were not tied to vanilla ordering will come last in the ordering
+	private static int compareIds(LayerProvider a, LayerProvider b) {
 		Identifier idA = a.id;
 		Identifier idB = b.id;
 
 		VanillaLayerMarker markerA = MARKERS.get(idA);
 		VanillaLayerMarker markerB = MARKERS.get(idB);
 
-		// If both are vanilla layers, ensure they remain the same order as defined by Minecraft
+		// If both are vanilla providers, ensure they remain the same order as defined by Minecraft
 		if (markerA != null && markerB != null) {
 			return markerA.compareTo(markerB);
 		}
@@ -234,7 +234,7 @@ public class AttributeLayerRegistryImpl {
 		return idA.compareTo(idB);
 	}
 
-	// Markers for vanilla layers. It's important that these enum constants stay in the order that vanilla layers should appear,
+	// Markers for vanilla providers. It's important that these enum constants stay in the order that vanilla providers should appear,
 	// since this order will be used to fix dependency cycles (and we don't want a dependency cycle to mess up the order).
 	private enum VanillaLayerMarker implements AttributeLayerProvider {
 		DIMENSION(AttributeLayerProvider.DIMENSIONS),
@@ -254,11 +254,11 @@ public class AttributeLayerRegistryImpl {
 		}
 	}
 
-	private static class Layer extends SortableNode<Layer> {
+	private static class LayerProvider extends SortableNode<LayerProvider> {
 		private final Identifier id;
 		private final AttributeLayerProvider provider;
 
-		private Layer(Identifier id, AttributeLayerProvider provider) {
+		private LayerProvider(Identifier id, AttributeLayerProvider provider) {
 			this.id = id;
 			this.provider = provider;
 		}
@@ -269,6 +269,6 @@ public class AttributeLayerRegistryImpl {
 		}
 	}
 
-	private record Dependency(Identifier firstLayer, Identifier secondLayer) {
+	private record Dependency(Identifier first, Identifier second) {
 	}
 }

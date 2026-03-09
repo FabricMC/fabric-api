@@ -31,12 +31,12 @@ public class AttributeLayerRegistry {
 	 * Register a {@link AttributeLayerProvider}. If a layer provider with the given identifier already exists, an exception
 	 * is thrown.
 	 *
-	 * @param id    The identifier of the layer provider. This identifier can be used to set an ordering via
-	 *              {@link #addProviderOrdering}.   .
-	 * @param layer The layer provider to register.
+	 * @param id       The identifier of the layer provider. This identifier can be used to set an ordering via
+	 *                 {@link #addProviderOrdering}.   .
+	 * @param provider The layer provider to register.
 	 */
-	public static void registerLayerProvider(Identifier id, AttributeLayerProvider layer) {
-		AttributeLayerRegistryImpl.registerLayerProvider(id, layer);
+	public static void registerLayerProvider(Identifier id, AttributeLayerProvider provider) {
+		AttributeLayerRegistryImpl.registerLayerProvider(id, provider);
 	}
 
 	/**
@@ -45,10 +45,10 @@ public class AttributeLayerRegistry {
 	 * said order. You may use this to order your layer provider against vanilla layer providers using any of the constants in
 	 * {@link AttributeLayerProvider}. If both layer identifiers are the same, then an exception is thrown.
 	 *
-	 * @param firstLayer  The ID of the layer provider that should activate earlier.
-	 * @param secondLayer The ID of the layer provider that should activate later.
+	 * @param firstProvider  The ID of the layer provider that should activate earlier.
+	 * @param secondProvider The ID of the layer provider that should activate later.
 	 */
-	public static void addProviderOrdering(Identifier firstLayer, Identifier secondLayer) {
-		AttributeLayerRegistryImpl.addProviderOrdering(firstLayer, secondLayer);
+	public static void addProviderOrdering(Identifier firstProvider, Identifier secondProvider) {
+		AttributeLayerRegistryImpl.addProviderOrdering(firstProvider, secondProvider);
 	}
 }
