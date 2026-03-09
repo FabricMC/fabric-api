@@ -18,7 +18,7 @@
   },
   "depends": {
     "fabricloader": ">=0.18.4",
-    "minecraft": ">=1.16-rc.3",
+    "minecraft": ">=1.21.11-rc1",
     "fabric-api-base": "*"
   },
   "description": "Fabric Environment Attribute API.",
