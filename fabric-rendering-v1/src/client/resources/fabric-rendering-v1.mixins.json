@@ -12,6 +12,7 @@
     "DebugOptionsScreenOptionListMixin",
     "DrawAccessor",
     "EntityRenderDispatcherMixin",
+    "EntityRendererMixin",
     "EntityRenderersMixin",
     "GameRendererMixin",
     "GuiAccessor",
