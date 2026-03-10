@@ -20,7 +20,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -65,48 +65,48 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 		);
 	}
 
-	private static void renderBeforeMiscOverlay(GuiGraphics graphics, DeltaTracker deltaTracker) {
+	private static void renderBeforeMiscOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a blue rectangle at the top right of the screen, and it should be blocked by misc overlays such as vignette, spyglass, and powder snow
 		graphics.fill(graphics.guiWidth() - 200, 0, graphics.guiWidth(), 30, CommonColors.BLUE);
-		graphics.drawString(Minecraft.getInstance().font, "1. Blue rectangle blocked by overlays", graphics.guiWidth() - 196, 10, CommonColors.WHITE);
-		graphics.drawString(Minecraft.getInstance().font, "such as powder snow", graphics.guiWidth() - 111, 20, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, "1. Blue rectangle blocked by overlays", graphics.guiWidth() - 196, 10, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, "such as powder snow", graphics.guiWidth() - 111, 20, CommonColors.WHITE);
 	}
 
-	private static void renderAfterMiscOverlay(GuiGraphics graphics, DeltaTracker deltaTracker) {
+	private static void renderAfterMiscOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a red square in the center of the screen underneath the crosshair
 		graphics.fill(graphics.guiWidth() / 2 - 10, graphics.guiHeight() / 2 - 10, graphics.guiWidth() / 2 + 10, graphics.guiHeight() / 2 + 10, CommonColors.RED);
-		graphics.drawCenteredString(Minecraft.getInstance().font, "2. Red square underneath crosshair", graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 10, CommonColors.WHITE);
+		graphics.centeredText(Minecraft.getInstance().font, "2. Red square underneath crosshair", graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 10, CommonColors.WHITE);
 	}
 
-	private static void renderAfterExperienceLevel(GuiGraphics graphics, DeltaTracker deltaTracker) {
+	private static void renderAfterExperienceLevel(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a green rectangle at the bottom of the screen, and it should block the hotbar and status bars
 		graphics.fill(graphics.guiWidth() / 2 - 50, graphics.guiHeight() - 50, graphics.guiWidth() / 2 + 50, graphics.guiHeight() - 10, CommonColors.GREEN);
-		graphics.drawCenteredString(Minecraft.getInstance().font, "3. This green rectangle should block the hotbar and status bars.", graphics.guiWidth() / 2, graphics.guiHeight() - 40, CommonColors.WHITE);
+		graphics.centeredText(Minecraft.getInstance().font, "3. This green rectangle should block the hotbar and status bars.", graphics.guiWidth() / 2, graphics.guiHeight() - 40, CommonColors.WHITE);
 	}
 
-	private static void renderBeforeDemoTimer(GuiGraphics graphics, DeltaTracker deltaTracker) {
+	private static void renderBeforeDemoTimer(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a yellow rectangle at the right of the screen, and it should be above the sleep overlay but below the scoreboard
 		graphics.fill(graphics.guiWidth() - 240, graphics.guiHeight() / 2 - 10, graphics.guiWidth(), graphics.guiHeight() / 2 + 10, CommonColors.YELLOW);
-		graphics.drawString(Minecraft.getInstance().font, "4. This yellow rectangle should be above", graphics.guiWidth() - 236, graphics.guiHeight() / 2 - 10, CommonColors.WHITE);
-		graphics.drawString(Minecraft.getInstance().font, "the sleep overlay but below the scoreboard.", graphics.guiWidth() - 236, graphics.guiHeight() / 2, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, "4. This yellow rectangle should be above", graphics.guiWidth() - 236, graphics.guiHeight() / 2 - 10, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, "the sleep overlay but below the scoreboard.", graphics.guiWidth() - 236, graphics.guiHeight() / 2, CommonColors.WHITE);
 	}
 
-	private static void renderBeforeChat(GuiGraphics graphics, DeltaTracker deltaTracker) {
+	private static void renderBeforeChat(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a blue rectangle at the bottom left of the screen, and it should be blocked by the chat
 		graphics.fill(0, graphics.guiHeight() - 40, 300, graphics.guiHeight() - 50, CommonColors.BLUE);
-		graphics.drawString(Minecraft.getInstance().font, "5. This blue rectangle should be blocked by the chat.", 0, graphics.guiHeight() - 50, CommonColors.WHITE);
+		graphics.text(Minecraft.getInstance().font, "5. This blue rectangle should be blocked by the chat.", 0, graphics.guiHeight() - 50, CommonColors.WHITE);
 	}
 
-	private static void renderAfterSubtitles(GuiGraphics graphics, DeltaTracker deltaTracker) {
+	private static void renderAfterSubtitles(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a yellow rectangle at the top of the screen, and it should block the player list
 		graphics.fill(graphics.guiWidth() / 2 - 150, 0, graphics.guiWidth() / 2 + 150, 15, CommonColors.YELLOW);
-		graphics.drawCenteredString(Minecraft.getInstance().font, "6. This yellow rectangle should block the player list.", graphics.guiWidth() / 2, 0, CommonColors.WHITE);
+		graphics.centeredText(Minecraft.getInstance().font, "6. This yellow rectangle should block the player list.", graphics.guiWidth() / 2, 0, CommonColors.WHITE);
 	}
 
 	@Override

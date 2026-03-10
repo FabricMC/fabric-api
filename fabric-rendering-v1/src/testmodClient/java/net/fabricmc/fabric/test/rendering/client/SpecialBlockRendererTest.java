@@ -32,7 +32,6 @@ import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.api.ClientModInitializer;
 
@@ -57,7 +56,7 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 		}
 
 		@Override
-		public void submit(ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+		public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
 			poseStack.pushPose();
 			poseStack.translate(0.5f, 0.0f, 0.5f);
 			poseStack.translate(0, 1.46875f, 0);

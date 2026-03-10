@@ -20,6 +20,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,7 +35,7 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 	}
 
 	@Override
-	public void renderFluid(BlockPos pos, BlockAndTintGetter level, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public void renderFluid(BlockPos pos, BlockAndTintGetter level, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
 		int light = getLight(level, pos);
 		float u1 = sprites[2].getU(0);
 		float v1 = sprites[2].getV(0);
@@ -47,6 +49,8 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 		float x2 = (pos.getX() & 15) + 0.9f;
 		float y2 = (pos.getY() & 15) + fluidState.getHeight(level, pos);
 		float z2 = (pos.getZ() & 15) + 0.9f;
+
+		VertexConsumer vertexConsumer = output.getBuilder(ChunkSectionLayer.SOLID);
 
 		vertex(vertexConsumer, x1, y1, z1, 1, 1, 1, u1, v1, light);
 		vertex(vertexConsumer, x2, y1, z2, 1, 1, 1, u2, v1, light);

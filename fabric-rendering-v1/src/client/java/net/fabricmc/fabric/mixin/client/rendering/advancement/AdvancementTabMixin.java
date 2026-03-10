@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
@@ -59,7 +59,7 @@ abstract class AdvancementTabMixin {
 	private AdvancementWidget root;
 
 	@WrapOperation(method = "drawIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTabType;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;IIILnet/minecraft/world/item/ItemStack;)V"))
-	private void wrapDrawIcon(@Coerce Object type, GuiGraphics graphics, int xo, int yo, int index, ItemStack icon, Operation<Void> original) {
+	private void wrapDrawIcon(@Coerce Object type, GuiGraphicsExtractor graphics, int xo, int yo, int index, ItemStack icon, Operation<Void> original) {
 		if (AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.isBound()) {
 			final AdvancementRenderContextImpl.IconImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
 			ScopedValue.where(AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT, context)
@@ -70,7 +70,7 @@ abstract class AdvancementTabMixin {
 	}
 
 	@WrapOperation(method = "drawContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;enableScissor(IIII)V"))
-	private void captureWindowSize(GuiGraphics graphics, int x0, int y0, int x1, int y1, Operation<Void> original, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
+	private void captureWindowSize(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, Operation<Void> original, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
 		bounds.set(new ScreenRectangle(0, 0, x1 - x0, y1 - y0));
 		original.call(graphics, x0, y0, x1, y1);
 	}
@@ -83,7 +83,7 @@ abstract class AdvancementTabMixin {
 	}
 
 	@Inject(method = "drawContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementWidget;drawConnectivity(Lnet/minecraft/client/gui/GuiGraphics;IIZ)V", ordinal = 0))
-	private void renderAdvancementBackground(GuiGraphics graphics, int windowLeft, int windowTop, CallbackInfo ci, @Share("backgroundRenderer") LocalRef<AdvancementRenderer.BackgroundRenderer> backgroundRenderer, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
+	private void renderAdvancementBackground(GuiGraphicsExtractor graphics, int windowLeft, int windowTop, CallbackInfo ci, @Share("backgroundRenderer") LocalRef<AdvancementRenderer.BackgroundRenderer> backgroundRenderer, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
 		if (backgroundRenderer.get() != null) {
 			AdvancementProgress progress = ((AdvancementWidgetAccessor) root).fabric_getProgress();
 			backgroundRenderer.get().renderAdvancementBackground(

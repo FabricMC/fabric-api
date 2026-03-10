@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -41,13 +41,13 @@ public final class FluidRendering {
 	 * @param handler the render handler to invoke {@link FluidRenderHandler#renderFluid} on
 	 * @param level the level
 	 * @param pos the pos
-	 * @param vertexConsumer the vertex consumer
+	 * @param output the {@link FluidRenderer.Output} used to get the {@link VertexConsumer} to render to
 	 * @param blockState the block state
 	 * @param fluidState the fluid state
 	 * @param defaultRenderer the renderer to use whenever the handler requests default geometry
 	 */
-	public static void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
-		FluidRenderingImpl.render(handler, level, pos, vertexConsumer, blockState, fluidState, defaultRenderer);
+	public static void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
+		FluidRenderingImpl.render(handler, level, pos, output, blockState, fluidState, defaultRenderer);
 	}
 
 	public interface DefaultRenderer {
@@ -62,12 +62,12 @@ public final class FluidRendering {
 		 * @param handler the handler that {@link FluidRenderHandler#renderFluid} was invoked on
 		 * @param level the level
 		 * @param pos the pos
-		 * @param vertexConsumer the vertex consumer
+		 * @param output the {@link FluidRenderer.Output} used to get the {@link VertexConsumer} to render to
 		 * @param blockState the block state
 		 * @param fluidState the fluid state
 		 */
-		default void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-			FluidRenderingImpl.renderVanillaDefault(handler, level, pos, vertexConsumer, blockState, fluidState);
+		default void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
+			FluidRenderingImpl.renderVanillaDefault(handler, level, pos, output, blockState, fluidState);
 		}
 	}
 }

@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
@@ -83,8 +82,8 @@ public interface FluidRenderHandler {
 	 * @param blockState The block state being rendered.
 	 * @param fluidState The fluid state being rendered.
 	 */
-	default void renderFluid(BlockPos pos, BlockAndTintGetter level, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		FluidRenderingImpl.renderDefault(this, level, pos, vertexConsumer, blockState, fluidState);
+	default void renderFluid(BlockPos pos, BlockAndTintGetter level, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
+		FluidRenderingImpl.renderDefault(this, level, pos, output, blockState, fluidState);
 	}
 
 	/**

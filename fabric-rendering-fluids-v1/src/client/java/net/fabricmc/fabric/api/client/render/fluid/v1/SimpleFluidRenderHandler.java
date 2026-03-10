@@ -113,7 +113,9 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * @see ModelBakery#WATER_OVERLAY
 	 */
 	public static SimpleFluidRenderHandler coloredWater(int tint) {
-		return new SimpleFluidRenderHandler(ModelBakery.WATER_STILL, ModelBakery.WATER_FLOW, ModelBakery.WATER_OVERLAY, tint);
+		// TODO 26.1
+		return null;
+		//return new SimpleFluidRenderHandler(ModelBakery.WATER_STILL, ModelBakery.WATER_FLOW, ModelBakery.WATER_OVERLAY, tint);
 	}
 
 	/**

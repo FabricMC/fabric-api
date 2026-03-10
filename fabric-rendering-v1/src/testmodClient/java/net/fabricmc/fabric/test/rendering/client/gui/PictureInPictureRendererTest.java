@@ -56,12 +56,12 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 		//noinspection deprecation
 		HudRenderCallback.EVENT.register((graphics, deltaTracker) -> {
 			// render it twice to test that PiPs can be added multiple times in the same frame
-			graphics.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRectangle(20, 0, 40, 20)));
-			graphics.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRectangle(40, 0, 60, 20)));
+			graphics.guiRenderState.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRectangle(20, 0, 40, 20)));
+			graphics.guiRenderState.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRectangle(40, 0, 60, 20)));
 
 			// also render some vanilla PiPs to check that they still work and can be rendered multiple times
-			graphics.guiRenderState.submitPicturesInPictureState(createSignState(60, WoodType.BIRCH));
-			graphics.guiRenderState.submitPicturesInPictureState(createSignState(80, WoodType.DARK_OAK));
+			graphics.guiRenderState.addPicturesInPictureState(createSignState(60, WoodType.BIRCH));
+			graphics.guiRenderState.addPicturesInPictureState(createSignState(80, WoodType.DARK_OAK));
 		});
 
 		// Test that InventoryScreen.drawEntity works with the same type of entity more than once
@@ -70,7 +70,7 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 				ScreenEvents.afterRender(screen).register((screen1, graphics, mouseX, mouseY, tickDelta) -> {
 					// no need to modify anything about this player, since they're in different locations they will be
 					// looking towards the mouse at different angles
-					InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
+					InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
 				});
 			}
 		});

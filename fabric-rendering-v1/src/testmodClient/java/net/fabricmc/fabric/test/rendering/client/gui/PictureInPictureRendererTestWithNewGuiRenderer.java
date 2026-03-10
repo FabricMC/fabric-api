@@ -23,7 +23,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.fog.FogRenderer;
@@ -51,9 +51,9 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 			int mouseX = (int) client.mouseHandler.getScaledXPos(client.getWindow());
 			int mouseY = (int) client.mouseHandler.getScaledYPos(client.getWindow());
 
-			GuiGraphics newContext = new GuiGraphics(client, newGuiRenderState, mouseX, mouseY);
+			GuiGraphicsExtractor newContext = new GuiGraphicsExtractor(client, newGuiRenderState, mouseX, mouseY);
 
-			newContext.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 60, 0, 80, 20, new ScreenRectangle(60, 0, 40, 20)));
+			newContext.guiRenderState.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 60, 0, 80, 20, new ScreenRectangle(60, 0, 40, 20)));
 
 			GpuBufferSlice orgProjectionMatrixBuffer = RenderSystem.getProjectionMatrixBuffer();
 			ProjectionType orgProjectionType = RenderSystem.getProjectionType();

@@ -55,9 +55,9 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 							graphics.guiWidth() / 8 + xOffset, graphics.guiHeight() / 8 + yOffset
 			);
 
-			graphics.guiRenderState.submitGuiElement(testStateCreator.apply(0, 0));
+			graphics.guiRenderState.addGuiElement(testStateCreator.apply(0, 0));
 			// this second triangle should not stretch to include the first triangle's vertex
-			graphics.guiRenderState.submitGuiElement(testStateCreator.apply(24, 24));
+			graphics.guiRenderState.addGuiElement(testStateCreator.apply(24, 24));
 
 			graphics.pose().popMatrix();
 		});

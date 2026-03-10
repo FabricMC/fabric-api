@@ -25,7 +25,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
@@ -84,7 +84,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		return transparencyForOverlay.getOrDefault(block, block instanceof HalfTransparentBlock || block instanceof LeavesBlock);
 	}
 
-	public void onFluidRendererReload(SpriteGetter spriteGetter, LiquidBlockRenderer renderer, Map<Fluid, ChunkSectionLayer> fluidChunkSectionLayers, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
+	public void onFluidRendererReload(SpriteGetter spriteGetter, FluidRenderer renderer, Map<Fluid, ChunkSectionLayer> fluidChunkSectionLayers, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
 		FluidRenderingImpl.setVanillaRenderer(renderer);
 
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);

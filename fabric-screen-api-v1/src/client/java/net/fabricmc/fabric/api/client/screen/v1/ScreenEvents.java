@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.screen.v1;
 import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -187,17 +187,17 @@ public final class ScreenEvents {
 
 	@FunctionalInterface
 	public interface BeforeRender {
-		void beforeRender(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
+		void beforeRender(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface
 	public interface AfterBackground {
-		void afterBackground(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
+		void afterBackground(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface
 	public interface AfterRender {
-		void afterRender(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
+		void afterRender(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface

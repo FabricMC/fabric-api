@@ -39,7 +39,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
@@ -55,7 +55,7 @@ import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerInfo;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
-@Mixin(LiquidBlockRenderer.class)
+@Mixin(FluidRenderer.class)
 public class LiquidBlockRendererMixin {
 	@Shadow
 	@Final
@@ -84,7 +84,7 @@ public class LiquidBlockRendererMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onResourceReloadReturn(SpriteGetter sprites, CallbackInfo info) {
-		LiquidBlockRenderer self = (LiquidBlockRenderer) (Object) this;
+		FluidRenderer self = (FluidRenderer) (Object) this;
 
 		this.layerByFluid = new IdentityHashMap<>(this.layerByFluid);
 		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(sprites, self, this.layerByFluid, new TextureAtlasSprite[]{waterStill, waterFlowing, waterOverlay}, new TextureAtlasSprite[]{lavaStill, lavaFlowing}, waterOverlay);
@@ -92,14 +92,14 @@ public class LiquidBlockRendererMixin {
 	}
 
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
-	public void onHeadRender(BlockAndTintGetter view, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
+	public void onHeadRender(BlockAndTintGetter view, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
 		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 
 		if (info.handler == null) {
 			FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getType());
 
 			if (handler != null) {
-				handler.renderFluid(pos, view, vertexConsumer, blockState, fluidState);
+				handler.renderFluid(pos, view, output, blockState, fluidState);
 				ci.cancel();
 			}
 		}

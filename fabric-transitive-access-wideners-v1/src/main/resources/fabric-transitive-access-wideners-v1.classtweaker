@@ -37,9 +37,9 @@ transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Vertex
 transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Polygon
 
 # Rendering custom gui elements
-transitive-accessible   field   net/minecraft/client/gui/GuiGraphics    guiRenderState  Lnet/minecraft/client/renderer/state/gui/GuiRenderState;
-transitive-accessible	field	net/minecraft/client/gui/GuiGraphics	scissorStack	Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
-transitive-accessible	class	net/minecraft/client/gui/GuiGraphics$ScissorStack
+transitive-accessible   field   net/minecraft/client/gui/GuiGraphicsExtractor    guiRenderState  Lnet/minecraft/client/renderer/state/gui/GuiRenderState;
+transitive-accessible	field	net/minecraft/client/gui/GuiGraphicsExtractor	scissorStack	Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
+transitive-accessible	class	net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 
 # Registering custom block entity renderers
 transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEntityRenderers	register	(Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V

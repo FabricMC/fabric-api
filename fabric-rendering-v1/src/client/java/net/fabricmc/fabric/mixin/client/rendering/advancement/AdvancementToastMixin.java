@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.AdvancementToast;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +42,7 @@ abstract class AdvancementToastMixin {
 	private AdvancementHolder advancement;
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIcon(GuiGraphics graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+	private void renderAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
 		AdvancementRenderer.IconRenderer iconRenderer = AdvancementRendererRegistryImpl.getIconRenderer(advancement.id());
 
 		if (iconRenderer == null || iconRenderer.shouldRenderOriginalIcon()) {

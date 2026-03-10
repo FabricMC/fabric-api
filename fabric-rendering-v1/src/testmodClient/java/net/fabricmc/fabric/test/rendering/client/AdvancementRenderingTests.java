@@ -39,11 +39,11 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 		@Override
 		public void renderAdvancementIcon(AdvancementRenderContext.Icon context) {
 			if (context.isHovered()) {
-				context.graphics().drawString(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
+				context.graphics().text(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
 			}
 
 			if (context.isSelected()) {
-				context.graphics().drawString(Minecraft.getInstance().font, "selected", context.x(), context.y() + 9, -1);
+				context.graphics().text(Minecraft.getInstance().font, "selected", context.x(), context.y() + 9, -1);
 			}
 		}
 
@@ -71,7 +71,7 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 			context.graphics().fill(x, y, x + 26, y + 26, context.isObtained() ? CommonColors.GREEN : CommonColors.RED);
 
 			if (context.isHovered()) {
-				context.graphics().drawString(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
+				context.graphics().text(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
 			}
 		}
 

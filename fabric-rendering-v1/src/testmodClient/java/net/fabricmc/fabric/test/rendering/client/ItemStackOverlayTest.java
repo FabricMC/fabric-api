@@ -31,7 +31,7 @@ public class ItemStackOverlayTest implements ClientModInitializer {
 			if (stack.is(ItemTags.SHULKER_BOXES)) {
 				String s = "+";
 				graphics.pose().pushMatrix();
-				graphics.drawString(font,
+				graphics.text(font,
 						s,
 						x + 19 - 2 - font.width(s),
 						y + 6 + 3,

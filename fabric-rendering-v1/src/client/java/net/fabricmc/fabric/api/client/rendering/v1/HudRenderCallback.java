@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.Event;
@@ -40,5 +40,5 @@ public interface HudRenderCallback {
 	 * @param graphics the {@link GuiGraphics} instance
 	 * @param deltaTracker the {@link DeltaTracker} instance
 	 */
-	void onHudRender(GuiGraphics graphics, DeltaTracker deltaTracker);
+	void onHudRender(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker);
 }

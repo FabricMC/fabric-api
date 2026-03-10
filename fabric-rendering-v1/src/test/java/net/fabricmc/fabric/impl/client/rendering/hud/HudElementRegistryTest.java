@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -167,7 +167,7 @@ public class HudElementRegistryTest {
 	}
 
 	private void assertOrder(List<String> expectedLayers) {
-		GuiGraphics graphics = mock(GuiGraphics.class);
+		GuiGraphicsExtractor graphics = mock(GuiGraphicsExtractor.class);
 		DeltaTracker deltaTracker = mock(DeltaTracker.class);
 		Matrix3x2fStack matrixStack = mock(Matrix3x2fStack.class);
 

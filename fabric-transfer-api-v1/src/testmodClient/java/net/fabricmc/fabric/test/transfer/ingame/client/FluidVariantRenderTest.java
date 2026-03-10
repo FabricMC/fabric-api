@@ -71,7 +71,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 
 				for (Component line : tooltip) {
 					renderY += 10;
-					graphics.renderTooltip(font, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
+					graphics.tooltip(font, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
 				}
 			}
 		});

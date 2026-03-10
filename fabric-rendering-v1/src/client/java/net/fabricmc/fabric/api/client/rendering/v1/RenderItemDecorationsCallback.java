@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -46,5 +46,5 @@ public interface RenderItemDecorationsCallback {
 	 * @param x            the x-position of the item stack
 	 * @param y            the y-position of the item stack
 	 */
-	void onRenderItemDecorations(GuiGraphics graphics, Font font, ItemStack stack, int x, int y);
+	void onRenderItemDecorations(GuiGraphicsExtractor graphics, Font font, ItemStack stack, int x, int y);
 }

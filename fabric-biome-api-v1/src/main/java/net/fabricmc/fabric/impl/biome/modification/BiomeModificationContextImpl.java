@@ -39,6 +39,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.FeatureTags;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.attribute.EnvironmentAttribute;
@@ -53,7 +54,6 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
@@ -250,11 +250,12 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		private void rebuildFlowerFeatures() {
 			// Replace the supplier to force a rebuild next time its called.
-			generationSettings.flowerFeatures = Suppliers.memoize(() -> {
-				return generationSettings.features.stream().flatMap(HolderSet::stream).map(Holder::value).flatMap(PlacedFeature::getFeatures).filter((configuredFeature) -> {
-					return configuredFeature.feature() == Feature.FLOWER;
-				}).collect(ImmutableList.toImmutableList());
-			});
+			generationSettings.boneMealFeatures = Suppliers.memoize(() -> generationSettings.features.stream()
+					.flatMap(HolderSet::stream)
+					.flatMap((feature) -> feature.value().getFeatures())
+					.filter((feature) -> feature.is(FeatureTags.CAN_SPAWN_FROM_BONE_MEAL))
+					.map(Holder::value)
+					.collect(ImmutableList.toImmutableList()));
 		}
 
 		@Override

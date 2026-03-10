@@ -23,12 +23,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.RenderItemDecorationsCallback;
 
-@Mixin(GuiGraphics.class)
+@Mixin(GuiGraphicsExtractor.class)
 abstract class GuiGraphicsMixin {
 	@Inject(
 			method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V",
@@ -37,7 +37,7 @@ abstract class GuiGraphicsMixin {
 	public void drawStackOverlay(Font font, ItemStack stack, int x, int y, @Nullable String stackCountText, CallbackInfo callback) {
 		if (!stack.isEmpty()) {
 			RenderItemDecorationsCallback.EVENT.invoker()
-					.onRenderItemDecorations((GuiGraphics) (Object) this, font, stack, x, y);
+					.onRenderItemDecorations((GuiGraphicsExtractor) (Object) this, font, stack, x, y);
 		}
 	}
 }

@@ -30,7 +30,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.ModelManager;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
@@ -50,7 +50,7 @@ public class GameRendererMixin {
 	private Minecraft minecraft;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void guiRendererReady(Minecraft client, ItemInHandRenderer firstPersonHeldItemRenderer, RenderBuffers buffers, BlockRenderDispatcher blockRenderManager, CallbackInfo ci) {
+	private void guiRendererReady(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, RenderBuffers renderBuffers, ModelManager modelManager, CallbackInfo ci) {
 		GuiRendererExtensions guiRenderer = (GuiRendererExtensions) this.guiRenderer;
 		guiRenderer.fabric_onReady(this.submitNodeStorage);
 	}

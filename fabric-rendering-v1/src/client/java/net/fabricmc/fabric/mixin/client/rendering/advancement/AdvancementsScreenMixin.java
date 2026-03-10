@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 
@@ -39,7 +39,7 @@ abstract class AdvancementsScreenMixin {
 	private @Nullable AdvancementTab selectedTab;
 
 	@WrapOperation(method = "renderWindow", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
-	private void wrapDrawIcon(AdvancementTab tab, GuiGraphics graphics, int xo, int yo, Operation<Void> original, @Local(name = "mouseX") int mouseX, @Local(name = "mouseY") int mouseY) {
+	private void wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original, @Local(name = "mouseX") int mouseX, @Local(name = "mouseY") int mouseY) {
 		AdvancementHolder holder = tab.getRootNode().holder();
 
 		if (AdvancementRendererRegistryImpl.getIconRenderer(holder.id()) != null) {

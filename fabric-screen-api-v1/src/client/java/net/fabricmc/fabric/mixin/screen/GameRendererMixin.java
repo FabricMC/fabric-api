@@ -21,7 +21,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 @Mixin(GameRenderer.class)
 abstract class GameRendererMixin {
 	@WrapOperation(method = "extractGui", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphics;IIF)V"))
-	private void onRenderScreen(Screen currentScreen, GuiGraphics graphics, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
+	private void onRenderScreen(Screen currentScreen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
 		ScreenEvents.beforeRender(currentScreen).invoker().beforeRender(currentScreen, graphics, mouseX, mouseY, tickDelta);
 		operation.call(currentScreen, graphics, mouseX, mouseY, tickDelta);
 		ScreenEvents.afterRender(currentScreen).invoker().afterRender(currentScreen, graphics, mouseX, mouseY, tickDelta);

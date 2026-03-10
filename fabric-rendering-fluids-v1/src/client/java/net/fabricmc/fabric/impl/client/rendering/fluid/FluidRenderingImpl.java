@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -30,44 +28,44 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRendering;
 public class FluidRenderingImpl {
 	private static final ThreadLocal<FluidRendering.DefaultRenderer> CURRENT_DEFAULT_RENDERER = new ThreadLocal<>();
 	private static final ThreadLocal<FluidRenderHandlerInfo> CURRENT_INFO = ThreadLocal.withInitial(FluidRenderHandlerInfo::new);
-	private static LiquidBlockRenderer vanillaRenderer;
+	private static FluidRenderer vanillaRenderer;
 
 	// Only invoked manually from FluidRendering#render
-	public static void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, FluidRendering.DefaultRenderer defaultRenderer) {
+	public static void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState, FluidRendering.DefaultRenderer defaultRenderer) {
 		CURRENT_DEFAULT_RENDERER.set(defaultRenderer);
 
 		try {
-			handler.renderFluid(pos, level, vertexConsumer, blockState, fluidState);
+			handler.renderFluid(pos, level, output, blockState, fluidState);
 		} finally {
 			CURRENT_DEFAULT_RENDERER.remove();
 		}
 	}
 
 	// Only invoked when FluidRenderHandler#renderFluid calls super
-	public static void renderDefault(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public static void renderDefault(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
 		FluidRendering.DefaultRenderer renderer = CURRENT_DEFAULT_RENDERER.get();
 
 		if (renderer != null) {
-			renderer.render(handler, level, pos, vertexConsumer, blockState, fluidState);
+			renderer.render(handler, level, pos, output, blockState, fluidState);
 		} else {
-			renderVanillaDefault(handler, level, pos, vertexConsumer, blockState, fluidState);
+			renderVanillaDefault(handler, level, pos, output, blockState, fluidState);
 		}
 	}
 
 	// Invoked when FluidRenderHandler#renderFluid is called directly without using FluidRendering#render (such as
 	// from vanilla LiquidBlockRenderer#render via mixin) or from the default implementation of DefaultRenderer#render
-	public static void renderVanillaDefault(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public static void renderVanillaDefault(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
 		FluidRenderHandlerInfo info = CURRENT_INFO.get();
 		info.setup(handler, level, pos, fluidState);
 
 		try {
-			vanillaRenderer.tesselate(level, pos, vertexConsumer, blockState, fluidState);
+			vanillaRenderer.tesselate(level, pos, output, blockState, fluidState);
 		} finally {
 			info.clear();
 		}
 	}
 
-	public static void setVanillaRenderer(LiquidBlockRenderer vanillaRenderer) {
+	public static void setVanillaRenderer(FluidRenderer vanillaRenderer) {
 		FluidRenderingImpl.vanillaRenderer = vanillaRenderer;
 	}
 
