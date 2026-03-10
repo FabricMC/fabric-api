@@ -30,7 +30,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 public sealed interface AdvancementRenderContext permits AdvancementRenderContext.Icon, AdvancementRenderContext.Frame, AdvancementRenderContext.Background {
 	/**
 	 * The graphics instance used for rendering.
-	 * @return {@link GuiGraphics} instance
+	 * @return {@link GuiGraphicsExtractor} instance
 	 */
 	GuiGraphicsExtractor graphics();
 

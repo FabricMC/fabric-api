@@ -23,7 +23,6 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;

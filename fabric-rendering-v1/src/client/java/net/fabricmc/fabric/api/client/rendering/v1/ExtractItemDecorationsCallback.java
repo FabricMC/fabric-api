@@ -40,7 +40,7 @@ public interface ExtractItemDecorationsCallback {
 			});
 
 	/**
-	 * @param graphics     the {@link GuiGraphics} instance
+	 * @param graphics     the {@link GuiGraphicsExtractor} instance
 	 * @param font         the font
 	 * @param stack        the item stack
 	 * @param x            the x-position of the item stack

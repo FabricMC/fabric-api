@@ -30,10 +30,10 @@ import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererRegistr
 
 /**
  * Allows registering {@linkplain PictureInPictureRenderer picture-in-picture renderers},
- * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.GuiGraphics GuiGraphics}.
+ * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.GuiGraphicsExtractor GuiGraphics}.
  *
  * <p>To render a custom gui element, first implement and register a {@link PictureInPictureRenderer}.
- * When you want to render, add an instance of the corresponding render state to {@link net.minecraft.client.gui.GuiGraphics#guiRenderState GuiGraphics#guiRenderState} using {@link net.minecraft.client.renderer.state.gui.GuiRenderState#submitPicturesInPictureState(PictureInPictureRenderState)}  GuiRenderState#submitPicturesInPictureState(PictureInPictureRenderState)}.
+ * When you want to render, add an instance of the corresponding render state to {@link net.minecraft.client.gui.GuiGraphicsExtractor#guiRenderState GuiGraphicsExtractor#guiRenderState} using {@link net.minecraft.client.renderer.state.gui.GuiRenderState#addPicturesInPictureState(PictureInPictureRenderState)}  GuiRenderState#addPicturesInPictureState(PictureInPictureRenderState)}.
  */
 public final class PictureInPictureRendererRegistry {
 	/**

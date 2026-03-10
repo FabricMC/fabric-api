@@ -47,7 +47,7 @@ public class FluidRenderingImpl {
 
 	// Invoked when FluidRenderHandler#renderFluid is called directly without using FluidRendering#render (such as
 	// from vanilla LiquidBlockRenderer#render via mixin) or from the default implementation of DefaultRenderer#render
-	public static void renderVanillaDefault(FluidRenderer fluidRenderer,  BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
+	public static void renderVanillaDefault(FluidRenderer fluidRenderer, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
 		ScopedValue.where(IS_RENDERING_VANILLA_DEFAULT, null).run(() -> fluidRenderer.tesselate(level, pos, output, blockState, fluidState));
 	}
 }

@@ -44,6 +44,7 @@ public interface FluidVariantRenderHandler {
 	 */
 	default void appendTooltip(FluidVariant fluidVariant, List<Component> tooltip, TooltipFlag tooltipFlag) {
 	}
+
 	/**
 	 * Return the color to use when rendering the sprites of this fluid variant.
 	 * Transparency (alpha) will generally be taken into account and should be specified as well.

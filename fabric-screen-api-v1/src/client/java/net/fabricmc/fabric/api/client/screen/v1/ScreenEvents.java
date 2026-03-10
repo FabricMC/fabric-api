@@ -91,7 +91,7 @@ public final class ScreenEvents {
 	 * }</pre>
 	 *
 	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.components.Renderable drawn}.
-	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.components.Renderable#render(GuiGraphics, int, int, float) render} methods in the corresponding screen events.
+	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.components.Renderable#extractRenderState(GuiGraphicsExtractor, int, int, float)} extractRenderState} methods in the corresponding screen events.
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT

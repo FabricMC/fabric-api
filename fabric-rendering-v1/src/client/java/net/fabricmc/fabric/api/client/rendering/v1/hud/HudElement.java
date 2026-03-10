@@ -29,7 +29,7 @@ public interface HudElement {
 	/**
 	 * Renders the HUD element.
 	 *
-	 * @param graphics the {@link GuiGraphics} used for rendering
+	 * @param graphics the {@link GuiGraphicsExtractor} used for rendering
 	 * @param deltaTracker the {@link DeltaTracker} providing timing information
 	 */
 	void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker);

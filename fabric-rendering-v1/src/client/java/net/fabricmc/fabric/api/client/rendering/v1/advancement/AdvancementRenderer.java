@@ -71,7 +71,7 @@ public final class AdvancementRenderer {
 	public interface IconRenderer {
 		/**
 		 * @param context the context of the icon rendering, which has
-		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
+		 *                {@link net.minecraft.client.gui.GuiGraphicsExtractor gui graphics} for rendering,
 		 *                the {@link net.minecraft.advancements.Advancement advancement} instance, and the icon's coordinates.
 		 */
 		void extractAdvancementIcon(AdvancementRenderContext.Icon context);
@@ -97,7 +97,7 @@ public final class AdvancementRenderer {
 	public interface FrameRenderer {
 		/**
 		 * @param context the context of the frame rendering, which has
-		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
+		 *                {@link net.minecraft.client.gui.GuiGraphicsExtractor gui graphics} for rendering,
 		 *                the {@link net.minecraft.advancements.Advancement advancement} instance, and the frame's coordinates.
 		 */
 		void extractAdvancementFrame(AdvancementRenderContext.Frame context);
@@ -127,7 +127,7 @@ public final class AdvancementRenderer {
 	public interface BackgroundRenderer {
 		/**
 		 * @param context the context of the frame rendering, which has
-		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
+		 *                {@link net.minecraft.client.gui.GuiGraphicsExtractor gui graphics} for rendering,
 		 *                the {@link net.minecraft.advancements.Advancement advancement} instance,
 		 *                and the background's {@link net.minecraft.client.gui.navigation.ScreenRectangle bounds}.
 		 */

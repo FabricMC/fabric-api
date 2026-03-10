@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
 @Mixin(FluidRenderer.class)
-public class LiquidBlockRendererMixin {
+public class FluidRendererMixin {
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
 	public void onHeadRender(BlockAndTintGetter view, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
 		if (FluidRenderingImpl.IS_RENDERING_VANILLA_DEFAULT.isBound()) {
@@ -57,7 +57,7 @@ public class LiquidBlockRendererMixin {
 	@Definition(id = "HalfTransparentBlock", type = HalfTransparentBlock.class)
 	@Expression("? instanceof HalfTransparentBlock")
 	@ModifyExpressionValue(method = "tesselate", at = @At("MIXINEXTRAS:EXPRESSION"))
-	private boolean modifyNonOverlayCheck(boolean original, @Local(name="relativeBlock") Block block) {
+	private boolean modifyNonOverlayCheck(boolean original, @Local(name = "relativeBlock") Block block) {
 		return FluidRenderingRegistry.isBlockTransparent(block);
 	}
 }

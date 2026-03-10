@@ -38,7 +38,8 @@ public final class FluidRenderingRegistry {
 
 	/**
 	 * Get a {@link FluidRenderHandler} for a given Fluid.
-	 * <p> Returns null if no handler is registered for the fluid.
+	 *
+	 * <p>Returns null if no handler is registered for the fluid.
 	 *
 	 * @param fluid The Fluid.
 	 * @return The FluidRenderHandler.
