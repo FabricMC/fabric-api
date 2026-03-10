@@ -18,14 +18,12 @@ package net.fabricmc.fabric.api.transfer.v1.client.fluid;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -105,37 +103,16 @@ public final class FluidVariantRendering {
 	}
 
 	/**
-	 * Return the still and the flowing sprite that should be used to render the passed fluid variant, or null if they are not available.
-	 * The sprites should be rendered using the color returned by {@link #getColor}.
-	 *
-	 * @see FluidVariantRenderHandler#getSprites
-	 */
-	@Nullable
-	public static TextureAtlasSprite[] getSprites(FluidVariant fluidVariant) {
-		return getHandlerOrDefault(fluidVariant.getFluid()).getSprites(fluidVariant);
-	}
-
-	/**
-	 * Return the still sprite that should be used to render the passed fluid variant, or null if it's not available.
-	 * The sprite should be rendered using the color returned by {@link #getColor}.
-	 */
-	@Nullable
-	public static TextureAtlasSprite getSprite(FluidVariant fluidVariant) {
-		TextureAtlasSprite[] sprites = getSprites(fluidVariant);
-		return sprites != null ? Objects.requireNonNull(sprites[0]) : null;
-	}
-
-	/**
-	 * Return the position-independent color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid variant.
+	 * Return the position-independent color that should be used to render the sprite of the passed fluid variant.
 	 */
 	public static int getColor(FluidVariant fluidVariant) {
 		return getColor(fluidVariant, null, null);
 	}
 
 	/**
-	 * Return the color that should be used when rendering {@linkplain #getSprite the sprite} of the passed fluid variant.
+	 * Return the color that should be used when rendering the sprite of the passed fluid variant.
 	 *
-	 * <p>If the level and the position parameters are null, a position-independent color is returned.
+	 * <p>If the level or the position parameters are null, a position-independent color is returned.
 	 * If the level and position parameters are not null, the color may depend on the position.
 	 * For example, if level and position are passed, water will use them to return a biome-dependent color.
 	 */
