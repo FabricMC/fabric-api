@@ -38,7 +38,7 @@ abstract class AdvancementsScreenMixin {
 	@Shadow
 	private @Nullable AdvancementTab selectedTab;
 
-	@WrapOperation(method = "renderWindow", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;II)V"))
+	@WrapOperation(method = "extractWindow", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;extractIcon(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V"))
 	private void wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original, @Local(name = "mouseX") int mouseX, @Local(name = "mouseY") int mouseY) {
 		AdvancementHolder holder = tab.getRootNode().holder();
 

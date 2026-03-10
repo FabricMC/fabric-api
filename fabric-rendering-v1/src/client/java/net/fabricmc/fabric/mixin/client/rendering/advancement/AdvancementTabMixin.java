@@ -58,7 +58,7 @@ abstract class AdvancementTabMixin {
 	@Final
 	private AdvancementWidget root;
 
-	@WrapOperation(method = "drawIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTabType;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;IIILnet/minecraft/world/item/ItemStack;)V"))
+	@WrapOperation(method = "extractIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTabType;extractIcon(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIILnet/minecraft/world/item/ItemStack;)V"))
 	private void wrapDrawIcon(@Coerce Object type, GuiGraphicsExtractor graphics, int xo, int yo, int index, ItemStack icon, Operation<Void> original) {
 		if (AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.isBound()) {
 			final AdvancementRenderContextImpl.IconImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
@@ -69,20 +69,20 @@ abstract class AdvancementTabMixin {
 		}
 	}
 
-	@WrapOperation(method = "drawContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;enableScissor(IIII)V"))
+	@WrapOperation(method = "extractContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;enableScissor(IIII)V"))
 	private void captureWindowSize(GuiGraphicsExtractor graphics, int x0, int y0, int x1, int y1, Operation<Void> original, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
 		bounds.set(new ScreenRectangle(0, 0, x1 - x0, y1 - y0));
 		original.call(graphics, x0, y0, x1, y1);
 	}
 
-	@ModifyExpressionValue(method = "drawContents", at = @At(value = "CONSTANT", args = "intValue=-1", ordinal = 0))
+	@ModifyExpressionValue(method = "extractContents", at = @At(value = "CONSTANT", args = "intValue=-1", ordinal = 0))
 	private int preBackgroundRender(int original, @Share("backgroundRenderer") LocalRef<AdvancementRenderer.BackgroundRenderer> backgroundRenderer) {
 		AdvancementHolder holder = rootNode.holder();
 		backgroundRenderer.set(AdvancementRendererRegistryImpl.getBackgroundRenderer(holder.id()));
 		return backgroundRenderer.get() == null || backgroundRenderer.get().shouldRenderOriginalBackground() ? original : Integer.MAX_VALUE;
 	}
 
-	@Inject(method = "drawContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementWidget;drawConnectivity(Lnet/minecraft/client/gui/GuiGraphics;IIZ)V", ordinal = 0))
+	@Inject(method = "extractContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementWidget;extractConnectivity(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIZ)V", ordinal = 0))
 	private void renderAdvancementBackground(GuiGraphicsExtractor graphics, int windowLeft, int windowTop, CallbackInfo ci, @Share("backgroundRenderer") LocalRef<AdvancementRenderer.BackgroundRenderer> backgroundRenderer, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
 		if (backgroundRenderer.get() != null) {
 			AdvancementProgress progress = ((AdvancementWidgetAccessor) root).fabric_getProgress();

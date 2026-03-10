@@ -104,7 +104,7 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 	}
 
 	@Inject(method = "extractTabButton", at = @At("HEAD"), cancellable = true)
-	private void renderTabIcon(GuiGraphicsExtractor guiGraphics, int i, int j, CreativeModeTab creativeModeTab, CallbackInfo info) {
+	private void extractTabButton(GuiGraphicsExtractor guiGraphics, int i, int j, CreativeModeTab creativeModeTab, CallbackInfo info) {
 		if (!isTabVisible(creativeModeTab)) {
 			info.cancel();
 		}

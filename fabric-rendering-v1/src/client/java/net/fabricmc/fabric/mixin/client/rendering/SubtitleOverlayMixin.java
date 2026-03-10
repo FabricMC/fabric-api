@@ -29,8 +29,8 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
 @Mixin(SubtitleOverlay.class)
 public class SubtitleOverlayMixin {
-	@WrapMethod(method = "render")
-	private void wrapSubtitleRender(GuiGraphicsExtractor context, Operation<Void> original) {
+	@WrapMethod(method = "extractRenderState")
+	private void wrapExtractRenderState(GuiGraphicsExtractor context, Operation<Void> original) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(
 				context,
 				Minecraft.getInstance().getDeltaTracker(),

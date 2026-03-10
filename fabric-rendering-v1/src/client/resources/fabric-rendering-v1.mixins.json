@@ -15,7 +15,7 @@
     "EntityRenderersMixin",
     "GameRendererMixin",
     "GuiAccessor",
-    "GuiGraphicsMixin",
+    "GuiGraphicsExtractorMixin",
     "GuiMixin",
     "GuiRendererMixin",
     "HumanoidArmorLayerMixin",
