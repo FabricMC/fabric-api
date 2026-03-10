@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
@@ -38,19 +37,17 @@ public final class FluidRenderingRegistryImpl {
 	private static final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
 	private static final Map<Fluid, FluidModel.Unbaked> models = new IdentityHashMap<>();
 	private static final Object2BooleanMap<Block> transparencyForOverlay = new Object2BooleanOpenHashMap<>();
-
-	{
-		handlers.put(Fluids.WATER, VanillaRenderHandler.INSTANCE);
-		handlers.put(Fluids.FLOWING_WATER, VanillaRenderHandler.INSTANCE);
-		handlers.put(Fluids.LAVA, VanillaRenderHandler.INSTANCE);
-		handlers.put(Fluids.FLOWING_LAVA, VanillaRenderHandler.INSTANCE);
-	}
+	private static final FluidRenderHandler DEFAULT_RENDER_HANDLER = new FluidRenderHandler() { };
 
 	private FluidRenderingRegistryImpl() {
 	}
 
-	@Nullable
 	public static FluidRenderHandler get(Fluid fluid) {
+		return handlers.getOrDefault(fluid, DEFAULT_RENDER_HANDLER);
+	}
+
+	@Nullable
+	public static FluidRenderHandler getOverride(Fluid fluid) {
 		return handlers.get(fluid);
 	}
 
@@ -80,9 +77,5 @@ public final class FluidRenderingRegistryImpl {
 
 	public static Map<Fluid, FluidModel.Unbaked> getUnbakedModels() {
 		return Collections.unmodifiableMap(models);
-	}
-
-	private static class VanillaRenderHandler implements FluidRenderHandler {
-		public static final VanillaRenderHandler INSTANCE = new VanillaRenderHandler();
 	}
 }

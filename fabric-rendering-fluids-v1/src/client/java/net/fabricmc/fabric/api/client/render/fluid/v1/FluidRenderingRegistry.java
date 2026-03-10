@@ -44,9 +44,20 @@ public final class FluidRenderingRegistry {
 	 * @param fluid The Fluid.
 	 * @return The FluidRenderHandler.
 	 */
-	@Nullable
 	public static FluidRenderHandler get(Fluid fluid) {
 		return FluidRenderingRegistryImpl.get(fluid);
+	}
+
+	/**
+	 * Get a {@link FluidRenderHandler} for a given Fluid, if it is not the
+	 * default implementation. Supports vanilla and Fabric fluids.
+	 *
+	 * @param fluid The Fluid.
+	 * @return The FluidRenderHandler.
+	 */
+	@Nullable
+	public static FluidRenderHandler getOverride(Fluid fluid) {
+		return FluidRenderingRegistryImpl.getOverride(fluid);
 	}
 
 	/**
