@@ -58,17 +58,17 @@ abstract class AdvancementWidgetMixin {
 	private @Nullable AdvancementProgress progress;
 
 	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
-		renderAdvancementIcon(graphics, x, y, false, () -> original.call(graphics, icon, x, y));
+	private void extractAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+		extractAdvancementIcon(graphics, x, y, false, () -> original.call(graphics, icon, x, y));
 	}
 
 	@WrapOperation(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIconHover(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
-		renderAdvancementIcon(graphics, x, y, true, () -> original.call(graphics, icon, x, y));
+	private void extractAdvancementIconHover(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+		extractAdvancementIcon(graphics, x, y, true, () -> original.call(graphics, icon, x, y));
 	}
 
 	@Unique
-	private void renderAdvancementIcon(GuiGraphicsExtractor graphics, int x, int y, boolean hovered, Runnable original) {
+	private void extractAdvancementIcon(GuiGraphicsExtractor graphics, int x, int y, boolean hovered, Runnable original) {
 		AdvancementRenderer.IconRenderer iconRenderer = AdvancementRendererRegistryImpl.getIconRenderer(advancementNode.holder().id());
 
 		if (iconRenderer == null || iconRenderer.shouldRenderOriginalIcon()) {
@@ -76,22 +76,22 @@ abstract class AdvancementWidgetMixin {
 		}
 
 		if (iconRenderer != null) {
-			iconRenderer.renderAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancementNode.holder(), progress, x, y, hovered, false));
+			iconRenderer.extractAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancementNode.holder(), progress, x, y, hovered, false));
 		}
 	}
 
 	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
-	private void renderAdvancementFrame(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
-		renderAdvancementFrame(graphics, x, y, false, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
+	private void extractAdvancementFrame(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
+		extractAdvancementFrame(graphics, x, y, false, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
 	}
 
 	@WrapOperation(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 3))
 	private void renderAdvancementFrameHover(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
-		renderAdvancementFrame(graphics, x, y, true, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
+		extractAdvancementFrame(graphics, x, y, true, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
 	}
 
 	@Unique
-	private void renderAdvancementFrame(GuiGraphicsExtractor graphics, int x, int y, boolean hovered, Runnable original) {
+	private void extractAdvancementFrame(GuiGraphicsExtractor graphics, int x, int y, boolean hovered, Runnable original) {
 		AdvancementRenderer.FrameRenderer frameRenderer = AdvancementRendererRegistryImpl.getFrameRenderer(advancementNode.holder().id());
 
 		if (frameRenderer == null || frameRenderer.shouldRenderOriginalFrame()) {
@@ -99,12 +99,12 @@ abstract class AdvancementWidgetMixin {
 		}
 
 		if (frameRenderer != null) {
-			frameRenderer.renderAdvancementFrame(new AdvancementRenderContextImpl.FrameImpl(graphics, advancementNode.holder(), progress, x, y, hovered));
+			frameRenderer.extractAdvancementFrame(new AdvancementRenderContextImpl.FrameImpl(graphics, advancementNode.holder(), progress, x, y, hovered));
 		}
 	}
 
 	@Inject(method = "extractHover", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
-	private void captureRenderTooltip(GuiGraphicsExtractor graphics, int xo, int yo, float fade, int screenxo, int screenyo, CallbackInfo ci, @Share("renderTooltip")LocalBooleanRef renderTooltip) {
+	private void captureExtractTooltip(GuiGraphicsExtractor graphics, int xo, int yo, float fade, int screenxo, int screenyo, CallbackInfo ci, @Share("renderTooltip")LocalBooleanRef renderTooltip) {
 		AdvancementRenderer.FrameRenderer frameRenderer = AdvancementRendererRegistryImpl.getFrameRenderer(advancementNode.holder().id());
 		renderTooltip.set(frameRenderer == null || frameRenderer.shouldRenderTooltip());
 	}

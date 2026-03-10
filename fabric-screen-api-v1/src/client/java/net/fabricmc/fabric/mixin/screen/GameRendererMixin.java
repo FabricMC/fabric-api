@@ -30,9 +30,9 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 @Mixin(GameRenderer.class)
 abstract class GameRendererMixin {
 	@WrapOperation(method = "extractGui", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V"))
-	private void onRenderScreen(Screen currentScreen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
-		ScreenEvents.beforeRender(currentScreen).invoker().beforeRender(currentScreen, graphics, mouseX, mouseY, tickDelta);
+	private void onExtractGui(Screen currentScreen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
+		ScreenEvents.beforeExtract(currentScreen).invoker().beforeExtract(currentScreen, graphics, mouseX, mouseY, tickDelta);
 		operation.call(currentScreen, graphics, mouseX, mouseY, tickDelta);
-		ScreenEvents.afterRender(currentScreen).invoker().afterRender(currentScreen, graphics, mouseX, mouseY, tickDelta);
+		ScreenEvents.afterExtract(currentScreen).invoker().afterExtract(currentScreen, graphics, mouseX, mouseY, tickDelta);
 	}
 }

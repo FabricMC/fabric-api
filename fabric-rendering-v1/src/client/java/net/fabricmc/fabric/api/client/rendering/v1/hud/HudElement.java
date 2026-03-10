@@ -32,5 +32,5 @@ public interface HudElement {
 	 * @param graphics the {@link GuiGraphics} used for rendering
 	 * @param deltaTracker the {@link DeltaTracker} providing timing information
 	 */
-	void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker);
+	void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker);
 }

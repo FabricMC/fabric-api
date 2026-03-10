@@ -74,7 +74,7 @@ public final class AdvancementRenderer {
 		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
 		 *                the {@link net.minecraft.advancements.Advancement advancement} instance, and the icon's coordinates.
 		 */
-		void renderAdvancementIcon(AdvancementRenderContext.Icon context);
+		void extractAdvancementIcon(AdvancementRenderContext.Icon context);
 
 		/**
 		 * @return {@code true} if the original advancement icon should render alongside this icon renderer.
@@ -100,7 +100,7 @@ public final class AdvancementRenderer {
 		 *                {@link net.minecraft.client.gui.GuiGraphics gui graphics} for rendering,
 		 *                the {@link net.minecraft.advancements.Advancement advancement} instance, and the frame's coordinates.
 		 */
-		void renderAdvancementFrame(AdvancementRenderContext.Frame context);
+		void extractAdvancementFrame(AdvancementRenderContext.Frame context);
 
 		/**
 		 * @return {@code true} if the original advancement frame should render alongside this frame renderer.
@@ -131,7 +131,7 @@ public final class AdvancementRenderer {
 		 *                the {@link net.minecraft.advancements.Advancement advancement} instance,
 		 *                and the background's {@link net.minecraft.client.gui.navigation.ScreenRectangle bounds}.
 		 */
-		void renderAdvancementBackground(AdvancementRenderContext.Background context);
+		void extractAdvancementBackground(AdvancementRenderContext.Background context);
 
 		/**
 		 * @return {@code true} if the original advancement background should render alongside this background renderer.

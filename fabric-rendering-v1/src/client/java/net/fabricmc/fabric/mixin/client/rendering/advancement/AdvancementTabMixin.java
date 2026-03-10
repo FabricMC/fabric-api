@@ -83,10 +83,10 @@ abstract class AdvancementTabMixin {
 	}
 
 	@Inject(method = "extractContents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementWidget;extractConnectivity(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIZ)V", ordinal = 0))
-	private void renderAdvancementBackground(GuiGraphicsExtractor graphics, int windowLeft, int windowTop, CallbackInfo ci, @Share("backgroundRenderer") LocalRef<AdvancementRenderer.BackgroundRenderer> backgroundRenderer, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
+	private void extractAdvancementBackground(GuiGraphicsExtractor graphics, int windowLeft, int windowTop, CallbackInfo ci, @Share("backgroundRenderer") LocalRef<AdvancementRenderer.BackgroundRenderer> backgroundRenderer, @Share("bounds") LocalRef<ScreenRectangle> bounds) {
 		if (backgroundRenderer.get() != null) {
 			AdvancementProgress progress = ((AdvancementWidgetAccessor) root).fabric_getProgress();
-			backgroundRenderer.get().renderAdvancementBackground(
+			backgroundRenderer.get().extractAdvancementBackground(
 					new AdvancementRenderContextImpl.BackgroundImpl(graphics, rootNode.holder(), progress, bounds.get(), scrollX, scrollY)
 			);
 		}

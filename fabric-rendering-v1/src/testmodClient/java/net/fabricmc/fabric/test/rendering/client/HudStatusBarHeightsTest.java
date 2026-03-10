@@ -75,7 +75,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.HEALTH_BAR);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderHealth(graphics, player, height, 0, 10, width);
+						extractHealth(graphics, player, height, 0, 10, width);
 					}
 				});
 		HudStatusBarHeightRegistry.addLeft(VanillaHudElements.HEALTH_BAR, (Player player) -> {
@@ -96,7 +96,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.ARMOR_BAR);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderArmor(graphics, player, height, 0, 10, width);
+						extractArmor(graphics, player, height, 0, 10, width);
 					}
 				});
 
@@ -122,7 +122,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						int width = graphics.guiWidth() / 2 - 91;
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderToughness(graphics, player, height, 0, 10, width);
+						extractToughness(graphics, player, height, 0, 10, width);
 					}
 				});
 		HudStatusBarHeightRegistry.addLeft(id, (Player player) -> {
@@ -147,7 +147,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						if (((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 							int width = graphics.guiWidth() / 2 + 91;
 							int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
-							renderStamina(graphics,
+							extractStamina(graphics,
 									((GuiAccessor) hud).fabric$callGetCameraPlayer(),
 									height,
 									width);
@@ -171,9 +171,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
+	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
-	private static void renderHealth(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
+	private static void extractHealth(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = Mth.floor(player.getHealth());
 
 		if (l > 0) {
@@ -195,9 +195,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
+	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
-	private static void renderArmor(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
+	private static void extractArmor(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = player.getArmorValue();
 
 		if (l > 0) {
@@ -218,9 +218,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
+	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
-	private static void renderToughness(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
+	private static void extractToughness(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int i = Mth.floor(player.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
 
 		if (i > 0) {
@@ -245,9 +245,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderFood(GuiGraphics, Player, int, int)
+	 * @see Gui#extractFood(GuiGraphicsExtractor, Player, int, int)
 	 */
-	private static void renderStamina(GuiGraphicsExtractor graphics, Player player, int y, int x) {
+	private static void extractStamina(GuiGraphicsExtractor graphics, Player player, int y, int x) {
 		int k = player.getFoodData().getFoodLevel();
 
 		for (int l = 0; l < 10; l++) {

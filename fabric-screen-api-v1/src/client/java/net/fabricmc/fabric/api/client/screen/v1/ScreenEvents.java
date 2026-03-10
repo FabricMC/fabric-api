@@ -116,18 +116,18 @@ public final class ScreenEvents {
 	}
 
 	/**
-	 * An event that is called before a screen is rendered.
+	 * An event that is called before a screen is extracted.
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeRender> beforeRender(Screen screen) {
+	public static Event<BeforeExtract> beforeExtract(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeRenderEvent();
 	}
 
 	/**
-	 * An event that is called after a screen's background is rendered.
+	 * An event that is called after a screen's background is extracted.
 	 *
 	 * @return the event
 	 */
@@ -138,11 +138,11 @@ public final class ScreenEvents {
 	}
 
 	/**
-	 * An event that is called after a screen is rendered.
+	 * An event that is called after a screen is extracted.
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterRender> afterRender(Screen screen) {
+	public static Event<AfterExtract> afterExtract(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterRenderEvent();
@@ -186,8 +186,8 @@ public final class ScreenEvents {
 	}
 
 	@FunctionalInterface
-	public interface BeforeRender {
-		void beforeRender(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
+	public interface BeforeExtract {
+		void beforeExtract(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface
@@ -196,8 +196,8 @@ public final class ScreenEvents {
 	}
 
 	@FunctionalInterface
-	public interface AfterRender {
-		void afterRender(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
+	public interface AfterExtract {
+		void afterExtract(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface

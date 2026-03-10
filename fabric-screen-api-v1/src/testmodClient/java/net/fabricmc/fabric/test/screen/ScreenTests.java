@@ -91,7 +91,7 @@ public final class ScreenTests implements ClientModInitializer {
 		} else if (screen instanceof GrindstoneScreen) {
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn BEHIND both the container screen interface and the darkened background, text, items, the carried item, tooltips, etc.
-			ScreenEvents.beforeRender(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.beforeExtract(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 34, 20, 20);
 			});
@@ -105,7 +105,7 @@ public final class ScreenTests implements ClientModInitializer {
 
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn ABOVE everything, including the background, container screen interface, text, items, the carried item, tooltips, etc.
-			ScreenEvents.afterRender(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.afterExtract(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) + 14, 20, 20);
 			});

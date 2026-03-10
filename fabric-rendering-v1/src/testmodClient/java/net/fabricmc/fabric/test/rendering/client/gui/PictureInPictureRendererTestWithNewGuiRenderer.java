@@ -28,10 +28,11 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.fog.FogRenderer;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
 /**
  * This test mod renders a second banner in the top left corner next to the one of
@@ -42,9 +43,7 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 	public void onInitializeClient() {
 		// BannerGuiElementRenderer is already registered by PictureInPictureRendererTest
 
-		// TODO: Migrate to new HUD API once available
-		//noinspection deprecation
-		HudRenderCallback.EVENT.register((graphics, deltaTracker) -> {
+		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip_new"), (graphics, deltaTracker) -> {
 			Minecraft client = Minecraft.getInstance();
 			GuiRenderState newGuiRenderState = new GuiRenderState();
 

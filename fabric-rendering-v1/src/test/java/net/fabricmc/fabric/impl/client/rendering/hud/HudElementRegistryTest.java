@@ -176,7 +176,7 @@ public class HudElementRegistryTest {
 		drawnLayers.clear();
 
 		for (Identifier id : HudElementRegistryImpl.VANILLA_ELEMENT_IDS) {
-			HudElementRegistryImpl.ROOT_ELEMENTS.get(id).render(
+			HudElementRegistryImpl.ROOT_ELEMENTS.get(id).extractRenderState(
 					graphics,
 					deltaTracker, (_, _) -> { });
 		}

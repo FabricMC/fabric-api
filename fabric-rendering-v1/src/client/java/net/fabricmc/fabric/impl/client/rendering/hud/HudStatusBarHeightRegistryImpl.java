@@ -376,7 +376,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 					graphics.pose().translate(0.0F, height);
 				}
 
-				layer.render(graphics, deltaTracker);
+				layer.extractRenderState(graphics, deltaTracker);
 
 				if (height != 0) {
 					graphics.pose().popMatrix();

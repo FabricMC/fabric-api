@@ -210,10 +210,10 @@ public class HudElementRegistryImpl {
 			layers().add(HudLayer.ofVanilla(id));
 		}
 
-		public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, HudElement vanillaElement) {
+		public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, HudElement vanillaElement) {
 			for (HudLayer layer : layers) {
 				if (!layer.isRemoved()) {
-					layer.element(vanillaElement).render(graphics, deltaTracker);
+					layer.element(vanillaElement).extractRenderState(graphics, deltaTracker);
 				}
 			}
 		}

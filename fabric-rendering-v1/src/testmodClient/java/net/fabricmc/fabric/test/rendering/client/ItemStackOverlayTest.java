@@ -21,12 +21,12 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ARGB;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderItemDecorationsCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.ExtractItemDecorationsCallback;
 
 public class ItemStackOverlayTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		RenderItemDecorationsCallback.EVENT.register((graphics, font, stack, x, y) -> {
+		ExtractItemDecorationsCallback.EVENT.register((graphics, font, stack, x, y) -> {
 			// renders a plus sign on all shulker boxes where the stack count would usually be
 			if (stack.is(ItemTags.SHULKER_BOXES)) {
 				String s = "+";

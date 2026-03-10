@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRenderer
 @Mixin(targets = "net/minecraft/client/gui/screens/advancements/AdvancementTabType")
 abstract class AdvancementTabTypeMixin {
 	@WrapOperation(method = "extractIcon", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+	private void extractAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
 		if (AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.isBound()) {
 			final AdvancementRenderContextImpl.IconImpl context = AdvancementRendererRegistryImpl.TAB_ICON_RENDER_CONTEXT.get();
 			context.setPos(x, y);
@@ -41,7 +41,7 @@ abstract class AdvancementTabTypeMixin {
 				original.call(graphics, icon, x, y);
 			}
 
-			iconRenderer.renderAdvancementIcon(context);
+			iconRenderer.extractAdvancementIcon(context);
 		} else {
 			original.call(graphics, icon, x, y);
 		}

@@ -42,7 +42,7 @@ abstract class AdvancementToastMixin {
 	private AdvancementHolder advancement;
 
 	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+	private void extractAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
 		AdvancementRenderer.IconRenderer iconRenderer = AdvancementRendererRegistryImpl.getIconRenderer(advancement.id());
 
 		if (iconRenderer == null || iconRenderer.shouldRenderOriginalIcon()) {
@@ -52,7 +52,7 @@ abstract class AdvancementToastMixin {
 		if (iconRenderer != null) {
 			ClientAdvancements advancements = Minecraft.getInstance().getConnection().getAdvancements();
 			AdvancementProgress progress = ((ClientAdvancementsAccessor) advancements).fabric_getProgress().get(advancement);
-			iconRenderer.renderAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancement, progress, x, y, false, false));
+			iconRenderer.extractAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancement, progress, x, y, false, false));
 		}
 	}
 }
