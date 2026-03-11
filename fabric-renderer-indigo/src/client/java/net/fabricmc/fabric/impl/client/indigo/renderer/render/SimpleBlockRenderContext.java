@@ -20,16 +20,19 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
@@ -39,7 +42,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 public class SimpleBlockRenderContext extends AbstractRenderContext {
 	public static final ThreadLocal<SimpleBlockRenderContext> POOL = ThreadLocal.withInitial(SimpleBlockRenderContext::new);
 
-	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
+	private final RandomSource random = RandomSource.createThreadLocalInstance();
 
 	private BlockMultiBufferSource bufferSource;
 	@Nullable
@@ -105,7 +108,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 		this.bufferSource = bufferSource;
 		this.layerFilter = layerFilter;
-		forceOpaque = ItemBlockRenderTypes.forceOpaque(state);
+		forceOpaque = ModelBlockRenderer.forceOpaque(Minecraft.getInstance().gameRenderer.getGameRenderState().optionsRenderState.cutoutLeaves, state);
 		this.tintColor = tintColor;
 		this.light = light;
 

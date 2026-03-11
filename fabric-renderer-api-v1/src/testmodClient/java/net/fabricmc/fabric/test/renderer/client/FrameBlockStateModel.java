@@ -21,18 +21,23 @@ import java.util.function.Predicate;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -59,7 +64,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
-		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
+		BlockStateModel innerModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(innerState);
 
 		// Now, we emit a transparent scaled-down version of the inner model
 
@@ -110,7 +115,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
-		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
+		BlockStateModel innerModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(innerState);
 		Object subkey = innerModel.createGeometryKey(level, pos, state, random);
 
 		if (subkey == null) {
@@ -124,7 +129,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
+	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 		// Renderer API makes this obsolete, so don't add any parts
 	}
 
@@ -134,8 +139,13 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public boolean hasTranslucency() {
-		return true;
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		return BakedQuad.FLAG_TRANSLUCENT;
+	}
+
+	@Override
+	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
+		return flag == BakedQuad.FLAG_TRANSLUCENT;
 	}
 
 	@Override
@@ -146,7 +156,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
-		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
+		BlockStateModel innerModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(innerState);
 		return innerModel.particleMaterial(level, pos, state);
 	}
 

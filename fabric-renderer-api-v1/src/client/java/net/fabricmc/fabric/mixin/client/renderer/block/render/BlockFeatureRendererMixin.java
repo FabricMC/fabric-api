@@ -20,6 +20,9 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -29,14 +32,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.MovingBlockRenderState;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -50,7 +47,7 @@ import net.fabricmc.fabric.impl.client.renderer.SubmitNodeCollectionExtension;
 
 @Mixin(BlockFeatureRenderer.class)
 abstract class BlockFeatureRendererMixin {
-	@Shadow
+	/*@Shadow
 	@Final
 	private PoseStack poseStack;
 
@@ -106,7 +103,7 @@ abstract class BlockFeatureRendererMixin {
 
 			poseStack.popPose();
 		}
-	}
+	}*/
 
 	// Support FRAPI models in BlockModelSubmit and support ExtendedBlockModelSubmit.
 	@Overwrite
@@ -115,14 +112,14 @@ abstract class BlockFeatureRendererMixin {
 			if (submit.renderType().hasBlending() == translucent) {
 				VertexConsumer buffer = bufferSource.getBuffer(submit.renderType());
 				FabricModelBlockRenderer.renderModel(
-						submit.pose(), _ -> buffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO,
+						submit.pose(), _ -> buffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), BlockAndTintGetter.EMPTY, BlockPos.ZERO,
 						Blocks.AIR.defaultBlockState());
 
 				if (submit.outlineColor() != 0) {
 					outlineBufferSource.setColor(submit.outlineColor());
 					VertexConsumer outlineBuffer = outlineBufferSource.getBuffer(submit.renderType());
 					FabricModelBlockRenderer.renderModel(
-							submit.pose(), _ -> outlineBuffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO,
+							submit.pose(), _ -> outlineBuffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), BlockAndTintGetter.EMPTY, BlockPos.ZERO,
 							Blocks.AIR.defaultBlockState());
 				}
 			}

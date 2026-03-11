@@ -16,19 +16,18 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.model;
 
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.block.model.Material;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Note: This interface is automatically implemented on {@link BlockModelShaper} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link BlockStateModelSet} via Mixin and interface injection.
  */
-public interface FabricBlockModelShaper {
+public interface FabricBlockStateModelSet {
 	/**
-	 * Alternative for {@link BlockModelShaper#getParticleMaterial(BlockState)} that additionally accepts a
+	 * Alternative for {@link BlockStateModelSet#getParticleMaterial(BlockState)} that additionally accepts a
 	 * {@link BlockAndTintGetter} and {@link BlockPos} to invoke
 	 * {@link FabricBlockStateModel#particleMaterial(BlockAndTintGetter, BlockPos, BlockState)}. <b>Prefer using this method
 	 * over the vanilla alternative when applicable to correctly retrieve context-aware particle materials.</b> If level
@@ -36,12 +35,12 @@ public interface FabricBlockModelShaper {
 	 *
 	 * @param state The block state whose model to retrieve the particle material from.
 	 * @param level The level in which the block exists. <b>Should not be empty (i.e. not
-	 * 	                {@link EmptyBlockAndTintGetter}).</b>
+	 *                    {@link BlockAndTintGetter#EMPTY}).</b>
 	 * @param pos The position of the block in the level.
 	 * @return the particle material
 	 */
 	default Material.Baked getParticleMaterial(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-		return ((BlockModelShaper) this).getBlockModel(state).particleMaterial(
+		return ((BlockStateModelSet) this).get(state).particleMaterial(
 				level, pos, state);
 	}
 }

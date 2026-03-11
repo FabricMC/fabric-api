@@ -21,17 +21,15 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
@@ -57,7 +55,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param lightCoords The minimum light value.
 	 * @param overlayCoords The overlay value.
 	 * @param outlineColor The outline color.
-	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link BlockAndTintGetter#EMPTY}).</b>
 	 *                  <b>Must not be mutated after calling this method.</b>
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b> <b>Must not be mutated after calling this method.</b>
@@ -65,7 +63,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @see FabricBlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	default void submitBlock(PoseStack poseStack, BlockState state, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
-		((OrderedSubmitNodeCollector) this).submitBlock(poseStack, state, lightCoords, overlayCoords, outlineColor);
+		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, state, lightCoords, overlayCoords, outlineColor);
 	}
 
 	/**
@@ -88,7 +86,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param lightCoords The minimum light value.
 	 * @param overlayCoords The overlay value.
 	 * @param outlineColor The outline color.
-	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link BlockAndTintGetter#EMPTY}).</b>
 	 *                  <b>Must not be mutated after calling this method.</b>
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b> <b>Must not be mutated after calling this method.</b>

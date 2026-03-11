@@ -3,15 +3,14 @@
   "package": "net.fabricmc.fabric.mixin.client.renderer",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "block.model.BlockModelPartMixin",
     "block.model.BlockStateModelMixin",
+    "block.model.BlockStateModelPartMixin",
     "block.model.MultiPartModelMixin",
     "block.model.MultiPartModelSharedBakedStateAccessor",
     "block.model.SimpleModelWrapperMixin",
     "block.model.SingleVariantMixin",
     "block.model.WeightedVariantsMixin",
     "block.particle.BlockMarkerMixin",
-    "block.particle.BlockModelShaperMixin",
     "block.particle.ScreenEffectRendererMixin",
     "block.particle.TerrainParticleMixin",
     "block.render.BlockFeatureRendererMixin",
@@ -26,15 +25,22 @@
     "item.BlockModelWrapperMixin",
     "item.BlockModelWrapperUnbakedMixin",
     "item.ItemStackRenderStateLayerRenderStateMixin",
+    "sprite.MaterialBakerMixin",
     "sprite.ModelManager1Mixin",
     "sprite.SpriteLoaderPreparationsMixin",
-    "sprite.TextureAtlasMixin",
-    "sprite.MaterialBakerMixin"
+    "sprite.TextureAtlasMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+    "block.particle.BlockStateModelSetMixin",
+    "item.BlockStateModelWrapperMixin",
+    "item.BlockStateModelWrapperUnbakedMixin",
+    "item.CuboidItemModelWrapperMixin",
+    "item.CuboidItemModelWrapperUnbakedMixin"
+  ]
 }

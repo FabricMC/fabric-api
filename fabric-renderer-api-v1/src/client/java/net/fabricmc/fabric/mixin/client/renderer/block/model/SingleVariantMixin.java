@@ -18,18 +18,19 @@ package net.fabricmc.fabric.mixin.client.renderer.block.model;
 
 import java.util.function.Predicate;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SingleVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
@@ -38,7 +39,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 abstract class SingleVariantMixin implements BlockStateModel {
 	@Shadow
 	@Final
-	private BlockModelPart model;
+	private BlockStateModelPart model;
 
 	// Not strictly necessary for FRAPI compatibility like other mixins, but saves a list allocation and some other
 	// operations over this method's default impl.

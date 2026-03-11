@@ -24,7 +24,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -103,7 +103,7 @@ public class FrameBlock extends Block implements EntityBlock, FabricBlock {
 	// The frames don't look exactly like the block they are mimicking,
 	// but the goal here is just to test the behavior with the pillar's connected textures. ;-)
 	@Override
-	public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	public BlockState getAppearance(BlockState state, BlockAndLightGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		// For this specific block, the render data works on both the client and the server, so let's use that.
 		if (((FabricBlockGetter) renderView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock) {
 			return mimickedBlock.defaultBlockState();

@@ -24,6 +24,11 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexSorting;
+
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,15 +38,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.SectionBufferBuilderPack;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.chunk.RenderSectionRegion;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -68,7 +70,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
 abstract class SectionCompilerMixin {
 	@Shadow
 	@Final
-	private BlockRenderDispatcher blockRenderer;
+	private BlockStateModelSet blockModelSet;
 
 	@Shadow
 	protected abstract BufferBuilder getOrBeginLayer(
@@ -112,7 +114,7 @@ abstract class SectionCompilerMixin {
 		RenderShape renderShape = blockState.getRenderShape();
 
 		if (renderShape == RenderShape.MODEL) {
-			BlockStateModel model = blockRenderer.getBlockModel(blockState);
+			BlockStateModel model = blockModelSet.get(blockState);
 			((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, pos);
 			return RenderShape.INVISIBLE; // Cancel the vanilla logic
 		}

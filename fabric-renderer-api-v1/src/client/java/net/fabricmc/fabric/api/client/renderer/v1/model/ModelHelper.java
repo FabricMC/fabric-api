@@ -21,11 +21,16 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Transparency;
+
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+
+import net.minecraft.client.resources.model.sprite.Material;
+
+import net.minecraft.util.LightCoordsUtil;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
@@ -49,15 +54,39 @@ public final class ModelHelper {
 	private ModelHelper() { }
 
 	/**
-	 * Computes a {@link BakedQuad.SpriteInfo} for a {@link Material.Baked}.
+	 * Computes a {@link BakedQuad.MaterialInfo} for a {@link Material.Baked}.
 	 *
 	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
 	 * This method is meant primarily for baking.
 	 */
-	public static BakedQuad.SpriteInfo computeSpriteInfo(Material.Baked material, QuadView quad) {
+	public static BakedQuad.MaterialInfo computeMaterialInfo(Material.Baked material, QuadView quad) {
 		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : computeTransparency(material.sprite(), quad);
 		// TODO: Consider interning or some other caching scheme to reduce object churn
-		return BakedQuad.SpriteInfo.of(material, transparency);
+		return BakedQuad.MaterialInfo.of(material, transparency, quad.tintIndex(), quad.diffuseShade(), computeLightEmission(quad));
+	}
+
+	// TODO: documentation
+	public static int computeLightEmission(QuadView quad) {
+		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
+		// values and all four block light values.
+		int lightEmission = 15;
+
+		if (!quad.emissive()) {
+			for (int i = 0; i < 4; i++) {
+				int lightmap = quad.lightmap(i);
+
+				if (lightmap == 0) {
+					lightEmission = 0;
+					break;
+				}
+
+				int blockLight = LightCoordsUtil.block(lightmap);
+				int skyLight = LightCoordsUtil.sky(lightmap);
+				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
+			}
+		}
+
+		return lightEmission;
 	}
 
 	/**
@@ -124,7 +153,7 @@ public final class ModelHelper {
 			quad.atlas(atlas);
 		}
 
-		BakedQuad.SpriteInfo spriteInfo = computeSpriteInfo(material, quad);
+		BakedQuad.MaterialInfo spriteInfo = computeMaterialInfo(material, quad);
 		quad.chunkLayer(spriteInfo.layer());
 		quad.itemRenderType(spriteInfo.itemRenderType());
 	}

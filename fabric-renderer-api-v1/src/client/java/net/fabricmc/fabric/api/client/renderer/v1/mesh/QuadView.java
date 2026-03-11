@@ -16,13 +16,18 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
+
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+
+import net.minecraft.client.resources.model.sprite.Material;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -176,7 +181,7 @@ public interface QuadView {
 	boolean emissive();
 
 	/**
-	 * This method is equivalent to {@link BakedQuad#shade()}.
+	 * This method is equivalent to {@link BakedQuad.MaterialInfo#shade()}.
 	 *
 	 * @see MutableQuadView#diffuseShade(boolean)
 	 */
@@ -198,7 +203,7 @@ public interface QuadView {
 	ShadeMode shadeMode();
 
 	/**
-	 * This method is equivalent to {@link BakedQuad#tintIndex()}.
+	 * This method is equivalent to {@link BakedQuad.MaterialInfo#tintIndex()}.
 	 *
 	 * @see MutableQuadView#tintIndex(int)
 	 */
@@ -225,26 +230,7 @@ public interface QuadView {
 		long packedUV2 = UVPair.pack(u(2), v(2));
 		long packedUV3 = UVPair.pack(u(3), v(3));
 
-		BakedQuad.SpriteInfo spriteInfo = new BakedQuad.SpriteInfo(sprite, chunkLayer(), itemRenderType());
-
-		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
-		// values and all four block light values.
-		int lightEmission = 15;
-
-		if (!emissive()) {
-			for (int i = 0; i < 4; i++) {
-				int lightmap = lightmap(i);
-
-				if (lightmap == 0) {
-					lightEmission = 0;
-					break;
-				}
-
-				int blockLight = LightCoordsUtil.block(lightmap);
-				int skyLight = LightCoordsUtil.sky(lightmap);
-				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
-			}
-		}
+		BakedQuad.MaterialInfo materialInfo = ModelHelper.computeMaterialInfo(new Material.Baked(sprite, false), this);
 
 		return new BakedQuad(
 				position0,
@@ -255,11 +241,8 @@ public interface QuadView {
 				packedUV1,
 				packedUV2,
 				packedUV3,
-				tintIndex(),
 				lightFace(),
-				spriteInfo,
-				diffuseShade(),
-				lightEmission
+				materialInfo
 		);
 	}
 }

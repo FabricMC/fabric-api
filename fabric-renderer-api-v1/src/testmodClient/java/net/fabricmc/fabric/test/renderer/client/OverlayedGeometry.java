@@ -18,16 +18,16 @@ package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.Objects;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.Material;
-import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvedModel;
-import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -82,7 +82,7 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace).emit();
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace);
 
-					TextureAtlasSprite sprite = bakedQuad.spriteInfo().sprite();
+					TextureAtlasSprite sprite = bakedQuad.materialInfo().sprite();
 
 					for (int j = 0; j < 4; j++) {
 						emitter.uv(

@@ -147,17 +147,17 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		if ((Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.HYBRID && !vanillaShade) || Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.ENHANCED) {
 			if (quad.hasAllVertexNormals()) {
 				for (int i = 0; i < 4; i++) {
-					float shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
+					float shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 					quad.color(i, ARGB.scaleRGB(quad.color(i), shade));
 				}
 			} else {
 				final float faceShade;
 
 				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
-					faceShade = blockInfo.level.getShade(quad.lightFace(), hasShade);
+					faceShade = blockInfo.level.cardinalLighting().byFace(quad.lightFace());
 				} else {
 					Vector3fc faceNormal = quad.faceNormal();
-					faceShade = normalShade(faceNormal.x(), faceNormal.y(), faceNormal.z(), hasShade);
+					faceShade = normalShade(faceNormal.x(), faceNormal.y(), faceNormal.z());
 				}
 
 				if (quad.hasVertexNormals()) {
@@ -165,7 +165,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 						float shade;
 
 						if (quad.hasNormal(i)) {
-							shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
+							shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 						} else {
 							shade = faceShade;
 						}
@@ -181,7 +181,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 				}
 			}
 		} else {
-			final float faceShade = blockInfo.level.getShade(quad.lightFace(), hasShade);
+			final float faceShade = blockInfo.level.cardinalLighting().byFace(quad.lightFace());
 
 			if (faceShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
@@ -196,31 +196,31 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 	 * Not how light actually works but the vanilla diffuse shading model is a hack to start with
 	 * and this gives reasonable results for non-cubic surfaces in a vanilla-style renderer.
 	 */
-	private float normalShade(float normalX, float normalY, float normalZ, boolean hasShade) {
+	private float normalShade(float normalX, float normalY, float normalZ) {
 		float sum = 0;
 		float div = 0;
 
 		if (normalX > 0) {
-			sum += normalX * blockInfo.level.getShade(Direction.EAST, hasShade);
+			sum += normalX * blockInfo.level.cardinalLighting().byFace(Direction.EAST);
 			div += normalX;
 		} else if (normalX < 0) {
-			sum += -normalX * blockInfo.level.getShade(Direction.WEST, hasShade);
+			sum += -normalX * blockInfo.level.cardinalLighting().byFace(Direction.WEST);
 			div -= normalX;
 		}
 
 		if (normalY > 0) {
-			sum += normalY * blockInfo.level.getShade(Direction.UP, hasShade);
+			sum += normalY * blockInfo.level.cardinalLighting().byFace(Direction.UP);
 			div += normalY;
 		} else if (normalY < 0) {
-			sum += -normalY * blockInfo.level.getShade(Direction.DOWN, hasShade);
+			sum += -normalY * blockInfo.level.cardinalLighting().byFace(Direction.DOWN);
 			div -= normalY;
 		}
 
 		if (normalZ > 0) {
-			sum += normalZ * blockInfo.level.getShade(Direction.SOUTH, hasShade);
+			sum += normalZ * blockInfo.level.cardinalLighting().byFace(Direction.SOUTH);
 			div += normalZ;
 		} else if (normalZ < 0) {
-			sum += -normalZ * blockInfo.level.getShade(Direction.NORTH, hasShade);
+			sum += -normalZ * blockInfo.level.cardinalLighting().byFace(Direction.NORTH);
 			div -= normalZ;
 		}
 

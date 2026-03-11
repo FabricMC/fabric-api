@@ -16,16 +16,17 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import net.minecraft.client.renderer.state.OptionsRenderState;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
+
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.Material;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -199,7 +200,7 @@ public interface MutableQuadView extends QuadView {
 
 		atlas(atlas);
 		// TODO 26.1: allow invoking this separately as a method in this interface
-		BakedQuad.SpriteInfo spriteInfo = ModelHelper.computeSpriteInfo(material, this);
+		BakedQuad.MaterialInfo spriteInfo = ModelHelper.computeMaterialInfo(material, this);
 		chunkLayer(spriteInfo.layer());
 		itemRenderType(spriteInfo.itemRenderType());
 		return this;
@@ -306,6 +307,7 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView chunkLayer(ChunkSectionLayer layer);
 
 	// TODO 26.1: allow using any RenderType
+
 	/**
 	 * Controls how this quad should be rendered after buffering in item contexts. The atlas texture used by the set
 	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
@@ -356,7 +358,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
 	 * {@linkplain BlockState#getLightEmission() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
 	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
-	 * {@linkplain Minecraft#useAmbientOcclusion() ambient occlusion is disabled globally}.
+	 * {@linkplain OptionsRenderState#ambientOcclusion) ambient occlusion is disabled globally}.
 	 *
 	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *

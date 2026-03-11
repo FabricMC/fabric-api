@@ -18,10 +18,10 @@ package net.fabricmc.fabric.mixin.client.renderer.block.model;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 
-import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockModelPart;
+import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModelPart;
 
-@Mixin(BlockModelPart.class)
-interface BlockModelPartMixin extends FabricBlockModelPart {
+@Mixin(BlockStateModelPart.class)
+interface BlockStateModelPartMixin extends FabricBlockStateModelPart {
 }

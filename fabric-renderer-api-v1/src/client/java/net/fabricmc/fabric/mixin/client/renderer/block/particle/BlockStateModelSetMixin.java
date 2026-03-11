@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.particle;
 
+import net.minecraft.client.renderer.block.BlockStateModelSet;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModelSet;
 
-import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockModelShaper;
-
-@Mixin(BlockModelShaper.class)
-abstract class BlockModelShaperMixin implements FabricBlockModelShaper {
+@Mixin(BlockStateModelSet.class)
+abstract class BlockStateModelSetMixin implements FabricBlockStateModelSet {
 }

@@ -20,17 +20,25 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.CUBIC_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
+import com.mojang.blaze3d.vertex.QuadInstance;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockModelLighter;
+
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+
+import net.minecraft.util.ARGB;
+
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
@@ -120,7 +128,8 @@ public class AoCalculator {
 	// These are what vanilla AO calc wants, per its usage in vanilla code
 	// Because this instance is effectively thread-local, we preserve instances
 	// to avoid making a new allocation each call.
-	private final ModelBlockRenderer.AmbientOcclusionRenderStorage vanillaCalc = new ModelBlockRenderer.AmbientOcclusionRenderStorage();
+	private final BlockModelLighter vanillaCalc = new BlockModelLighter();
+	private final QuadInstance vanillaQuadInstance = new QuadInstance();
 	private final Vector3f vanillaPos0 = new Vector3f();
 	private final Vector3f vanillaPos1 = new Vector3f();
 	private final Vector3f vanillaPos2 = new Vector3f();
@@ -136,14 +145,18 @@ public class AoCalculator {
 				quad.copyPos(1, vanillaPos1),
 				quad.copyPos(2, vanillaPos2),
 				quad.copyPos(3, vanillaPos3),
-				0, 0, 0, 0, -1, quad.lightFace(), null, true, 0
+				0, 0, 0, 0,
+				quad.lightFace(),
+				new BakedQuad.MaterialInfo(null, null, null, -1, true, 0)
 		);
 
-		ModelBlockRenderer.calculateShape(blockInfo.level, blockInfo.blockState, blockInfo.blockPos, bakedQuad, vanillaCalc);
-		vanillaCalc.calculate(blockInfo.level, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), quad.diffuseShade());
+		vanillaCalc.prepareQuadAmbientOcclusion(blockInfo.level, blockInfo.blockState, blockInfo.blockPos, bakedQuad, vanillaQuadInstance);
 
-		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
-		System.arraycopy(vanillaCalc.lightmap, 0, lightDest, 0, 4);
+		for (int i = 0; i < 4; i++) {
+			// the color is expected to be fully gray, so we can pick either one and be fine.
+			aoDest[i] = ARGB.redFloat(vanillaQuadInstance.getColor(i));
+			lightDest[i] = vanillaQuadInstance.getLightCoords(i);
+		}
 	}
 
 	private void calcFastVanilla(QuadViewImpl quad) {
@@ -325,7 +338,7 @@ public class AoCalculator {
 
 		if ((completionFlags & mask) == 0) {
 			completionFlags |= mask;
-			computeFace(result, lightFace, isOnBlockFace, shade);
+			computeFace(result, lightFace, isOnBlockFace);
 		}
 
 		return result;
@@ -339,7 +352,7 @@ public class AoCalculator {
 	 * in vanilla logic for some blocks that aren't full opaque cubes.
 	 * Except for parameterization, the logic itself is practically identical to vanilla.
 	 */
-	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace, boolean shade) {
+	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace) {
 		final BlockAndTintGetter level = blockInfo.level;
 		final BlockPos pos = blockInfo.blockPos;
 		final BlockState blockState = blockInfo.blockState;
@@ -369,7 +382,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[1]);
 		searchState = level.getBlockState(searchPos);
@@ -381,7 +394,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[2]);
 		searchState = level.getBlockState(searchPos);
@@ -393,7 +406,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[3]);
 		searchState = level.getBlockState(searchPos);
@@ -405,7 +418,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 
 		// c = corner - values at corners of face
 		int cLight0, cLight1, cLight2, cLight3;
@@ -424,7 +437,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo0 = dataProvider.ao(searchPos, searchState);
 			cLight0 = dataProvider.light(searchPos, searchState);
-			cIsClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 		}
 
 		if (!isClear3 && !isClear0) {
@@ -436,7 +449,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo1 = dataProvider.ao(searchPos, searchState);
 			cLight1 = dataProvider.light(searchPos, searchState);
-			cIsClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 		}
 
 		if (!isClear2 && !isClear1) {
@@ -449,7 +462,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo2 = dataProvider.ao(searchPos, searchState);
 			cLight2 = dataProvider.light(searchPos, searchState);
-			cIsClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 		}
 
 		if (!isClear3 && !isClear1) {
@@ -462,7 +475,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo3 = dataProvider.ao(searchPos, searchState);
 			cLight3 = dataProvider.light(searchPos, searchState);
-			cIsClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 		}
 
 		// If on block face and neighbor isn't occluding, "center" will be neighbor light
@@ -479,14 +492,14 @@ public class AoCalculator {
 		// dark room with active sculk sensor above slabs).
 		if (isOnBlockFace && !searchState.isSolidRender()) {
 			lightCenter = dataProvider.light(searchPos, searchState);
-			isClearCenter = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
+			isClearCenter = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
 		} else {
 			lightCenter = dataProvider.light(pos, blockState);
-			isClearCenter = !blockState.isViewBlocking(level, pos) || blockState.getLightBlock() == 0;
+			isClearCenter = !blockState.isViewBlocking(level, pos) || blockState.getLightDampening() == 0;
 		}
 
 		float aoCenter = dataProvider.ao(lightPos, level.getBlockState(lightPos));
-		float shadeBrightness = level.getShade(lightFace, shade);
+		float shadeBrightness = level.cardinalLighting().byFace(lightFace);
 
 		result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * shadeBrightness;
 		result.a1 = ((ao2 + ao0 + cAo0 + aoCenter) * 0.25F) * shadeBrightness;

@@ -16,15 +16,20 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+
+import net.minecraft.client.renderer.state.OptionsRenderState;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -59,10 +64,11 @@ public class BlockRenderInfo {
 		this.blockPos = blockPos;
 		this.blockState = blockState;
 
-		useAo = Minecraft.useAmbientOcclusion();
+		OptionsRenderState optionsRenderState = Minecraft.getInstance().gameRenderer.getGameRenderState().optionsRenderState;
+		useAo = optionsRenderState.ambientOcclusion;
 		defaultAo = useAo && blockState.getLightEmission() == 0;
 
-		forceOpaque = ItemBlockRenderTypes.forceOpaque(blockState);
+		forceOpaque = ModelBlockRenderer.forceOpaque(optionsRenderState.cutoutLeaves, blockState);
 
 		cullCompletionFlags = 0;
 		cullResultFlags = 0;
@@ -75,8 +81,14 @@ public class BlockRenderInfo {
 	}
 
 	public int blockColor(int tintIndex) {
-		return 0xFF000000 | blockColorMap.getColor(blockState,
-				level, blockPos, tintIndex);
+		BlockTintSource tintSource = blockColorMap.getTintSource(blockState, tintIndex);
+		int color = -1;
+
+		if (tintSource != null) {
+			color = tintSource.colorInWorld(blockState, level, blockPos);
+		}
+
+		return 0xFF000000 | color;
 	}
 
 	public boolean effectiveAo(TriState aoMode) {

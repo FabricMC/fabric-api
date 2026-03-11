@@ -31,12 +31,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 
@@ -46,7 +46,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
 import net.fabricmc.fabric.api.util.TriState;
 
 @Mixin(SimpleModelWrapper.class)
-abstract class SimpleModelWrapperMixin implements BlockModelPart {
+abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 	@Shadow
 	@Final
 	private QuadCollection quads;
@@ -54,8 +54,8 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 	@Final
 	private boolean useAmbientOcclusion;
 
-	@Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/renderer/block/model/BlockModelPart;", at = @At(value = "INVOKE", target = "net/minecraft/client/resources/model/QuadCollection.getAll()Ljava/util/List;"))
-	private static void analyzeMesh(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockModelPart> cir, @Local(name = "geometry") QuadCollection geometry, @Local(name = "hasTranslucency") LocalBooleanRef hasTranslucencyRef, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
+	@Inject(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/geometry/QuadCollection;getAll()Ljava/util/List;"))
+	private static void analyzeMesh(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockStateModelPart> cir, @Local(name = "geometry") QuadCollection geometry, @Local(name = "hasTranslucency") LocalBooleanRef hasTranslucencyRef, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
 		if (geometry instanceof MeshQuadCollection meshQuadCollection) {
 			meshQuadCollection.getMesh().forEach(quad -> {
 				if (quad.atlas() != QuadAtlas.BLOCK) {
@@ -92,7 +92,7 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 				emitter.popTransform();
 			}
 		} else {
-			BlockModelPart.super.emitQuads(emitter, cullTest);
+			BlockStateModelPart.super.emitQuads(emitter, cullTest);
 		}
 	}
 }
