@@ -36,6 +36,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
+import net.fabricmc.fabric.api.attachment.v1.GlobalAttachments;
 
 public sealed interface AttachmentTargetInfo<T> {
 	int MAX_SIZE_IN_BYTES = Byte.BYTES + Long.BYTES;
@@ -60,6 +61,7 @@ public sealed interface AttachmentTargetInfo<T> {
 		static Type<Entity> ENTITY = new Type<>((byte) 1, EntityTarget.PACKET_CODEC);
 		static Type<ChunkAccess> CHUNK = new Type<>((byte) 2, ChunkTarget.PACKET_CODEC);
 		static Type<Level> WORLD = new Type<>((byte) 3, LevelTarget.PACKET_CODEC);
+		static Type<GlobalAttachments> GLOBAL = new Type<>((byte) 4, GlobalTarget.PACKET_CODEC);
 
 		public Type {
 			TYPES.put(id, this);
@@ -191,6 +193,34 @@ public sealed interface AttachmentTargetInfo<T> {
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
 							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.level").withStyle(ChatFormatting.YELLOW)
+					))
+					.append(CommonComponents.NEW_LINE);
+		}
+	}
+
+	final class GlobalTarget implements AttachmentTargetInfo<GlobalAttachments> {
+		public static final GlobalTarget INSTANCE = new GlobalTarget();
+		static final StreamCodec<ByteBuf, GlobalTarget> PACKET_CODEC = StreamCodec.unit(INSTANCE);
+
+		private GlobalTarget() {
+		}
+
+		@Override
+		public Type<GlobalAttachments> getType() {
+			return Type.GLOBAL;
+		}
+
+		@Override
+		public AttachmentTarget getTarget(Level level) {
+			return level.globalAttachments();
+		}
+
+		@Override
+		public void appendDebugInformation(MutableComponent component) {
+			component
+					.append(Component.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.global").withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
 		}

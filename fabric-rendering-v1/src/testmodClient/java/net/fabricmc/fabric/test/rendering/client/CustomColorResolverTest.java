@@ -16,7 +16,13 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import java.util.List;
+
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ColorResolver;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
@@ -32,16 +38,21 @@ public class CustomColorResolverTest implements ClientModInitializer {
 		}
 	};
 
+	private static final BlockTintSource TINT_SOURCE = new BlockTintSource() {
+		@Override
+		public int color(BlockState state) {
+			return -1;
+		}
+
+		@Override
+		public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+			return level.getBlockTint(pos, TEST_COLOR_RESOLVER);
+		}
+	};
+
 	@Override
 	public void onInitializeClient() {
 		ColorResolverRegistry.register(TEST_COLOR_RESOLVER);
-
-		BlockColorRegistry.register((state, level, pos, tintIndex) -> {
-			if (level != null && pos != null) {
-				return level.getBlockTint(pos, TEST_COLOR_RESOLVER);
-			} else {
-				return -1;
-			}
-		}, CustomColorResolverTestInit.CUSTOM_COLOR_BLOCK);
+		BlockColorRegistry.register(List.of(TINT_SOURCE), CustomColorResolverTestInit.CUSTOM_COLOR_BLOCK);
 	}
 }

@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
-import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.world.phys.HitResult;
 
 import net.fabricmc.fabric.api.event.Event;

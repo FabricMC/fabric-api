@@ -23,19 +23,16 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.spectator.SpectatorGui;
 import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
 import net.minecraft.world.entity.player.Player;
 
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
@@ -45,158 +42,153 @@ abstract class GuiMixin {
 	@Final
 	private Minecraft minecraft;
 
-	@Inject(method = "render", at = @At(value = "TAIL"))
-	public void render(GuiGraphics graphics, DeltaTracker deltaTracker, CallbackInfo callbackInfo) {
-		HudRenderCallback.EVENT.invoker().onHudRender(graphics, deltaTracker);
-	}
-
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderCameraOverlays(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapMiscOverlays(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.MISC_OVERLAYS).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractCameraOverlays(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapMiscOverlays(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.MISC_OVERLAYS).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderCrosshair(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapCrosshair(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.CROSSHAIR).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapCrosshair(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.CROSSHAIR).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;renderHotbar(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapSpectatorMenu(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SPECTATOR_MENU).render(
+	@WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;extractHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+	private void wrapSpectatorMenu(SpectatorGui instance, GuiGraphicsExtractor graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.SPECTATOR_MENU).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
 	}
 
-	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderItemHotbar(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapHotbar(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.HOTBAR).render(
+	@WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractItemHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapHotbar(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.HOTBAR).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderArmor(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;IIII)V"))
-	private void wrapArmorBar(GuiGraphics graphics, Player player, int i, int j, int k, int x, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.ARMOR_BAR).render(
+	@WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractArmor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIII)V"))
+	private void wrapArmorBar(GuiGraphicsExtractor graphics, Player player, int i, int j, int k, int x, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.ARMOR_BAR).extractRenderState(
 				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(ctx, player, i, j, k, x));
 	}
 
-	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderHearts(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"))
-	private void wrapHealthBar(Gui instance, GuiGraphics graphics, Player player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.HEALTH_BAR).render(
+	@WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractHearts(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;IIIIFIIIZ)V"))
+	private void wrapHealthBar(Gui instance, GuiGraphicsExtractor graphics, Player player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.HEALTH_BAR).extractRenderState(
 				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, x, y, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking));
 	}
 
-	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderFood(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;II)V"))
-	private void wrapFoodBar(Gui instance, GuiGraphics graphics, Player player, int top, int right, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.FOOD_BAR).render(
+	@WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractFood(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;II)V"))
+	private void wrapFoodBar(Gui instance, GuiGraphicsExtractor graphics, Player player, int top, int right, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.FOOD_BAR).extractRenderState(
 				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, top, right));
 	}
 
-	@WrapOperation(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderAirBubbles(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/entity/player/Player;III)V"))
-	private void wrapAirBar(Gui instance, GuiGraphics graphics, Player player, int heartCount, int top, int left, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.AIR_BAR).render(
+	@WrapOperation(method = "extractPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractAirBubbles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/world/entity/player/Player;III)V"))
+	private void wrapAirBar(Gui instance, GuiGraphicsExtractor graphics, Player player, int heartCount, int top, int left, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.AIR_BAR).extractRenderState(
 				graphics, minecraft.getDeltaTracker(), (ctx, _) -> renderVanilla.call(instance, ctx, player, heartCount, top, left));
 	}
 
-	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderVehicleHealth(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapMountHealth(Gui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.MOUNT_HEALTH).render(
+	@WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractVehicleHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+	private void wrapMountHealth(Gui instance, GuiGraphicsExtractor graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.MOUNT_HEALTH).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
 	}
 
-	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapRenderBar(ContextualBarRenderer instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.INFO_BAR).render(
+	@WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapExtractInfoBar(ContextualBarRenderer instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.INFO_BAR).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderExperienceLevel(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;I)V"))
-	private void wrapExperienceLevel(GuiGraphics graphics, Font font, int level, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.EXPERIENCE_LEVEL).render(
+	@WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;extractExperienceLevel(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Font;I)V"))
+	private void wrapExperienceLevel(GuiGraphicsExtractor graphics, Font font, int level, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.EXPERIENCE_LEVEL).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(ctx, font, level));
 	}
 
-	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSelectedItemName(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapHeldItemTooltip(Gui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.HELD_ITEM_TOOLTIP).render(
+	@WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractSelectedItemName(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+	private void wrapHeldItemTooltip(Gui instance, GuiGraphicsExtractor graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.HELD_ITEM_TOOLTIP).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
 	}
 
-	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;renderAction(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapRenderSpectatorGui(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SPECTATOR_TOOLTIP).render(
+	@WrapOperation(method = "extractHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;extractAction(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+	private void wrapExtractSpectatorGui(SpectatorGui instance, GuiGraphicsExtractor graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.SPECTATOR_TOOLTIP).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderEffects(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapMobEffectOverlay(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.MOB_EFFECTS).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractEffects(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapMobEffectOverlay(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.MOB_EFFECTS).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderBossOverlay(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapBossHealthOverlay(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.BOSS_BAR).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractBossOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapBossHealthOverlay(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.BOSS_BAR).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSleepOverlay(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapSleepOverlay(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SLEEP).render(graphics,
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractSleepOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapSleepOverlay(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.SLEEP).extractRenderState(graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderDemoOverlay(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapDemoTimer(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.DEMO_TIMER).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractDemoOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapDemoTimer(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.DEMO_TIMER).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderScoreboardSidebar(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapScoreboardSidebar(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SCOREBOARD).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractScoreboardSidebar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapScoreboardSidebar(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.SCOREBOARD).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderOverlayMessage(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapOverlayMessage(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.OVERLAY_MESSAGE).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractOverlayMessage(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapOverlayMessage(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.OVERLAY_MESSAGE).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderTitle(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapTitleAndSubtitle(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.TITLE_AND_SUBTITLE).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractTitle(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapTitleAndSubtitle(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.TITLE_AND_SUBTITLE).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderChat(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapChat(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.CHAT).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractChat(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapChat(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.CHAT).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx,
 				dt
 		));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderTabList(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapPlayerList(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.PLAYER_LIST).render(
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractTabList(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
+	private void wrapPlayerList(Gui instance, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.PLAYER_LIST).extractRenderState(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx,
 				dt

@@ -314,4 +314,85 @@ class ItemTests extends AbstractTransferApiTest {
 			throw new AssertionError("setChanged should have been called when committing.");
 		}
 	}
+
+	/**
+	 * Test that {@link DataComponentTypes#MAX_STACK_SIZE} overrides on an item variant are respected.
+	 * Items that are normally stackable (e.g. diamonds, max 64) but have a component override
+	 * reducing their max stack size (e.g. to 1) should not be merged into existing stacks.
+	 *
+	 * <p>This is a regression test for a bug where {@code Item.getMaxCount()} was used instead of
+	 * {@code ItemStack.getMaxCount()}, causing the component override to be ignored.
+	 */
+	@Test
+	public void testComponentMaxStackSizeOverride() {
+		// Create a variant of a normally-stackable item (diamond, default max 64)
+		// with MAX_STACK_SIZE overridden to 1 via components.
+		DataComponentPatch components = DataComponentPatch.builder()
+				.set(DataComponents.MAX_STACK_SIZE, 1)
+				.build();
+		ItemVariant unstackableDiamond = ItemVariant.of(Items.DIAMOND, components);
+
+		// Also create a normal diamond variant for comparison.
+		ItemVariant normalDiamond = ItemVariant.of(Items.DIAMOND);
+
+		// Test 1: Inserting into a fresh inventory should place 1 per slot.
+		SimpleContainer inventory = new SimpleContainer(3);
+		ContainerStorage wrapper = ContainerStorage.of(inventory, null);
+
+		try (Transaction transaction = Transaction.openOuter()) {
+			// Try to insert 3 unstackable diamonds. Should go into 3 separate slots.
+			long inserted = wrapper.insert(unstackableDiamond, 3, transaction);
+
+			if (inserted != 3) {
+				throw new AssertionError("Should have inserted 3 unstackable diamonds, but inserted " + inserted);
+			}
+
+			// Verify each slot has exactly 1.
+			for (int i = 0; i < 3; i++) {
+				ItemStack stack = inventory.getItem(i);
+
+				if (stack.getCount() != 1) {
+					throw new AssertionError("Slot " + i + " should have count 1, but has " + stack.getCount());
+				}
+			}
+
+			transaction.commit();
+		}
+
+		// Test 2: Inserting into a slot that already has one should NOT merge.
+		SimpleContainer inventory2 = new SimpleContainer(1);
+		ContainerStorage wrapper2 = ContainerStorage.of(inventory2, null);
+
+		try (Transaction transaction = Transaction.openOuter()) {
+			// Insert one first.
+			long first = wrapper2.insert(unstackableDiamond, 1, transaction);
+
+			if (first != 1) {
+				throw new AssertionError("First insert should have succeeded.");
+			}
+
+			// Try to insert another into the same single-slot inventory. Should fail.
+			long second = wrapper2.insert(unstackableDiamond, 1, transaction);
+
+			if (second != 0) {
+				throw new AssertionError("Second insert should have returned 0 (slot full), but inserted " + second);
+			}
+
+			transaction.commit();
+		}
+
+		// Test 3: Normal diamonds (no component override) should still stack to 64.
+		SimpleContainer inventory3 = new SimpleContainer(1);
+		ContainerStorage wrapper3 = ContainerStorage.of(inventory3, null);
+
+		try (Transaction transaction = Transaction.openOuter()) {
+			long inserted = wrapper3.insert(normalDiamond, 100, transaction);
+
+			if (inserted != 64) {
+				throw new AssertionError("Normal diamonds should stack to 64, but inserted " + inserted);
+			}
+
+			transaction.commit();
+		}
+	}
 }

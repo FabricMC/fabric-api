@@ -8,6 +8,7 @@
   "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "Block entity",
   "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "Chunk",
   "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "Entity",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.global": "Global",
   "fabric-data-attachment-api-v1.unknown-target.target-type.level": "Level",
   "fabric-data-attachment-api-v1.unknown-target.title": "Received attachment change for unknown target!"
 }

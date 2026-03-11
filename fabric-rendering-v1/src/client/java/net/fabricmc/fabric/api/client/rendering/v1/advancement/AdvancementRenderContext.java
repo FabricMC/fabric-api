@@ -23,16 +23,16 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 @ApiStatus.NonExtendable
 public sealed interface AdvancementRenderContext permits AdvancementRenderContext.Icon, AdvancementRenderContext.Frame, AdvancementRenderContext.Background {
 	/**
 	 * The graphics instance used for rendering.
-	 * @return {@link GuiGraphics} instance
+	 * @return {@link GuiGraphicsExtractor} instance
 	 */
-	GuiGraphics graphics();
+	GuiGraphicsExtractor graphics();
 
 	/**
 	 * The holder for the advancement.

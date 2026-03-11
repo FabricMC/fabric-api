@@ -23,11 +23,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.chunk.RenderSectionRegion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
 import net.fabricmc.fabric.impl.blockgetter.client.RenderDataMapConsumer;
@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.blockgetter.client.RenderDataMapConsumer;
 public abstract class RenderSectionRegionMixin implements BlockAndTintGetter, RenderDataMapConsumer {
 	@Shadow
 	@Final
-	private Level level;
+	private ClientLevel level;
 	@Unique
 	@Nullable
 	private Long2ObjectMap<Object> fabric_renderDataMap;

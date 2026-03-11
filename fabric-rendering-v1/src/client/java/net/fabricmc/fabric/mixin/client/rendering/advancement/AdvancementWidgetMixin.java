@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -57,18 +57,18 @@ abstract class AdvancementWidgetMixin {
 	@Shadow
 	private @Nullable AdvancementProgress progress;
 
-	@WrapOperation(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIcon(GuiGraphics graphics, ItemStack icon, int x, int y, Operation<Void> original) {
-		renderAdvancementIcon(graphics, x, y, false, () -> original.call(graphics, icon, x, y));
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
+	private void extractAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+		extractAdvancementIcon(graphics, x, y, false, () -> original.call(graphics, icon, x, y));
 	}
 
-	@WrapOperation(method = "drawHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIconHover(GuiGraphics graphics, ItemStack icon, int x, int y, Operation<Void> original) {
-		renderAdvancementIcon(graphics, x, y, true, () -> original.call(graphics, icon, x, y));
+	@WrapOperation(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
+	private void extractAdvancementIconHover(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+		extractAdvancementIcon(graphics, x, y, true, () -> original.call(graphics, icon, x, y));
 	}
 
 	@Unique
-	private void renderAdvancementIcon(GuiGraphics graphics, int x, int y, boolean hovered, Runnable original) {
+	private void extractAdvancementIcon(GuiGraphicsExtractor graphics, int x, int y, boolean hovered, Runnable original) {
 		AdvancementRenderer.IconRenderer iconRenderer = AdvancementRendererRegistryImpl.getIconRenderer(advancementNode.holder().id());
 
 		if (iconRenderer == null || iconRenderer.shouldRenderOriginalIcon()) {
@@ -76,22 +76,22 @@ abstract class AdvancementWidgetMixin {
 		}
 
 		if (iconRenderer != null) {
-			iconRenderer.renderAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancementNode.holder(), progress, x, y, hovered, false));
+			iconRenderer.extractAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancementNode.holder(), progress, x, y, hovered, false));
 		}
 	}
 
-	@WrapOperation(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
-	private void renderAdvancementFrame(GuiGraphics graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
-		renderAdvancementFrame(graphics, x, y, false, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+	private void extractAdvancementFrame(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
+		extractAdvancementFrame(graphics, x, y, false, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
 	}
 
-	@WrapOperation(method = "drawHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 3))
-	private void renderAdvancementFrameHover(GuiGraphics graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
-		renderAdvancementFrame(graphics, x, y, true, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
+	@WrapOperation(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 3))
+	private void renderAdvancementFrameHover(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
+		extractAdvancementFrame(graphics, x, y, true, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
 	}
 
 	@Unique
-	private void renderAdvancementFrame(GuiGraphics graphics, int x, int y, boolean hovered, Runnable original) {
+	private void extractAdvancementFrame(GuiGraphicsExtractor graphics, int x, int y, boolean hovered, Runnable original) {
 		AdvancementRenderer.FrameRenderer frameRenderer = AdvancementRendererRegistryImpl.getFrameRenderer(advancementNode.holder().id());
 
 		if (frameRenderer == null || frameRenderer.shouldRenderOriginalFrame()) {
@@ -99,36 +99,36 @@ abstract class AdvancementWidgetMixin {
 		}
 
 		if (frameRenderer != null) {
-			frameRenderer.renderAdvancementFrame(new AdvancementRenderContextImpl.FrameImpl(graphics, advancementNode.holder(), progress, x, y, hovered));
+			frameRenderer.extractAdvancementFrame(new AdvancementRenderContextImpl.FrameImpl(graphics, advancementNode.holder(), progress, x, y, hovered));
 		}
 	}
 
-	@Inject(method = "drawHover", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
-	private void captureRenderTooltip(GuiGraphics graphics, int xo, int yo, float fade, int screenxo, int screenyo, CallbackInfo ci, @Share("renderTooltip")LocalBooleanRef renderTooltip) {
+	@Inject(method = "extractHover", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
+	private void captureExtractTooltip(GuiGraphicsExtractor graphics, int xo, int yo, float fade, int screenxo, int screenyo, CallbackInfo ci, @Share("renderTooltip")LocalBooleanRef renderTooltip) {
 		AdvancementRenderer.FrameRenderer frameRenderer = AdvancementRendererRegistryImpl.getFrameRenderer(advancementNode.holder().id());
 		renderTooltip.set(frameRenderer == null || frameRenderer.shouldRenderTooltip());
 	}
 
-	@WrapWithCondition(method = "drawHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementWidget;drawMultilineText(Lnet/minecraft/client/gui/GuiGraphics;Ljava/util/List;III)V"))
-	private boolean cancelTooltipMultilineTextRendering(AdvancementWidget widget, GuiGraphics graphics, List<FormattedCharSequence> lines, int x, int y, int color, @Share("renderTooltip")LocalBooleanRef renderTooltip) {
+	@WrapWithCondition(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementWidget;extractMultilineText(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Ljava/util/List;III)V"))
+	private boolean cancelTooltipMultilineTextRendering(AdvancementWidget widget, GuiGraphicsExtractor graphics, List<FormattedCharSequence> lines, int x, int y, int color, @Share("renderTooltip")LocalBooleanRef renderTooltip) {
 		return renderTooltip.get();
 	}
 
-	@WrapWithCondition(method = "drawHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V"))
-	private boolean cancelTooltipStringRendering(GuiGraphics graphics, Font font, Component str, int x, int y, int color, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
+	@WrapWithCondition(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Component;III)V"))
+	private boolean cancelTooltipStringRendering(GuiGraphicsExtractor graphics, Font font, Component str, int x, int y, int color, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
 		return renderTooltip.get();
 	}
 
-	@WrapWithCondition(method = "drawHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIIIII)V"))
-	private boolean cancelTooltipTitleBarRendering(GuiGraphics graphics, RenderPipeline renderPipeline, Identifier location, int spriteWidth, int spriteHeight, int textureX, int textureY, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
+	@WrapWithCondition(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIIIII)V"))
+	private boolean cancelTooltipTitleBarRendering(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int spriteWidth, int spriteHeight, int textureX, int textureY, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
 		return renderTooltip.get();
 	}
 
-	@WrapWithCondition(method = "drawHover",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"),
-			slice = @Slice(from = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 2))
+	@WrapWithCondition(method = "extractHover",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"),
+			slice = @Slice(from = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 2))
 	)
-	private boolean cancelTooltipTitleBoxRendering(GuiGraphics graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
+	private boolean cancelTooltipTitleBoxRendering(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
 		return renderTooltip.get();
 	}
 }

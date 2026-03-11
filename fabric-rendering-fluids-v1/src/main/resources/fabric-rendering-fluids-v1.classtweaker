@@ -1,0 +1,2 @@
+classTweaker	v1	official
+transitive-accessible field net/minecraft/client/renderer/block/FluidRenderer fluidModels Lnet/minecraft/client/renderer/block/FluidStateModelSet;

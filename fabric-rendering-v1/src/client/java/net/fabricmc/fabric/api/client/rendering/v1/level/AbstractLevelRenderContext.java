@@ -20,7 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 @ApiStatus.NonExtendable
 public interface AbstractLevelRenderContext {

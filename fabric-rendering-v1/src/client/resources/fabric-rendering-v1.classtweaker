@@ -8,11 +8,11 @@ transitive-inject-interface	net/minecraft/client/renderer/state/MapRenderState	n
 transitive-inject-interface	net/minecraft/client/renderer/state/MapRenderState$MapDecorationRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/item/ItemStackRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
-transitive-inject-interface	net/minecraft/client/renderer/state/LevelRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-inject-interface	net/minecraft/client/renderer/state/level/LevelRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/block/MovingBlockRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/blockentity/state/BlockEntityRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
-transitive-inject-interface	net/minecraft/client/renderer/state/BlockOutlineRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
-transitive-inject-interface	net/minecraft/client/renderer/state/CameraRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
-transitive-inject-interface	net/minecraft/client/renderer/state/SkyRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
-transitive-inject-interface	net/minecraft/client/renderer/state/WeatherRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
-transitive-inject-interface	net/minecraft/client/renderer/state/WorldBorderRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-inject-interface	net/minecraft/client/renderer/state/level/BlockOutlineRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-inject-interface	net/minecraft/client/renderer/state/level/CameraRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-inject-interface	net/minecraft/client/renderer/state/level/SkyRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-inject-interface	net/minecraft/client/renderer/state/level/WeatherRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-inject-interface	net/minecraft/client/renderer/state/level/WorldBorderRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState

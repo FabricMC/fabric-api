@@ -17,34 +17,34 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 @FunctionalInterface
-public interface RenderItemDecorationsCallback {
+public interface ExtractItemDecorationsCallback {
 	/**
-	 * Fires at the end of {@link GuiGraphics#renderItemDecorations(Font, ItemStack, int, int, String)} and allows
+	 * Fires at the end of {@link GuiGraphicsExtractor#itemDecorations(Font, ItemStack, int, int, String)} and allows
 	 * for drawing custom item stack decorations.
 	 *
 	 * <p>In vanilla these are: durability bar, cooldown overlay and stack count.
 	 */
-	Event<RenderItemDecorationsCallback> EVENT = EventFactory.createArrayBacked(
-			RenderItemDecorationsCallback.class,
+	Event<ExtractItemDecorationsCallback> EVENT = EventFactory.createArrayBacked(
+			ExtractItemDecorationsCallback.class,
 			callbacks -> (graphics, font, stack, x, y) -> {
-				for (RenderItemDecorationsCallback callback : callbacks) {
-					callback.onRenderItemDecorations(graphics, font, stack, x, y);
+				for (ExtractItemDecorationsCallback callback : callbacks) {
+					callback.onExtractItemDecorations(graphics, font, stack, x, y);
 				}
 			});
 
 	/**
-	 * @param graphics     the {@link GuiGraphics} instance
+	 * @param graphics     the {@link GuiGraphicsExtractor} instance
 	 * @param font         the font
 	 * @param stack        the item stack
 	 * @param x            the x-position of the item stack
 	 * @param y            the y-position of the item stack
 	 */
-	void onRenderItemDecorations(GuiGraphics graphics, Font font, ItemStack stack, int x, int y);
+	void onExtractItemDecorations(GuiGraphicsExtractor graphics, Font font, ItemStack stack, int x, int y);
 }

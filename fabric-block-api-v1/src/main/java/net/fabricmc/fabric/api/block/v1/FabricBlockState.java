@@ -20,7 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -40,7 +40,7 @@ public interface FabricBlockState {
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 * @see FabricBlock#getAppearance
 	 */
-	default BlockState getAppearance(BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	default BlockState getAppearance(BlockAndLightGetter level, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		BlockState self = (BlockState) this;
 		return self.getBlock().getAppearance(self, level, pos, side, sourceState, sourcePos);
 	}
