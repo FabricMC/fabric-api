@@ -22,9 +22,9 @@
     "block.render.SnowGolemHeadLayerMixin",
     "block.render.SubmitNodeCollectionMixin",
     "block.render.SubmitNodeStorageMixin",
-    "item.BlockModelWrapperMixin",
-    "item.BlockModelWrapperUnbakedMixin",
     "item.ItemStackRenderStateLayerRenderStateMixin",
+    "block.particle.BlockStateModelSetMixin",
+    "item.CuboidItemModelWrapperMixin",
     "sprite.MaterialBakerMixin",
     "sprite.ModelManager1Mixin",
     "sprite.SpriteLoaderPreparationsMixin",
@@ -37,10 +37,5 @@
     "requireAnnotations": true
   },
   "mixins": [
-    "block.particle.BlockStateModelSetMixin",
-    "item.BlockStateModelWrapperMixin",
-    "item.BlockStateModelWrapperUnbakedMixin",
-    "item.CuboidItemModelWrapperMixin",
-    "item.CuboidItemModelWrapperUnbakedMixin"
   ]
 }
