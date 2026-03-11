@@ -34,7 +34,7 @@ public interface EntityRenderStateExtractionCallback {
 				}
 			});
 
-	void onRenderStateExtraction(EntityRenderStateExtractionCallback.Context ctx);
+	void onRenderStateExtraction(Context ctx);
 
 	@ApiStatus.NonExtendable
 	interface Context {

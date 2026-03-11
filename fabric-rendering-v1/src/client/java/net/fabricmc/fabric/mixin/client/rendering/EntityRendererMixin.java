@@ -45,7 +45,7 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
 	}
 
 	@Override
-	public void addExtractors(List<EntityRenderStateDataExtractor> extractors) {
+	public void fabric_addExtractors(List<EntityRenderStateDataExtractor> extractors) {
 		this.renderStateExtractors.addAll(extractors);
 	}
 }

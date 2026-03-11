@@ -19,6 +19,5 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import java.util.List;
 
 public interface EntityRenderStateExtractorHolder {
-
-	void addExtractors(List<EntityRenderStateDataExtractor> extractors);
+	void fabric_addExtractors(List<EntityRenderStateDataExtractor> extractors);
 }
