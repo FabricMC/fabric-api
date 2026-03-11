@@ -10,8 +10,5 @@
   },
   "client": [
     "ClientPacketListenerMixin"
-  ],
-  "mixins": [
-    "ClientLevelMixin"
   ]
 }

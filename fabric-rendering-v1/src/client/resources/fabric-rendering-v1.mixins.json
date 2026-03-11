@@ -31,6 +31,7 @@
     "RenderPipelineMixin",
     "RenderPipelineSnippetMixin",
     "RenderStateMixin",
+    "SpecialModelRenderersMixin",
     "SpriteSourcesAccessor",
     "SubtitleOverlayMixin",
     "advancement.AdvancementsScreenMixin",
@@ -53,5 +54,8 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+    "EntityRendererMixin"
+  ]
 }

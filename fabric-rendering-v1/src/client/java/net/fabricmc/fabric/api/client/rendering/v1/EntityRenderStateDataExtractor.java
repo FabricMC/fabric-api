@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.attachment.v1;
+package net.fabricmc.fabric.api.client.rendering.v1;
 
-/**
- * Interface to obtain {@link GlobalAttachments} from {@link net.minecraft.world.level.Level Level}
- * and {@link net.minecraft.server.MinecraftServer MinecraftServer}.
- */
-// Internally, also implemented on ClientPacketListener for use in ClientLevelMixin.
-public interface GlobalAttachmentsProvider {
-	default GlobalAttachments globalAttachments() {
-		throw new UnsupportedOperationException("Implemented via mixin!");
-	}
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
+
+public interface EntityRenderStateDataExtractor {
+	void extract(Entity entity, EntityRenderState state);
 }

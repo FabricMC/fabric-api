@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.access.client;
+package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
+import java.util.List;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.test.access.SignBlockEntityTest;
-
-public class BlockEntityRendererTest implements ClientModInitializer {
-	@Override
-	public void onInitializeClient() {
-		BlockEntityRenderers.register(SignBlockEntityTest.TEST_SIGN_BLOCK_ENTITY, SignRenderer::new);
-	}
+public interface EntityRenderStateExtractorHolder {
+	void fabric_addExtractors(List<EntityRenderStateDataExtractor> extractors);
 }

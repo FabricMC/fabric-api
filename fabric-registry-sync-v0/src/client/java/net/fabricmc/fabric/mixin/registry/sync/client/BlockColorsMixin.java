@@ -14,21 +14,30 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.rendering.renderstate;
+package net.fabricmc.fabric.mixin.registry.sync.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.core.IdMapper;
+import net.minecraft.core.registries.BuiltInRegistries;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
+import net.fabricmc.fabric.impl.registry.sync.trackers.IdMapperTracker;
 
-@Mixin(LevelRenderState.class)
-public class LevelRenderStateMixin {
-	@Inject(method = "reset", at = @At("TAIL"))
-	private void clearExtraRenderData(CallbackInfo ci) {
-		((FabricRenderState) this).clearExtraData();
+@Mixin(BlockColors.class)
+public class BlockColorsMixin {
+	@Final
+	@Shadow
+	private IdMapper<BlockColor> blockColors;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void create(CallbackInfo info) {
+		IdMapperTracker.register(BuiltInRegistries.BLOCK, "BlockColors.providers", blockColors);
 	}
 }

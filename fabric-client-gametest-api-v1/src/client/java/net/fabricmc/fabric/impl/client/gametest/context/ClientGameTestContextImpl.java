@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.Optionull;
 import net.minecraft.client.CloudStatus;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
@@ -396,9 +395,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 		try {
 			CompletableFuture<T> future = computeOnClient(client -> {
-				DeltaTracker.DefaultValue deltaTracker = DeltaTrackerDefaultValueAccessor.create(options.deltaTicks);
-				client.gameRenderer.extract(deltaTracker, true);
-				client.gameRenderer.render(deltaTracker, true);
+				client.gameRenderer.render(DeltaTrackerDefaultValueAccessor.create(options.deltaTicks), true);
 				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
 				Screenshot.takeScreenshot(client.getMainRenderTarget(), screenshot -> {
