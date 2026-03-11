@@ -34,21 +34,21 @@ import net.minecraft.world.level.material.Fluid;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
 public final class FluidRenderingRegistryImpl {
-	private static final Map<Fluid, FluidRenderHandler> handlers = new IdentityHashMap<>();
-	private static final Map<Fluid, FluidModel.Unbaked> models = new IdentityHashMap<>();
-	private static final Object2BooleanMap<Block> transparencyForOverlay = new Object2BooleanOpenHashMap<>();
+	private static final Map<Fluid, FluidRenderHandler> HANDLERS = new IdentityHashMap<>();
+	private static final Map<Fluid, FluidModel.Unbaked> MODELS = new IdentityHashMap<>();
+	private static final Object2BooleanMap<Block> TRANSPARENCY_FOR_OVERLAY = new Object2BooleanOpenHashMap<>();
 	private static final FluidRenderHandler DEFAULT_RENDER_HANDLER = new FluidRenderHandler() { };
 
 	private FluidRenderingRegistryImpl() {
 	}
 
 	public static FluidRenderHandler get(Fluid fluid) {
-		return handlers.getOrDefault(fluid, DEFAULT_RENDER_HANDLER);
+		return HANDLERS.getOrDefault(fluid, DEFAULT_RENDER_HANDLER);
 	}
 
 	@Nullable
 	public static FluidRenderHandler getOverride(Fluid fluid) {
-		return handlers.get(fluid);
+		return HANDLERS.get(fluid);
 	}
 
 	public static void register(Fluid fluid, FluidModel.Unbaked model, FluidRenderHandler renderer) {
@@ -56,26 +56,26 @@ public final class FluidRenderingRegistryImpl {
 		Objects.requireNonNull(model, "model cannot be null");
 		Objects.requireNonNull(renderer, "renderer cannot be null");
 
-		handlers.put(fluid, renderer);
-		models.put(fluid, model);
+		HANDLERS.put(fluid, renderer);
+		MODELS.put(fluid, model);
 	}
 
 	public static void register(Fluid fluid, FluidModel.Unbaked model) {
 		Objects.requireNonNull(fluid, "fluid cannot be null");
 		Objects.requireNonNull(model, "model cannot be null");
 
-		models.put(fluid, model);
+		MODELS.put(fluid, model);
 	}
 
 	public static void setBlockTransparency(Block block, boolean transparent) {
-		transparencyForOverlay.put(block, transparent);
+		TRANSPARENCY_FOR_OVERLAY.put(block, transparent);
 	}
 
 	public static boolean isBlockTransparent(Block block) {
-		return transparencyForOverlay.getOrDefault(block, block instanceof HalfTransparentBlock || block instanceof LeavesBlock);
+		return TRANSPARENCY_FOR_OVERLAY.getOrDefault(block, block instanceof HalfTransparentBlock || block instanceof LeavesBlock);
 	}
 
 	public static Map<Fluid, FluidModel.Unbaked> getUnbakedModels() {
-		return Collections.unmodifiableMap(models);
+		return Collections.unmodifiableMap(MODELS);
 	}
 }
