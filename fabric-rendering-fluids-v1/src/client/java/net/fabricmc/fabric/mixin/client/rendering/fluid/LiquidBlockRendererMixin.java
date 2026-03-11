@@ -42,7 +42,7 @@ import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -85,10 +85,11 @@ public class LiquidBlockRendererMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onResourceReloadReturn(SpriteGetter sprites, CallbackInfo info) {
 		LiquidBlockRenderer self = (LiquidBlockRenderer) (Object) this;
+		Map<Fluid, ChunkSectionLayer> moddedLayers = ((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(sprites, self, new TextureAtlasSprite[]{waterStill, waterFlowing, waterOverlay}, new TextureAtlasSprite[]{lavaStill, lavaFlowing}, waterOverlay);
 
-		this.layerByFluid = new IdentityHashMap<>(this.layerByFluid);
-		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(sprites, self, this.layerByFluid, new TextureAtlasSprite[]{waterStill, waterFlowing, waterOverlay}, new TextureAtlasSprite[]{lavaStill, lavaFlowing}, waterOverlay);
-		this.layerByFluid = Map.copyOf(this.layerByFluid);
+		Map<Fluid, ChunkSectionLayer> layers = new IdentityHashMap<>(this.layerByFluid);
+		layers.putAll(moddedLayers);
+		this.layerByFluid = Map.copyOf(layers);
 	}
 
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)

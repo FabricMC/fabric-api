@@ -17,20 +17,19 @@
 package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
 
 public final class BlockColorRegistryImpl {
 	@Nullable
 	private static BlockColors blockColors;
 	@Nullable
-	private static Map<Block, List<BlockTintSource>> map = new IdentityHashMap<>();
+	private static Map<Block, BlockColor> map = new IdentityHashMap<>();
 
 	public static void initialize(BlockColors blockColors) {
 		if (BlockColorRegistryImpl.blockColors != null) {
@@ -43,12 +42,12 @@ public final class BlockColorRegistryImpl {
 		map = null;
 	}
 
-	public static void register(List<BlockTintSource> layers, Block... blocks) {
+	public static void register(BlockColor color, Block... blocks) {
 		if (blockColors != null) {
-			blockColors.register(layers, blocks);
+			blockColors.register(color, blocks);
 		} else {
 			for (Block block : blocks) {
-				map.put(block, layers);
+				map.put(block, color);
 			}
 		}
 	}

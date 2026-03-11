@@ -22,11 +22,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.attachment.v1.GlobalAttachmentsProvider;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(Level.class)
-abstract class LevelMixin implements AttachmentTargetImpl, GlobalAttachmentsProvider {
+abstract class LevelMixin implements AttachmentTargetImpl {
 	@Shadow
 	public abstract boolean isClientSide();
 
