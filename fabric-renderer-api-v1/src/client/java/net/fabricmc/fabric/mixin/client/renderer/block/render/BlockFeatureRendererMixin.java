@@ -23,6 +23,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -47,7 +51,7 @@ import net.fabricmc.fabric.impl.client.renderer.SubmitNodeCollectionExtension;
 
 @Mixin(BlockFeatureRenderer.class)
 abstract class BlockFeatureRendererMixin {
-	/*@Shadow
+	@Shadow
 	@Final
 	private PoseStack poseStack;
 
@@ -103,7 +107,7 @@ abstract class BlockFeatureRendererMixin {
 
 			poseStack.popPose();
 		}
-	}*/
+	}
 
 	// Support FRAPI models in BlockModelSubmit and support ExtendedBlockModelSubmit.
 	@Overwrite
