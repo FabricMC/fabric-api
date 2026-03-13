@@ -9,6 +9,8 @@ jobs:
           distribution: 'microsoft'
           java-version: '25'
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: gradle/actions/wrapper-validation@v4
       - run: ./gradlew check build :buildSrc:check publishToMavenLocal --stacktrace
       - uses: FabricMCBot/publish-checkstyle-report@4627c82002aa370b6cb2a3140f34c7a8c55a5297
