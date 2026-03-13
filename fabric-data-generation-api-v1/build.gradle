@@ -62,10 +62,7 @@ runDatagenClient {
 	outputs.dir file("src/testmod/generated")
 }
 
-test.dependsOn runDatagenClient
-
 tasks.register('datapackZip', Zip) {
-	dependsOn runDatagenClient
 	archiveFileName = "${base.archivesName.get()}-${project.version}-test-datapack.zip"
 	destinationDirectory = layout.buildDirectory.dir('libs')
 
