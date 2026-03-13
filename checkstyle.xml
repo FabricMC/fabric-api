@@ -215,25 +215,22 @@
 
         <!-- Prevent public records in API packages -->
         <module name="MatchXpath">
-            <property name="query" value="//RECORD_DEF[./MODIFIERS/LITERAL_PUBLIC][//PACKAGE_DEF//DOT/IDENT[@text='api']]"/>
+            <property name="query" value="//RECORD_DEF[./MODIFIERS/LITERAL_PUBLIC][ancestor::COMPILATION_UNIT/PACKAGE_DEF//IDENT[@text='api']]"/>
             <message key="matchxpath.match" value="public records are not allowed in API packages"/>
         </module>
 
         <!-- Prevent non-@Unique fields in Mixin classes -->
         <module name="MatchXpath">
             <property name="query" value="
-                //OBJBLOCK/VARIABLE_DEF[
-                    not(
-                        ./MODIFIERS/ANNOTATION/IDENT[
-                            @text='Unique'
-                            or @text='Shadow'
-                        ]
-                    )
-                    and
-                    ../../../CLASS_DEF[
-                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                //CLASS_DEF[./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']]
+                    //OBJBLOCK/VARIABLE_DEF[
+                        not(
+                            ./MODIFIERS/ANNOTATION/IDENT[
+                                @text='Unique'
+                                or @text='Shadow'
+                            ]
+                        )
                     ]
-                ]
             "/>
             <message key="matchxpath.match" value="Mixin fields must be annotated with @Unique or @Shadow"/>
         </module>
@@ -242,30 +239,27 @@
         <!-- All Mixin and MixinExtras annotations must be listed here -->
         <module name="MatchXpath">
             <property name="query" value="
-                //METHOD_DEF[
-                    not(
-                        ./MODIFIERS/ANNOTATION/IDENT[
-                            @text='Unique'
-                            or @text='Inject'
-                            or @text='ModifyArg'
-                            or @text='ModifyExpressionValue'
-                            or @text='ModifyReceiver'
-                            or @text='ModifyReturnValue'
-                            or @text='ModifyVariable'
-                            or @text='Override'
-                            or @text='Overwrite'
-                            or @text='Redirect'
-                            or @text='Shadow'
-                            or @text='WrapMethod'
-                            or @text='WrapOperation'
-                            or @text='WrapWithCondition'
-                        ]
-                    )
-                    and
-                    ../../../CLASS_DEF[
-                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                //CLASS_DEF[./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']]
+                    //METHOD_DEF[
+                        not(
+                            ./MODIFIERS/ANNOTATION/IDENT[
+                                @text='Unique'
+                                or @text='Inject'
+                                or @text='ModifyArg'
+                                or @text='ModifyExpressionValue'
+                                or @text='ModifyReceiver'
+                                or @text='ModifyReturnValue'
+                                or @text='ModifyVariable'
+                                or @text='Override'
+                                or @text='Overwrite'
+                                or @text='Redirect'
+                                or @text='Shadow'
+                                or @text='WrapMethod'
+                                or @text='WrapOperation'
+                                or @text='WrapWithCondition'
+                            ]
+                        )
                     ]
-                ]
             "/>
             <message key="matchxpath.match" value="Mixin methods must be annotated with @Unique or one of the Mixin annotations"/>
         </module>
