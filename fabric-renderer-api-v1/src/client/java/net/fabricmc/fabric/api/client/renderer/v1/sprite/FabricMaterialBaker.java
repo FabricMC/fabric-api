@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.sprite;
 
-import net.minecraft.client.resources.model.MaterialBaker;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;

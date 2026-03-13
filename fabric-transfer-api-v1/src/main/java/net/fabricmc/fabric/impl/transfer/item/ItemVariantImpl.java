@@ -23,6 +23,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -117,5 +118,13 @@ public class ItemVariantImpl implements ItemVariant {
 		}
 
 		return ret;
+	}
+
+	/**
+	 * Return the max stack size for this variant, respecting component overrides such as
+	 * {@link DataComponentTypes#MAX_STACK_SIZE}.
+	 */
+	public static int getMaxStackSize(ItemVariant variant) {
+		return variant.getComponents().getOrDefault(DataComponents.MAX_STACK_SIZE, variant.getItem().getDefaultMaxStackSize());
 	}
 }

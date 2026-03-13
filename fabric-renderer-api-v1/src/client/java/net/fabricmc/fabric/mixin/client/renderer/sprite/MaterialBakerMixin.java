@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.client.renderer.sprite;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.resources.model.MaterialBaker;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricMaterialBaker;
 

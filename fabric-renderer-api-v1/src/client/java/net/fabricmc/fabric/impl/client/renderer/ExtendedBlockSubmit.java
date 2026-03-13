@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 public record ExtendedBlockSubmit(PoseStack.Pose pose, BlockState state, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos) {

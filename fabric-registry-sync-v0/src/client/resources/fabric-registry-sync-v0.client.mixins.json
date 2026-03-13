@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.registry.sync.client",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "BlockColorsMixin",
     "RegistryDataCollectorMixin",
     "RegistryDataCollectorContentsCollectorAccessor",
     "MinecraftMixin",

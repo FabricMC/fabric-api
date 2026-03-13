@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 

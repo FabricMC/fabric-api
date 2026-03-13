@@ -71,6 +71,7 @@ public class TestSingleplayerContextImpl implements TestSingleplayerContext {
 		});
 
 		context.waitFor(client -> !ThreadingImpl.isServerRunning && client.level == null, SharedConstants.TICKS_PER_MINUTE);
+		context.waitTicks(2);
 		context.setScreen(TitleScreen::new);
 	}
 }

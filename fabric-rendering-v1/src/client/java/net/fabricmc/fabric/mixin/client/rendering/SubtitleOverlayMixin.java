@@ -21,7 +21,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.SubtitleOverlay;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -29,9 +29,9 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
 @Mixin(SubtitleOverlay.class)
 public class SubtitleOverlayMixin {
-	@WrapMethod(method = "render")
-	private void wrapSubtitleRender(GuiGraphics context, Operation<Void> original) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(
+	@WrapMethod(method = "extractRenderState")
+	private void wrapExtractRenderState(GuiGraphicsExtractor context, Operation<Void> original) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).extractRenderState(
 				context,
 				Minecraft.getInstance().getDeltaTracker(),
 				(ctx, tc) -> original.call(ctx)

@@ -18,9 +18,11 @@ package net.fabricmc.fabric.test.renderer.client;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.resources.Identifier;
 
 public class OverlayedUnbakedModelDeserializer extends SimpleUnbakedModelDeserializer {

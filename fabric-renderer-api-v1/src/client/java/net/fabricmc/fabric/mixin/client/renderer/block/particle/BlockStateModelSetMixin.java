@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer;
+package net.fabricmc.fabric.mixin.client.renderer.block.particle;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinderGetter;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import org.spongepowered.asm.mixin.Mixin;
 
-public interface BlockModelWrapperExtension {
-	void fabric_setMesh(Mesh mesh, SpriteFinderGetter spriteFinderGetter);
+import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModelSet;
+
+@Mixin(BlockStateModelSet.class)
+abstract class BlockStateModelSetMixin implements FabricBlockStateModelSet {
 }

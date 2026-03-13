@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SpriteMapper;
-import net.minecraft.client.resources.model.SpriteId;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.object.builder.client.SignTypeTextureHelper;
@@ -36,12 +36,12 @@ abstract class SheetsMixin {
 		SignTypeTextureHelper.shouldAddTextures = true;
 	}
 
-	@Redirect(method = "createSignSprite", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SpriteMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/SpriteId;"))
+	@Redirect(method = "createSignSprite", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SpriteMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/sprite/SpriteId;"))
 	private static SpriteId redirectSignVanillaId(SpriteMapper instance, String name) {
 		return instance.apply(Identifier.parse(name));
 	}
 
-	@Redirect(method = "createHangingSignSprite", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SpriteMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/SpriteId;"))
+	@Redirect(method = "createHangingSignSprite", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SpriteMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/sprite/SpriteId;"))
 	private static SpriteId redirectHangingVanillaId(SpriteMapper instance, String name) {
 		return instance.apply(Identifier.parse(name));
 	}

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -367,7 +367,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	private static void replaceVanillaElement(Identifier id, ResolvedHeightProvider heightProvider) {
 		HudElementRegistry.replaceElement(id, (HudElement layer) -> {
-			return (GuiGraphics graphics, DeltaTracker deltaTracker) -> {
+			return (GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) -> {
 				Player player = ((GuiAccessor) Minecraft.getInstance().gui).fabric$callGetCameraPlayer();
 				int height = player != null ? heightProvider.getResolvedHeight(player) : 0;
 
@@ -376,7 +376,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 					graphics.pose().translate(0.0F, height);
 				}
 
-				layer.render(graphics, deltaTracker);
+				layer.extractRenderState(graphics, deltaTracker);
 
 				if (height != 0) {
 					graphics.pose().popMatrix();

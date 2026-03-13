@@ -23,15 +23,16 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.renderer.fog.FogRenderer;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
 /**
  * This test mod renders a second banner in the top left corner next to the one of
@@ -42,18 +43,16 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 	public void onInitializeClient() {
 		// BannerGuiElementRenderer is already registered by PictureInPictureRendererTest
 
-		// TODO: Migrate to new HUD API once available
-		//noinspection deprecation
-		HudRenderCallback.EVENT.register((graphics, deltaTracker) -> {
+		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip_new"), (graphics, deltaTracker) -> {
 			Minecraft client = Minecraft.getInstance();
 			GuiRenderState newGuiRenderState = new GuiRenderState();
 
 			int mouseX = (int) client.mouseHandler.getScaledXPos(client.getWindow());
 			int mouseY = (int) client.mouseHandler.getScaledYPos(client.getWindow());
 
-			GuiGraphics newContext = new GuiGraphics(client, newGuiRenderState, mouseX, mouseY);
+			GuiGraphicsExtractor newContext = new GuiGraphicsExtractor(client, newGuiRenderState, mouseX, mouseY);
 
-			newContext.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 60, 0, 80, 20, new ScreenRectangle(60, 0, 40, 20)));
+			newContext.guiRenderState.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 60, 0, 80, 20, new ScreenRectangle(60, 0, 40, 20)));
 
 			GpuBufferSlice orgProjectionMatrixBuffer = RenderSystem.getProjectionMatrixBuffer();
 			ProjectionType orgProjectionType = RenderSystem.getProjectionType();

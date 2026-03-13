@@ -29,10 +29,12 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -277,7 +279,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		uv(2, UVPair.unpackU(packedUV2), UVPair.unpackV(packedUV2));
 		uv(3, UVPair.unpackU(packedUV3), UVPair.unpackV(packedUV3));
 
-		int lightEmission = quad.lightEmission();
+		int lightEmission = quad.materialInfo().lightEmission();
 		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
 		lightmap(lightmap, lightmap, lightmap, lightmap);
 
@@ -285,17 +287,17 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 		nominalFace(quad.direction());
 		emissive(lightEmission == 15);
-		diffuseShade(quad.shade());
-		QuadAtlas atlas = QuadAtlas.ofLocation(quad.spriteInfo().sprite().atlasLocation());
+		diffuseShade(quad.materialInfo().shade());
+		QuadAtlas atlas = QuadAtlas.ofLocation(quad.materialInfo().sprite().atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;
 		}
 
 		atlas(atlas);
-		chunkLayer(quad.spriteInfo().layer());
-		itemRenderType(quad.spriteInfo().itemRenderType());
-		tintIndex(quad.tintIndex());
+		chunkLayer(quad.materialInfo().layer());
+		itemRenderType(quad.materialInfo().itemRenderType());
+		tintIndex(quad.materialInfo().tintIndex());
 		return this;
 	}
 

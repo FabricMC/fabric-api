@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.block.model;
+package net.fabricmc.fabric.api.attachment.v1;
 
-import org.spongepowered.asm.mixin.Mixin;
-
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-
-import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockModelPart;
-
-@Mixin(BlockModelPart.class)
-interface BlockModelPartMixin extends FabricBlockModelPart {
+/**
+ * Interface to obtain {@link GlobalAttachments} from {@link net.minecraft.world.level.Level Level}
+ * and {@link net.minecraft.server.MinecraftServer MinecraftServer}.
+ */
+// Internally, also implemented on ClientPacketListener for use in ClientLevelMixin.
+public interface GlobalAttachmentsProvider {
+	default GlobalAttachments globalAttachments() {
+		throw new UnsupportedOperationException("Implemented via mixin!");
+	}
 }

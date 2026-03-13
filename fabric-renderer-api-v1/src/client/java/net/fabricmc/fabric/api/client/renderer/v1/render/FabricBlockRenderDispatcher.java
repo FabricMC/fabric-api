@@ -23,15 +23,12 @@ import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BakedQuadOutput;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
@@ -50,7 +47,7 @@ public interface FabricBlockRenderDispatcher {
 	 *
 	 * @param state The block state.
 	 * @param pos The block position.
-	 * @param level The level in which to render the breaking texture. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param level The level in which to render the breaking texture. <b>Can be empty (i.e. {@link BlockAndTintGetter#EMPTY}).</b>
 	 * @param poseStack The pose stack.
 	 * @param vertexConsumer The vertex consumer. <b>Consider using {@link SheetedDecalTextureGenerator} in
 	 * conjunction with one of {@link ModelBakery#DESTROY_TYPES} where the index is the breaking progress.</b>
@@ -78,7 +75,7 @@ public interface FabricBlockRenderDispatcher {
 	 *                    ({@code false}).
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
-	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link BlockAndTintGetter#EMPTY}).</b>
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b>
 	 *

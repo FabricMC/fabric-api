@@ -23,7 +23,9 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -52,16 +54,16 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 			int renderY = 0;
 			List<FluidVariant> variants = List.of(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.LAVA));
 
-			for (FluidVariant variant : variants) {
-				TextureAtlasSprite[] sprites = FluidVariantRendering.getSprites(variant);
-				int color = FluidVariantRendering.getColor(variant, player.level(), player.blockPosition());
+			FluidRenderer fluidRenderer = new FluidRenderer(Minecraft.getInstance().getModelManager().getFluidStateModelSet());
 
-				if (sprites != null) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);
-					renderY += 16;
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[1], 0, renderY, 16, 16, color);
-					renderY += 16;
-				}
+			for (FluidVariant variant : variants) {
+				FluidModel fluidModel = fluidRenderer.fluidModels.get(variant.getFluid().defaultFluidState());
+				int color = FluidVariantRendering.getColor(variant, (BlockAndTintGetter) player.level(), player.blockPosition());
+
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, fluidModel.stillMaterial().sprite(), 0, renderY, 16, 16, color);
+				renderY += 16;
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, fluidModel.flowingMaterial().sprite(), 0, renderY, 16, 16, color);
+				renderY += 16;
 
 				List<Component> tooltip = FluidVariantRendering.getTooltip(variant);
 				Font font = Minecraft.getInstance().font;
@@ -70,7 +72,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 
 				for (Component line : tooltip) {
 					renderY += 10;
-					graphics.renderTooltip(font, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
+					graphics.tooltip(font, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
 				}
 			}
 		});

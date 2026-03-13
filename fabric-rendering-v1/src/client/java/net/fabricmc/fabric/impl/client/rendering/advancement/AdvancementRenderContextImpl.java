@@ -20,14 +20,14 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 
 import net.fabricmc.fabric.api.client.rendering.v1.advancement.AdvancementRenderContext;
 
 public final class AdvancementRenderContextImpl {
 	public static final class IconImpl implements AdvancementRenderContext.Icon {
-		private final GuiGraphics graphics;
+		private final GuiGraphicsExtractor graphics;
 		private final AdvancementHolder holder;
 		@Nullable
 		private final AdvancementProgress progress;
@@ -36,7 +36,7 @@ public final class AdvancementRenderContextImpl {
 		private final boolean hovered;
 		private final boolean selected;
 
-		public IconImpl(GuiGraphics graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, int x, int y, boolean hovered, boolean selected) {
+		public IconImpl(GuiGraphicsExtractor graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, int x, int y, boolean hovered, boolean selected) {
 			this.graphics = graphics;
 			this.holder = holder;
 			this.progress = progress;
@@ -46,12 +46,12 @@ public final class AdvancementRenderContextImpl {
 			this.selected = selected;
 		}
 
-		public IconImpl(GuiGraphics graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, boolean hovered, boolean selected) {
+		public IconImpl(GuiGraphicsExtractor graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, boolean hovered, boolean selected) {
 			this(graphics, holder, progress, 0, 0, hovered, selected);
 		}
 
 		@Override
-		public GuiGraphics graphics() {
+		public GuiGraphicsExtractor graphics() {
 			return graphics;
 		}
 
@@ -91,10 +91,10 @@ public final class AdvancementRenderContextImpl {
 		}
 	}
 
-	public record FrameImpl(GuiGraphics graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, int x, int y, boolean isHovered) implements AdvancementRenderContext.Frame {
+	public record FrameImpl(GuiGraphicsExtractor graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, int x, int y, boolean isHovered) implements AdvancementRenderContext.Frame {
 	}
 
-	public record BackgroundImpl(GuiGraphics graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, ScreenRectangle bounds, double scrollX, double scrollY) implements AdvancementRenderContext.Background {
+	public record BackgroundImpl(GuiGraphicsExtractor graphics, AdvancementHolder holder, @Nullable AdvancementProgress progress, ScreenRectangle bounds, double scrollX, double scrollY) implements AdvancementRenderContext.Background {
 	}
 
 	private AdvancementRenderContextImpl() {

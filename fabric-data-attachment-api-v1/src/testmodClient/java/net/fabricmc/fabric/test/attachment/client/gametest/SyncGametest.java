@@ -120,6 +120,8 @@ public class SyncGametest implements FabricClientGameTest {
 
 				ServerLevel nether = server.getLevel(Level.NETHER);
 				setSyncedWithAll(Objects.requireNonNull(nether));
+
+				setSyncedWithAll(server.globalAttachments());
 			});
 
 			LOGGER.info("Joining dedicated server");
@@ -157,6 +159,7 @@ public class SyncGametest implements FabricClientGameTest {
 					assertHasSyncedWithAll(villager);
 					assertHasSyncedWithAll(level.getChunk(0, 0));
 					assertHasSyncedWithAll(client.player);
+					assertHasSyncedWithAll(level.globalAttachments());
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_ITEM);
 					assertHasSynced(villager, AttachmentTestMod.SYNCED_LARGE);
@@ -187,6 +190,7 @@ public class SyncGametest implements FabricClientGameTest {
 				LOGGER.info("Testing synced attachments (2/2)");
 				context.runOnClient(client -> {
 					assertHasSyncedWithAll(client.level);
+					assertHasSyncedWithAll(client.level.globalAttachments());
 					// asserts the removal wasn't synced
 					assertPresence(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY, true);
 				});

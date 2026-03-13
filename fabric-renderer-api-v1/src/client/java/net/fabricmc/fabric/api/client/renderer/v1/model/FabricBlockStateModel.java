@@ -16,20 +16,23 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.multipart.MultiPartModel;
+
+import net.minecraft.client.resources.model.sprite.Material;
+
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.Material;
-import net.minecraft.client.renderer.block.model.multipart.MultiPartModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
@@ -46,7 +49,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 public interface FabricBlockStateModel {
 	/**
 	 * Produces this model's geometry. <b>This method must be called instead of
-	 * {@link BlockStateModel#collectParts(RandomSource, List)} or {@link BlockStateModel#collectParts(RandomSource)}; the vanilla methods
+	 * {@link BlockStateModel#collectParts(RandomSource, List)}; the vanilla methods
 	 * should be considered deprecated as they may not produce accurate results.</b> However, it is acceptable for a
 	 * custom model to only implement the vanilla methods as the default implementation of this method will delegate to
 	 * one of the vanilla methods.
@@ -54,7 +57,7 @@ public interface FabricBlockStateModel {
 	 * <p>Like {@link BlockStateModel#collectParts(RandomSource, List)}, this method may be called outside of chunk rebuilds. For
 	 * example, some entities and block entities render blocks. In some such cases, the provided position may be the
 	 * <em>nearest</em> position and not actual position. In others, the provided level may be
-	 * {@linkplain EmptyBlockAndTintGetter#INSTANCE empty}.
+	 * {@linkplain BlockAndTintGetter#EMPTY empty}.
 	 *
 	 * <p>If multiple independent subtasks use the provided random, it is recommended that implementations
 	 * {@linkplain RandomSource#setSeed(long) reseed} the random using a predetermined value before invoking each subtask, so
@@ -83,7 +86,8 @@ public interface FabricBlockStateModel {
 	 * @see #createGeometryKey(BlockAndTintGetter, BlockPos, BlockState, RandomSource)
 	 */
 	default void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
-		final List<BlockModelPart> parts = ((BlockStateModel) this).collectParts(random);
+		final List<BlockStateModelPart> parts = new ArrayList<>();
+		((BlockStateModel) this).collectParts(random, parts);
 		final int partCount = parts.size();
 
 		for (int i = 0; i < partCount; i++) {

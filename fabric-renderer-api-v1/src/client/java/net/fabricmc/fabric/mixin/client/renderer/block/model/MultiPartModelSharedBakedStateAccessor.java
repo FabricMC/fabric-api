@@ -21,8 +21,8 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.multipart.MultiPartModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.multipart.MultiPartModel;
 
 @Mixin(MultiPartModel.SharedBakedState.class)
 public interface MultiPartModelSharedBakedStateAccessor {

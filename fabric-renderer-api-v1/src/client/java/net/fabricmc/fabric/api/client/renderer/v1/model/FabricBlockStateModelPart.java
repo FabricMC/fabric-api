@@ -18,25 +18,27 @@ package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.function.Predicate;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.impl.client.renderer.VanillaBlockModelPartEncoder;
 
 /**
- * Note: This interface is automatically implemented on {@link BlockModelPart} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link BlockStateModelPart} via Mixin and interface injection.
  */
-public interface FabricBlockModelPart {
+public interface FabricBlockStateModelPart {
 	/**
 	 * Produces this model part's geometry. <b>This method must be called instead of
-	 * {@link BlockModelPart#getQuads(Direction)} and {@link BlockModelPart#useAmbientOcclusion()}; the vanilla methods
+	 * {@link BlockStateModelPart#getQuads(Direction)} and {@link BlockStateModelPart#useAmbientOcclusion()}; the vanilla methods
 	 * should be considered deprecated as they may not produce accurate results.</b> However, it is acceptable for a
 	 * custom model part to only implement the vanilla methods as the default implementation of this method will
 	 * delegate to the vanilla methods.
@@ -44,7 +46,7 @@ public interface FabricBlockModelPart {
 	 * <p>This method mainly exists for convenience when interacting with parts implemented and produced by vanilla
 	 * code. Custom models should generally override
 	 * {@link FabricBlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * instead of subclassing {@link BlockModelPart} and overriding this method.
+	 * instead of subclassing {@link BlockStateModelPart} and overriding this method.
 	 *
 	 * @param emitter Accepts model part output.
 	 * @param cullTest A test that returns {@code true} for faces which will be culled and {@code false} for faces which
@@ -54,6 +56,6 @@ public interface FabricBlockModelPart {
 	 *                 should be used whenever possible.
 	 */
 	default void emitQuads(QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
-		VanillaBlockModelPartEncoder.emitQuads((BlockModelPart) this, emitter, cullTest);
+		VanillaBlockModelPartEncoder.emitQuads((BlockStateModelPart) this, emitter, cullTest);
 	}
 }
