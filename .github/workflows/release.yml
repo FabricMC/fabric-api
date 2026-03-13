@@ -13,6 +13,8 @@ jobs:
           distribution: 'microsoft'
           java-version: '25'
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: FabricMC/fabric-action-scripts@v2
         id: changelog
         with:
