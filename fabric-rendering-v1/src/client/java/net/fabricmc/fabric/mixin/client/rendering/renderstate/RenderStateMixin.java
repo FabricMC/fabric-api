@@ -30,8 +30,8 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.fog.FogData;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.GameRenderState;
-import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.state.LightmapRenderState;
+import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.state.OptionsRenderState;
 import net.minecraft.client.renderer.state.WindowRenderState;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
@@ -59,9 +59,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 		ItemStackRenderState.class,
 		ItemStackRenderState.LayerRenderState.class,
 		GameRenderState.class,
+		LightmapRenderState.class,
 		MapRenderState.class,
 		MapRenderState.MapDecorationRenderState.class,
-		LightmapRenderState.class,
 		OptionsRenderState.class,
 		WindowRenderState.class,
 		GuiRenderState.class,

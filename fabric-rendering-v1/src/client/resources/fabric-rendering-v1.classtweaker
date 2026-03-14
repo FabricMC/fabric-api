@@ -12,9 +12,9 @@ transitive-inject-interface	net/minecraft/client/renderer/fog/FogData	net/fabric
 transitive-inject-interface	net/minecraft/client/renderer/item/ItemStackRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/GameRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-inject-interface	net/minecraft/client/renderer/state/LightmapRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/MapRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/MapRenderState$MapDecorationRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
-transitive-inject-interface	net/minecraft/client/renderer/state/LightmapRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/OptionsRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/WindowRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/gui/GuiRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
