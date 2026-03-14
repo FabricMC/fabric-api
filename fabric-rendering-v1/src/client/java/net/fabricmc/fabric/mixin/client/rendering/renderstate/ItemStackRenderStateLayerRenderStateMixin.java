@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 
 @Mixin(ItemStackRenderState.LayerRenderState.class)
-public class ItemStackRenderStateLayerRenderStateMixin {
+abstract class ItemStackRenderStateLayerRenderStateMixin {
 	@Inject(method = "clear", at = @At("TAIL"))
 	private void clearExtraRenderData(CallbackInfo ci) {
 		((FabricRenderState) this).clearExtraData();

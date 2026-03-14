@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.state.level.WeatherRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 
 @Mixin(WeatherRenderState.class)
-public class WeatherRenderStateMixin {
+abstract class WeatherRenderStateMixin {
 	@Inject(method = "reset", at = @At("TAIL"))
 	private void clearExtraRenderData(CallbackInfo ci) {
 		((FabricRenderState) this).clearExtraData();
