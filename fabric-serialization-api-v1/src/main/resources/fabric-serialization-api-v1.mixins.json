@@ -6,7 +6,9 @@
     "TagValueInputMixin",
     "TagValueOutputMixin",
     "ValueInputMixin",
-    "ValueOutputMixin"
+    "ValueOutputMixin",
+    "filefix.DataFixersMixin",
+    "filefix.FileFixerUpperAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
