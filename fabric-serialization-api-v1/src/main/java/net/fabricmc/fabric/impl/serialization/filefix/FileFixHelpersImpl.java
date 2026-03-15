@@ -14,9 +14,8 @@ public interface FileFixHelpersImpl {
 																String oldDimensionPath,
 																String newDimensionPath) {
 		return saveIdMap.entrySet().stream()
-				.map(entry -> (FileFixOperation)
-						FileFixOperations.move(oldDimensionPath + "/data/" + entry.getKey() + ".dat",
-								newDimensionPath + "/data/" + entry.getValue().getNamespace() + "/" + entry.getValue().getPath() + ".dat"))
+				.map(entry -> createNamespacedDataMoveOperation(entry.getKey(), entry.getValue(),
+						oldDimensionPath + "/data/", newDimensionPath + "/data/"))
 				.toList();
 	}
 
@@ -24,10 +23,12 @@ public interface FileFixHelpersImpl {
 		return FileFixOperations.applyInFolders(
 				FileRelation.DIMENSIONS_DATA,
 				saveIdMap.entrySet().stream()
-						// example.dat -> example_mod/example.dat
-						.map(entry -> (FileFixOperation)
-								FileFixOperations.move(entry.getKey() + ".dat", entry.getValue().getNamespace() + "/" + entry.getValue().getPath() + ".dat"))
+						.map(entry -> createNamespacedDataMoveOperation(entry.getKey(), entry.getValue(), "", ""))
 						.toList()
 		);
+	}
+
+	static FileFixOperation createNamespacedDataMoveOperation(String oldId, Identifier newId, String oldPrefix, String newPrefix) {
+		return FileFixOperations.move(oldPrefix + oldId + ".dat", newPrefix + newId.getNamespace() + "/" + newId.getPath() + ".dat");
 	}
 }

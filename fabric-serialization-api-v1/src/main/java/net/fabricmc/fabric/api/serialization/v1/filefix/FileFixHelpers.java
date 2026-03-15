@@ -9,7 +9,9 @@ import net.fabricmc.fabric.mixin.serialization.filefix.FileFixerUpperAccessor;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.filefix.FileFix;
+import net.minecraft.util.filefix.access.FileRelation;
 import net.minecraft.util.filefix.operations.FileFixOperation;
+import net.minecraft.util.filefix.operations.FileFixOperations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,5 +52,39 @@ public interface FileFixHelpers {
 
 	static void registerDimensionDataMoveFileFix(Map<String, Identifier> saveIdMap) {
 		FileFixSchemaRegisterCallback.registerFileFixes(FileFixerUpperAccessor.getFileFixerIntroductionVersion(), createDimensionDataMoveFileFix(saveIdMap));
+	}
+
+	static FileFixOperation createGlobalDataMoveOperation(String oldSaveId, Identifier newSaveId) {
+		return createGlobalDataMoveOperation(Map.of(oldSaveId, newSaveId));
+	}
+
+	static FileFixOperation createGlobalDataMoveOperation(Map<String, Identifier> saveIdMap) {
+		return FileFixOperations.applyInFolders(
+				FileRelation.DATA,
+				saveIdMap.entrySet().stream()
+						.map(entry -> FileFixHelpersImpl.createNamespacedDataMoveOperation(entry.getKey(), entry.getValue(), "", ""))
+						.toList()
+		);
+	}
+
+	static Function<Schema, FileFix> createGlobalDataMoveFileFix(String oldSaveId, Identifier newSaveId) {
+		return createGlobalDataMoveFileFix(Map.of(oldSaveId, newSaveId));
+	}
+
+	static Function<Schema, FileFix> createGlobalDataMoveFileFix(Map<String, Identifier> saveIdMap) {
+		return schema -> new FileFix(schema) {
+			@Override
+			public void makeFixer() {
+				addFileFixOperation(createGlobalDataMoveOperation(saveIdMap));
+			}
+		};
+	}
+
+	static void registerGlobalDataMoveFileFix(String oldSaveId, Identifier newSaveId) {
+		registerGlobalDataMoveFileFix(Map.of(oldSaveId, newSaveId));
+	}
+
+	static void registerGlobalDataMoveFileFix(Map<String, Identifier> saveIdMap) {
+		FileFixSchemaRegisterCallback.registerFileFixes(FileFixerUpperAccessor.getFileFixerIntroductionVersion(), createGlobalDataMoveFileFix(saveIdMap));
 	}
 }
