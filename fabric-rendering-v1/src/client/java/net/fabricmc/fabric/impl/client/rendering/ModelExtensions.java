@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.rendering;
-
-import java.util.function.BiConsumer;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+package net.fabricmc.fabric.impl.client.rendering;
 
 import net.minecraft.client.model.geom.ModelPart;
 
-@Mixin(ModelPart.class)
-public interface ModelPartAccessor {
-	@Invoker("addAllChildren")
-	void fabric$callAddAllChildren(BiConsumer<String, ModelPart> partBiConsumer);
+public interface ModelExtensions {
+	void fabric$calculateChildParts(ModelPart root);
 }
