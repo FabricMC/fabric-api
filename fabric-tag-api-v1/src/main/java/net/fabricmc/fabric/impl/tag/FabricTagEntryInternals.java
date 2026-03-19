@@ -31,13 +31,13 @@ import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.impl.tag.util.WrapperCodec;
 
-public final class FabricTagEntryImpl {
+public final class FabricTagEntryInternals {
 	public static final Codec<TagEntry> REMOVED_ENTRY_CODEC = new WrapperCodec<>(
 			TagEntry.CODEC,
 			new WrapperCodec.Wrapper<>() {
 				@Override
 				public <T> DataResult<Pair<TagEntry, T>> decode(DynamicOps<T> ops, T input, Decoder<TagEntry> wrapped) {
-					return FabricTagEntryImpl.withRemovedValue(true, () -> wrapped.decode(ops, input));
+					return FabricTagEntryInternals.withRemovedValue(true, () -> wrapped.decode(ops, input));
 				}
 			}
 	);
@@ -47,7 +47,7 @@ public final class FabricTagEntryImpl {
 	 */
 	private static final ThreadLocal<Unit> REMOVED = new ThreadLocal<>();
 
-	private FabricTagEntryImpl() {
+	private FabricTagEntryInternals() {
 		throw new UnsupportedOperationException();
 	}
 

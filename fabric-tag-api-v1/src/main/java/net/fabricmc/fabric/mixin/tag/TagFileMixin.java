@@ -43,7 +43,7 @@ import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 
 import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
-import net.fabricmc.fabric.impl.tag.FabricTagEntryImpl;
+import net.fabricmc.fabric.impl.tag.FabricTagEntryInternals;
 import net.fabricmc.fabric.impl.tag.util.WrapperCodec;
 
 @Mixin(TagFile.class)
@@ -82,7 +82,7 @@ public class TagFileMixin {
 	}
 
 	static {
-		Codec<List<TagEntry>> removeEntryCodec = FabricTagEntryImpl.REMOVED_ENTRY_CODEC
+		Codec<List<TagEntry>> removeEntryCodec = FabricTagEntryInternals.REMOVED_ENTRY_CODEC
 				.listOf()
 				.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
 				.codec();

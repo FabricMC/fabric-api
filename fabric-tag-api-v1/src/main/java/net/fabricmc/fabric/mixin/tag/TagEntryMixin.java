@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.tags.TagEntry;
 
 import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
-import net.fabricmc.fabric.impl.tag.FabricTagEntryImpl;
+import net.fabricmc.fabric.impl.tag.FabricTagEntryInternals;
 
 @Mixin(TagEntry.class)
 public class TagEntryMixin implements FabricTagEntry {
@@ -38,7 +38,7 @@ public class TagEntryMixin implements FabricTagEntry {
 	public TagEntryMixin() { }
 
 	{
-		removed = FabricTagEntryImpl.getCurrentRemovedValue();
+		removed = FabricTagEntryInternals.getCurrentRemovedValue();
 		required = required && !removed;
 	}
 
