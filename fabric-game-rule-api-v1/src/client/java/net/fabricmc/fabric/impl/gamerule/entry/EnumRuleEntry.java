@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
 import net.minecraft.network.chat.Component;
@@ -61,11 +61,11 @@ public final class EnumRuleEntry<E extends Enum<E>> extends AbstractGameRulesScr
 	}
 
 	@Override
-	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float a) {
-		this.renderLabel(graphics, this.getContentY(), this.getContentX());
+	public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+		this.extractLabel(graphics, this.getContentY(), this.getContentX());
 
 		this.button.setX(this.getContentRight() - 44);
 		this.button.setY(this.getContentY());
-		this.button.render(graphics, mouseX, mouseY, a);
+		this.button.extractRenderState(graphics, mouseX, mouseY, a);
 	}
 }

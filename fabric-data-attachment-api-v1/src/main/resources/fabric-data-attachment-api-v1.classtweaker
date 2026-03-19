@@ -3,3 +3,5 @@ transitive-inject-interface	net/minecraft/world/level/block/entity/BlockEntity	n
 transitive-inject-interface	net/minecraft/world/level/chunk/ChunkAccess	net/fabricmc/fabric/api/attachment/v1/AttachmentTarget
 transitive-inject-interface	net/minecraft/world/entity/Entity	net/fabricmc/fabric/api/attachment/v1/AttachmentTarget
 transitive-inject-interface	net/minecraft/world/level/Level	net/fabricmc/fabric/api/attachment/v1/AttachmentTarget
+transitive-inject-interface net/minecraft/server/MinecraftServer    net/fabricmc/fabric/api/attachment/v1/GlobalAttachmentsProvider
+transitive-inject-interface net/minecraft/world/level/Level   net/fabricmc/fabric/api/attachment/v1/GlobalAttachmentsProvider

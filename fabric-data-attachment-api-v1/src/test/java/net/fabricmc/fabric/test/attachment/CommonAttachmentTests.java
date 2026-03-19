@@ -46,6 +46,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.Bootstrap;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
@@ -69,6 +70,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentSavedData;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.GlobalAttachmentsImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncException;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
@@ -112,6 +114,7 @@ public class CommonAttachmentTests {
 		 * CALLS_REAL_METHODS makes sense here because AttachmentTarget does not refer to anything in the underlying
 		 * class, and it saves us a lot of pain trying to get the regular constructors for ServerLevel and LevelChunk to work.
 		 */
+		GlobalAttachmentsImpl globalAttachments = mockAndDisableSync(GlobalAttachmentsImpl.class);
 		ServerLevel serverLevel = mockAndDisableSync(ServerLevel.class);
 		Entity entity = mockAndDisableSync(Entity.class);
 		BlockEntity blockEntity = mockAndDisableSync(BlockEntity.class);
@@ -121,7 +124,7 @@ public class CommonAttachmentTests {
 
 		ProtoChunk protoChunk = mockAndDisableSync(ProtoChunk.class);
 
-		for (AttachmentTarget target : new AttachmentTarget[]{serverLevel, entity, blockEntity, levelChunk, protoChunk}) {
+		for (AttachmentTarget target : new AttachmentTarget[]{globalAttachments, serverLevel, entity, blockEntity, levelChunk, protoChunk}) {
 			testForTarget(target, basic);
 		}
 	}
@@ -278,7 +281,7 @@ public class CommonAttachmentTests {
 	}
 
 	@Test
-	void testWorldPersistentState() {
+	void testLevelSavedData() {
 		// Trying to simulate actual saving and loading for the world is too hard
 		RegistryAccess ra = mockRA();
 
@@ -301,6 +304,35 @@ public class CommonAttachmentTests {
 		AttachmentSavedData.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
 		assertTrue(level.hasAttached(PERSISTENT));
 		assertEquals(expected, level.getAttached(PERSISTENT));
+	}
+
+	@Test
+	void testGlobalSavedData() {
+		RegistryAccess.Frozen ra = mockFrozenRA();
+
+		MinecraftServer server = mock(MinecraftServer.class);
+		GlobalAttachmentsImpl globalAttachments = new GlobalAttachmentsImpl(server);
+		when(server.registryAccess()).thenReturn(ra);
+		when(server.globalAttachments()).thenReturn(globalAttachments);
+
+		AttachmentSavedData state = new AttachmentSavedData(globalAttachments);
+		assertFalse(globalAttachments.hasAttached(PERSISTENT));
+		assertFalse(state.isDirty());
+
+		int expected = 1;
+		globalAttachments.setAttached(PERSISTENT, expected);
+		assertTrue(state.isDirty());
+		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(server).encodeStart(RegistryOps.create(NbtOps.INSTANCE, ra), state).getOrThrow();
+		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
+
+		server = mock(MinecraftServer.class);
+		globalAttachments = new GlobalAttachmentsImpl(server);
+		when(server.registryAccess()).thenReturn(ra);
+		when(server.globalAttachments()).thenReturn(globalAttachments);
+
+		AttachmentSavedData.codec(server).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
+		assertTrue(globalAttachments.hasAttached(PERSISTENT));
+		assertEquals(expected, globalAttachments.getAttached(PERSISTENT));
 	}
 
 	@Test
@@ -329,6 +361,12 @@ public class CommonAttachmentTests {
 
 	private static RegistryAccess mockRA() {
 		RegistryAccess ra = mock(RegistryAccess.class);
+		when(ra.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, ra));
+		return ra;
+	}
+
+	private static RegistryAccess.Frozen mockFrozenRA() {
+		RegistryAccess.Frozen ra = mock(RegistryAccess.Frozen.class);
 		when(ra.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, ra));
 		return ra;
 	}

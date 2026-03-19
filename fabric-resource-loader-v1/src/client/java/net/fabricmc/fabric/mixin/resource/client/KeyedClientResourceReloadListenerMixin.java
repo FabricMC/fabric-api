@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.CloudRenderer;
 import net.minecraft.client.renderer.GpuWarnlistManager;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.ShaderManager;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -38,9 +37,9 @@ import net.minecraft.client.resources.GrassColorReloadListener;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.client.resources.WaypointStyleManager;
 import net.minecraft.client.resources.language.LanguageManager;
-import net.minecraft.client.resources.model.AtlasManager;
 import net.minecraft.client.resources.model.EquipmentAssetManager;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.resources.Identifier;
 
@@ -52,7 +51,6 @@ import net.fabricmc.fabric.impl.resource.FabricResourceReloader;
 		AtlasManager.class,
 		ModelManager.class,
 		BlockEntityRenderDispatcher.class,
-		BlockRenderDispatcher.class,
 		CloudRenderer.class,
 		EquipmentAssetManager.class,
 		EntityRenderDispatcher.class,
@@ -85,8 +83,6 @@ public abstract class KeyedClientResourceReloadListenerMixin implements FabricRe
 				this.fabric$id = ResourceReloaderKeys.Client.MODELS;
 			} else if (self instanceof BlockEntityRenderDispatcher) {
 				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDER_DISPATCHER;
-			} else if (self instanceof BlockRenderDispatcher) {
-				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_RENDER_DISPATCHER;
 			} else if (self instanceof CloudRenderer) {
 				this.fabric$id = ResourceReloaderKeys.Client.CLOUD_RENDERER;
 			} else if (self instanceof DryFoliageColorReloadListener) {

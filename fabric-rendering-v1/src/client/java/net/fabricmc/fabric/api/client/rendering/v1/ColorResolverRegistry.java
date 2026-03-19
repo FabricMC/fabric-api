@@ -21,7 +21,7 @@ import java.util.Set;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorResolverRegistryImpl;

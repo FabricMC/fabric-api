@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.client.gametest.input;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.platform.Window;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,7 +34,7 @@ public class MinecraftMixin {
 	@Final
 	private Window window;
 
-	@ModifyExpressionValue(method = "renderFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;isMinimized()Z"))
+	@ModifyExpressionValue(method = "renderFrame", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/WindowRenderState;isMinimized:Z", opcode = Opcodes.GETFIELD))
 	private boolean hasZeroRealWidthOrHeight(boolean original) {
 		WindowHooks windowHooks = (WindowHooks) (Object) window;
 		return windowHooks.fabric_getRealFramebufferWidth() == 0 || windowHooks.fabric_getRealFramebufferHeight() == 0;

@@ -21,12 +21,12 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 
 @Mixin(LevelReader.class)
-public interface LevelReaderMixin extends BlockAndTintGetter {
+public interface LevelReaderMixin extends BlockAndLightGetter {
 	@Shadow
 	Holder<Biome> getBiome(BlockPos pos);
 

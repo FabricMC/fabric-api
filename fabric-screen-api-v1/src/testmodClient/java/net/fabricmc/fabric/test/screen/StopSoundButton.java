@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.screen;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -30,7 +30,7 @@ class StopSoundButton extends AbstractButton {
 	}
 
 	@Override
-	protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
 		if (this.isHovered()) {

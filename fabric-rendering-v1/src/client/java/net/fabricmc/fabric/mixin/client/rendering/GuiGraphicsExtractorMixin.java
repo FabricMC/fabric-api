@@ -23,21 +23,21 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.rendering.v1.RenderItemDecorationsCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.ExtractItemDecorationsCallback;
 
-@Mixin(GuiGraphics.class)
-abstract class GuiGraphicsMixin {
+@Mixin(GuiGraphicsExtractor.class)
+abstract class GuiGraphicsExtractorMixin {
 	@Inject(
-			method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V",
+			method = "itemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V",
 			at = @At("RETURN")
 	)
 	public void drawStackOverlay(Font font, ItemStack stack, int x, int y, @Nullable String stackCountText, CallbackInfo callback) {
 		if (!stack.isEmpty()) {
-			RenderItemDecorationsCallback.EVENT.invoker()
-					.onRenderItemDecorations((GuiGraphics) (Object) this, font, stack, x, y);
+			ExtractItemDecorationsCallback.EVENT.invoker()
+					.onExtractItemDecorations((GuiGraphicsExtractor) (Object) this, font, stack, x, y);
 		}
 	}
 }

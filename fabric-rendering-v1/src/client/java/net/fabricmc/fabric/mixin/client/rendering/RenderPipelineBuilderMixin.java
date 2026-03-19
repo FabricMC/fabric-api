@@ -22,10 +22,9 @@ import java.util.Optional;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.platform.LogicOp;
 import com.mojang.blaze3d.platform.PolygonMode;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import org.spongepowered.asm.mixin.Mixin;
@@ -79,19 +78,15 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			Optional<ShaderDefines> shaderDefines,
 			Optional<List<String>> samplers,
 			Optional<List<RenderPipeline.UniformDescription>> uniforms,
-			Optional<BlendFunction> blendFunction,
-			Optional<DepthTestFunction> depthTestFunction,
+			Optional<ColorTargetState> colorTargetState,
+			Optional<DepthStencilState> depthStencilState,
 			Optional<PolygonMode> polygonMode,
 			Optional<Boolean> cull,
-			Optional<Boolean> writeColor,
-			Optional<Boolean> writeAlpha,
-			Optional<Boolean> writeDepth,
-			Optional<LogicOp> colorLogic,
 			Optional<VertexFormat> vertexFormat,
 			Optional<VertexFormat.Mode> vertexFormatMode,
 			Operation<RenderPipeline.Snippet> original
 	) {
-		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(vertexShader, fragmentShader, shaderDefines, samplers, uniforms, blendFunction, depthTestFunction, polygonMode, cull, writeColor, writeAlpha, writeDepth, colorLogic, vertexFormat, vertexFormatMode), usePipelineDrawModeForGui);
+		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(vertexShader, fragmentShader, shaderDefines, samplers, uniforms, colorTargetState, depthStencilState, polygonMode, cull, vertexFormat, vertexFormatMode), usePipelineDrawModeForGui);
 	}
 
 	@ModifyReturnValue(

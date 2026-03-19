@@ -21,7 +21,7 @@ import java.util.List;
 import com.mojang.serialization.DataResult;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen;
 import net.minecraft.network.chat.CommonComponents;
@@ -63,11 +63,11 @@ public final class DoubleRuleEntry extends AbstractGameRulesScreen.GameRuleEntry
 	}
 
 	@Override
-	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		this.renderLabel(graphics, this.getContentY(), this.getContentX());
+	public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		this.extractLabel(graphics, this.getContentY(), this.getContentX());
 
 		this.input.setX(this.getContentRight() - 44);
 		this.input.setY(this.getContentY());
-		this.input.render(graphics, mouseX, mouseY, tickDelta);
+		this.input.extractRenderState(graphics, mouseX, mouseY, tickDelta);
 	}
 }

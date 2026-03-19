@@ -23,7 +23,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
@@ -45,16 +45,17 @@ import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelExtractionContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelRenderContextImpl;
 
 @Mixin(LevelRenderer.class)
-public abstract class LevelRendererMixin {
+public abstract class LevelRendererMixin implements LevelRendererExtensions {
 	@Shadow
 	@Final
 	private Minecraft minecraft;
@@ -76,11 +77,19 @@ public abstract class LevelRendererMixin {
 	@Unique
 	private final LevelExtractionContextImpl extractionContext = new LevelExtractionContextImpl();
 
+	@Override
+	public void fabric_prepareLevelExtractionContext(DeltaTracker deltaTracker) {
+		extractionContext.prepare(
+				minecraft.gameRenderer,
+				minecraft.levelRenderer,
+				levelRenderState,
+				level,
+				deltaTracker,
+				minecraft.gameRenderer.getMainCamera());
+	}
+
 	@Inject(method = "renderLevel", at = @At("HEAD"))
-	private void beforeRender(GraphicsResourceAllocator allocator, DeltaTracker deltaTracker, boolean renderBlockOutline, CameraRenderState cameraState, Matrix4f viewMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, ChunkSectionsToRender chunkSectionsToRender, CallbackInfo ci) {
-		extractionContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, level,
-				deltaTracker, renderBlockOutline, minecraft.gameRenderer.getMainCamera(), viewMatrix, viewMatrix);
-		extractionContext.setFrustum(cameraState.cullFrustum);
+	private void beforeRender(GraphicsResourceAllocator resourceAllocator, DeltaTracker deltaTracker, boolean renderOutline, CameraRenderState cameraState, Matrix4fc modelViewMatrix, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, ChunkSectionsToRender chunkSectionsToRender, CallbackInfo ci) {
 		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, chunkSectionsToRender, submitNodeStorage, renderBuffers.bufferSource());
 	}
 
@@ -107,7 +116,7 @@ public abstract class LevelRendererMixin {
 		return poseStack;
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=solidFeatures"))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=renderSolidFeatures"))
 	private void afterCollectSubmits(CallbackInfo ci) {
 		LevelRenderEvents.COLLECT_SUBMITS.invoker().collectSubmits(renderContext);
 	}
@@ -117,12 +126,12 @@ public abstract class LevelRendererMixin {
 		LevelRenderEvents.AFTER_SOLID_FEATURES.invoker().afterSolidFeatures(renderContext);
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=destroyProgress"))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderTranslucentFeatures()V", shift = At.Shift.AFTER))
 	private void afterRenderTranslucentFeatures(CallbackInfo ci) {
 		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.invoker().afterTranslucentFeatures(renderContext);
 	}
 
-	@Inject(method = "renderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/CameraRenderState;pos:Lnet/minecraft/world/phys/Vec3;", opcode = Opcodes.GETFIELD), cancellable = true)
+	@Inject(method = "renderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/level/CameraRenderState;pos:Lnet/minecraft/world/phys/Vec3;", opcode = Opcodes.GETFIELD), cancellable = true)
 	private void beforeRenderBlockOutline(MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean translucent, LevelRenderState levelRenderState, CallbackInfo ci) {
 		if (!LevelRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.levelState().blockOutlineRenderState)) {
 			bufferSource.endLastBatch();

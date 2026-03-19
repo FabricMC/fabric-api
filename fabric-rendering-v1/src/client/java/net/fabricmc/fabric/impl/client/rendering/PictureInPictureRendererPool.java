@@ -21,9 +21,9 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 
 public final class PictureInPictureRendererPool<T extends PictureInPictureRenderState> implements AutoCloseable {
 	private int index = 0;

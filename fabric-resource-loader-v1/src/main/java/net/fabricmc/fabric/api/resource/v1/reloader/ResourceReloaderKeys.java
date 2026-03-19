@@ -48,7 +48,6 @@ public final class ResourceReloaderKeys {
 	 */
 	public static final class Client {
 		public static final Identifier BLOCK_ENTITY_RENDER_DISPATCHER = Identifier.withDefaultNamespace("block_entity_render_dispatcher");
-		public static final Identifier BLOCK_RENDER_DISPATCHER = Identifier.withDefaultNamespace("block_render_dispatcher");
 		public static final Identifier CLOUD_RENDERER = Identifier.withDefaultNamespace("cloud_renderer");
 		public static final Identifier EQUIPMENT_ASSETS = Identifier.withDefaultNamespace("equipment_assets");
 		public static final Identifier ENTITY_RENDER_DISPATCHER = Identifier.withDefaultNamespace("entity_render_dispatcher");

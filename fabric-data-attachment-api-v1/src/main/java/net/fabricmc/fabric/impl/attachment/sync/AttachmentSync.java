@@ -149,6 +149,8 @@ public class AttachmentSync implements ModInitializer {
 
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
+			// sync global attachments
+			((AttachmentTargetImpl) player.level().globalAttachments()).fabric_computeInitialSyncChanges(player, changes::add);
 			// sync level attachments
 			((AttachmentTargetImpl) player.level()).fabric_computeInitialSyncChanges(player, changes::add);
 			// sync player's own persistent attachments that couldn't be synced earlier

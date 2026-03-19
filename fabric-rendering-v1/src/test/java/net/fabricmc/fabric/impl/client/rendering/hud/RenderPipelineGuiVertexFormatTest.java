@@ -104,7 +104,7 @@ public class RenderPipelineGuiVertexFormatTest {
 		FabricRenderPipeline.Snippet snippet = RenderPipeline.builder()
 				.withUsePipelineDrawModeForGui(true)
 				.buildSnippet();
-		String expectedToString = "Snippet[vertexShader=Optional.empty, fragmentShader=Optional.empty, shaderDefines=Optional.empty, samplers=Optional.empty, uniforms=Optional.empty, blendFunction=Optional.empty, depthTestFunction=Optional.empty, polygonMode=Optional.empty, cull=Optional.empty, writeColor=Optional.empty, writeAlpha=Optional.empty, writeDepth=Optional.empty, colorLogic=Optional.empty, vertexFormat=Optional.empty, vertexFormatMode=Optional.empty, usePipelineDrawModeForGui=Optional[true]]";
+		String expectedToString = "Snippet[vertexShader=Optional.empty, fragmentShader=Optional.empty, shaderDefines=Optional.empty, samplers=Optional.empty, uniforms=Optional.empty, colorTargetState=Optional.empty, depthStencilState=Optional.empty, polygonMode=Optional.empty, cull=Optional.empty, vertexFormat=Optional.empty, vertexFormatMode=Optional.empty, usePipelineDrawModeForGui=Optional[true]]";
 		Assertions.assertEquals(expectedToString, snippet.toString());
 		FabricRenderPipeline.Snippet snippet2 = RenderPipeline.builder()
 				.withUsePipelineDrawModeForGui(true)
@@ -120,7 +120,6 @@ public class RenderPipelineGuiVertexFormatTest {
 
 	private static RenderPipeline.Snippet createEmptySnippet() {
 		return new RenderPipeline.Snippet(
-				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty()

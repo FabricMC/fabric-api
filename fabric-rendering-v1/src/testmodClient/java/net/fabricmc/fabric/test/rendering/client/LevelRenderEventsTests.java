@@ -17,11 +17,11 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.BlockOutlineRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.Blocks;
@@ -44,6 +44,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderConte
 
 public class LevelRenderEventsTests implements ClientModInitializer, FabricClientGameTest {
 	private static final RenderStateDataKey<Boolean> DIAMOND_BLOCK_OUTLINE = RenderStateDataKey.create(() -> "fabric api test mod block outline diamond block");
+	@Nullable
+	private static BlockModelResolver blockModelResolver = null;
 
 	private static void extractBlockOutline(LevelExtractionContext context, HitResult hitResult) {
 		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.level().getBlockState(blockHitResult.getBlockPos()).is(Blocks.DIAMOND_BLOCK)) {
@@ -53,21 +55,18 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 	private static boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState) {
 		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
-			PoseStack poseStack = new PoseStack();
+			PoseStack poseStack = context.poseStack();
 			poseStack.pushPose();
-			Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().position();
+			Vec3 cameraPos = context.levelState().cameraRenderState.pos;
 			BlockPos pos = outlineRenderState.pos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
 			poseStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
 			poseStack.scale(0.5f, 0.5f, 0.5f);
-
-			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-					Blocks.DIAMOND_BLOCK.defaultBlockState(),
-					poseStack, context.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY
-			);
-
+			AABB box = new AABB(0, 0, 0, 1, 1, 1);
+			int green = ARGB.colorFromFloat(1.0f, 0, 1, 0);
+			TestRenderUtils.drawFilledBox(poseStack, context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, green);
 			poseStack.popPose();
 		}
 
@@ -120,7 +119,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 			singleplayer.getServer().runCommand("/tp @a 0 100 -3");
 			singleplayer.getServer().runCommand("/setblock 0 101 0 minecraft:diamond_block");
 			singleplayer.getClientLevel().waitForChunksRender();
-
+			context.waitTicks(10);
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("level_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
 		}
 	}
@@ -129,10 +128,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		assertAbstractRenderContext(context);
 		assertNotNull(context.level(), "level is null");
 		assertNotNull(context.camera(), "camera is null");
-		assertNotNull(context.frustum(), "frustum is null");
 		assertNotNull(context.deltaTracker(), "deltaTracker is null");
-		assertNotNull(context.viewMatrix(), "viewMatrix is null");
-		assertNotNull(context.cullProjectionMatrix(), "cullProjectionMatrix is null");
 	}
 
 	private static void assertRenderContext(LevelRenderContext context) {
