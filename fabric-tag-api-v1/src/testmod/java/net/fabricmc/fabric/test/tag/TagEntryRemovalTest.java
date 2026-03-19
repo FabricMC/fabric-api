@@ -56,7 +56,7 @@ public final class TagEntryRemovalTest implements ModInitializer {
 					() -> TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ENCHANTMENT_TAG), Enchantments.UNBREAKING, Enchantments.MENDING),
 					"Expected %s not to contain Unbreaking or Mending".formatted(TEST_ENCHANTMENT_TAG)
 			);
-			LOGGER.info("Tag entry removal tests completed successfully!");
+			LOGGER.info("The tests for tag entry removals passed!");
 		});
 	}
 }
