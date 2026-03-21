@@ -213,7 +213,7 @@ public final class LevelRenderEvents {
 	 *
 	 * <p><strong>Warning:</strong> after rendering things in this event, consumers should call
 	 * {@link MultiBufferSource.BufferSource#endBatch() context.bufferSource().endBatch()}, otherwise
-	 * you may get strange rendering behavior!
+	 * you may get strange rendering bugs!
 	 */
 	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
 		for (final EndMain callback : callbacks) {
