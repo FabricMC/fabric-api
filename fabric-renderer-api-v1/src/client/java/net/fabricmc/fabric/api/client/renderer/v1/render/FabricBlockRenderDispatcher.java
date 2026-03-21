@@ -53,8 +53,7 @@ public interface FabricBlockRenderDispatcher {
 	 * conjunction with one of {@link ModelBakery#DESTROY_TYPES} where the index is the breaking progress.</b>
 	 */
 	default void renderBreakingTexture(BlockState state, BlockPos pos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer) {
-		Renderer.get().renderBreakingTexture((BlockRenderDispatcher) this,
-				state, pos, level, poseStack, vertexConsumer);
+		Renderer.get().renderBreakingTexture(state, pos, level, poseStack, vertexConsumer);
 	}
 
 	/**
@@ -82,9 +81,7 @@ public interface FabricBlockRenderDispatcher {
 	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	default void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
-		Renderer.get().renderSingleBlock((BlockRenderDispatcher) this, state,
-				poseStack, bufferSource, layerFilter, light, overlay,
-				level, pos);
+		Renderer.get().renderSingleBlock(state, poseStack, bufferSource, layerFilter, light, overlay, level, pos);
 	}
 
 	/**
@@ -110,8 +107,6 @@ public interface FabricBlockRenderDispatcher {
 	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	default void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
-		Renderer.get().renderSingleBlock((BlockRenderDispatcher) this, state,
-				poseStack, bufferSource, null, light, overlay,
-				level, pos);
+		Renderer.get().renderSingleBlock(state, poseStack, bufferSource, null, light, overlay, level, pos);
 	}
 }

@@ -28,15 +28,16 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.Material;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.CompositeBlockStateModel;
@@ -46,22 +47,19 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	private final BlockStateModel[] models;
 	@UnmodifiableView
 	private final List<BlockStateModel> modelsView;
-	private final boolean hasTranslucency;
+	private final int materialFlags;
 
 	public CompositeBlockStateModelImpl(BlockStateModel[] models) {
 		this.models = models;
 		modelsView = Arrays.asList(models);
 
-		boolean hasTranslucency = false;
+		int flags = 0;
 
 		for (BlockStateModel model : this.models) {
-			if (model.hasTranslucency()) {
-				hasTranslucency = true;
-				break;
-			}
+			flags |= model.materialFlags();
 		}
 
-		this.hasTranslucency = hasTranslucency;
+		this.materialFlags = flags;
 	}
 
 	public static CompositeBlockStateModelImpl of(List<BlockStateModel> models) {
@@ -80,7 +78,7 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
+	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 		long seed = random.nextLong();
 
 		for (BlockStateModel model : models) {
@@ -135,13 +133,18 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public boolean hasTranslucency() {
-		return this.hasTranslucency;
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return models[0].particleMaterial(level, pos, state);
 	}
 
 	@Override
-	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		return models[0].particleMaterial(level, pos, state);
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		return materialFlags;
+	}
+
+	@Override
+	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
+		return (materialFlags & flag) != 0;
 	}
 
 	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {

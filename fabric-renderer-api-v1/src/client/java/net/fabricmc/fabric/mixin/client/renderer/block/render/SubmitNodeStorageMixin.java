@@ -19,15 +19,12 @@ package net.fabricmc.fabric.mixin.client.renderer.block.render;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;

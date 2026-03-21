@@ -21,7 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.item.CompositeModel;
 
 import net.fabricmc.fabric.impl.client.model.loading.CompositeBlockStateModelImpl;

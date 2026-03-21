@@ -18,11 +18,10 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
 import static net.minecraft.util.Mth.equal;
 
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-
 import org.joml.Vector3fc;
 
 import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;

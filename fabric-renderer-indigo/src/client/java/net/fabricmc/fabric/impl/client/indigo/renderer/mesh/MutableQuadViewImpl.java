@@ -29,15 +29,13 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 

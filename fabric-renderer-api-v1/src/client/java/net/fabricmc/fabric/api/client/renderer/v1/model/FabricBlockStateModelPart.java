@@ -18,12 +18,10 @@ package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.function.Predicate;
 
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;

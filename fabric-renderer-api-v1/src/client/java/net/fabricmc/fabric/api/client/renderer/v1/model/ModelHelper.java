@@ -21,19 +21,15 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Transparency;
-
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-
-import net.minecraft.client.resources.model.sprite.Material;
-
-import net.minecraft.util.LightCoordsUtil;
-
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
+import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;

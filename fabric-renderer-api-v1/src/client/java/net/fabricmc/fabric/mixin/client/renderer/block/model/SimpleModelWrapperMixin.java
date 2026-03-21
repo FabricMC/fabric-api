@@ -21,7 +21,6 @@ import java.util.function.Predicate;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -34,9 +33,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 
@@ -55,7 +54,7 @@ abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 	private boolean useAmbientOcclusion;
 
 	@Inject(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/geometry/QuadCollection;getAll()Ljava/util/List;"))
-	private static void analyzeMesh(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockStateModelPart> cir, @Local(name = "geometry") QuadCollection geometry, @Local(name = "hasTranslucency") LocalBooleanRef hasTranslucencyRef, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
+	private static void analyzeMesh(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockStateModelPart> cir, @Local(name = "geometry") QuadCollection geometry, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
 		if (geometry instanceof MeshQuadCollection meshQuadCollection) {
 			meshQuadCollection.getMesh().forEach(quad -> {
 				if (quad.atlas() != QuadAtlas.BLOCK) {
@@ -69,8 +68,6 @@ abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 					TextureAtlasSprite sprite = modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
 					forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
 				}
-
-				hasTranslucencyRef.set(hasTranslucencyRef.get() | quad.chunkLayer().translucent());
 			});
 		}
 	}

@@ -21,13 +21,12 @@ import java.util.List;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
-
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
+
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 
 /**
  * A special {@link QuadCollection} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Useful for custom

@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.particle;
 
-import net.minecraft.client.renderer.block.BlockStateModelSet;
 import org.spongepowered.asm.mixin.Mixin;
+
+import net.minecraft.client.renderer.block.BlockStateModelSet;
 
 import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModelSet;
 

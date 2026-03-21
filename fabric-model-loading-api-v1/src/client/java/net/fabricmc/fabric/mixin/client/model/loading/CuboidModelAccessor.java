@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.indigo.renderer;
+package net.fabricmc.fabric.mixin.client.model.loading;
 
+import com.google.gson.Gson;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.cuboid.CuboidModel;
 
-@Mixin(BlockRenderDispatcher.class)
-public interface BlockRenderDispatcherAccessor {
-	@Accessor("blockColors")
-	BlockColors getBlockColors();
+@Mixin(CuboidModel.class)
+public interface CuboidModelAccessor {
+	@Accessor("GSON")
+	static Gson fabric_getGson() {
+		throw new AssertionError();
+	}
 }

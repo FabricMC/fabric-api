@@ -18,13 +18,12 @@ package net.fabricmc.fabric.api.client.renderer.v1.sprite;
 
 import java.util.function.Predicate;
 
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
-
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;

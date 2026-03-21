@@ -19,15 +19,13 @@ package net.fabricmc.fabric.mixin.client.indigo.renderer;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;

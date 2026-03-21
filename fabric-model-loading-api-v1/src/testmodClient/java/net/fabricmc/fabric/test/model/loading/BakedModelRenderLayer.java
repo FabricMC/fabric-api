@@ -16,20 +16,24 @@
 
 package net.fabricmc.fabric.test.model.loading;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.AxisAngle4f;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.util.Mth;
 
 public class BakedModelRenderLayer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
@@ -48,9 +52,17 @@ public class BakedModelRenderLayer<S extends LivingEntityRenderState, M extends 
 		poseStack.scale(-0.75F, -0.75F, 0.75F);
 		float aboveHead = (float) (Math.sin(state.ageInTicks * 0.08F)) * 0.5F + 0.5F;
 		poseStack.translate(-0.5F, 0.75F + aboveHead, -0.5F);
+
 		// FIXME 1.21.9
 		// FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(bufferSource), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
-		nodeCollector.order(0).submitBlockModel(poseStack, Sheets.cutoutBlockSheet(), model, -1, light, OverlayTexture.NO_OVERLAY, 0);
+
+		BlockModelRenderState renderState = new BlockModelRenderState();
+		List<BlockStateModelPart> partList = renderState.setupModel(new Matrix4f(), model.hasMaterialFlag(BakedQuad.FLAG_TRANSLUCENT));
+		model.collectParts(renderState.scratchRandomSource(42L), partList);
+		renderState.tintLayers().add(-1);
+
+		renderState.submit(poseStack, nodeCollector, light, OverlayTexture.NO_OVERLAY, 0);
+
 		poseStack.popPose();
 	}
 }

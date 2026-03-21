@@ -4,8 +4,8 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "ModelManagerMixin",
-    "BlockModelAccessor",
-    "BlockModelMixin",
+    "CuboidModelAccessor",
+    "CuboidModelMixin",
     "ModelBakeryBakingResultMixin",
     "ModelBakeryMixin",
     "BlockStateModelUnbakedMixin"

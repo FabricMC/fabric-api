@@ -16,15 +16,14 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.particle;
 
-import net.minecraft.client.renderer.block.BlockStateModelSet;
-import net.minecraft.client.resources.model.sprite.Material;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.BlockMarker;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 

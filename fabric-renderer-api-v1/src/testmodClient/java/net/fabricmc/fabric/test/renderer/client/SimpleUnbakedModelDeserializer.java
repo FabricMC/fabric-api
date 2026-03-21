@@ -22,19 +22,15 @@ import java.util.List;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.resources.model.cuboid.CuboidModel;
 import net.minecraft.client.resources.model.cuboid.CuboidModelElement;
 import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.client.resources.model.cuboid.UnbakedCuboidGeometry;
 import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
-
 import net.minecraft.client.resources.model.sprite.TextureSlots;
-
-import org.jspecify.annotations.Nullable;
-
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 

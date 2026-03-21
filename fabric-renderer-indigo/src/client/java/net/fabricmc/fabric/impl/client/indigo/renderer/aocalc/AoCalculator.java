@@ -21,23 +21,17 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
 import com.mojang.blaze3d.vertex.QuadInstance;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.BlockModelLighter;
-
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-
-import net.minecraft.util.ARGB;
-
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockModelLighter;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 

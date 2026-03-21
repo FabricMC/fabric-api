@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
+import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemFeatureRendererAccessor;
 
 /**
  * Used during item buffering to support geometry added through {@link FabricLayerRenderState#emitter()}.
@@ -59,7 +59,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	public void renderItem(
 			ItemDisplayContext displayContext,
-			PoseStack poseStack,
+			PoseStack.Pose pose,
 			MultiBufferSource bufferSource,
 			int light,
 			int overlay,
@@ -71,7 +71,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			boolean translucent
 	) {
 		this.displayContext = displayContext;
-		pose = poseStack.last();
+		this.pose = pose;
 		this.bufferSource = bufferSource;
 		this.light = light;
 		this.overlay = overlay;
@@ -83,7 +83,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		bufferQuads(vanillaQuads, mesh);
 
-		pose = null;
+		this.pose = null;
 		this.bufferSource = null;
 		this.tints = null;
 
@@ -188,10 +188,10 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private VertexConsumer createVertexConsumer(RenderType renderType, ItemStackRenderState.FoilType foilType) {
 		if (foilType != ItemStackRenderState.FoilType.NONE) {
 			if (foilType == ItemStackRenderState.FoilType.SPECIAL && foilDecalPose == null) {
-				foilDecalPose = ItemRendererAccessor.fabric_computeFoilDecalPose(displayContext, pose);
+				foilDecalPose = ItemFeatureRendererAccessor.fabric_computeFoilDecalPose(displayContext, pose);
 			}
 
-			return ItemRendererAccessor.fabric_getFoilBuffer(bufferSource, renderType, foilDecalPose);
+			return ItemFeatureRendererAccessor.fabric_getFoilBuffer(bufferSource, renderType, foilDecalPose);
 		}
 
 		return bufferSource.getBuffer(renderType);

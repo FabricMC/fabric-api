@@ -21,13 +21,13 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.cuboid.CuboidModel;
 
 import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelJsonDeserializer;
 
-@Mixin(BlockModel.class)
-abstract class BlockModelMixin {
+@Mixin(CuboidModel.class)
+abstract class CuboidModelMixin {
 	@ModifyExpressionValue(method = "<clinit>()V", at = @At(value = "NEW", target = "com/google/gson/GsonBuilder"))
 	private static GsonBuilder addUnbakedModelAdapter(GsonBuilder builder) {
 		return builder.registerTypeHierarchyAdapter(UnbakedModel.class, new UnbakedModelJsonDeserializer());

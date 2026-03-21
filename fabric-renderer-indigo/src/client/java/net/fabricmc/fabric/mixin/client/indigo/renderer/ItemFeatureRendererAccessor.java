@@ -23,12 +23,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
-@Mixin(ItemRenderer.class)
-public interface ItemRendererAccessor {
+@Mixin(ItemFeatureRenderer.class)
+public interface ItemFeatureRendererAccessor {
 	@Invoker("getFoilBuffer")
 	static VertexConsumer fabric_getFoilBuffer(MultiBufferSource bufferSource, RenderType renderType, PoseStack.@Nullable Pose foilDecalPose) {
 		throw new AssertionError();

@@ -21,19 +21,16 @@ import java.util.Map;
 
 import com.mojang.math.MatrixUtil;
 import com.mojang.math.Transformation;
-
-import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
-import net.minecraft.client.renderer.block.dispatch.ModelState;
-
-import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
-
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
 

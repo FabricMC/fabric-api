@@ -19,12 +19,10 @@ package net.fabricmc.fabric.impl.client.renderer;
 import java.util.List;
 import java.util.function.Predicate;
 
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;

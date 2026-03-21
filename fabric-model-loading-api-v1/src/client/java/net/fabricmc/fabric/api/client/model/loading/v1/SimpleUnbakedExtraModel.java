@@ -21,24 +21,23 @@ import java.util.function.BiFunction;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.logging.LogUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.slf4j.Logger;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.Material;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
@@ -97,16 +96,14 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 
 	// TODO: expose this as a public utility
 	// Mirror of SimpleModelWrapper#bake (with FRAPI's mixin) that accepts a ResolvedModel instead of an Identifier
-	private static BlockModelPart bakeResolved(final ModelBaker modelBakery, final ResolvedModel model, final ModelState state) {
+	private static BlockStateModelPart bakeResolved(final ModelBaker modelBakery, final ResolvedModel model, final ModelState state) {
 		TextureSlots textureSlots = model.getTopTextureSlots();
 		boolean hasAmbientOcclusion = model.getTopAmbientOcclusion();
 		Material.Baked particleMaterial = model.resolveParticleMaterial(textureSlots, modelBakery);
 		QuadCollection geometry = model.bakeTopGeometry(textureSlots, modelBakery, state);
-		boolean hasTranslucency = false;
 		Multimap<Identifier, Identifier> forbiddenSprites = null;
 
 		if (geometry instanceof MeshQuadCollection meshQuadCollection) {
-			MutableBoolean hasTranslucencyRef = new MutableBoolean(hasTranslucency);
 			MutableObject<Multimap<Identifier, Identifier>> forbiddenSpritesRef = new MutableObject<>(forbiddenSprites);
 
 			meshQuadCollection.getMesh().forEach(quad -> {
@@ -121,16 +118,13 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 					TextureAtlasSprite sprite = modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
 					forbiddenSprites1.put(sprite.atlasLocation(), sprite.contents().name());
 				}
-
-				hasTranslucencyRef.setValue(hasTranslucencyRef.booleanValue() | quad.chunkLayer().translucent());
 			});
 
-			hasTranslucency = hasTranslucencyRef.booleanValue();
 			forbiddenSprites = forbiddenSpritesRef.get();
 		}
 
 		for (BakedQuad bakedQuad : geometry.getAll()) {
-			TextureAtlasSprite sprite = bakedQuad.spriteInfo().sprite();
+			TextureAtlasSprite sprite = bakedQuad.materialInfo().sprite();
 
 			if (!sprite.atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
 				if (forbiddenSprites == null) {
@@ -139,15 +133,13 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 
 				forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
 			}
-
-			hasTranslucency |= bakedQuad.spriteInfo().layer().translucent();
 		}
 
 		if (forbiddenSprites != null) {
 			LOGGER.warn("Rejecting block model {}, since it contains sprites from outside of supported atlas: {}", model.debugName(), forbiddenSprites);
 			return modelBakery.missingBlockModelPart();
 		} else {
-			return new SimpleModelWrapper(geometry, hasAmbientOcclusion, particleMaterial, hasTranslucency);
+			return new SimpleModelWrapper(geometry, hasAmbientOcclusion, particleMaterial);
 		}
 	}
 

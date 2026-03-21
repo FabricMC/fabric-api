@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;

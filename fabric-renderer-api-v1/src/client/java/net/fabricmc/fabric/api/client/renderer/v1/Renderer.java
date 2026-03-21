@@ -21,15 +21,13 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -58,7 +56,7 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * <ul><li>{@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
  *
  * <p>All other places in vanilla code that invoke {@link BlockStateModel#collectParts(RandomSource, List)},
- * {@link BlockStateModel#collectParts(RandomSource)},
+ * {@link BlockStateModel#collectParts(RandomSource, List),
  * {@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput)},
  * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput, boolean, List)},
  * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, BakedQuadOutput, boolean, int)},
@@ -105,13 +103,13 @@ public interface Renderer {
 	 * @see FabricBlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)
 	 */
 	@ApiStatus.OverrideOnly
-	void renderBreakingTexture(BlockRenderDispatcher renderDispatcher, BlockState state, BlockPos pos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer);
+	void renderBreakingTexture(BlockState state, BlockPos pos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer);
 
 	/**
 	 * @see FabricBlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, Predicate, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	@ApiStatus.OverrideOnly
-	void renderSingleBlock(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
+	void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
 
 	/**
 	 * @see FabricLayerRenderState#emitter()
