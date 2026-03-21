@@ -21,17 +21,32 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.fog.FogData;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.GameRenderState;
+import net.minecraft.client.renderer.state.LightmapRenderState;
 import net.minecraft.client.renderer.state.MapRenderState;
+import net.minecraft.client.renderer.state.OptionsRenderState;
+import net.minecraft.client.renderer.state.WindowRenderState;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.client.renderer.state.gui.PanoramaRenderState;
+import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.CameraEntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.state.level.ParticlesRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.client.renderer.state.level.WeatherRenderState;
 import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.Bootstrap;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.shapes.Shapes;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -47,20 +62,33 @@ public class RenderStateDataTest {
 
 	@Test
 	void assertFabricRenderStateMethods() {
-		ItemStackRenderState itemRenderState = new ItemStackRenderState();
+		ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
 		FabricRenderState[] states = new FabricRenderState[]{
-				new EntityRenderState(),
+				new BlockModelRenderState(),
+				new MovingBlockRenderState(),
 				new BlockEntityRenderState(),
-				itemRenderState,
-				itemRenderState.new LayerRenderState(),
+				new EntityRenderState(),
+				new EntityRenderState.LeashState(),
+				new FogData(),
+				itemStackRenderState,
+				itemStackRenderState.new LayerRenderState(),
+				new GameRenderState(),
 				new MapRenderState(),
 				new MapRenderState.MapDecorationRenderState(),
-				new MovingBlockRenderState(),
-				new LevelRenderState(),
+				new LightmapRenderState(),
+				new OptionsRenderState(),
+				new WindowRenderState(),
+				new GuiRenderState(),
+				new PanoramaRenderState(0f),
+				new BlockBreakingRenderState(BlockPos.ZERO, Blocks.AIR.defaultBlockState(), 0),
+				new BlockOutlineRenderState(BlockPos.ZERO, false, false, Shapes.empty()),
+				new CameraEntityRenderState(),
 				new CameraRenderState(),
+				new LevelRenderState(),
+				new ParticlesRenderState(),
+				new SkyRenderState(),
 				new WeatherRenderState(),
-				new WorldBorderRenderState(),
-				new SkyRenderState()
+				new WorldBorderRenderState()
 		};
 
 		for (FabricRenderState state : states) {

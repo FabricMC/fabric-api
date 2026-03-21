@@ -19,14 +19,25 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.fog.FogData;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.GameRenderState;
+import net.minecraft.client.renderer.state.LightmapRenderState;
 import net.minecraft.client.renderer.state.MapRenderState;
+import net.minecraft.client.renderer.state.OptionsRenderState;
+import net.minecraft.client.renderer.state.WindowRenderState;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.client.renderer.state.gui.PanoramaRenderState;
+import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.CameraEntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.state.level.ParticlesRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.client.renderer.state.level.WeatherRenderState;
 import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
@@ -36,17 +47,52 @@ import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
  *
  * <p>Note: This interface is automatically implemented on the following classes via Mixin and interface injection:
  * <ul>
- *     <li>{@link EntityRenderState},
- *     <li>{@link BlockEntityRenderState}
- *     <li>{@link ItemStackRenderState} and {@link ItemStackRenderState.LayerRenderState}
- *     <li>{@link MapRenderState} and {@link MapRenderState.MapDecorationRenderState}
- *     <li>{@link MovingBlockRenderState}
- *     <li>{@link LevelRenderState}
- *     <li>{@link CameraRenderState}
- *     <li>{@link BlockOutlineRenderState}
- *     <li>{@link WeatherRenderState}
- *     <li>{@link WorldBorderRenderState}
- *     <li>{@link SkyRenderState}
+ *     <li>{@link GameRenderState}
+ *         <ul>
+ *             <li>{@link LevelRenderState}
+ *                 <ul>
+ *                     <li>{@link CameraRenderState}
+ *                         <ul>
+ *                             <li>{@link FogData}
+ *                             <li>{@link CameraEntityRenderState}
+ *                         </ul>
+ *                     </li>
+ *                     <li>{@link EntityRenderState}
+ *                         <ul>
+ *                             <li>{@link EntityRenderState.LeashState}
+ *                             <li>{@link BlockModelRenderState}
+ *                             <li>{@link MovingBlockRenderState}
+ *                         </ul>
+ *                     </li>
+ *                     <li>{@link BlockEntityRenderState}
+ *                     <li>{@link BlockOutlineRenderState}
+ *                     <li>{@link BlockBreakingRenderState}
+ *                     <li>{@link WeatherRenderState}
+ *                     <li>{@link WorldBorderRenderState}
+ *                     <li>{@link SkyRenderState}
+ *                     <li>{@link ParticlesRenderState}
+ *                 </ul>
+ *             </li>
+ *             <li>{@link LightmapRenderState}
+ *             <li>{@link GuiRenderState}
+ *                 <ul>
+ *                     <li>{@link PanoramaRenderState}
+ *                 </ul>
+ *             </li>
+ *             <li>{@link OptionsRenderState}
+ *             <li>{@link WindowRenderState}
+ *         </ul>
+ *     </li>
+ *     <li>{@link ItemStackRenderState}
+ *         <ul>
+ *             <li>{@link ItemStackRenderState.LayerRenderState}
+ *         </ul>
+ *     </li>
+ *     <li>{@link MapRenderState}
+ *         <ul>
+ *             <li>{@link MapRenderState.MapDecorationRenderState}
+ *         </ul>
+ *     </li>
  * </ul>
  */
 @ApiStatus.NonExtendable

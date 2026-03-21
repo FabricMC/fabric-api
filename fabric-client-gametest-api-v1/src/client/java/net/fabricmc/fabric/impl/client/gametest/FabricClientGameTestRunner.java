@@ -39,7 +39,7 @@ public class FabricClientGameTestRunner {
 
 	public static void start() {
 		// make the game think the window is focused
-		Minecraft.getInstance().setWindowActive(true);
+		((WindowHooks) (Object) Minecraft.getInstance().getWindow()).fabric_focus();
 
 		List<EntrypointContainer<FabricClientGameTest>> gameTests = getTestToRun();
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.rendering;
+package net.fabricmc.fabric.mixin.client.rendering.renderstate;
 
 import java.util.Map;
 
@@ -23,14 +23,25 @@ import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.fog.FogData;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.GameRenderState;
+import net.minecraft.client.renderer.state.LightmapRenderState;
 import net.minecraft.client.renderer.state.MapRenderState;
+import net.minecraft.client.renderer.state.OptionsRenderState;
+import net.minecraft.client.renderer.state.WindowRenderState;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.client.renderer.state.gui.PanoramaRenderState;
+import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.CameraEntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.state.level.ParticlesRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.client.renderer.state.level.WeatherRenderState;
 import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
@@ -39,21 +50,33 @@ import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
 @Mixin({
-		EntityRenderState.class,
+		BlockModelRenderState.class,
+		MovingBlockRenderState.class,
 		BlockEntityRenderState.class,
+		EntityRenderState.class,
+		EntityRenderState.LeashState.class,
+		FogData.class,
 		ItemStackRenderState.class,
 		ItemStackRenderState.LayerRenderState.class,
+		GameRenderState.class,
+		LightmapRenderState.class,
 		MapRenderState.class,
 		MapRenderState.MapDecorationRenderState.class,
-		MovingBlockRenderState.class,
-		LevelRenderState.class,
-		CameraRenderState.class,
+		OptionsRenderState.class,
+		WindowRenderState.class,
+		GuiRenderState.class,
+		PanoramaRenderState.class,
+		BlockBreakingRenderState.class,
 		BlockOutlineRenderState.class,
+		CameraEntityRenderState.class,
+		CameraRenderState.class,
+		LevelRenderState.class,
+		ParticlesRenderState.class,
+		SkyRenderState.class,
 		WeatherRenderState.class,
-		WorldBorderRenderState.class,
-		SkyRenderState.class
+		WorldBorderRenderState.class
 })
-public abstract class RenderStateMixin implements FabricRenderState {
+abstract class RenderStateMixin implements FabricRenderState {
 	@Unique
 	@Nullable
 	private Map<RenderStateDataKey<?>, Object> renderStateData;

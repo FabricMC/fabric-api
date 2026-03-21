@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 
 @Mixin(WorldBorderRenderState.class)
-public class WorldBorderRenderStateMixin {
+abstract class WorldBorderRenderStateMixin {
 	@Inject(method = "reset", at = @At("TAIL"))
 	private void clearExtraRenderData(CallbackInfo ci) {
 		((FabricRenderState) this).clearExtraData();

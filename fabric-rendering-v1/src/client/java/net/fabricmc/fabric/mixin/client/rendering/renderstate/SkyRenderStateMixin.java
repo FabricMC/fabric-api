@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 
 @Mixin(SkyRenderState.class)
-public class SkyRenderStateMixin {
+abstract class SkyRenderStateMixin {
 	@Inject(method = "reset", at = @At("TAIL"))
 	private void clearExtraRenderData(CallbackInfo ci) {
 		((FabricRenderState) this).clearExtraData();
