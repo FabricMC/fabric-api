@@ -110,7 +110,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		this.tintColor = tintColor;
 		this.light = light;
 
-		random.setSeed(42L);
+		random.setSeed(state.getSeed(pos));
 
 		model.emitQuads(getEmitter(), level, pos, state, random, _ -> false);
 
