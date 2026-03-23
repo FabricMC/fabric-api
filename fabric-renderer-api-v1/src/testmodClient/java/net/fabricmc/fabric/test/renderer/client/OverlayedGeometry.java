@@ -30,10 +30,10 @@ import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
@@ -60,18 +60,7 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 			meshQuadCollection.getMesh().forEach(quad -> {
 				emitter.copyFrom(quad).emit();
 				emitter.copyFrom(quad);
-
-				TextureAtlasSprite sprite = modelBaker.materials().spriteFinder(emitter.atlas()).find(emitter);
-
-				for (int i = 0; i < 4; i++) {
-					emitter.uv(
-							i,
-							overlaySprite.getU(Mth.inverseLerp(emitter.u(i), sprite.getU0(), sprite.getU1())),
-							overlaySprite.getV(Mth.inverseLerp(emitter.v(i), sprite.getV0(), sprite.getV1()))
-					);
-				}
-
-				ModelHelper.setSpriteInfo(emitter, overlayMaterial);
+				emitter.materialBake(overlayMaterial, MutableQuadView.BAKE_LOCK_UV);
 				emitter.emit();
 			});
 		} else {
@@ -81,18 +70,7 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 				for (BakedQuad bakedQuad : parentQuads.getQuads(cullFace)) {
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace).emit();
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace);
-
-					TextureAtlasSprite sprite = bakedQuad.materialInfo().sprite();
-
-					for (int j = 0; j < 4; j++) {
-						emitter.uv(
-								j,
-								overlaySprite.getU(Mth.inverseLerp(emitter.u(j), sprite.getU0(), sprite.getU1())),
-								overlaySprite.getV(Mth.inverseLerp(emitter.v(j), sprite.getV0(), sprite.getV1()))
-						);
-					}
-
-					ModelHelper.setSpriteInfo(emitter, overlayMaterial);
+					emitter.materialBake(overlayMaterial, MutableQuadView.BAKE_LOCK_UV);
 					emitter.emit();
 				}
 			}

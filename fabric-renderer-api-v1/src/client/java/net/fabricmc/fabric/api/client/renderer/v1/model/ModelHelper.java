@@ -24,11 +24,13 @@ import com.mojang.blaze3d.platform.Transparency;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
@@ -36,6 +38,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
+import net.fabricmc.fabric.impl.client.renderer.QuadSpriteBaker;
 
 /**
  * Collection of utilities for model implementations.
@@ -48,6 +51,19 @@ public final class ModelHelper {
 	public static final int NULL_FACE_ID = 6;
 
 	private ModelHelper() { }
+
+	/**
+	 * Finds tint color from an array of tint layers and a tint index.
+	 *
+	 * @param tintLayers an array of tint colors.
+	 * @param tintIndex the tint index.
+	 * @return the tint color in {@link ARGB} format.
+	 * @see SubmitNodeStorage.BlockModelSubmit#tintLayers()
+	 */
+	public static int getTintColor(int[] tintLayers, int tintIndex) {
+		boolean hasTintColor = tintIndex != -1;
+		return hasTintColor ? tintLayers[tintIndex] : -1;
+	}
 
 	/**
 	 * Computes a {@link BakedQuad.MaterialInfo} for a {@link Material.Baked}.
@@ -140,18 +156,6 @@ public final class ModelHelper {
 		return sprite
 				.contents()
 				.computeTransparency(minU, minV, maxU, maxV);
-	}
-
-	public static void setSpriteInfo(MutableQuadView quad, Material.Baked material) {
-		QuadAtlas atlas = QuadAtlas.ofLocation(material.sprite().atlasLocation());
-
-		if (atlas != null) {
-			quad.atlas(atlas);
-		}
-
-		BakedQuad.MaterialInfo spriteInfo = computeMaterialInfo(material, quad);
-		quad.chunkLayer(spriteInfo.layer());
-		quad.itemRenderType(spriteInfo.itemRenderType());
 	}
 
 	/**

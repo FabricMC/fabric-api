@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import net.minecraft.util.LightCoordsUtil;
+
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
@@ -198,10 +200,20 @@ public interface MutableQuadView extends QuadView {
 		}
 
 		atlas(atlas);
-		// TODO 26.1: allow invoking this separately as a method in this interface
-		BakedQuad.MaterialInfo spriteInfo = ModelHelper.computeMaterialInfo(material, this);
-		chunkLayer(spriteInfo.layer());
-		itemRenderType(spriteInfo.itemRenderType());
+		materialInfo(ModelHelper.computeMaterialInfo(material, this));
+		return this;
+	}
+
+	// TODO: 26.1 docs
+	default MutableQuadView materialInfo(BakedQuad.MaterialInfo materialInfo) {
+		chunkLayer(materialInfo.layer());
+		itemRenderType(materialInfo.itemRenderType());
+		tintIndex(materialInfo.tintIndex());
+		diffuseShade(materialInfo.shade());
+		int lightEmission = materialInfo.lightEmission();
+		emissive(lightEmission == 15);
+		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
+		lightmap(lightmap, lightmap, lightmap, lightmap);
 		return this;
 	}
 

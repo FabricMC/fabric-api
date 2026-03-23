@@ -86,6 +86,12 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
+	@Override
+	default QuadEmitter materialInfo(BakedQuad.MaterialInfo materialInfo) {
+		MutableQuadView.super.materialInfo(materialInfo);
+		return this;
+	}
+
 	default QuadEmitter uvUnitSquare() {
 		uv(0, 0, 0);
 		uv(1, 0, 1);

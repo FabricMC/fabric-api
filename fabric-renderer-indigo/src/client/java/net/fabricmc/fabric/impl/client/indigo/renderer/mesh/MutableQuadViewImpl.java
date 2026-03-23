@@ -277,15 +277,9 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		uv(2, UVPair.unpackU(packedUV2), UVPair.unpackV(packedUV2));
 		uv(3, UVPair.unpackU(packedUV3), UVPair.unpackV(packedUV3));
 
-		int lightEmission = quad.materialInfo().lightEmission();
-		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
-		lightmap(lightmap, lightmap, lightmap, lightmap);
-
 		normalFlags(0);
 
 		nominalFace(quad.direction());
-		emissive(lightEmission == 15);
-		diffuseShade(quad.materialInfo().shade());
 		QuadAtlas atlas = QuadAtlas.ofLocation(quad.materialInfo().sprite().atlasLocation());
 
 		if (atlas == null) {
@@ -293,9 +287,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		}
 
 		atlas(atlas);
-		chunkLayer(quad.materialInfo().layer());
-		itemRenderType(quad.materialInfo().itemRenderType());
-		tintIndex(quad.materialInfo().tintIndex());
+		materialInfo(quad.materialInfo());
 		return this;
 	}
 

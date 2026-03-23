@@ -17,25 +17,32 @@
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 public final class ChunkSectionLayerHelper {
 	private ChunkSectionLayerHelper() {
 	}
 
 	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
-	 * {@link ItemBlockRenderTypes#getMovingBlockRenderType(ChunkSectionLayer)}.
+	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types.
 	 */
 	public static BlockMultiBufferSource movingDelegate(MultiBufferSource bufferSource) {
-		return layer -> bufferSource.getBuffer(ItemBlockRenderTypes.getMovingBlockRenderType(layer));
+		return layer -> bufferSource.getBuffer(switch (layer) {
+		case SOLID -> RenderTypes.solidMovingBlock();
+		case CUTOUT -> RenderTypes.cutoutMovingBlock();
+		case TRANSLUCENT -> RenderTypes.translucentMovingBlock();
+		});
 	}
 
 	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
-	 * {@link ItemBlockRenderTypes#getRenderType(ChunkSectionLayer)}.
+	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types.
 	 */
 	public static BlockMultiBufferSource entityDelegate(MultiBufferSource bufferSource) {
-		return layer -> bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(layer));
+		return layer -> bufferSource.getBuffer(switch (layer) {
+		case SOLID, CUTOUT -> Sheets.cutoutBlockSheet();
+		case TRANSLUCENT -> Sheets.translucentBlockSheet();
+		});
 	}
 }
