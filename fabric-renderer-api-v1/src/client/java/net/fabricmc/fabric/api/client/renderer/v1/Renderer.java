@@ -36,6 +36,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
@@ -99,6 +100,12 @@ public interface Renderer {
 	 */
 	@ApiStatus.OverrideOnly
 	void putModelQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
+
+	/**
+	 * @see FabricBlockFeatureRenderer#putMeshQuads(PoseStack.Pose, BlockMultiBufferSource, Predicate, MeshView, int[], int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 */
+	@ApiStatus.OverrideOnly
+	void putMeshQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, MeshView mesh, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
 	/**
 	 * @see FabricBlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)

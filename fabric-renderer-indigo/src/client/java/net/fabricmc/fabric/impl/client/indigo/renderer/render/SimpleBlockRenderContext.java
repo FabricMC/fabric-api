@@ -33,6 +33,7 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -115,6 +116,29 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		random.setSeed(42L);
 
 		model.emitQuads(getEmitter(), level, pos, state, random, _ -> false);
+
+		this.pose = null;
+		this.bufferSource = null;
+		this.layerFilter = null;
+		lastChunkLayer = null;
+		lastVertexConsumer = null;
+	}
+
+	public void bufferMesh(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, MeshView mesh, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		this.pose = pose;
+		this.overlay = overlay;
+
+		this.bufferSource = bufferSource;
+		this.layerFilter = layerFilter;
+		forceOpaque = ModelBlockRenderer.forceOpaque(Minecraft.getInstance().gameRenderer.getGameRenderState().optionsRenderState.cutoutLeaves, state);
+		this.tintLayers = tintLayers;
+		this.light = light;
+
+		// Vanilla uses a fixed seed in this context.
+		// seed chosen by fair dice roll
+		random.setSeed(42L);
+
+		mesh.outputTo(getEmitter());
 
 		this.pose = null;
 		this.bufferSource = null;

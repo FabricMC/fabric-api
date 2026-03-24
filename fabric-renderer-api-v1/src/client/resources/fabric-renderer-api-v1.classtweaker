@@ -6,6 +6,7 @@ transitive-inject-interface	net/minecraft/client/renderer/block/BlockStateModelS
 transitive-inject-interface	net/minecraft/client/renderer/block/dispatch/BlockStateModel	net/fabricmc/fabric/api/client/renderer/v1/model/FabricBlockStateModel
 transitive-inject-interface	net/minecraft/client/renderer/block/ModelBlockRenderer	net/fabricmc/fabric/api/client/renderer/v1/render/FabricModelBlockRenderer
 #transitive-inject-interface	net/minecraft/client/renderer/block/BlockRenderDispatcher	net/fabricmc/fabric/api/client/renderer/v1/render/FabricBlockRenderDispatcher
+transitive-inject-interface	net/minecraft/client/renderer/block/BlockModelRenderState	net/fabricmc/fabric/api/client/renderer/v1/render/FabricBlockModelRenderState
 transitive-inject-interface	net/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState	net/fabricmc/fabric/api/client/renderer/v1/render/FabricLayerRenderState
 transitive-inject-interface	net/minecraft/client/renderer/OrderedSubmitNodeCollector	net/fabricmc/fabric/api/client/renderer/v1/render/FabricOrderedSubmitNodeCollector
 transitive-inject-interface	net/minecraft/client/renderer/texture/TextureAtlas	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricTextureAtlas

@@ -28,7 +28,8 @@
     "sprite.MaterialBakerMixin",
     "sprite.ModelManager1Mixin",
     "sprite.SpriteLoaderPreparationsMixin",
-    "sprite.TextureAtlasMixin"
+    "sprite.TextureAtlasMixin",
+    "block.render.BlockModelRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

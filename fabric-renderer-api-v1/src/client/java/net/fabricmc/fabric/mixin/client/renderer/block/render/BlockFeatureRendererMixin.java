@@ -126,22 +126,33 @@ abstract class BlockFeatureRendererMixin {
 		for (ExtendedBlockModelSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockModelSubmits()) {
 			blockMultiBufferSource.renderTypeFunction = submit.renderTypeFunction();
 			blockMultiBufferSource.multiBufferSource = bufferSource;
+			putExtendedQuads(submit, blockMultiBufferSource);
+
+			if (submit.outlineColor() != 0) {
+				outlineBufferSource.setColor(submit.outlineColor());
+				blockMultiBufferSource.multiBufferSource = outlineBufferSource;
+				putExtendedQuads(submit, blockMultiBufferSource);
+			}
+		}
+	}
+
+	@Unique
+	private static void putExtendedQuads(
+			ExtendedBlockModelSubmit submit,
+			DelegatingBlockMultiBufferSourceImpl blockMultiBufferSource
+	) {
+		if (submit.model() != null) {
 			FabricBlockFeatureRenderer.putModelQuads(
 					submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(),
 					submit.tintLayers(), submit.lightCoords(), submit.overlayCoords(), submit.level(),
 					submit.pos(), submit.state()
 			);
-
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				blockMultiBufferSource.multiBufferSource = outlineBufferSource;
-				FabricBlockFeatureRenderer.putModelQuads(
-						submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(),
-						submit.tintLayers(), submit.lightCoords(), submit.overlayCoords(), submit.level(),
-						submit.pos(),
-						submit.state()
-				);
-			}
+		} else if (submit.mesh() != null) {
+			FabricBlockFeatureRenderer.putMeshQuads(
+					submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.mesh(),
+					submit.tintLayers(), submit.lightCoords(), submit.overlayCoords(), submit.level(),
+					submit.pos(), submit.state()
+			);
 		}
 	}
 

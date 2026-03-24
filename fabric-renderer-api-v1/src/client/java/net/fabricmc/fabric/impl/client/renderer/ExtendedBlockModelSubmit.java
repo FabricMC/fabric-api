@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.renderer;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -27,5 +28,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
+
+public record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, @Nullable BlockStateModel model, @Nullable MeshView mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 }

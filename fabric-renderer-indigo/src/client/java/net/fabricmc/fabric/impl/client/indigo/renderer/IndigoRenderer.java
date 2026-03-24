@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
@@ -77,6 +78,12 @@ public class IndigoRenderer implements Renderer {
 	public void putModelQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		SimpleBlockRenderContext.POOL.get().bufferModel(
 				pose, bufferSource, layerFilter, model, tintLayers, light, overlay, level, pos, state);
+	}
+
+	@Override
+	public void putMeshQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, MeshView mesh, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		SimpleBlockRenderContext.POOL.get().bufferMesh(
+				pose, bufferSource, layerFilter, mesh, tintLayers, light, overlay, level, pos, state);
 	}
 
 	@Override

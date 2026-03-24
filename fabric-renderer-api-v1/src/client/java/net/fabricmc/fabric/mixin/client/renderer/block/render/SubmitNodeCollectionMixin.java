@@ -37,8 +37,10 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockSubmit;
 import net.fabricmc.fabric.impl.client.renderer.SubmitNodeCollectionExtension;
@@ -57,12 +59,20 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	private final List<ExtendedBlockModelSubmit> extendedBlockModelSubmits = new ArrayList<>();
 
 	@Override
-	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int[] tintLayers, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		wasUsed = true;
 		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(
 				poseStack.last().copy(),
-				renderTypeFunction, model, tintLayers,
-				light, overlay, outlineColor, level, pos, state));
+				renderTypeFunction, model, null, tintLayers, lightCoords, overlayCoords, outlineColor, level, pos, state));
+	}
+
+	@Override
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, RenderType renderType, RandomSource random, MeshView mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		wasUsed = true;
+		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(
+				poseStack.last().copy(),
+				renderTypeFunction, null, mesh, tintLayers,
+				lightCoords, overlayCoords, outlineColor, level, pos, state));
 	}
 
 	@Override
