@@ -20,29 +20,25 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.minecraft.client.Minecraft;
-
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-
-import net.minecraft.client.renderer.texture.OverlayTexture;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
 import net.minecraft.client.renderer.state.OptionsRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,10 +46,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockFeatureRenderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.impl.client.renderer.DelegatingBlockMultiBufferSourceImpl;
 import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockModelSubmit;
-import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockSubmit;
+import net.fabricmc.fabric.impl.client.renderer.PartitionedBlockStateModel;
 import net.fabricmc.fabric.impl.client.renderer.SubmitNodeCollectionExtension;
 
 @Mixin(BlockFeatureRenderer.class)
@@ -94,42 +89,6 @@ abstract class BlockFeatureRendererMixin {
 		}
 	}
 
-	// Support multi-chunk layer models (BlockSubmit) and ExtendedBlockSubmit.
-	@Overwrite
-	private void old$renderBlockSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource, final BlockRenderDispatcher blockRenderDispatcher, final OutlineBufferSource outlineBufferSource, final boolean translucent) {
-		Predicate<ChunkSectionLayer> layerFilter = translucent ? layer -> layer == ChunkSectionLayer.TRANSLUCENT : layer -> layer != ChunkSectionLayer.TRANSLUCENT;
-
-		for (SubmitNodeStorage.BlockSubmit submit : nodeCollection.getBlockSubmits()) {
-			old$poseStack.pushPose();
-			old$poseStack.last().set(submit.pose());
-			blockRenderDispatcher.renderSingleBlock(submit.state(), old$poseStack, bufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO);
-
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				blockRenderDispatcher.renderSingleBlock(submit.state(), old$poseStack, outlineBufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO);
-			}
-
-			old$poseStack.popPose();
-		}
-
-		for (ExtendedBlockSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockSubmits()) {
-			old$poseStack.pushPose();
-			old$poseStack.last().set(submit.pose());
-			blockRenderDispatcher.renderSingleBlock(
-					submit.state(), old$poseStack,
-					bufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
-
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				blockRenderDispatcher.renderSingleBlock(
-						submit.state(), old$poseStack,
-						outlineBufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
-			}
-
-			old$poseStack.popPose();
-		}
-	}
-
 	// Support FRAPI models in BlockModelSubmit and support ExtendedBlockModelSubmit.
 	@Overwrite
 	private void renderBlockModelSubmits(
@@ -142,57 +101,84 @@ abstract class BlockFeatureRendererMixin {
 			if (submit.renderType().hasBlending() == translucent) {
 				VertexConsumer buffer = bufferSource.getBuffer(submit.renderType());
 				FabricBlockFeatureRenderer.putModelQuads(
-						submit.pose(), _ -> buffer, submit.modelParts()
+						submit.pose(), _ -> buffer,
+						new PartitionedBlockStateModel(submit.modelParts()), submit.tintLayers(),
+						submit.lightCoords(), submit.overlayCoords(), BlockAndTintGetter.EMPTY,
+						BlockPos.ZERO, Blocks.AIR.defaultBlockState()
 				);
-
-				VertexConsumer outlineBuffer;
-
-				if (submit.outlineColor() != 0) {
-					outlineBufferSource.setColor(submit.outlineColor());
-					outlineBuffer = outlineBufferSource.getBuffer(submit.renderType());
-				} else {
-					outlineBuffer = null;
-				}
-			}
-		}
-	}
-
-	// Support FRAPI models in BlockModelSubmit and support ExtendedBlockModelSubmit.
-	@Overwrite
-	private void old$renderBlockModelSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource, final OutlineBufferSource outlineBufferSource, final boolean translucent) {
-		for (SubmitNodeStorage.BlockModelSubmit submit : nodeCollection.getBlockModelSubmits()) {
-			if (submit.renderType().hasBlending() == translucent) {
-				VertexConsumer buffer = bufferSource.getBuffer(submit.renderType());
-				FabricModelBlockRenderer.renderModel(
-						submit.pose(), _ -> buffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), BlockAndTintGetter.EMPTY, BlockPos.ZERO,
-						Blocks.AIR.defaultBlockState());
 
 				if (submit.outlineColor() != 0) {
 					outlineBufferSource.setColor(submit.outlineColor());
 					VertexConsumer outlineBuffer = outlineBufferSource.getBuffer(submit.renderType());
-					FabricModelBlockRenderer.renderModel(
-							submit.pose(), _ -> outlineBuffer, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), BlockAndTintGetter.EMPTY, BlockPos.ZERO,
-							Blocks.AIR.defaultBlockState());
+					FabricBlockFeatureRenderer.putModelQuads(
+							submit.pose(), _ -> outlineBuffer,
+							new PartitionedBlockStateModel(submit.modelParts()), submit.tintLayers(),
+							submit.lightCoords(), submit.overlayCoords(), BlockAndTintGetter.EMPTY,
+							BlockPos.ZERO, Blocks.AIR.defaultBlockState()
+					);
 				}
 			}
 		}
 
-		DelegatingBlockMultiBufferSourceImpl blockMultiBufferSource = new DelegatingBlockMultiBufferSourceImpl(translucent);
+		DelegatingBlockMultiBufferSourceImpl blockMultiBufferSource =
+				new DelegatingBlockMultiBufferSourceImpl(translucent);
 
 		for (ExtendedBlockModelSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockModelSubmits()) {
 			blockMultiBufferSource.renderTypeFunction = submit.renderTypeFunction();
 			blockMultiBufferSource.multiBufferSource = bufferSource;
-			FabricModelBlockRenderer.renderModel(
-					submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
-					submit.state());
+			FabricBlockFeatureRenderer.putModelQuads(
+					submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(),
+					submit.tintLayers(), submit.lightCoords(), submit.overlayCoords(), submit.level(),
+					submit.pos(), submit.state()
+			);
 
 			if (submit.outlineColor() != 0) {
 				outlineBufferSource.setColor(submit.outlineColor());
 				blockMultiBufferSource.multiBufferSource = outlineBufferSource;
-				FabricModelBlockRenderer.renderModel(
-						submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.tintColor(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
-						submit.state());
+				FabricBlockFeatureRenderer.putModelQuads(
+						submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(),
+						submit.tintLayers(), submit.lightCoords(), submit.overlayCoords(), submit.level(),
+						submit.pos(),
+						submit.state()
+				);
 			}
 		}
 	}
+
+	// FIXME: what was this and what do we replace it with
+	// Support multi-chunk layer models (BlockSubmit) and ExtendedBlockSubmit.
+//	@Overwrite
+//	private void old$renderBlockSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource, final BlockRenderDispatcher blockRenderDispatcher, final OutlineBufferSource outlineBufferSource, final boolean translucent) {
+//		Predicate<ChunkSectionLayer> layerFilter = translucent ? layer -> layer == ChunkSectionLayer.TRANSLUCENT : layer -> layer != ChunkSectionLayer.TRANSLUCENT;
+//
+//		for (SubmitNodeStorage.BlockSubmit submit : nodeCollection.getBlockSubmits()) {
+//			old$poseStack.pushPose();
+//			old$poseStack.last().set(submit.pose());
+//			blockRenderDispatcher.renderSingleBlock(submit.state(), old$poseStack, bufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO);
+//
+//			if (submit.outlineColor() != 0) {
+//				outlineBufferSource.setColor(submit.outlineColor());
+//				blockRenderDispatcher.renderSingleBlock(submit.state(), old$poseStack, outlineBufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO);
+//			}
+//
+//			old$poseStack.popPose();
+//		}
+//
+//		for (ExtendedBlockSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockSubmits()) {
+//			old$poseStack.pushPose();
+//			old$poseStack.last().set(submit.pose());
+//			blockRenderDispatcher.renderSingleBlock(
+//					submit.state(), old$poseStack,
+//					bufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
+//
+//			if (submit.outlineColor() != 0) {
+//				outlineBufferSource.setColor(submit.outlineColor());
+//				blockRenderDispatcher.renderSingleBlock(
+//						submit.state(), old$poseStack,
+//						outlineBufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
+//			}
+//
+//			old$poseStack.popPose();
+//		}
+//	}
 }

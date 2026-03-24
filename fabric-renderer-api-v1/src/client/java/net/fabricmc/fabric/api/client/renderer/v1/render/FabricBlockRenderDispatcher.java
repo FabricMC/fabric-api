@@ -38,6 +38,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 /**
  * Note: This interface is automatically implemented on {@link BlockRenderDispatcher} via Mixin and interface injection.
  */
+@Deprecated(forRemoval = true)
 public interface FabricBlockRenderDispatcher {
 	/**
 	 * Alternative for
@@ -77,8 +78,6 @@ public interface FabricBlockRenderDispatcher {
 	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link BlockAndTintGetter#EMPTY}).</b>
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b>
-	 *
-	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	default void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
 		Renderer.get().renderSingleBlock(state, poseStack, bufferSource, layerFilter, light, overlay, level, pos);
@@ -103,8 +102,6 @@ public interface FabricBlockRenderDispatcher {
 	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b>
-	 *
-	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	default void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
 		Renderer.get().renderSingleBlock(state, poseStack, bufferSource, null, light, overlay, level, pos);

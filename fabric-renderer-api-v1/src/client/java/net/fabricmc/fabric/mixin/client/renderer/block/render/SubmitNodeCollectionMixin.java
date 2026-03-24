@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeStorage;
@@ -38,7 +37,6 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockModelSubmit;
@@ -59,20 +57,11 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	private final List<ExtendedBlockModelSubmit> extendedBlockModelSubmits = new ArrayList<>();
 
 	@Override
-	public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
-		wasUsed = true;
-		extendedBlockSubmits.add(new ExtendedBlockSubmit(poseStack.last().copy(), state, light, overlay, outlineColor,
-				level, pos));
-		Minecraft.getInstance().getModelManager().specialBlockModelRenderer().renderByBlock(state.getBlock(), ItemDisplayContext.NONE,
-				poseStack, submitNodeStorage, light, overlay, outlineColor);
-	}
-
-	@Override
-	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int tint, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int[] tintLayers, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		wasUsed = true;
 		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(
 				poseStack.last().copy(),
-				renderTypeFunction, model, tint,
+				renderTypeFunction, model, tintLayers,
 				light, overlay, outlineColor, level, pos, state));
 	}
 

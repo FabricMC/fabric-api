@@ -138,4 +138,14 @@ public interface FabricBlockStateModel {
 	default Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return ((BlockStateModel) this).particleMaterial();
 	}
+
+	/**
+	 * Alternative to {@link net.minecraft.client.renderer.block.dispatch.BlockStateModel#collectParts(RandomSource, List)} that returns a new {@link List}.
+	 * @return a new list of {@link BlockStateModelPart}
+	 */
+	default List<BlockStateModelPart> collectParts(RandomSource random) {
+		List<BlockStateModelPart> parts = new ArrayList<>();
+		((BlockStateModel) this).collectParts(random, parts);
+		return parts;
+	}
 }

@@ -46,7 +46,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	@Nullable
 	private Predicate<ChunkSectionLayer> layerFilter;
 	private boolean forceOpaque;
-	private int tintColor;
+	private int[] tintLayers;
 	private int light;
 
 	@Nullable
@@ -78,7 +78,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	private void tintQuad(MutableQuadViewImpl quad) {
 		if (quad.tintIndex() != -1) {
-			int tint = 0xFF000000 | this.tintColor;
+			int tint = 0xFF000000 | this.tintLayers[quad.tintIndex()];
 
 			for (int i = 0; i < 4; i++) {
 				quad.color(i, ARGB.multiply(quad.color(i), tint));
@@ -100,14 +100,14 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		this.pose = pose;
 		this.overlay = overlay;
 
 		this.bufferSource = bufferSource;
 		this.layerFilter = layerFilter;
 		forceOpaque = ModelBlockRenderer.forceOpaque(Minecraft.getInstance().gameRenderer.getGameRenderState().optionsRenderState.cutoutLeaves, state);
-		this.tintColor = tintColor;
+		this.tintLayers = tintLayers;
 		this.light = light;
 
 		random.setSeed(state.getSeed(pos));

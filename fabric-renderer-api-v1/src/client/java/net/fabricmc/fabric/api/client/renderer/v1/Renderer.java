@@ -20,13 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-
-import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -101,10 +95,10 @@ public interface Renderer {
 	void tesselateBlock(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, boolean cull, long seed, int overlay);
 
 	/**
-	 * @see FabricBlockFeatureRenderer#putModelQuads(PoseStack.Pose, BlockMultiBufferSource, Predicate, BlockStateModel, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricBlockFeatureRenderer#putModelQuads(PoseStack.Pose, BlockMultiBufferSource, Predicate, BlockStateModel, int[], int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	@ApiStatus.OverrideOnly
-	void putModelQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
+	void putModelQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
 	/**
 	 * @see FabricBlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)
@@ -123,17 +117,4 @@ public interface Renderer {
 	 */
 	@ApiStatus.OverrideOnly
 	QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer);
-
-	/**
-	 * @see FabricBlockFeatureRenderer#putPartQuads(PoseStack.Pose, BlockMultiBufferSource, Predicate, BlockStateModel, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
-	 */
-	@ApiStatus.OverrideOnly
-	void putPartQuads(
-			BlockStateModelPart part,
-			PoseStack.Pose pose,
-			QuadInstance quadInstance,
-			int[] tintLayers,
-			VertexConsumer buffer,
-			@Nullable VertexConsumer outlineBuffer
-	);
 }

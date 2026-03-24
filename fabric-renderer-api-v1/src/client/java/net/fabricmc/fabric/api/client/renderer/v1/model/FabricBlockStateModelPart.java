@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.function.Predicate;
 
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -55,5 +58,16 @@ public interface FabricBlockStateModelPart {
 	 */
 	default void emitQuads(QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
 		VanillaBlockModelPartEncoder.emitQuads((BlockStateModelPart) this, emitter, cullTest);
+	}
+
+	/**
+	 * Like {@link BlockStateModel#hasMaterialFlag(int)} but for a
+	 * {@linkplain BlockStateModelPart model part}.
+	 *
+	 * @param flag the flag to find
+	 * @return whether the flag is set
+	 */
+	default boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
+		return (((BlockStateModelPart) this).materialFlags() & flag) != 0;
 	}
 }

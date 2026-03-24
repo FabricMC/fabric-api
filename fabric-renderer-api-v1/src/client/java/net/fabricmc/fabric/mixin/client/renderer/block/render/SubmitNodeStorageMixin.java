@@ -33,16 +33,10 @@ import net.minecraft.world.level.block.state.BlockState;
 @Mixin(SubmitNodeStorage.class)
 abstract class SubmitNodeStorageMixin implements SubmitNodeCollector {
 	@Override
-	public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
-		order(0).submitBlock(poseStack, state, light, overlay, outlineColor,
-				level, pos);
-	}
-
-	@Override
-	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int tint, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, int[] tintLayers, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		order(0).submitBlockModel(
 				poseStack,
-				renderTypeFunction, model, tint, light, overlay, outlineColor,
+				renderTypeFunction, model, tintLayers, light, overlay, outlineColor,
 				level, pos, state);
 	}
 }

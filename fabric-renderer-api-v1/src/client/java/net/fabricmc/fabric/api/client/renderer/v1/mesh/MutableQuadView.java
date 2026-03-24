@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
-import net.minecraft.util.LightCoordsUtil;
-
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
@@ -33,6 +31,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
@@ -369,7 +368,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
 	 * {@linkplain BlockState#getLightEmission() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
 	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
-	 * {@linkplain OptionsRenderState#ambientOcclusion) ambient occlusion is disabled globally}.
+	 * {@linkplain OptionsRenderState#ambientOcclusion ambient occlusion is disabled globally}.
 	 *
 	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *

@@ -21,7 +21,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -130,12 +129,13 @@ public interface FabricModelBlockRenderer {
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
-	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int[], int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	@Deprecated
+	// TODO: replace with putModelQuads
+	@Deprecated(forRemoval = true)
 	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		Renderer.get().putModelQuads(
-				pose, bufferSource, layerFilter, model, tintColor, light, overlay, level, pos, state);
+				pose, bufferSource, layerFilter, model, null, light, overlay, level, pos, state);
 	}
 
 	/**
@@ -161,19 +161,12 @@ public interface FabricModelBlockRenderer {
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
-	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricOrderedSubmitNodeCollector#submitBlockModel(PoseStack, Function, BlockStateModel, int[], int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	// TODO: replace with putBlockQuads
-	@Deprecated
+	// TODO: replace with putModelQuads
+	@Deprecated(forRemoval = true)
 	static void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, int tintColor, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		Renderer.get().putModelQuads(
-				pose, bufferSource, null, model, tintColor, light, overlay, level, pos, state);
-	}
-
-	/**
-	 * @return the {@link QuadInstance}
-	 */
-	default QuadInstance getQuadInstance() {
-		throw new IllegalStateException("Implemented via Mixin.");
+				pose, bufferSource, null, model, null, light, overlay, level, pos, state);
 	}
 }
