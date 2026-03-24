@@ -110,7 +110,9 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		this.tintLayers = tintLayers;
 		this.light = light;
 
-		random.setSeed(state.getSeed(pos));
+		// Vanilla uses a fixed seed in this context.
+		// seed chosen by fair dice roll
+		random.setSeed(42L);
 
 		model.emitQuads(getEmitter(), level, pos, state, random, _ -> false);
 
