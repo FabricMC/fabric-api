@@ -52,21 +52,33 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	// alone, bottom, middle, top
 	private final Material.Baked[] materials;
-	private final boolean hasTranslucency;
+	private final @BakedQuad.MaterialFlags int materialFlags;
 
 	public PillarBlockStateModel(Material.Baked[] materials) {
 		this.materials = materials;
 
-		boolean hasTranslucency = false;
+		boolean translucent = false;
+		boolean animated = false;
 
 		for (Material.Baked material : materials) {
-			hasTranslucency |= material.forceTranslucent() || material.sprite()
+			translucent = translucent || material.forceTranslucent() || material.sprite()
 					.contents()
 					.computeTransparency(0.0f, 0.0f, 1.0f, 1.0f)
 					.hasTranslucent();
+			animated = animated || material.sprite().contents().isAnimated();
 		}
 
-		this.hasTranslucency = hasTranslucency;
+		@BakedQuad.MaterialFlags int materialFlags = 0;
+
+		if (translucent) {
+			materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
+		}
+
+		if (animated) {
+			materialFlags |= BakedQuad.FLAG_ANIMATED;
+		}
+
+		this.materialFlags = materialFlags;
 	}
 
 	@Override
@@ -131,21 +143,12 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	@Override
 	public Material.Baked particleMaterial() {
-		return this.materials[0];
-	}
-
-	@Override
-	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
-		return flag == BakedQuad.FLAG_TRANSLUCENT && this.hasTranslucency;
+		return materials[0];
 	}
 
 	@Override
 	public @BakedQuad.MaterialFlags int materialFlags() {
-		if (this.hasTranslucency) {
-			return BakedQuad.FLAG_TRANSLUCENT;
-		}
-
-		return 0;
+		return materialFlags;
 	}
 
 	public record Unbaked() implements CustomUnbakedBlockStateModel, ModelDebugName {

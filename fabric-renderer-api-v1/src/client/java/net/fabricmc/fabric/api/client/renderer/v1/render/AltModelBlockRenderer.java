@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
+package net.fabricmc.fabric.api.client.renderer.v1.render;
 
-/**
- * Static routines of general utility for renderer implementations.
- * Renderers are not required to use these helpers, but they were
- * designed to be usable without the default renderer.
- */
-public final class ColorHelper {
-	private ColorHelper() { }
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
-	/**
-	 * Component-wise max.
-	 */
-	public static int maxLight(int l0, int l1) {
-		if (l0 == 0) return l1;
-		if (l1 == 0) return l0;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
-		return Math.max(l0 & 0xFFFF, l1 & 0xFFFF) | Math.max(l0 & 0xFFFF0000, l1 & 0xFFFF0000);
-	}
+// TODO FRAPI 26.1: doc
+public interface AltModelBlockRenderer {
+	void tesselateBlock(QuadEmitter output, float x, float y, float z, BlockAndTintGetter level, BlockPos pos, BlockState blockState, BlockStateModel model, long seed);
 }

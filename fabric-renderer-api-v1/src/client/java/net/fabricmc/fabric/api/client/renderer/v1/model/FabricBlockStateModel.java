@@ -22,10 +22,13 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.multipart.MultiPartModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -83,12 +86,26 @@ public interface FabricBlockStateModel {
 	 * @see #createGeometryKey(BlockAndTintGetter, BlockPos, BlockState, RandomSource)
 	 */
 	default void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+		final boolean cutoutLeaves = Minecraft.getInstance().options.cutoutLeaves().get();
+		final boolean forceOpaque = ModelBlockRenderer.forceOpaque(cutoutLeaves, state);
+
+		if (forceOpaque) {
+			emitter.pushTransform(quad -> {
+				quad.chunkLayer(ChunkSectionLayer.SOLID);
+				return true;
+			});
+		}
+
 		final List<BlockStateModelPart> parts = new ArrayList<>();
 		((BlockStateModel) this).collectParts(random, parts);
 		final int partCount = parts.size();
 
 		for (int i = 0; i < partCount; i++) {
 			parts.get(i).emitQuads(emitter, cullTest);
+		}
+
+		if (forceOpaque) {
+			emitter.popTransform();
 		}
 	}
 
@@ -137,15 +154,5 @@ public interface FabricBlockStateModel {
 	 */
 	default Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return ((BlockStateModel) this).particleMaterial();
-	}
-
-	/**
-	 * Alternative to {@link net.minecraft.client.renderer.block.dispatch.BlockStateModel#collectParts(RandomSource, List)} that returns a new {@link List}.
-	 * @return a new list of {@link BlockStateModelPart}
-	 */
-	default List<BlockStateModelPart> collectParts(RandomSource random) {
-		List<BlockStateModelPart> parts = new ArrayList<>();
-		((BlockStateModel) this).collectParts(random, parts);
-		return parts;
 	}
 }

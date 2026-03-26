@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -140,6 +141,16 @@ public interface MutableQuadView extends QuadView {
 		return pos(vertexIndex, pos.x(), pos.y(), pos.z());
 	}
 
+	// TODO 26.1: docs
+	//  encourage renderers to override this to make it more efficient
+	default MutableQuadView translate(float x, float y, float z) {
+		for (int i = 0; i < 4; i++) {
+			pos(i, x(i) + x, y(i) + y, z(i) + z);
+		}
+
+		return this;
+	}
+
 	/**
 	 * Sets the color in ARGB format (0xAARRGGBB) for the given vertex.
 	 *
@@ -157,6 +168,15 @@ public interface MutableQuadView extends QuadView {
 		color(1, c1);
 		color(2, c2);
 		color(3, c3);
+		return this;
+	}
+
+	// TODO 26.1: docs
+	default MutableQuadView multiplyColor(int color) {
+		for (int i = 0; i < 4; i++) {
+			color(i, ARGB.multiply(color(i), color));
+		}
+
 		return this;
 	}
 
@@ -183,6 +203,14 @@ public interface MutableQuadView extends QuadView {
 		return uv(vertexIndex, uv.x(), uv.y());
 	}
 
+	default MutableQuadView uvUnitSquare() {
+		uv(0, 0, 0);
+		uv(1, 0, 1);
+		uv(2, 1, 1);
+		uv(3, 1, 0);
+		return this;
+	}
+
 	/**
 	 * Sets the texture coordinates for all vertices using the given material's sprite. Also sets this quad's
 	 * {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer}, and
@@ -192,25 +220,26 @@ public interface MutableQuadView extends QuadView {
 	 */
 	default MutableQuadView materialBake(Material.Baked material, int bakeFlags) {
 		QuadSpriteBaker.bakeSprite(this, material.sprite(), bakeFlags);
-		QuadAtlas atlas = QuadAtlas.ofLocation(material.sprite().atlasLocation());
-
-		if (atlas == null) {
-			atlas = QuadAtlas.BLOCK;
-		}
-
-		atlas(atlas);
 		materialInfo(ModelHelper.computeMaterialInfo(material, this));
 		return this;
 	}
 
 	// TODO: 26.1 docs
 	default MutableQuadView materialInfo(BakedQuad.MaterialInfo materialInfo) {
+		QuadAtlas atlas = QuadAtlas.ofLocation(materialInfo.sprite().atlasLocation());
+
+		if (atlas == null) {
+			atlas = QuadAtlas.BLOCK;
+		}
+
+		atlas(atlas);
 		chunkLayer(materialInfo.layer());
 		itemRenderType(materialInfo.itemRenderType());
 		tintIndex(materialInfo.tintIndex());
 		diffuseShade(materialInfo.shade());
 		int lightEmission = materialInfo.lightEmission();
 		emissive(lightEmission == 15);
+		// FIXME FRAPI 26.1: max lightmap, don't reset it
 		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
 		lightmap(lightmap, lightmap, lightmap, lightmap);
 		return this;
@@ -241,6 +270,8 @@ public interface MutableQuadView extends QuadView {
 		lightmap(3, l3);
 		return this;
 	}
+
+	// TODO FRAPI 26.1: add helper to apply minimum lightmap to whole quad, respecting existing values
 
 	/**
 	 * Sets the normal vector for the given vertex. The {@linkplain #faceNormal() face normal} is used when no vertex
@@ -431,4 +462,73 @@ public interface MutableQuadView extends QuadView {
 	 * <p>Calling this method does not emit this quad.
 	 */
 	MutableQuadView fromBakedQuad(BakedQuad quad);
+
+	// TODO FRAPI 26.1: docs
+	MutableQuadView clear();
+
+	/**
+	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
+	 * is effectively zero - meaning the face is a cull face.
+	 */
+	float CULL_FACE_EPSILON = 0.00001f;
+
+	/**
+	 * Helper method to assign vertex coordinates for a square aligned with the given face.
+	 * Ensures that vertex order is consistent with vanilla convention. (Incorrect order can
+	 * lead to bad AO lighting unless enhanced lighting logic is available/enabled.)
+	 *
+	 * <p>Square will be parallel to the given face and coplanar with the face (and culled if the
+	 * face is occluded) if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.
+	 *
+	 * <p>All coordinates should be normalized (0-1).
+	 */
+	default MutableQuadView square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
+		if (Math.abs(depth) < CULL_FACE_EPSILON) {
+			cullFace(nominalFace);
+			depth = 0; // avoid any inconsistency for face quads
+		} else {
+			cullFace(null);
+		}
+
+		nominalFace(nominalFace);
+		switch (nominalFace) {
+			case UP:
+				depth = 1 - depth;
+				top = 1 - top;
+				bottom = 1 - bottom;
+
+			case DOWN:
+				pos(0, left, depth, top);
+				pos(1, left, depth, bottom);
+				pos(2, right, depth, bottom);
+				pos(3, right, depth, top);
+				break;
+
+			case EAST:
+				depth = 1 - depth;
+				left = 1 - left;
+				right = 1 - right;
+
+			case WEST:
+				pos(0, depth, top, left);
+				pos(1, depth, bottom, left);
+				pos(2, depth, bottom, right);
+				pos(3, depth, top, right);
+				break;
+
+			case SOUTH:
+				depth = 1 - depth;
+				left = 1 - left;
+				right = 1 - right;
+
+			case NORTH:
+				pos(0, 1 - left, top, depth);
+				pos(1, 1 - left, bottom, depth);
+				pos(2, 1 - right, bottom, depth);
+				pos(3, 1 - right, top, depth);
+				break;
+		}
+
+		return this;
+	}
 }

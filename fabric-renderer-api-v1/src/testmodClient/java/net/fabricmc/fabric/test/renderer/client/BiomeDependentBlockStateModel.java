@@ -84,12 +84,7 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 
 	@Override
 	public @BakedQuad.MaterialFlags int materialFlags() {
-		return this.regularModel.materialFlags() | this.biomeModel.materialFlags();
-	}
-
-	@Override
-	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
-		return this.regularModel.hasMaterialFlag(flag) || this.biomeModel.hasMaterialFlag(flag);
+		return regularModel.materialFlags() | biomeModel.materialFlags();
 	}
 
 	@Override

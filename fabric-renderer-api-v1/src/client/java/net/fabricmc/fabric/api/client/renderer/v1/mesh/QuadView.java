@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -241,4 +243,10 @@ public interface QuadView {
 				materialInfo
 		);
 	}
+
+	// TODO FRAPI 26.1: doc
+	void buffer(int overlayCoords, VertexConsumer vertexConsumer);
+
+	// TODO FRAPI 26.1: doc
+	void buffer(int overlayCoords, PoseStack.Pose pose, VertexConsumer vertexConsumer);
 }

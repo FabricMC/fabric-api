@@ -17,55 +17,40 @@
 package net.fabricmc.fabric.api.client.renderer.v1;
 
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.jetbrains.annotations.ApiStatus;
-import org.jspecify.annotations.Nullable;
-
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockFeatureRenderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockRenderDispatcher;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
+import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 
+// TODO FRAPI 26.1: more methods
 /**
  * Interface for rendering plug-ins that provide enhanced capabilities
  * for model lighting, buffering and rendering. Such plug-ins implement the
  * enhanced model rendering interfaces specified by the Fabric API.
  *
- * <p>Renderers must ensure that terrain buffering supports {@link BlockStateModel#emitQuads}, which happens in
- * {@link SectionCompiler} in vanilla; this code is not patched automatically. Renderers must also ensure that the
- * following vanilla methods support {@link BlockStateModel#emitQuads}; these methods are not patched automatically.
+ * <p>Renderers must ensure that terrain buffering supports {@link BlockStateModel#emitQuads}, if they introduce an
+ * alternate path for it. In vanilla, this happens in {@link SectionCompiler}, which is automatically patched to use
+ * {@link #altModelBlockRenderer(boolean, boolean, BlockColors)}.
  *
- * <ul><li>{@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
- *
- * <p>All other places in vanilla code that invoke {@link BlockStateModel#collectParts(RandomSource, List)},
- * {@link BlockStateModel#collectParts(RandomSource, List),
- * {@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput)},
- * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, BakedQuadOutput, boolean, List)},
- * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, BakedQuadOutput, boolean, int)},
- * or
- * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, BakedQuadOutput, BlockStateModel, int, int, int)}
- * are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
- * {@link FabricModelBlockRenderer} or {@link FabricBlockRenderDispatcher}.
+ * <p>All places in vanilla code that invoke {@link BlockStateModel#collectParts(RandomSource, List)} or
+ * {@link ModelBlockRenderer#tesselateBlock(BlockQuadOutput, float, float, float, BlockAndTintGetter, BlockPos, BlockState, BlockStateModel, long)}
+ * are, where appropriate, patched automatically to invoke {@link BlockStateModel#emitQuads} or
+ * {@link AltModelBlockRenderer#tesselateBlock(QuadEmitter, float, float, float, BlockAndTintGetter, BlockPos, BlockState, BlockStateModel, long)},
+ * respectively, instead.
  */
 public interface Renderer {
 	/**
@@ -80,6 +65,9 @@ public interface Renderer {
 		return RendererManager.getRenderer();
 	}
 
+	// TODO FRAPI 26.1: doc
+	QuadEmitter quadEmitter(Consumer<? super MutableQuadView> consumer);
+
 	/**
 	 * Obtain a new {@link MutableMesh} instance to build optimized meshes and create baked models
 	 * with enhanced features.
@@ -89,39 +77,6 @@ public interface Renderer {
 	 */
 	MutableMesh mutableMesh();
 
-	/**
-	 * @see FabricModelBlockRenderer#tesselateBlock(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, Predicate, boolean, long, int)
-	 */
-	@ApiStatus.OverrideOnly
-	void tesselateBlock(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, boolean cull, long seed, int overlay);
-
-	/**
-	 * @see FabricBlockFeatureRenderer#putModelQuads(PoseStack.Pose, BlockMultiBufferSource, Predicate, BlockStateModel, int[], int, int, BlockAndTintGetter, BlockPos, BlockState)
-	 */
-	@ApiStatus.OverrideOnly
-	void putModelQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
-
-	/**
-	 * @see FabricBlockFeatureRenderer#putMeshQuads(PoseStack.Pose, BlockMultiBufferSource, Predicate, MeshView, int[], int, int, BlockAndTintGetter, BlockPos, BlockState)
-	 */
-	@ApiStatus.OverrideOnly
-	void putMeshQuads(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, MeshView mesh, int[] tintLayers, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
-
-	/**
-	 * @see FabricBlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)
-	 */
-	@ApiStatus.OverrideOnly
-	void renderBreakingTexture(BlockState state, BlockPos pos, BlockAndTintGetter level, PoseStack poseStack, VertexConsumer vertexConsumer);
-
-	/**
-	 * @see FabricBlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, Predicate, int, int, BlockAndTintGetter, BlockPos)
-	 */
-	@ApiStatus.OverrideOnly
-	void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
-
-	/**
-	 * @see FabricLayerRenderState#emitter()
-	 */
-	@ApiStatus.OverrideOnly
-	QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer);
+	// TODO FRAPI 26.1: doc
+	AltModelBlockRenderer altModelBlockRenderer(boolean ambientOcclusion, boolean cull, BlockColors blockColors);
 }

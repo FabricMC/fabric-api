@@ -1,9 +1,29 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
 import static net.minecraft.client.renderer.block.BlockModelRenderState.EMPTY_TINTS;
 
+import java.util.List;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,14 +35,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockModelRenderState;
@@ -30,13 +49,21 @@ import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockModelRenderS
 @Mixin(BlockModelRenderState.class)
 public abstract class BlockModelRenderStateMixin implements FabricBlockModelRenderState {
 	@Shadow
-	private @Nullable IntList tintLayers;
+	@Nullable
+	private List<BlockStateModelPart> modelParts;
 	@Shadow
-	private @Nullable Matrix4fc transformation;
+	@Nullable
+	private Matrix4fc transformation;
 	@Shadow
-	private @Nullable RenderType renderType;
+	@Nullable
+	private RenderType renderType;
 	@Shadow
-	private @Nullable RandomSource randomSource;
+	@Nullable
+	private IntList tintLayers;
+	@Shadow
+	@Nullable
+	private RandomSource randomSource;
+
 	@Unique
 	@Nullable
 	private MutableMesh mesh;
@@ -47,44 +74,48 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 		return null;
 	}
 
-	@Inject(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelRenderState;submitModel(Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V", shift = At.Shift.AFTER))
-	private void submitMesh(
-			PoseStack poseStack,
-			SubmitNodeCollector submitNodeCollector,
-			int lightCoords,
-			int overlayCoords,
-			int outlineColor,
-			CallbackInfo ci
-	) {
-		if (this.mesh != null) {
-			RenderType renderType = this.renderType;
-			int[] tints = this.tintLayers != null ? this.tintLayers.toArray(EMPTY_TINTS) : EMPTY_TINTS;
+	@Override
+	public QuadEmitter setupMesh(Matrix4fc transformation, boolean hasTranslucency) {
+		this.transformation = identityToNull(transformation);
+		renderType = hasTranslucency ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
 
-			if (this.transformation != null) {
-				poseStack.pushPose();
-				poseStack.mulPose(this.transformation);
-				submitNodeCollector.submitBlockModel(poseStack, _ -> renderType, renderType, this.randomSource, this.mesh, tints, lightCoords, overlayCoords, outlineColor, BlockAndTintGetter.EMPTY, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
-				poseStack.popPose();
-			} else {
-				submitNodeCollector.submitBlockModel(poseStack, _ -> renderType, renderType, this.randomSource, this.mesh, tints, lightCoords, overlayCoords, outlineColor, BlockAndTintGetter.EMPTY, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
-			}
+		if (mesh == null) {
+			mesh = Renderer.get().mutableMesh();
+		} else {
+			mesh.clear();
 		}
+
+		return mesh.emitter();
 	}
 
-	@Override
-	public QuadEmitter setupMesh(
-			Matrix4fc transformation,
-			boolean hasTranslucency
-	) {
-		this.transformation = identityToNull(transformation);
-		this.renderType = hasTranslucency ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
+	@Inject(method = "clear()V", at = @At("RETURN"))
+	private void onReturnClear(CallbackInfo ci) {
+		mesh = null;
+	}
 
-		if (this.mesh == null) {
-			this.mesh = Renderer.get().mutableMesh();
-		} else {
-			this.mesh.clear();
+	@ModifyReturnValue(method = "isEmpty()Z", at = @At("RETURN"))
+	private boolean modifyIsEmpty(boolean original) {
+		return original && mesh == null;
+	}
+
+	// TODO FRAPI 26.1: improve this injection or use a second submit for just the mesh
+	@Inject(method = "submitModel", at = @At("HEAD"), cancellable = true)
+	private void submitMesh(RenderType renderType, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, CallbackInfo ci) {
+		if (mesh != null && mesh.size() > 0) {
+			if (modelParts != null && !modelParts.isEmpty()) {
+				List<BlockStateModelPart> modelPartsCopy = new ObjectArrayList<>(modelParts);
+				Mesh meshCopy = mesh.immutableCopy();
+				int[] tints = tintLayers != null ? tintLayers.toArray(EMPTY_TINTS) : EMPTY_TINTS;
+				if (transformation != null) {
+					poseStack.pushPose();
+					poseStack.mulPose(transformation);
+					submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
+					poseStack.popPose();
+				} else {
+					submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
+				}
+			}
+			ci.cancel();
 		}
-
-		return this.mesh.emitter();
 	}
 }

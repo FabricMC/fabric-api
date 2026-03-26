@@ -11,32 +11,28 @@
     "block.model.SingleVariantMixin",
     "block.model.WeightedVariantsMixin",
     "block.particle.BlockMarkerMixin",
+    "block.particle.BlockStateModelSetMixin",
     "block.particle.ScreenEffectRendererMixin",
     "block.particle.TerrainParticleMixin",
     "block.render.BlockFeatureRendererMixin",
-    "block.render.BlockRenderDispatcherMixin",
-    "block.render.ItemFrameRendererMixin",
-    "block.render.ModelBlockRendererMixin",
-    "block.render.MushroomCowMushroomLayerMixin",
-    "block.render.OrderedSubmitNodeCollectorMixin",
-    "block.render.SnowGolemHeadLayerMixin",
-    "block.render.SubmitNodeCollectionMixin",
-    "block.render.SubmitNodeStorageMixin",
-    "item.ItemStackRenderStateLayerRenderStateMixin",
-    "block.particle.BlockStateModelSetMixin",
+    "block.render.BlockModelRenderStateMixin",
+    "block.render.BlockStateModelWrapperMixin",
+    "block.render.SectionCompilerMixin",
     "item.CuboidItemModelWrapperMixin",
+    "item.ItemStackRenderStateLayerRenderStateMixin",
+    "item.ItemStackRenderStateMixin",
     "sprite.MaterialBakerMixin",
     "sprite.ModelManager1Mixin",
     "sprite.SpriteLoaderPreparationsMixin",
     "sprite.TextureAtlasMixin",
-    "block.render.BlockModelRenderStateMixin"
+    "submit.OrderedSubmitNodeCollectorMixin",
+    "submit.SubmitNodeCollectionMixin",
+    "submit.SubmitNodeStorageMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "overwrites": {
     "requireAnnotations": true
-  },
-  "mixins": [
-  ]
+  }
 }

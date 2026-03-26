@@ -57,11 +57,23 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
+	default QuadEmitter translate(float x, float y, float z) {
+		MutableQuadView.super.translate(x, y, z);
+		return this;
+	}
+
+	@Override
 	QuadEmitter color(int vertexIndex, int color);
 
 	@Override
 	default QuadEmitter color(int c0, int c1, int c2, int c3) {
 		MutableQuadView.super.color(c0, c1, c2, c3);
+		return this;
+	}
+
+	@Override
+	default QuadEmitter multiplyColor(int color) {
+		MutableQuadView.super.multiplyColor(color);
 		return this;
 	}
 
@@ -81,6 +93,12 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
+	default MutableQuadView uvUnitSquare() {
+		MutableQuadView.super.uvUnitSquare();
+		return this;
+	}
+
+	@Override
 	default QuadEmitter materialBake(Material.Baked material, int bakeFlags) {
 		MutableQuadView.super.materialBake(material, bakeFlags);
 		return this;
@@ -89,14 +107,6 @@ public interface QuadEmitter extends MutableQuadView {
 	@Override
 	default QuadEmitter materialInfo(BakedQuad.MaterialInfo materialInfo) {
 		MutableQuadView.super.materialInfo(materialInfo);
-		return this;
-	}
-
-	default QuadEmitter uvUnitSquare() {
-		uv(0, 0, 0);
-		uv(1, 0, 1);
-		uv(2, 1, 1);
-		uv(3, 1, 0);
 		return this;
 	}
 
@@ -166,69 +176,12 @@ public interface QuadEmitter extends MutableQuadView {
 	@Override
 	QuadEmitter fromBakedQuad(BakedQuad quad);
 
-	/**
-	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
-	 * is effectively zero - meaning the face is a cull face.
-	 */
-	float CULL_FACE_EPSILON = 0.00001f;
+	@Override
+	QuadEmitter clear();
 
-	/**
-	 * Helper method to assign vertex coordinates for a square aligned with the given face.
-	 * Ensures that vertex order is consistent with vanilla convention. (Incorrect order can
-	 * lead to bad AO lighting unless enhanced lighting logic is available/enabled.)
-	 *
-	 * <p>Square will be parallel to the given face and coplanar with the face (and culled if the
-	 * face is occluded) if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.
-	 *
-	 * <p>All coordinates should be normalized (0-1).
-	 */
+	@Override
 	default QuadEmitter square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
-		if (Math.abs(depth) < CULL_FACE_EPSILON) {
-			cullFace(nominalFace);
-			depth = 0; // avoid any inconsistency for face quads
-		} else {
-			cullFace(null);
-		}
-
-		nominalFace(nominalFace);
-		switch (nominalFace) {
-		case UP:
-			depth = 1 - depth;
-			top = 1 - top;
-			bottom = 1 - bottom;
-
-		case DOWN:
-			pos(0, left, depth, top);
-			pos(1, left, depth, bottom);
-			pos(2, right, depth, bottom);
-			pos(3, right, depth, top);
-			break;
-
-		case EAST:
-			depth = 1 - depth;
-			left = 1 - left;
-			right = 1 - right;
-
-		case WEST:
-			pos(0, depth, top, left);
-			pos(1, depth, bottom, left);
-			pos(2, depth, bottom, right);
-			pos(3, depth, top, right);
-			break;
-
-		case SOUTH:
-			depth = 1 - depth;
-			left = 1 - left;
-			right = 1 - right;
-
-		case NORTH:
-			pos(0, 1 - left, top, depth);
-			pos(1, 1 - left, bottom, depth);
-			pos(2, 1 - right, bottom, depth);
-			pos(3, 1 - right, top, depth);
-			break;
-		}
-
+		MutableQuadView.super.square(nominalFace, left, bottom, right, top, depth);
 		return this;
 	}
 

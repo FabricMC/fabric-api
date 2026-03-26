@@ -47,19 +47,19 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	private final BlockStateModel[] models;
 	@UnmodifiableView
 	private final List<BlockStateModel> modelsView;
-	private final int materialFlags;
+	private final @BakedQuad.MaterialFlags int materialFlags;
 
 	public CompositeBlockStateModelImpl(BlockStateModel[] models) {
 		this.models = models;
 		modelsView = Arrays.asList(models);
 
-		int flags = 0;
+		@BakedQuad.MaterialFlags int materialFlags = 0;
 
 		for (BlockStateModel model : this.models) {
-			flags |= model.materialFlags();
+			materialFlags |= model.materialFlags();
 		}
 
-		this.materialFlags = flags;
+		this.materialFlags = materialFlags;
 	}
 
 	public static CompositeBlockStateModelImpl of(List<BlockStateModel> models) {
@@ -140,11 +140,6 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	@Override
 	public @BakedQuad.MaterialFlags int materialFlags() {
 		return materialFlags;
-	}
-
-	@Override
-	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
-		return (materialFlags & flag) != 0;
 	}
 
 	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {

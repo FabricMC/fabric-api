@@ -26,86 +26,35 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessSubmitNodeCollection;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.AltItemRenderer;
 
+// TODO FRAPI 26.1: why are the casts necessary?
 @Mixin(ItemFeatureRenderer.class)
 abstract class ItemFeatureRendererMixin {
 	@Unique
-	private final ItemRenderContext itemRenderContext = new ItemRenderContext();
+	private final AltItemRenderer altItemRenderer = new AltItemRenderer();
 
 	@Inject(method = "renderSolid", at = @At("RETURN"))
 	private void onReturnRenderSolid(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
-		for (MeshItemSubmit submit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
-			itemRenderContext.renderItem(
-					submit.displayContext(),
-					submit.pose(),
-					bufferSource,
-					submit.lightCoords(),
-					submit.overlayCoords(),
-					submit.tintLayers(),
-					submit.quads(),
-					submit.mesh(),
-					submit.foilType(),
-					false,
-					false
-			);
+		altItemRenderer.prepare(bufferSource, outlineBufferSource, false);
 
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				itemRenderContext.renderItem(
-						submit.displayContext(),
-						submit.pose(),
-						outlineBufferSource,
-						submit.lightCoords(),
-						submit.overlayCoords(),
-						submit.tintLayers(),
-						submit.quads(),
-						submit.mesh(),
-						ItemStackRenderState.FoilType.NONE,
-						true,
-						false
-				);
-			}
+		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : ((FabricSubmitNodeCollection) nodeCollection).getExtendedItemSubmits()) {
+			altItemRenderer.renderItem(submit);
 		}
+
+		altItemRenderer.clear();
 	}
 
 	@Inject(method = "renderTranslucent", at = @At("RETURN"))
 	private void onReturnRenderTranslucent(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
-		for (MeshItemSubmit submit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
-			itemRenderContext.renderItem(
-					submit.displayContext(),
-					submit.pose(),
-					bufferSource,
-					submit.lightCoords(),
-					submit.overlayCoords(),
-					submit.tintLayers(),
-					submit.quads(),
-					submit.mesh(),
-					submit.foilType(),
-					false,
-					true
-			);
+		altItemRenderer.prepare(bufferSource, outlineBufferSource, true);
 
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				itemRenderContext.renderItem(
-						submit.displayContext(),
-						submit.pose(),
-						outlineBufferSource,
-						submit.lightCoords(),
-						submit.overlayCoords(),
-						submit.tintLayers(),
-						submit.quads(),
-						submit.mesh(),
-						ItemStackRenderState.FoilType.NONE,
-						true,
-						true
-				);
-			}
+		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : ((FabricSubmitNodeCollection) nodeCollection).getExtendedItemSubmits()) {
+			altItemRenderer.renderItem(submit);
 		}
+
+		altItemRenderer.clear();
 	}
 }

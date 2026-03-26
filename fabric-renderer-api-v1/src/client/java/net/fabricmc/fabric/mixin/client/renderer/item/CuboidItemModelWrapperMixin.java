@@ -34,24 +34,40 @@ import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
 
 @Mixin(CuboidItemModelWrapper.class)
 abstract class CuboidItemModelWrapperMixin implements ItemModel {
-
 	@Shadow
 	@Final
 	private QuadCollection quads;
 
 	@Inject(method = "update", at = @At("RETURN"))
 	private void onReturnUpdate(ItemStackRenderState output, ItemStack item, ItemModelResolver resolver, ItemDisplayContext displayContext, ClientLevel level, ItemOwner owner, int seed, CallbackInfo ci, @Local(name = "layer") ItemStackRenderState.LayerRenderState layer) {
-		if (this.quads instanceof MeshQuadCollection meshCollection) {
-			Mesh mesh = meshCollection.getMesh();
-
-			if (mesh != null) {
-				mesh.outputTo(layer.emitter());
-			}
+		if (quads instanceof MeshQuadCollection meshQuadCollection) {
+			meshQuadCollection.getMesh().outputTo(layer.emitter());
 		}
 	}
+
+	// TODO FRAPI 26.1
+//	@Unique
+//	private static void validateAtlasUsage(MeshView mesh) {
+//		Iterator<BakedQuad> quadIterator = quads.iterator();
+//		if (quadIterator.hasNext()) {
+//			Identifier expectedAtlas = ((BakedQuad)quadIterator.next()).materialInfo().sprite().atlasLocation();
+//
+//			while(quadIterator.hasNext()) {
+//				BakedQuad quad = (BakedQuad)quadIterator.next();
+//				Identifier quadAtlas = quad.materialInfo().sprite().atlasLocation();
+//				if (!quadAtlas.equals(expectedAtlas)) {
+//					String var10002 = String.valueOf(expectedAtlas);
+//					throw new IllegalStateException("Multiple atlases used in model, expected " + var10002 + ", but also got " + String.valueOf(quadAtlas));
+//				}
+//			}
+//
+//			if (!expectedAtlas.equals(TextureAtlas.LOCATION_ITEMS) && !expectedAtlas.equals(TextureAtlas.LOCATION_BLOCKS)) {
+//				throw new IllegalArgumentException("Atlas " + String.valueOf(expectedAtlas) + " can't be usef for item models");
+//			}
+//		}
+//	}
 }

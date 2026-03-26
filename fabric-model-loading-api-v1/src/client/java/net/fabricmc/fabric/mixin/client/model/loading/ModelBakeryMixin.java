@@ -118,6 +118,6 @@ abstract class ModelBakeryMixin {
 			return operation.call(unbakedModel, bakeContext, transformation);
 		}
 
-		return fabric_eventDispatcher.modifyItemModel(unbakedModel, itemId, bakeContext, operation);
+		return fabric_eventDispatcher.modifyItemModel(unbakedModel, itemId, bakeContext, transformation, operation);
 	}
 }

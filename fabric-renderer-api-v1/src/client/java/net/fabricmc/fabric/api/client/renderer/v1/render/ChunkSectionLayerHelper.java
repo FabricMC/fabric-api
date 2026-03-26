@@ -16,26 +16,24 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-
-import net.fabricmc.fabric.impl.client.renderer.FrapiRenderTypes;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 public final class ChunkSectionLayerHelper {
 	private ChunkSectionLayerHelper() {
 	}
 
-	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types.
-	 */
-	public static BlockMultiBufferSource movingDelegate(MultiBufferSource bufferSource) {
-		return layer -> bufferSource.getBuffer(FrapiRenderTypes.getMovingBlockRenderType(layer));
+	public static RenderType getMovingBlockRenderType(ChunkSectionLayer layer) {
+		return switch (layer) {
+			case SOLID -> RenderTypes.solidMovingBlock();
+			case CUTOUT -> RenderTypes.cutoutMovingBlock();
+			case TRANSLUCENT -> RenderTypes.translucentMovingBlock();
+		};
 	}
 
-	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types.
-	 */
-	public static BlockMultiBufferSource entityDelegate(MultiBufferSource bufferSource) {
-		return layer -> bufferSource.getBuffer(FrapiRenderTypes.getRenderType(layer));
+	public static RenderType getRenderType(boolean translucent) {
+		return translucent ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
 	}
 }

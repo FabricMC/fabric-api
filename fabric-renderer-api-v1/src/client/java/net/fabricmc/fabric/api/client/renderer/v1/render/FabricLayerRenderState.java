@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 
-import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
 /**
@@ -43,6 +42,6 @@ public interface FabricLayerRenderState {
 	 * <p>Do not retain references outside the context of this layer.
 	 */
 	default QuadEmitter emitter() {
-		return Renderer.get().getLayerRenderStateEmitter((ItemStackRenderState.LayerRenderState) this);
+		throw new AssertionError("Implemented in mixin.");
 	}
 }

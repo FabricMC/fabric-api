@@ -58,6 +58,16 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		return wrapped.materialFlags();
+	}
+
+	@Override
+	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
+		return wrapped.hasMaterialFlag(flag);
+	}
+
+	@Override
 	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		wrapped.emitQuads(emitter, level, pos, state, random, cullTest);
 	}
@@ -71,15 +81,5 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	@Override
 	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return wrapped.particleMaterial(level, pos, state);
-	}
-
-	@Override
-	public @BakedQuad.MaterialFlags int materialFlags() {
-		return wrapped.materialFlags();
-	}
-
-	@Override
-	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
-		return wrapped.hasMaterialFlag(flag);
 	}
 }

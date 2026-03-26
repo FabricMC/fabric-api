@@ -37,7 +37,6 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
@@ -97,12 +96,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return true;
 	};
 
-	public final void clear() {
-		System.arraycopy(DEFAULT_QUAD_DATA, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
-		isGeometryInvalid = true;
-		nominalFace = null;
-	}
-
 	@Override
 	public final MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
 		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
@@ -110,6 +103,19 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		data[index + 1] = Float.floatToRawIntBits(y);
 		data[index + 2] = Float.floatToRawIntBits(z);
 		isGeometryInvalid = true;
+		return this;
+	}
+
+	// Much more efficient than default impl as it does not invalidate geometry
+	@Override
+	public final MutableQuadViewImpl translate(float x, float y, float z) {
+		for (int i = 0; i < 4; i++) {
+			final int index = baseIndex + i * VERTEX_STRIDE + VERTEX_X;
+			data[index] = Float.floatToRawIntBits(Float.intBitsToFloat(data[index]) + x);
+			data[index + 1] = Float.floatToRawIntBits(Float.intBitsToFloat(data[index + 1]) + y);
+			data[index + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(data[index + 2]) + z);
+		}
+
 		return this;
 	}
 
@@ -280,14 +286,15 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		normalFlags(0);
 
 		nominalFace(quad.direction());
-		QuadAtlas atlas = QuadAtlas.ofLocation(quad.materialInfo().sprite().atlasLocation());
-
-		if (atlas == null) {
-			atlas = QuadAtlas.BLOCK;
-		}
-
-		atlas(atlas);
 		materialInfo(quad.materialInfo());
+		return this;
+	}
+
+	@Override
+	public final MutableQuadViewImpl clear() {
+		System.arraycopy(DEFAULT_QUAD_DATA, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
+		isGeometryInvalid = true;
+		nominalFace = null;
 		return this;
 	}
 

@@ -21,9 +21,7 @@ import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -57,16 +55,5 @@ public interface FabricBlockStateModelPart {
 	 */
 	default void emitQuads(QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
 		VanillaBlockModelPartEncoder.emitQuads((BlockStateModelPart) this, emitter, cullTest);
-	}
-
-	/**
-	 * Like {@link BlockStateModel#hasMaterialFlag(int)} but for a
-	 * {@linkplain BlockStateModelPart model part}.
-	 *
-	 * @param flag the flag to find
-	 * @return whether the flag is set
-	 */
-	default boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
-		return (((BlockStateModelPart) this).materialFlags() & flag) != 0;
 	}
 }

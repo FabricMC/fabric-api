@@ -14,46 +14,33 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.indigo.renderer;
+package net.fabricmc.fabric.mixin.client.renderer.submit;
 
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.world.item.ItemDisplayContext;
 
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessOrderedSubmitNodeCollector;
 
 @Mixin(SubmitNodeStorage.class)
-abstract class SubmitNodeStorageMixin implements SubmitNodeCollector, AccessOrderedSubmitNodeCollector {
+abstract class SubmitNodeStorageMixin implements SubmitNodeCollector {
 	@Override
-	public void fabric_submitItem(
-			PoseStack poseStack,
-			ItemDisplayContext displayContext,
-			int light,
-			int overlay,
-			int outlineColors,
-			int[] tintLayers,
-			List<BakedQuad> quads,
-			ItemStackRenderState.FoilType foilType,
-			MeshView mesh
-	) {
-		OrderedSubmitNodeCollector nodeCollector = order(0);
+	public void submitBlockModel(PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
+		order(0).submitBlockModel(poseStack, renderType, parts, mesh, tintLayers, lightCoords, overlayCoords, outlineColor);
+	}
 
-		if (nodeCollector instanceof AccessOrderedSubmitNodeCollector access) {
-			access.fabric_submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
-					foilType, mesh);
-		} else {
-			nodeCollector.submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
-					foilType
-			);
-		}
+	@Override
+	public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
+		order(0).submitItem(poseStack, displayContext, lightCoords, overlayCoords, outlineColor, tintLayers, quads, mesh, foilType);
 	}
 }

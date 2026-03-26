@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.block.render;
+package net.fabricmc.fabric.api.client.renderer.v1.render;
 
-import org.spongepowered.asm.mixin.Mixin;
+import net.minecraft.util.LightCoordsUtil;
 
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
+// TODO FRAPI 26.1: docs
+public final class ExtraLightCoordsUtil {
+	private ExtraLightCoordsUtil() {
+	}
 
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
-
-@Mixin(ModelBlockRenderer.class)
-abstract class ModelBlockRendererMixin implements FabricModelBlockRenderer {
+	public static int smoothMax(final int coords1, final int coords2) {
+		int block1 = LightCoordsUtil.smoothBlock(coords1);
+		int block2 = LightCoordsUtil.smoothBlock(coords2);
+		int sky1 = LightCoordsUtil.smoothSky(coords1);
+		int sky2 = LightCoordsUtil.smoothSky(coords2);
+		return LightCoordsUtil.smoothPack(Math.max(block1, block2), Math.max(sky1, sky2));
+	}
 }

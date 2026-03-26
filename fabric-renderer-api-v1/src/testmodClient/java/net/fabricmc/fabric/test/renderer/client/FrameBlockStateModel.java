@@ -136,12 +136,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 
 	@Override
 	public @BakedQuad.MaterialFlags int materialFlags() {
-		return BakedQuad.FLAG_TRANSLUCENT;
-	}
-
-	@Override
-	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
-		return flag == BakedQuad.FLAG_TRANSLUCENT;
+		return frameModel.materialFlags();
 	}
 
 	@Override

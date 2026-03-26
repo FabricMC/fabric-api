@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.block.render;
+package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.BlockModelLighter;
 
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockRenderDispatcher;
-
-@Mixin(BlockRenderDispatcher.class)
-abstract class BlockRenderDispatcherMixin implements FabricBlockRenderDispatcher {
+@Mixin(BlockModelLighter.class)
+public interface BlockModelLighterAccessor {
+	@Accessor("CACHE")
+	static ThreadLocal<BlockModelLighter.Cache> fabric_getCACHE() {
+		throw new AssertionError();
+	}
 }

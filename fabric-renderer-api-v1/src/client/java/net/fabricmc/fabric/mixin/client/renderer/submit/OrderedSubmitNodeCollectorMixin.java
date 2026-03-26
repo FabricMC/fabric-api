@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.indigo.renderer.render;
+package net.fabricmc.fabric.mixin.client.renderer.submit;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
+import org.spongepowered.asm.mixin.Mixin;
 
-public interface LightDataProvider {
-	int light(BlockPos pos, BlockState state);
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 
-	float ao(BlockPos pos, BlockState state);
+import net.fabricmc.fabric.api.client.renderer.v1.render.FabricOrderedSubmitNodeCollector;
+
+@Mixin(OrderedSubmitNodeCollector.class)
+interface OrderedSubmitNodeCollectorMixin extends FabricOrderedSubmitNodeCollector {
 }

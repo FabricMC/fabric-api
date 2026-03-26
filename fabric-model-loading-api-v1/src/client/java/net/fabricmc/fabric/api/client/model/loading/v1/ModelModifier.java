@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
@@ -217,6 +218,11 @@ public final class ModelModifier {
 			 * The vanilla context being used to bake this model.
 			 */
 			ItemModel.BakingContext bakingContext();
+
+			/**
+			 * The transformation applied during baking of this model.
+			 */
+			Matrix4fc transformation();
 		}
 	}
 
@@ -251,6 +257,11 @@ public final class ModelModifier {
 			 * The vanilla context being used to bake this model.
 			 */
 			ItemModel.BakingContext bakingContext();
+
+			/**
+			 * The transformation applied during baking of this model.
+			 */
+			Matrix4fc transformation();
 		}
 	}
 

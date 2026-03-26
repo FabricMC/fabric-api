@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.indigo.renderer;
+package net.fabricmc.fabric.mixin.client.renderer.item;
 
 import java.util.function.Consumer;
 
@@ -31,9 +31,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.QuadToPosPipe;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.impl.client.renderer.LayerRenderStateExtension;
+import net.fabricmc.fabric.impl.client.renderer.QuadToPosPipe;
 
 @Mixin(ItemStackRenderState.class)
 abstract class ItemStackRenderStateMixin {
@@ -44,12 +44,12 @@ abstract class ItemStackRenderStateMixin {
 
 	@Inject(method = "visitExtents(Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;setIdentity()V"))
 	private void afterLayerLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local(name = "scratch") Vector3f vec, @Local(name = "layer") ItemStackRenderState.LayerRenderState layer, @Local(name = "poseTransform") Matrix4f matrix, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
-		MutableMeshImpl mutableMesh = ((AccessLayerRenderState) layer).fabric_getMutableMesh();
+		MutableMesh mutableMesh = ((LayerRenderStateExtension) layer).fabric_getMutableMesh();
 
-		if (mutableMesh.size() > 0) {
+		if (mutableMesh != null && mutableMesh.size() > 0) {
 			QuadToPosPipe pipe = pipeRef.get();
 			pipe.matrix = matrix;
-			// Use the mutable version here as it does not use a ThreadLocal or cursor stack
+			// Use the mutable version here as it does not use a ThreadLocal or cursor stack, at least in Indigo
 			mutableMesh.forEachMutable(pipe);
 		}
 	}

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.indigo.renderer.accessor;
+package net.fabricmc.fabric.impl.client.renderer;
 
-import java.util.List;
+import org.jspecify.annotations.Nullable;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 
-public interface AccessSubmitNodeCollection {
-	List<MeshItemSubmit> fabric_getMeshItemSubmits();
+public interface LayerRenderStateExtension {
+	@Nullable
+	MutableMesh fabric_getMutableMesh();
 }

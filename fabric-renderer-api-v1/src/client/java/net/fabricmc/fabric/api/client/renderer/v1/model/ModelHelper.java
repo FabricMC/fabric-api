@@ -17,28 +17,17 @@
 package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.Arrays;
-import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Transparency;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
-import net.fabricmc.fabric.impl.client.renderer.QuadSpriteBaker;
 
 /**
  * Collection of utilities for model implementations.
@@ -53,16 +42,24 @@ public final class ModelHelper {
 	private ModelHelper() { }
 
 	/**
-	 * Finds tint color from an array of tint layers and a tint index.
-	 *
-	 * @param tintLayers an array of tint colors.
-	 * @param tintIndex the tint index.
-	 * @return the tint color in {@link ARGB} format.
-	 * @see SubmitNodeStorage.BlockModelSubmit#tintLayers()
+	 * Convenient way to encode faces that may be null.
+	 * Null is returned as {@link #NULL_FACE_ID}.
+	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
 	 */
-	public static int getTintColor(int[] tintLayers, int tintIndex) {
-		boolean hasTintColor = tintIndex != -1;
-		return hasTintColor ? tintLayers[tintIndex] : -1;
+	public static int toFaceIndex(@Nullable Direction face) {
+		return face == null ? NULL_FACE_ID : face.get3DDataValue();
+	}
+
+	/**
+	 * Use to decode a result from {@link #toFaceIndex(Direction)}.
+	 * Return value will be null if encoded value was null.
+	 * Can also be used for no-allocation iteration of {@link Direction#values()},
+	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
+	 * to exclude or include the null value, respectively.)
+	 */
+	@Nullable
+	public static Direction faceFromIndex(int faceIndex) {
+		return FACES[faceIndex];
 	}
 
 	/**
@@ -74,11 +71,11 @@ public final class ModelHelper {
 	public static BakedQuad.MaterialInfo computeMaterialInfo(Material.Baked material, QuadView quad) {
 		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : computeTransparency(material.sprite(), quad);
 		// TODO: Consider interning or some other caching scheme to reduce object churn
-		return BakedQuad.MaterialInfo.of(material, transparency, quad.tintIndex(), quad.diffuseShade(), computeLightEmission(quad));
+		return BakedQuad.MaterialInfo.of(material, transparency, quad.tintIndex(), quad.diffuseShade(), approximateLightEmission(quad));
 	}
 
 	// TODO: documentation
-	public static int computeLightEmission(QuadView quad) {
+	public static int approximateLightEmission(QuadView quad) {
 		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
 		// values and all four block light values.
 		int lightEmission = 15;
@@ -156,59 +153,5 @@ public final class ModelHelper {
 		return sprite
 				.contents()
 				.computeTransparency(minU, minV, maxU, maxV);
-	}
-
-	/**
-	 * Convenient way to encode faces that may be null.
-	 * Null is returned as {@link #NULL_FACE_ID}.
-	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
-	 */
-	public static int toFaceIndex(@Nullable Direction face) {
-		return face == null ? NULL_FACE_ID : face.get3DDataValue();
-	}
-
-	/**
-	 * Use to decode a result from {@link #toFaceIndex(Direction)}.
-	 * Return value will be null if encoded value was null.
-	 * Can also be used for no-allocation iteration of {@link Direction#values()},
-	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
-	 * to exclude or include the null value, respectively.)
-	 */
-	@Nullable
-	public static Direction faceFromIndex(int faceIndex) {
-		return FACES[faceIndex];
-	}
-
-	/**
-	 * Converts a mesh into an array of lists of vanilla baked quads.
-	 * Useful for creating vanilla baked models when required for compatibility.
-	 * The array indexes correspond to {@link Direction#getName()} with the
-	 * addition of {@link #NULL_FACE_ID}.
-	 *
-	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
-	 */
-	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
-		SpriteFinder finder = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).spriteFinder();
-
-		@SuppressWarnings("unchecked")
-		final ImmutableList.Builder<BakedQuad>[] builders = new ImmutableList.Builder[7];
-
-		for (int i = 0; i < 7; i++) {
-			builders[i] = ImmutableList.builder();
-		}
-
-		mesh.forEach(q -> {
-			Direction cullFace = q.cullFace();
-			builders[cullFace == null ? NULL_FACE_ID : cullFace.get3DDataValue()].add(q.toBakedQuad(finder.find(q)));
-		});
-
-		@SuppressWarnings("unchecked")
-		List<BakedQuad>[] result = new List[7];
-
-		for (int i = 0; i < 7; i++) {
-			result[i] = builders[i].build();
-		}
-
-		return result;
 	}
 }
