@@ -26,6 +26,7 @@ import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -36,6 +37,9 @@ import net.fabricmc.fabric.test.rendering.client.RenderLayerTest;
 
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarRendererMixin<AvatarlikeEntity extends Avatar & ClientAvatarEntity> {
+	@Unique
+	private static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
+
 	@Unique
 	private BlockModelResolver blockModelResolver;
 
@@ -57,6 +61,6 @@ public abstract class AvatarRendererMixin<AvatarlikeEntity extends Avatar & Clie
 			state.setData(RenderLayerTest.DIAMOND_BLOCK, blockRenderState);
 		}
 
-		this.blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState());
+		this.blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState(), BLOCK_DISPLAY_CONTEXT);
 	}
 }

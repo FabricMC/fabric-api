@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -66,7 +66,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		// register a custom health bar with a different height for large max health;
 		// ideally tested together with a custom armor bar
 		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR,
-				(HudElement _) -> (GuiGraphics graphics, DeltaTracker _) -> {
+				(HudElement _) -> (GuiGraphicsExtractor graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -75,7 +75,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.HEALTH_BAR);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderHealth(graphics, player, height, 0, 10, width);
+						extractHealth(graphics, player, height, 0, 10, width);
 					}
 				});
 		HudStatusBarHeightRegistry.addLeft(VanillaHudElements.HEALTH_BAR, (Player player) -> {
@@ -87,7 +87,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	private static void testArmorBar() {
 		// register a custom armor bar with slightly altered rendering compared to the vanilla bar
 		HudElementRegistry.replaceElement(VanillaHudElements.ARMOR_BAR,
-				(HudElement _) -> (GuiGraphics graphics, DeltaTracker _) -> {
+				(HudElement _) -> (GuiGraphicsExtractor graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -96,7 +96,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.ARMOR_BAR);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderArmor(graphics, player, height, 0, 10, width);
+						extractArmor(graphics, player, height, 0, 10, width);
 					}
 				});
 
@@ -114,7 +114,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "toughness_bar");
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HEALTH_BAR,
 				id,
-				(GuiGraphics graphics, DeltaTracker _) -> {
+				(GuiGraphicsExtractor graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -122,7 +122,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						int width = graphics.guiWidth() / 2 - 91;
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderToughness(graphics, player, height, 0, 10, width);
+						extractToughness(graphics, player, height, 0, 10, width);
 					}
 				});
 		HudStatusBarHeightRegistry.addLeft(id, (Player player) -> {
@@ -137,7 +137,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "stamina_bar");
 		HudElementRegistry.attachElementAfter(VanillaHudElements.FOOD_BAR,
 				id,
-				(GuiGraphics graphics, DeltaTracker _) -> {
+				(GuiGraphicsExtractor graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -147,7 +147,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						if (((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 							int width = graphics.guiWidth() / 2 + 91;
 							int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
-							renderStamina(graphics,
+							extractStamina(graphics,
 									((GuiAccessor) hud).fabric$callGetCameraPlayer(),
 									height,
 									width);
@@ -171,9 +171,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
+	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
-	private static void renderHealth(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
+	private static void extractHealth(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = Mth.floor(player.getHealth());
 
 		if (l > 0) {
@@ -195,9 +195,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
+	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
-	private static void renderArmor(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
+	private static void extractArmor(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = player.getArmorValue();
 
 		if (l > 0) {
@@ -218,9 +218,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
+	 * @see Gui#extractArmor(GuiGraphicsExtractor, Player, int, int, int, int)
 	 */
-	private static void renderToughness(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
+	private static void extractToughness(GuiGraphicsExtractor graphics, Player player, int y, int heartRows, int height, int x) {
 		int i = Mth.floor(player.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
 
 		if (i > 0) {
@@ -245,9 +245,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	}
 
 	/**
-	 * @see Gui#renderFood(GuiGraphics, Player, int, int)
+	 * @see Gui#extractFood(GuiGraphicsExtractor, Player, int, int)
 	 */
-	private static void renderStamina(GuiGraphics graphics, Player player, int y, int x) {
+	private static void extractStamina(GuiGraphicsExtractor graphics, Player player, int y, int x) {
 		int k = player.getFoodData().getFoodLevel();
 
 		for (int l = 0; l < 10; l++) {

@@ -18,31 +18,35 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.material.Fluid;
 
-import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingRegistryImpl;
 
 /**
- * Registry for {@link FluidRenderHandler} instances.
+ * Registry for {@link FluidModel} and {@link FluidRenderHandler} instances.
  *
  * <p>Notably, this supports querying, overriding and wrapping vanilla fluid
  * rendering.
  */
-public interface FluidRenderHandlerRegistry {
-	FluidRenderHandlerRegistry INSTANCE = new FluidRenderHandlerRegistryImpl();
+public final class FluidRenderingRegistry {
+	private FluidRenderingRegistry() {
+	}
 
 	/**
-	 * Get a {@link FluidRenderHandler} for a given Fluid. Supports vanilla and
-	 * Fabric fluids.
+	 * Get a {@link FluidRenderHandler} for a given Fluid.
+	 *
+	 * <p>Returns null if no handler is registered for the fluid.
 	 *
 	 * @param fluid The Fluid.
 	 * @return The FluidRenderHandler.
 	 */
-	@Nullable
-	FluidRenderHandler get(Fluid fluid);
+	public static FluidRenderHandler get(Fluid fluid) {
+		return FluidRenderingRegistryImpl.get(fluid);
+	}
 
 	/**
 	 * Get a {@link FluidRenderHandler} for a given Fluid, if it is not the
@@ -52,33 +56,68 @@ public interface FluidRenderHandlerRegistry {
 	 * @return The FluidRenderHandler.
 	 */
 	@Nullable
-	FluidRenderHandler getOverride(Fluid fluid);
+	public static FluidRenderHandler getOverride(Fluid fluid) {
+		return FluidRenderingRegistryImpl.getOverride(fluid);
+	}
 
 	/**
-	 * Register a {@link FluidRenderHandler} for a given Fluid.
+	 * Register a {@link FluidModel.Unbaked} and {@link FluidRenderHandler} for a given Fluid.
 	 *
 	 * <p>Note that most fluids have a still and a flowing type, and a
 	 * FluidRenderHandler must be registered for each type separately. To easily
 	 * register a render handler for a pair of still and flowing fluids, use
-	 * {@link #register(Fluid, Fluid, FluidRenderHandler)}.
+	 * {@link #register(Fluid, Fluid, FluidModel.Unbaked, FluidRenderHandler)}.
 	 *
 	 * @param fluid The Fluid.
+	 * @param model The {@link FluidModel.Unbaked} to use for the fluid.
 	 * @param renderer The FluidRenderHandler.
 	 */
-	void register(Fluid fluid, FluidRenderHandler renderer);
+	public static void register(Fluid fluid, FluidModel.Unbaked model, FluidRenderHandler renderer) {
+		FluidRenderingRegistryImpl.register(fluid, model, renderer);
+	}
 
 	/**
-	 * Register a {@link FluidRenderHandler} for two given Fluids, usually a
+	 * Register a {@link FluidModel.Unbaked} for a given Fluid.
+	 *
+	 * <p>Note that most fluids have a still and a flowing type, and a
+	 * model must be registered for each type separately. To easily
+	 * register a render handler for a pair of still and flowing fluids, use
+	 * {@link #register(Fluid, Fluid, FluidModel.Unbaked)}.
+	 *
+	 * @param fluid The Fluid.
+	 * @param model The {@link FluidModel.Unbaked} to use for the fluid.
+	 */
+	public static void register(Fluid fluid, FluidModel.Unbaked model) {
+		FluidRenderingRegistryImpl.register(fluid, model);
+	}
+
+	/**
+	 * Register a {@link FluidModel.Unbaked} and {@link FluidRenderHandler} for two given Fluids, usually a
 	 * pair of a still and a flowing fluid type that use the same fluid
 	 * renderer.
 	 *
 	 * @param still The still Fluid.
 	 * @param flow The flowing Fluid.
+	 * @param model The {@link FluidModel.Unbaked} to use for the fluid.
 	 * @param renderer The FluidRenderHandler.
 	 */
-	default void register(Fluid still, Fluid flow, FluidRenderHandler renderer) {
-		register(still, renderer);
-		register(flow, renderer);
+	public static void register(Fluid still, Fluid flow, FluidModel.Unbaked model, FluidRenderHandler renderer) {
+		register(still, model, renderer);
+		register(flow, model, renderer);
+	}
+
+	/**
+	 * Register a {@link FluidModel.Unbaked} for two given Fluids, usually a
+	 * pair of a still and a flowing fluid type that use the same fluid
+	 * renderer.
+	 *
+	 * @param still The still Fluid.
+	 * @param flow The flowing Fluid.
+	 * @param model The {@link FluidModel.Unbaked} to use for the fluid.
+	 */
+	public static void register(Fluid still, Fluid flow, FluidModel.Unbaked model) {
+		register(still, model);
+		register(flow, model);
 	}
 
 	/**
@@ -93,7 +132,9 @@ public interface FluidRenderHandlerRegistry {
 	 * @param transparent Whether the block is transparent (e.g. gets the
 	 * overlay textures) or not.
 	 */
-	void setBlockTransparency(Block block, boolean transparent);
+	public static void setBlockTransparency(Block block, boolean transparent) {
+		FluidRenderingRegistryImpl.setBlockTransparency(block, transparent);
+	}
 
 	/**
 	 * Looks up whether a block is transparent and gets a fluid overlay texture
@@ -106,5 +147,7 @@ public interface FluidRenderHandlerRegistry {
 	 * @return Whether the block is transparent (e.g. gets the overlay textures)
 	 * or not.
 	 */
-	boolean isBlockTransparent(Block block);
+	public static boolean isBlockTransparent(Block block) {
+		return FluidRenderingRegistryImpl.isBlockTransparent(block);
+	}
 }

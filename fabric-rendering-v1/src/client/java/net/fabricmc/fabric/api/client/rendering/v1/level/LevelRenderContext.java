@@ -22,8 +22,10 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 
+import net.fabricmc.fabric.impl.client.rendering.LevelRenderContextBackwardsCompatHack;
+
 @ApiStatus.NonExtendable
-public interface LevelRenderContext extends LevelTerrainRenderContext {
+public interface LevelRenderContext extends LevelTerrainRenderContext, LevelRenderContextBackwardsCompatHack {
 	SubmitNodeCollector submitNodeCollector();
 
 	PoseStack poseStack();
@@ -40,5 +42,6 @@ public interface LevelRenderContext extends LevelTerrainRenderContext {
 	 * <p>Renders that cannot draw in one of the supported events must be drawn directly to the frame buffer,
 	 * preferably in {@link LevelRenderEvents#END_MAIN} to avoid being overdrawn or cleared.
 	 */
-	MultiBufferSource bufferSource();
+	@Override
+	MultiBufferSource.BufferSource bufferSource();
 }

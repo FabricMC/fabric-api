@@ -20,14 +20,15 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.FluidState;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 /**
@@ -45,27 +46,7 @@ public interface FluidVariantRenderHandler {
 	}
 
 	/**
-	 * Return an array of size at least 2 containing the sprites that should be used to render the passed fluid variant,
-	 * for use in baked models, (block) entity renderers, or user interfaces.
-	 * The first sprite in the array is the still sprite, and the second is the flowing sprite.
-	 *
-	 * <p>Null may be returned if the fluid variant should not be rendered, but if an array is returned it must have at least two entries and
-	 * they may not be null.
-	 */
-	@Nullable
-	default TextureAtlasSprite[] getSprites(FluidVariant fluidVariant) {
-		// Use the fluid render handler by default.
-		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
-
-		if (fluidRenderHandler != null) {
-			return fluidRenderHandler.getFluidSprites(null, null, fluidVariant.getFluid().defaultFluidState());
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Return the color to use when rendering {@linkplain #getSprites the sprites} of this fluid variant.
+	 * Return the color to use when rendering the sprites of this fluid variant.
 	 * Transparency (alpha) will generally be taken into account and should be specified as well.
 	 *
 	 * <p>The level and position are optional context parameters and may be {@code null}.
@@ -74,13 +55,17 @@ public interface FluidVariantRenderHandler {
 	 * For example, water returns the biome-dependent color if the context parameters are specified, or its default color if one of them is null.
 	 */
 	default int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
-		// Use the fluid render handler by default.
-		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
+		FluidState fluidState = fluidVariant.getFluid().defaultFluidState();
+		FluidModel fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidState);
 
-		if (fluidRenderHandler != null) {
-			return fluidRenderHandler.getFluidColor(level, pos, fluidVariant.getFluid().defaultFluidState()) | 255 << 24;
-		} else {
+		if (fluidModel.tintSource() == null) {
 			return -1;
+		}
+
+		if (level != null && pos != null) {
+			return fluidModel.tintSource().colorInWorld(Blocks.AIR.defaultBlockState(), level, pos);
+		} else {
+			return fluidModel.tintSource().color(Blocks.AIR.defaultBlockState());
 		}
 	}
 }

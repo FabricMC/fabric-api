@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.screen.v1;
 import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -91,7 +91,7 @@ public final class ScreenEvents {
 	 * }</pre>
 	 *
 	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.components.Renderable drawn}.
-	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.components.Renderable#render(GuiGraphics, int, int, float) render} methods in the corresponding screen events.
+	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.components.Renderable#extractRenderState(GuiGraphicsExtractor, int, int, float)} extractRenderState} methods in the corresponding screen events.
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT
@@ -116,18 +116,18 @@ public final class ScreenEvents {
 	}
 
 	/**
-	 * An event that is called before a screen is rendered.
+	 * An event that is called before a screen is extracted.
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeRender> beforeRender(Screen screen) {
+	public static Event<BeforeExtract> beforeExtract(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeRenderEvent();
 	}
 
 	/**
-	 * An event that is called after a screen's background is rendered.
+	 * An event that is called after a screen's background is extracted.
 	 *
 	 * @return the event
 	 */
@@ -138,11 +138,11 @@ public final class ScreenEvents {
 	}
 
 	/**
-	 * An event that is called after a screen is rendered.
+	 * An event that is called after a screen is extracted.
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterRender> afterRender(Screen screen) {
+	public static Event<AfterExtract> afterExtract(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterRenderEvent();
@@ -186,18 +186,18 @@ public final class ScreenEvents {
 	}
 
 	@FunctionalInterface
-	public interface BeforeRender {
-		void beforeRender(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
+	public interface BeforeExtract {
+		void beforeExtract(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface
 	public interface AfterBackground {
-		void afterBackground(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
+		void afterBackground(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface
-	public interface AfterRender {
-		void afterRender(Screen screen, GuiGraphics graphics, int mouseX, int mouseY, float tickProgress);
+	public interface AfterExtract {
+		void afterExtract(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface

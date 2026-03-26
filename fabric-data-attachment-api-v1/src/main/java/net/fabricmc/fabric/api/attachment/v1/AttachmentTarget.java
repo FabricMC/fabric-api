@@ -35,7 +35,10 @@ import net.fabricmc.fabric.api.event.Event;
 /**
  * Marks all objects on which data can be attached using {@link AttachmentType}s.
  *
- * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerLevel} and {@link ChunkAccess} via mixin.</p>
+ * <p>
+ * Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerLevel} and {@link ChunkAccess} via mixin.
+ * Additionally, {@link GlobalAttachments} also implements this for server-wide data attachments.
+ * </p>
  *
  * <p>Note about {@link BlockEntity} and {@link ChunkAccess} targets: these objects need to be notified of changes to their
  * state (using {@link BlockEntity#setChanged()} and {@link ChunkAccess#markUnsaved()} respectively), otherwise the modifications will not take effect properly.

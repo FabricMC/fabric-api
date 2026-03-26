@@ -40,6 +40,6 @@
   },
   "accessWidener": "fabric-data-attachment-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "experimental"
+    "fabric-api:module-lifecycle": "stable"
   }
 }

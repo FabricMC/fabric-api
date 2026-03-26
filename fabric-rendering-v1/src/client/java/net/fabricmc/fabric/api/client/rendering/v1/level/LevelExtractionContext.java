@@ -17,13 +17,11 @@
 package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.joml.Matrix4fc;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.culling.Frustum;
 
 @ApiStatus.NonExtendable
 public interface LevelExtractionContext extends AbstractLevelRenderContext {
@@ -37,13 +35,5 @@ public interface LevelExtractionContext extends AbstractLevelRenderContext {
 
 	Camera camera();
 
-	Frustum frustum();
-
 	DeltaTracker deltaTracker();
-
-	Matrix4fc viewMatrix();
-
-	Matrix4fc cullProjectionMatrix();
-
-	boolean blockOutlines();
 }

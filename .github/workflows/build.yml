@@ -1,42 +1,48 @@
 name: Build
-on: [push, pull_request, merge_group]
+on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'microsoft'
           java-version: '25'
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: gradle/actions/wrapper-validation@v4
-      - run: ./gradlew check build :buildSrc:check publishToMavenLocal --stacktrace
+      - run: ./gradlew check build outJar :buildSrc:check publishToMavenLocal --stacktrace
       - uses: FabricMCBot/publish-checkstyle-report@4627c82002aa370b6cb2a3140f34c7a8c55a5297
         if: ${{ failure() }}
         with:
           reports: |
             **/build/reports/checkstyle/*.xml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Artifacts ${{ matrix.java }}
           path: |
             build/libs/
             ./*/build/libs/
             build/publishMods/
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Maven Local ${{ matrix.java }}
           path: ~/.m2/repository/net/fabricmc/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Artifacts ${{ matrix.java }}
+          archive: false
+          path: |
+            build/out/
 
   client_test:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'microsoft'
           java-version: '25'
@@ -47,12 +53,12 @@ jobs:
       - run: ./gradlew runClientGametest --stacktrace --warning-mode=fail
         env:
           ENABLE_TRACY: false
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: Test Screenshots
           path: run/screenshots
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: Tracy Profile
@@ -61,23 +67,23 @@ jobs:
   server_test:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'microsoft'
           java-version: '25'
       - run: mkdir run && echo "eula=true" >> run/eula.txt
-      - run: ./gradlew runAutoTestServer --stacktrace --warning-mode=fail
+      - run: ./gradlew runAutoTestServer runGametest --stacktrace --warning-mode=fail
 
   check_resources:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'microsoft'
           java-version: '25'

@@ -27,5 +27,6 @@
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
-  }
+  },
+  "accessWidener": "fabric-rendering-fluids-v1.classtweaker"
 }

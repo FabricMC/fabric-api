@@ -16,46 +16,52 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
 
 public class FabricFluidRenderingTestModClient implements ClientModInitializer {
+	private static final FluidModel.Unbaked NO_OVERLAY_MODEL = new FluidModel.Unbaked(
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still")),
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing")),
+			null,
+			_ -> 0xFF5555
+	);
+	private static final FluidModel.Unbaked OVERLAY_MODEL = new FluidModel.Unbaked(
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_still")),
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_flowing")),
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")),
+			_ -> 0xFF5555
+	);
+	private static final FluidModel.Unbaked CUSTOM_MODEL = new FluidModel.Unbaked(
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")),
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")),
+			new Material(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "block/test_fluid_overlay")),
+			null
+	);
+
 	@Override
 	public void onInitializeClient() {
 		// Doors now will have overlay textures to the side
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.ACACIA_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.DARK_OAK_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.BIRCH_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.CRIMSON_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.IRON_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.JUNGLE_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.OAK_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.SPRUCE_DOOR, true);
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.WARPED_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.ACACIA_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.DARK_OAK_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.BIRCH_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.CRIMSON_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.IRON_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.JUNGLE_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.OAK_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.SPRUCE_DOOR, true);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.WARPED_DOOR, true);
 
 		// Red stained glass will have falling fluid textures to the side
-		FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
 
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_still")),
-				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_flowing")),
-				0xFF5555
-		));
-
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, new SimpleFluidRenderHandler(
-				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_still")),
-				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_flowing")),
-				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_overlay")),
-				0x5555FF
-		));
-
-		FluidRenderHandlerRegistry.INSTANCE.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, new CustomizedFluidRenderer(
-				Sheets.BLOCKS_MAPPER.apply(Identifier.fromNamespaceAndPath("fabric-rendering-fluids-v1-testmod", "test_fluid_overlay"))
-		));
+		FluidRenderingRegistry.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, NO_OVERLAY_MODEL);
+		FluidRenderingRegistry.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, OVERLAY_MODEL);
+		FluidRenderingRegistry.register(TestFluids.CUSTOM, TestFluids.CUSTOM_FLOWING, CUSTOM_MODEL, new CustomizedFluidRenderer());
 	}
 }

@@ -2,8 +2,8 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "net.fabricmc.fabric-loom" version "1.15.2" apply false
-	id "com.diffplug.spotless" version "7.2.1"
+	id "net.fabricmc.fabric-loom" version "1.15.5" apply false
+	id "com.diffplug.spotless" version "8.3.0"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
@@ -23,6 +23,10 @@ def debugArgs = [
 	"-Dmixin.debug.verify=true",
 	//"-Dmixin.debug.strict=true",
 	"-Dmixin.debug.countInjections=true",
+	"-XX:+UseZGC",
+	"-XX:+UseCompactObjectHeaders",
+	"-XX:+AlwaysPreTouch",
+	"-XX:+UseStringDeduplication"
 ]
 
 import groovy.json.JsonSlurper
@@ -230,11 +234,12 @@ allprojects {
 
 		testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 		testImplementation sourceSets.testmodClient.output
-		testImplementation 'org.mockito:mockito-core:5.20.0'
+		testImplementation 'org.mockito:mockito-core:5.23.0'
 	}
 
 	test {
 		useJUnitPlatform()
+		jvmArgs(debugArgs)
 	}
 
 	tasks.withType(ProcessResources).configureEach {
@@ -267,7 +272,7 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "10.20.2"
+		toolVersion = "13.3.0"
 	}
 
 	tasks.withType(AbstractArchiveTask).configureEach {
@@ -409,8 +414,6 @@ loom {
 runGametest {
 	outputs.file project.layout.buildDirectory.file("junit.xml")
 }
-
-test.dependsOn runGametest
 
 // Format all the gradle files
 spotless {
@@ -694,6 +697,11 @@ publishMods {
 
 assemble.dependsOn signJar
 
+// Copy the final jar into a directory of its own so we can easily upload it without zipping during github actions builds.
+tasks.register('outJar', Copy) {
+	from signJar.output
+	into layout.buildDirectory.dir("out")
+}
 
 // A task to ensure that the version being released has not already been released.
 tasks.register('checkVersion') {

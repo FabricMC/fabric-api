@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.rendering.level;
 
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Camera;
@@ -25,8 +23,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 
@@ -37,11 +34,7 @@ public class LevelExtractionContextImpl implements LevelExtractionContext {
 	private ClientLevel level;
 	private Camera camera;
 	@Nullable
-	private Frustum frustum;
 	private DeltaTracker deltaTracker;
-	private Matrix4f viewMatrix;
-	private Matrix4f cullProjectionMatrix;
-	private boolean blockOutlines;
 
 	public void prepare(
 			GameRenderer gameRenderer,
@@ -49,11 +42,7 @@ public class LevelExtractionContextImpl implements LevelExtractionContext {
 			LevelRenderState levelRenderState,
 			ClientLevel level,
 			DeltaTracker deltaTracker,
-			boolean blockOutlines,
-			Camera camera,
-			Matrix4f viewMatrix,
-			Matrix4f cullProjectionMatrix,
-			@Nullable Frustum frustum
+			Camera camera
 	) {
 		this.gameRenderer = gameRenderer;
 		this.levelRenderer = levelRenderer;
@@ -61,11 +50,7 @@ public class LevelExtractionContextImpl implements LevelExtractionContext {
 		this.level = level;
 
 		this.deltaTracker = deltaTracker;
-		this.blockOutlines = blockOutlines;
 		this.camera = camera;
-		this.viewMatrix = viewMatrix;
-		this.cullProjectionMatrix = cullProjectionMatrix;
-		this.frustum = frustum;
 	}
 
 	@Override
@@ -94,28 +79,7 @@ public class LevelExtractionContextImpl implements LevelExtractionContext {
 	}
 
 	@Override
-	@Nullable
-	public Frustum frustum() {
-		return frustum;
-	}
-
-	@Override
 	public DeltaTracker deltaTracker() {
 		return this.deltaTracker;
-	}
-
-	@Override
-	public Matrix4fc viewMatrix() {
-		return viewMatrix;
-	}
-
-	@Override
-	public Matrix4fc cullProjectionMatrix() {
-		return cullProjectionMatrix;
-	}
-
-	@Override
-	public boolean blockOutlines() {
-		return blockOutlines;
 	}
 }

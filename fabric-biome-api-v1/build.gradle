@@ -43,7 +43,4 @@ loom {
 	}
 }
 
-// Ensure the worldgen JSONs are re-created to ensure the data-gen still works
-test.dependsOn runDatagen
-runTestmodClient.dependsOn runDatagen
 generateResources.dependsOn runDatagen

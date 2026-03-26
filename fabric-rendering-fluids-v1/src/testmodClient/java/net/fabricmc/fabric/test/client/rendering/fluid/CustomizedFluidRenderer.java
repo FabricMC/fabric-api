@@ -20,25 +20,27 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.resources.model.SpriteId;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
-public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
-	public CustomizedFluidRenderer(SpriteId overlayTexture) {
-		super(overlayTexture, overlayTexture, overlayTexture);
-	}
-
+public class CustomizedFluidRenderer implements FluidRenderHandler {
 	@Override
-	public void renderFluid(BlockPos pos, BlockAndTintGetter level, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public void renderFluid(FluidRenderer fluidRenderer, BlockPos pos, BlockAndTintGetter level, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
+		FluidModel model = fluidRenderer.fluidModels.get(fluidState);
+		TextureAtlasSprite sprite = model.flowingMaterial().sprite();
+
 		int light = getLight(level, pos);
-		float u1 = sprites[2].getU(0);
-		float v1 = sprites[2].getV(0);
-		float u2 = sprites[2].getU(1);
-		float v2 = sprites[2].getV(fluidState.getHeight(level, pos));
+		float u1 = sprite.getU(0);
+		float v1 = sprite.getV(0);
+		float u2 = sprite.getU(1);
+		float v2 = sprite.getV(fluidState.getHeight(level, pos));
 
 		float x1 = (pos.getX() & 15) + 0.1f;
 		float y1 = pos.getY() & 15;
@@ -47,6 +49,8 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 		float x2 = (pos.getX() & 15) + 0.9f;
 		float y2 = (pos.getY() & 15) + fluidState.getHeight(level, pos);
 		float z2 = (pos.getZ() & 15) + 0.9f;
+
+		VertexConsumer vertexConsumer = output.getBuilder(ChunkSectionLayer.SOLID);
 
 		vertex(vertexConsumer, x1, y1, z1, 1, 1, 1, u1, v1, light);
 		vertex(vertexConsumer, x2, y1, z2, 1, 1, 1, u2, v1, light);

@@ -28,7 +28,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
@@ -210,10 +210,10 @@ public class HudElementRegistryImpl {
 			layers().add(HudLayer.ofVanilla(id));
 		}
 
-		public void render(GuiGraphics graphics, DeltaTracker deltaTracker, HudElement vanillaElement) {
+		public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, HudElement vanillaElement) {
 			for (HudLayer layer : layers) {
 				if (!layer.isRemoved()) {
-					layer.element(vanillaElement).render(graphics, deltaTracker);
+					layer.element(vanillaElement).extractRenderState(graphics, deltaTracker);
 				}
 			}
 		}

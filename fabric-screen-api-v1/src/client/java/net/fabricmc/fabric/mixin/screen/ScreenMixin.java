@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -63,11 +63,11 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenEvents.AfterTick> afterTickEvent;
 	@Unique
-	private Event<ScreenEvents.BeforeRender> beforeRenderEvent;
+	private Event<ScreenEvents.BeforeExtract> beforeRenderEvent;
 	@Unique
 	private Event<ScreenEvents.AfterBackground> afterBackgroundEvent;
 	@Unique
-	private Event<ScreenEvents.AfterRender> afterRenderEvent;
+	private Event<ScreenEvents.AfterExtract> afterRenderEvent;
 
 	// Keyboard
 	@Unique
@@ -109,8 +109,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
-	@Inject(method = "renderWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.AFTER))
-	public final void renderWithTooltip(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
+	public final void extractWithTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
 		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
 	}
 
@@ -210,7 +210,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	}
 
 	@Override
-	public Event<ScreenEvents.BeforeRender> fabric_getBeforeRenderEvent() {
+	public Event<ScreenEvents.BeforeExtract> fabric_getBeforeRenderEvent() {
 		return ensureEventsAreInitialized(this.beforeRenderEvent);
 	}
 
@@ -220,7 +220,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	}
 
 	@Override
-	public Event<ScreenEvents.AfterRender> fabric_getAfterRenderEvent() {
+	public Event<ScreenEvents.AfterExtract> fabric_getAfterRenderEvent() {
 		return ensureEventsAreInitialized(this.afterRenderEvent);
 	}
 

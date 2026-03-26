@@ -21,6 +21,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.item.Item;
 
@@ -50,7 +51,37 @@ public final class DefaultItemComponentEvents {
 		 * @param itemPredicate A predicate to match items to modify
 		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
 		 */
-		void modify(Predicate<Item> itemPredicate, BiConsumer<DataComponentMap.Builder, Item> builderConsumer);
+		void modify(Predicate<Item> itemPredicate, ModifyConsumer builderConsumer);
+
+		/**
+		 * Modify the default data components of the specified item.
+		 *
+		 * @param item The item to modify
+		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
+		 */
+		default void modify(Item item, ModifyConsumer builderConsumer) {
+			modify(Predicate.isEqual(item), builderConsumer);
+		}
+
+		/**
+		 * Modify the default data components of the specified items.
+		 *
+		 * @param items The items to modify
+		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
+		 */
+		default void modify(Collection<Item> items, ModifyConsumer builderConsumer) {
+			modify(items::contains, builderConsumer);
+		}
+
+		/**
+		 * Modify the default data components of the specified item.
+		 *
+		 * @param itemPredicate A predicate to match items to modify
+		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
+		 */
+		default void modify(Predicate<Item> itemPredicate, BiConsumer<DataComponentMap.Builder, Item> builderConsumer) {
+			modify(itemPredicate, ((builder, _lookupProvider, item) -> builderConsumer.accept(builder, item)));
+		}
 
 		/**
 		 * Modify the default data components of the specified item.
@@ -80,5 +111,17 @@ public final class DefaultItemComponentEvents {
 		 * @param context The context to modify items
 		 */
 		void modify(ModifyContext context);
+	}
+
+	@FunctionalInterface
+	public interface ModifyConsumer {
+		/**
+		 * A consumer used for modifying the provided {@link DataComponentMap.Builder}.
+		 *
+		 * @param builder The data component builder for the item.
+		 * @param lookupProvider A lookup provider to obtain holders and holder sets from registries.
+		 * @param item The item to modify.
+		 */
+		void modify(DataComponentMap.Builder builder, HolderLookup.Provider lookupProvider, Item item);
 	}
 }

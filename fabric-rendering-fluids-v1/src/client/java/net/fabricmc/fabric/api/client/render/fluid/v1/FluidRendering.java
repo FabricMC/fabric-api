@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -38,36 +38,38 @@ public final class FluidRendering {
 	 * {@link FluidRenderHandler#renderFluid}, but the passed default renderer is invoked instead of the vanilla
 	 * renderer whenever the handler requests default geometry to be rendered.
 	 *
+	 * @param fluidRenderer the {@link FluidRenderer} instance used to render the fluid. {@link FluidRenderer#fluidModels} can be used to get the model for the fluid being rendered.
 	 * @param handler the render handler to invoke {@link FluidRenderHandler#renderFluid} on
 	 * @param level the level
 	 * @param pos the pos
-	 * @param vertexConsumer the vertex consumer
+	 * @param output the {@link FluidRenderer.Output} used to get the {@link VertexConsumer} to render to
 	 * @param blockState the block state
 	 * @param fluidState the fluid state
 	 * @param defaultRenderer the renderer to use whenever the handler requests default geometry
 	 */
-	public static void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
-		FluidRenderingImpl.render(handler, level, pos, vertexConsumer, blockState, fluidState, defaultRenderer);
+	public static void render(FluidRenderer fluidRenderer, FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
+		FluidRenderingImpl.render(fluidRenderer, handler, level, pos, output, blockState, fluidState, defaultRenderer);
 	}
 
 	public interface DefaultRenderer {
 		/**
 		 * Render the default geometry when it is requested by {@link FluidRenderHandler#renderFluid}. The default
-		 * implementation invokes the vanilla renderer. Calling {@link LiquidBlockRenderer#tesselate} directly is not supported
+		 * implementation invokes the vanilla renderer. Calling {@link FluidRenderer#tesselate} directly is not supported
 		 * but using {@code DefaultRenderer.super.render} is supported. Note that the parameter values passed to this
 		 * call are provided by the render handler, meaning they are not necessarily the same as those provided to the
 		 * initial rendering call. As per the documentation of {@link FluidRenderHandler#renderFluid}, a new handler
 		 * should not be retrieved and only the passed one should be used.
 		 *
+		 * @param fluidRenderer the {@link FluidRenderer} instance used to render the fluid. {@link FluidRenderer#fluidModels} can be used to get the model for the fluid being rendered.
 		 * @param handler the handler that {@link FluidRenderHandler#renderFluid} was invoked on
 		 * @param level the level
 		 * @param pos the pos
-		 * @param vertexConsumer the vertex consumer
+		 * @param output the {@link FluidRenderer.Output} used to get the {@link VertexConsumer} to render to
 		 * @param blockState the block state
 		 * @param fluidState the fluid state
 		 */
-		default void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-			FluidRenderingImpl.renderVanillaDefault(handler, level, pos, vertexConsumer, blockState, fluidState);
+		default void render(FluidRenderer fluidRenderer, FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState) {
+			FluidRenderingImpl.renderVanillaDefault(fluidRenderer, level, pos, output, blockState, fluidState);
 		}
 	}
 }
