@@ -35,7 +35,9 @@ public interface FileFixSchemaRegisterCallback {
 	 * at {@link FileFixSchemaRegisterCallback#EVENT}, which adds the given {@code fixes} to the
 	 * game's {@link FileFixerUpper} at the given data version.
 	 *
-	 * <p>Please note that this method does not throw for invalid data versions.</p>
+	 * <p>Please note that this method does not throw for invalid data versions, and that
+	 * fixes can only be registered for a data version that has file fixes in vanilla, because
+	 * there won't be a schema registered for those versions.</p>
 	 *
 	 * @param version the data version to register the file fixes for.
 	 * @param fixes the file fixes to register.
