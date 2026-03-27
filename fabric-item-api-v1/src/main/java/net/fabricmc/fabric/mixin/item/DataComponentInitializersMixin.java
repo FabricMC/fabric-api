@@ -16,27 +16,19 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentInitializers;
 
 import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
 
-@Mixin(targets = "net.minecraft.core.component.DataComponentInitializers$1")
+@Mixin(DataComponentInitializers.class)
 public abstract class DataComponentInitializersMixin {
-	@Shadow
-	public abstract ResourceKey<? extends Registry<?>> key();
-
-	@Inject(method = "apply", at = @At("RETURN"))
-	private void apply(CallbackInfo ci) {
-		if (Registries.ITEM.identifier().equals(key().identifier())) {
-			DefaultItemComponentImpl.modifyItemComponents();
-		}
+	@WrapMethod(method = "createInitializerForRegistry")
+	private static <T> DataComponentInitializers.PendingComponents<T> captureLookup(HolderLookup.Provider context, DataComponentInitializers.PendingComponentBuilders<T> elementBuilders, Operation<DataComponentInitializers.PendingComponents<T>> original) {
+		return ScopedValue.where(DefaultItemComponentImpl.LOOKUP_PROVIDER_SCOPED_VALUE, context).call(() -> original.call(context, elementBuilders));
 	}
 }

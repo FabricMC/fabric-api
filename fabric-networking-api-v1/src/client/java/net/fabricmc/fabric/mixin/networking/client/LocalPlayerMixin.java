@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.mixin.networking.client;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.network.Connection;
-import net.minecraft.server.network.ServerHandshakePacketListenerImpl;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
 
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 
-@Mixin(ServerHandshakePacketListenerImpl.class)
-abstract class ServerHandshakePacketListenerImplMixin implements PacketContextProvider {
+@Mixin(LocalPlayer.class)
+public class LocalPlayerMixin implements PacketContextProvider {
 	@Shadow
 	@Final
-	private Connection connection;
+	public ClientPacketListener connection;
 
 	@Override
 	public PacketContext getPacketContext() {

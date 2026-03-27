@@ -6,9 +6,11 @@
     "AbstractFurnaceBlockEntityMixin",
     "AnvilMenuMixin",
     "BrewingStandBlockEntityMixin",
-    "DataComponentMapBuilderMixin",
+    "BuiltInRegistriesMixin",
     "CraftingRecipeMixin",
     "DataComponentInitializersMixin",
+    "DataComponentInitializersPendingComponentsMixin",
+    "DataComponentMapBuilderMixin",
     "EnchantCommandMixin",
     "EnchantmentBuilderAccessor",
     "EnchantmentBuilderMixin",
@@ -18,7 +20,6 @@
     "ItemPropertiesMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "BuiltInRegistriesMixin",
     "ResourceManagerRegistryLoadTaskMixin"
   ],
   "injectors": {

@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.rendering;
+package net.fabricmc.fabric.impl.client.rendering;
 
-import java.util.function.BiConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
-
-import net.minecraft.client.model.geom.ModelPart;
-
-@Mixin(ModelPart.class)
-public interface ModelPartAccessor {
-	@Invoker("addAllChildren")
-	void fabric$callAddAllChildren(BiConsumer<String, ModelPart> partBiConsumer);
+// Forces javac to generate a bridge method in LevelRenderContext returning MultiBufferSource,
+// allowing code compiled against the old LevelRenderContext, where this method returned
+// MultiBufferSource, to still run. Should be removed as soon as we're allowed to make breaking
+// changes.
+@Deprecated(forRemoval = true)
+public interface LevelRenderContextBackwardsCompatHack {
+	MultiBufferSource bufferSource();
 }

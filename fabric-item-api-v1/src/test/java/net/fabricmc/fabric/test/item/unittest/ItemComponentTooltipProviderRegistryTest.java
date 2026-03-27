@@ -19,16 +19,22 @@ package net.fabricmc.fabric.test.item.unittest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
@@ -52,7 +58,17 @@ public class ItemComponentTooltipProviderRegistryTest {
 			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
 		}
 
-		DefaultItemComponentImpl.modifyItemComponents();
+		DefaultItemComponentImpl.modifyItemComponents(new HolderLookup.Provider() {
+			@Override
+			public @NonNull Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
+				return Stream.empty();
+			}
+
+			@Override
+			public <T> @NonNull Optional<? extends HolderLookup.RegistryLookup<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
+				return Optional.empty();
+			}
+		});
 	}
 
 	@Test
