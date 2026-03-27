@@ -76,7 +76,7 @@ abstract class BlockFeatureRendererMixin {
 	}
 
 	@Inject(method = "renderMovingBlockSubmits", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.<init>(ZZLnet/minecraft/client/color/block/BlockColors;)V"))
-	private void beforeInitBlockRenderer(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockStateModelSet blockStateModelSet, OptionsRenderState optionsState, boolean translucent, CallbackInfo ci, @Local PoseStack poseStack, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
+	private void beforeInitBlockRenderer(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockStateModelSet blockStateModelSet, OptionsRenderState optionsState, boolean translucent, CallbackInfo ci, @Local(name = "poseStack") PoseStack poseStack, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
 		altBlockRenderer.set(Renderer.get().altModelBlockRenderer(optionsState.ambientOcclusion, false, Minecraft.getInstance().getBlockColors()));
 		altQuadOutput.set(Renderer.get().quadEmitter(quad -> {
 			RenderType renderType = ChunkSectionLayerHelper.getMovingBlockRenderType(quad.chunkLayer());

@@ -59,10 +59,14 @@ abstract class SectionCompilerMixin {
 	private BlockColors blockColors;
 
 	@Shadow
-	abstract BufferBuilder getOrBeginLayer(Map<ChunkSectionLayer, BufferBuilder> startedLayers, SectionBufferBuilderPack buffers, ChunkSectionLayer layer);
+	protected abstract BufferBuilder getOrBeginLayer(
+			Map<ChunkSectionLayer, BufferBuilder> startedLayers,
+			SectionBufferBuilderPack buffers,
+			ChunkSectionLayer layer
+	);
 
 	@Inject(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;betweenClosed(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Ljava/lang/Iterable;"))
-	private void beforeLoopCompile(SectionPos sectionPos, RenderSectionRegion region, VertexSorting vertexSorting, SectionBufferBuilderPack builders, CallbackInfoReturnable<SectionCompiler.Results> cir, @Local Map<ChunkSectionLayer, BufferBuilder> startedLayers, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
+	private void beforeLoopCompile(SectionPos sectionPos, RenderSectionRegion region, VertexSorting vertexSorting, SectionBufferBuilderPack builders, CallbackInfoReturnable<SectionCompiler.Results> cir, @Local(name = "startedLayers") Map<ChunkSectionLayer, BufferBuilder> startedLayers, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
 		altBlockRenderer.set(Renderer.get().altModelBlockRenderer(ambientOcclusion, true, blockColors));
 		altQuadOutput.set(Renderer.get().quadEmitter(quad -> {
 			BufferBuilder builder = getOrBeginLayer(startedLayers, builders, quad.chunkLayer());
