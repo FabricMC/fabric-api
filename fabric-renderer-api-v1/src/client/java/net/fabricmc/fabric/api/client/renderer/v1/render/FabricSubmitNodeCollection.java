@@ -21,6 +21,8 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.SubmitNodeStorage.BlockModelSubmit;
+import net.minecraft.client.renderer.SubmitNodeStorage.ItemSubmit;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -30,22 +32,38 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 
-// TODO FRAPI 26.1: docs
 /**
  * Note: This interface is automatically implemented on {@link SubmitNodeCollection} via Mixin and interface injection.
  */
 public interface FabricSubmitNodeCollection {
+	/**
+	 * @return {@linkplain ExtendedBlockModelSubmit extended block model submits} in this
+	 * {@link SubmitNodeCollection}.
+	 */
 	default List<ExtendedBlockModelSubmit> getExtendedBlockModelSubmits() {
-		throw new AssertionError();
+		throw new UnsupportedOperationException("Implemented via Mixin.");
 	}
 
+	/**
+	 * @return {@linkplain ExtendedItemSubmit extended item submits} in this
+	 * {@link SubmitNodeCollection}.
+	 */
 	default List<ExtendedItemSubmit> getExtendedItemSubmits() {
-		throw new AssertionError();
+		throw new UnsupportedOperationException("Implemented via Mixin.");
 	}
 
+	// CHECKSTYLE:OFF MatchXpath
+	/**
+	 * An alternative to {@link BlockModelSubmit} that accepts a {@link Mesh}.
+	 */
 	record ExtendedBlockModelSubmit(PoseStack.Pose pose, RenderType renderType, List<BlockStateModelPart> modelParts, Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
 	}
 
+	/**
+	 * An alternative to {@link ItemSubmit} that accepts a {@link MeshView}.
+	 */
 	record ExtendedItemSubmit(PoseStack.Pose pose, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 	}
+
+	// CHECKSTYLE:ON MatchXpath
 }

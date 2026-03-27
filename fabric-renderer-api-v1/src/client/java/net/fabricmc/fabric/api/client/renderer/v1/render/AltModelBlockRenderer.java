@@ -17,13 +17,33 @@
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockQuadOutput;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
-// TODO FRAPI 26.1: doc
+/**
+ * An alternative to {@link ModelBlockRenderer} that tessellates block models into a
+ * {@link QuadEmitter} instead of a {@link BlockQuadOutput}.
+ */
 public interface AltModelBlockRenderer {
+	/**
+	 * An alternative to {@link ModelBlockRenderer#tesselateBlock(BlockQuadOutput, float, float, float, BlockAndTintGetter, BlockPos, BlockState, BlockStateModel, long)}
+	 * that tessellates a {@link BlockStateModel} into a {@link QuadEmitter} instead of a
+	 * {@link BlockQuadOutput}.
+	 *
+	 * @param output the quad output
+	 * @param x the x position
+	 * @param y the y position
+	 * @param z the z position
+	 * @param level the level to tessellate in
+	 * @param pos the model's in-level position
+	 * @param blockState the model's block state
+	 * @param model the model
+	 * @param seed the model's random seed
+	 */
 	void tesselateBlock(QuadEmitter output, float x, float y, float z, BlockAndTintGetter level, BlockPos pos, BlockState blockState, BlockStateModel model, long seed);
 }

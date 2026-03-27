@@ -64,7 +64,12 @@ public interface Renderer {
 		return RendererManager.getRenderer();
 	}
 
-	// TODO FRAPI 26.1: doc
+	/**
+	 * Obtain a new {@link QuadEmitter} instance that performs extra logic when emitted.
+	 * This is equivalent to vanilla's {@link BlockQuadOutput}.
+	 *
+	 * @param consumer logic performed when the quad is emitted.
+	 */
 	QuadEmitter quadEmitter(Consumer<? super MutableQuadView> consumer);
 
 	/**
@@ -76,6 +81,9 @@ public interface Renderer {
 	 */
 	MutableMesh mutableMesh();
 
-	// TODO FRAPI 26.1: doc
+	/**
+	 * Obtain a new {@link AltModelBlockRenderer} to tesselate blocks with
+	 * {@linkplain QuadEmitter modded quads}.
+	 */
 	AltModelBlockRenderer altModelBlockRenderer(boolean ambientOcclusion, boolean cull, BlockColors blockColors);
 }

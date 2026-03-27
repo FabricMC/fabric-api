@@ -30,7 +30,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 
-// TODO FRAPI 26.1: docs
 /**
  * Note: This interface is automatically implemented on {@link OrderedSubmitNodeCollector} via Mixin and interface injection.
  */
@@ -38,10 +37,35 @@ public interface FabricOrderedSubmitNodeCollector {
 	// TODO FRAPI 26.1
 	//  reintroduce Function<ChunkSectionLayer, RenderType> renderTypeFunction?
 	//  should this be MeshView instead of Mesh?
+	/**
+	 * Alternative to {@link OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, List, int[], int, int, int)} that also accepts a {@link Mesh}.
+	 *
+	 * @param poseStack the pose stack
+	 * @param renderType the render type
+	 * @param parts the vanilla {@linkplain BlockStateModelPart parts}
+	 * @param mesh the mesh
+	 * @param tintLayers the array of tint layers
+	 * @param lightCoords the light coordinates
+	 * @param overlayCoords the overlay coordinates
+	 * @param outlineColor the block outline color
+	 */
 	default void submitBlockModel(PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
 		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, renderType, parts, tintLayers, lightCoords, overlayCoords, outlineColor);
 	}
 
+	/**
+	 * Alternative to {@link OrderedSubmitNodeCollector#submitItem(PoseStack, ItemDisplayContext, int, int, int, int[], List, ItemStackRenderState.FoilType)} that also accepts a {@link MeshView}.
+	 *
+	 * @param poseStack the pose stack
+	 * @param displayContext the item display context
+	 * @param lightCoords the light coordinates
+	 * @param overlayCoords the overlay coordinates
+	 * @param outlineColor the block outline color
+	 * @param tintLayers the array of tint layers
+	 * @param quads the list of vanilla quads
+	 * @param mesh the mesh
+	 * @param foilType the foil type
+	 */
 	default void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 		((OrderedSubmitNodeCollector) this).submitItem(poseStack, displayContext, lightCoords, overlayCoords, outlineColor, tintLayers, quads, foilType);
 	}
