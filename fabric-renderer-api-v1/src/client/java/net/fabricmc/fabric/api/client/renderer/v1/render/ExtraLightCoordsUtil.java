@@ -18,11 +18,18 @@ package net.fabricmc.fabric.api.client.renderer.v1.render;
 
 import net.minecraft.util.LightCoordsUtil;
 
-// TODO FRAPI 26.1: docs
+/**
+ * Covers some light-related utilities that {@link LightCoordsUtil} does not.
+ */
 public final class ExtraLightCoordsUtil {
 	private ExtraLightCoordsUtil() {
 	}
 
+	/**
+	 * @param coords1 Packed block- and skylight 1
+	 * @param coords2 Packed block- and skylight 2
+	 * @return The maximum block- and skylight of the two inputs, packed "smoothly".
+	 */
 	public static int smoothMax(final int coords1, final int coords2) {
 		int block1 = LightCoordsUtil.smoothBlock(coords1);
 		int block2 = LightCoordsUtil.smoothBlock(coords2);
