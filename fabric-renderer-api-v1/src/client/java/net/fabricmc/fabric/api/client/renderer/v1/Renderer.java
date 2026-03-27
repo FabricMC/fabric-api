@@ -36,7 +36,6 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 
-// TODO FRAPI 26.1: more methods
 /**
  * Interface for rendering plug-ins that provide enhanced capabilities
  * for model lighting, buffering and rendering. Such plug-ins implement the

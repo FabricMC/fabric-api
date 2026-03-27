@@ -54,7 +54,7 @@ abstract class BlockStateModelWrapperMixin implements BlockModel {
 
 	@Overwrite
 	@Override
-	public void update(final BlockModelRenderState output, final BlockState blockState, final BlockDisplayContext displayContext, final long seed) {
+	public void update(BlockModelRenderState output, BlockState blockState, BlockDisplayContext displayContext, final long seed) {
 		QuadEmitter emitter = output.setupMesh(transformation, model.hasMaterialFlag(BakedQuad.FLAG_TRANSLUCENT));
 		// TODO FRAPI 26.1: somehow pass the level and pos here when available?
 		model.emitQuads(emitter, BlockAndTintGetter.EMPTY, BlockPos.ZERO, blockState, output.scratchRandomSource(seed), _ -> false);

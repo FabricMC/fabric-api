@@ -49,6 +49,7 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 		if (mutableMesh == null) {
 			mutableMesh = Renderer.get().mutableMesh();
 		}
+
 		return mutableMesh.emitter();
 	}
 

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -30,6 +31,9 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 
 // TODO FRAPI 26.1: docs
+/**
+ * Note: This interface is automatically implemented on {@link SubmitNodeCollection} via Mixin and interface injection.
+ */
 public interface FabricSubmitNodeCollection {
 	default List<ExtendedBlockModelSubmit> getExtendedBlockModelSubmits() {
 		throw new AssertionError();

@@ -63,10 +63,8 @@ public final class ModelHelper {
 	}
 
 	/**
-	 * Computes a {@link BakedQuad.MaterialInfo} for a {@link Material.Baked}.
-	 *
-	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
-	 * This method is meant primarily for baking.
+	 * Computes the {@link BakedQuad.MaterialInfo} for a {@link Material.Baked}, given the vertex
+	 * UVs from the given quad.
 	 */
 	public static BakedQuad.MaterialInfo computeMaterialInfo(Material.Baked material, QuadView quad) {
 		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : computeTransparency(material.sprite(), quad);
@@ -74,7 +72,7 @@ public final class ModelHelper {
 		return BakedQuad.MaterialInfo.of(material, transparency, quad.tintIndex(), quad.diffuseShade(), approximateLightEmission(quad));
 	}
 
-	// TODO: documentation
+	// TODO FRAPI 26.1: docs
 	public static int approximateLightEmission(QuadView quad) {
 		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
 		// values and all four block light values.
@@ -99,10 +97,8 @@ public final class ModelHelper {
 	}
 
 	/**
-	 * Computes {@link Transparency} for a {@link TextureAtlasSprite}.
-	 *
-	 * <p><b>Warning</b>: do not call this method while rendering as it does not cache the result.
-	 * This method is meant primarily for baking.
+	 * Computes the {@link Transparency} for a {@link TextureAtlasSprite}, given the vertex UVs from
+	 * the given quad.
 	 */
 	public static Transparency computeTransparency(TextureAtlasSprite sprite, QuadView quad) {
 		// Find the minimum and maximum UV's.

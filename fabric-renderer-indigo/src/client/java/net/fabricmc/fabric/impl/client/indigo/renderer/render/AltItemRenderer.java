@@ -31,7 +31,6 @@ import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtraLightCoordsUtil;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
@@ -137,15 +136,9 @@ public class AltItemRenderer {
 
 	private void shadeQuad(MutableQuadViewImpl quad, boolean emissive) {
 		if (emissive) {
-			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
-			}
+			quad.lightmap(LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT);
 		} else {
-			final int light = submit.lightCoords();
-
-			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, ExtraLightCoordsUtil.smoothMax(quad.lightmap(i), light));
-			}
+			quad.minLightmap(submit.lightCoords());
 		}
 	}
 

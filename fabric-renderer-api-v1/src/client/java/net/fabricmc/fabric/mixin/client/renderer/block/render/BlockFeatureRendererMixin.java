@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
-import java.util.function.Consumer;
-
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
@@ -44,31 +43,37 @@ import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.BlockStateModelSet;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.OptionsRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtraLightCoordsUtil;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
+import net.fabricmc.fabric.impl.client.renderer.QuadConsumers;
 
 // TODO FRAPI 26.1: how much of this, if any, should be moved to Indigo?
 @Mixin(BlockFeatureRenderer.class)
 abstract class BlockFeatureRendererMixin {
 	@Shadow
 	@Final
+	private QuadInstance quadInstance;
+	@Shadow
+	@Final
 	private RandomSource random;
+
+	@Shadow
+	private static void putPartQuads(BlockStateModelPart part, PoseStack.Pose pose, QuadInstance quadInstance, int[] tintLayers, VertexConsumer buffer, @Nullable VertexConsumer outlineBuffer) {
+	}
 
 	@Inject(method = "renderMovingBlockSubmits", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.<init>(ZZLnet/minecraft/client/color/block/BlockColors;)V"))
 	private void beforeInitBlockRenderer(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockStateModelSet blockStateModelSet, OptionsRenderState optionsState, boolean translucent, CallbackInfo ci, @Local PoseStack poseStack, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
@@ -87,38 +92,7 @@ abstract class BlockFeatureRendererMixin {
 
 	@Inject(method = "renderBlockModelSubmits", at = @At("RETURN"))
 	private void onReturnRenderBlockModelSubmits(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, boolean translucent, CallbackInfo ci) {
-		var quadConsumer = new Consumer<MutableQuadView>() {
-			int[] tintLayers;
-			int lightCoords;
-			int overlayCoords;
-			PoseStack.Pose pose;
-			VertexConsumer buffer;
-			@Nullable
-			VertexConsumer outlineBuffer;
-
-			@Override
-			public void accept(MutableQuadView quad) {
-				if (quad.emissive()) {
-					quad.lightmap(LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT);
-				} else {
-					for (int i = 0; i < 4; i++) {
-						quad.lightmap(i, ExtraLightCoordsUtil.smoothMax(quad.lightmap(i), lightCoords));
-					}
-				}
-
-				int tintIndex = quad.tintIndex();
-
-				if (tintIndex != -1 && tintIndex < tintLayers.length) {
-					quad.multiplyColor(tintLayers[tintIndex]);
-				}
-
-				quad.buffer(overlayCoords, pose, buffer);
-				if (outlineBuffer != null) {
-					quad.buffer(overlayCoords, pose, outlineBuffer);
-				}
-			}
-		};
-
+		QuadConsumers.BlockModel quadConsumer = new QuadConsumers.BlockModel();
 		QuadEmitter output = Renderer.get().quadEmitter(quadConsumer);
 
 		for (FabricSubmitNodeCollection.ExtendedBlockModelSubmit submit : nodeCollection.getExtendedBlockModelSubmits()) {
@@ -133,15 +107,19 @@ abstract class BlockFeatureRendererMixin {
 					outlineBuffer = null;
 				}
 
-				// FIXME 26.1: mixin doesn't allow this
-//				quadConsumer.tintLayers = submit.tintLayers();
-//				quadConsumer.lightCoords = submit.lightCoords();
-//				quadConsumer.overlayCoords = submit.overlayCoords();
-//				quadConsumer.pose = submit.pose();
-//				quadConsumer.buffer = buffer;
-//				quadConsumer.outlineBuffer = outlineBuffer;
+				quadInstance.setLightCoords(submit.lightCoords());
+				quadInstance.setOverlayCoords(submit.overlayCoords());
 
-				// FIXME FRAPI 26.1: submit.modelParts() is ignored. respect it (render before mesh) or remove it from the submit.
+				for (BlockStateModelPart part : submit.modelParts()) {
+					putPartQuads(part, submit.pose(), quadInstance, submit.tintLayers(), buffer, outlineBuffer);
+				}
+
+				quadConsumer.tintLayers = submit.tintLayers();
+				quadConsumer.lightCoords = submit.lightCoords();
+				quadConsumer.overlayCoords = submit.overlayCoords();
+				quadConsumer.pose = submit.pose();
+				quadConsumer.buffer = buffer;
+				quadConsumer.outlineBuffer = outlineBuffer;
 				submit.mesh().outputTo(output);
 			}
 		}
@@ -150,24 +128,13 @@ abstract class BlockFeatureRendererMixin {
 	// TODO FRAPI 26.1: don't use an overwrite if possible
 	@Overwrite
 	private void renderBreakingBlockModelSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource) {
-		var quadConsumer = new Consumer<MutableQuadView>() {
-			PoseStack.Pose pose;
-			VertexConsumer buffer;
-
-			@Override
-			public void accept(MutableQuadView quad) {
-				quad.lightmap(LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT);
-				quad.buffer(OverlayTexture.NO_OVERLAY, pose, buffer);
-			}
-		};
-
+		QuadConsumers.BreakingBlockModel quadConsumer = new QuadConsumers.BreakingBlockModel();
 		QuadEmitter output = Renderer.get().quadEmitter(quadConsumer);
 
 		for (SubmitNodeStorage.BreakingBlockModelSubmit submit : nodeCollection.getBreakingBlockModelSubmits()) {
 			VertexConsumer buffer = new SheetedDecalTextureGenerator(bufferSource.getBuffer(ModelBakery.DESTROY_TYPES.get(submit.progress())), submit.pose(), 1.0F);
-			// FIXME 26.1: mixin doesn't allow this
-//			quadConsumer.pose = submit.pose();
-//			quadConsumer.buffer = buffer;
+			quadConsumer.pose = submit.pose();
+			quadConsumer.buffer = buffer;
 			output.clear();
 			random.setSeed(submit.seed());
 			// TODO FRAPI 26.1: somehow pass the level, pos, and state here when available? maybe via extended submit type?

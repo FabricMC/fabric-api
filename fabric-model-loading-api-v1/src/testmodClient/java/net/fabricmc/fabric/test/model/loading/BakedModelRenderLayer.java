@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.model.EntityModel;
@@ -28,6 +29,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -38,9 +40,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockModelRenderState;
 
 public class BakedModelRenderLayer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
+	private static final Matrix4fc IDENTITY_MATRIX4FC = new Matrix4f();
+	public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
+
 	private final Supplier<BlockStateModel> modelSupplier;
 
 	public BakedModelRenderLayer(RenderLayerParent<S, M> context, Supplier<BlockStateModel> modelSupplier) {
@@ -57,12 +61,11 @@ public class BakedModelRenderLayer<S extends LivingEntityRenderState, M extends 
 		float aboveHead = (float) (Math.sin(state.ageInTicks * 0.08F)) * 0.5F + 0.5F;
 		poseStack.translate(-0.5F, 0.75F + aboveHead, -0.5F);
 
-		// FIXME 1.21.9
-		// FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(bufferSource), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
-
+		// Normally the BlockModelRenderState would be stored in the entity render state and it
+		// would be populated in the entity renderer's extractRenderState method, but that doesn't
+		// seem possible to do without mixins for this case
 		BlockModelRenderState renderState = new BlockModelRenderState();
-		QuadEmitter emitter = ((FabricBlockModelRenderState) renderState)
-				.setupMesh(new Matrix4f(), model.hasMaterialFlag(BakedQuad.FLAG_TRANSLUCENT));
+		QuadEmitter emitter = renderState.setupMesh(IDENTITY_MATRIX4FC, model.hasMaterialFlag(BakedQuad.FLAG_TRANSLUCENT));
 		model.emitQuads(
 				emitter,
 				BlockAndTintGetter.EMPTY,
@@ -71,8 +74,6 @@ public class BakedModelRenderLayer<S extends LivingEntityRenderState, M extends 
 				renderState.scratchRandomSource(42L),
 				_ -> false
 		);
-		renderState.tintLayers().add(-1);
-
 		renderState.submit(poseStack, nodeCollector, light, OverlayTexture.NO_OVERLAY, 0);
 
 		poseStack.popPose();

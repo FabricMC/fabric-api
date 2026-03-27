@@ -119,6 +119,11 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
+	default QuadEmitter minLightmap(int lightmap) {
+		MutableQuadView.super.minLightmap(lightmap);
+		return this;
+	}
+
 	@Override
 	QuadEmitter normal(int vertexIndex, float x, float y, float z);
 

@@ -38,6 +38,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
+// TODO FRAPI 26.1:
+//  problem: models that rely on level context need to generalize their flags, which can be very inefficient, as flags cannot depend on context.
+//  case: models that can render an arbitrary submodel, such as the testmod's frame model.
+//  solution: make an overloaded flag getter that accepts context AND/OR allow emitQuads to return the flags for the current context.
 /**
  * Interface for baked block state models that output geometry with enhanced rendering features.
  * Can also be used to generate or customize geometry output based on level state.
@@ -49,10 +53,10 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 public interface FabricBlockStateModel {
 	/**
 	 * Produces this model's geometry. <b>This method must be called instead of
-	 * {@link BlockStateModel#collectParts(RandomSource, List)}; the vanilla methods
+	 * {@link BlockStateModel#collectParts(RandomSource, List)}; the vanilla method
 	 * should be considered deprecated as they may not produce accurate results.</b> However, it is acceptable for a
-	 * custom model to only implement the vanilla methods as the default implementation of this method will delegate to
-	 * one of the vanilla methods.
+	 * custom model to only implement the vanilla method as the default implementation of this method will delegate to
+	 * it.
 	 *
 	 * <p>Like {@link BlockStateModel#collectParts(RandomSource, List)}, this method may be called outside of chunk rebuilds. For
 	 * example, some entities and block entities render blocks. In some such cases, the provided position may be the
@@ -120,7 +124,7 @@ public interface FabricBlockStateModel {
 	 * just those produced by this model instance, so care should be taken when selecting the type of the key.
 	 * Generally, one class of model will want to make its own record class to use for geometry keys.
 	 *
-	 * <p>A {@code null} key means that a geometry key does exist for specifically the given context; a key may exist
+	 * <p>A {@code null} key means that a geometry key does not exist for specifically the given context; a key may exist
 	 * for a different context. It is always possible to create a key for any context, but some custom models may choose
 	 * not to if doing so is too complex. Vanilla models correctly implement this method, but may return {@code null}
 	 * when delegating to a submodel that returns {@code null}.

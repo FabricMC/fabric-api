@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
 import static net.minecraft.client.renderer.block.BlockModelRenderState.EMPTY_TINTS;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -102,19 +103,18 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 	@Inject(method = "submitModel", at = @At("HEAD"), cancellable = true)
 	private void submitMesh(RenderType renderType, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, CallbackInfo ci) {
 		if (mesh != null && mesh.size() > 0) {
-			if (modelParts != null && !modelParts.isEmpty()) {
-				List<BlockStateModelPart> modelPartsCopy = new ObjectArrayList<>(modelParts);
-				Mesh meshCopy = mesh.immutableCopy();
-				int[] tints = tintLayers != null ? tintLayers.toArray(EMPTY_TINTS) : EMPTY_TINTS;
-				if (transformation != null) {
-					poseStack.pushPose();
-					poseStack.mulPose(transformation);
-					submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
-					poseStack.popPose();
-				} else {
-					submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
-				}
+			List<BlockStateModelPart> modelPartsCopy = modelParts != null && !modelParts.isEmpty() ? new ObjectArrayList<>(modelParts) : Collections.emptyList();
+			Mesh meshCopy = mesh.immutableCopy();
+			int[] tints = tintLayers != null ? tintLayers.toArray(EMPTY_TINTS) : EMPTY_TINTS;
+			if (transformation != null) {
+				poseStack.pushPose();
+				poseStack.mulPose(transformation);
+				submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
+				poseStack.popPose();
+			} else {
+				submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
 			}
+
 			ci.cancel();
 		}
 	}

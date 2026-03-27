@@ -54,9 +54,8 @@ public class FlatLighter {
 					quad.color(i, ARGB.scaleRGB(quad.color(i), directionalBrightness));
 				}
 			}
-		}
-		// Check the AO mode to match how shade is applied during smooth lighting
-		else if ((Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.HYBRID && !vanillaShade) || Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.ENHANCED) {
+		} else if ((Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.HYBRID && !vanillaShade) || Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.ENHANCED) {
+			// ^ Check the AO mode to match how shade is applied during smooth lighting
 			if (quad.hasAllVertexNormals()) {
 				for (int i = 0; i < 4; i++) {
 					final float directionalBrightness = normalShade(cardinalLighting, quad.normalX(i), quad.normalY(i), quad.normalZ(i));

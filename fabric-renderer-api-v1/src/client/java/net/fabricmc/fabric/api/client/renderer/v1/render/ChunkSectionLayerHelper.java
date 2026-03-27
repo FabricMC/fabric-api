@@ -27,9 +27,9 @@ public final class ChunkSectionLayerHelper {
 
 	public static RenderType getMovingBlockRenderType(ChunkSectionLayer layer) {
 		return switch (layer) {
-			case SOLID -> RenderTypes.solidMovingBlock();
-			case CUTOUT -> RenderTypes.cutoutMovingBlock();
-			case TRANSLUCENT -> RenderTypes.translucentMovingBlock();
+		case SOLID -> RenderTypes.solidMovingBlock();
+		case CUTOUT -> RenderTypes.cutoutMovingBlock();
+		case TRANSLUCENT -> RenderTypes.translucentMovingBlock();
 		};
 	}
 

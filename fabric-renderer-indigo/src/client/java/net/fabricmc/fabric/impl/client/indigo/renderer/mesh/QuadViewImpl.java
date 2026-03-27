@@ -328,7 +328,6 @@ public class QuadViewImpl implements QuadView {
 				vertexConsumer.addVertex(x(i), y(i), z(i), color(i), u(i), v(i), overlayCoords, lightmap(i), normalVec.x(), normalVec.y(), normalVec.z());
 			}
 		}
-
 	}
 
 	@Override

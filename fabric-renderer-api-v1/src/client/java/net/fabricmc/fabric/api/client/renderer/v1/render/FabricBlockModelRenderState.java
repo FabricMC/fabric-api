@@ -34,6 +34,8 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
  */
 public interface FabricBlockModelRenderState {
 	// TODO FRAPI 26.1: docs
+	//  also the design here is not ideal because both setupModel and setupMesh override the transformation and renderType fields.
+	//  if a user wants to use both methods, that's unnecessary and unintuitive. might not be worth changing as the part list is always initialized by setupModel.
 	/**
 	 * Alternative to {@link BlockModelRenderState#setupModel(Matrix4fc, boolean)} that returns a
 	 * {@link QuadEmitter}.

@@ -36,6 +36,7 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.render.ExtraLightCoordsUtil;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.renderer.QuadSpriteBaker;
@@ -141,13 +142,13 @@ public interface MutableQuadView extends QuadView {
 		return pos(vertexIndex, pos.x(), pos.y(), pos.z());
 	}
 
-	// TODO 26.1: docs
+	// TODO FRAPI 26.1: docs
 	//  encourage renderers to override this to make it more efficient
 	default MutableQuadView translate(float x, float y, float z) {
-		for (int i = 0; i < 4; i++) {
-			pos(i, x(i) + x, y(i) + y, z(i) + z);
-		}
-
+		pos(0, x(0) + x, y(0) + y, z(0) + z);
+		pos(1, x(1) + x, y(1) + y, z(1) + z);
+		pos(2, x(2) + x, y(2) + y, z(2) + z);
+		pos(3, x(3) + x, y(3) + y, z(3) + z);
 		return this;
 	}
 
@@ -171,12 +172,12 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
-	// TODO 26.1: docs
+	// TODO FRAPI 26.1: docs
 	default MutableQuadView multiplyColor(int color) {
-		for (int i = 0; i < 4; i++) {
-			color(i, ARGB.multiply(color(i), color));
-		}
-
+		color(0, ARGB.multiply(color(0), color));
+		color(1, ARGB.multiply(color(1), color));
+		color(2, ARGB.multiply(color(2), color));
+		color(3, ARGB.multiply(color(3), color));
 		return this;
 	}
 
@@ -224,7 +225,7 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
-	// TODO: 26.1 docs
+	// TODO: FRAPI 26.1 docs
 	default MutableQuadView materialInfo(BakedQuad.MaterialInfo materialInfo) {
 		QuadAtlas atlas = QuadAtlas.ofLocation(materialInfo.sprite().atlasLocation());
 
@@ -239,9 +240,7 @@ public interface MutableQuadView extends QuadView {
 		diffuseShade(materialInfo.shade());
 		int lightEmission = materialInfo.lightEmission();
 		emissive(lightEmission == 15);
-		// FIXME FRAPI 26.1: max lightmap, don't reset it
-		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
-		lightmap(lightmap, lightmap, lightmap, lightmap);
+		minLightmap(LightCoordsUtil.pack(lightEmission, lightEmission));
 		return this;
 	}
 
@@ -271,7 +270,14 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
-	// TODO FRAPI 26.1: add helper to apply minimum lightmap to whole quad, respecting existing values
+	// TODO FRAPI 26.1: docs
+	default MutableQuadView minLightmap(int lightmap) {
+		lightmap(0, ExtraLightCoordsUtil.smoothMax(lightmap(0), lightmap));
+		lightmap(1, ExtraLightCoordsUtil.smoothMax(lightmap(1), lightmap));
+		lightmap(2, ExtraLightCoordsUtil.smoothMax(lightmap(2), lightmap));
+		lightmap(3, ExtraLightCoordsUtil.smoothMax(lightmap(3), lightmap));
+		return this;
+	}
 
 	/**
 	 * Sets the normal vector for the given vertex. The {@linkplain #faceNormal() face normal} is used when no vertex
@@ -347,7 +353,7 @@ public interface MutableQuadView extends QuadView {
 	 */
 	MutableQuadView chunkLayer(ChunkSectionLayer layer);
 
-	// TODO 26.1: allow using any RenderType
+	// TODO FRAPI 26.1: allow using any RenderType
 
 	/**
 	 * Controls how this quad should be rendered after buffering in item contexts. The atlas texture used by the set
@@ -361,7 +367,7 @@ public interface MutableQuadView extends QuadView {
 	 *     <li>{@link Sheets#translucentBlockItemSheet()}
 	 * </ul>
 	 *
-	 * <p>If this method is invoked with any value not in the above list, it will no-op.
+	 * <p>The behavior is undefined if this method is invoked with any value not in the above list.
 	 *
 	 * <p>The default value is {@link Sheets#cutoutBlockItemSheet()}.
 	 *
@@ -456,8 +462,9 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView copyFrom(QuadView quad);
 
 	/**
-	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. In addition,
-	 * this quad's vertex colors and vertex normals will be reset. This quad's existing lightmap values will be ignored.
+	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}, in accordance
+	 * with {@link #materialInfo(BakedQuad.MaterialInfo)}. In addition, this quad's vertex colors and vertex normals
+	 * will be reset.
 	 *
 	 * <p>Calling this method does not emit this quad.
 	 */
@@ -492,41 +499,41 @@ public interface MutableQuadView extends QuadView {
 
 		nominalFace(nominalFace);
 		switch (nominalFace) {
-			case UP:
-				depth = 1 - depth;
-				top = 1 - top;
-				bottom = 1 - bottom;
+		case UP:
+			depth = 1 - depth;
+			top = 1 - top;
+			bottom = 1 - bottom;
 
-			case DOWN:
-				pos(0, left, depth, top);
-				pos(1, left, depth, bottom);
-				pos(2, right, depth, bottom);
-				pos(3, right, depth, top);
-				break;
+		case DOWN:
+			pos(0, left, depth, top);
+			pos(1, left, depth, bottom);
+			pos(2, right, depth, bottom);
+			pos(3, right, depth, top);
+			break;
 
-			case EAST:
-				depth = 1 - depth;
-				left = 1 - left;
-				right = 1 - right;
+		case EAST:
+			depth = 1 - depth;
+			left = 1 - left;
+			right = 1 - right;
 
-			case WEST:
-				pos(0, depth, top, left);
-				pos(1, depth, bottom, left);
-				pos(2, depth, bottom, right);
-				pos(3, depth, top, right);
-				break;
+		case WEST:
+			pos(0, depth, top, left);
+			pos(1, depth, bottom, left);
+			pos(2, depth, bottom, right);
+			pos(3, depth, top, right);
+			break;
 
-			case SOUTH:
-				depth = 1 - depth;
-				left = 1 - left;
-				right = 1 - right;
+		case SOUTH:
+			depth = 1 - depth;
+			left = 1 - left;
+			right = 1 - right;
 
-			case NORTH:
-				pos(0, 1 - left, top, depth);
-				pos(1, 1 - left, bottom, depth);
-				pos(2, 1 - right, bottom, depth);
-				pos(3, 1 - right, top, depth);
-				break;
+		case NORTH:
+			pos(0, 1 - left, top, depth);
+			pos(1, 1 - left, bottom, depth);
+			pos(2, 1 - right, bottom, depth);
+			pos(3, 1 - right, top, depth);
+			break;
 		}
 
 		return this;

@@ -167,15 +167,9 @@ public class AltModelBlockRendererImpl implements AltModelBlockRenderer, QuadTra
 			}
 		} else {
 			if (emissive) {
-				for (int i = 0; i < 4; i++) {
-					quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
-				}
+				quad.lightmap(LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT);
 			} else {
-				final int light = flatLighter.light(level, blockState, pos, quad);
-
-				for (int i = 0; i < 4; i++) {
-					quad.lightmap(i, ExtraLightCoordsUtil.smoothMax(quad.lightmap(i), light));
-				}
+				quad.minLightmap(flatLighter.light(level, blockState, pos, quad));
 			}
 
 			flatLighter.applyDirectionalBrightness(level.cardinalLighting(), quad, vanillaShade);
@@ -213,6 +207,7 @@ public class AltModelBlockRendererImpl implements AltModelBlockRenderer, QuadTra
 			return -1;
 		} else {
 			BlockTintSource tintSource = tintSources.set(tintIndex, null);
+
 			if (tintSource != null) {
 				int computedTintValue = tintSource.colorInWorld(state, level, pos);
 				computedTintValues.set(tintIndex, computedTintValue);

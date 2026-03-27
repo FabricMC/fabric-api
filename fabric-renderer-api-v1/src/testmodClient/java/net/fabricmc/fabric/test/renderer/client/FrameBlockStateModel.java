@@ -136,7 +136,9 @@ public class FrameBlockStateModel implements BlockStateModel {
 
 	@Override
 	public @BakedQuad.MaterialFlags int materialFlags() {
-		return frameModel.materialFlags();
+		// This model can render any submodel, which may be translucent and animated, so this model
+		// must report that it is also translucent and animated in the general case.
+		return BakedQuad.FLAG_ANIMATED | BakedQuad.FLAG_TRANSLUCENT;
 	}
 
 	@Override

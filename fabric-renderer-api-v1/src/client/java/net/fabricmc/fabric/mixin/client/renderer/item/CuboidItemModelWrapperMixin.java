@@ -36,6 +36,10 @@ import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
 
+// NOTE: We intentionally do not validate the mesh like vanilla validates the quad list. Nowadays,
+// both vanilla and FRAPI allow using multiple atlases from within the same layer, so perhaps the
+// vanilla validation is a holdover from older versions. Regardless, we want to allow this for
+// meshes.
 @Mixin(CuboidItemModelWrapper.class)
 abstract class CuboidItemModelWrapperMixin implements ItemModel {
 	@Shadow
@@ -48,26 +52,4 @@ abstract class CuboidItemModelWrapperMixin implements ItemModel {
 			meshQuadCollection.getMesh().outputTo(layer.emitter());
 		}
 	}
-
-	// TODO FRAPI 26.1
-//	@Unique
-//	private static void validateAtlasUsage(MeshView mesh) {
-//		Iterator<BakedQuad> quadIterator = quads.iterator();
-//		if (quadIterator.hasNext()) {
-//			Identifier expectedAtlas = ((BakedQuad)quadIterator.next()).materialInfo().sprite().atlasLocation();
-//
-//			while(quadIterator.hasNext()) {
-//				BakedQuad quad = (BakedQuad)quadIterator.next();
-//				Identifier quadAtlas = quad.materialInfo().sprite().atlasLocation();
-//				if (!quadAtlas.equals(expectedAtlas)) {
-//					String var10002 = String.valueOf(expectedAtlas);
-//					throw new IllegalStateException("Multiple atlases used in model, expected " + var10002 + ", but also got " + String.valueOf(quadAtlas));
-//				}
-//			}
-//
-//			if (!expectedAtlas.equals(TextureAtlas.LOCATION_ITEMS) && !expectedAtlas.equals(TextureAtlas.LOCATION_BLOCKS)) {
-//				throw new IllegalArgumentException("Atlas " + String.valueOf(expectedAtlas) + " can't be usef for item models");
-//			}
-//		}
-//	}
 }
