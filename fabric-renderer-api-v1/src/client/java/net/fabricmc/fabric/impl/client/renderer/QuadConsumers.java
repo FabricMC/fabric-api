@@ -23,11 +23,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 
 // Workaround for mixin not allowing referencing members of anonymous classes defined within mixins.
 // Once that is fixed, this class should be inlined.
@@ -74,22 +72,6 @@ public final class QuadConsumers {
 		public void accept(MutableQuadView quad) {
 			quad.lightmap(LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT);
 			quad.buffer(OverlayTexture.NO_OVERLAY, pose, buffer);
-		}
-	}
-
-	public static class ValidateAtlasUsage implements Consumer<QuadView> {
-		@Nullable
-		public Identifier expectedAtlas;
-
-		@Override
-		public void accept(QuadView quad) {
-			Identifier quadAtlas = quad.atlas().getTextureLocation();
-
-			if (expectedAtlas == null) {
-				expectedAtlas = quadAtlas;
-			} else if (!quadAtlas.equals(expectedAtlas)) {
-				throw new IllegalStateException("Multiple atlases used in model, expected " + expectedAtlas + ", but also got " + quadAtlas);
-			}
 		}
 	}
 }
