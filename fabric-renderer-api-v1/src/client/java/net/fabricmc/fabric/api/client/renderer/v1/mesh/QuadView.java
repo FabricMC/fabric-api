@@ -201,6 +201,11 @@ public interface QuadView {
 	ShadeMode shadeMode();
 
 	/**
+	 * @see MutableQuadView#animated(boolean)
+	 */
+	boolean animated();
+
+	/**
 	 * This method is equivalent to {@link BakedQuad.MaterialInfo#tintIndex()}.
 	 *
 	 * @see MutableQuadView#tintIndex(int)

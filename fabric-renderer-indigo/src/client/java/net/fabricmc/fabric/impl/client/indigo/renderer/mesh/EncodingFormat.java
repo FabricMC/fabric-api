@@ -104,6 +104,7 @@ public final class EncodingFormat {
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
 	private static final QuadAtlas[] QUAD_ATLASES = QuadAtlas.values();
 	private static final int QUAD_ATLAS_COUNT = QUAD_ATLASES.length;
+	private static final int ANIMATED_COUNT = 1;
 
 	private static final int NULL_FOIL_TYPE_INDEX = NULLABLE_FOIL_TYPE_COUNT - 1;
 
@@ -120,6 +121,7 @@ public final class EncodingFormat {
 	private static final int FOIL_TYPE_BIT_LENGTH = Mth.ceillog2(
 			NULLABLE_FOIL_TYPE_COUNT);
 	private static final int SHADE_MODE_BIT_LENGTH = Mth.ceillog2(SHADE_MODE_COUNT);
+	private static final int ANIMATED_BIT_LENGTH = Mth.ceillog2(ANIMATED_COUNT);
 
 	private static final int CULL_BIT_OFFSET = 0;
 	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
@@ -133,7 +135,8 @@ public final class EncodingFormat {
 	private static final int AO_BIT_OFFSET = DIFFUSE_BIT_OFFSET + DIFFUSE_BIT_LENGTH;
 	private static final int FOIL_TYPE_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
 	private static final int SHADE_MODE_BIT_OFFSET = FOIL_TYPE_BIT_OFFSET + FOIL_TYPE_BIT_LENGTH;
-	private static final int TOTAL_BIT_LENGTH = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
+	private static final int ANIMATED_BIT_OFFSET = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
+	private static final int TOTAL_BIT_LENGTH = ANIMATED_BIT_OFFSET + ANIMATED_BIT_LENGTH;
 
 	private static final int CULL_MASK = bitMask(CULL_BIT_LENGTH, CULL_BIT_OFFSET);
 	private static final int LIGHT_MASK = bitMask(LIGHT_BIT_LENGTH, LIGHT_BIT_OFFSET);
@@ -152,6 +155,7 @@ public final class EncodingFormat {
 			FOIL_TYPE_BIT_OFFSET
 	);
 	private static final int SHADE_MODE_MASK = bitMask(SHADE_MODE_BIT_LENGTH, SHADE_MODE_BIT_OFFSET);
+	private static final int ANIMATED_MASK = bitMask(ANIMATED_BIT_LENGTH, ANIMATED_BIT_OFFSET);
 
 	static {
 		Preconditions.checkArgument(TOTAL_BIT_LENGTH <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
@@ -258,5 +262,13 @@ public final class EncodingFormat {
 
 	static int shadeMode(int bits, ShadeMode mode) {
 		return (bits & ~SHADE_MODE_MASK) | (mode.ordinal() << SHADE_MODE_BIT_OFFSET);
+	}
+
+	static boolean animated(int bits) {
+		return (bits & ANIMATED_MASK) >>> ANIMATED_BIT_OFFSET == 1;
+	}
+
+	static int animated(int bits, boolean animated) {
+		return (bits & ~ANIMATED_MASK) | ((animated ? 1 : 0) << ANIMATED_BIT_OFFSET);
 	}
 }

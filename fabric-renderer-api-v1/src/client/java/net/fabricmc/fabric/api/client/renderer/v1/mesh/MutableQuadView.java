@@ -214,10 +214,11 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Sets the texture coordinates for all vertices using the given material's sprite. Also sets this quad's
-	 * {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer}, and
-	 * {@linkplain #itemRenderType(RenderType) item render type} to appropriate values based on the given material. Can
-	 * handle UV locking, rotation, interpolation, etc. Control this behavior by passing additive combinations of the
-	 * BAKE_ flags defined in this interface.
+	 * {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer},
+	 * {@linkplain #animated(boolean)}, and {@linkplain #itemRenderType(RenderType) item render type}
+	 * to appropriate values based on the given material. Can handle UV locking, rotation,
+	 * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags
+	 * defined in this interface.
 	 */
 	default MutableQuadView materialBake(Material.Baked material, int bakeFlags) {
 		QuadSpriteBaker.bakeSprite(this, material.sprite(), bakeFlags);
@@ -241,6 +242,7 @@ public interface MutableQuadView extends QuadView {
 		int lightEmission = materialInfo.lightEmission();
 		emissive(lightEmission == 15);
 		minLightmap(LightCoordsUtil.pack(lightEmission, lightEmission));
+		animated(materialInfo.sprite().contents().isAnimated());
 		return this;
 	}
 
@@ -438,6 +440,13 @@ public interface MutableQuadView extends QuadView {
 	 * @see ShadeMode
 	 */
 	MutableQuadView shadeMode(ShadeMode mode);
+
+	/**
+	 * Whether the sprite associated with this quad is animated.
+	 *
+	 * <p>The default value is {@code false}.
+	 */
+	MutableQuadView animated(boolean animated);
 
 	/**
 	 * Sets the tint index, which is used to retrieve the tint color.

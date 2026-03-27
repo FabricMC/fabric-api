@@ -66,9 +66,9 @@ public final class MeshQuadCollection extends QuadCollection {
 					flags |= BakedQuad.FLAG_TRANSLUCENT;
 				}
 
-				// FIXME FRAPI 26.1
-				//  requires sprite lookup/retrieval here, which is currently not possible
-				// flags |= BakedQuad.FLAG_ANIMATED;
+				if (quad.animated()) {
+					flags |= BakedQuad.FLAG_ANIMATED;
+				}
 			}
 		};
 

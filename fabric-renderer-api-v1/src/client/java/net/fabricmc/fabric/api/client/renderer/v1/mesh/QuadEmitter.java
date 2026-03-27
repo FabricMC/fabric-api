@@ -170,6 +170,9 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter shadeMode(ShadeMode mode);
 
 	@Override
+	QuadEmitter animated(boolean animated);
+
+	@Override
 	QuadEmitter tintIndex(int tintIndex);
 
 	@Override

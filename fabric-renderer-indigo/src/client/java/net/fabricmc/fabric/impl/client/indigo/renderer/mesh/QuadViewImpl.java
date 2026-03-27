@@ -290,6 +290,11 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
+	public boolean animated() {
+		return EncodingFormat.animated(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
 	public final int tintIndex() {
 		return data[baseIndex + HEADER_TINT_INDEX];
 	}

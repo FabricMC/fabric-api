@@ -80,6 +80,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		quad.ambientOcclusion(TriState.DEFAULT);
 		quad.foilType(null);
 		quad.tintIndex(-1);
+		quad.animated(false);
 	}
 
 	private QuadTransform activeTransform = NO_TRANSFORM;
@@ -230,6 +231,12 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	public MutableQuadViewImpl shadeMode(ShadeMode mode) {
 		Objects.requireNonNull(mode, "ShadeMode may not be null");
 		data[baseIndex + HEADER_BITS] = EncodingFormat.shadeMode(data[baseIndex + HEADER_BITS], mode);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl animated(boolean animated) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.animated(data[baseIndex + HEADER_BITS], animated);
 		return this;
 	}
 
