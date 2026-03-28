@@ -50,7 +50,7 @@ abstract class BlockStateModelWrapperMixin implements BlockModel {
 	private Matrix4fc transformation;
 
 	@Shadow
-	abstract void updateTints(final BlockModelRenderState renderState, final BlockState blockState);
+	abstract void updateTints(BlockModelRenderState renderState, BlockState blockState);
 
 	@Overwrite
 	@Override

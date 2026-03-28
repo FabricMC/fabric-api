@@ -106,6 +106,7 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 			List<BlockStateModelPart> modelPartsCopy = modelParts != null && !modelParts.isEmpty() ? new ObjectArrayList<>(modelParts) : Collections.emptyList();
 			Mesh meshCopy = mesh.immutableCopy();
 			int[] tints = tintLayers != null ? tintLayers.toArray(EMPTY_TINTS) : EMPTY_TINTS;
+
 			if (transformation != null) {
 				poseStack.pushPose();
 				poseStack.mulPose(transformation);
