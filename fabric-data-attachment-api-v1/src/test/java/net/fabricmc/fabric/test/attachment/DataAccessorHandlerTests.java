@@ -17,8 +17,14 @@
 package net.fabricmc.fabric.test.attachment;
 
 import static net.fabricmc.fabric.test.attachment.AttachmentTestMod.MOD_ID;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
@@ -71,7 +77,7 @@ public class DataAccessorHandlerTests {
 	@BeforeEach
 	void setUp() {
 		RegistryAccess ra = CommonAttachmentTests.mockRA();
-		this.blockEntity = new BlockEntity(BlockEntityType.CHEST, BlockPos.ZERO, Blocks.CHEST.defaultBlockState()) {};
+		this.blockEntity = new BlockEntity(BlockEntityType.CHEST, BlockPos.ZERO, Blocks.CHEST.defaultBlockState()) { };
 		Level mockLevel = mock(Level.class);
 		when(mockLevel.registryAccess()).thenReturn(ra);
 		blockEntity.setLevel(mockLevel);
@@ -156,11 +162,11 @@ public class DataAccessorHandlerTests {
 		assertFalse(blockEntity.hasAttached(STRING));
 		assertFalse(blockEntity.hasAttached(BOOL));
 
-		merge(dataAccessor, "{\"fabric:attachments\": {" +
-				"\"fabric-data-attachment-api-v1-testmod:int\": 42, " +
-				"\"fabric-data-attachment-api-v1-testmod:string\": \"test\", " +
-				"\"fabric-data-attachment-api-v1-testmod:bool\": true" +
-				"}}");
+		merge(dataAccessor, "{\"fabric:attachments\": {"
+				+ "\"fabric-data-attachment-api-v1-testmod:int\": 42, "
+				+ "\"fabric-data-attachment-api-v1-testmod:string\": \"test\", "
+				+ "\"fabric-data-attachment-api-v1-testmod:bool\": true"
+				+ "}}");
 
 		assertEquals(42, blockEntity.getAttached(INT));
 		assertEquals("test", blockEntity.getAttached(STRING));
@@ -199,10 +205,10 @@ public class DataAccessorHandlerTests {
 		assertFalse(blockEntity.hasAttached(BOOL));
 
 		// Update INT, remove STRING, add BOOL
-		set(dataAccessor, "{\"fabric:attachments\": {" +
-				"\"fabric-data-attachment-api-v1-testmod:int\": 999, " +
-				"\"fabric-data-attachment-api-v1-testmod:bool\": true" +
-				"}}");
+		set(dataAccessor, "{\"fabric:attachments\": {"
+				+ "\"fabric-data-attachment-api-v1-testmod:int\": 999, "
+				+ "\"fabric-data-attachment-api-v1-testmod:bool\": true"
+				+ "}}");
 
 		assertEquals(999, blockEntity.getAttached(INT));
 		assertFalse(blockEntity.hasAttached(STRING));
