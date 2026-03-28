@@ -47,7 +47,7 @@ public abstract class EntityDataAccessorMixin implements DataAccessor {
 	@WrapMethod(method = "setData")
 	public void setData(CompoundTag tag, Operation<Void> original) {
 		if (entity.level() == null) {
-			// The block entity is not in a level, just follow the default logic.
+			// The entity is not in a level, just follow the default logic.
 			original.call(tag);
 			return;
 		}

@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
  * This applies the changes using the high level APIs, ensuring that the changes are correctly synced to the client.
  */
 public class DataAccessorHandler {
-	public static ScopedValue<Void> APPLYING_DATA_CHANGE = ScopedValue.newInstance();
+	public static final ScopedValue<Void> APPLYING_DATA_CHANGE = ScopedValue.newInstance();
 
 	public static void applyDataChanges(AttachmentTarget target, ValueInput data, Runnable applyData) {
 		AttachmentTargetImpl targetImpl = (AttachmentTargetImpl) target;

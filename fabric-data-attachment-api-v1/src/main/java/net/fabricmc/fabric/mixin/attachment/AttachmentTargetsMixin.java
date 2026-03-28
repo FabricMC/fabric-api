@@ -139,7 +139,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	public void fabric_readAttachmentsFromNbt(ValueInput input) {
 		if (DataAccessorHandler.APPLYING_DATA_CHANGE.isBound()) {
-			// DataAccessorHandler handles applying data changes seperately.
+			// DataAccessorHandler handles applying data changes separately.
 			return;
 		}
 
