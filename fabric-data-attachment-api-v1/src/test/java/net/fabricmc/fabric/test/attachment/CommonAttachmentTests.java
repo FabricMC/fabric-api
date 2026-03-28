@@ -359,7 +359,7 @@ public class CommonAttachmentTests {
 	 * so testing is handled by the testmod instead.
 	 */
 
-	private static RegistryAccess mockRA() {
+	static RegistryAccess mockRA() {
 		RegistryAccess ra = mock(RegistryAccess.class);
 		when(ra.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, ra));
 		return ra;
