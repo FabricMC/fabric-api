@@ -36,9 +36,9 @@ public interface AltModelBlockRenderer {
 	 * {@link BlockQuadOutput}.
 	 *
 	 * @param output the quad output
-	 * @param x the x position
-	 * @param y the y position
-	 * @param z the z position
+	 * @param x the x position offset
+	 * @param y the y position offset
+	 * @param z the z position offset
 	 * @param level the level to tessellate in
 	 * @param pos the model's in-level position
 	 * @param blockState the model's block state

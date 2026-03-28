@@ -104,7 +104,6 @@ public final class EncodingFormat {
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
 	private static final QuadAtlas[] QUAD_ATLASES = QuadAtlas.values();
 	private static final int QUAD_ATLAS_COUNT = QUAD_ATLASES.length;
-	private static final int ANIMATED_COUNT = 1;
 
 	private static final int NULL_FOIL_TYPE_INDEX = NULLABLE_FOIL_TYPE_COUNT - 1;
 
@@ -121,7 +120,7 @@ public final class EncodingFormat {
 	private static final int FOIL_TYPE_BIT_LENGTH = Mth.ceillog2(
 			NULLABLE_FOIL_TYPE_COUNT);
 	private static final int SHADE_MODE_BIT_LENGTH = Mth.ceillog2(SHADE_MODE_COUNT);
-	private static final int ANIMATED_BIT_LENGTH = Mth.ceillog2(ANIMATED_COUNT);
+	private static final int ANIMATED_BIT_LENGTH = 1;
 
 	private static final int CULL_BIT_OFFSET = 0;
 	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
@@ -265,10 +264,10 @@ public final class EncodingFormat {
 	}
 
 	static boolean animated(int bits) {
-		return (bits & ANIMATED_MASK) >>> ANIMATED_BIT_OFFSET == 1;
+		return (bits & ANIMATED_MASK) != 0;
 	}
 
 	static int animated(int bits, boolean animated) {
-		return (bits & ~ANIMATED_MASK) | ((animated ? 1 : 0) << ANIMATED_BIT_OFFSET);
+		return animated ? (bits | ANIMATED_MASK) : (bits & ~ANIMATED_MASK);
 	}
 }

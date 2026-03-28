@@ -65,8 +65,8 @@ public interface Renderer {
 	}
 
 	/**
-	 * Obtain a new {@link QuadEmitter} instance that performs extra logic when emitted.
-	 * This is equivalent to vanilla's {@link BlockQuadOutput}.
+	 * Obtain a new {@link QuadEmitter} instance that invokes the given consumer on
+	 * {@link QuadEmitter#emit()}, after transforms are applied.
 	 *
 	 * @param consumer logic performed when the quad is emitted.
 	 */
@@ -82,8 +82,9 @@ public interface Renderer {
 	MutableMesh mutableMesh();
 
 	/**
-	 * Obtain a new {@link AltModelBlockRenderer} to tesselate blocks with
-	 * {@linkplain QuadEmitter modded quads}.
+	 * Obtain a new {@link AltModelBlockRenderer} instance to tesselate blocks with
+	 * {@linkplain QuadEmitter modded quads}. Prefer using this over the vanilla
+	 * {@link ModelBlockRenderer} to correctly tesselate modded models.
 	 */
 	AltModelBlockRenderer altModelBlockRenderer(boolean ambientOcclusion, boolean cull, BlockColors blockColors);
 }

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -249,9 +250,33 @@ public interface QuadView {
 		);
 	}
 
-	// TODO FRAPI 26.1: doc
+	/**
+	 * Buffers this quad's vertex data into the given {@link VertexConsumer} without any additional
+	 * transformations. The given overlay value will be applied to all output vertices as
+	 * {@link QuadView}s don't store overlay values.
+	 *
+	 * <p>Unlike
+	 * {@link VertexConsumer#putBlockBakedQuad(float, float, float, BakedQuad, QuadInstance)},
+	 * output vertex normals are based on the {@linkplain #faceNormal() exact face normal} or set
+	 * vertex normals instead of the {@linkplain #lightFace() quantized face normal}.
+	 *
+	 * @param overlayCoords the overlay value to use for all output vertices
+	 * @param vertexConsumer the vertex consumer to output to
+	 */
 	void buffer(int overlayCoords, VertexConsumer vertexConsumer);
 
-	// TODO FRAPI 26.1: doc
+	/** the given {@link VertexConsumer} with an additional
+	 * transformation. The given overlay value will be applied to all output vertices as
+	 * {@link QuadView}s don't store overlay values.
+	 *
+	 * <p>Unlike {@link VertexConsumer#putBakedQuad(PoseStack.Pose, BakedQuad, QuadInstance)},
+	 * output vertex normals are based on the {@linkplain #faceNormal() exact face normal} or set
+	 * vertex normals instead of the
+	 * 	 * Buffers this quad's vertex data into{@linkplain #lightFace() quantized face normal}.
+	 *
+	 * @param overlayCoords the overlay value to use for all output vertices
+	 * @param pose the transformation to apply to output vertices
+	 * @param vertexConsumer the vertex consumer to output to
+	 */
 	void buffer(int overlayCoords, PoseStack.Pose pose, VertexConsumer vertexConsumer);
 }

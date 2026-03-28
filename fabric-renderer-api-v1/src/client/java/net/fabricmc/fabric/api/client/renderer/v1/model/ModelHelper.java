@@ -63,7 +63,7 @@ public final class ModelHelper {
 	}
 
 	/**
-	 * Computes the {@link BakedQuad.MaterialInfo} for a {@link Material.Baked}, given the vertex
+	 * Computes the {@link BakedQuad.MaterialInfo} for a {@link Material.Baked}, using the vertex
 	 * UVs from the given quad.
 	 */
 	public static BakedQuad.MaterialInfo computeMaterialInfo(Material.Baked material, QuadView quad) {
@@ -72,10 +72,18 @@ public final class ModelHelper {
 		return BakedQuad.MaterialInfo.of(material, transparency, quad.tintIndex(), quad.diffuseShade(), approximateLightEmission(quad));
 	}
 
-	// TODO FRAPI 26.1: docs
+	/**
+	 * Computes the approximate
+	 * {@linkplain BakedQuad.MaterialInfo#lightEmission() vanilla light emission} for the given
+	 * quad. {@link QuadView}s store lightmap values per vertex, so a single vanilla light emission
+	 * value cannot accurately represent a {@link QuadView}'s light data.
+	 *
+	 * <p>The approximate value is computed as 15 (the maximum) if the quad is emissive; otherwise,
+	 * as the minimum of all four sky light values and all four block light values.
+	 *
+	 * @return the approximate light emission
+	 */
 	public static int approximateLightEmission(QuadView quad) {
-		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
-		// values and all four block light values.
 		int lightEmission = 15;
 
 		if (!quad.emissive()) {
@@ -97,7 +105,7 @@ public final class ModelHelper {
 	}
 
 	/**
-	 * Computes the {@link Transparency} for a {@link TextureAtlasSprite}, given the vertex UVs from
+	 * Computes the {@link Transparency} for a {@link TextureAtlasSprite}, using the vertex UVs from
 	 * the given quad.
 	 */
 	public static Transparency computeTransparency(TextureAtlasSprite sprite, QuadView quad) {

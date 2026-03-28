@@ -142,8 +142,9 @@ public interface MutableQuadView extends QuadView {
 		return pos(vertexIndex, pos.x(), pos.y(), pos.z());
 	}
 
-	// TODO FRAPI 26.1: docs
-	//  encourage renderers to override this to make it more efficient
+	/**
+	 * Translates the geometric positions of all vertices of this quad by the given offset.
+	 */
 	default MutableQuadView translate(float x, float y, float z) {
 		pos(0, x(0) + x, y(0) + y, z(0) + z);
 		pos(1, x(1) + x, y(1) + y, z(1) + z);
@@ -172,7 +173,12 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
-	// TODO FRAPI 26.1: docs
+	/**
+	 * Multiplies all components of each of this quad's vertex colors by the given color in ARGB
+	 * format (0xAARRGGBB).
+	 *
+	 * @param color the color in ARGB format (0xAARRGGBB) to multiply by
+	 */
 	default MutableQuadView multiplyColor(int color) {
 		color(0, ARGB.multiply(color(0), color));
 		color(1, ARGB.multiply(color(1), color));
@@ -272,7 +278,12 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
-	// TODO FRAPI 26.1: docs
+	/**
+	 * Sets the minimum lightmap value for the whole quad; in other words, sets each vertex's
+	 * lightmap value to the per-component maximum of its existing value and the given value.
+	 *
+	 * @param lightmap the minimum lightmap value
+	 */
 	default MutableQuadView minLightmap(int lightmap) {
 		lightmap(0, ExtraLightCoordsUtil.smoothMax(lightmap(0), lightmap));
 		lightmap(1, ExtraLightCoordsUtil.smoothMax(lightmap(1), lightmap));
@@ -479,7 +490,9 @@ public interface MutableQuadView extends QuadView {
 	 */
 	MutableQuadView fromBakedQuad(BakedQuad quad);
 
-	// TODO FRAPI 26.1: docs
+	/**
+	 * Resets all vertex data and properties of this quad to their default values.
+	 */
 	MutableQuadView clear();
 
 	/**

@@ -30,7 +30,6 @@ import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.AltItemRenderer;
 
-// TODO FRAPI 26.1: why are the casts necessary?
 @Mixin(ItemFeatureRenderer.class)
 abstract class ItemFeatureRendererMixin {
 	@Unique
@@ -40,7 +39,7 @@ abstract class ItemFeatureRendererMixin {
 	private void onReturnRenderSolid(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
 		altItemRenderer.prepare(bufferSource, outlineBufferSource, false);
 
-		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : ((FabricSubmitNodeCollection) nodeCollection).getExtendedItemSubmits()) {
+		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : nodeCollection.getExtendedItemSubmits()) {
 			altItemRenderer.renderItem(submit);
 		}
 
@@ -51,7 +50,7 @@ abstract class ItemFeatureRendererMixin {
 	private void onReturnRenderTranslucent(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
 		altItemRenderer.prepare(bufferSource, outlineBufferSource, true);
 
-		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : ((FabricSubmitNodeCollection) nodeCollection).getExtendedItemSubmits()) {
+		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : nodeCollection.getExtendedItemSubmits()) {
 			altItemRenderer.renderItem(submit);
 		}
 
