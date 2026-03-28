@@ -406,7 +406,6 @@ loom {
 			vmArg "-Dfabric.client.gametest"
 			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
 			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
-			vmArg "-Dfabric.client.gametest.disableNetworkSynchronizer=true"
 		}
 	}
 }
