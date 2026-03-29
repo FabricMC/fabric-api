@@ -37,6 +37,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
@@ -80,7 +81,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		quad.ambientOcclusion(TriState.DEFAULT);
 		quad.foilType(null);
 		quad.tintIndex(-1);
-		quad.animated(false);
 	}
 
 	private QuadTransform activeTransform = NO_TRANSFORM;
@@ -277,6 +277,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
+		BakedQuad.MaterialInfo materialInfo = quad.materialInfo();
+
 		pos(0, quad.position0());
 		pos(1, quad.position1());
 		pos(2, quad.position2());
@@ -293,10 +295,27 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		uv(2, UVPair.unpackU(packedUV2), UVPair.unpackV(packedUV2));
 		uv(3, UVPair.unpackU(packedUV3), UVPair.unpackV(packedUV3));
 
+		int lightEmission = materialInfo.lightEmission();
+		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
+		lightmap(lightmap, lightmap, lightmap, lightmap);
+
 		normalFlags(0);
 
 		nominalFace(quad.direction());
-		materialInfo(quad.materialInfo());
+
+		QuadAtlas atlas = QuadAtlas.ofLocation(materialInfo.sprite().atlasLocation());
+
+		if (atlas == null) {
+			atlas = QuadAtlas.BLOCK;
+		}
+
+		atlas(atlas);
+		animated(materialInfo.sprite().contents().isAnimated());
+		chunkLayer(materialInfo.layer());
+		itemRenderType(materialInfo.itemRenderType());
+		tintIndex(materialInfo.tintIndex());
+		diffuseShade(materialInfo.shade());
+		emissive(lightEmission == 15);
 		return this;
 	}
 

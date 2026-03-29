@@ -35,8 +35,8 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
  */
 public interface FabricOrderedSubmitNodeCollector {
 	// TODO FRAPI 26.1
-	//  reintroduce Function<ChunkSectionLayer, RenderType> renderTypeFunction?
-	//  should this be MeshView instead of Mesh?
+	//  reintroduce Function<ChunkSectionLayer, RenderType> renderTypeFunction? probably yes, but
+	//  needs thought about how to determine whether a submit is translucent or not
 	/**
 	 * Alternative to {@link OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, List, int[], int, int, int)} that also accepts a {@link Mesh}.
 	 *

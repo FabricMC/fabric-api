@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -66,7 +67,7 @@ public final class MeshQuadCollection extends QuadCollection {
 					flags |= BakedQuad.FLAG_TRANSLUCENT;
 				}
 
-				if (quad.animated()) {
+				if (quad.animated() || (quad.foilType() != null && quad.foilType() != ItemStackRenderState.FoilType.NONE)) {
 					flags |= BakedQuad.FLAG_ANIMATED;
 				}
 			}

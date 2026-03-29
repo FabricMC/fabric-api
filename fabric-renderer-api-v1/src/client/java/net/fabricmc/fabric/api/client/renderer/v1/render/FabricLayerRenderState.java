@@ -28,6 +28,9 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
  * injection.
  */
 public interface FabricLayerRenderState {
+	// TODO FRAPI 26.1: consider automatically marking the state as animated if any quads with
+	//  animated quads or guaranteed glint are added to this emitter. the only concern is
+	//  efficiency.
 	/**
 	 * Retrieves the {@link QuadEmitter} used to append quads to this layer. Calling this method a second time
 	 * invalidates any prior result. Geometry added to this emitter will not be visible in

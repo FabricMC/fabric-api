@@ -41,6 +41,8 @@ import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
+// TODO: the inner model will not be tinted. we should add a better solution than applying the tint
+//  manually in the model.
 public class FrameBlockStateModel implements BlockStateModel {
 	private final BlockStateModel frameModel;
 

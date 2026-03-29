@@ -22,10 +22,7 @@ import com.mojang.blaze3d.platform.Transparency;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 
@@ -60,48 +57,6 @@ public final class ModelHelper {
 	@Nullable
 	public static Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
-	}
-
-	/**
-	 * Computes the {@link BakedQuad.MaterialInfo} for a {@link Material.Baked}, using the vertex
-	 * UVs from the given quad.
-	 */
-	public static BakedQuad.MaterialInfo computeMaterialInfo(Material.Baked material, QuadView quad) {
-		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : computeTransparency(material.sprite(), quad);
-		// TODO: Consider interning or some other caching scheme to reduce object churn
-		return BakedQuad.MaterialInfo.of(material, transparency, quad.tintIndex(), quad.diffuseShade(), approximateLightEmission(quad));
-	}
-
-	/**
-	 * Computes the approximate
-	 * {@linkplain BakedQuad.MaterialInfo#lightEmission() vanilla light emission} for the given
-	 * quad. {@link QuadView}s store lightmap values per vertex, so a single vanilla light emission
-	 * value cannot accurately represent a {@link QuadView}'s light data.
-	 *
-	 * <p>The approximate value is computed as 15 (the maximum) if the quad is emissive; otherwise,
-	 * as the minimum of all four sky light values and all four block light values.
-	 *
-	 * @return the approximate light emission
-	 */
-	public static int approximateLightEmission(QuadView quad) {
-		int lightEmission = 15;
-
-		if (!quad.emissive()) {
-			for (int i = 0; i < 4; i++) {
-				int lightmap = quad.lightmap(i);
-
-				if (lightmap == 0) {
-					lightEmission = 0;
-					break;
-				}
-
-				int blockLight = LightCoordsUtil.block(lightmap);
-				int skyLight = LightCoordsUtil.sky(lightmap);
-				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
-			}
-		}
-
-		return lightEmission;
 	}
 
 	/**

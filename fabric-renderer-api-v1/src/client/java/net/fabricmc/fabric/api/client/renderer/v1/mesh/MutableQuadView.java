@@ -16,23 +16,24 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import com.mojang.blaze3d.platform.Transparency;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.Options;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.OptionsRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
@@ -219,36 +220,49 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Sets the texture coordinates for all vertices using the given material's sprite. Also sets this quad's
-	 * {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer},
-	 * {@linkplain #animated(boolean)}, and {@linkplain #itemRenderType(RenderType) item render type}
-	 * to appropriate values based on the given material. Can handle UV locking, rotation,
-	 * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags
-	 * defined in this interface.
+	 * Sets the texture coordinates for all vertices using the given material's sprite, then invokes
+	 * {@link #postMaterialBake(Material.Baked)}. Can handle UV locking, rotation, interpolation,
+	 * etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in
+	 * this interface.
 	 */
 	default MutableQuadView materialBake(Material.Baked material, int bakeFlags) {
 		QuadSpriteBaker.bakeSprite(this, material.sprite(), bakeFlags);
-		materialInfo(ModelHelper.computeMaterialInfo(material, this));
+		postMaterialBake(material);
 		return this;
 	}
 
-	// TODO: FRAPI 26.1 docs
-	default MutableQuadView materialInfo(BakedQuad.MaterialInfo materialInfo) {
-		QuadAtlas atlas = QuadAtlas.ofLocation(materialInfo.sprite().atlasLocation());
+	/**
+	 * Sets this quad's {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #animated(boolean)},
+	 * {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer}, and
+	 * {@linkplain #itemRenderType(RenderType) item render type} to appropriate values based on the
+	 * given material and this quad's texture coordinates. Exposed separately from
+	 * {@link #materialBake(Material.Baked, int)} as mods frequently transform texture coordinates
+	 * in ways that are based on a material, but do not want to use
+	 * {@link #materialBake(Material.Baked, int)}; for example, interpolating sprites for connected
+	 * textures.
+	 */
+	default MutableQuadView postMaterialBake(Material.Baked material) {
+		QuadAtlas atlas = QuadAtlas.ofLocation(material.sprite().atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;
 		}
 
 		atlas(atlas);
-		chunkLayer(materialInfo.layer());
-		itemRenderType(materialInfo.itemRenderType());
-		tintIndex(materialInfo.tintIndex());
-		diffuseShade(materialInfo.shade());
-		int lightEmission = materialInfo.lightEmission();
-		emissive(lightEmission == 15);
-		minLightmap(LightCoordsUtil.pack(lightEmission, lightEmission));
-		animated(materialInfo.sprite().contents().isAnimated());
+		animated(material.sprite().contents().isAnimated());
+
+		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : ModelHelper.computeTransparency(material.sprite(), this);
+		ChunkSectionLayer layer = ChunkSectionLayer.byTransparency(transparency);
+		RenderType itemRenderType;
+
+		if (material.sprite().atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
+			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
+		} else {
+			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentItemSheet() : Sheets.cutoutItemSheet();
+		}
+
+		chunkLayer(layer);
+		itemRenderType(itemRenderType);
 		return this;
 	}
 
@@ -418,7 +432,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
 	 * {@linkplain BlockState#getLightEmission() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
 	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
-	 * {@linkplain OptionsRenderState#ambientOcclusion ambient occlusion is disabled globally}.
+	 * {@linkplain Options#ambientOcclusion() ambient occlusion is disabled globally}.
 	 *
 	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *
@@ -482,9 +496,9 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView copyFrom(QuadView quad);
 
 	/**
-	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}, in accordance
-	 * with {@link #materialInfo(BakedQuad.MaterialInfo)}. In addition, this quad's vertex colors and vertex normals
-	 * will be reset.
+	 * Sets all applicable data and properties of this quad as specified by the given
+	 * {@link BakedQuad}. In addition, this quad's vertex colors and vertex normals will be reset.
+	 * This quad's existing lightmap values will be ignored and overwritten.
 	 *
 	 * <p>Calling this method does not emit this quad.
 	 */

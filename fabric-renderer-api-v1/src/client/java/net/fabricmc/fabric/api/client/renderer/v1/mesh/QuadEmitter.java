@@ -105,8 +105,8 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	default QuadEmitter materialInfo(BakedQuad.MaterialInfo materialInfo) {
-		MutableQuadView.super.materialInfo(materialInfo);
+	default QuadEmitter postMaterialBake(Material.Baked material) {
+		MutableQuadView.super.postMaterialBake(material);
 		return this;
 	}
 

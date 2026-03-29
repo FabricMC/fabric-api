@@ -30,10 +30,9 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 
-import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -234,7 +233,26 @@ public interface QuadView {
 		long packedUV2 = UVPair.pack(u(2), v(2));
 		long packedUV3 = UVPair.pack(u(3), v(3));
 
-		BakedQuad.MaterialInfo materialInfo = ModelHelper.computeMaterialInfo(new Material.Baked(sprite, false), this);
+		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
+		// values and all four block light values.
+		int lightEmission = 15;
+
+		if (!emissive()) {
+			for (int i = 0; i < 4; i++) {
+				int lightmap = lightmap(i);
+
+				if (lightmap == 0) {
+					lightEmission = 0;
+					break;
+				}
+
+				int blockLight = LightCoordsUtil.block(lightmap);
+				int skyLight = LightCoordsUtil.sky(lightmap);
+				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
+			}
+		}
+
+		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), tintIndex(), diffuseShade(), lightEmission);
 
 		return new BakedQuad(
 				position0,
@@ -265,14 +283,14 @@ public interface QuadView {
 	 */
 	void buffer(int overlayCoords, VertexConsumer vertexConsumer);
 
-	/** the given {@link VertexConsumer} with an additional
+	/**
+	 * Buffers this quad's vertex data into the given {@link VertexConsumer} with an additional
 	 * transformation. The given overlay value will be applied to all output vertices as
 	 * {@link QuadView}s don't store overlay values.
 	 *
 	 * <p>Unlike {@link VertexConsumer#putBakedQuad(PoseStack.Pose, BakedQuad, QuadInstance)},
 	 * output vertex normals are based on the {@linkplain #faceNormal() exact face normal} or set
-	 * vertex normals instead of the
-	 * 	 * Buffers this quad's vertex data into{@linkplain #lightFace() quantized face normal}.
+	 * vertex normals instead of the {@linkplain #lightFace() quantized face normal}.
 	 *
 	 * @param overlayCoords the overlay value to use for all output vertices
 	 * @param pose the transformation to apply to output vertices
