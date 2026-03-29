@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.entity.event.gametest;
 
-import net.fabricmc.fabric.api.test.EventScope;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
@@ -34,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.fabricmc.fabric.api.test.EventScope;
 
 public class ServerMobEffectsGameTest {
 	@GameTest
@@ -123,7 +123,7 @@ public class ServerMobEffectsGameTest {
 
 		Salmon theSalmon = summonTheSalmon(context);
 		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_REMOVE, beforeRemove);
-			 EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
+			EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
 		) {
 			theSalmon.addEffect(createEffect(MobEffects.SATURATION));
 			theSalmon.removeEffect(MobEffects.SATURATION);
@@ -145,7 +145,7 @@ public class ServerMobEffectsGameTest {
 
 		Salmon theSalmon = summonTheSalmon(context);
 		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_REMOVE, beforeRemove);
-			 EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
+			EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
 		) {
 			theSalmon.removeEffect(MobEffects.SATURATION);
 			context.succeed();
