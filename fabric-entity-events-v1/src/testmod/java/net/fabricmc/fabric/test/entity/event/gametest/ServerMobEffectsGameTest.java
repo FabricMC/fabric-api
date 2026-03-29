@@ -112,12 +112,12 @@ public class ServerMobEffectsGameTest {
 	@GameTest
 	public void beforeAfterRemove(GameTestHelper context) {
 		ServerMobEffectEvents.BeforeRemove beforeRemove = (_, entity, _) -> {
-			if (!isThisTheSalmon(entity) || context == null) return;
+			if (!isThisTheSalmon(entity)) return;
 			context.assertTrue(entity.hasEffect(MobEffects.SATURATION), "The Salmon must have saturation as it should not yet have been removed");
 		};
 
 		ServerMobEffectEvents.AfterRemove afterRemove = (_, entity, _) -> {
-			if (!isThisTheSalmon(entity) || context == null) return;
+			if (!isThisTheSalmon(entity)) return;
 			context.assertFalse(entity.hasEffect(MobEffects.SATURATION), "The Salmon mustn't have saturation as it should have been removed by now");
 		};
 
