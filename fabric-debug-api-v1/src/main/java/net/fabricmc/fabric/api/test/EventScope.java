@@ -1,11 +1,11 @@
 package net.fabricmc.fabric.api.test;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.test.EventTestingImpl;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resources.Identifier;
 
-import org.jetbrains.annotations.ApiStatus;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.test.EventTestingImpl;
 
 @ApiStatus.NonExtendable
 @FunctionalInterface

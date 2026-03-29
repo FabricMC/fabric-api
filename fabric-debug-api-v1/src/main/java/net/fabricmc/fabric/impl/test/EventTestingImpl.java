@@ -1,9 +1,9 @@
 package net.fabricmc.fabric.impl.test;
 
+import net.minecraft.resources.Identifier;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.test.EventScope;
-
-import net.minecraft.resources.Identifier;
 
 public final class EventTestingImpl {
 	private EventTestingImpl() {

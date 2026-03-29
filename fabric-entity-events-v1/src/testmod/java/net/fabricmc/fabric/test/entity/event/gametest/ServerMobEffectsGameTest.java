@@ -123,7 +123,7 @@ public class ServerMobEffectsGameTest {
 
 		Salmon theSalmon = summonTheSalmon(context);
 		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_REMOVE, beforeRemove);
-			EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
+							EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
 		) {
 			theSalmon.addEffect(createEffect(MobEffects.SATURATION));
 			theSalmon.removeEffect(MobEffects.SATURATION);
@@ -145,7 +145,7 @@ public class ServerMobEffectsGameTest {
 
 		Salmon theSalmon = summonTheSalmon(context);
 		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_REMOVE, beforeRemove);
-			EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
+							EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
 		) {
 			theSalmon.removeEffect(MobEffects.SATURATION);
 			context.succeed();
