@@ -63,6 +63,12 @@ public class DataAccessorHandlerTests {
 			Identifier.fromNamespaceAndPath(MOD_ID, "bool"),
 			Codec.BOOL
 	);
+	private static final AttachmentType<Integer> NON_PERSISTENT_INT = AttachmentRegistry.create(
+			Identifier.fromNamespaceAndPath(MOD_ID, "non_persistent_int")
+	);
+	private static final AttachmentType<String> NON_PERSISTENT_STRING = AttachmentRegistry.create(
+			Identifier.fromNamespaceAndPath(MOD_ID, "non_persistent_string")
+	);
 
 	@BeforeAll
 	static void beforeAll() {
@@ -214,5 +220,111 @@ public class DataAccessorHandlerTests {
 		assertFalse(blockEntity.hasAttached(STRING));
 		assertEquals(true, blockEntity.getAttached(BOOL));
 		verify(callback).onAttachedSet(1, 999);
+	}
+
+	@Test
+	void nonPersistentAttachmentsKeptWhenClearingWithEmptyData() throws CommandSyntaxException {
+		blockEntity.setAttached(INT, 5);
+		blockEntity.setAttached(NON_PERSISTENT_INT, 100);
+		reset(callback);
+
+		assertTrue(blockEntity.hasAttached(INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+
+		// Clear all data - persistent attachments should be removed, non-persistent kept
+		set(dataAccessor, "{}");
+
+		assertFalse(blockEntity.hasAttached(INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+		assertEquals(100, blockEntity.getAttached(NON_PERSISTENT_INT));
+		verify(callback).onAttachedSet(5, null);
+	}
+
+	@Test
+	void nonPersistentAttachmentsKeptWhenClearingWithEmptyAttachments() throws CommandSyntaxException {
+		blockEntity.setAttached(INT, 5);
+		blockEntity.setAttached(NON_PERSISTENT_STRING, "keep me");
+		reset(callback);
+
+		assertTrue(blockEntity.hasAttached(INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+
+		// Clear all attachments - persistent should be removed, non-persistent kept
+		set(dataAccessor, "{\"fabric:attachments\": {}}");
+
+		assertFalse(blockEntity.hasAttached(INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+		assertEquals("keep me", blockEntity.getAttached(NON_PERSISTENT_STRING));
+		verify(callback).onAttachedSet(5, null);
+	}
+
+	@Test
+	void nonPersistentAttachmentsKeptWhenSettingPersistentOnes() throws CommandSyntaxException {
+		blockEntity.setAttached(INT, 1);
+		blockEntity.setAttached(NON_PERSISTENT_INT, 200);
+		blockEntity.setAttached(NON_PERSISTENT_STRING, "transient");
+		reset(callback);
+
+		assertTrue(blockEntity.hasAttached(INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+
+		// Update only persistent attachment INT - non-persistent should remain
+		set(dataAccessor, "{\"fabric:attachments\": {\"fabric-data-attachment-api-v1-testmod:int\": 42}}");
+
+		assertEquals(42, blockEntity.getAttached(INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+		assertEquals(200, blockEntity.getAttached(NON_PERSISTENT_INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+		assertEquals("transient", blockEntity.getAttached(NON_PERSISTENT_STRING));
+		verify(callback).onAttachedSet(1, 42);
+	}
+
+	@Test
+	void mixedPersistentAndNonPersistentRemoval() throws CommandSyntaxException {
+		blockEntity.setAttached(INT, 10);
+		blockEntity.setAttached(STRING, "remove");
+		blockEntity.setAttached(NON_PERSISTENT_INT, 300);
+		blockEntity.setAttached(NON_PERSISTENT_STRING, "keep");
+		reset(callback);
+
+		assertTrue(blockEntity.hasAttached(INT));
+		assertTrue(blockEntity.hasAttached(STRING));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+
+		// Only keep INT with new value - STRING should be removed, non-persistent should be kept
+		set(dataAccessor, "{\"fabric:attachments\": {\"fabric-data-attachment-api-v1-testmod:int\": 15}}");
+
+		assertTrue(blockEntity.hasAttached(INT));
+		assertEquals(15, blockEntity.getAttached(INT));
+		assertFalse(blockEntity.hasAttached(STRING));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+		assertEquals(300, blockEntity.getAttached(NON_PERSISTENT_INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+		assertEquals("keep", blockEntity.getAttached(NON_PERSISTENT_STRING));
+		verify(callback).onAttachedSet(10, 15);
+	}
+
+	@Test
+	void nonPersistentOnlyUnaffectedByDataCommands() throws CommandSyntaxException {
+		blockEntity.setAttached(NON_PERSISTENT_INT, 500);
+		blockEntity.setAttached(NON_PERSISTENT_STRING, "unchanged");
+
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+
+		// Add persistent attachments via data command - non-persistent should remain
+		merge(dataAccessor, "{\"fabric:attachments\": {"
+				+ "\"fabric-data-attachment-api-v1-testmod:int\": 7, "
+				+ "\"fabric-data-attachment-api-v1-testmod:string\": \"new\""
+				+ "}}");
+
+		assertEquals(7, blockEntity.getAttached(INT));
+		assertEquals("new", blockEntity.getAttached(STRING));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_INT));
+		assertEquals(500, blockEntity.getAttached(NON_PERSISTENT_INT));
+		assertTrue(blockEntity.hasAttached(NON_PERSISTENT_STRING));
+		assertEquals("unchanged", blockEntity.getAttached(NON_PERSISTENT_STRING));
 	}
 }

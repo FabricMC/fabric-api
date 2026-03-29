@@ -48,7 +48,10 @@ public class DataAccessorHandler {
 			return;
 		} else if (oldAttachments != null && (newAttachments == null || newAttachments.isEmpty())) {
 			// Clear all attachments - copy keys to avoid ConcurrentModificationException
-			oldAttachments.keySet().stream().toList().forEach(target::removeAttached);
+			oldAttachments.keySet().stream()
+					.filter(AttachmentType::isPersistent)
+					.toList()
+					.forEach(target::removeAttached);
 			return;
 		}
 
@@ -58,6 +61,7 @@ public class DataAccessorHandler {
 		// Remove all of the removed attachments - copy keys to avoid ConcurrentModificationException
 		if (oldAttachments != null) {
 			oldAttachments.keySet().stream()
+					.filter(AttachmentType::isPersistent)
 					.filter(attachmentType -> !newAttachments.containsKey(attachmentType))
 					.toList()
 					.forEach(target::removeAttached);

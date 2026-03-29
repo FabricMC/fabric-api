@@ -16,45 +16,28 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.spongepowered.asm.mixin.Final;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.commands.data.BlockDataAccessor;
 import net.minecraft.server.commands.data.DataAccessor;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 
 import net.fabricmc.fabric.impl.attachment.DataAccessorHandler;
 
 @Mixin(BlockDataAccessor.class)
 public abstract class BlockDataAccessorMixin implements DataAccessor {
-	@Unique
-	private static final Logger LOGGER = LoggerFactory.getLogger("BlockDataAccessorMixin");
-
-	@Shadow
-	@Final
-	private BlockEntity entity;
-
-	@WrapMethod(method = "setData")
-	public void setData(CompoundTag tag, Operation<Void> original) {
+	@WrapOperation(method = "setData", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;loadWithComponents(Lnet/minecraft/world/level/storage/ValueInput;)V"))
+	public void setData(BlockEntity entity, ValueInput input, Operation<Void> original) {
 		if (entity.getLevel() == null) {
 			// The block entity is not in a level, just follow the default logic.
-			original.call(tag);
+			original.call(entity, input);
 			return;
 		}
 
-		try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
-			ValueInput data = TagValueInput.create(reporter, this.entity.getLevel().registryAccess(), tag);
-			DataAccessorHandler.applyDataChanges(this.entity, data, () -> original.call(tag));
-		}
+		DataAccessorHandler.applyDataChanges(entity, input, () -> original.call(entity, input));
 	}
 }
