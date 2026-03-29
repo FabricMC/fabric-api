@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -33,18 +34,29 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
-public final class EventFactoryImpl {
+public class EventFactoryImpl {
+	public static final EventFactoryImpl INSTANCE = ServiceLoader.load(EventFactoryImpl.class).findFirst().orElseGet(EventFactoryImpl::new);
 	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS
 			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
-	private EventFactoryImpl() { }
+	protected EventFactoryImpl() {
+		Class<?> thisClass = getClass();
+
+		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals("net.fabricmc.fabric.impl.test.TestableEventFactoryImpl")) {
+			throw new IllegalStateException("You are not allowed to create a custom EventFactoryImpl!");
+		}
+	}
 
 	public static void invalidate() {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
 	}
 
-	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
-		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, invokerFactory);
+	protected <T> ArrayBackedEvent<T> doCreateArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
+		return new ArrayBackedEvent<>(type, invokerFactory);
+	}
+
+	public final <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
+		ArrayBackedEvent<T> event = doCreateArrayBacked(type, invokerFactory);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
 	}

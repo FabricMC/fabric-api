@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 /**
  * Data of an {@link ArrayBackedEvent} phase.
  */
-class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
+public class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
 	final Identifier id;
 	T[] listeners;
 
@@ -40,6 +40,25 @@ class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
 		int oldLength = listeners.length;
 		listeners = Arrays.copyOf(listeners, oldLength + 1);
 		listeners[oldLength] = listener;
+	}
+
+	public boolean removeListener(T listener) {
+		int indexToRemove;
+
+		for (indexToRemove = listeners.length - 1; indexToRemove >= 0; indexToRemove--) {
+			if (listeners[indexToRemove] == listener) {
+				break;
+			}
+		}
+
+		if (indexToRemove == -1) {
+			return false;
+		}
+
+		T[] newListeners = Arrays.copyOf(listeners, listeners.length - 1);
+		System.arraycopy(listeners, indexToRemove + 1, newListeners, indexToRemove, newListeners.length - indexToRemove);
+		listeners = newListeners;
+		return true;
 	}
 
 	@Override

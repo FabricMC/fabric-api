@@ -30,10 +30,10 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 
-class ArrayBackedEvent<T> extends Event<T> {
+public class ArrayBackedEvent<T> extends Event<T> {
 	private final Function<T[], T> invokerFactory;
-	private final Object lock = new Object();
-	private T[] handlers;
+	protected final Object lock = new Object();
+	protected T[] handlers;
 	/**
 	 * Registered event phases.
 	 */
@@ -44,7 +44,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 	private final List<EventPhaseData<T>> sortedPhases = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
-	ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory) {
+	protected ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory) {
 		this.invokerFactory = invokerFactory;
 		this.handlers = (T[]) Array.newInstance(type, 0);
 		update();
@@ -70,7 +70,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 		}
 	}
 
-	private EventPhaseData<T> getOrCreatePhase(Identifier id, boolean sortIfCreate) {
+	protected final EventPhaseData<T> getOrCreatePhase(Identifier id, boolean sortIfCreate) {
 		EventPhaseData<T> phase = phases.get(id);
 
 		if (phase == null) {
@@ -86,7 +86,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 		return phase;
 	}
 
-	private void rebuildInvoker(int newLength) {
+	protected final void rebuildInvoker(int newLength) {
 		// Rebuild handlers.
 		if (sortedPhases.size() == 1) {
 			// Special case with a single phase: use the array of the phase directly.
