@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.entity.event.gametest;
 
+import net.fabricmc.fabric.api.test.EventScope;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
@@ -110,42 +111,45 @@ public class ServerMobEffectsGameTest {
 
 	@GameTest
 	public void beforeAfterRemove(GameTestHelper context) {
-		var obj = new Object() { // Scoped events at home
-			GameTestHelper contextRef = context;
+		ServerMobEffectEvents.BeforeRemove beforeRemove = (_, entity, _) -> {
+			if (!isThisTheSalmon(entity) || context == null) return;
+			context.assertTrue(entity.hasEffect(MobEffects.SATURATION), "The Salmon must have saturation as it should not yet have been removed");
 		};
-		ServerMobEffectEvents.BEFORE_REMOVE.register((effectInstance, entity, ctx) -> {
-			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
-			obj.contextRef.assertTrue(entity.hasEffect(MobEffects.SATURATION), "The Salmon must have saturation as it should not yet have been removed");
-		});
-		ServerMobEffectEvents.AFTER_REMOVE.register((effectInstance, entity, ctx) -> {
-			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
-			obj.contextRef.assertFalse(entity.hasEffect(MobEffects.SATURATION), "The Salmon mustn't have saturation as it should have been removed by now");
-		});
+
+		ServerMobEffectEvents.AfterRemove afterRemove = (_, entity, _) -> {
+			if (!isThisTheSalmon(entity) || context == null) return;
+			context.assertFalse(entity.hasEffect(MobEffects.SATURATION), "The Salmon mustn't have saturation as it should have been removed by now");
+		};
+
 		Salmon theSalmon = summonTheSalmon(context);
-		theSalmon.addEffect(createEffect(MobEffects.SATURATION));
-		theSalmon.removeEffect(MobEffects.SATURATION);
-		context.succeed();
-		obj.contextRef = null;
+		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_REMOVE, beforeRemove);
+			 EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
+		) {
+			theSalmon.addEffect(createEffect(MobEffects.SATURATION));
+			theSalmon.removeEffect(MobEffects.SATURATION);
+			context.succeed();
+		}
 	}
 
 	// Regression test for https://github.com/FabricMC/fabric-api/issues/5121
 	@GameTest
 	public void removeNoneExistentEffect(GameTestHelper context) {
-		var obj = new Object() { // Scoped events at home
-			GameTestHelper contextRef = context;
+		ServerMobEffectEvents.BeforeRemove beforeRemove = (_, entity, _) -> {
+			if (!isThisTheSalmon(entity)) return;
+			context.fail("The BEFORE_REMOVE event must not be called when removing a non-existent effect");
 		};
-		ServerMobEffectEvents.BEFORE_REMOVE.register((effectInstance, entity, ctx) -> {
-			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
-			obj.contextRef.fail("The BEFORE_REMOVE event must not be called when removing a non-existent effect");
-		});
-		ServerMobEffectEvents.AFTER_REMOVE.register((effectInstance, entity, ctx) -> {
-			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
-			obj.contextRef.fail("The AFTER_REMOVE event must not be called when removing a non-existent effect");
-		});
+		ServerMobEffectEvents.AfterRemove afterRemove = (_, entity, _) -> {
+			if (!isThisTheSalmon(entity)) return;
+			context.fail("The AFTER_REMOVE event must not be called when removing a non-existent effect");
+		};
+
 		Salmon theSalmon = summonTheSalmon(context);
-		theSalmon.removeEffect(MobEffects.SATURATION);
-		context.succeed();
-		obj.contextRef = null;
+		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_REMOVE, beforeRemove);
+			 EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_REMOVE, afterRemove)
+		) {
+			theSalmon.removeEffect(MobEffects.SATURATION);
+			context.succeed();
+		}
 	}
 
 	private static Salmon summonTheSalmon(GameTestHelper context) {
