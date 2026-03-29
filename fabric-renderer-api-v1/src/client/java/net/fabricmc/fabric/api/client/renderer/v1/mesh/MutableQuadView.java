@@ -175,9 +175,9 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Multiplies all components of each of this quad's vertex colors by the given color in ARGB
-	 * format (0xAARRGGBB).
+	 * format ({@code 0xAARRGGBB}).
 	 *
-	 * @param color the color in ARGB format (0xAARRGGBB) to multiply by
+	 * @param color the color in ARGB format ({@code 0xAARRGGBB}) to multiply by
 	 */
 	default MutableQuadView multiplyColor(int color) {
 		color(0, ARGB.multiply(color(0), color));
