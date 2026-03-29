@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.test.EventTestingImpl;
 
 @ApiStatus.NonExtendable
-@FunctionalInterface
 public interface EventScope extends AutoCloseable {
 	@Override
 	void close();
