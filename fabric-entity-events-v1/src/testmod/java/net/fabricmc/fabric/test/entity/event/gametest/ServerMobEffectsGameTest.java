@@ -38,75 +38,82 @@ import net.fabricmc.fabric.api.test.EventScope;
 public class ServerMobEffectsGameTest {
 	@GameTest
 	public void allowAdd(GameTestHelper context) {
-		ServerMobEffectEvents.ALLOW_ADD.register((effectInstance, entity, ctx) -> {
+		ServerMobEffectEvents.AllowAdd allowAdd = (effectInstance, entity, ctx) -> {
 			if (ctx.isFromCommand()) return true;
 			// If the entity wants to regenerate and is holding a potato,
 			// deny them regeneration privileges.
 			// This is specific enough since events aren't scoped for
 			// GameTests.
 			return !(effectInstance.is(MobEffects.REGENERATION) && isThisTheSalmon(entity));
-		});
+		};
+
 		Salmon theSalmon = summonTheSalmon(context);
-		theSalmon.addEffect(createEffect(MobEffects.REGENERATION));
-		context.assertTrue(theSalmon.getMainHandItem().is(Items.POTATO), "The Salmon must be holding (how!?) a potato");
-		context.assertFalse(theSalmon.hasEffect(MobEffects.REGENERATION), "The Salmon must not have regeneration");
-		context.succeed();
+
+		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.ALLOW_ADD, allowAdd)) {
+			theSalmon.addEffect(createEffect(MobEffects.REGENERATION));
+			context.assertTrue(theSalmon.getMainHandItem().is(Items.POTATO), "The Salmon must be holding (how!?) a potato");
+			context.assertFalse(theSalmon.hasEffect(MobEffects.REGENERATION), "The Salmon must not have regeneration");
+			context.succeed();
+		}
 	}
 
 	@GameTest
 	public void beforeAfterAdd(GameTestHelper context) {
-		var obj = new Object() { // Scoped events at home
-			GameTestHelper contextRef = context;
+		ServerMobEffectEvents.BeforeAdd beforeAdd = (_, entity, _) -> {
+			if (!isThisTheSalmon(entity)) return;
+			context.assertFalse(entity.hasEffect(MobEffects.ABSORPTION), "The Salmon mustn't have absorption yet");
 		};
-		ServerMobEffectEvents.BEFORE_ADD.register((effectInstance, entity, ctx) -> {
-			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
-			obj.contextRef.assertFalse(entity.hasEffect(MobEffects.ABSORPTION), "The Salmon mustn't have absorption yet");
-		});
-		ServerMobEffectEvents.AFTER_ADD.register((effectInstance, entity, ctx) -> {
-			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
-			obj.contextRef.assertTrue(entity.hasEffect(MobEffects.ABSORPTION), "The Salmon must have absorption at this point");
-		});
-		Salmon theSalmon = summonTheSalmon(context);
-		theSalmon.addEffect(createEffect(MobEffects.ABSORPTION));
-		context.succeed();
-		obj.contextRef = null;
+
+		ServerMobEffectEvents.AfterAdd afterAdd = (_, entity, _) -> {
+			if (!isThisTheSalmon(entity)) return;
+			context.assertTrue(entity.hasEffect(MobEffects.ABSORPTION), "The Salmon must have absorption at this point");
+		};
+
+		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_ADD, beforeAdd);
+					EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_ADD, afterAdd)) {
+			Salmon theSalmon = summonTheSalmon(context);
+			theSalmon.addEffect(createEffect(MobEffects.ABSORPTION));
+			context.succeed();
+		}
 	}
 
 	@GameTest(
 			maxTicks = 150
 	)
 	public void allowEarlyRemove(GameTestHelper context) {
-		ServerMobEffectEvents.ALLOW_EARLY_REMOVE.register((effectInstance, entity, ctx) -> {
+		ServerMobEffectEvents.AllowEarlyRemove allowEarlyRemove = (effectInstance, entity, ctx) -> {
 			if (ctx.isFromCommand()) return true;
 			// Same thing as ALLOW_ADD.
 			boolean isThisTheEntity = isThisTheSalmon(entity) || isThisThePlayer(entity);
 			boolean cannotRemove = effectInstance.is(MobEffects.BLINDNESS) || effectInstance.is(MobEffects.POISON);
 			return !(cannotRemove && isThisTheEntity);
-		});
+		};
 
-		// Regular Salmon testing
-		Salmon theSalmon = summonTheSalmon(context);
-		theSalmon.addEffect(createEffect(MobEffects.BLINDNESS));
-		context.assertTrue(theSalmon.hasEffect(MobEffects.BLINDNESS), "The Salmon must have blindness");
+		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.ALLOW_EARLY_REMOVE, allowEarlyRemove)) {
+			// Regular Salmon testing
+			Salmon theSalmon = summonTheSalmon(context);
+			theSalmon.addEffect(createEffect(MobEffects.BLINDNESS));
+			context.assertTrue(theSalmon.hasEffect(MobEffects.BLINDNESS), "The Salmon must have blindness");
 
-		// Player milk testing
-		Player thePlayer = summonThePlayer(context);
-		thePlayer.addEffect(createEffect(MobEffects.WEAVING));
-		thePlayer.addEffect(createEffect(MobEffects.BLINDNESS));
-		useItem(thePlayer);
+			// Player milk testing
+			Player thePlayer = summonThePlayer(context);
+			thePlayer.addEffect(createEffect(MobEffects.WEAVING));
+			thePlayer.addEffect(createEffect(MobEffects.BLINDNESS));
+			useItem(thePlayer);
 
-		context.assertFalse(thePlayer.isUsingItem(), "The Player mustn't be using an item at this point; this is a bug with the test"); // Sanity check so you don't go insane
-		context.assertFalse(thePlayer.hasEffect(MobEffects.WEAVING), "The Player mustn't have weaving as it should have been cleared after drinking milk");
-		context.assertTrue(thePlayer.hasEffect(MobEffects.BLINDNESS), "The Player must still have blindness after drinking milk");
+			context.assertFalse(thePlayer.isUsingItem(), "The Player mustn't be using an item at this point; this is a bug with the test"); // Sanity check so you don't go insane
+			context.assertFalse(thePlayer.hasEffect(MobEffects.WEAVING), "The Player mustn't have weaving as it should have been cleared after drinking milk");
+			context.assertTrue(thePlayer.hasEffect(MobEffects.BLINDNESS), "The Player must still have blindness after drinking milk");
 
-		// Player honey/poison testing
-		thePlayer.addEffect(createEffect(MobEffects.POISON));
-		thePlayer.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.HONEY_BOTTLE));
-		useItem(thePlayer);
+			// Player honey/poison testing
+			thePlayer.addEffect(createEffect(MobEffects.POISON));
+			thePlayer.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.HONEY_BOTTLE));
+			useItem(thePlayer);
 
-		context.assertTrue(thePlayer.hasEffect(MobEffects.POISON), "The Player must still have poison after drinking a honey bottle");
+			context.assertTrue(thePlayer.hasEffect(MobEffects.POISON), "The Player must still have poison after drinking a honey bottle");
 
-		context.succeed();
+			context.succeed();
+		}
 	}
 
 	@GameTest
