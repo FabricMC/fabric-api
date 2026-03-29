@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.networking.client.channeltest;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -51,7 +51,7 @@ final class ChannelList extends AbstractSelectionList<ChannelList.Entry> {
 		}
 
 		@Override
-		public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			graphics.setTooltipForNextFrame(ChannelList.this.minecraft.font, Component.literal(this.channel.toString()).withStyle(ChatFormatting.WHITE), getContentX(), getContentY());
 		}
 	}

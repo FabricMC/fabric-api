@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.datagen.v1;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -31,6 +33,7 @@ import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.loader.api.ModContainer;
 
 /**
@@ -128,6 +131,17 @@ public final class FabricDataGenerator extends DataGenerator.Uncached {
 	@Deprecated
 	public DataGenerator.PackGenerator getBuiltinDatapack(boolean shouldRun, String packName) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void run() throws IOException {
+		Path output = vanillaPackOutput.getOutputFolder();
+
+		if (Files.exists(output)) {
+			FabricDataGenHelper.deleteDirectory(output);
+		}
+
+		super.run();
 	}
 
 	/**

@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.AdvancementToast;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.world.item.ItemStack;
@@ -41,8 +41,8 @@ abstract class AdvancementToastMixin {
 	@Final
 	private AdvancementHolder advancement;
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderFakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
-	private void renderAdvancementIcon(GuiGraphics graphics, ItemStack icon, int x, int y, Operation<Void> original) {
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fakeItem(Lnet/minecraft/world/item/ItemStack;II)V"))
+	private void extractAdvancementIcon(GuiGraphicsExtractor graphics, ItemStack icon, int x, int y, Operation<Void> original) {
 		AdvancementRenderer.IconRenderer iconRenderer = AdvancementRendererRegistryImpl.getIconRenderer(advancement.id());
 
 		if (iconRenderer == null || iconRenderer.shouldRenderOriginalIcon()) {
@@ -52,7 +52,7 @@ abstract class AdvancementToastMixin {
 		if (iconRenderer != null) {
 			ClientAdvancements advancements = Minecraft.getInstance().getConnection().getAdvancements();
 			AdvancementProgress progress = ((ClientAdvancementsAccessor) advancements).fabric_getProgress().get(advancement);
-			iconRenderer.renderAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancement, progress, x, y, false, false));
+			iconRenderer.extractAdvancementIcon(new AdvancementRenderContextImpl.IconImpl(graphics, advancement, progress, x, y, false, false));
 		}
 	}
 }

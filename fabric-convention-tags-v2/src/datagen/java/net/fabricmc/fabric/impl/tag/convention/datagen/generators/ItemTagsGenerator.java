@@ -932,5 +932,6 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		aliasGroup("fence_gates").add(ItemTags.FENCE_GATES, ConventionalItemTags.FENCE_GATES);
 
 		aliasGroup("flowers/small").add(ItemTags.SMALL_FLOWERS, ConventionalItemTags.SMALL_FLOWERS);
+		aliasGroup("dyes").add(ItemTags.DYES, ConventionalItemTags.DYES);
 	}
 }

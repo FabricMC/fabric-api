@@ -49,7 +49,7 @@ public class ExtendedBlockParticleOptionStreamCodec implements StreamCodec<Regis
 	public void encode(RegistryFriendlyByteBuf buf, BlockParticleOption value) {
 		BlockPos pos = value.getBlockPos();
 
-		if (pos == null || ExtendedBlockParticleOptionSync.shouldEncodeFallback(buf)) {
+		if (pos == null || ExtendedBlockParticleOptionSync.shouldEncodeFallback()) {
 			fallback.encode(buf, value);
 			return;
 		}

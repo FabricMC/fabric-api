@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * @see BlockApiLookup
  */
 @ApiStatus.NonExtendable
-public interface BlockApiCache<A, C> {
+public interface BlockApiCache<A, C extends @Nullable Object> {
 	/**
 	 * Attempt to retrieve an API from a block in the level, using the level and the position passed at creation time.
 	 *
@@ -92,7 +92,7 @@ public interface BlockApiCache<A, C> {
 	/**
 	 * Create a new instance bound to the passed {@link ServerLevel} and position, and querying the same API as the passed lookup.
 	 */
-	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerLevel level, BlockPos pos) {
+	static <A, C extends @Nullable Object> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerLevel level, BlockPos pos) {
 		Objects.requireNonNull(pos, "BlockPos may not be null.");
 		Objects.requireNonNull(level, "ServerLevel may not be null.");
 

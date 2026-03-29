@@ -34,10 +34,10 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.BeforeRender> createBeforeRenderEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeRender.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
-			for (ScreenEvents.BeforeRender callback : callbacks) {
-				callback.beforeRender(screen, matrices, mouseX, mouseY, tickDelta);
+	public static Event<ScreenEvents.BeforeExtract> createBeforeRenderEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeExtract.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
+			for (ScreenEvents.BeforeExtract callback : callbacks) {
+				callback.beforeExtract(screen, matrices, mouseX, mouseY, tickDelta);
 			}
 		});
 	}
@@ -50,10 +50,10 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.AfterRender> createAfterRenderEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterRender.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
-			for (ScreenEvents.AfterRender callback : callbacks) {
-				callback.afterRender(screen, matrices, mouseX, mouseY, tickDelta);
+	public static Event<ScreenEvents.AfterExtract> createAfterRenderEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterExtract.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
+			for (ScreenEvents.AfterExtract callback : callbacks) {
+				callback.afterExtract(screen, matrices, mouseX, mouseY, tickDelta);
 			}
 		});
 	}

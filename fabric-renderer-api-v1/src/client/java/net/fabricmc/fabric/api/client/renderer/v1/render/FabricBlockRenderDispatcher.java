@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -40,9 +41,39 @@ public interface FabricBlockRenderDispatcher {
 	 * Alternative for
 	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
-	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
-	 * on multiple chunk layers and to provide the model with additional context.</b>
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
+	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
+	 * geometry on multiple chunk layers and to provide the model with additional context.</b>
+	 *
+	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
+	 * entity renderers.
+	 *
+	 * @param state The block state.
+	 * @param poseStack The pose stack.
+	 * @param bufferSource The buffer source.
+	 * @param layerFilter Specifies the chunk layers for which geometry should be buffered ({@code true}) or discarded
+	 *                    ({@code false}).
+	 * @param light The minimum light value.
+	 * @param overlay The overlay value.
+	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
+	 *            </b>
+	 *
+	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
+	 */
+	default void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
+		Renderer.get().renderSingleBlock((BlockRenderDispatcher) this, state,
+				poseStack, bufferSource, layerFilter, light, overlay,
+				level, pos);
+	}
+
+	/**
+	 * Alternative for
+	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
+	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
+	 * when necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have
+	 * geometry on multiple chunk layers and to provide the model with additional context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.
@@ -58,9 +89,9 @@ public interface FabricBlockRenderDispatcher {
 	 *
 	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
-	default void renderBlockAsEntity(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
-		Renderer.get().renderBlockAsEntity((BlockRenderDispatcher) this, state,
-				poseStack, bufferSource, light, overlay,
+	default void renderSingleBlock(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
+		Renderer.get().renderSingleBlock((BlockRenderDispatcher) this, state,
+				poseStack, bufferSource, null, light, overlay,
 				level, pos);
 	}
 }

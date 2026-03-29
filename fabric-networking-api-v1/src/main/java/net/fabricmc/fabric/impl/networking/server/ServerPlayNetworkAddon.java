@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.networking.v1.ClientboundPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -157,6 +158,11 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		@Override
 		public ServerPlayer player() {
 			return listener.getPlayer();
+		}
+
+		@Override
+		public PacketContext packetContext() {
+			return listener.getPacketContext();
 		}
 	}
 }

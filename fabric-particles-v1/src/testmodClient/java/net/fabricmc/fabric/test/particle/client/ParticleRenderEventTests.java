@@ -16,24 +16,28 @@
 
 package net.fabricmc.fabric.test.particle.client;
 
+import java.util.List;
+
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
 import net.fabricmc.fabric.test.particle.ParticleTestSetup;
-import net.fabricmc.fabric.test.particle.ParticleTintTestBlock;
 
 public final class ParticleRenderEventTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		BlockColorRegistry.register((state, level, pos, tintIndex) -> {
-			if (tintIndex == 0) {
-				return ((ParticleTintTestBlock) state.getBlock()).color;
+		BlockTintSource tintSource = new BlockTintSource() {
+			@Override
+			public int color(BlockState state) {
+				return -1;
 			}
+		};
 
-			return -1;
-		}, ParticleTestSetup.ALWAYS_TINTED, ParticleTestSetup.TINTED_OVER_WATER, ParticleTestSetup.NEVER_TINTED);
+		BlockColorRegistry.register(List.of(tintSource), ParticleTestSetup.ALWAYS_TINTED, ParticleTestSetup.TINTED_OVER_WATER, ParticleTestSetup.NEVER_TINTED);
 
 		ParticleRenderEvents.ALLOW_TERRAIN_PARTICLE_TINT.register((state, level, pos) -> {
 			if (state.is(ParticleTestSetup.NEVER_TINTED)) {

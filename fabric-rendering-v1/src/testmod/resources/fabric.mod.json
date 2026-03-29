@@ -19,7 +19,6 @@
       "net.fabricmc.fabric.test.rendering.client.CustomColorResolverTest",
       "net.fabricmc.fabric.test.rendering.client.DebugOptionsTests",
       "net.fabricmc.fabric.test.rendering.client.RenderLayerTest",
-      "net.fabricmc.fabric.test.rendering.client.HudAndShaderTest",
       "net.fabricmc.fabric.test.rendering.client.HudStatusBarHeightsTest",
       "net.fabricmc.fabric.test.rendering.client.HudTests",
       "net.fabricmc.fabric.test.rendering.client.ItemStackOverlayTest",

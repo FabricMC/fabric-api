@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.gametest.threading;
 
+import java.util.Optional;
+
 import com.google.common.base.Preconditions;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
@@ -34,6 +36,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.util.thread.BlockableEventLoop;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
@@ -74,7 +77,7 @@ public class MinecraftMixin {
 		deregisterClient();
 	}
 
-	@ModifyExpressionValue(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/DeltaTracker$Timer;advanceTime(JZ)I"))
+	@ModifyExpressionValue(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/DeltaTracker$Timer;advanceGameTime(J)I"))
 	private int captureTicksPerFrame(int capturedTicksPerFrame, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
 		// limit the number of ticks in a single frame to 1 (disable the "catch-up" mechanism)
 		if (capturedTicksPerFrame > 1) {
@@ -108,10 +111,10 @@ public class MinecraftMixin {
 	}
 
 	@Inject(method = "doWorldLoad", at = @At("HEAD"), cancellable = true)
-	private void deferStartIntegratedServer(LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, boolean newWorld, CallbackInfo ci) {
+	private void deferStartIntegratedServer(LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Optional<GameRules> gameRules, boolean newWorld, CallbackInfo ci) {
 		if (ThreadingImpl.taskToRun != null) {
 			// don't start the integrated server (which busywaits) inside a task
-			deferredTask = () -> Minecraft.getInstance().doWorldLoad(storageAccess, dataPackManager, worldStem, newWorld);
+			deferredTask = () -> Minecraft.getInstance().doWorldLoad(storageAccess, dataPackManager, worldStem, gameRules, newWorld);
 			ci.cancel();
 		}
 	}
@@ -137,7 +140,7 @@ public class MinecraftMixin {
 		NetworkSynchronizer.CLIENTBOUND.reset();
 	}
 
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(ZZ)V", shift = At.Shift.AFTER))
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(Z)V", shift = At.Shift.AFTER))
 	private void onDisconnectBusyWait(CallbackInfo ci) {
 		// give the server a chance to tick too
 		preRunTasks();

@@ -23,4 +23,5 @@ public interface WindowHooks {
 	int fabric_getRealFramebufferHeight();
 	void fabric_resetSize();
 	void fabric_resize(int width, int height);
+	void fabric_focus();
 }

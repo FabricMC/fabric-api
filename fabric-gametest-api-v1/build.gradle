@@ -17,5 +17,6 @@ loom {
 
 moduleDependencies(project, [
 	'fabric-api-base',
+	'fabric-registry-sync-v0',
 	'fabric-resource-loader-v1',
 ])

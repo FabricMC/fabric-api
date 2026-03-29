@@ -64,8 +64,9 @@ public final class ClientReceiveMessageEvents {
 	 * {@link #GAME_CANCELED} will be triggered instead of {@link #MODIFY_GAME}.
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
-	 * To toggle overlay, return false and call
-	 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) LocalPlayer.displayClientMessage(message, overlay)}.
+	 * To toggle overlay, return false and call either
+	 * {@link net.minecraft.client.player.LocalPlayer#sendSystemMessage(Component) LocalPlayer.sendSystemMessage(message)} or
+	 * {@link net.minecraft.client.player.LocalPlayer#sendOverlayMessage(Component) LocalPlayer.sendOverlayMessage(message)}.
 	 */
 	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
 		boolean allow = true;
@@ -102,7 +103,7 @@ public final class ClientReceiveMessageEvents {
 	 * Mods can use this to listen to the message.
 	 *
 	 * <p>If mods want to modify the message, they should use {@link #ALLOW_CHAT}
-	 * and manually add the new message to the chat hud using {@link ChatComponent#addMessage(Component)}
+	 * and manually add the new message to the chat hud using {@link ChatComponent#addPlayerMessage(Component, net.minecraft.network.chat.MessageSignature, net.minecraft.client.gui.components.GuiMessageTag)}
 	 */
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
 		for (Chat listener : listeners) {
@@ -172,8 +173,9 @@ public final class ClientReceiveMessageEvents {
 		 * {@link #GAME_CANCELED} will be triggered instead of {@link #MODIFY_GAME}.
 		 *
 		 * <p>Overlay is whether the message will be displayed in the action bar.
-		 * To toggle overlay, return false and call
-		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
+		 * To toggle overlay, return false and call either
+		 * {@link net.minecraft.client.player.LocalPlayer#sendSystemMessage(Component) LocalPlayer.sendSystemMessage(message)} or
+		 * {@link net.minecraft.client.player.LocalPlayer#sendOverlayMessage(Component) LocalPlayer.sendOverlayMessage(message)}.
 		 *
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar

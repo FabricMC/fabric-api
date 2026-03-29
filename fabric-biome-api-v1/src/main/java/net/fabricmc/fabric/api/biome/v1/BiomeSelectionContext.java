@@ -50,7 +50,7 @@ public interface BiomeSelectionContext {
 
 		for (HolderSet<PlacedFeature> featureSuppliers : featureSteps) {
 			for (Holder<PlacedFeature> featureSupplier : featureSuppliers) {
-				if (featureSupplier.value().getFeatures().anyMatch(cf -> getFeatureKey(cf).orElse(null) == key)) {
+				if (featureSupplier.value().getFeatures().anyMatch(cf -> getFeatureKey(cf.value()).orElse(null) == key)) {
 					return true;
 				}
 			}

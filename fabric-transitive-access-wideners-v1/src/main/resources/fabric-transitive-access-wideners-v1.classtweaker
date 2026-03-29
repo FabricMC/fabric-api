@@ -37,9 +37,9 @@ transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Vertex
 transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Polygon
 
 # Rendering custom gui elements
-transitive-accessible	field	net/minecraft/client/gui/GuiGraphics	guiRenderState	Lnet/minecraft/client/gui/render/state/GuiRenderState;
-transitive-accessible	field	net/minecraft/client/gui/GuiGraphics	scissorStack	Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
-transitive-accessible	class	net/minecraft/client/gui/GuiGraphics$ScissorStack
+transitive-accessible   field   net/minecraft/client/gui/GuiGraphicsExtractor    guiRenderState  Lnet/minecraft/client/renderer/state/gui/GuiRenderState;
+transitive-accessible	field	net/minecraft/client/gui/GuiGraphicsExtractor	scissorStack	Lnet/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack;
+transitive-accessible	class	net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 
 # Registering custom block entity renderers
 transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEntityRenderers	register	(Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V
@@ -227,7 +227,7 @@ transitive-accessible method net/minecraft/world/level/block/SkullBlock <init> (
 transitive-accessible method net/minecraft/world/level/block/SmithingTableBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/SmokerBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/SnowLayerBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/SnowyDirtBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/SnowyBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/SpawnerBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/SpongeBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/StairBlock <init> (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -320,6 +320,8 @@ transitive-accessible method net/minecraft/world/item/enchantment/Enchantment ap
 transitive-accessible method net/minecraft/world/item/enchantment/Enchantment applyEffects (Ljava/util/List;Lnet/minecraft/world/level/storage/loot/LootContext;Lorg/apache/commons/lang3/mutable/MutableFloat;Lnet/minecraft/world/item/enchantment/Enchantment$FloatAction;)V
 transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor
 transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor
+transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$GenericAction
+transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$FloatAction
 
 # private fields of RenderPipelines
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines MATRICES_PROJECTION_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
@@ -333,6 +335,7 @@ transitive-accessible field net/minecraft/client/renderer/RenderPipelines BLOCK_
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines ENTITY_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines ENTITY_EMISSIVE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines BEACON_BEAM_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/renderer/RenderPipelines ITEM_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines TEXT_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines END_PORTAL_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines CLOUDS_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;

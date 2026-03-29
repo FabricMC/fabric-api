@@ -139,7 +139,7 @@ public class MinecraftGameRuleServiceImplTest {
 		DedicatedServer server = mock(DedicatedServer.class);
 		WorldData worldData = mock(WorldData.class);
 		when(server.getWorldData()).thenReturn(worldData);
-		when(worldData.getGameRules()).thenReturn(this.gameRules);
+		when(server.getGameRules()).thenReturn(this.gameRules);
 		return server;
 	}
 

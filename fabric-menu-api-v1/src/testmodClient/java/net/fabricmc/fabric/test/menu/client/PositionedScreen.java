@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.menu.client;
 
 import java.util.Optional;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
@@ -46,10 +46,10 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-		renderBackground(guiGraphics, mouseX, mouseY, delta);
-		super.render(guiGraphics, mouseX, mouseY, delta);
-		renderTooltip(guiGraphics, mouseX, mouseY);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+		extractBackground(guiGraphics, mouseX, mouseY, delta);
+		super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
+		extractTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+	public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);

@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 
 @Mixin(GuiRenderer.class)
 public interface GuiRendererAccessor {

@@ -32,6 +32,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
@@ -295,5 +296,12 @@ public final class ClientPlayNetworking {
 		 * @return The packet sender
 		 */
 		PacketSender responseSender();
+
+		/**
+		 * @return The PacketContext instance attached to the listener
+		 */
+		default PacketContext packetContext() {
+			return Objects.requireNonNull(this.client().getConnection(), "this.client().getConnection() is null!").getPacketContext();
+		}
 	}
 }

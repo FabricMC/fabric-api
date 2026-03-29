@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -53,6 +54,9 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 				target.setAttached(type, entry.getValue());
 			}
 		}
+
+		// Avoid unnecessary extra syncing after initial sync
+		((AttachmentTargetImpl) target).fabric_clearDeferredSyncChanges();
 	}
 
 	@Nullable
@@ -85,6 +89,19 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	}
 
 	/**
+	 * Sends changes that should be communicated to clients in a deferred manner, then clears those changes.
+	 *
+	 * <p>Used when the target does not immediately sync when the attachment is set, but instead defers sync to (usually) match vanilla's sync timing.
+	 */
+	default void fabric_sendAndClearDeferredSyncChanges(List<ServerPlayer> players) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default void fabric_clearDeferredSyncChanges() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
 	 * Sync targets can change their identity {@link net.minecraft.world.entity.Entity#setId(int)}, use this function to update the target to match the new identity.
 	 */
 	default <T> void fabric_updateSyncTarget(AttachmentTargetInfo<T> oldTargetInfo, AttachmentTargetInfo<T> newTargetInfo) {
@@ -99,6 +116,10 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 
 	default boolean fabric_shouldTryToSync() {
 		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default boolean fabric_shouldDeferSync() {
+		return false;
 	}
 
 	RegistryAccess fabric_getRegistryAccess();

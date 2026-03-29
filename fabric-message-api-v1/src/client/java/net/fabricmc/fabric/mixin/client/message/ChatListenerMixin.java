@@ -68,12 +68,23 @@ public abstract class ChatListenerMixin {
 	}
 
 	@Inject(method = "handleSystemMessage", at = @At("HEAD"), cancellable = true)
-	private void fabric_allowGameMessage(Component _message, boolean overlay, CallbackInfo ci, @Local(argsOnly = true) LocalRef<Component> message) {
-		if (ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message.get(), overlay)) {
-			message.set(ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message.get(), overlay));
-			ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message.get(), overlay);
+	private void fabric_allowSystemMessage(Component _message, boolean remote, CallbackInfo ci, @Local(argsOnly = true) LocalRef<Component> message) {
+		if (ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message.get(), false)) {
+			message.set(ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message.get(), false));
+			ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message.get(), false);
 		} else {
-			ClientReceiveMessageEvents.GAME_CANCELED.invoker().onReceiveGameMessageCanceled(message.get(), overlay);
+			ClientReceiveMessageEvents.GAME_CANCELED.invoker().onReceiveGameMessageCanceled(message.get(), false);
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "handleOverlay", at = @At("HEAD"), cancellable = true)
+	private void fabric_allowOverlayMessage(Component _message, CallbackInfo ci, @Local(argsOnly = true) LocalRef<Component> message) {
+		if (ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message.get(), true)) {
+			message.set(ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message.get(), true));
+			ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message.get(), true);
+		} else {
+			ClientReceiveMessageEvents.GAME_CANCELED.invoker().onReceiveGameMessageCanceled(message.get(), true);
 			ci.cancel();
 		}
 	}

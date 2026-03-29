@@ -289,7 +289,7 @@ public class RegistryRemapTest {
 		public static final ThisThreadExecutor INSTANCE = new ThisThreadExecutor();
 
 		private ThisThreadExecutor() {
-			super("Test thread executor");
+			super("Test thread executor", true);
 		}
 
 		@Override

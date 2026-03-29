@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
@@ -26,22 +26,25 @@ import net.minecraft.world.item.Item;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 
 public class DefaultItemComponentImpl {
-	public static void modifyItemComponents() {
-		DefaultItemComponentEvents.MODIFY.invoker().modify(ModifyContextImpl.INSTANCE);
+	public static final ScopedValue<HolderLookup.Provider> LOOKUP_PROVIDER_SCOPED_VALUE = ScopedValue.newInstance();
+
+	public static void modifyItemComponents(HolderLookup.Provider registries) {
+		DefaultItemComponentEvents.MODIFY.invoker().modify(new ModifyContextImpl(registries));
 	}
 
 	static class ModifyContextImpl implements DefaultItemComponentEvents.ModifyContext {
-		private static final ModifyContextImpl INSTANCE = new ModifyContextImpl();
+		private final HolderLookup.Provider registryLookup;
 
-		private ModifyContextImpl() {
+		private ModifyContextImpl(HolderLookup.Provider registries) {
+			this.registryLookup = registries;
 		}
 
 		@Override
-		public void modify(Predicate<Item> itemPredicate, BiConsumer<DataComponentMap.Builder, Item> builderConsumer) {
+		public void modify(Predicate<Item> itemPredicate, DefaultItemComponentEvents.ModifyConsumer builderConsumer) {
 			for (Item item : BuiltInRegistries.ITEM) {
 				if (itemPredicate.test(item)) {
 					DataComponentMap.Builder builder = DataComponentMap.builder().addAll(item.components());
-					builderConsumer.accept(builder, item);
+					builderConsumer.modify(builder, registryLookup, item);
 					item.builtInRegistryHolder().bindComponents(builder.build());
 				}
 			}

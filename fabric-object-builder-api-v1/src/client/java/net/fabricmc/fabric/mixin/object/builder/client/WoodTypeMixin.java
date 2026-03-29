@@ -33,8 +33,8 @@ abstract class WoodTypeMixin {
 	private static void onReturnRegister(WoodType type, CallbackInfoReturnable<WoodType> cir) {
 		if (SignTypeTextureHelper.shouldAddTextures) {
 			final Identifier identifier = Identifier.parse(type.name());
-			Sheets.SIGN_MATERIALS.put(type, Sheets.SIGN_MAPPER.apply(identifier));
-			Sheets.HANGING_SIGN_MATERIALS.put(type, Sheets.HANGING_SIGN_MAPPER.apply(identifier));
+			Sheets.SIGN_SPRITES.put(type, Sheets.SIGN_MAPPER.apply(identifier));
+			Sheets.HANGING_SIGN_SPRITES.put(type, Sheets.HANGING_SIGN_MAPPER.apply(identifier));
 		}
 	}
 }

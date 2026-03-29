@@ -9,7 +9,7 @@
     "DetectorRailBlockMixin",
     "EntityTypeBuilderMixin",
     "EntityTypeMixin",
-    "DimensionDataStorageMixin",
+    "SavedDataStorageMixin",
     "EntityDataSerializersAccessor",
     "EntityDataSerializersMixin"
   ],

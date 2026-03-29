@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.rendering.client.gui;
 
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.world.item.DyeColor;
 
 public record BannerGuiElementRenderState(DyeColor color, int x0, int y0, int x1, int y1, ScreenRectangle scissorArea, ScreenRectangle bounds) implements PictureInPictureRenderState {

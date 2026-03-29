@@ -17,8 +17,12 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import com.mojang.datafixers.util.Pair;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
+
+import net.fabricmc.fabric.impl.client.rendering.ModelExtensions;
 
 /**
  * A model that copies transforms from a source model to a delegate model.
@@ -27,7 +31,7 @@ import net.minecraft.client.model.Model;
  * @param <S> type of the source model state
  * @param <D> type of the delegate model state
  */
-public final class TransformCopyingModel<S, D> extends Model<Pair<S, D>> {
+public final class TransformCopyingModel<S, D> extends Model<Pair<S, D>> implements ModelExtensions {
 	private final Model<? super S> source;
 	private final Model<? super D> delegate;
 	private final boolean setDelegateAngles;
@@ -58,5 +62,19 @@ public final class TransformCopyingModel<S, D> extends Model<Pair<S, D>> {
 		if (setDelegateAngles) {
 			delegate.setupAnim(state.getSecond());
 		}
+	}
+
+	@Override
+	public void fabric$calculateChildParts(ModelPart root) {
+	}
+
+	@Override
+	public @Nullable ModelPart getChildPart(String name) {
+		return delegate.getChildPart(name);
+	}
+
+	@Override
+	public void copyTransforms(Model<?> model) {
+		delegate.copyTransforms(model);
 	}
 }

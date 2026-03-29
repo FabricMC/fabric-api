@@ -68,7 +68,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	}
 
 	@Override
-	public void submitBlockStateModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		wasUsed = true;
 		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(
 				poseStack.last().copy(),

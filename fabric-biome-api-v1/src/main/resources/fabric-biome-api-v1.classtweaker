@@ -40,8 +40,8 @@ accessible	field	net/minecraft/world/level/biome/BiomeGenerationSettings	carvers
 mutable	field	net/minecraft/world/level/biome/BiomeGenerationSettings	carvers	Lnet/minecraft/core/HolderSet;
 accessible	field	net/minecraft/world/level/biome/BiomeGenerationSettings	features	Ljava/util/List;
 mutable	field	net/minecraft/world/level/biome/BiomeGenerationSettings	features	Ljava/util/List;
-accessible	field	net/minecraft/world/level/biome/BiomeGenerationSettings	flowerFeatures	Ljava/util/function/Supplier;
-mutable	field	net/minecraft/world/level/biome/BiomeGenerationSettings	flowerFeatures	Ljava/util/function/Supplier;
+accessible	field	net/minecraft/world/level/biome/BiomeGenerationSettings	boneMealFeatures	Ljava/util/function/Supplier;
+mutable	field	net/minecraft/world/level/biome/BiomeGenerationSettings	boneMealFeatures	Ljava/util/function/Supplier;
 accessible	field	net/minecraft/world/level/biome/BiomeGenerationSettings	featureSet	Ljava/util/function/Supplier;
 mutable	field	net/minecraft/world/level/biome/BiomeGenerationSettings	featureSet	Ljava/util/function/Supplier;
 

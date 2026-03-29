@@ -21,6 +21,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
@@ -53,6 +54,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 	protected abstract LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo);
 
+	@Nullable
 	protected abstract VertexConsumer getVertexConsumer(ChunkSectionLayer layer);
 
 	/** Must be called before buffering a block model. */
@@ -68,9 +70,14 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			return;
 		}
 
+		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveChunkLayer(quad.chunkLayer()));
+
+		if (vertexConsumer == null) {
+			return;
+		}
+
 		final boolean ao = blockInfo.effectiveAo(quad.ambientOcclusion());
 		final boolean vanillaShade = quad.shadeMode() == ShadeMode.VANILLA;
-		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveChunkLayer(quad.chunkLayer()));
 
 		tintQuad(quad);
 		shadeQuad(quad, ao, quad.emissive(), vanillaShade);

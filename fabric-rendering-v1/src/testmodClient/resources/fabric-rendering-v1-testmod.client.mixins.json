@@ -3,9 +3,11 @@
   "package": "net.fabricmc.fabric.test.rendering.client.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "AvatarRendererMixin",
     "GameRendererAccessor",
     "GuiRendererAccessor",
-    "PigRendererMixin"
+    "PigRendererMixin",
+    "MinecraftAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

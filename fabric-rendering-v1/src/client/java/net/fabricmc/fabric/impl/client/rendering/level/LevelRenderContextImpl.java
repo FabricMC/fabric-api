@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.AbstractLevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
@@ -39,7 +39,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	private SubmitNodeCollector nodeCollector;
 	@Nullable
 	private PoseStack poseStack;
-	private MultiBufferSource bufferSource;
+	private MultiBufferSource.BufferSource bufferSource;
 
 	public void prepare(
 			GameRenderer gameRenderer,
@@ -47,7 +47,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 			LevelRenderState levelRenderState,
 			ChunkSectionsToRender sectionsToRender,
 			SubmitNodeCollector nodeCollector,
-			MultiBufferSource bufferSource
+			MultiBufferSource.BufferSource bufferSource
 	) {
 		this.gameRenderer = gameRenderer;
 		this.levelRenderer = levelRenderer;
@@ -96,7 +96,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	}
 
 	@Override
-	public MultiBufferSource bufferSource() {
+	public MultiBufferSource.BufferSource bufferSource() {
 		return bufferSource;
 	}
 }

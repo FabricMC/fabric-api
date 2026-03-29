@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.packs.TransferableSelectionList;
@@ -58,9 +58,9 @@ class TransferableSelectionListPackEntryMixin {
 	@Final
 	TransferableSelectionList this$0;
 
-	@Inject(method = "renderContent", at = @At("RETURN"))
-	private void onRenderContent(
-			GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci
+	@Inject(method = "extractContent", at = @At("RETURN"))
+	private void onExtractContent(
+			GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci
 	) {
 		if (hovered) {
 			Component name = null;

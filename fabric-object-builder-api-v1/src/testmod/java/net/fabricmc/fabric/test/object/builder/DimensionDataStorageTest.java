@@ -52,7 +52,7 @@ public class DimensionDataStorageTest implements ModInitializer {
 		private static final Codec<TestState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("value").forGetter(TestState::getValue)
 		).apply(instance, TestState::new));
-		private static final SavedDataType<TestState> TYPE = new SavedDataType<>(ObjectBuilderTestConstants.id("test_state").toString().replace(":", "_"), TestState::new, CODEC, null);
+		private static final SavedDataType<TestState> TYPE = new SavedDataType<>(ObjectBuilderTestConstants.id("test_state"), TestState::new, CODEC, null);
 
 		public static TestState getOrCreate(ServerLevel level) {
 			return level.getDataStorage().computeIfAbsent(TestState.TYPE);

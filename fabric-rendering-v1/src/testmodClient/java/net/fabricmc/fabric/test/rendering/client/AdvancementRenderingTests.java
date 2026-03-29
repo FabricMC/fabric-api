@@ -37,13 +37,13 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 
 	static class StoryRootIconRenderer implements AdvancementRenderer.IconRenderer {
 		@Override
-		public void renderAdvancementIcon(AdvancementRenderContext.Icon context) {
+		public void extractAdvancementIcon(AdvancementRenderContext.Icon context) {
 			if (context.isHovered()) {
-				context.graphics().drawString(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
+				context.graphics().text(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
 			}
 
 			if (context.isSelected()) {
-				context.graphics().drawString(Minecraft.getInstance().font, "selected", context.x(), context.y() + 9, -1);
+				context.graphics().text(Minecraft.getInstance().font, "selected", context.x(), context.y() + 9, -1);
 			}
 		}
 
@@ -57,7 +57,7 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 		private static final Identifier BACKGROUND = Identifier.withDefaultNamespace("textures/painting/unpacked.png");
 
 		@Override
-		public void renderAdvancementBackground(AdvancementRenderContext.Background context) {
+		public void extractAdvancementBackground(AdvancementRenderContext.Background context) {
 			ScreenRectangle bounds = context.bounds();
 			context.graphics().blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, bounds.left(), bounds.top(), 1 - Mth.floor(context.scrollX()), 3 - Mth.floor(context.scrollY()), bounds.width(), bounds.height(), 64, 64);
 		}
@@ -65,13 +65,13 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 
 	static class MineDiamondFrameRenderer implements AdvancementRenderer.FrameRenderer {
 		@Override
-		public void renderAdvancementFrame(AdvancementRenderContext.Frame context) {
+		public void extractAdvancementFrame(AdvancementRenderContext.Frame context) {
 			int x = context.x();
 			int y = context.y();
 			context.graphics().fill(x, y, x + 26, y + 26, context.isObtained() ? CommonColors.GREEN : CommonColors.RED);
 
 			if (context.isHovered()) {
-				context.graphics().drawString(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
+				context.graphics().text(Minecraft.getInstance().font, "hovered", context.x(), context.y(), -1);
 			}
 		}
 

@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -59,9 +59,9 @@ public record PackTooltipComponent(Optional<Component> name, Optional<List<Forma
 	}
 
 	@Override
-	public void renderText(GuiGraphics graphics, Font font, int x, int y) {
+	public void extractText(GuiGraphicsExtractor graphics, Font font, int x, int y) {
 		if (this.name.isPresent()) {
-			graphics.drawString(font, this.name.get(), x, y, 0xffffffff, true);
+			graphics.text(font, this.name.get(), x, y, 0xffffffff, true);
 			y += font.lineHeight + 1;
 
 			if (this.description.isPresent()) {
@@ -71,14 +71,14 @@ public record PackTooltipComponent(Optional<Component> name, Optional<List<Forma
 
 		if (this.description.isPresent()) {
 			for (FormattedCharSequence line : this.description.get()) {
-				graphics.drawString(font, line, x, y, 0xffffffff, true);
+				graphics.text(font, line, x, y, 0xffffffff, true);
 				y += font.lineHeight + 1;
 			}
 		}
 	}
 
 	@Override
-	public void renderImage(Font font, int x, int y, int width, int height, GuiGraphics graphics) {
+	public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
 		if (this.name.isPresent() && this.description.isPresent()) {
 			graphics.fill(
 					x, y + font.lineHeight + 4,

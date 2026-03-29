@@ -21,18 +21,37 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 
+import net.fabricmc.fabric.api.attachment.v1.GlobalAttachments;
+import net.fabricmc.fabric.api.attachment.v1.GlobalAttachmentsProvider;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.GlobalAttachmentsImpl;
 
 @Mixin(ClientPacketListener.class)
-abstract class ClientPacketListenerMixin {
+abstract class ClientPacketListenerMixin implements GlobalAttachmentsProvider {
+	@Unique
+	private GlobalAttachmentsImpl globalAttachments;
+
+	@Override
+	public GlobalAttachments globalAttachments() {
+		return globalAttachments;
+	}
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void initGlobalAttachments(CallbackInfo ci) {
+		globalAttachments = new GlobalAttachmentsImpl(null);
+	}
+
 	@WrapOperation(
 			method = "handleRespawn",
 			at = @At(

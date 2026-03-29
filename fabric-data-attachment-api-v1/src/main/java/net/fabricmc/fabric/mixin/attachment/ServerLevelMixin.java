@@ -34,6 +34,7 @@ import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.level.storage.WritableLevelData;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.attachment.v1.GlobalAttachments;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentSavedData;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
@@ -94,5 +95,10 @@ abstract class ServerLevelMixin extends Level implements AttachmentTargetImpl {
 	@Override
 	public RegistryAccess fabric_getRegistryAccess() {
 		return registryAccess();
+	}
+
+	@Override
+	public GlobalAttachments globalAttachments() {
+		return server.globalAttachments();
 	}
 }
