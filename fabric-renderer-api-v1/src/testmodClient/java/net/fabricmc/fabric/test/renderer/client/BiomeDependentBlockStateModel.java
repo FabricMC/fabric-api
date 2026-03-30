@@ -74,6 +74,25 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		if (((FabricBlockGetter) level).hasBiomes() && ((FabricBlockGetter) level).getBiomeFabric(pos).is(biomeTag)) {
+			return biomeModel.particleMaterial(level, pos, state);
+		} else {
+			return regularModel.particleMaterial(level, pos, state);
+		}
+	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		if (((FabricBlockGetter) level).hasBiomes() && ((FabricBlockGetter) level).getBiomeFabric(pos).is(biomeTag)) {
+			return biomeModel.materialFlags(level, pos, state, random);
+		} else {
+			return regularModel.materialFlags(level, pos, state, random);
+		}
+	}
+
+	@Override
 	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 	}
 
@@ -85,15 +104,6 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	@Override
 	public @BakedQuad.MaterialFlags int materialFlags() {
 		return regularModel.materialFlags() | biomeModel.materialFlags();
-	}
-
-	@Override
-	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		if (((FabricBlockGetter) level).hasBiomes() && ((FabricBlockGetter) level).getBiomeFabric(pos).is(biomeTag)) {
-			return biomeModel.particleMaterial(level, pos, state);
-		} else {
-			return regularModel.particleMaterial(level, pos, state);
-		}
 	}
 
 	public record Unbaked(BlockStateModel.Unbaked regularModel, BlockStateModel.Unbaked biomeModel, TagKey<Biome> biomeTag) implements CustomUnbakedBlockStateModel {

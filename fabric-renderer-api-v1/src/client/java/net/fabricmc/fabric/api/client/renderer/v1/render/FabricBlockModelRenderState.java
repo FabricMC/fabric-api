@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
-
 import org.joml.Matrix4fc;
 
 import net.minecraft.client.renderer.block.BlockModelRenderState;

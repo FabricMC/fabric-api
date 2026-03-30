@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.WeightedVariants;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -58,5 +59,11 @@ abstract class WeightedVariantsMixin implements BlockStateModel {
 	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return list.unwrap().getFirst().value().particleMaterial(
 				level, pos, state);
+	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		return list.getRandomOrThrow(random).materialFlags(level, pos, state, random);
 	}
 }

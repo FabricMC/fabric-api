@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.multipart.MultiPartModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -104,5 +105,23 @@ abstract class MultiPartModelMixin implements BlockStateModel {
 	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return ((MultiPartModelSharedBakedStateAccessor) (Object) shared).getSelectors().getFirst().model().particleMaterial(
 				level, pos, state);
+	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		if (models == null) {
+			models = shared.selectModels(this.blockState);
+		}
+
+		long seed = random.nextLong();
+		@BakedQuad.MaterialFlags int flags = 0;
+
+		for (BlockStateModel model : models) {
+			random.setSeed(seed);
+			flags |= model.materialFlags(level, pos, state, random);
+		}
+
+		return flags;
 	}
 }

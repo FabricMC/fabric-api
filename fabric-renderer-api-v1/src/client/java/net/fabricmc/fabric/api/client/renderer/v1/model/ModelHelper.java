@@ -21,7 +21,9 @@ import java.util.Arrays;
 import com.mojang.blaze3d.platform.Transparency;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
@@ -112,5 +114,23 @@ public final class ModelHelper {
 		return sprite
 				.contents()
 				.computeTransparency(minU, minV, maxU, maxV);
+	}
+
+	/**
+	 * Computes the vanilla material flags for the given quad. This operation is cheap.
+	 */
+	@BakedQuad.MaterialFlags
+	public static int computeMaterialFlags(QuadView quad) {
+		@BakedQuad.MaterialFlags int flags = 0;
+
+		if (quad.chunkLayer().translucent()) {
+			flags |= BakedQuad.FLAG_TRANSLUCENT;
+		}
+
+		if (quad.animated() || (quad.foilType() != null && quad.foilType() != ItemStackRenderState.FoilType.NONE)) {
+			flags |= BakedQuad.FLAG_ANIMATED;
+		}
+
+		return flags;
 	}
 }

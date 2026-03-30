@@ -16,15 +16,12 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
-import java.util.List;
-
 import org.joml.Matrix4fc;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -44,9 +41,6 @@ abstract class BlockStateModelWrapperMixin implements BlockModel {
 	private BlockStateModel model;
 	@Shadow
 	@Final
-	private List<BlockTintSource> tints;
-	@Shadow
-	@Final
 	private Matrix4fc transformation;
 
 	@Shadow
@@ -54,8 +48,9 @@ abstract class BlockStateModelWrapperMixin implements BlockModel {
 
 	@Overwrite
 	@Override
-	public void update(BlockModelRenderState output, BlockState blockState, BlockDisplayContext displayContext, final long seed) {
-		QuadEmitter emitter = output.setupMesh(transformation, model.hasMaterialFlag(BakedQuad.FLAG_TRANSLUCENT));
+	public void update(BlockModelRenderState output, BlockState blockState, BlockDisplayContext displayContext, long seed) {
+		// This could be optimized to inspect the quad output rather than calling hasMaterialFlag
+		QuadEmitter emitter = output.setupMesh(transformation, model.hasMaterialFlag(BlockAndTintGetter.EMPTY, BlockPos.ZERO, blockState, output.scratchRandomSource(seed), BakedQuad.FLAG_TRANSLUCENT));
 		// TODO FRAPI 26.1: somehow pass the level and pos here when available?
 		model.emitQuads(emitter, BlockAndTintGetter.EMPTY, BlockPos.ZERO, blockState, output.scratchRandomSource(seed), _ -> false);
 		updateTints(output, blockState);

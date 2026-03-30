@@ -52,33 +52,34 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	// alone, bottom, middle, top
 	private final Material.Baked[] materials;
-	private final @BakedQuad.MaterialFlags int materialFlags;
+	private final @BakedQuad.MaterialFlags int[] materialFlags;
+	private final @BakedQuad.MaterialFlags int staticMaterialFlags;
 
 	public PillarBlockStateModel(Material.Baked[] materials) {
 		this.materials = materials;
+		materialFlags = new int[materials.length];
+		@BakedQuad.MaterialFlags int staticMaterialFlags = 0;
 
-		boolean translucent = false;
-		boolean animated = false;
+		for (int i = 0; i < materials.length; i++) {
+			Material.Baked material = materials[i];
+			int flags = 0;
 
-		for (Material.Baked material : materials) {
-			translucent = translucent || material.forceTranslucent() || material.sprite()
+			if (material.forceTranslucent() || material.sprite()
 					.contents()
 					.computeTransparency(0.0f, 0.0f, 1.0f, 1.0f)
-					.hasTranslucent();
-			animated = animated || material.sprite().contents().isAnimated();
+					.hasTranslucent()) {
+				flags |= BakedQuad.FLAG_TRANSLUCENT;
+			}
+
+			if (material.sprite().contents().isAnimated()) {
+				flags |= BakedQuad.FLAG_ANIMATED;
+			}
+
+			materialFlags[i] = flags;
+			staticMaterialFlags |= flags;
 		}
 
-		@BakedQuad.MaterialFlags int materialFlags = 0;
-
-		if (translucent) {
-			materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
-		}
-
-		if (animated) {
-			materialFlags |= BakedQuad.FLAG_ANIMATED;
-		}
-
-		this.materialFlags = materialFlags;
+		this.staticMaterialFlags = staticMaterialFlags;
 	}
 
 	@Override
@@ -102,6 +103,17 @@ public class PillarBlockStateModel implements BlockStateModel {
 				getConnectedTexture(level, pos, state, Direction.WEST),
 				getConnectedTexture(level, pos, state, Direction.EAST)
 		);
+	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		@BakedQuad.MaterialFlags int flags = materialFlags[ConnectedTexture.ALONE.ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.NORTH).ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.SOUTH).ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.WEST).ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.EAST).ordinal()];
+		return flags;
 	}
 
 	private static ConnectedTexture getConnectedTexture(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side) {
@@ -148,7 +160,7 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	@Override
 	public @BakedQuad.MaterialFlags int materialFlags() {
-		return materialFlags;
+		return staticMaterialFlags;
 	}
 
 	public record Unbaked() implements CustomUnbakedBlockStateModel, ModelDebugName {
