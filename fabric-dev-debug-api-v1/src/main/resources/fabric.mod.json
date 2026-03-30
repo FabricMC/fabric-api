@@ -14,7 +14,7 @@
     "fabric-api-base": "*",
     "fabric-debug-api-v1": "*"
   },
-  "description": "A toolkit for using Events scoped narrowly.",
+  "description": "An extension of Debug API with features only available in development environments.",
   "custom": {
     "fabric-api:module-lifecycle": "experimental"
   }
