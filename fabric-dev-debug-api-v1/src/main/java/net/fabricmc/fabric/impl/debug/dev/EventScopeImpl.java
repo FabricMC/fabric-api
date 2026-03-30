@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.debug.dev;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.debug.dev.v1.EventScope;
+import net.fabricmc.fabric.api.event.Event;
 
 public class EventScopeImpl<T> implements EventScope {
 	private final TestableArrayBackedEvent<T> event;
@@ -29,6 +30,15 @@ public class EventScopeImpl<T> implements EventScope {
 		this.event = event;
 		this.phase = phase;
 		this.listener = listener;
+	}
+
+	public static <T> EventScope registerScoped(Event<T> event, Identifier phase, T listener) {
+		if (!(event instanceof TestableArrayBackedEvent<T> testableEvent)) {
+			throw new IllegalArgumentException("Event is not testable, something has gone very wrong!");
+		}
+
+		event.register(phase, listener);
+		return new EventScopeImpl<>(testableEvent, phase, listener);
 	}
 
 	@Override

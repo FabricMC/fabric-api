@@ -24,7 +24,7 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.debug.dev.EventTestingImpl;
+import net.fabricmc.fabric.impl.debug.dev.EventScopeImpl;
 
 /**
  * Represents a wrapper around a short-lived {@link Event}.
@@ -55,6 +55,6 @@ public interface EventScope extends AutoCloseable {
 	 * @see EventFactory#createWithPhases(Class, Function, Identifier...)
 	 */
 	static <T> EventScope registerScoped(Event<T> event, Identifier phase, T listener) {
-		return EventTestingImpl.registerScoped(event, phase, listener);
+		return EventScopeImpl.registerScoped(event, phase, listener);
 	}
 }
