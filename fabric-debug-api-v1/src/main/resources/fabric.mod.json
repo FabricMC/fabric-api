@@ -17,8 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.18.4",
-    "fabric-api-base": "*",
-    "fabric-registry-sync-v0": "*"
+    "fabric-api-base": "*"
   },
   "description": "A toolkit for registering and using debug subscriptions and other debug tools Mojang have created.",
   "mixins": [

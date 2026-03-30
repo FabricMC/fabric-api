@@ -12,7 +12,7 @@
   "depends": {
     "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
-    "fabric-registry-sync-v0": "*"
+    "fabric-debug-api-v1": "*"
   },
   "description": "A toolkit for using Events scoped narrowly.",
   "custom": {
