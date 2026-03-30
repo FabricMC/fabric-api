@@ -46,6 +46,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.DataAccessorHandler;
 import net.fabricmc.fabric.impl.attachment.GlobalAttachmentsImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
@@ -137,6 +138,11 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_readAttachmentsFromNbt(ValueInput input) {
+		if (DataAccessorHandler.APPLYING_DATA_CHANGE.isBound()) {
+			// DataAccessorHandler handles applying data changes separately.
+			return;
+		}
+
 		// Note on player targets: no syncing can happen here as the networkHandler is still null
 		// Instead it is done on player join (see AttachmentSync)
 		IdentityHashMap<AttachmentType<?>, Object> fromNbt = AttachmentSerializingImpl.deserializeAttachmentData(input);

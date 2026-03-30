@@ -25,12 +25,14 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -109,11 +111,13 @@ public class SyncGametest implements FabricClientGameTest {
 				var villager = new Villager(EntityType.VILLAGER, level);
 				villager.setNoAi(true);
 				villager.setInvulnerable(true);
+				villager.setCustomName(Component.literal("TestVillager"));
 				state.villagerId = villager.getUUID();
 				level.addFreshEntity(villager);
 				setSyncedWithAll(villager);
 				set(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 				villager.setAttached(AttachmentTestMod.SYNCED_LARGE, AttachmentTestMod.LARGE_DATA);
+				villager.setAttached(AttachmentTestMod.SYNCED_ITEM, new ItemStack(Items.EGG));
 
 				LevelChunk originChunk = level.getChunk(0, 0);
 				setSyncedWithAll(originChunk);
@@ -176,6 +180,19 @@ public class SyncGametest implements FabricClientGameTest {
 
 					// reset view distance
 					client.options.renderDistance().set(12);
+				});
+
+				// Test modifying attachments using the data command, and that the changes are synced to the client.
+				serverContext.runCommand("data modify entity @n[name=\"TestVillager\"] \"fabric:attachments\".\"fabric-data-attachment-api-v1-testmod:synced_item\".id set value \"minecraft:diamond\"");
+				context.waitTick();
+				context.runOnClient(client -> {
+					ClientLevel level = Objects.requireNonNull(client.level);
+					Entity villager = level.getEntity(state.villagerId);
+					ItemStack syncedItem = villager.getAttached(AttachmentTestMod.SYNCED_ITEM);
+
+					if (syncedItem.getItem() != Items.DIAMOND) {
+						throw new AssertionError("Unexpected synced item: %s".formatted(syncedItem.getItem()));
+					}
 				});
 
 				LOGGER.info("Setting up second phase");
