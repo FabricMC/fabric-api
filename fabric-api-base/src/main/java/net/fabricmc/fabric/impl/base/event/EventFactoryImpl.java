@@ -42,7 +42,7 @@ public class EventFactoryImpl {
 	protected EventFactoryImpl() {
 		Class<?> thisClass = getClass();
 
-		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals("net.fabricmc.fabric.impl.debug.TestableEventFactoryImpl")) {
+		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals("net.fabricmc.fabric.impl.debug.dev.TestableEventFactoryImpl")) {
 			throw new IllegalStateException("You are not allowed to create a custom EventFactoryImpl!");
 		}
 	}

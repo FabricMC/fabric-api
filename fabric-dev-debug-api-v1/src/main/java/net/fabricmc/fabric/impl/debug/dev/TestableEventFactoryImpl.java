@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.debug;
+package net.fabricmc.fabric.impl.debug.dev;
 
-import net.minecraft.resources.Identifier;
+import java.util.function.Function;
 
-import net.fabricmc.fabric.api.debug.v1.EventScope;
+import net.fabricmc.fabric.impl.base.event.ArrayBackedEvent;
+import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
-public class EventScopeImpl<T> implements EventScope {
-	private final TestableArrayBackedEvent<T> event;
-	private final Identifier phase;
-	private final T listener;
-
-	public EventScopeImpl(TestableArrayBackedEvent<T> event, Identifier phase, T listener) {
-		this.event = event;
-		this.phase = phase;
-		this.listener = listener;
-	}
-
+public class TestableEventFactoryImpl extends EventFactoryImpl {
 	@Override
-	public void close() {
-		event.unregister(phase, listener);
+	protected <T> ArrayBackedEvent<T> doCreateArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
+		return new TestableArrayBackedEvent<>(type, invokerFactory);
 	}
 }

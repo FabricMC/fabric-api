@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.debug.v1;
+package net.fabricmc.fabric.api.debug.dev.v1;
 
 import java.util.function.Function;
 
@@ -24,7 +24,7 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.debug.EventTestingImpl;
+import net.fabricmc.fabric.impl.debug.dev.EventTestingImpl;
 
 /**
  * Represents a wrapper around a short-lived {@link Event}.
