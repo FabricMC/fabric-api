@@ -41,7 +41,7 @@ public class EventScopeTest {
 	public void testEventScope(GameTestHelper helper) {
 		Foo foo = () -> false;
 
-		try (EventScope _ = EventScope.registerScoped(EVENT, foo)) {
+		try (EventScope _ = EventScope.register(EVENT, foo)) {
 			helper.assertFalse(EVENT.invoker().doSomething(), "Event Foo in EventScope was not registered.");
 		}
 

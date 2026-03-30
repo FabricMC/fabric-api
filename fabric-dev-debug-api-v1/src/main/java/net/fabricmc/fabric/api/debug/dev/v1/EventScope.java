@@ -42,8 +42,8 @@ public interface EventScope extends AutoCloseable {
 	 * @param <T> is the type parameter for the event's listener
 	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase {@link Event#DEFAULT_PHASE}
 	 */
-	static <T> EventScope registerScoped(Event<T> event, T listener) {
-		return registerScoped(event, Event.DEFAULT_PHASE, listener);
+	static <T> EventScope register(Event<T> event, T listener) {
+		return register(event, Event.DEFAULT_PHASE, listener);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public interface EventScope extends AutoCloseable {
 	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase
 	 * @see EventFactory#createWithPhases(Class, Function, Identifier...)
 	 */
-	static <T> EventScope registerScoped(Event<T> event, Identifier phase, T listener) {
-		return EventScopeImpl.registerScoped(event, phase, listener);
+	static <T> EventScope register(Event<T> event, Identifier phase, T listener) {
+		return EventScopeImpl.register(event, phase, listener);
 	}
 }

@@ -32,7 +32,7 @@ public class EventScopeImpl<T> implements EventScope {
 		this.listener = listener;
 	}
 
-	public static <T> EventScope registerScoped(Event<T> event, Identifier phase, T listener) {
+	public static <T> EventScope register(Event<T> event, Identifier phase, T listener) {
 		if (!(event instanceof TestableArrayBackedEvent<T> testableEvent)) {
 			throw new IllegalArgumentException("Event is not testable, something has gone very wrong!");
 		}
