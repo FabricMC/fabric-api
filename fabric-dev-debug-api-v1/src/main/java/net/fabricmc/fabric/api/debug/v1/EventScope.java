@@ -39,7 +39,7 @@ public interface EventScope extends AutoCloseable {
 	 * @param event The {@link Event} that should get registered
 	 * @param listener The corresponding listener
 	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase {@link Event#DEFAULT_PHASE}
-	 * @param <T> is the type parameter of the event and the listener it should hold
+	 * @param <T> is the type parameter for the event's listener
 	 */
 	static <T> EventScope registerScoped(Event<T> event, T listener) {
 		return registerScoped(event, Event.DEFAULT_PHASE, listener);
@@ -49,7 +49,7 @@ public interface EventScope extends AutoCloseable {
 	 * @param phase The event phase, see {@link net.fabricmc.fabric.api.event.EventFactory#createWithPhases(Class, Function, Identifier...)} for details
 	 * @param listener The corresponding listener
 	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase
-	 * @param <T> is the type parameter of the event and the listener it should hold
+	 * @param <T> is the type parameter for the event's listener
 	 */
 	static <T> EventScope registerScoped(Event<T> event, Identifier phase, T listener) {
 		return EventTestingImpl.registerScoped(event, phase, listener);
