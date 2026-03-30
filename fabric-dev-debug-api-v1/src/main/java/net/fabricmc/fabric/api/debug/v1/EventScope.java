@@ -23,6 +23,8 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.debug.EventTestingImpl;
 
+import java.util.function.Function;
+
 /**
  * Represents a wrapper around a short-lived {@link Event}.
  * This class implements {@link AutoCloseable} and is intended to be used in a try-with-resources statement. When
@@ -33,10 +35,22 @@ public interface EventScope extends AutoCloseable {
 	@Override
 	void close();
 
+	/**
+	 * @param event The {@link Event} that should get registered
+	 * @param listener The corresponding listener
+	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase {@link Event#DEFAULT_PHASE}
+	 * @param <T> is the type parameter of the event and the listener it should hold
+	 */
 	static <T> EventScope registerScoped(Event<T> event, T listener) {
 		return registerScoped(event, Event.DEFAULT_PHASE, listener);
 	}
-
+	/**
+	 * @param event The {@link Event} that should get registered
+	 * @param phase The event phase, see {@link net.fabricmc.fabric.api.event.EventFactory#createWithPhases(Class, Function, Identifier...)} for details
+	 * @param listener The corresponding listener
+	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase
+	 * @param <T> is the type parameter of the event and the listener it should hold
+	 */
 	static <T> EventScope registerScoped(Event<T> event, Identifier phase, T listener) {
 		return EventTestingImpl.registerScoped(event, phase, listener);
 	}
