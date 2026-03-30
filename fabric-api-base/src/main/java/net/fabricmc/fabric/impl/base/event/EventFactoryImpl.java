@@ -43,7 +43,9 @@ public class EventFactoryImpl {
 	protected EventFactoryImpl() {
 		Class<?> thisClass = getClass();
 
-		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals(TestableEventFactoryImpl.class.getName())) {
+		String validInheritor = TestableEventFactoryImpl.class.getName();
+
+		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals(validInheritor)) {
 			throw new IllegalStateException("You are not allowed to create a custom EventFactoryImpl!");
 		}
 	}
