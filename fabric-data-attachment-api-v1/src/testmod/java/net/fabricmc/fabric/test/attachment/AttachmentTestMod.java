@@ -33,6 +33,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -147,6 +148,10 @@ public class AttachmentTestMod implements ModInitializer {
 					entity.hurtServer(level, level.damageSources().generic(), 1);
 				}
 			});
+
+			if (entity instanceof Chicken) {
+				entity.setAttached(SYNCED_ITEM, new ItemStack(Items.EGG, 6));
+			}
 		});
 	}
 }

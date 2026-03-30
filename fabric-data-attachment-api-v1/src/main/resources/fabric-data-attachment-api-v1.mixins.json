@@ -5,11 +5,13 @@
   "mixins": [
     "AttachmentTargetsMixin",
     "BannerBlockEntityMixin",
+    "BlockDataAccessorMixin",
     "BlockEntityMixin",
     "ChunkAccessMixin",
     "ChunkHolderMixin",
     "ClientboundCustomPayloadPacketAccessor",
     "DimensionStorageFileFixMixin",
+    "EntityDataAccessorMixin",
     "EntityMixin",
     "ImposterProtoChunkMixin",
     "LevelChunkMixin",
