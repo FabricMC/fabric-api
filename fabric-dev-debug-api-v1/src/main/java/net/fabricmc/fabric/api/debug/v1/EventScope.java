@@ -16,14 +16,15 @@
 
 package net.fabricmc.fabric.api.debug.v1;
 
+import java.util.function.Function;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.debug.EventTestingImpl;
-
-import java.util.function.Function;
 
 /**
  * Represents a wrapper around a short-lived {@link Event}.
@@ -38,18 +39,20 @@ public interface EventScope extends AutoCloseable {
 	/**
 	 * @param event The {@link Event} that should get registered
 	 * @param listener The corresponding listener
-	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase {@link Event#DEFAULT_PHASE}
 	 * @param <T> is the type parameter for the event's listener
+	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase {@link Event#DEFAULT_PHASE}
 	 */
 	static <T> EventScope registerScoped(Event<T> event, T listener) {
 		return registerScoped(event, Event.DEFAULT_PHASE, listener);
 	}
+
 	/**
 	 * @param event The {@link Event} that should get registered
-	 * @param phase The event phase, see {@link net.fabricmc.fabric.api.event.EventFactory#createWithPhases(Class, Function, Identifier...)} for details
+	 * @param phase The {@linkplain EventFactory#createWithPhases(Class, Function, Identifier...) event phase}
 	 * @param listener The corresponding listener
-	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase
 	 * @param <T> is the type parameter for the event's listener
+	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase
+	 * @see EventFactory#createWithPhases(Class, Function, Identifier...)
 	 */
 	static <T> EventScope registerScoped(Event<T> event, Identifier phase, T listener) {
 		return EventTestingImpl.registerScoped(event, phase, listener);
