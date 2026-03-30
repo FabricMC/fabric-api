@@ -8,8 +8,7 @@
   "depends": {
     "fabric-entity-events-v1": "*",
     "fabric-command-api-v2": "*",
-    "fabric-registry-sync-v0": "*",
-    "fabric-dev-debug-api-v1": "*"
+    "fabric-registry-sync-v0": "*"
   },
   "entrypoints": {
     "main": [

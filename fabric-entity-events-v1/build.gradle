@@ -10,6 +10,5 @@ testDependencies(project, [
 	':fabric-command-api-v2',
 	':fabric-networking-api-v1',
 	':fabric-registry-sync-v0',
-	':fabric-rendering-v1',
-	':fabric-dev-debug-api-v1'
+	':fabric-rendering-v1'
 ])
