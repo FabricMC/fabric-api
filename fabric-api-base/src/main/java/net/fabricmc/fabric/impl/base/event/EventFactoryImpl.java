@@ -33,6 +33,7 @@ import com.google.common.collect.MapMaker;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.test.TestableEventFactoryImpl;
 
 public class EventFactoryImpl {
 	public static final EventFactoryImpl INSTANCE = ServiceLoader.load(EventFactoryImpl.class).findFirst().orElseGet(EventFactoryImpl::new);
@@ -42,7 +43,7 @@ public class EventFactoryImpl {
 	protected EventFactoryImpl() {
 		Class<?> thisClass = getClass();
 
-		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals("net.fabricmc.fabric.impl.test.TestableEventFactoryImpl")) {
+		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals(TestableEventFactoryImpl.class.getName())) {
 			throw new IllegalStateException("You are not allowed to create a custom EventFactoryImpl!");
 		}
 	}
