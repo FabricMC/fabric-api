@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.devdebug.v1;
+package net.fabricmc.fabric.api.debug.v1;
 
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.devdebug.v1.EventTestingImpl;
+import net.fabricmc.fabric.impl.debug.EventTestingImpl;
 
 /**
  * Represents a wrapper around a short-lived {@link Event}.

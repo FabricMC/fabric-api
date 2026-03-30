@@ -1,1 +1,1 @@
-net.fabricmc.fabric.impl.devdebug.v1.TestableEventFactoryImpl
+net.fabricmc.fabric.impl.debug.TestableEventFactoryImpl

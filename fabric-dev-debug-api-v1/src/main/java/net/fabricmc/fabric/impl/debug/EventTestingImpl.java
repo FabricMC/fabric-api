@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.devdebug.v1;
+package net.fabricmc.fabric.impl.debug;
 
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.devdebug.v1.EventScope;
+import net.fabricmc.fabric.api.debug.v1.EventScope;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.loader.api.FabricLoader;
 
