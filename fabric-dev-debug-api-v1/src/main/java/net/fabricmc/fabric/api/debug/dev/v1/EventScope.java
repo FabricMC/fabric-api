@@ -28,8 +28,8 @@ import net.fabricmc.fabric.impl.debug.dev.EventTestingImpl;
 
 /**
  * Represents a wrapper around a short-lived {@link Event}.
- * This class implements {@link AutoCloseable} and is intended to be used in a try-with-resources statement. When
- * closed, the Event will be unregistered.
+ * This class implements {@link AutoCloseable} and is intended to be used in a try-with-resources block.
+ * When closed, the event will be unregistered.
  */
 @ApiStatus.NonExtendable
 public interface EventScope extends AutoCloseable {
@@ -37,8 +37,8 @@ public interface EventScope extends AutoCloseable {
 	void close();
 
 	/**
-	 * @param event The {@link Event} that should get registered
-	 * @param listener The corresponding listener
+	 * @param event The {@link Event} to be registered in an {@link EventScope}
+	 * @param listener The event listener
 	 * @param <T> is the type parameter for the event's listener
 	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase {@link Event#DEFAULT_PHASE}
 	 */
@@ -47,9 +47,9 @@ public interface EventScope extends AutoCloseable {
 	}
 
 	/**
-	 * @param event The {@link Event} that should get registered
+	 * @param event The {@link Event} to be registered in an {@link EventScope}
 	 * @param phase The {@linkplain EventFactory#createWithPhases(Class, Function, Identifier...) event phase}
-	 * @param listener The corresponding listener
+	 * @param listener The event listener
 	 * @param <T> is the type parameter for the event's listener
 	 * @return a new {@link EventScope} instance holding the event, its listener and the event phase
 	 * @see EventFactory#createWithPhases(Class, Function, Identifier...)
