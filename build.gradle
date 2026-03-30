@@ -617,7 +617,8 @@ void setupRepositories(RepositoryHandler repositories) {
 // These modules are not included in the fat jar, maven will resolve them via the pom.
 def devOnlyModules = [
 	"fabric-client-gametest-api-v1",
-	"fabric-gametest-api-v1"
+	"fabric-gametest-api-v1",
+	"fabric-dev-debug-api-v1"
 ]
 
 dependencies {

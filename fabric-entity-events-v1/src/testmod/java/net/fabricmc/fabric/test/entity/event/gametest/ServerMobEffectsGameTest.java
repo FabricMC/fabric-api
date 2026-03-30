@@ -31,9 +31,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 
+import net.fabricmc.fabric.api.devdebug.v1.EventScope;
 import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.fabricmc.fabric.api.test.EventScope;
 
 public class ServerMobEffectsGameTest {
 	@GameTest
@@ -70,7 +70,7 @@ public class ServerMobEffectsGameTest {
 		};
 
 		try (EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.BEFORE_ADD, beforeAdd);
-					EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_ADD, afterAdd)) {
+				EventScope _ = EventScope.registerScoped(ServerMobEffectEvents.AFTER_ADD, afterAdd)) {
 			Salmon theSalmon = summonTheSalmon(context);
 			theSalmon.addEffect(createEffect(MobEffects.ABSORPTION));
 			context.succeed();
