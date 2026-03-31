@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.renderer.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
-import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
 public final class RendererClientTest implements ClientModInitializer {
@@ -31,12 +30,5 @@ public final class RendererClientTest implements ClientModInitializer {
 		CustomUnbakedBlockStateModel.register(RendererTest.id("biome_dependent"), BiomeDependentBlockStateModel.Unbaked.CODEC);
 		CustomUnbakedBlockStateModel.register(RendererTest.id("frame"), FrameBlockStateModel.Unbaked.CODEC);
 		CustomUnbakedBlockStateModel.register(RendererTest.id("pillar"), PillarBlockStateModel.Unbaked.CODEC);
-
-		try {
-			// if it crashes, that means the ordering is #*@!ed up.
-			Renderer.get(); // Ensure Renderer can be initialized as early as mod init
-		} catch (Exception e) {
-			throw new RuntimeException("Renderer failed to initialize", e);
-		}
 	}
 }

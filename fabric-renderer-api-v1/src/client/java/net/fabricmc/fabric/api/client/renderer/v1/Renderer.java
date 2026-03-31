@@ -65,6 +65,17 @@ public interface Renderer {
 	}
 
 	/**
+	 * Rendering extension mods must implement {@link Renderer} and
+	 * call this method during initialization.
+	 *
+	 * <p>Only one {@link Renderer} plug-in can be active in any game instance.
+	 * If a second mod attempts to register, this method will throw an UnsupportedOperationException.
+	 */
+	static void register(Renderer renderer) {
+		RendererManager.registerRenderer(renderer);
+	}
+
+	/**
 	 * Obtain a new {@link QuadEmitter} instance that invokes the given consumer on
 	 * {@link QuadEmitter#emit()}, after transforms are applied.
 	 *
