@@ -57,8 +57,7 @@ public interface Renderer {
 	 * and materials.
 	 *
 	 * <p><b>Warning:</b> do not call this method before {@link ModInitializer} has been invoked. Doing
-	 * so will likely crash. If you need to determine which renderer is chosen, use
-	 * {@link RendererProvider#getModId()}.
+	 * so will likely crash.
 	 */
 	static Renderer get() {
 		return RendererManager.getRenderer();
