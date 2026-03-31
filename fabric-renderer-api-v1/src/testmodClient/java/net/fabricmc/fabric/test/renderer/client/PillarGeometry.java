@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import java.util.Objects;
+
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
@@ -37,14 +39,15 @@ public record PillarGeometry() implements UnbakedGeometry {
 	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.sprites()));
+		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.materials()));
 
-		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("pillar"), model);
+		Material.Baked material = baker.materials()
+				.get(Objects.requireNonNull(textures.getMaterial("pillar")), model);
 
 		for (Direction side : Direction.values()) {
-			emitter.square(side, 0, 0, 1, 1, 0);
-			emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-			emitter.emit();
+			emitter.square(side, 0, 0, 1, 1, 0)
+					.materialBake(material, MutableQuadView.BAKE_LOCK_UV)
+					.emit();
 		}
 
 		return new MeshQuadCollection(builder.immutableCopy());

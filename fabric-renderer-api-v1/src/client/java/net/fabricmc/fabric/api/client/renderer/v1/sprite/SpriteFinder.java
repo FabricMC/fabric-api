@@ -20,12 +20,13 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
@@ -41,7 +42,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModel;
  * finding the sprite for use in {@link QuadView#toBakedQuad(TextureAtlasSprite)}.
  *
  * <p>A sprite finder can be retrieved from various vanilla objects. Always use
- * {@link FabricSpriteGetter#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
+ * {@link FabricMaterialBaker#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
  * whenever an applicable instance is available. For example, model baking is supplied with a
  * {@link SpriteGetter}, so it should be used to retrieve the sprite finder. In most other cases, it is
  * safe to use {@link FabricTextureAtlas#spriteFinder()}.
@@ -63,7 +64,7 @@ public interface SpriteFinder {
 	 * Alternative to {@link #find(QuadView)} when vertex centroid is already
 	 * known or unsuitable.  Expects normalized (0-1) coordinates on the atlas texture,
 	 * which should already be the case for u,v values in vanilla baked quads and in
-	 * {@link QuadView} after calling {@link MutableQuadView#spriteBake(TextureAtlasSprite, int)}.
+	 * {@link QuadView} after calling {@link MutableQuadView#materialBake(Material.Baked, int)}.
 	 *
 	 * <p>Coordinates must be in the sprite interior for reliable results. Generally will
 	 * be easier to use {@link #find(QuadView)} unless you know the vertex

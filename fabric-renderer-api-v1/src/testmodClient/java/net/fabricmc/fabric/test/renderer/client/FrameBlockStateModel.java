@@ -24,15 +24,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -40,6 +41,8 @@ import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 
+// TODO: the inner model will not be tinted. we should add a better solution than applying the tint
+//  manually in the model.
 public class FrameBlockStateModel implements BlockStateModel {
 	private final BlockStateModel frameModel;
 
@@ -59,7 +62,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
-		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
+		BlockStateModel innerModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(innerState);
 
 		// Now, we emit a transparent scaled-down version of the inner model
 
@@ -110,7 +113,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
-		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
+		BlockStateModel innerModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(innerState);
 		Object subkey = innerModel.createGeometryKey(level, pos, state, random);
 
 		if (subkey == null) {
@@ -124,25 +127,49 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
+		if (!(((FabricBlockGetter) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+			return frameModel.particleMaterial(level, pos, state); // No inner block to render, or data of wrong type
+		}
+
+		BlockState innerState = mimickedBlock.defaultBlockState();
+		BlockStateModel innerModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(innerState);
+		return innerModel.particleMaterial(level, pos, state);
+	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		@BakedQuad.MaterialFlags int flags = frameModel.materialFlags(level, pos, state, random);
+
+		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
+		if (!(((FabricBlockGetter) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+			return flags; // No inner block to render, or data of wrong type
+		}
+
+		BlockState innerState = mimickedBlock.defaultBlockState();
+		BlockStateModel innerModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(innerState);
+		flags |= BakedQuad.FLAG_TRANSLUCENT;
+		flags |= innerModel.materialFlags(level, pos, state, random);
+		return flags;
+	}
+
+	@Override
+	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 		// Renderer API makes this obsolete, so don't add any parts
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon() {
-		return frameModel.particleIcon();
+	public Material.Baked particleMaterial() {
+		return frameModel.particleMaterial();
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
-		if (!(((FabricBlockGetter) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
-			return frameModel.particleIcon(level, pos, state); // No inner block to render, or data of wrong type
-		}
-
-		BlockState innerState = mimickedBlock.defaultBlockState();
-		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
-		return innerModel.particleIcon(level, pos, state);
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		// This model can render any submodel, which may be translucent and animated, so this model
+		// must report that it is also translucent and animated in the general case.
+		return BakedQuad.FLAG_ANIMATED | BakedQuad.FLAG_TRANSLUCENT;
 	}
 
 	public record Unbaked(BlockStateModel.Unbaked frameModel) implements CustomUnbakedBlockStateModel {

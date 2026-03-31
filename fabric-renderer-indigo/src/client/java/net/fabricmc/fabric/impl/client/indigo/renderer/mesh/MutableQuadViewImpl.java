@@ -32,9 +32,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 
@@ -57,7 +58,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
  * numbers. It also allows for a consistent interface for those transformations.
  */
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
-	private static final QuadTransform NO_TRANSFORM = q -> true;
+	private static final QuadTransform NO_TRANSFORM = _ -> true;
 
 	private static final int[] DEFAULT_QUAD_DATA = new int[EncodingFormat.TOTAL_STRIDE];
 
@@ -74,7 +75,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		// Apply non-zero defaults
 		quad.color(-1, -1, -1, -1);
 		quad.cullFace(null);
-		quad.chunkLayer(null);
+		quad.chunkLayer(ChunkSectionLayer.CUTOUT);
+		quad.itemRenderType(ItemRenderType.DEFAULT.renderType);
 		quad.diffuseShade(true);
 		quad.ambientOcclusion(TriState.DEFAULT);
 		quad.foilType(null);
@@ -95,12 +97,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return true;
 	};
 
-	public final void clear() {
-		System.arraycopy(DEFAULT_QUAD_DATA, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
-		isGeometryInvalid = true;
-		nominalFace = null;
-	}
-
 	@Override
 	public final MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
 		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
@@ -108,6 +104,22 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		data[index + 1] = Float.floatToRawIntBits(y);
 		data[index + 2] = Float.floatToRawIntBits(z);
 		isGeometryInvalid = true;
+		return this;
+	}
+
+	// Much more efficient than default impl as it does not invalidate geometry
+	// FIXME FRAPI 26.1: some geometry flags should be invalidated, but partial invalidation might
+	//  add too much complexity. in all existing code, geometry is never queried after calling this
+	//  method, so the default implementation may be sufficient.
+	@Override
+	public final MutableQuadViewImpl translate(float x, float y, float z) {
+		for (int i = 0; i < 4; i++) {
+			final int index = baseIndex + i * VERTEX_STRIDE + VERTEX_X;
+			data[index] = Float.floatToRawIntBits(Float.intBitsToFloat(data[index]) + x);
+			data[index + 1] = Float.floatToRawIntBits(Float.intBitsToFloat(data[index + 1]) + y);
+			data[index + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(data[index + 2]) + z);
+		}
+
 		return this;
 	}
 
@@ -175,10 +187,19 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl chunkLayer(@Nullable ChunkSectionLayer layer) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS],
-				layer
-		);
+	public MutableQuadViewImpl chunkLayer(ChunkSectionLayer layer) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS], layer);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl itemRenderType(RenderType renderType) {
+		ItemRenderType enumValue = ItemRenderType.RENDER_TYPE_2_ENUM.get(renderType);
+
+		if (enumValue != null) {
+			data[baseIndex + HEADER_BITS] = EncodingFormat.itemRenderType(data[baseIndex + HEADER_BITS], enumValue);
+		}
+
 		return this;
 	}
 
@@ -217,6 +238,12 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
+	public MutableQuadViewImpl animated(boolean animated) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.animated(data[baseIndex + HEADER_BITS], animated);
+		return this;
+	}
+
+	@Override
 	public MutableQuadViewImpl atlas(QuadAtlas quadAtlas) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS], quadAtlas);
 		return this;
@@ -250,6 +277,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
+		BakedQuad.MaterialInfo materialInfo = quad.materialInfo();
+
 		pos(0, quad.position0());
 		pos(1, quad.position1());
 		pos(2, quad.position2());
@@ -266,23 +295,35 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		uv(2, UVPair.unpackU(packedUV2), UVPair.unpackV(packedUV2));
 		uv(3, UVPair.unpackU(packedUV3), UVPair.unpackV(packedUV3));
 
-		int lightEmission = quad.lightEmission();
+		int lightEmission = materialInfo.lightEmission();
 		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
 		lightmap(lightmap, lightmap, lightmap, lightmap);
 
 		normalFlags(0);
 
 		nominalFace(quad.direction());
-		emissive(lightEmission == 15);
-		diffuseShade(quad.shade());
-		QuadAtlas atlas = QuadAtlas.of(quad.sprite().atlasLocation());
+
+		QuadAtlas atlas = QuadAtlas.ofLocation(materialInfo.sprite().atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;
 		}
 
 		atlas(atlas);
-		tintIndex(quad.tintIndex());
+		animated(materialInfo.sprite().contents().isAnimated());
+		chunkLayer(materialInfo.layer());
+		itemRenderType(materialInfo.itemRenderType());
+		tintIndex(materialInfo.tintIndex());
+		diffuseShade(materialInfo.shade());
+		emissive(lightEmission == 15);
+		return this;
+	}
+
+	@Override
+	public final MutableQuadViewImpl clear() {
+		System.arraycopy(DEFAULT_QUAD_DATA, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
+		isGeometryInvalid = true;
+		nominalFace = null;
 		return this;
 	}
 

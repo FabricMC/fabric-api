@@ -19,29 +19,32 @@ package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 
 /**
  * An atlas texture that a {@link QuadView} uses.
  */
 public enum QuadAtlas {
-	BLOCK(TextureAtlas.LOCATION_BLOCKS),
-	ITEM(TextureAtlas.LOCATION_ITEMS);
+	BLOCK(TextureAtlas.LOCATION_BLOCKS, AtlasIds.BLOCKS),
+	ITEM(TextureAtlas.LOCATION_ITEMS, AtlasIds.ITEMS);
 
-	private final Identifier textureId;
+	private final Identifier textureLocation;
+	private final Identifier id;
 
-	QuadAtlas(Identifier textureId) {
-		this.textureId = textureId;
+	QuadAtlas(Identifier textureLocation, Identifier id) {
+		this.textureLocation = textureLocation;
+		this.id = id;
 	}
 
 	/**
-	 * {@return the quad atlas for the given atlas texture ID or null if no corresponding quad atlas exists}
+	 * {@return the quad atlas for the given atlas texture location or null if no corresponding quad atlas exists}
 	 */
 	@Nullable
-	public static QuadAtlas of(Identifier atlasTextureId) {
-		if (atlasTextureId.equals(TextureAtlas.LOCATION_BLOCKS)) {
+	public static QuadAtlas ofLocation(Identifier atlasTextureLocation) {
+		if (atlasTextureLocation.equals(TextureAtlas.LOCATION_BLOCKS)) {
 			return BLOCK;
-		} else if (atlasTextureId.equals(TextureAtlas.LOCATION_ITEMS)) {
+		} else if (atlasTextureLocation.equals(TextureAtlas.LOCATION_ITEMS)) {
 			return ITEM;
 		} else {
 			return null;
@@ -49,9 +52,30 @@ public enum QuadAtlas {
 	}
 
 	/**
-	 * {@return the atlas texture ID}
+	 * {@return the quad atlas for the given atlas ID or null if no corresponding quad atlas exists}
 	 */
-	public Identifier getTextureId() {
-		return textureId;
+	@Nullable
+	public static QuadAtlas ofId(Identifier atlasId) {
+		if (atlasId.equals(AtlasIds.BLOCKS)) {
+			return BLOCK;
+		} else if (atlasId.equals(AtlasIds.ITEMS)) {
+			return ITEM;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * @return the atlas texture location (ends with {@code .png})
+	 */
+	public Identifier getTextureLocation() {
+		return textureLocation;
+	}
+
+	/**
+	 * @return the atlas ID
+	 */
+	public Identifier getId() {
+		return id;
 	}
 }

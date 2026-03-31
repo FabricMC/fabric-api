@@ -20,17 +20,17 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.resources.model.MissingBlockModel;
+import net.minecraft.client.resources.model.cuboid.MissingCuboidModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.CrossCollisionBlock;
@@ -101,7 +101,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			BlockState westOakFence = Blocks.OAK_FENCE.defaultBlockState().setValue(CrossCollisionBlock.WEST, true);
 			pluginContext.modifyBlockModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
 				if (context.state() == westOakFence) {
-					return simpleUnbakedGroupedBlockStateModel(MissingBlockModel.LOCATION);
+					return simpleUnbakedGroupedBlockStateModel(MissingCuboidModel.LOCATION);
 				}
 
 				return model;

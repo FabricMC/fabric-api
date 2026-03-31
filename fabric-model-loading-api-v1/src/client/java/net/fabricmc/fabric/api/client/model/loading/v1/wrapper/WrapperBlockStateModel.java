@@ -21,13 +21,14 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
@@ -47,18 +48,23 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
+	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 		wrapped.collectParts(random, parts);
 	}
 
 	@Override
-	public List<BlockModelPart> collectParts(RandomSource random) {
-		return wrapped.collectParts(random);
+	public Material.Baked particleMaterial() {
+		return wrapped.particleMaterial();
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon() {
-		return wrapped.particleIcon();
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		return wrapped.materialFlags();
+	}
+
+	@Override
+	public boolean hasMaterialFlag(@BakedQuad.MaterialFlags int flag) {
+		return wrapped.hasMaterialFlag(flag);
 	}
 
 	@Override
@@ -73,7 +79,7 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		return wrapped.particleIcon(level, pos, state);
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return wrapped.particleMaterial(level, pos, state);
 	}
 }

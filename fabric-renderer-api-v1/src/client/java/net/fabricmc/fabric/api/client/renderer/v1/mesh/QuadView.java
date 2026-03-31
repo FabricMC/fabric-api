@@ -16,16 +16,20 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 
@@ -155,10 +159,19 @@ public interface QuadView {
 	Direction cullFace();
 
 	/**
+	 * @see MutableQuadView#atlas(QuadAtlas)
+	 */
+	QuadAtlas atlas();
+
+	/**
 	 * @see MutableQuadView#chunkLayer(ChunkSectionLayer)
 	 */
-	@Nullable
 	ChunkSectionLayer chunkLayer();
+
+	/**
+	 * @see MutableQuadView#itemRenderType(RenderType)
+	 */
+	RenderType itemRenderType();
 
 	/**
 	 * @see MutableQuadView#emissive(boolean)
@@ -166,7 +179,7 @@ public interface QuadView {
 	boolean emissive();
 
 	/**
-	 * This method is equivalent to {@link BakedQuad#shade()}.
+	 * This method is equivalent to {@link BakedQuad.MaterialInfo#shade()}.
 	 *
 	 * @see MutableQuadView#diffuseShade(boolean)
 	 */
@@ -188,12 +201,12 @@ public interface QuadView {
 	ShadeMode shadeMode();
 
 	/**
-	 * @see MutableQuadView#atlas(QuadAtlas)
+	 * @see MutableQuadView#animated(boolean)
 	 */
-	QuadAtlas atlas();
+	boolean animated();
 
 	/**
-	 * This method is equivalent to {@link BakedQuad#tintIndex()}.
+	 * This method is equivalent to {@link BakedQuad.MaterialInfo#tintIndex()}.
 	 *
 	 * @see MutableQuadView#tintIndex(int)
 	 */
@@ -210,7 +223,7 @@ public interface QuadView {
 	 * @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
 	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
-	default BakedQuad toBakedQuad(BakedQuad.SpriteInfo sprite) {
+	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
 		Vector3f position0 = copyPos(0, null);
 		Vector3f position1 = copyPos(1, null);
 		Vector3f position2 = copyPos(2, null);
@@ -239,6 +252,8 @@ public interface QuadView {
 			}
 		}
 
+		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), tintIndex(), diffuseShade(), lightEmission);
+
 		return new BakedQuad(
 				position0,
 				position1,
@@ -248,11 +263,38 @@ public interface QuadView {
 				packedUV1,
 				packedUV2,
 				packedUV3,
-				tintIndex(),
 				lightFace(),
-				sprite,
-				diffuseShade(),
-				lightEmission
+				materialInfo
 		);
 	}
+
+	/**
+	 * Buffers this quad's vertex data into the given {@link VertexConsumer} without any additional
+	 * transformations. The given overlay value will be applied to all output vertices as
+	 * {@link QuadView}s don't store overlay values.
+	 *
+	 * <p>Unlike
+	 * {@link VertexConsumer#putBlockBakedQuad(float, float, float, BakedQuad, QuadInstance)},
+	 * output vertex normals are based on the {@linkplain #faceNormal() exact face normal} or set
+	 * vertex normals instead of the {@linkplain #lightFace() quantized face normal}.
+	 *
+	 * @param overlayCoords the overlay value to use for all output vertices
+	 * @param vertexConsumer the vertex consumer to output to
+	 */
+	void buffer(int overlayCoords, VertexConsumer vertexConsumer);
+
+	/**
+	 * Buffers this quad's vertex data into the given {@link VertexConsumer} with an additional
+	 * transformation. The given overlay value will be applied to all output vertices as
+	 * {@link QuadView}s don't store overlay values.
+	 *
+	 * <p>Unlike {@link VertexConsumer#putBakedQuad(PoseStack.Pose, BakedQuad, QuadInstance)},
+	 * output vertex normals are based on the {@linkplain #faceNormal() exact face normal} or set
+	 * vertex normals instead of the {@linkplain #lightFace() quantized face normal}.
+	 *
+	 * @param overlayCoords the overlay value to use for all output vertices
+	 * @param pose the transformation to apply to output vertices
+	 * @param vertexConsumer the vertex consumer to output to
+	 */
+	void buffer(int overlayCoords, PoseStack.Pose pose, VertexConsumer vertexConsumer);
 }

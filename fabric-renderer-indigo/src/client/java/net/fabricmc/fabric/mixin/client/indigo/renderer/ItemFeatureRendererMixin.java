@@ -16,10 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,108 +26,34 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessSubmitNodeCollection;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.AltItemRenderer;
 
 @Mixin(ItemFeatureRenderer.class)
 abstract class ItemFeatureRendererMixin {
-	@Shadow
-	@Final
-	private PoseStack poseStack;
-
 	@Unique
-	private final ItemRenderContext itemRenderContext = new ItemRenderContext();
+	private final AltItemRenderer altItemRenderer = new AltItemRenderer();
 
 	@Inject(method = "renderSolid", at = @At("RETURN"))
 	private void onReturnRenderSolid(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
-		for (MeshItemSubmit submit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
-			poseStack.pushPose();
-			poseStack.last().set(submit.pose());
+		altItemRenderer.prepare(bufferSource, outlineBufferSource, false);
 
-			itemRenderContext.renderItem(
-					submit.displayContext(),
-					poseStack,
-					bufferSource,
-					submit.lightCoords(),
-					submit.overlayCoords(),
-					submit.tintLayers(),
-					submit.quads(),
-					submit.mesh(),
-					submit.renderType(),
-					submit.renderTypeGetter(),
-					submit.foilType(),
-					false,
-					false
-			);
-
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				itemRenderContext.renderItem(
-						submit.displayContext(),
-						poseStack,
-						outlineBufferSource,
-						submit.lightCoords(),
-						submit.overlayCoords(),
-						submit.tintLayers(),
-						submit.quads(),
-						submit.mesh(),
-						submit.renderType(),
-						submit.renderTypeGetter(),
-						ItemStackRenderState.FoilType.NONE,
-						true,
-						false
-				);
-			}
-
-			poseStack.popPose();
+		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : nodeCollection.getExtendedItemSubmits()) {
+			altItemRenderer.renderItem(submit);
 		}
+
+		altItemRenderer.clear();
 	}
 
 	@Inject(method = "renderTranslucent", at = @At("RETURN"))
 	private void onReturnRenderTranslucent(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
-		for (MeshItemSubmit submit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
-			poseStack.pushPose();
-			poseStack.last().set(submit.pose());
+		altItemRenderer.prepare(bufferSource, outlineBufferSource, true);
 
-			itemRenderContext.renderItem(
-					submit.displayContext(),
-					poseStack,
-					bufferSource,
-					submit.lightCoords(),
-					submit.overlayCoords(),
-					submit.tintLayers(),
-					submit.quads(),
-					submit.mesh(),
-					submit.renderType(),
-					submit.renderTypeGetter(),
-					submit.foilType(),
-					false,
-					true
-			);
-
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				itemRenderContext.renderItem(
-						submit.displayContext(),
-						poseStack,
-						outlineBufferSource,
-						submit.lightCoords(),
-						submit.overlayCoords(),
-						submit.tintLayers(),
-						submit.quads(),
-						submit.mesh(),
-						submit.renderType(),
-						submit.renderTypeGetter(),
-						ItemStackRenderState.FoilType.NONE,
-						true,
-						true
-				);
-			}
-
-			poseStack.popPose();
+		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : nodeCollection.getExtendedItemSubmits()) {
+			altItemRenderer.renderItem(submit);
 		}
+
+		altItemRenderer.clear();
 	}
 }

@@ -24,13 +24,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockElement;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.SimpleUnbakedGeometry;
-import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.cuboid.CuboidModel;
+import net.minecraft.client.resources.model.cuboid.CuboidModelElement;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
+import net.minecraft.client.resources.model.cuboid.UnbakedCuboidGeometry;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
@@ -58,20 +58,20 @@ public class SimpleUnbakedModelDeserializer implements UnbakedModelDeserializer 
 
 		TextureSlots.Data textureMap = getTextureMap(object);
 		Identifier parentLocation = getParentLocation(object);
-		return new BlockModel(elements, guiLight, hasAmbientOcclusion, transforms, textureMap, parentLocation);
+		return new CuboidModel(elements, guiLight, hasAmbientOcclusion, transforms, textureMap, parentLocation);
 	}
 
 	protected @Nullable UnbakedGeometry getElements(final JsonDeserializationContext context, final JsonObject object) {
 		if (!object.has("elements")) {
 			return null;
 		} else {
-			List<BlockElement> elements = new ArrayList<>();
+			List<CuboidModelElement> elements = new ArrayList<>();
 
 			for (JsonElement element : GsonHelper.getAsJsonArray(object, "elements")) {
-				elements.add(context.deserialize(element, BlockElement.class));
+				elements.add(context.deserialize(element, CuboidModelElement.class));
 			}
 
-			return new SimpleUnbakedGeometry(elements);
+			return new UnbakedCuboidGeometry(elements);
 		}
 	}
 

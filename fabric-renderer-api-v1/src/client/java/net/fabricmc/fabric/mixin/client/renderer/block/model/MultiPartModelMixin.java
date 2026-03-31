@@ -25,13 +25,14 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.multipart.MultiPartModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.multipart.MultiPartModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
@@ -101,8 +102,26 @@ abstract class MultiPartModelMixin implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		return ((MultiPartModelSharedBakedStateAccessor) (Object) shared).getSelectors().getFirst().model().particleIcon(
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return ((MultiPartModelSharedBakedStateAccessor) (Object) shared).getSelectors().getFirst().model().particleMaterial(
 				level, pos, state);
+	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		if (models == null) {
+			models = shared.selectModels(this.blockState);
+		}
+
+		long seed = random.nextLong();
+		@BakedQuad.MaterialFlags int flags = 0;
+
+		for (BlockStateModel model : models) {
+			random.setSeed(seed);
+			flags |= model.materialFlags(level, pos, state, random);
+		}
+
+		return flags;
 	}
 }

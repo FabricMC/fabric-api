@@ -32,10 +32,10 @@ import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.resources.model.WeightedVariants;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.renderer.block.dispatch.Variant;
+import net.minecraft.client.renderer.block.dispatch.WeightedVariants;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.random.Weighted;
@@ -63,7 +63,7 @@ public class CustomUnbakedBlockStateModelRegistry {
 					ExtraCodecs.POSITIVE_INT.optionalFieldOf("weight", 1).forGetter(Weighted::weight)
 			).apply(instance, Weighted::new)
 	);
-	/** Extended codec for a vanilla weighted model that supports using custom models instead of regular variants. Replaces {@link BlockStateModel.Unbaked#WEIGHTED_CODEC}. */
+	/** Extended codec for a vanilla weighted model that supports using custom models instead of regular variants. Replaces {@link BlockStateModel.Unbaked#HARDCODED_WEIGHTED_CODEC}. */
 	public static final Codec<WeightedVariants.Unbaked> WEIGHTED_MODEL_CODEC = ExtraCodecs.nonEmptyList(WEIGHTED_VARIANT_CODEC.listOf())
 			.flatComapMap(
 					weightedVariants -> new WeightedVariants.Unbaked(WeightedList.of(Lists.transform(weightedVariants, weighted -> weighted.map(either -> either.map(Function.identity(), Function.identity()))))),

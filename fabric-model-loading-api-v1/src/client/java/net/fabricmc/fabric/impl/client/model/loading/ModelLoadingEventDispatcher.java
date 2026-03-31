@@ -26,11 +26,12 @@ import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -154,10 +155,10 @@ public class ModelLoadingEventDispatcher {
 		return pluginContext.modifyBlockModelAfterBake().invoker().modifyModelAfterBake(model, modifierContext);
 	}
 
-	public ItemModel modifyItemModel(ItemModel.Unbaked unbakedModel, Identifier itemId, ItemModel.BakingContext bakeContext, Operation<ItemModel> bakeOperation) {
-		BakeItemModifierContext modifierContext = new BakeItemModifierContext(itemId, bakeContext);
+	public ItemModel modifyItemModel(ItemModel.Unbaked unbakedModel, Identifier itemId, ItemModel.BakingContext bakeContext, Matrix4fc transformation, Operation<ItemModel> bakeOperation) {
+		BakeItemModifierContext modifierContext = new BakeItemModifierContext(itemId, bakeContext, transformation);
 		unbakedModel = pluginContext.modifyItemModelBeforeBake().invoker().modifyModelBeforeBake(unbakedModel, modifierContext);
-		ItemModel model = bakeOperation.call(unbakedModel, bakeContext);
+		ItemModel model = bakeOperation.call(unbakedModel, bakeContext, transformation);
 		modifierContext.prepareAfterBake(unbakedModel);
 		return pluginContext.modifyItemModelAfterBake().invoker().modifyModelAfterBake(model, modifierContext);
 	}
@@ -250,11 +251,13 @@ public class ModelLoadingEventDispatcher {
 	private static class BakeItemModifierContext implements ModelModifier.BeforeBakeItem.Context, ModelModifier.AfterBakeItem.Context {
 		private final Identifier itemId;
 		private final ItemModel.BakingContext bakeContext;
+		private final Matrix4fc transformation;
 		private ItemModel.Unbaked sourceModel;
 
-		private BakeItemModifierContext(Identifier itemId, ItemModel.BakingContext bakeContext) {
+		private BakeItemModifierContext(Identifier itemId, ItemModel.BakingContext bakeContext, Matrix4fc transformation) {
 			this.itemId = itemId;
 			this.bakeContext = bakeContext;
+			this.transformation = transformation;
 		}
 
 		private void prepareAfterBake(ItemModel.Unbaked sourceModel) {
@@ -269,6 +272,11 @@ public class ModelLoadingEventDispatcher {
 		@Override
 		public ItemModel.BakingContext bakingContext() {
 			return bakeContext;
+		}
+
+		@Override
+		public Matrix4fc transformation() {
+			return transformation;
 		}
 
 		@Override

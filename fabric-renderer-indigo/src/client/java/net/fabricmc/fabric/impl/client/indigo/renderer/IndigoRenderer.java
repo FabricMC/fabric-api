@@ -16,34 +16,19 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer;
 
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import org.jspecify.annotations.Nullable;
-
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.color.block.BlockColors;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
+import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainLikeRenderContext;
-import net.fabricmc.fabric.mixin.client.indigo.renderer.BlockRenderDispatcherAccessor;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.AltModelBlockRendererImpl;
 
 /**
  * The Fabric default renderer implementation. Supports all features defined in the API.
@@ -63,49 +48,27 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
+	public QuadEmitter quadEmitter(Consumer<? super MutableQuadView> consumer) {
+		return new MutableQuadViewImpl() {
+			{
+				data = new int[EncodingFormat.TOTAL_STRIDE];
+				clear();
+			}
+
+			@Override
+			protected void emitDirectly() {
+				consumer.accept(this);
+			}
+		};
+	}
+
+	@Override
 	public MutableMesh mutableMesh() {
 		return new MutableMeshImpl();
 	}
 
 	@Override
-	public void tesselateBlock(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, boolean cull, long seed, int overlay) {
-		TerrainLikeRenderContext.POOL.get().bufferModel(
-				level, model, state, pos, poseStack, bufferSource, layerFilter, cull, seed, overlay);
-	}
-
-	@Override
-	public void renderModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		SimpleBlockRenderContext.POOL.get().bufferModel(
-				pose, bufferSource, layerFilter, model, red, green, blue, light, overlay, level, pos, state);
-	}
-
-	@Override
-	public void renderSingleBlock(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, @Nullable Predicate<ChunkSectionLayer> layerFilter, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
-		RenderShape renderShape = state.getRenderShape();
-
-		if (renderShape != RenderShape.INVISIBLE) {
-			BlockStateModel model = renderDispatcher.getBlockModel(state);
-			int tint = ((BlockRenderDispatcherAccessor) renderDispatcher).getBlockColors().getColor(state, null, null, 0);
-			float red = (tint >> 16 & 255) / 255.0F;
-			float green = (tint >> 8 & 255) / 255.0F;
-			float blue = (tint & 255) / 255.0F;
-			FabricModelBlockRenderer.renderModel(
-					poseStack.last(), ChunkSectionLayerHelper.entityDelegate(
-							bufferSource), layerFilter, model, red, green, blue, light, overlay,
-					level, pos, state);
-		}
-	}
-
-	@Override
-	public QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer) {
-		return ((AccessLayerRenderState) layer).fabric_getMutableMesh().emitter();
-	}
-
-	@Override
-	public void setLayerRenderTypeGetter(
-			ItemStackRenderState.LayerRenderState layer,
-			ItemRenderTypeGetter renderTypeGetter
-	) {
-		((AccessLayerRenderState) layer).fabric_setRenderTypeGetter(renderTypeGetter);
+	public AltModelBlockRenderer altModelBlockRenderer(boolean ambientOcclusion, boolean cull, BlockColors blockColors) {
+		return new AltModelBlockRendererImpl(ambientOcclusion, cull, blockColors);
 	}
 }

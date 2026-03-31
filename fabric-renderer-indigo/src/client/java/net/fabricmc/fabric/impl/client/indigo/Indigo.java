@@ -28,6 +28,8 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,6 +47,9 @@ public class Indigo {
 	static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
 	/** If set the default config file will be generated on startup, restoring pre 26.1 behavior. */
 	private static final boolean GENERATE_CONFIG_FILE = System.getProperty("fabric.indigo.generateConfigFile") != null;
+
+	// A hack for Mixins, check usages
+	public static final ScopedValue<MultiBufferSource> LEVEL_RENDERER_BUFFER_SOURCE = ScopedValue.newInstance();
 
 	private static boolean asBoolean(@Nullable String property, boolean defValue) {
 		return asTriState(property).orElse(defValue);
@@ -90,12 +95,12 @@ public class Indigo {
 			}
 		}
 
-		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", (_) -> "hybrid"), AoConfig.HYBRID);
-		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", (_) -> "auto"), false);
-		FIX_SMOOTH_LIGHTING_OFFSET = asBoolean((String) properties.computeIfAbsent("fix-smooth-lighting-offset", (_) -> "auto"), true);
-		boolean fixMeanLightCalculation = asBoolean((String) properties.computeIfAbsent("fix-mean-light-calculation", (_) -> "auto"), true);
-		FIX_EXTERIOR_VERTEX_LIGHTING = asBoolean((String) properties.computeIfAbsent("fix-exterior-vertex-lighting", (_) -> "auto"), true);
-		FIX_LUMINOUS_AO_SHADE = asBoolean((String) properties.computeIfAbsent("fix-luminous-block-ambient-occlusion", (_) -> "auto"), false);
+		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", _ -> "hybrid"), AoConfig.HYBRID);
+		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", _ -> "auto"), false);
+		FIX_SMOOTH_LIGHTING_OFFSET = asBoolean((String) properties.computeIfAbsent("fix-smooth-lighting-offset", _ -> "auto"), true);
+		boolean fixMeanLightCalculation = asBoolean((String) properties.computeIfAbsent("fix-mean-light-calculation", _ -> "auto"), true);
+		FIX_EXTERIOR_VERTEX_LIGHTING = asBoolean((String) properties.computeIfAbsent("fix-exterior-vertex-lighting", _ -> "auto"), true);
+		FIX_LUMINOUS_AO_SHADE = asBoolean((String) properties.computeIfAbsent("fix-luminous-block-ambient-occlusion", _ -> "auto"), false);
 
 		if (fixMeanLightCalculation && !FIX_SMOOTH_LIGHTING_OFFSET) {
 			fixMeanLightCalculation = false;

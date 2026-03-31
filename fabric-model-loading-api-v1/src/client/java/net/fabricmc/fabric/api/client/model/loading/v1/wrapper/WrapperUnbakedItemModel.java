@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
 import com.mojang.serialization.MapCodec;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.renderer.item.ItemModel;
 
@@ -45,7 +46,7 @@ public abstract class WrapperUnbakedItemModel implements ItemModel.Unbaked {
 	}
 
 	@Override
-	public ItemModel bake(ItemModel.BakingContext context) {
-		return wrapped.bake(context);
+	public ItemModel bake(ItemModel.BakingContext context, Matrix4fc transformation) {
+		return wrapped.bake(context, transformation);
 	}
 }

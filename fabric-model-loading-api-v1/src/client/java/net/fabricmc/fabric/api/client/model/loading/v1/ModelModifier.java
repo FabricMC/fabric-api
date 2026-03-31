@@ -17,8 +17,9 @@
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.joml.Matrix4fc;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
@@ -144,7 +145,7 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model. It can be used to
-			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
+			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#materials get materials}. Note
 			 * that retrieving a model which was not previously
 			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			 * model.
@@ -182,7 +183,7 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model. It can be used to
-			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#sprites get sprites}. Note
+			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#materials get materials}. Note
 			 * that retrieving a model which was not previously
 			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			 * model.
@@ -217,6 +218,11 @@ public final class ModelModifier {
 			 * The vanilla context being used to bake this model.
 			 */
 			ItemModel.BakingContext bakingContext();
+
+			/**
+			 * The transformation applied during baking of this model.
+			 */
+			Matrix4fc transformation();
 		}
 	}
 
@@ -251,6 +257,11 @@ public final class ModelModifier {
 			 * The vanilla context being used to bake this model.
 			 */
 			ItemModel.BakingContext bakingContext();
+
+			/**
+			 * The transformation applied during baking of this model.
+			 */
+			Matrix4fc transformation();
 		}
 	}
 

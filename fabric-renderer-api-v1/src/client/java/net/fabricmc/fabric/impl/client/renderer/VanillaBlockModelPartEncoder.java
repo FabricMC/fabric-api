@@ -21,8 +21,8 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
@@ -31,10 +31,10 @@ import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
- * Routines for adaptation of vanilla {@link BlockModelPart}s to FRAPI pipelines.
+ * Routines for adaptation of vanilla {@link BlockStateModelPart}s to FRAPI pipelines.
  */
 public class VanillaBlockModelPartEncoder {
-	public static void emitQuads(BlockModelPart part, QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
+	public static void emitQuads(BlockStateModelPart part, QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
 		// This does not exactly match vanilla, but doing so requires hiding state all over the FRAPI impl.
 		final TriState ao = part.useAmbientOcclusion() ? TriState.DEFAULT : TriState.FALSE;
 

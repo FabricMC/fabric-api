@@ -16,18 +16,20 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.particle;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.ScreenEffectRenderer;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,15 +40,15 @@ abstract class ScreenEffectRendererMixin {
 	@Nullable
 	private static BlockPos pos;
 
-	@Redirect(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getParticleIcon(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
-	private static TextureAtlasSprite getParticleIconProxy(BlockModelShaper models, BlockState state, @Local(name = "player") Player player) {
-		if (pos != null) {
-			TextureAtlasSprite sprite = models.getParticleIcon(state, player.level(), pos);
+	@WrapOperation(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockStateModelSet;getParticleMaterial(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/resources/model/sprite/Material$Baked;"))
+	private static Material.Baked getParticleMaterialProxy(BlockStateModelSet models, BlockState state, Operation<Material.Baked> original, @Local(name = "player") Player player) {
+		if (pos != null && player.level() instanceof BlockAndTintGetter level) {
+			Material.Baked material = models.getParticleMaterial(state, level, pos);
 			pos = null;
-			return sprite;
+			return material;
 		}
 
-		return models.getParticleIcon(state);
+		return original.call(models, state);
 	}
 
 	@Inject(method = "getViewBlockingState", at = @At("RETURN"))

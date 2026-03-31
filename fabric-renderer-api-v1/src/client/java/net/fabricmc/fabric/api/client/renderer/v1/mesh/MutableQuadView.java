@@ -16,24 +16,29 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.mesh;
 
+import com.mojang.blaze3d.platform.Transparency;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.Options;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ItemRenderTypeGetter;
+import net.fabricmc.fabric.api.client.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.client.renderer.v1.render.ExtraLightCoordsUtil;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.renderer.QuadSpriteBaker;
 
@@ -54,25 +59,25 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * When enabled, causes texture to appear with no rotation. This is the default and does not have to be specified
 	 * explicitly. Can be overridden by other rotation flags.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_NONE = 0;
 
 	/**
 	 * When enabled, causes texture to appear rotated 90 degrees clockwise.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_90 = 1;
 
 	/**
 	 * When enabled, causes texture to appear rotated 180 degrees.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_180 = 2;
 
 	/**
 	 * When enabled, causes texture to appear rotated 270 degrees clockwise.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_ROTATE_270 = 3;
 
@@ -80,7 +85,7 @@ public interface MutableQuadView extends QuadView {
 	 * When enabled, texture coordinates are assigned based on vertex positions and the
 	 * {@linkplain #nominalFace() nominal face}.
 	 * Any existing UV coordinates will be replaced and the {@link #BAKE_NORMALIZED} flag will be ignored.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 *
 	 * <p>UV lock derives texture coordinates based on {@linkplain #nominalFace() nominal face} by projecting the quad
 	 * onto it, even when the quad is not co-planar with it. This flag is ignored if the normal face is {@code null}.
@@ -93,7 +98,7 @@ public interface MutableQuadView extends QuadView {
 	 * and texture mapping scenarios. Results are different from what
 	 * can be obtained via rotation and both can be applied. Any
 	 * rotation is applied before this flag.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_FLIP_U = 8;
 
@@ -107,7 +112,7 @@ public interface MutableQuadView extends QuadView {
 	 * with conventional Minecraft model format. This is scaled to 0-1 during
 	 * baking before interpolation. Model loaders that already have 0-1 coordinates
 	 * can avoid wasteful multiplication/division by passing 0-1 coordinates directly.
-	 * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
+	 * Pass in bakeFlags parameter to {@link #materialBake(Material.Baked, int)}.
 	 */
 	int BAKE_NORMALIZED = 32;
 
@@ -139,6 +144,17 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
+	 * Translates the geometric positions of all vertices of this quad by the given offset.
+	 */
+	default MutableQuadView translate(float x, float y, float z) {
+		pos(0, x(0) + x, y(0) + y, z(0) + z);
+		pos(1, x(1) + x, y(1) + y, z(1) + z);
+		pos(2, x(2) + x, y(2) + y, z(2) + z);
+		pos(3, x(3) + x, y(3) + y, z(3) + z);
+		return this;
+	}
+
+	/**
 	 * Sets the color in ARGB format (0xAARRGGBB) for the given vertex.
 	 *
 	 * <p>The default value for all vertices is {@code 0xFFFFFFFF}.
@@ -155,6 +171,20 @@ public interface MutableQuadView extends QuadView {
 		color(1, c1);
 		color(2, c2);
 		color(3, c3);
+		return this;
+	}
+
+	/**
+	 * Multiplies all components of each of this quad's vertex colors by the given color in ARGB
+	 * format ({@code 0xAARRGGBB}).
+	 *
+	 * @param color the color in ARGB format ({@code 0xAARRGGBB}) to multiply by
+	 */
+	default MutableQuadView multiplyColor(int color) {
+		color(0, ARGB.multiply(color(0), color));
+		color(1, ARGB.multiply(color(1), color));
+		color(2, ARGB.multiply(color(2), color));
+		color(3, ARGB.multiply(color(3), color));
 		return this;
 	}
 
@@ -181,20 +211,58 @@ public interface MutableQuadView extends QuadView {
 		return uv(vertexIndex, uv.x(), uv.y());
 	}
 
+	default MutableQuadView uvUnitSquare() {
+		uv(0, 0, 0);
+		uv(1, 0, 1);
+		uv(2, 1, 1);
+		uv(3, 1, 0);
+		return this;
+	}
+
 	/**
-	 * Sets the texture coordinates for all vertices using the given sprite. Also sets this quad's atlas to the given
-	 * sprite's atlas. Can handle UV locking, rotation, interpolation, etc. Control this behavior by passing additive
-	 * combinations of the BAKE_ flags defined in this interface.
+	 * Sets the texture coordinates for all vertices using the given material's sprite, then invokes
+	 * {@link #postMaterialBake(Material.Baked)}. Can handle UV locking, rotation, interpolation,
+	 * etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in
+	 * this interface.
 	 */
-	default MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
-		QuadSpriteBaker.bakeSprite(this, sprite, bakeFlags);
-		QuadAtlas atlas = QuadAtlas.of(sprite.atlasLocation());
+	default MutableQuadView materialBake(Material.Baked material, int bakeFlags) {
+		QuadSpriteBaker.bakeSprite(this, material.sprite(), bakeFlags);
+		postMaterialBake(material);
+		return this;
+	}
+
+	/**
+	 * Sets this quad's {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #animated(boolean)},
+	 * {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer}, and
+	 * {@linkplain #itemRenderType(RenderType) item render type} to appropriate values based on the
+	 * given material and this quad's texture coordinates. Exposed separately from
+	 * {@link #materialBake(Material.Baked, int)} as mods frequently transform texture coordinates
+	 * in ways that are based on a material, but do not want to use
+	 * {@link #materialBake(Material.Baked, int)}; for example, interpolating sprites for connected
+	 * textures.
+	 */
+	default MutableQuadView postMaterialBake(Material.Baked material) {
+		QuadAtlas atlas = QuadAtlas.ofLocation(material.sprite().atlasLocation());
 
 		if (atlas == null) {
 			atlas = QuadAtlas.BLOCK;
 		}
 
 		atlas(atlas);
+		animated(material.sprite().contents().isAnimated());
+
+		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : ModelHelper.computeTransparency(material.sprite(), this);
+		ChunkSectionLayer layer = ChunkSectionLayer.byTransparency(transparency);
+		RenderType itemRenderType;
+
+		if (material.sprite().atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
+			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
+		} else {
+			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentItemSheet() : Sheets.cutoutItemSheet();
+		}
+
+		chunkLayer(layer);
+		itemRenderType(itemRenderType);
 		return this;
 	}
 
@@ -221,6 +289,20 @@ public interface MutableQuadView extends QuadView {
 		lightmap(1, l1);
 		lightmap(2, l2);
 		lightmap(3, l3);
+		return this;
+	}
+
+	/**
+	 * Sets the minimum lightmap value for the whole quad; in other words, sets each vertex's
+	 * lightmap value to the per-component maximum of its existing value and the given value.
+	 *
+	 * @param lightmap the minimum lightmap value
+	 */
+	default MutableQuadView minLightmap(int lightmap) {
+		lightmap(0, ExtraLightCoordsUtil.smoothMax(lightmap(0), lightmap));
+		lightmap(1, ExtraLightCoordsUtil.smoothMax(lightmap(1), lightmap));
+		lightmap(2, ExtraLightCoordsUtil.smoothMax(lightmap(2), lightmap));
+		lightmap(3, ExtraLightCoordsUtil.smoothMax(lightmap(3), lightmap));
 		return this;
 	}
 
@@ -252,7 +334,7 @@ public interface MutableQuadView extends QuadView {
 	 * but if set, should be the expected value of {@link #lightFace()}. It may be used to shortcut geometric analysis,
 	 * if the provided value was correct; otherwise, it is ignored.
 	 *
-	 * <p>The nominal face is also used for {@link #spriteBake(TextureAtlasSprite, int)} with {@link #BAKE_LOCK_UV}.
+	 * <p>The nominal face is also used for {@link #materialBake(Material.Baked, int)} with {@link #BAKE_LOCK_UV}.
 	 *
 	 * <p>When {@link #cullFace(Direction)} is called, it also sets the nominal face.
 	 *
@@ -278,17 +360,47 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView cullFace(@Nullable Direction face);
 
 	/**
-	 * Controls how this quad's pixels should be blended with the scene.
+	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad. This property is mainly used to retrieve this
+	 * quad's {@linkplain TextureAtlasSprite sprite} via the appropriate atlas' {@link SpriteFinder}.
 	 *
-	 * <p>If set to {@code null}, {@link ItemBlockRenderTypes#getChunkRenderType(BlockState)} will be used to retrieve
-	 * the {@linkplain ChunkSectionLayer chunk layer} in block contexts. Set to another value to override this behavior.
+	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}.
 	 *
-	 * <p>In block contexts, a non-null value will be used directly. In item contexts, any value will be converted to a
-	 * {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
+	 * <p>The default value is {@link QuadAtlas#BLOCK}.
 	 *
-	 * <p>The default value is {@code null}.
+	 * @see QuadAtlas
 	 */
-	MutableQuadView chunkLayer(@Nullable ChunkSectionLayer layer);
+	MutableQuadView atlas(QuadAtlas quadAtlas);
+
+	/**
+	 * Controls how this quad should be rendered after buffering in block contexts.
+	 *
+	 * <p>The default value is {@link ChunkSectionLayer#CUTOUT}.
+	 *
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
+	 */
+	MutableQuadView chunkLayer(ChunkSectionLayer layer);
+
+	// TODO FRAPI 26.1: allow using any RenderType
+
+	/**
+	 * Controls how this quad should be rendered after buffering in item contexts. The atlas texture used by the set
+	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
+	 *
+	 * <p>Only the following values are allowed:
+	 * <ul>
+	 *     <li>{@link Sheets#cutoutItemSheet()}
+	 *     <li>{@link Sheets#translucentItemSheet()}
+	 *     <li>{@link Sheets#cutoutBlockItemSheet()}
+	 *     <li>{@link Sheets#translucentBlockItemSheet()}
+	 * </ul>
+	 *
+	 * <p>The behavior is undefined if this method is invoked with any value not in the above list.
+	 *
+	 * <p>The default value is {@link Sheets#cutoutBlockItemSheet()}.
+	 *
+	 * <p>This property is respected only in item contexts. It will not have an effect in other contexts.
+	 */
+	MutableQuadView itemRenderType(RenderType renderType);
 
 	/**
 	 * When true, this quad will be rendered at full brightness.
@@ -320,7 +432,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
 	 * {@linkplain BlockState#getLightEmission() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
 	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
-	 * {@linkplain Minecraft#useAmbientOcclusion() ambient occlusion is disabled globally}.
+	 * {@linkplain Options#ambientOcclusion() ambient occlusion is disabled globally}.
 	 *
 	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *
@@ -355,16 +467,11 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView shadeMode(ShadeMode mode);
 
 	/**
-	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
+	 * Whether the sprite associated with this quad is animated.
 	 *
-	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
-	 * converted to a {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
-	 *
-	 * <p>The default value is {@link QuadAtlas#BLOCK}.
-	 *
-	 * @see QuadAtlas
+	 * <p>The default value is {@code false}.
 	 */
-	MutableQuadView atlas(QuadAtlas quadAtlas);
+	MutableQuadView animated(boolean animated);
 
 	/**
 	 * Sets the tint index, which is used to retrieve the tint color.
@@ -389,10 +496,82 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView copyFrom(QuadView quad);
 
 	/**
-	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. In addition,
-	 * this quad's vertex colors and vertex normals will be reset. This quad's existing lightmap values will be ignored.
+	 * Sets all applicable data and properties of this quad as specified by the given
+	 * {@link BakedQuad}. In addition, this quad's vertex colors and vertex normals will be reset.
+	 * This quad's existing lightmap values will be ignored and overwritten.
 	 *
 	 * <p>Calling this method does not emit this quad.
 	 */
 	MutableQuadView fromBakedQuad(BakedQuad quad);
+
+	/**
+	 * Resets all vertex data and properties of this quad to their default values.
+	 */
+	MutableQuadView clear();
+
+	/**
+	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
+	 * is effectively zero - meaning the face is a cull face.
+	 */
+	float CULL_FACE_EPSILON = 0.00001f;
+
+	/**
+	 * Helper method to assign vertex coordinates for a square aligned with the given face.
+	 * Ensures that vertex order is consistent with vanilla convention. (Incorrect order can
+	 * lead to bad AO lighting unless enhanced lighting logic is available/enabled.)
+	 *
+	 * <p>Square will be parallel to the given face and coplanar with the face (and culled if the
+	 * face is occluded) if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.
+	 *
+	 * <p>All coordinates should be normalized (0-1).
+	 */
+	default MutableQuadView square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
+		if (Math.abs(depth) < CULL_FACE_EPSILON) {
+			cullFace(nominalFace);
+			depth = 0; // avoid any inconsistency for face quads
+		} else {
+			cullFace(null);
+		}
+
+		nominalFace(nominalFace);
+		switch (nominalFace) {
+		case UP:
+			depth = 1 - depth;
+			top = 1 - top;
+			bottom = 1 - bottom;
+
+		case DOWN:
+			pos(0, left, depth, top);
+			pos(1, left, depth, bottom);
+			pos(2, right, depth, bottom);
+			pos(3, right, depth, top);
+			break;
+
+		case EAST:
+			depth = 1 - depth;
+			left = 1 - left;
+			right = 1 - right;
+
+		case WEST:
+			pos(0, depth, top, left);
+			pos(1, depth, bottom, left);
+			pos(2, depth, bottom, right);
+			pos(3, depth, top, right);
+			break;
+
+		case SOUTH:
+			depth = 1 - depth;
+			left = 1 - left;
+			right = 1 - right;
+
+		case NORTH:
+			pos(0, 1 - left, top, depth);
+			pos(1, 1 - left, bottom, depth);
+			pos(2, 1 - right, bottom, depth);
+			pos(3, 1 - right, top, depth);
+			break;
+		}
+
+		return this;
+	}
 }

@@ -4,22 +4,17 @@
   "compatibilityLevel": "JAVA_25",
   "plugin": "net.fabricmc.fabric.impl.client.indigo.IndigoMixinConfigPlugin",
   "client": [
-    "SubmitNodeCollectionMixin",
-    "ModelBlockRendererMixin",
-    "BlockRenderDispatcherAccessor",
-    "BlockRenderDispatcherMixin",
-    "RenderSectionRegionMixin",
-    "ItemFeatureRendererMixin",
-    "ItemRendererAccessor",
-    "ItemStackRenderStateLayerRenderStateMixin",
-    "ItemStackRenderStateMixin",
-    "SubmitNodeStorageMixin",
-    "SectionCompilerMixin"
+    "BlockModelLighterAccessor",
+    "ItemFeatureRendererAccessor",
+    "ItemFeatureRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "overwrites": {
     "requireAnnotations": true
+  },
+  "mixinextras": {
+    "minVersion": "0.5.0"
   }
 }

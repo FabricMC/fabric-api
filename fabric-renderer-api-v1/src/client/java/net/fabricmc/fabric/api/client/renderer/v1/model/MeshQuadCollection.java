@@ -17,27 +17,32 @@
 package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 
 /**
  * A special {@link QuadCollection} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Useful for custom
- * implementations of {@link UnbakedGeometry#bake(TextureSlots, ModelBaker, ModelState, ModelDebugName)} that want to return a
- * mesh. Instances of this class always return empty lists from inherited methods.
+ * implementations of {@link UnbakedGeometry#bake(TextureSlots, ModelBaker, ModelState, ModelDebugName)} that want to
+ * return a mesh. Instances of this class always return empty quad lists from inherited methods. Other public methods,
+ * including {@link QuadCollection#materialFlags()} and {@link QuadCollection#hasMaterialFlag(int)}, will return
+ * expected values computed from the mesh.
  *
- * <p>Any code that interacts with {@link QuadCollection} should first check {@code instanceof MeshBakedGeometry} and use
- * {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
+ * <p>Any code that interacts with {@link QuadCollection} should first check {@code instanceof MeshQuadCollection} and
+ * use {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
  */
 public final class MeshQuadCollection extends QuadCollection {
 	private final Mesh mesh;
+	private @BakedQuad.MaterialFlags int materialFlags = -1;
 
 	public MeshQuadCollection(Mesh mesh) {
 		super(List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of());
@@ -49,5 +54,28 @@ public final class MeshQuadCollection extends QuadCollection {
 	 */
 	public Mesh getMesh() {
 		return mesh;
+	}
+
+	private static @BakedQuad.MaterialFlags int computeMaterialFlags(final Mesh mesh) {
+		var quadConsumer = new Consumer<QuadView>() {
+			@BakedQuad.MaterialFlags int flags = 0;
+
+			@Override
+			public void accept(QuadView quad) {
+				flags |= ModelHelper.computeMaterialFlags(quad);
+			}
+		};
+
+		mesh.forEach(quadConsumer);
+		return quadConsumer.flags;
+	}
+
+	@Override
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		if (materialFlags == -1) {
+			materialFlags = computeMaterialFlags(mesh);
+		}
+
+		return materialFlags;
 	}
 }

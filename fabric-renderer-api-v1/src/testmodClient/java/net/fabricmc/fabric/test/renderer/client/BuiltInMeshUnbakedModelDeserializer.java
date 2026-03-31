@@ -20,7 +20,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
 import net.minecraft.util.GsonHelper;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
