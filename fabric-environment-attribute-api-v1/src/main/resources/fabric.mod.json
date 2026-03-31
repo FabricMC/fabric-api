@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-environment-attribute-api-v1",
+  "name": "Fabric Environment Attribute API (v1)",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-environment-attribute-api-v1/icon.png",
+  "contact" : {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "entrypoints": {
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": ">=1.21.11-rc1",
+    "fabric-api-base": "*"
+  },
+  "description": "Fabric Environment Attribute API.",
+  "mixins": [
+    "fabric-environment-attribute-api-v1.mixins.json"
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}
