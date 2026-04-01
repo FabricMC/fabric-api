@@ -25,23 +25,21 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Encoder;
-
 import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
 import net.fabricmc.fabric.impl.tag.util.WrapperCodec;
-
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TagFile.class)
 public class TagFileMixin implements TagFileHooks {
@@ -65,7 +63,7 @@ public class TagFileMixin implements TagFileHooks {
 			public <T> DataResult<T> encode(TagFile input, DynamicOps<T> ops, T prefix, Encoder<TagFile> wrapped) {
 				return wrapped.encode(input, ops, prefix).flatMap(
 						result -> removeEntryCodec.encode(
-								((TagFileHooks)(Object)input).fabric_removed(),
+								((TagFileHooks) (Object) input).fabric_removed(),
 								ops,
 								result
 						)
@@ -77,7 +75,7 @@ public class TagFileMixin implements TagFileHooks {
 				return removeEntryCodec.decode(ops, input).flatMap(
 						result ->
 								wrapped.decode(ops, input).map(pair -> pair.mapFirst(tagFile -> {
-									((TagFileHooks)(Object)tagFile).fabric_setRemoved(result.getFirst());
+									((TagFileHooks) (Object) tagFile).fabric_setRemoved(result.getFirst());
 									return tagFile;
 								}))
 				);

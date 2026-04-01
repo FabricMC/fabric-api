@@ -16,24 +16,22 @@
 
 package net.fabricmc.fabric.test.tag;
 
+import static net.fabricmc.fabric.test.tag.TagTestUtils.tagKey;
+
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-
 import net.minecraft.world.item.enchantment.Enchantment;
-
 import net.minecraft.world.item.enchantment.Enchantments;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-
-import static net.fabricmc.fabric.test.tag.TagTestUtils.tagKey;
 
 public final class TagEntryRemovalTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TagEntryRemovalTest.class);

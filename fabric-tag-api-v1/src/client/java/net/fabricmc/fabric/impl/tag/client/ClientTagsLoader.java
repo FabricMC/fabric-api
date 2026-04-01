@@ -28,9 +28,6 @@ import java.util.Set;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
-
-import net.fabricmc.fabric.impl.tag.TagFileHooks;
-
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -45,6 +42,7 @@ import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StrictJsonParser;
 
+import net.fabricmc.fabric.impl.tag.TagFileHooks;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 

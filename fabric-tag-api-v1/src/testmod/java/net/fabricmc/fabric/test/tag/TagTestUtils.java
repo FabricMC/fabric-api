@@ -22,6 +22,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.function.FailableRunnable;
+import org.slf4j.Logger;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -31,9 +34,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-
-import org.apache.commons.lang3.function.FailableRunnable;
-import org.slf4j.Logger;
 
 public class TagTestUtils {
 	public static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registryRef, String name) {

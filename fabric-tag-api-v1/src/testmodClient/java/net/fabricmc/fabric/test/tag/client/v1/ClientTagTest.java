@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.test.tag.client.v1;
 
-import net.minecraft.core.registries.Registries;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biomes;

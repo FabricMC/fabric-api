@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.tag;
 
-import net.minecraft.tags.TagEntry;
-
 import java.util.Collections;
 import java.util.List;
+
+import net.minecraft.tags.TagEntry;
 
 public interface TagFileHooks {
 	default List<TagEntry> fabric_removed() {
