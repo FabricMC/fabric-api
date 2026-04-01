@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.util.Collection;
+import java.util.stream.Stream;
+
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.TagKey;
 
@@ -35,6 +38,75 @@ public interface FabricTagAppender<E, T> {
 	}
 
 	default TagAppender<E, T> forceAddTag(TagKey<T> tag) {
+		return (TagAppender<E, T>) this;
+	}
+
+	/**
+	 * Removes an entry from the tag.
+	 * @param element The entry to remove from the contents of the tag
+	 * @return this, for chaining
+	 */
+	default TagAppender<E, T> remove(E element) {
+		return (TagAppender<E, T>) this;
+	}
+
+	/**
+	 * Removes multiple entries from the tag.
+	 * @param elements The entries to remove from the contents of the tag
+	 * @return this, for chaining
+	 */
+	default TagAppender<E, T> remove(final E... elements) {
+		return (TagAppender<E, T>) this;
+	}
+
+	/**
+	 * Removes multiple entries from the tag.
+	 * @param elements The entries to remove from the contents of the tag
+	 * @return this, for chaining
+	 */
+	default TagAppender<E, T> removeAll(final Collection<E> elements) {
+		return (TagAppender<E, T>) this;
+	}
+
+	/**
+	 * Removes multiple entries from the tag.
+	 * @param elements The entries to remove from the contents of the tag
+	 * @return this, for chaining
+	 */
+	default TagAppender<E, T> removeAll(final Stream<E> elements) {
+		return (TagAppender<E, T>) this;
+	}
+
+	/**
+	 * Optionally removes an entry from the tag.
+	 * This will only operate if the specified value is present.
+	 * @param element The entry to remove from the contents of the tag
+	 * @return this, for chaining
+	 */
+	default TagAppender<E, T> removeOptional(E element) {
+		return (TagAppender<E, T>) this;
+	}
+
+	/**
+	 * Removes all entries of the specified tag from the tag.
+	 * @param tag The tag to remove from the contents of the tag
+	 * @return this, for chaining
+	 */
+	default TagAppender<E, T> removeTag(TagKey<T> tag) {
+		return (TagAppender<E, T>) this;
+	}
+
+	/**
+	 * Optionally removes all entries of the specified tag from the tag.
+	 * This will only operate if the specified tag is present.
+	 * @param tag The tag to remove from the contents of the tag
+	 * @return this, for chaining
+	 */
+	default TagAppender<E, T> removeOptionalTag(TagKey<T> tag) {
+		return (TagAppender<E, T>) this;
+	}
+
+	default TagAppender<E, T> forceRemoveTag(TagKey<T> tag) {
 		return (TagAppender<E, T>) this;
 	}
 }

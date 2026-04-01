@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Final;
@@ -24,6 +29,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.data.tags.TagAppender;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 
@@ -31,48 +37,146 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagAppender;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
 /**
- * Extends TagAppender to support setting the replace field.
+ * Extends TagAppender to support setting the replace and fabric:removed fields.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(TagAppender.class)
 interface TagAppenderMixin<E, T> extends FabricTagAppender<E, T> {
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$1")
-	abstract class TagAppender1Mixin<E, T> implements TagAppenderMixin<E, T> {
+	abstract class TagAppender1Mixin<T> implements TagAppenderMixin<ResourceKey<T>, T> {
 		// the builder param
 		@Shadow
 		@Final
 		TagBuilder val$builder;
 
 		@Override
-		public TagAppender<E, T> setReplace(boolean replace) {
+		public TagAppender<ResourceKey<T>, T> setReplace(boolean replace) {
 			((FabricTagBuilder) this.val$builder).fabric_setReplace(replace);
-			return (TagAppender<E, T>) this;
+			return (TagAppender<ResourceKey<T>, T>) this;
 		}
 
 		@Override
-		public TagAppender<E, T> forceAddTag(TagKey<T> tag) {
+		public TagAppender<ResourceKey<T>, T> forceAddTag(TagKey<T> tag) {
 			((FabricTagBuilder) this.val$builder).fabric_forceAddTag(tag.location());
-			return (TagAppender<E, T>) this;
+			return (TagAppender<ResourceKey<T>, T>) this;
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> remove(ResourceKey<T> element) {
+			((FabricTagBuilder) this.val$builder).fabric_removeElement(element.identifier());
+			return (TagAppender<ResourceKey<T>, T>) this;
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> remove(final ResourceKey<T>... elements) {
+			return removeAll(Arrays.stream(elements));
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> removeAll(final Collection<ResourceKey<T>> elements) {
+			elements.forEach(element -> ((FabricTagBuilder) this.val$builder).fabric_removeElement(element.identifier()));
+			return (TagAppender<ResourceKey<T>, T>) this;
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> removeAll(final Stream<ResourceKey<T>> elements) {
+			elements.forEach(element -> ((FabricTagBuilder) this.val$builder).fabric_removeElement(element.identifier()));
+			return (TagAppender<ResourceKey<T>, T>) this;
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> removeOptional(ResourceKey<T> element) {
+			((FabricTagBuilder) this.val$builder).fabric_removeOptionalElement(element.identifier());
+			return (TagAppender<ResourceKey<T>, T>) this;
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> removeTag(TagKey<T> tag) {
+			((FabricTagBuilder) this.val$builder).fabric_removeTag(tag.location());
+			return (TagAppender<ResourceKey<T>, T>) this;
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> removeOptionalTag(TagKey<T> tag) {
+			((FabricTagBuilder) this.val$builder).fabric_removeTag(tag.location());
+			return (TagAppender<ResourceKey<T>, T>) this;
+		}
+
+		@Override
+		public TagAppender<ResourceKey<T>, T> forceRemoveTag(TagKey<T> tag) {
+			((FabricTagBuilder) this.val$builder).fabric_forceRemoveTag(tag.location());
+			return (TagAppender<ResourceKey<T>, T>) this;
 		}
 	}
 
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$2")
-	abstract class TagAppender2Mixin<E, T> implements TagAppenderMixin<E, T> {
+	abstract class TagAppender2Mixin<U, E, T> implements TagAppenderMixin<U, T> {
 		// TagAppender.this
 		@Shadow
 		@Final
 		TagAppender val$original;
 
+		@Shadow
+		@Final
+		Function<U, E> val$converter;
+
 		@Override
-		public TagAppender<E, T> setReplace(boolean replace) {
-			((FabricTagAppender) this.val$original).setReplace(replace);
-			return (TagAppender<E, T>) this;
+		public TagAppender<U, T> setReplace(boolean replace) {
+			this.val$original.setReplace(replace);
+			return (TagAppender<U, T>) this;
 		}
 
 		@Override
-		public TagAppender<E, T> forceAddTag(TagKey<T> tag) {
-			((FabricTagAppender) this.val$original).forceAddTag(tag);
-			return (TagAppender<E, T>) this;
+		public TagAppender<U, T> forceAddTag(TagKey<T> tag) {
+			this.val$original.forceAddTag(tag);
+			return (TagAppender<U, T>) this;
+		}
+
+		@Override
+		public TagAppender<U, T> remove(U element) {
+			val$original.remove(val$converter.apply(element));
+			return (TagAppender<U, T>) this;
+		}
+
+		@Override
+		public TagAppender<U, T> remove(final U... elements) {
+			return removeAll(Arrays.stream(elements));
+		}
+
+		@Override
+		public TagAppender<U, T> removeAll(final Collection<U> elements) {
+			elements.forEach(element -> val$original.remove(val$converter.apply(element)));
+			return (TagAppender<U, T>) this;
+		}
+
+		@Override
+		public TagAppender<U, T> removeAll(final Stream<U> elements) {
+			elements.forEach(element -> val$original.remove(val$converter.apply(element)));
+			return (TagAppender<U, T>) this;
+		}
+
+		@Override
+		public TagAppender<U, T> removeOptional(U element) {
+			val$original.removeOptional(val$converter.apply(element));
+			return (TagAppender<U, T>) this;
+		}
+
+		@Override
+		public TagAppender<U, T> removeTag(TagKey<T> tag) {
+			val$original.removeTag(tag);
+			return (TagAppender<U, T>) this;
+		}
+
+		@Override
+		public TagAppender<U, T> removeOptionalTag(TagKey<T> tag) {
+			val$original.removeOptionalTag(tag);
+			return (TagAppender<U, T>) this;
+		}
+
+		@Override
+		public TagAppender<U, T> forceRemoveTag(TagKey<T> tag) {
+			val$original.forceRemoveTag(tag);
+			return (TagAppender<U, T>) this;
 		}
 
 		@WrapOperation(

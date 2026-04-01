@@ -19,7 +19,10 @@ package net.fabricmc.fabric.test.datagen;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ENTITY_TYPE_WITHOUT_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.FORCED_BLOCK_TAG_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.NON_EXISTENT_BLOCK_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.NON_EXISTENT_BLOCK_TAG_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ENTITY_TYPE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
@@ -316,6 +319,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
 			aliasGroup(Identifier.fromNamespaceAndPath("other_namespace", "flowers"))
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
+
+			valueLookupBuilder(BlockTags.SUPPORTS_WARPED_FUNGUS)
+					.remove(Blocks.SOUL_SOIL)
+					.removeTag(BlockTags.DIRT);
+
+			valueLookupBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
+					.remove(
+							Blocks.ANCIENT_DEBRIS,
+							Blocks.NETHERITE_BLOCK,
+							Blocks.OBSIDIAN
+					);
+			builder(BlockTags.NEEDS_DIAMOND_TOOL)
+					.removeOptional(NON_EXISTENT_BLOCK_KEY)
+					.removeOptionalTag(NON_EXISTENT_BLOCK_TAG_KEY)
+					.forceRemoveTag(FORCED_BLOCK_TAG_KEY);
 		}
 	}
 
