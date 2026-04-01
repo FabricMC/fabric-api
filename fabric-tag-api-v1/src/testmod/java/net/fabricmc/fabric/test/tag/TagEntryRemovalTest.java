@@ -37,7 +37,7 @@ public final class TagEntryRemovalTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TagEntryRemovalTest.class);
 
 	private final TagKey<Enchantment> TEST_ENCHANTMENT_TAG = tagKey(Registries.ENCHANTMENT, "all_enchantments_without_durability_enchantments");
-	private final TagKey<Item> TEST_ITEM_TAG = tagKey(Registries.ITEM, "snowballs_but_not_bricks");
+	private final TagKey<Item> TEST_ITEM_TAG = tagKey(Registries.ITEM, "snowballs_without_bricks");
 
 	@Override
 	public void onInitialize() {
