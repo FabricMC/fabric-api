@@ -31,6 +31,10 @@ import net.minecraft.tags.TagEntry;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Mixin(TagBuilder.class)
 public abstract class TagBuilderMixin implements FabricTagBuilder {
 	@Shadow
