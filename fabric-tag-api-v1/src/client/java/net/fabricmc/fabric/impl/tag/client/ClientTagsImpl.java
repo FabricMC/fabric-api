@@ -78,6 +78,7 @@ public class ClientTagsImpl {
 			if (isInWithLocalFallback((TagKey<T>) key, holder, checked)) {
 				return false;
 			}
+
 			checked.add((TagKey<T>) key);
 		}
 

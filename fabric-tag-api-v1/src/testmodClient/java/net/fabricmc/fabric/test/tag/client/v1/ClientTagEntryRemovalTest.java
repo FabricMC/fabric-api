@@ -40,12 +40,15 @@ public class ClientTagEntryRemovalTest implements ClientModInitializer {
 			if (ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.DIRT)) {
 				throw new AssertionError("Expected not to find dirt in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was found!");
 			}
+
 			if (ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.MUD)) {
 				throw new AssertionError("Expected not to find mud in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was found!");
 			}
+
 			if (!ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.ROOTED_DIRT)) {
 				throw new AssertionError("Expected to find rooted_dirt in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was not found!");
 			}
+
 			if (!ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.MUDDY_MANGROVE_ROOTS)) {
 				throw new AssertionError("Expected to find muddy_mangrove_roots in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was not found!");
 			}

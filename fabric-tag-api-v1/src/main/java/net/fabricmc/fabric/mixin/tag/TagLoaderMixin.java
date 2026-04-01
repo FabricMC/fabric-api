@@ -47,7 +47,7 @@ import net.fabricmc.fabric.impl.tag.TagLoaderEntryWithSourceHooks;
 public class TagLoaderMixin {
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
 	private void addRemovableTagEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "tagContents") List<TagLoader.EntryWithSource> tagContents, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
-		((TagFileHooks)(Object)parsedContents).fabric_removed().forEach(tagEntry -> {
+		((TagFileHooks) (Object) parsedContents).fabric_removed().forEach(tagEntry -> {
 			TagLoader.EntryWithSource entryWithSource = new TagLoader.EntryWithSource(tagEntry, sourceId);
 			((TagLoaderEntryWithSourceHooks) (Object) entryWithSource).fabric_setRemove(true);
 			tagContents.add(entryWithSource);
