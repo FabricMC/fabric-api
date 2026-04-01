@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tag.v1;
+package net.fabricmc.fabric.mixin.tag;
 
-public interface FabricTagEntry {
-	default boolean isRemoved() {
-		return false;
-	}
+import java.util.Map;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.core.HolderSet;
+import net.minecraft.tags.TagKey;
+
+@Mixin(targets = "net.minecraft.core.MappedRegistry$TagSet$2")
+public interface MappedRegistryTagSet2Accessor<T> {
+	@Accessor("val$tags")
+	Map<TagKey<T>, HolderSet.Named<T>> fabric_getTagMap();
+
+	@Accessor("val$tags")
+	@Mutable
+	void fabric_setTagMap(Map<TagKey<T>, HolderSet.Named<T>> tagMap);
 }

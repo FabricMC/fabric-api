@@ -24,10 +24,16 @@ import java.util.function.Consumer;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.impl.tag.TagFileHooks;
+import net.fabricmc.fabric.impl.tag.TagLoaderEntryWithSourceHooks;
+
+import net.minecraft.resources.Identifier;
+
+import net.minecraft.tags.TagFile;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -38,25 +44,34 @@ import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
-	@WrapOperation(
-			method = "tryBuildTag",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagEntry;build(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/function/Consumer;)Z")
-	)
-	private <T> boolean swapRemovalIdConsumer(TagEntry instance, TagEntry.Lookup<T> valueGetter, Consumer<T> idConsumer, Operation<Boolean> original, @Local SequencedSet<T> sequencedSet) {
+	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
+	private void addRemovableTagEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "tagContents") List<TagLoader.EntryWithSource> tagContents, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
+		((TagFileHooks)(Object)parsedContents).fabric_removed().forEach(tagEntry -> {
+			TagLoader.EntryWithSource entryWithSource = new TagLoader.EntryWithSource(tagEntry, sourceId);
+			((TagLoaderEntryWithSourceHooks)(Object)entryWithSource).fabric_setRemove(true);
+			tagContents.add(entryWithSource);
+		});
+	}
+
+	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagEntry;build(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/function/Consumer;)Z"))
+	private <T> boolean swapRemovalIdConsumer(TagEntry instance, TagEntry.Lookup<T> lookup, Consumer<T> output, Operation<Boolean> original, @Local(argsOnly = true, name = "entries") List<TagLoader.EntryWithSource> entries, @Local(name = "values") SequencedSet<T> values, @Local(name = "entry") TagLoader.EntryWithSource entry) {
 		return original.call(
 				instance,
-				valueGetter,
-				((FabricTagEntry) instance).isRemoved()
-						? (Consumer<T>) sequencedSet::remove
-						: idConsumer
+				lookup,
+				((TagLoaderEntryWithSourceHooks)(Object)entry).fabric_remove()
+						? (Consumer<T>) values::remove
+						: output
 		);
 	}
 
 	// Fixes a likely vanilla bug causing loot table tags to not get loaded.
 	@WrapOperation(method = "loadTagsForRegistry(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/WritableRegistry;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagLoader;loadTagsForRegistry(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/tags/TagLoader$ElementLookup;)Ljava/util/Map;"))
-	private static <T> Map<TagKey<T>, List<Holder<T>>> loadTagsForRegistry(ResourceManager manager, ResourceKey<? extends Registry<T>> registryKey, TagLoader.ElementLookup<Holder<T>> lookup, Operation<Map<TagKey<T>, List<Holder<T>>>> original, @Local(argsOnly = true) WritableRegistry<T> registry) {
+	private static <T> Map<TagKey<T>, List<Holder<T>>> loadTagsForRegistry(ResourceManager manager, ResourceKey<? extends Registry<T>> registryKey, TagLoader.ElementLookup<Holder<T>> lookup, Operation<Map<TagKey<T>, List<Holder<T>>>> original, @Local(argsOnly = true, name = "registry") WritableRegistry<T> registry) {
 		Map<TagKey<T>, List<Holder<T>>> tags = original.call(manager, registryKey, lookup);
 		registry.bindTags(tags);
 		return tags;

@@ -29,7 +29,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 
-import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
+import net.fabricmc.fabric.impl.tag.TagFileHooks;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -55,7 +55,8 @@ public class ClientTagsLoader {
 	 * Parsing based on {@link net.minecraft.tags.TagLoader#load(net.minecraft.server.packs.resources.ResourceManager)}
 	 */
 	public static LoadedTag loadTag(TagKey<?> tagKey) {
-		var tags = new HashSet<TagEntry>();
+		var values = new HashSet<TagEntry>();
+		var removed = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.location());
 
 		for (Path tagPath : tagFiles) {
@@ -66,52 +67,74 @@ public class ClientTagsLoader {
 
 				if (maybeTagFile != null) {
 					if (maybeTagFile.replace()) {
-						tags.clear();
+						values.clear();
 					}
 
-					tags.addAll(maybeTagFile.entries());
+					values.addAll(maybeTagFile.entries());
+					removed.addAll(((TagFileHooks) (Object) maybeTagFile).fabric_removed());
 				}
 			} catch (IOException e) {
-				LOGGER.error("Error loading tag: " + tagKey, e);
+				LOGGER.error("Error loading tag: {}", tagKey, e);
 			}
 		}
 
 		HashSet<Identifier> completeIds = new HashSet<>();
 		HashSet<Identifier> removedIds = new HashSet<>();
 		HashSet<Identifier> immediateChildIds = new HashSet<>();
+		HashSet<Identifier> immediateRemovedChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
+		HashSet<TagKey<?>> immediateRemovedChildTags = new HashSet<>();
 
-		for (TagEntry tagEntry : tags) {
-			boolean remove = ((FabricTagEntry)tagEntry).isRemoved();
+		for (TagEntry tagEntry : values) {
 			tagEntry.build(new TagEntry.Lookup<>() {
 				@NonNull
 				@Override
-				public Identifier element(Identifier id, boolean required) {
+				public Identifier element(@NonNull Identifier id, boolean required) {
 					immediateChildIds.add(id);
 					return id;
 				}
 
 				@Nullable
 				@Override
-				public Collection<Identifier> tag(Identifier id) {
+				public Collection<Identifier> tag(@NonNull Identifier id) {
 					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
 				}
-			}, remove
-					? removedIds::add
-					: completeIds::add
-			);
+			}, completeIds::add);
+		}
+
+		for (TagEntry removedEntry : removed) {
+			removedEntry.build(new TagEntry.Lookup<>() {
+				@NonNull
+				@Override
+				public Identifier element(@NonNull Identifier id, boolean required) {
+					immediateRemovedChildIds.add(id);
+					return id;
+				}
+
+				@Nullable
+				@Override
+				public Collection<Identifier> tag(@NonNull Identifier id) {
+					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
+					immediateRemovedChildTags.add(tag);
+					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).removedIds;
+				}
+			}, removedIds::add);
 		}
 
 		// Ensure that the tag does not refer to itself
 		immediateChildTags.remove(tagKey);
+		immediateRemovedChildTags.remove(tagKey);
 
-		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(removedIds), Collections.unmodifiableSet(immediateChildTags),
-				Collections.unmodifiableSet(immediateChildIds));
+		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(removedIds),
+				Collections.unmodifiableSet(immediateChildTags), Collections.unmodifiableSet(immediateRemovedChildTags),
+				Collections.unmodifiableSet(immediateChildIds), Collections.unmodifiableSet(immediateRemovedChildIds));
 	}
 
-	public record LoadedTag(Set<Identifier> completeIds, Set<Identifier> removedIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds, Set<Identifier> removedIds,
+							Set<TagKey<?>> immediateChildTags, Set<TagKey<?>> immediateRemovedChildTags,
+							Set<Identifier> immediateChildIds, Set<Identifier> immediateRemovedChildIds) {
 	}
 
 	/**

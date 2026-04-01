@@ -18,12 +18,7 @@ package net.fabricmc.fabric.mixin.tag;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import com.google.common.collect.Streams;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -31,58 +26,36 @@ import com.mojang.serialization.Decoder;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Encoder;
 
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Slice;
 
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 
-import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
-import net.fabricmc.fabric.impl.tag.FabricTagEntryInternals;
+import net.fabricmc.fabric.impl.tag.TagFileHooks;
 import net.fabricmc.fabric.impl.tag.util.WrapperCodec;
 
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 @Mixin(TagFile.class)
-public class TagFileMixin {
+public class TagFileMixin implements TagFileHooks {
 	@Unique
-	private static final ThreadLocal<List<TagEntry>> REMOVE_ENTRIES = ThreadLocal.withInitial(List::of);
+	private List<TagEntry> removed = Collections.emptyList();
 
 	@Shadow
+	@Mutable
 	@Final
 	public static Codec<TagFile> CODEC;
 
-	@ModifyArg(
-			method = "lambda$static$0",
-			at = @At(
-					value = "INVOKE",
-					target = "Lcom/mojang/datafixers/Products$P2;apply(Lcom/mojang/datafixers/kinds/Applicative;Ljava/util/function/BiFunction;)Lcom/mojang/datafixers/kinds/App;"
-			)
-	)
-	private static BiFunction<List<TagEntry>, Boolean, TagFile> modify(BiFunction<List<TagEntry>, Boolean, TagFile> instance) {
-		return (entries, replace) -> instance.apply(
-				Streams.concat(entries.stream(), REMOVE_ENTRIES.get().stream()).toList(),
-				replace
-		);
-	}
-
-	@ModifyArg(
-			method = "lambda$static$0",
-			at = @At(
-					value = "INVOKE:FIRST",
-					target = "Lcom/mojang/serialization/MapCodec;forGetter(Ljava/util/function/Function;)Lcom/mojang/serialization/codecs/RecordCodecBuilder;"
-			),
-			slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=values"))
-	)
-	private static Function<TagFile, List<TagEntry>> wrapGetter(Function<TagFile, List<TagEntry>> getter) {
-		return getter.andThen(list -> list.stream().filter(Predicate.not(entry -> ((FabricTagEntry) entry).isRemoved())).toList());
-	}
-
-	static {
-		Codec<List<TagEntry>> removeEntryCodec = FabricTagEntryInternals.REMOVED_ENTRY_CODEC
+	@Inject(method = "<clinit>", at = @At("TAIL"))
+	private static void modifyCodec(CallbackInfo ci) {
+		Codec<List<TagEntry>> removeEntryCodec = TagEntry.CODEC
 				.listOf()
 				.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
 				.codec();
@@ -92,12 +65,7 @@ public class TagFileMixin {
 			public <T> DataResult<T> encode(TagFile input, DynamicOps<T> ops, T prefix, Encoder<TagFile> wrapped) {
 				return wrapped.encode(input, ops, prefix).flatMap(
 						result -> removeEntryCodec.encode(
-								List.copyOf(
-										input.entries()
-												.stream()
-												.filter(entry -> ((FabricTagEntry) entry).isRemoved())
-												.toList()
-								),
+								((TagFileHooks)(Object)input).fabric_removed(),
 								ops,
 								result
 						)
@@ -107,21 +75,23 @@ public class TagFileMixin {
 			@Override
 			public <T> DataResult<Pair<TagFile, T>> decode(DynamicOps<T> ops, T input, Decoder<TagFile> wrapped) {
 				return removeEntryCodec.decode(ops, input).flatMap(
-						result -> withRemovedEntries(result.getFirst(), () -> wrapped.decode(ops, input))
+						result ->
+								wrapped.decode(ops, input).map(pair -> pair.mapFirst(tagFile -> {
+									((TagFileHooks)(Object)tagFile).fabric_setRemoved(result.getFirst());
+									return tagFile;
+								}))
 				);
 			}
 		});
 	}
 
-	@Unique
-	private static <T> T withRemovedEntries(List<TagEntry> removed, Supplier<T> action) {
-		List<TagEntry> initialValue = REMOVE_ENTRIES.get();
+	@Override
+	public @NonNull List<TagEntry> fabric_removed() {
+		return removed;
+	}
 
-		try {
-			REMOVE_ENTRIES.set(removed);
-			return action.get();
-		} finally {
-			REMOVE_ENTRIES.set(initialValue);
-		}
+	@Override
+	public void fabric_setRemoved(List<TagEntry> removed) {
+		this.removed = removed;
 	}
 }
