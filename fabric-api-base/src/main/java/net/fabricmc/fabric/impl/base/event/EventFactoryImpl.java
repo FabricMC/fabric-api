@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
-import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -33,18 +32,37 @@ import com.google.common.collect.MapMaker;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class EventFactoryImpl {
-	public static final EventFactoryImpl INSTANCE = ServiceLoader.load(EventFactoryImpl.class).findFirst().orElseGet(EventFactoryImpl::new);
+	public static final EventFactoryImpl INSTANCE;
 	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS
 			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
-	protected EventFactoryImpl() {
-		Class<?> thisClass = getClass();
+	static {
+		final String eventScopeModule = "fabric-dev-debug-api-v1";
 
-		if (thisClass != EventFactoryImpl.class && !thisClass.getName().equals("net.fabricmc.fabric.impl.debug.dev.TestableEventFactoryImpl")) {
-			throw new IllegalStateException("You are not allowed to create a custom EventFactoryImpl!");
+		if (FabricLoader.getInstance().isModLoaded(eventScopeModule)) {
+			String clazzName = FabricLoader.getInstance()
+					.getModContainer(eventScopeModule)
+					.orElseThrow()
+					.getMetadata()
+					.getCustomValue("fabric-api-base:event_factory_impl")
+					.getAsString();
+			try {
+				Class<?> clazz = Class.forName(clazzName);
+				INSTANCE = (EventFactoryImpl) MethodHandles.publicLookup()
+						.findConstructor(clazz, MethodType.methodType(void.class))
+						.invoke();
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		} else {
+			INSTANCE = new EventFactoryImpl();
 		}
+	}
+
+	protected EventFactoryImpl() {
 	}
 
 	public static void invalidate() {
