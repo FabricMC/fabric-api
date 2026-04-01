@@ -7,6 +7,7 @@
       "id": "fabric-data-gen-api-v1-testmod:non_existent",
       "required": false
     },
+    "#fabric-data-gen-api-v1-testmod:non_existent",
     "#fabric-data-gen-api-v1-testmod:forced"
   ],
   "values": []
