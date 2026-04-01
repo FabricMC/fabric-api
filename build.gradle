@@ -678,13 +678,16 @@ publishMods {
 	curseforge {
 		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
 		projectId = "306612"
-		minecraftVersions.add(project.curseforge_minecraft_version)
+		project.curseforge_minecraft_versions.split(",").each { minecraftVersions.add(it.trim()) }
 	}
 
 	modrinth {
 		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
 		projectId = "P7dR8mSH"
 		minecraftVersions.add(project.minecraft_version)
+		if (project.modrinth_extra_minecraft_versions) {
+			project.modrinth_extra_minecraft_versions.split(",").each { minecraftVersions.add(it.trim()) }
+		}
 	}
 
 	github {
