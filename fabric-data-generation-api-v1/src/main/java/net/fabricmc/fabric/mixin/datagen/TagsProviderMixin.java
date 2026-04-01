@@ -17,8 +17,10 @@
 package net.fabricmc.fabric.mixin.datagen;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -39,10 +41,13 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
+import net.minecraft.tags.TagEntry;
+import net.minecraft.tags.TagFile;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.TagAliasGenerator;
+import net.fabricmc.fabric.impl.tag.TagFileHooks;
 
 @Mixin(TagsProvider.class)
 public class TagsProviderMixin<T> {
@@ -55,6 +60,27 @@ public class TagsProviderMixin<T> {
 	@Inject(method = "<init>(Lnet/minecraft/data/PackOutput;Lnet/minecraft/resources/ResourceKey;Ljava/util/concurrent/CompletableFuture;Ljava/util/concurrent/CompletableFuture;)V", at = @At("RETURN"))
 	private void initPathResolver(PackOutput output, ResourceKey<? extends Registry<T>> registryRef, CompletableFuture<?> registriesFuture, CompletableFuture<?> parentTagLookupFuture, CallbackInfo info) {
 		tagAliasPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, TagAliasGenerator.getDirectory(registryRef));
+	}
+
+	@WrapOperation(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Ljava/util/List;stream()Ljava/util/stream/Stream;", ordinal = 1))
+	private Stream<TagEntry> entries(List<TagEntry> instance, Operation<Stream<TagEntry>> original, @Local(name = "builder") TagBuilder builder) {
+		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
+			return Stream.concat(original.call(instance), fabricTagBuilder.fabric_buildRemoved().stream());
+		}
+
+		return original.call(instance);
+	}
+
+	@SuppressWarnings("unchecked")
+	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
+	private T addRemoved(T value, @Local(name = "builder") TagBuilder builder) {
+		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
+			TagFile file = (TagFile) value;
+			((TagFileHooks) (Object) file).fabric_setRemoved(fabricTagBuilder.fabric_buildRemoved());
+			return (T) file;
+		}
+
+		return value;
 	}
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)

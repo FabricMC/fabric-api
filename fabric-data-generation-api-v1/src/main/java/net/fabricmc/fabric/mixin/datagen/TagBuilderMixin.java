@@ -27,11 +27,17 @@ import net.minecraft.tags.TagEntry;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Mixin(TagBuilder.class)
 public abstract class TagBuilderMixin implements FabricTagBuilder {
 	@Shadow
 	public abstract TagBuilder add(TagEntry entry);
 
+	@Unique
+	private final List<TagEntry> removed = new ArrayList<>();
 	@Unique
 	private boolean replace = false;
 
@@ -48,5 +54,40 @@ public abstract class TagBuilderMixin implements FabricTagBuilder {
 	@Override
 	public void fabric_forceAddTag(Identifier tag) {
 		this.add(new ForcedTagEntry(tag));
+	}
+
+	@Override
+	public List<TagEntry> fabric_buildRemoved() {
+		return Collections.unmodifiableList(removed);
+	}
+
+	@Override
+	public void fabric_remove(TagEntry entry) {
+		removed.add(entry);
+	}
+
+	@Override
+	public void fabric_removeElement(Identifier id) {
+		removed.add(TagEntry.element(id));
+	}
+
+	@Override
+	public void fabric_removeOptionalElement(Identifier id) {
+		fabric_remove(TagEntry.optionalElement(id));
+	}
+
+	@Override
+	public void fabric_removeTag(Identifier tag) {
+		fabric_remove(TagEntry.tag(tag));
+	}
+
+	@Override
+	public void fabric_removeOptionalTag(Identifier tag) {
+		fabric_remove(TagEntry.optionalTag(tag));
+	}
+
+	@Override
+	public void fabric_forceRemoveTag(Identifier tag) {
+		fabric_remove(new ForcedTagEntry(tag));
 	}
 }
