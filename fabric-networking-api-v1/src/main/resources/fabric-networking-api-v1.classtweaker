@@ -6,6 +6,8 @@ transitive-inject-interface	net/minecraft/server/network/ServerConfigurationPack
 transitive-inject-interface	net/minecraft/server/network/ServerCommonPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
 transitive-inject-interface	net/minecraft/server/network/ServerLoginPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
 transitive-inject-interface	net/minecraft/server/network/ServerHandshakePacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
+transitive-inject-interface	net/minecraft/server/level/ServerPlayer	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
 transitive-inject-interface	net/minecraft/client/multiplayer/ClientHandshakePacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
 transitive-inject-interface	net/minecraft/client/multiplayer/ClientCommonPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
+transitive-inject-interface	net/minecraft/client/player/LocalPlayer	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
 transitive-inject-interface	net/minecraft/network/Connection	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider

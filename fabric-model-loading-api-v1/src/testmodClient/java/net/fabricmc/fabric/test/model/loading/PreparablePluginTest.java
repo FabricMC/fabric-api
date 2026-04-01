@@ -29,10 +29,10 @@ import com.mojang.logging.LogUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.resources.model.AtlasManager;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.cuboid.CuboidModel;
+import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -71,11 +71,11 @@ public class PreparablePluginTest implements ClientModInitializer {
 	/**
 	 * Adaptation of the {@link ModelManager} method.
 	 */
-	private static CompletableFuture<Map<Identifier, BlockModel>> loadModelReplacements(PreparableReloadListener.SharedState resourceReloaderStore, Executor executor) {
+	private static CompletableFuture<Map<Identifier, CuboidModel>> loadModelReplacements(PreparableReloadListener.SharedState resourceReloaderStore, Executor executor) {
 		Objects.requireNonNull(resourceReloaderStore.get(AtlasManager.PENDING_STITCH));
 
 		return CompletableFuture.supplyAsync(() -> MODEL_REPLACEMENTS_FINDER.listMatchingResources(resourceReloaderStore.resourceManager()), executor).thenCompose(models2 -> {
-			ArrayList<CompletableFuture<Pair<Identifier, BlockModel>>> list = new ArrayList<>(models2.size());
+			ArrayList<CompletableFuture<Pair<Identifier, CuboidModel>>> list = new ArrayList<>(models2.size());
 
 			for (Map.Entry<Identifier, Resource> entry : models2.entrySet()) {
 				list.add(CompletableFuture.supplyAsync(() -> {
@@ -83,7 +83,7 @@ public class PreparablePluginTest implements ClientModInitializer {
 						// Remove model_replacements/ prefix from the identifier
 						Identifier modelId = MODEL_REPLACEMENTS_FINDER.fileToId(entry.getKey());
 
-						return Pair.of(modelId, BlockModel.fromStream(reader));
+						return Pair.of(modelId, CuboidModel.fromStream(reader));
 					} catch (Exception exception) {
 						LOGGER.error("Failed to load model {}", entry.getKey(), exception);
 						return null;

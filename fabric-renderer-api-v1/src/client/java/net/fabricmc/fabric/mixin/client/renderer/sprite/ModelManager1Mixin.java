@@ -23,19 +23,19 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.renderer.texture.SpriteLoader;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricMaterialBaker;
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
 import net.fabricmc.fabric.impl.client.renderer.MissingSpriteFinderImpl;
 
 @Mixin(targets = "net.minecraft.client.resources.model.ModelManager$1")
-abstract class ModelManager1Mixin implements SpriteGetter {
+abstract class ModelManager1Mixin implements FabricMaterialBaker {
 	@Shadow
 	@Final
-	private TextureAtlasSprite blockMissing;
+	private Material.Baked blockMissing;
 	@Shadow
 	@Final
 	SpriteLoader.Preparations val$blockAtlas;
@@ -48,10 +48,10 @@ abstract class ModelManager1Mixin implements SpriteGetter {
 	private volatile MissingSpriteFinderImpl missingSpriteFinder;
 
 	@Override
-	public SpriteFinder spriteFinder(Identifier atlasTextureId) {
-		if (atlasTextureId.equals(TextureAtlas.LOCATION_BLOCKS)) {
+	public SpriteFinder spriteFinder(Identifier atlasId) {
+		if (atlasId.equals(AtlasIds.BLOCKS)) {
 			return val$blockAtlas.spriteFinder();
-		} else if (atlasTextureId.equals(TextureAtlas.LOCATION_ITEMS)) {
+		} else if (atlasId.equals(AtlasIds.ITEMS)) {
 			return val$itemAtlas.spriteFinder();
 		}
 
@@ -62,7 +62,7 @@ abstract class ModelManager1Mixin implements SpriteGetter {
 				result = missingSpriteFinder;
 
 				if (result == null) {
-					missingSpriteFinder = result = new MissingSpriteFinderImpl(blockMissing);
+					missingSpriteFinder = result = new MissingSpriteFinderImpl(blockMissing.sprite());
 				}
 			}
 		}

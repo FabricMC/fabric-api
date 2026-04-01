@@ -17,18 +17,16 @@
 package net.fabricmc.fabric.api.client.renderer.v1.model;
 
 import java.util.Arrays;
-import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.Transparency;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
 
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 
 /**
  * Collection of utilities for model implementations.
@@ -64,35 +62,75 @@ public final class ModelHelper {
 	}
 
 	/**
-	 * Converts a mesh into an array of lists of vanilla baked quads.
-	 * Useful for creating vanilla baked models when required for compatibility.
-	 * The array indexes correspond to {@link Direction#getName()} with the
-	 * addition of {@link #NULL_FACE_ID}.
-	 *
-	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
+	 * Computes the {@link Transparency} for a {@link TextureAtlasSprite}, using the vertex UVs from
+	 * the given quad.
 	 */
-	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
-		SpriteFinder finder = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).spriteFinder();
+	public static Transparency computeTransparency(TextureAtlasSprite sprite, QuadView quad) {
+		// Find the minimum and maximum UV's.
+		// A simulation of the algorithm is provided in comments below.
+		float minU = Float.MAX_VALUE; // 7, 7, 5, 3
+		float minV = Float.MAX_VALUE; // 9, 8, 8, 8
+		float maxU = 0; // 7, 12, 12, 12
+		float maxV = 0; // 9, 9,  10, 13
 
-		@SuppressWarnings("unchecked")
-		final ImmutableList.Builder<BakedQuad>[] builders = new ImmutableList.Builder[7];
+		// u, v
+		// 7, 9
+		// 12,8
+		// 5, 10
+		// 3, 13
 
-		for (int i = 0; i < 7; i++) {
-			builders[i] = ImmutableList.builder();
+		for (int i = 0; i < 4; i++) {
+			float u = quad.u(i);
+			float v = quad.v(i);
+
+			if (u < minU) {
+				minU = u;
+			}
+
+			if (u > maxU) {
+				maxU = u;
+			}
+
+			if (v < minV) {
+				minV = v;
+			}
+
+			if (v > maxV) {
+				maxV = v;
+			}
 		}
 
-		mesh.forEach(q -> {
-			Direction cullFace = q.cullFace();
-			builders[cullFace == null ? NULL_FACE_ID : cullFace.get3DDataValue()].add(q.toBakedQuad(finder.find(q)));
-		});
+		// Normalize UVs
+		// Inverse linear interpolation
+		// `(t_q - t_0)/Δt` where `t_q` is the value and `t` is `u` or `v`
+		final float width = 1.0f / (sprite.getU1() - sprite.getU0());
+		final float height = 1.0f / (sprite.getV1() - sprite.getV0());
+		minU = (minU - sprite.getU0()) * width;
+		minV = (minV - sprite.getV0()) * height;
+		maxU = (maxU - sprite.getU0()) * width;
+		maxV = (maxV - sprite.getV0()) * height;
 
-		@SuppressWarnings("unchecked")
-		List<BakedQuad>[] result = new List[7];
+		// See FaceBakery#computeMaterialTransparency
+		return sprite
+				.contents()
+				.computeTransparency(minU, minV, maxU, maxV);
+	}
 
-		for (int i = 0; i < 7; i++) {
-			result[i] = builders[i].build();
+	/**
+	 * Computes the vanilla material flags for the given quad. This operation is cheap.
+	 */
+	@BakedQuad.MaterialFlags
+	public static int computeMaterialFlags(QuadView quad) {
+		@BakedQuad.MaterialFlags int flags = 0;
+
+		if (quad.chunkLayer().translucent()) {
+			flags |= BakedQuad.FLAG_TRANSLUCENT;
 		}
 
-		return result;
+		if (quad.animated() || (quad.foilType() != null && quad.foilType() != ItemStackRenderState.FoilType.NONE)) {
+			flags |= BakedQuad.FLAG_ANIMATED;
+		}
+
+		return flags;
 	}
 }

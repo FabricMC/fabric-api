@@ -25,6 +25,7 @@ import com.mojang.authlib.GameProfile;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -34,6 +35,7 @@ import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 public final class PacketContextImpl implements PacketContext {
 	public static final ScopedValue<PacketContext> VALUE = ScopedValue.newInstance();
 	public static final Key<MinecraftServer> SERVER_INSTANCE = fabricKey("server_instance");
+	public static final Key<RegistryAccess> REGISTRY_ACCESS = fabricKey("registry_access");
 	public static final Key<GameProfile> GAME_PROFILE = fabricKey("game_profile");
 	public static final Key<@NonNull Connection> CONNECTION = fabricKey("connection");
 

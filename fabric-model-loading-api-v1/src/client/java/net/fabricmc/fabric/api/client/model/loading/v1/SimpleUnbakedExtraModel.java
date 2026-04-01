@@ -18,15 +18,30 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.function.BiFunction;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.resources.model.BlockModelRotation;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.mojang.logging.LogUtils;
+import org.apache.commons.lang3.mutable.MutableObject;
+import org.slf4j.Logger;
+
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.resources.Identifier;
+
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
+import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
 
 /**
  * A {@link UnbakedExtraModel} that loads a single model.
@@ -34,6 +49,8 @@ import net.minecraft.resources.Identifier;
  * @param <T> The type of the baked model, for instance {@link BlockStateModel}.
  */
 public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
+	private static final Logger LOGGER = LogUtils.getLogger();
+
 	private final Identifier model;
 	private final BiFunction<ResolvedModel, ModelBaker, T> bake;
 
@@ -69,19 +86,61 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	/**
 	 * Create a {@link SimpleUnbakedExtraModel} for a {@link BlockStateModel}.
 	 *
-	 * @param model    The location of the model to load.
-	 * @param settings The settings to bake the geometry with.
+	 * @param model The location of the model to load.
+	 * @param state The state to bake the geometry with.
 	 * @return The unbaked extra model.
 	 */
-	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelState settings) {
-		return new SimpleUnbakedExtraModel<>(model, (baked, baker) -> {
-			TextureSlots textures = baked.getTopTextureSlots();
-			return new SingleVariant(new SimpleModelWrapper(
-					baked.bakeTopGeometry(textures, baker, settings),
-					baked.getTopAmbientOcclusion(),
-					baked.resolveParticleSprite(textures, baker)
-			));
-		});
+	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelState state) {
+		return new SimpleUnbakedExtraModel<>(model, (baked, baker) -> new SingleVariant(bakeResolved(baker, baked, state)));
+	}
+
+	// TODO: expose this as a public utility
+	// Mirror of SimpleModelWrapper#bake (with FRAPI's mixin) that accepts a ResolvedModel instead of an Identifier
+	private static BlockStateModelPart bakeResolved(final ModelBaker modelBakery, final ResolvedModel model, final ModelState state) {
+		TextureSlots textureSlots = model.getTopTextureSlots();
+		boolean hasAmbientOcclusion = model.getTopAmbientOcclusion();
+		Material.Baked particleMaterial = model.resolveParticleMaterial(textureSlots, modelBakery);
+		QuadCollection geometry = model.bakeTopGeometry(textureSlots, modelBakery, state);
+		Multimap<Identifier, Identifier> forbiddenSprites = null;
+
+		if (geometry instanceof MeshQuadCollection meshQuadCollection) {
+			MutableObject<Multimap<Identifier, Identifier>> forbiddenSpritesRef = new MutableObject<>(forbiddenSprites);
+
+			meshQuadCollection.getMesh().forEach(quad -> {
+				if (quad.atlas() != QuadAtlas.BLOCK) {
+					Multimap<Identifier, Identifier> forbiddenSprites1 = forbiddenSpritesRef.get();
+
+					if (forbiddenSprites1 == null) {
+						forbiddenSprites1 = HashMultimap.create();
+						forbiddenSpritesRef.setValue(forbiddenSprites1);
+					}
+
+					TextureAtlasSprite sprite = modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
+					forbiddenSprites1.put(sprite.atlasLocation(), sprite.contents().name());
+				}
+			});
+
+			forbiddenSprites = forbiddenSpritesRef.get();
+		}
+
+		for (BakedQuad bakedQuad : geometry.getAll()) {
+			TextureAtlasSprite sprite = bakedQuad.materialInfo().sprite();
+
+			if (!sprite.atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
+				if (forbiddenSprites == null) {
+					forbiddenSprites = HashMultimap.create();
+				}
+
+				forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
+			}
+		}
+
+		if (forbiddenSprites != null) {
+			LOGGER.warn("Rejecting block model {}, since it contains sprites from outside of supported atlas: {}", model.debugName(), forbiddenSprites);
+			return modelBakery.missingBlockModelPart();
+		} else {
+			return new SimpleModelWrapper(geometry, hasAmbientOcclusion, particleMaterial);
+		}
 	}
 
 	@Override

@@ -25,11 +25,12 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.Connection;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerHandshakePacketListenerImpl;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
 import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
 
@@ -48,11 +49,11 @@ import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
  * PacketContext.Key<TriState> TATER_MESSAGE = PacketContext.key(Identifier.fromNamespaceAndPath("mod", "tater_message"));
  *
  * ServerConfigurationNetworking.registerGlobalReceiver(ServerboundModConfig.TYPE, (packet, context) -> {
- *      context.packetListener().getPacketContext().set(TATER_MESSAGE, packet.taterMessage());
+ *      context.packetContext().set(TATER_MESSAGE, packet.taterMessage());
  * });
  *
  * ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
- *      if (handler.getPacketContext().orElse(TATER_MESSAGE, TriState.DEFAULT).orElse(ModConfig.taterMessage)) {
+ *      if (handler.getPacketContext().orElse(TATER_MESSAGE, ModConfig.taterMessage)) {
  *            handler.getPlayer().sendSystemMessage(Component.literal("I am a Tiny Potato and I believe in you!"), false);
  *      }
  * });
@@ -62,9 +63,15 @@ import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
 public interface PacketContext {
 	/**
 	 * The server instance that handles this connection. Only present on clientbound connections.
-	 * This value is set once the {@link ServerHandshakePacketListenerImpl} is constructed.
+	 * This value is set once the {@link ServerLoginPacketListenerImpl} is constructed.
 	 */
 	ReadKey<MinecraftServer> SERVER_INSTANCE = PacketContextImpl.SERVER_INSTANCE;
+	/**
+	 * The instance of registry access.
+	 * This value is set once the {@link ServerLoginPacketListenerImpl} is constructed (on serve)
+	 * and once client side configuration is finished.
+	 */
+	ReadKey<RegistryAccess> REGISTRY_ACCESS = PacketContextImpl.REGISTRY_ACCESS;
 	/**
 	 * The Game Profile attached to this connection.
 	 * This value is set on both server and client, once the login process succeeds.
@@ -138,7 +145,13 @@ public interface PacketContext {
 	 * @return current context or null
 	 */
 	static PacketContext orElseThrow() {
-		return PacketContextImpl.VALUE.orElseThrow(() -> new RuntimeException("PacketContext is required, but it wasn't set up!"));
+		PacketContext ctx = PacketContextImpl.VALUE.orElseThrow(() -> new RuntimeException("PacketContext is required, but it wasn't set up!"));
+
+		if (ctx == null) {
+			throw new RuntimeException("PacketContext is required, but it was disabled!");
+		}
+
+		return ctx;
 	}
 
 	/**
@@ -160,6 +173,34 @@ public interface PacketContext {
 	 */
 	static <T> T supplyWithContext(PacketContextProvider provider, Supplier<T> supplier) {
 		return ScopedValue.where(PacketContextImpl.VALUE, provider.getPacketContext()).call(supplier::get);
+	}
+
+	/**
+	 * Runs specified runnable without a packet context.
+	 *
+	 * @param runnable runnable to execute
+	 */
+	static void runWithoutContext(Runnable runnable) {
+		if (PacketContextImpl.VALUE.isBound()) {
+			ScopedValue.where(PacketContextImpl.VALUE, null).run(runnable);
+			return;
+		}
+
+		runnable.run();
+	}
+
+	/**
+	 * Runs specified runnable without a packet context, returning a value.
+	 *
+	 * @param supplier supplier to execute
+	 * @return result of supplier
+	 */
+	static <T> T supplyWithoutContext(Supplier<T> supplier) {
+		if (PacketContextImpl.VALUE.isBound()) {
+			return ScopedValue.where(PacketContextImpl.VALUE, null).call(supplier::get);
+		}
+
+		return supplier.get();
 	}
 
 	/**

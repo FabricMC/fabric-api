@@ -73,6 +73,8 @@ public abstract class WindowMixin implements WindowHooks {
 	@Shadow
 	protected abstract void setMode();
 
+	@Shadow
+	private boolean focused;
 	@Unique
 	private int defaultWidth;
 	@Unique
@@ -209,5 +211,10 @@ public abstract class WindowMixin implements WindowHooks {
 
 		setMode();
 		this.eventHandler.resizeGui();
+	}
+
+	@Override
+	public void fabric_focus() {
+		this.focused = true;
 	}
 }

@@ -34,9 +34,10 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricModel;
+import net.fabricmc.fabric.impl.client.rendering.ModelExtensions;
 
 @Mixin(Model.class)
-abstract class ModelMixin<S> implements FabricModel<S> {
+abstract class ModelMixin<S> implements FabricModel<S>, ModelExtensions {
 	@Shadow
 	public abstract ModelPart root();
 
@@ -45,7 +46,12 @@ abstract class ModelMixin<S> implements FabricModel<S> {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void fillChildPartMap(ModelPart root, Function<Identifier, RenderType> layerFactory, CallbackInfo ci) {
-		((ModelPartAccessor) (Object) root).fabric$callForEachChild(childPartMap::putIfAbsent);
+		this.fabric$calculateChildParts(root);
+	}
+
+	@Override
+	public void fabric$calculateChildParts(ModelPart root) {
+		((ModelPartAccessor) (Object) root).fabric$callAddAllChildren(childPartMap::putIfAbsent);
 	}
 
 	@Override
@@ -57,7 +63,7 @@ abstract class ModelMixin<S> implements FabricModel<S> {
 	@Override
 	public void copyTransforms(Model<?> model) {
 		copyTransforms(model.root(), root());
-		((ModelPartAccessor) (Object) model.root()).fabric$callForEachChild((name, part) -> {
+		((ModelPartAccessor) (Object) model.root()).fabric$callAddAllChildren((name, part) -> {
 			ModelPart childPart = getChildPart(name);
 
 			if (childPart != null) {

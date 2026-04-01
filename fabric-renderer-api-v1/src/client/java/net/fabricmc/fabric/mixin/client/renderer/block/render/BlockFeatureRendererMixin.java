@@ -16,120 +16,138 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
-import java.util.function.Predicate;
-
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockQuadOutput;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.OptionsRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.client.renderer.v1.render.BlockMultiBufferSource;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricModelBlockRenderer;
-import net.fabricmc.fabric.impl.client.renderer.DelegatingBlockMultiBufferSourceImpl;
-import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockModelSubmit;
-import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockSubmit;
-import net.fabricmc.fabric.impl.client.renderer.SubmitNodeCollectionExtension;
+import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
+import net.fabricmc.fabric.impl.client.renderer.QuadConsumers;
 
+// TODO FRAPI 26.1: how much of this, if any, should be moved to Indigo?
 @Mixin(BlockFeatureRenderer.class)
 abstract class BlockFeatureRendererMixin {
 	@Shadow
 	@Final
-	private PoseStack poseStack;
+	private QuadInstance quadInstance;
+	@Shadow
+	@Final
+	private RandomSource random;
 
-	// Support multi-chunk layer models (MovingBlockSubmit).
-	@Overwrite
-	private void renderMovingBlockSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource, final BlockRenderDispatcher blockRenderDispatcher, final boolean translucent) {
-		BlockMultiBufferSource blockBufferSource = ChunkSectionLayerHelper.movingDelegate(bufferSource);
-		Predicate<ChunkSectionLayer> layerFilter = translucent ? layer -> layer == ChunkSectionLayer.TRANSLUCENT : layer -> layer != ChunkSectionLayer.TRANSLUCENT;
-
-		for (SubmitNodeStorage.MovingBlockSubmit submit : nodeCollection.getMovingBlockSubmits()) {
-			MovingBlockRenderState renderState = submit.movingBlockRenderState();
-			BlockState blockState = renderState.blockState;
-			BlockStateModel model = blockRenderDispatcher.getBlockModel(blockState);
-			long seed = blockState.getSeed(renderState.randomSeedPos);
-			poseStack.pushPose();
-			poseStack.mulPose(submit.pose());
-			blockRenderDispatcher.getModelRenderer().tesselateBlock(renderState, model, blockState, renderState.blockPos, poseStack, blockBufferSource, layerFilter, false, seed, OverlayTexture.NO_OVERLAY);
-			poseStack.popPose();
-		}
+	@Shadow
+	private static void putPartQuads(BlockStateModelPart part, PoseStack.Pose pose, QuadInstance quadInstance, int[] tintLayers, VertexConsumer buffer, @Nullable VertexConsumer outlineBuffer) {
 	}
 
-	// Support multi-chunk layer models (BlockSubmit) and ExtendedBlockSubmit.
-	@Overwrite
-	private void renderBlockSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource, final BlockRenderDispatcher blockRenderDispatcher, final OutlineBufferSource outlineBufferSource, final boolean translucent) {
-		Predicate<ChunkSectionLayer> layerFilter = translucent ? layer -> layer == ChunkSectionLayer.TRANSLUCENT : layer -> layer != ChunkSectionLayer.TRANSLUCENT;
-
-		for (SubmitNodeStorage.BlockSubmit submit : nodeCollection.getBlockSubmits()) {
-			poseStack.pushPose();
-			poseStack.last().set(submit.pose());
-			blockRenderDispatcher.renderSingleBlock(submit.state(), poseStack, bufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO);
-
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				blockRenderDispatcher.renderSingleBlock(submit.state(), poseStack, outlineBufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO);
-			}
-
-			poseStack.popPose();
-		}
-
-		for (ExtendedBlockSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockSubmits()) {
-			poseStack.pushPose();
-			poseStack.last().set(submit.pose());
-			blockRenderDispatcher.renderSingleBlock(
-					submit.state(), poseStack,
-					bufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
-
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				blockRenderDispatcher.renderSingleBlock(
-						submit.state(), poseStack,
-						outlineBufferSource, layerFilter, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
-			}
-
-			poseStack.popPose();
-		}
+	@Inject(method = "renderMovingBlockSubmits", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.<init>(ZZLnet/minecraft/client/color/block/BlockColors;)V"))
+	private void beforeInitBlockRenderer(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockStateModelSet blockStateModelSet, OptionsRenderState optionsState, boolean translucent, CallbackInfo ci, @Local(name = "poseStack") PoseStack poseStack, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
+		altBlockRenderer.set(Renderer.get().altModelBlockRenderer(optionsState.ambientOcclusion, false, Minecraft.getInstance().getBlockColors()));
+		altQuadOutput.set(Renderer.get().quadEmitter(quad -> {
+			RenderType renderType = ChunkSectionLayerHelper.getMovingBlockRenderType(quad.chunkLayer());
+			VertexConsumer buffer = bufferSource.getBuffer(renderType);
+			quad.buffer(OverlayTexture.NO_OVERLAY, poseStack.last(), buffer);
+		}));
 	}
 
-	// Support ExtendedBlockModelSubmit.
+	@Redirect(method = "renderMovingBlockSubmits", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;hasMaterialFlag(I)Z"))
+	private boolean hasMaterialFlagProxy(BlockStateModel model, @BakedQuad.MaterialFlags int flag, @Local(name = "movingBlockRenderState") MovingBlockRenderState movingBlockRenderState, @Local(name = "blockState") BlockState blockState) {
+		long blockSeed = blockState.getSeed(movingBlockRenderState.randomSeedPos);
+		random.setSeed(blockSeed);
+		return model.hasMaterialFlag(movingBlockRenderState, movingBlockRenderState.blockPos, blockState, random, flag);
+	}
+
+	@Redirect(method = "renderMovingBlockSubmits", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.tesselateBlock(Lnet/minecraft/client/renderer/block/BlockQuadOutput;FFFLnet/minecraft/client/renderer/block/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;J)V"))
+	private void tesselateBlockProxy(ModelBlockRenderer blockRenderer, BlockQuadOutput output, float x, float y, float z, BlockAndTintGetter level, BlockPos pos, BlockState blockState, BlockStateModel model, long seed, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
+		altBlockRenderer.get().tesselateBlock(altQuadOutput.get(), x, y, z, level, pos, blockState, model, seed);
+	}
+
 	@Inject(method = "renderBlockModelSubmits", at = @At("RETURN"))
 	private void onReturnRenderBlockModelSubmits(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, boolean translucent, CallbackInfo ci) {
-		DelegatingBlockMultiBufferSourceImpl blockMultiBufferSource = new DelegatingBlockMultiBufferSourceImpl(translucent);
+		QuadConsumers.BlockModel quadConsumer = new QuadConsumers.BlockModel();
+		QuadEmitter output = Renderer.get().quadEmitter(quadConsumer);
 
-		for (ExtendedBlockModelSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockModelSubmits()) {
-			blockMultiBufferSource.renderTypeFunction = submit.renderTypeFunction();
-			blockMultiBufferSource.multiBufferSource = bufferSource;
-			FabricModelBlockRenderer.renderModel(
-					submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.r(), submit.g(),
-					submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
-					submit.state());
+		for (FabricSubmitNodeCollection.ExtendedBlockModelSubmit submit : nodeCollection.getExtendedBlockModelSubmits()) {
+			if (submit.renderType().hasBlending() == translucent) {
+				VertexConsumer buffer = bufferSource.getBuffer(submit.renderType());
+				VertexConsumer outlineBuffer;
 
-			if (submit.outlineColor() != 0) {
-				outlineBufferSource.setColor(submit.outlineColor());
-				blockMultiBufferSource.multiBufferSource = outlineBufferSource;
-				FabricModelBlockRenderer.renderModel(
-						submit.pose(), blockMultiBufferSource, blockMultiBufferSource, submit.model(), submit.r(), submit.g(),
-						submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(),
-						submit.state());
+				if (submit.outlineColor() != 0) {
+					outlineBufferSource.setColor(submit.outlineColor());
+					outlineBuffer = outlineBufferSource.getBuffer(submit.renderType());
+				} else {
+					outlineBuffer = null;
+				}
+
+				quadInstance.setLightCoords(submit.lightCoords());
+				quadInstance.setOverlayCoords(submit.overlayCoords());
+
+				for (BlockStateModelPart part : submit.modelParts()) {
+					putPartQuads(part, submit.pose(), quadInstance, submit.tintLayers(), buffer, outlineBuffer);
+				}
+
+				quadConsumer.tintLayers = submit.tintLayers();
+				quadConsumer.lightCoords = submit.lightCoords();
+				quadConsumer.overlayCoords = submit.overlayCoords();
+				quadConsumer.pose = submit.pose();
+				quadConsumer.buffer = buffer;
+				quadConsumer.outlineBuffer = outlineBuffer;
+				submit.mesh().outputTo(output);
 			}
+		}
+	}
+
+	// TODO FRAPI 26.1: don't use an overwrite if possible
+	@Overwrite
+	private void renderBreakingBlockModelSubmits(final SubmitNodeCollection nodeCollection, final MultiBufferSource.BufferSource bufferSource) {
+		QuadConsumers.BreakingBlockModel quadConsumer = new QuadConsumers.BreakingBlockModel();
+		QuadEmitter output = Renderer.get().quadEmitter(quadConsumer);
+
+		for (SubmitNodeStorage.BreakingBlockModelSubmit submit : nodeCollection.getBreakingBlockModelSubmits()) {
+			VertexConsumer buffer = new SheetedDecalTextureGenerator(bufferSource.getBuffer(ModelBakery.DESTROY_TYPES.get(submit.progress())), submit.pose(), 1.0F);
+			quadConsumer.pose = submit.pose();
+			quadConsumer.buffer = buffer;
+			output.clear();
+			random.setSeed(submit.seed());
+			// TODO FRAPI 26.1: somehow pass the level, pos, and state here when available? maybe via extended submit type?
+			submit.model().emitQuads(output, BlockAndTintGetter.EMPTY, BlockPos.ZERO, Blocks.AIR.defaultBlockState(), random, _ -> false);
 		}
 	}
 }

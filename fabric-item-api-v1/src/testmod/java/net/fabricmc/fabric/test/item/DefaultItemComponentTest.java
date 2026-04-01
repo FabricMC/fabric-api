@@ -27,6 +27,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.Event;
@@ -58,6 +60,12 @@ public class DefaultItemComponentTest implements ModInitializer {
 						() -> Items.DIAMOND_PICKAXE.getName(Items.DIAMOND_PICKAXE.getDefaultInstance())
 				);
 				builder.set(DataComponents.ITEM_NAME, prependModifiedLiteral(baseName));
+			});
+			// Make all Netherite Axes have Fire Aspect I
+			context.modify(Items.NETHERITE_AXE, (builder, registryLookup, item) -> {
+				ItemEnchantments.Mutable mutableEnchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+				mutableEnchantments.set(registryLookup.getOrThrow(Enchantments.FIRE_ASPECT), 1);
+				builder.set(DataComponents.ENCHANTMENTS, mutableEnchantments.toImmutable());
 			});
 		});
 

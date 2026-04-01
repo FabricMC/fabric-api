@@ -28,15 +28,16 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.CompositeBlockStateModel;
@@ -46,10 +47,19 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	private final BlockStateModel[] models;
 	@UnmodifiableView
 	private final List<BlockStateModel> modelsView;
+	private final @BakedQuad.MaterialFlags int materialFlags;
 
 	public CompositeBlockStateModelImpl(BlockStateModel[] models) {
 		this.models = models;
 		modelsView = Arrays.asList(models);
+
+		@BakedQuad.MaterialFlags int materialFlags = 0;
+
+		for (BlockStateModel model : this.models) {
+			materialFlags |= model.materialFlags();
+		}
+
+		this.materialFlags = materialFlags;
 	}
 
 	public static CompositeBlockStateModelImpl of(List<BlockStateModel> models) {
@@ -68,7 +78,7 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
+	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 		long seed = random.nextLong();
 
 		for (BlockStateModel model : models) {
@@ -118,13 +128,18 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon() {
-		return models[0].particleIcon();
+	public Material.Baked particleMaterial() {
+		return models[0].particleMaterial();
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		return models[0].particleIcon(level, pos, state);
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return models[0].particleMaterial(level, pos, state);
+	}
+
+	@Override
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		return materialFlags;
 	}
 
 	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {

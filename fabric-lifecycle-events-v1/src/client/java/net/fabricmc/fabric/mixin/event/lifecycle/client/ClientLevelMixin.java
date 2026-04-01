@@ -26,14 +26,15 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 @Mixin(ClientLevel.class)
-public abstract class ClientLevelMixin {
-	@Inject(method = "tickEntities", at = @At("TAIL"))
-	public void tickLevelAfterBlockEntities(CallbackInfo ci) {
-		ClientTickEvents.END_LEVEL_TICK.invoker().onEndTick((ClientLevel) (Object) this);
-	}
-
+abstract class ClientLevelMixin {
 	@Inject(method = "tickEntities", at = @At("HEAD"))
 	private void startLevelTick(CallbackInfo ci) {
+		// level.tick(Block)Entities is called before level.tick() in Minecraft.tick()
 		ClientTickEvents.START_LEVEL_TICK.invoker().onStartTick((ClientLevel) (Object) this);
+	}
+
+	@Inject(method = "tick", at = @At("RETURN"))
+	public void endLevelTick(CallbackInfo ci) {
+		ClientTickEvents.END_LEVEL_TICK.invoker().onEndTick((ClientLevel) (Object) this);
 	}
 }

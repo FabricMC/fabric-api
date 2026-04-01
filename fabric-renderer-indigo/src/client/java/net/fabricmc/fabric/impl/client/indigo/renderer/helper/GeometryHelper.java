@@ -21,7 +21,7 @@ import static net.minecraft.util.Mth.equal;
 import org.joml.Vector3fc;
 
 import net.minecraft.client.renderer.FaceInfo;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;

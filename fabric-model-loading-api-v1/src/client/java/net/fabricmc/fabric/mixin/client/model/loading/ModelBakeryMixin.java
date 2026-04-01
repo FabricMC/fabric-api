@@ -25,6 +25,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -36,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -100,7 +101,7 @@ abstract class ModelBakeryMixin {
 		});
 	}
 
-	@WrapOperation(method = "lambda$bakeModels$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockStateModel$UnbakedRoot;bake(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/resources/model/ModelBaker;)Lnet/minecraft/client/renderer/block/model/BlockStateModel;"))
+	@WrapOperation(method = "lambda$bakeModels$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel$UnbakedRoot;bake(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/resources/model/ModelBaker;)Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;"))
 	private static BlockStateModel wrapBlockModelBake(BlockStateModel.UnbakedRoot unbakedModel, BlockState state, ModelBaker baker, Operation<BlockStateModel> operation) {
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 
@@ -111,12 +112,12 @@ abstract class ModelBakeryMixin {
 		return eventDispatcher.modifyBlockModel(unbakedModel, state, baker, operation);
 	}
 
-	@WrapOperation(method = "lambda$bakeModels$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemModel$Unbaked;bake(Lnet/minecraft/client/renderer/item/ItemModel$BakingContext;)Lnet/minecraft/client/renderer/item/ItemModel;"))
-	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Operation<ItemModel> operation, @Local(argsOnly = true) Identifier itemId) {
+	@WrapOperation(method = "lambda$bakeModels$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemModel$Unbaked;bake(Lnet/minecraft/client/renderer/item/ItemModel$BakingContext;Lorg/joml/Matrix4fc;)Lnet/minecraft/client/renderer/item/ItemModel;"))
+	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Matrix4fc transformation, Operation<ItemModel> operation, @Local(argsOnly = true) Identifier itemId) {
 		if (fabric_eventDispatcher == null) {
-			return operation.call(unbakedModel, bakeContext);
+			return operation.call(unbakedModel, bakeContext, transformation);
 		}
 
-		return fabric_eventDispatcher.modifyItemModel(unbakedModel, itemId, bakeContext, operation);
+		return fabric_eventDispatcher.modifyItemModel(unbakedModel, itemId, bakeContext, transformation, operation);
 	}
 }

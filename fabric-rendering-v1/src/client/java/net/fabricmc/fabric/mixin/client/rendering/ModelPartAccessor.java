@@ -26,5 +26,5 @@ import net.minecraft.client.model.geom.ModelPart;
 @Mixin(ModelPart.class)
 public interface ModelPartAccessor {
 	@Invoker("addAllChildren")
-	void fabric$callForEachChild(BiConsumer<String, ModelPart> partBiConsumer);
+	void fabric$callAddAllChildren(BiConsumer<String, ModelPart> partBiConsumer);
 }

@@ -30,6 +30,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
 /**
@@ -359,5 +360,12 @@ public final class ServerPlayNetworking {
 		 * @return The packet sender
 		 */
 		PacketSender responseSender();
+
+		/**
+		 * @return The PacketContext instance attached to the listener
+		 */
+		default PacketContext packetContext() {
+			return this.player().connection.getPacketContext();
+		}
 	}
 }

@@ -23,17 +23,16 @@ import java.util.stream.Stream;
 import com.mojang.serialization.MapCodec;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.block.v1.FabricBlockState;
@@ -52,19 +51,44 @@ public class PillarBlockStateModel implements BlockStateModel {
 	}
 
 	// alone, bottom, middle, top
-	private final TextureAtlasSprite[] sprites;
+	private final Material.Baked[] materials;
+	private final @BakedQuad.MaterialFlags int[] materialFlags;
+	private final @BakedQuad.MaterialFlags int staticMaterialFlags;
 
-	public PillarBlockStateModel(TextureAtlasSprite[] sprites) {
-		this.sprites = sprites;
+	public PillarBlockStateModel(Material.Baked[] materials) {
+		this.materials = materials;
+		materialFlags = new int[materials.length];
+		@BakedQuad.MaterialFlags int staticMaterialFlags = 0;
+
+		for (int i = 0; i < materials.length; i++) {
+			Material.Baked material = materials[i];
+			int flags = 0;
+
+			if (material.forceTranslucent() || material.sprite()
+					.contents()
+					.computeTransparency(0.0f, 0.0f, 1.0f, 1.0f)
+					.hasTranslucent()) {
+				flags |= BakedQuad.FLAG_TRANSLUCENT;
+			}
+
+			if (material.sprite().contents().isAnimated()) {
+				flags |= BakedQuad.FLAG_ANIMATED;
+			}
+
+			materialFlags[i] = flags;
+			staticMaterialFlags |= flags;
+		}
+
+		this.staticMaterialFlags = staticMaterialFlags;
 	}
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = getConnectedTexture(level, pos, state, side);
-			emitter.square(side, 0, 0, 1, 1, 0);
-			emitter.spriteBake(sprites[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
-			emitter.emit();
+			emitter.square(side, 0, 0, 1, 1, 0)
+					.materialBake(materials[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV)
+					.emit();
 		}
 	}
 
@@ -79,6 +103,17 @@ public class PillarBlockStateModel implements BlockStateModel {
 				getConnectedTexture(level, pos, state, Direction.WEST),
 				getConnectedTexture(level, pos, state, Direction.EAST)
 		);
+	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		@BakedQuad.MaterialFlags int flags = materialFlags[ConnectedTexture.ALONE.ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.NORTH).ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.SOUTH).ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.WEST).ordinal()];
+		flags |= materialFlags[getConnectedTexture(level, pos, state, Direction.EAST).ordinal()];
+		return flags;
 	}
 
 	private static ConnectedTexture getConnectedTexture(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side) {
@@ -111,25 +146,26 @@ public class PillarBlockStateModel implements BlockStateModel {
 		BlockState otherAppearance = ((FabricBlockState) otherState).getAppearance(
 				level, otherPos, side, originState, originPos);
 
-		if (!otherAppearance.is(Registration.PILLAR_BLOCK)) {
-			return false;
-		}
-
-		return true;
+		return otherAppearance.is(Registration.PILLAR_BLOCK);
 	}
 
 	@Override
-	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
+	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon() {
-		return sprites[0];
+	public Material.Baked particleMaterial() {
+		return materials[0];
+	}
+
+	@Override
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		return staticMaterialFlags;
 	}
 
 	public record Unbaked() implements CustomUnbakedBlockStateModel, ModelDebugName {
-		private static final List<Material> SPRITES = Stream.of("alone", "bottom", "middle", "top")
-				.map(suffix -> new Material(TextureAtlas.LOCATION_BLOCKS, RendererTest.id("block/pillar_" + suffix)))
+		private static final List<Material> MATERIALS = Stream.of("alone", "bottom", "middle", "top")
+				.map(suffix -> new Material(RendererTest.id("block/pillar_" + suffix)))
 				.toList();
 		public static final Unbaked INSTANCE = new Unbaked();
 		public static final MapCodec<Unbaked> CODEC = MapCodec.unit(INSTANCE);
@@ -145,13 +181,15 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 		@Override
 		public BlockStateModel bake(ModelBaker baker) {
-			TextureAtlasSprite[] sprites = new TextureAtlasSprite[SPRITES.size()];
+			Material.Baked[] materials = new Material.Baked[MATERIALS.size()];
 
-			for (int i = 0; i < sprites.length; ++i) {
-				sprites[i] = baker.sprites().get(SPRITES.get(i), this);
+			for (int i = 0; i < materials.length; ++i) {
+				Material.Baked material = baker.materials()
+						.get(MATERIALS.get(i), this);
+				materials[i] = material;
 			}
 
-			return new PillarBlockStateModel(sprites);
+			return new PillarBlockStateModel(materials);
 		}
 
 		@Override

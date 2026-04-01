@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
@@ -288,5 +289,12 @@ public final class ClientConfigurationNetworking {
 		 * @return The packet sender
 		 */
 		PacketSender responseSender();
+
+		/**
+		 * @return The PacketContext instance attached to the listener
+		 */
+		default PacketContext packetContext() {
+			return this.packetListener().getPacketContext();
+		}
 	}
 }

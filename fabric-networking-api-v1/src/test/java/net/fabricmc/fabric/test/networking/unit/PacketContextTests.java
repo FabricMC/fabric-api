@@ -84,6 +84,14 @@ public class PacketContextTests {
 		PacketContext.runWithContext(connection, () -> {
 			assertEquals(PacketContext.get(), context);
 			assertDoesNotThrow(() -> PacketContext.orElseThrow());
+
+			PacketContext.runWithoutContext(() -> {
+				assertNull(assertDoesNotThrow(() -> PacketContext.get()));
+				assertThrows(RuntimeException.class, () -> PacketContext.orElseThrow());
+			});
+
+			assertEquals(PacketContext.get(), context);
+			assertDoesNotThrow(() -> PacketContext.orElseThrow());
 		});
 
 		assertNull(assertDoesNotThrow(() -> PacketContext.get()));

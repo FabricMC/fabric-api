@@ -19,28 +19,18 @@ package net.fabricmc.fabric.mixin.networking;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.Connection;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerHandshakePacketListenerImpl;
 
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
-import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
 
 @Mixin(ServerHandshakePacketListenerImpl.class)
 abstract class ServerHandshakePacketListenerImplMixin implements PacketContextProvider {
 	@Shadow
 	@Final
 	private Connection connection;
-
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void provideServerContext(MinecraftServer server, Connection connection, CallbackInfo ci) {
-		connection.getPacketContext().set(PacketContextImpl.SERVER_INSTANCE, server);
-	}
 
 	@Override
 	public PacketContext getPacketContext() {

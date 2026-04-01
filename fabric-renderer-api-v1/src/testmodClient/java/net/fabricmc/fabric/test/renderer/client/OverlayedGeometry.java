@@ -16,21 +16,24 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.TextureSlots;
+import java.util.Objects;
+
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvedModel;
-import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
@@ -44,8 +47,10 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 
 		ResolvedModel parentModel = modelBaker.getModel(parentId);
 		QuadCollection parentQuads = parentModel.bakeTopGeometry(parentModel.getTopTextureSlots(), modelBaker, modelState);
-		TextureAtlasSprite overlaySprite = modelBaker.sprites().get(textures.getMaterial("overlay"), name);
-		QuadAtlas overlayAtlas = QuadAtlas.of(overlaySprite.atlasLocation());
+		Material.Baked overlayMaterial = modelBaker.materials()
+				.get(Objects.requireNonNull(textures.getMaterial("overlay")), name);
+		TextureAtlasSprite overlaySprite = overlayMaterial.sprite();
+		QuadAtlas overlayAtlas = QuadAtlas.ofLocation(overlaySprite.atlasLocation());
 
 		if (overlayAtlas == null) {
 			return parentQuads;
@@ -55,18 +60,7 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 			meshQuadCollection.getMesh().forEach(quad -> {
 				emitter.copyFrom(quad).emit();
 				emitter.copyFrom(quad);
-				emitter.atlas(overlayAtlas);
-
-				TextureAtlasSprite sprite = modelBaker.sprites().spriteFinder(emitter.atlas()).find(emitter);
-
-				for (int i = 0; i < 4; i++) {
-					emitter.uv(
-							i,
-							overlaySprite.getU(Mth.inverseLerp(emitter.u(i), sprite.getU0(), sprite.getU1())),
-							overlaySprite.getV(Mth.inverseLerp(emitter.v(i), sprite.getV0(), sprite.getV1()))
-					);
-				}
-
+				emitter.materialBake(overlayMaterial, MutableQuadView.BAKE_LOCK_UV);
 				emitter.emit();
 			});
 		} else {
@@ -76,18 +70,7 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 				for (BakedQuad bakedQuad : parentQuads.getQuads(cullFace)) {
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace).emit();
 					emitter.fromBakedQuad(bakedQuad).cullFace(cullFace);
-					emitter.atlas(overlayAtlas);
-
-					TextureAtlasSprite sprite = bakedQuad.sprite();
-
-					for (int j = 0; j < 4; j++) {
-						emitter.uv(
-								j,
-								overlaySprite.getU(Mth.inverseLerp(emitter.u(j), sprite.getU0(), sprite.getU1())),
-								overlaySprite.getV(Mth.inverseLerp(emitter.v(j), sprite.getV0(), sprite.getV1()))
-						);
-					}
-
+					emitter.materialBake(overlayMaterial, MutableQuadView.BAKE_LOCK_UV);
 					emitter.emit();
 				}
 			}

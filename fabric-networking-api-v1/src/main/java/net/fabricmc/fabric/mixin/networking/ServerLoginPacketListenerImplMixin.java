@@ -53,7 +53,10 @@ abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExten
 	private ServerLoginNetworkAddon addon;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void initAddon(CallbackInfo ci) {
+	private void initAddon(MinecraftServer server, Connection connection, boolean transferred, CallbackInfo ci) {
+		connection.getPacketContext().set(PacketContextImpl.SERVER_INSTANCE, server);
+		connection.getPacketContext().set(PacketContextImpl.REGISTRY_ACCESS, server.registryAccess());
+
 		this.addon = new ServerLoginNetworkAddon((ServerLoginPacketListenerImpl) (Object) this);
 		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
 		this.addon.lateInit();

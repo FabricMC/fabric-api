@@ -25,8 +25,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.cuboid.CuboidModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
@@ -67,6 +67,6 @@ public class UnbakedModelJsonDeserializer implements JsonDeserializer<UnbakedMod
 			}
 		}
 
-		return context.deserialize(jsonElement, BlockModel.class);
+		return context.deserialize(jsonElement, CuboidModel.class);
 	}
 }

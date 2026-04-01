@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.world.level.block.state.BlockState;
 

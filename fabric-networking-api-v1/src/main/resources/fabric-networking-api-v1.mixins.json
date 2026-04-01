@@ -23,6 +23,7 @@
     "ServerGamePacketListenerImplMixin",
     "ServerHandshakePacketListenerImplMixin",
     "ServerLoginPacketListenerImplMixin",
+    "ServerPlayerMixin",
     "accessor.ChunkMapAccessor",
     "accessor.EntityTrackerAccessor",
     "accessor.PacketDecoderAccessor",
