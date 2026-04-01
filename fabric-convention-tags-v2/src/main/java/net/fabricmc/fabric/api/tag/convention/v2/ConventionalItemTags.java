@@ -495,6 +495,11 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> MUSIC_DISCS = register("music_discs");
 	/**
+	 * For banner patterns to be used in recipes.
+	 * This is a backport of 21.6 Minecraft's #minecraft:loom_patterns item tag.
+	 */
+	public static final TagKey<Item> LOOM_PATTERNS = register("loom_patterns");
+	/**
 	 * For rod-like materials to be used in recipes.
 	 */
 	public static final TagKey<Item> RODS = register("rods");
