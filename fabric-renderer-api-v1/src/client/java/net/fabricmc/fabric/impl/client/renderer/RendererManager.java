@@ -16,108 +16,31 @@
 
 package net.fabricmc.fabric.impl.client.renderer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jetbrains.annotations.VisibleForTesting;
-
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.client.renderer.v1.RendererProvider;
-import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
-import net.fabricmc.fabric.impl.base.toposort.SortableNode;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public final class RendererManager {
-	@VisibleForTesting
-	public static List<RendererProviderNode> nodes = new ArrayList<>();
-	@VisibleForTesting
-	public static final Map<String, EntrypointContainer<RendererProvider>> ENTRYPOINTS = new HashMap<>();
-	@VisibleForTesting
-	public static final Map<String, RendererProviderNode> NODE_MAP = new HashMap<>();
-	@VisibleForTesting
-	public static final Map<String, Collection<String>> OVERRIDES = new HashMap<>();
-	private static EntrypointContainer<RendererProvider> chosenRendererProvider;
 	private static Renderer activeRenderer;
 
 	private RendererManager() {
 	}
 
 	public static Renderer getRenderer() {
-		if (activeRenderer != null) {
-			return activeRenderer;
+		if (activeRenderer == null) {
+			throw new UnsupportedOperationException("Attempted to retrieve active rendering plug-in before one was registered.");
 		}
 
-		activeRenderer = getOrLoadRendererProvider().getEntrypoint().getRenderer();
 		return activeRenderer;
 	}
 
-	public static EntrypointContainer<RendererProvider> getOrLoadRendererProvider() {
-		if (chosenRendererProvider != null) {
-			return chosenRendererProvider;
+	public static void registerRenderer(Renderer renderer) {
+		if (renderer == null) {
+			throw new NullPointerException("Attempted to register a null rendering plug-in. This is not supported.");
 		}
 
-		List<EntrypointContainer<RendererProvider>> entrypoints = FabricLoader.getInstance()
-				.getEntrypointContainers("fabric-renderer-api-v1:renderer_provider", RendererProvider.class);
-
-		// Collect orderings
-		for (EntrypointContainer<RendererProvider> next : entrypoints) {
-			String id = next.getProvider().getMetadata().getId();
-			RendererManager.ENTRYPOINTS.put(id, next);
-			RendererProviderNode node = new RendererProviderNode(id, next.getEntrypoint());
-			NODE_MAP.put(id, node);
-			OVERRIDES.put(id, node.rendererProvider.getOverrides());
+		if (activeRenderer != null) {
+			throw new UnsupportedOperationException("Attempted to register a second rendering plug-in. Multiple rendering plug-ins are not supported.");
 		}
 
-		sortOverrides();
-
-		if (!nodes.isEmpty()) {
-			EntrypointContainer<RendererProvider> rendererProvider = RendererManager.ENTRYPOINTS.get(nodes.getFirst().id);
-			chosenRendererProvider = rendererProvider;
-			return rendererProvider;
-		} else {
-			throw new NullPointerException("A renderer plug-in has not been provided before Minecraft has loaded. This is unsupported.");
-		}
-	}
-
-	@VisibleForTesting
-	public static void sortOverrides() {
-		// Sort orderings
-		for (Map.Entry<String, Collection<String>> entry : OVERRIDES.entrySet()) {
-			RendererProviderNode providerNode = NODE_MAP.get(entry.getKey());
-
-			for (String overrideId : entry.getValue()) {
-				RendererProviderNode overrideNode = NODE_MAP.get(overrideId);
-
-				if (overrideNode == null) {
-					continue;
-				}
-
-				RendererProviderNode.link(providerNode, overrideNode);
-			}
-
-			nodes = new ArrayList<>(NODE_MAP.values());
-			NodeSorting.sort(nodes, "RendererProvider", Comparator.comparing(RendererProviderNode::getDescription));
-		}
-	}
-
-	@VisibleForTesting
-	public static class RendererProviderNode extends SortableNode<RendererProviderNode> {
-		public final String id;
-		public final RendererProvider rendererProvider;
-
-		public RendererProviderNode(String id, RendererProvider rendererProvider) {
-			this.id = id;
-			this.rendererProvider = rendererProvider;
-		}
-
-		@Override
-		protected String getDescription() {
-			return id;
-		}
+		activeRenderer = renderer;
 	}
 }

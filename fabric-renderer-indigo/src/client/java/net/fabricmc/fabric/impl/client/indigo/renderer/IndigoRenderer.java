@@ -34,18 +34,9 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.AltModelBlockRende
  * The Fabric default renderer implementation. Supports all features defined in the API.
  */
 public class IndigoRenderer implements Renderer {
-	private static IndigoRenderer instance;
+	public static final IndigoRenderer INSTANCE = new IndigoRenderer();
 
-	private IndigoRenderer() {
-	}
-
-	static IndigoRenderer getOrCreateInstance() {
-		if (instance == null) {
-			instance = new IndigoRenderer();
-		}
-
-		return instance;
-	}
+	private IndigoRenderer() { }
 
 	@Override
 	public QuadEmitter quadEmitter(Consumer<? super MutableQuadView> consumer) {
