@@ -19,7 +19,7 @@
     "fabricloader": ">=0.18.4",
     "fabric-api-base": "*"
   },
-  "description": "A toolkit for using debug tools Mojang have created and other utilities in tests and development.",
+  "description": "A toolkit for registering and using debug subscriptions and other debug tools Mojang have created.",
   "mixins": [
     "fabric-debug-api-v1.mixins.json",
     {
