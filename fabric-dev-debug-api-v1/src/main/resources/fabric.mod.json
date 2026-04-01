@@ -16,6 +16,6 @@
   },
   "description": "An extension of Debug API with features only available in development environments.",
   "custom": {
-    "fabric-api:module-lifecycle": "experimental"
+    "fabric-api:module-lifecycle": "stable"
   }
 }
