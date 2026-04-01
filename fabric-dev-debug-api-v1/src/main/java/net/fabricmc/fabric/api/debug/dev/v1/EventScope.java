@@ -32,6 +32,7 @@ import net.fabricmc.fabric.impl.debug.dev.EventScopeImpl;
  * When closed, the event will be unregistered.
  */
 @ApiStatus.NonExtendable
+@ApiStatus.Experimental
 public interface EventScope extends AutoCloseable {
 	@Override
 	void close();
