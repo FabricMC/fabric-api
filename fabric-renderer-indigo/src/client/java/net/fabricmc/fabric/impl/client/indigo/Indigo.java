@@ -30,11 +30,14 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
 import net.fabricmc.loader.api.FabricLoader;
 
-public class Indigo {
+public class Indigo implements ClientModInitializer {
 	public static final AoConfig AMBIENT_OCCLUSION_MODE;
 	/** Set true in dev env to confirm results match vanilla when they should. */
 	public static final boolean DEBUG_COMPARE_LIGHTING;
@@ -44,7 +47,7 @@ public class Indigo {
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 	public static final boolean FIX_LUMINOUS_AO_SHADE;
 
-	static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
 	/** If set the default config file will be generated on startup, restoring pre 26.1 behavior. */
 	private static final boolean GENERATE_CONFIG_FILE = System.getProperty("fabric.indigo.generateConfigFile") != null;
 
@@ -123,6 +126,16 @@ public class Indigo {
 			} catch (IOException e) {
 				LOGGER.warn("[Indigo] Could not store property file '{}'", configFile.toAbsolutePath(), e);
 			}
+		}
+	}
+
+	@Override
+	public void onInitializeClient() {
+		if (IndigoMixinConfigPlugin.shouldApplyIndigo()) {
+			LOGGER.info("[Indigo] Registering Indigo renderer!");
+			Renderer.register(IndigoRenderer.INSTANCE);
+		} else {
+			LOGGER.info("[Indigo] Different rendering plugin detected; not applying Indigo.");
 		}
 	}
 }
