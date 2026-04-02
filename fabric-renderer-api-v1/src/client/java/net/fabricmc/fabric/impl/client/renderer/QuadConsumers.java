@@ -17,11 +17,13 @@
 package net.fabricmc.fabric.impl.client.renderer;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 
@@ -38,9 +40,8 @@ public final class QuadConsumers {
 		public int lightCoords;
 		public int overlayCoords;
 		public PoseStack.Pose pose;
-		public VertexConsumer buffer;
-		@Nullable
-		public VertexConsumer outlineBuffer;
+		public Function<ChunkSectionLayer, RenderType> renderTypeFunction;
+		public BlockModelBufferCache bufferCache;
 
 		@Override
 		public void accept(MutableQuadView quad) {
@@ -56,7 +57,9 @@ public final class QuadConsumers {
 				quad.multiplyColor(tintLayers[tintIndex]);
 			}
 
-			quad.buffer(overlayCoords, pose, buffer);
+			RenderType renderType = renderTypeFunction.apply(quad.chunkLayer());
+			quad.buffer(overlayCoords, pose, bufferCache.getBuffer(renderType));
+			VertexConsumer outlineBuffer = bufferCache.getOutlineBuffer(renderType);
 
 			if (outlineBuffer != null) {
 				quad.buffer(overlayCoords, pose, outlineBuffer);

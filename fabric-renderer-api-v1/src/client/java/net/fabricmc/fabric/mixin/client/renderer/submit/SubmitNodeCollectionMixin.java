@@ -18,8 +18,10 @@ package net.fabricmc.fabric.mixin.client.renderer.submit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -50,9 +53,9 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	private final List<ExtendedItemSubmit> extendedItemSubmits = new ArrayList<>();
 
 	@Override
-	public void submitBlockModel(PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, boolean translucent, List<BlockStateModelPart> parts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
 		wasUsed = true;
-		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(poseStack.last().copy(), renderType, parts, mesh, tintLayers, lightCoords, overlayCoords, outlineColor));
+		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(poseStack.last().copy(), renderTypeFunction, translucent, parts, mesh, tintLayers, lightCoords, overlayCoords, outlineColor));
 	}
 
 	@Override

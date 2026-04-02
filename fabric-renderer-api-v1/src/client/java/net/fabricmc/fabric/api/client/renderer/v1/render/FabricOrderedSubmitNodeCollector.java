@@ -17,11 +17,14 @@
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -34,14 +37,16 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
  * Note: This interface is automatically implemented on {@link OrderedSubmitNodeCollector} via Mixin and interface injection.
  */
 public interface FabricOrderedSubmitNodeCollector {
-	// TODO FRAPI 26.1
-	//  reintroduce Function<ChunkSectionLayer, RenderType> renderTypeFunction? probably yes, but
-	//  needs thought about how to determine whether a submit is translucent or not
 	/**
-	 * Alternative to {@link OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, List, int[], int, int, int)} that also accepts a {@link Mesh}.
+	 * Alternative to
+	 * {@link OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, List, int[], int, int, int)} that also
+	 * optionally accepts a {@link Mesh} and can be rendered to multiple render types. To render to a single render
+	 * type like the vanilla submit, pass a render type function that always returns the same value and that render
+	 * type's {@link RenderType#hasBlending()} value as the translucent parameter.
 	 *
 	 * @param poseStack the pose stack
-	 * @param renderType the render type
+	 * @param renderTypeFunction the render type function to convert quads' chunk layers to render types
+	 * @param translucent whether this submit should be considered translucent
 	 * @param parts the vanilla {@linkplain BlockStateModelPart parts}
 	 * @param mesh the mesh
 	 * @param tintLayers the array of tint layers
@@ -49,8 +54,8 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param overlayCoords the overlay coordinates
 	 * @param outlineColor the block outline color
 	 */
-	default void submitBlockModel(PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
-		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, renderType, parts, tintLayers, lightCoords, overlayCoords, outlineColor);
+	default void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, boolean translucent, List<BlockStateModelPart> parts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
+		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, ChunkSectionLayerHelper.getRenderType(translucent), parts, tintLayers, lightCoords, overlayCoords, outlineColor);
 	}
 
 	/**

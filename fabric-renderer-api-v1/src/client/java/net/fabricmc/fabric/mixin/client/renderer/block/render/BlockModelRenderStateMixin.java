@@ -33,6 +33,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -86,6 +87,10 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 			mesh.clear();
 		}
 
+		if (modelParts != null) {
+			modelParts.clear();
+		}
+
 		return mesh.emitter();
 	}
 
@@ -99,7 +104,14 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 		return original && mesh == null;
 	}
 
-	// TODO FRAPI 26.1: improve this injection or use a second submit for just the mesh
+	@Inject(method = "setupModel", at = @At("RETURN"))
+	private void onReturnSetupModel(CallbackInfoReturnable<List<BlockStateModelPart>> cir) {
+		if (mesh != null) {
+			mesh.clear();
+		}
+	}
+
+	// TODO: improve this injection or use a second submit for just the mesh
 	@Inject(method = "submitModel", at = @At("HEAD"), cancellable = true)
 	private void submitMesh(RenderType renderType, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, CallbackInfo ci) {
 		if (mesh != null && mesh.size() > 0) {
@@ -110,10 +122,10 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 			if (transformation != null) {
 				poseStack.pushPose();
 				poseStack.mulPose(transformation);
-				submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
+				submitNodeCollector.submitBlockModel(poseStack, _ -> renderType, renderType.hasBlending(), modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
 				poseStack.popPose();
 			} else {
-				submitNodeCollector.submitBlockModel(poseStack, renderType, modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
+				submitNodeCollector.submitBlockModel(poseStack, _ -> renderType, renderType.hasBlending(), modelPartsCopy, meshCopy, tints, lightCoords, overlayCoords, outlineColor);
 			}
 
 			ci.cancel();
