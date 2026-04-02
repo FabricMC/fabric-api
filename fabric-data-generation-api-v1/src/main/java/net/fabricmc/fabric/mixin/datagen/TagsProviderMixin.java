@@ -42,7 +42,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagFile;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
@@ -71,13 +70,12 @@ public class TagsProviderMixin<T> {
 		return original.call(instance);
 	}
 
-	@SuppressWarnings("unchecked")
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
 	private T addRemoved(T value, @Local(name = "builder") TagBuilder builder) {
 		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
-			TagFile file = (TagFile) value;
-			((TagFileHooks) (Object) file).fabric_setRemoved(fabricTagBuilder.fabric_buildRemoved());
-			return (T) file;
+			// Expected to always be TagFile, there are MANY other issues if this is not the case.
+			((TagFileHooks) value).fabric_setRemoved(fabricTagBuilder.fabric_buildRemoved());
+			return value;
 		}
 
 		return value;
