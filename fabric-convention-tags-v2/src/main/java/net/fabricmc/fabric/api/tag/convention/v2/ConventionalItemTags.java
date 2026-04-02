@@ -23,6 +23,8 @@ import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
+import net.minecraft.world.level.block.Block;
+
 /**
  * See {@link net.minecraft.tags.ItemTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
@@ -422,6 +424,14 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Item> WOODEN_FENCE_GATES = register("fence_gates/wooden");
+
+	// Bars
+	/**
+	 * Aliased with {@link ItemTags#BARS}.
+	 */
+	public static final TagKey<Item> BARS = register("bars");
+	public static final TagKey<Item> IRON_BARS = register("bars/iron");
+	public static final TagKey<Item> COPPER_BARS = register("bars/copper");
 
 	// Pumpkins
 	public static final TagKey<Item> PUMPKINS = register("pumpkins");
