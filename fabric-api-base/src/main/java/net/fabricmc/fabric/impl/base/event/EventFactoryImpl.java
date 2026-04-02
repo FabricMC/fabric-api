@@ -40,7 +40,7 @@ public class EventFactoryImpl {
 			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
 	static {
-		final String eventScopeModule = "fabric-dev-debug-api-v1";
+		final String eventScopeModule = "fabric-test-api-v1";
 
 		if (FabricLoader.getInstance().isModLoaded(eventScopeModule)) {
 			String clazzName = FabricLoader.getInstance()
