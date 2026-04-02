@@ -85,16 +85,15 @@ public class ClientTagsLoader {
 
 		for (TagEntry tagEntry : values) {
 			tagEntry.build(new TagEntry.Lookup<>() {
-				@NonNull
 				@Override
-				public Identifier element(@NonNull Identifier id, boolean required) {
+				public Identifier element(Identifier id, boolean required) {
 					immediateChildIds.add(id);
 					return id;
 				}
 
 				@Nullable
 				@Override
-				public Collection<Identifier> tag(@NonNull Identifier id) {
+				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
@@ -104,16 +103,15 @@ public class ClientTagsLoader {
 
 		for (TagEntry removedEntry : removed) {
 			removedEntry.build(new TagEntry.Lookup<>() {
-				@NonNull
 				@Override
-				public Identifier element(@NonNull Identifier id, boolean required) {
+				public Identifier element(Identifier id, boolean required) {
 					immediateRemovedChildIds.add(id);
 					return id;
 				}
 
 				@Nullable
 				@Override
-				public Collection<Identifier> tag(@NonNull Identifier id) {
+				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
 					immediateRemovedChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).removedIds;

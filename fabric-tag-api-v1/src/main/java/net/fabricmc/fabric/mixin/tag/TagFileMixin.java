@@ -84,7 +84,7 @@ public class TagFileMixin implements TagFileHooks {
 	}
 
 	@Override
-	public @NonNull List<TagEntry> fabric_removed() {
+	public List<TagEntry> fabric_removed() {
 		return removed;
 	}
 
