@@ -4,10 +4,5 @@
   "name": "Fabric Test API (v1) Test Mod",
   "version": "1.0.0",
   "environment": "*",
-  "license": "Apache-2.0",
-  "entrypoints": {
-    "fabric-gametest": [
-      "net.fabricmc.fabric.test.EventScopeTest"
-    ]
-  }
+  "license": "Apache-2.0"
 }

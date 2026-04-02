@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.test;
 
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.test.v1.EventScope;
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.test.v1.EventScope;
 
 public class EventScopeImpl<T> implements EventScope {
 	private final TestableArrayBackedEvent<T> event;

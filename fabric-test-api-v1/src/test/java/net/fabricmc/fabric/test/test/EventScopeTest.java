@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test;
+package net.fabricmc.fabric.test.test;
 
-import net.minecraft.gametest.framework.GameTestHelper;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.fabricmc.fabric.api.test.v1.EventScope;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import net.minecraft.SharedConstants;
+import net.minecraft.server.Bootstrap;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.fabricmc.fabric.api.test.v1.EventScope;
 
 public class EventScopeTest {
 	private static final Event<Foo> EVENT = EventFactory.createArrayBacked(
@@ -37,16 +43,21 @@ public class EventScopeTest {
 			}
 	);
 
-	@GameTest
-	public void testEventScope(GameTestHelper helper) {
+	@BeforeAll
+	static void bootstrap() {
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
+	}
+
+	@Test
+	void testEventScope() {
 		Foo foo = () -> false;
 
 		try (EventScope _ = EventScope.register(EVENT, foo)) {
-			helper.assertFalse(EVENT.invoker().doSomething(), "Event Foo in EventScope was not registered.");
+			assertFalse(EVENT.invoker().doSomething(), "Event Foo in EventScope was not registered.");
 		}
 
-		helper.assertTrue(EVENT.invoker().doSomething(), "EventScope did not unregister event Foo after closing.");
-		helper.succeed();
+		assertTrue(EVENT.invoker().doSomething(), "EventScope did not unregister event Foo after closing.");
 	}
 
 	private interface Foo {
