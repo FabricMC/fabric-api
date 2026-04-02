@@ -75,17 +75,5 @@ public class ClientTagTest implements ClientModInitializer {
 			// Success!
 			LOGGER.info("The tests for client tags passed!");
 		});
-
-		if (true) return;
-
-		// This should be tested on a server with the datapack from the builtin resourcepack.
-		// That is, fabric:sword_efficient should NOT exist on the server (can be confirmed with F3 on a dirt block),
-		// but the this test should pass as minecraft:sword_efficient will contain dirt on the server
-		ClientTickEvents.END_LEVEL_TICK.register(client -> {
-			if (!ClientTags.isInWithLocalFallback(TagKey.create(BuiltInRegistries.BLOCK.key(),
-					Identifier.fromNamespaceAndPath("fabric", "sword_efficient")), Blocks.DIRT)) {
-				throw new AssertionError("Expected to find dirt in fabric:sword_efficient, but it was not found!");
-			}
-		});
 	}
 }
