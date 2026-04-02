@@ -37,6 +37,12 @@ public interface FabricTagAppender<E, T> {
 		return (TagAppender<E, T>) this;
 	}
 
+	/**
+	 * Forces a tag key into the tag, bypassing any errors resulting from the
+	 * tag not existing at runtime.
+	 * @param tag The tag to force into the contents of the tag
+	 * @return this, for chaining
+	 */
 	default TagAppender<E, T> forceAddTag(TagKey<T> tag) {
 		return (TagAppender<E, T>) this;
 	}
@@ -106,6 +112,12 @@ public interface FabricTagAppender<E, T> {
 		return (TagAppender<E, T>) this;
 	}
 
+	/**
+	 * Forces a tag key to be removed from the tag, bypassing any errors resulting from the
+	 * tag not existing at runtime.
+	 * @param tag The tag to force remove from the contents of the tag
+	 * @return this, for chaining
+	 */
 	default TagAppender<E, T> forceRemoveTag(TagKey<T> tag) {
 		return (TagAppender<E, T>) this;
 	}
