@@ -23,8 +23,6 @@ import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
-import net.minecraft.world.level.block.Block;
-
 /**
  * See {@link net.minecraft.tags.ItemTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
