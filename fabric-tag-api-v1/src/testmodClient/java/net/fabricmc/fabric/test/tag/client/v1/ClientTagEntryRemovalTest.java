@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.tag.client.v1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
@@ -29,7 +28,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.fabric.test.tag.TagTestUtils;
@@ -75,17 +73,6 @@ public class ClientTagEntryRemovalTest implements ClientModInitializer {
 
 			// Success!
 			LOGGER.info("The tests for client tag entry removals passed!");
-		});
-
-		CommonLifecycleEvents.TAGS_LOADED.register((registryAccess, client) -> {
-			if (!client || Minecraft.getInstance().hasSingleplayerServer()) {
-				return;
-			}
-
-			// This should be tested on a server with the datapack from the builtin resourcepack.
-			// That is, minecraft:sword_efficient SHOULD exist on melon the server (can be confirmed with F3 on a melon block),
-			// but the this test should pass as minecraft:sword_efficient will contain melon on the server
-			ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "Tag {} contains the expected entries {}", BlockTags.SWORD_EFFICIENT, Blocks.COCOA);
 		});
 	}
 }

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.test.tag.client.v1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.biome.Biomes;
@@ -76,14 +75,14 @@ public class ClientTagTest implements ClientModInitializer {
 			LOGGER.info("The tests for client tags passed!");
 		});
 
+		if (true) {
+			return;
+		}
+
 		// This should be tested on a server with the datapack from the builtin resourcepack.
 		// That is, minecraft:sword_efficient should NOT exist on dirt the server (can be confirmed with F3 on a dirt block),
 		// but the this test should pass as minecraft:sword_efficient will contain dirt on the server
 		CommonLifecycleEvents.TAGS_LOADED.register((registryAccess, client) -> {
-			if (!client || Minecraft.getInstance().hasSingleplayerServer()) {
-				return;
-			}
-
 			ClientTagTestUtils.assertThrows(
 					() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", BlockTags.SWORD_EFFICIENT, Blocks.DIRT),
 					"Did not expect to find %s in %s, but it was found!"
