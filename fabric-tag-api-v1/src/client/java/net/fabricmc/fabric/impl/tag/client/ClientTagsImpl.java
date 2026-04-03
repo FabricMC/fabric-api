@@ -62,19 +62,15 @@ public class ClientTagsImpl {
 		}
 
 		// Recursively search the entries contained with the tag
-		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
+		ClientTagsLoader.LoadedTag loadedTag = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
 
 		Identifier id = holder.unwrapKey().get().identifier();
 
-		if (wt.immediateRemovedChildIds().contains(id)) {
+		if (loadedTag.immediateRemovedChildIds().contains(id)) {
 			return false;
 		}
 
-		if (wt.immediateChildIds().contains(id)) {
-			return true;
-		}
-
-		for (TagKey<?> key : wt.immediateRemovedChildTags()) {
+		for (TagKey<?> key : loadedTag.immediateRemovedChildTags()) {
 			if (isInWithLocalFallback((TagKey<T>) key, holder, checked)) {
 				return false;
 			}
@@ -82,7 +78,11 @@ public class ClientTagsImpl {
 			checked.add((TagKey<T>) key);
 		}
 
-		for (TagKey<?> key : wt.immediateChildTags()) {
+		if (loadedTag.immediateChildIds().contains(id)) {
+			return true;
+		}
+
+		for (TagKey<?> key : loadedTag.immediateChildTags()) {
 			if (isInWithLocalFallback((TagKey<T>) key, holder, checked)) {
 				return true;
 			}

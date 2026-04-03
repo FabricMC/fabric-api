@@ -63,6 +63,37 @@ public class TagTestUtils {
 	}
 
 	@SafeVarargs
+	static <T> void assertInTag(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, ResourceKey<T>... expected) {
+		assertInTag(logger, successFmtStr, registries, tags, Set.of(expected));
+	}
+
+	static <T> void assertInTag(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, Set<ResourceKey<T>> expected) {
+		HolderLookup<T> lookup = registries.lookupOrThrow(tags.getFirst().registry());
+
+		for (TagKey<T> tag : tags) {
+			HolderSet.Named<T> holderSet = lookup.getOrThrow(tag);
+			Set<ResourceKey<T>> actual = holderSet.contents
+					.stream()
+					.map(entry -> entry.unwrapKey().orElseThrow())
+					.collect(Collectors.toSet());
+
+			for (ResourceKey<T> key : expected) {
+				if (!actual.contains(key)) {
+					throw new AssertionError("Expected to find %s in %s, but it was not found!"
+							.formatted(key, tag.location()));
+				}
+			}
+		}
+
+		if (!successFmtStr.isBlank()) {
+			logger.info(successFmtStr, tags.getFirst().registry().identifier(), expected.stream()
+					.map(ResourceKey::identifier)
+					.map(Identifier::toString)
+					.collect(Collectors.joining(", ")));
+		}
+	}
+
+	@SafeVarargs
 	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, Function<T, ResourceKey<T>> keyExtractor, T... expected) {
 		Set<ResourceKey<T>> keys = Arrays.stream(expected)
 				.map(keyExtractor)
@@ -79,8 +110,8 @@ public class TagTestUtils {
 		HolderLookup<T> lookup = registries.lookupOrThrow(tags.getFirst().registry());
 
 		for (TagKey<T> tag : tags) {
-			HolderSet.Named<T> tagEntryList = lookup.getOrThrow(tag);
-			Set<ResourceKey<T>> actual = tagEntryList.contents
+			HolderSet.Named<T> holderSet = lookup.getOrThrow(tag);
+			Set<ResourceKey<T>> actual = holderSet.contents
 					.stream()
 					.map(entry -> entry.unwrapKey().orElseThrow())
 					.collect(Collectors.toSet());
@@ -91,9 +122,11 @@ public class TagTestUtils {
 			}
 		}
 
-		logger.info(successFmtStr, tags.getFirst().registry().identifier(), tags.stream()
-				.map(TagKey::location)
-				.map(Identifier::toString)
-				.collect(Collectors.joining(", ")));
+		if (!successFmtStr.isBlank()) {
+			logger.info(successFmtStr, tags.getFirst().registry().identifier(), tags.stream()
+					.map(TagKey::location)
+					.map(Identifier::toString)
+					.collect(Collectors.joining(", ")));
+		}
 	}
 }

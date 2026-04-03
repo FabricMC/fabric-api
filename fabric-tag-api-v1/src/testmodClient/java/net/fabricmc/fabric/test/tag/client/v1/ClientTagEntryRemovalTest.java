@@ -19,15 +19,22 @@ package net.fabricmc.fabric.test.tag.client.v1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.fabric.test.tag.TagTestUtils;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
 public class ClientTagEntryRemovalTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagEntryRemovalTest.class);
@@ -36,25 +43,49 @@ public class ClientTagEntryRemovalTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		final ModContainer container = FabricLoader.getInstance().getModContainer(ClientTagTest.MOD_ID).get();
+
+		if (!ResourceLoader.registerBuiltinPack(Identifier.fromNamespaceAndPath(ClientTagTest.MOD_ID, "removal_test"),
+				container, PackActivationType.ALWAYS_ENABLED)) {
+			throw new IllegalStateException("Could not register 'removal_test' built-in resource pack.");
+		}
+
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			if (ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.DIRT)) {
-				throw new AssertionError("Expected not to find dirt in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was found!");
-			}
+			ClientTagTestUtils.assertThrows(
+					() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", REMOVAL_TEST_TAG, Blocks.DIRT),
+					"Did not expect to find %s in %s, but it was found!"
+							.formatted(Blocks.DIRT.builtInRegistryHolder().key().identifier(), REMOVAL_TEST_TAG.location())
+			);
 
-			if (ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.MUD)) {
-				throw new AssertionError("Expected not to find mud in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was found!");
-			}
+			ClientTagTestUtils.assertThrows(
+					() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", REMOVAL_TEST_TAG, Blocks.MUD),
+					"Did not expect to find %s in %s, but it was found!"
+							.formatted(Blocks.MUD.builtInRegistryHolder().key().identifier(), REMOVAL_TEST_TAG.location())
+			);
 
-			if (!ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.ROOTED_DIRT)) {
-				throw new AssertionError("Expected to find rooted_dirt in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was not found!");
-			}
+			ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", REMOVAL_TEST_TAG, Blocks.ROOTED_DIRT);
 
-			if (!ClientTags.isInWithLocalFallback(REMOVAL_TEST_TAG, Blocks.MUDDY_MANGROVE_ROOTS)) {
-				throw new AssertionError("Expected to find muddy_mangrove_roots in fabric-tag-api-v1-testmod:dirt_and_mud_with_client_exclusions, but it was not found!");
-			}
+			ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", REMOVAL_TEST_TAG, Blocks.MUDDY_MANGROVE_ROOTS);
+
+			ClientTagTestUtils.assertThrows(
+					() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", BlockTags.SWORD_EFFICIENT, Blocks.COCOA),
+					"Did not expect to find %s in %s, but it was found!"
+							.formatted(Blocks.COCOA.builtInRegistryHolder().key().identifier(), BlockTags.SWORD_EFFICIENT.location())
+			);
 
 			// Success!
 			LOGGER.info("The tests for client tag entry removals passed!");
+		});
+
+		CommonLifecycleEvents.TAGS_LOADED.register((registryAccess, client) -> {
+			if (!client || Minecraft.getInstance().hasSingleplayerServer()) {
+				return;
+			}
+
+			// This should be tested on a server with the datapack from the builtin resourcepack.
+			// That is, minecraft:sword_efficient SHOULD exist on melon the server (can be confirmed with F3 on a melon block),
+			// but the this test should pass as minecraft:sword_efficient will contain melon on the server
+			ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "Tag {} contains the expected entries {}", BlockTags.SWORD_EFFICIENT, Blocks.COCOA);
 		});
 	}
 }

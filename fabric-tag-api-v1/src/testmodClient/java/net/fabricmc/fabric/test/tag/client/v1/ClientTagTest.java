@@ -19,15 +19,15 @@ package net.fabricmc.fabric.test.tag.client.v1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
@@ -48,7 +48,7 @@ public class ClientTagTest implements ClientModInitializer {
 
 		if (!ResourceLoader.registerBuiltinPack(Identifier.fromNamespaceAndPath(MOD_ID, "test2"),
 				container, PackActivationType.ALWAYS_ENABLED)) {
-			throw new IllegalStateException("Could not register built-in resource pack.");
+			throw new IllegalStateException("Could not register 'test2' built-in resource pack.");
 		}
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
@@ -56,37 +56,39 @@ public class ClientTagTest implements ClientModInitializer {
 				throw new AssertionError("Expected to load c:increase_block_drops, but it was not found!");
 			}
 
-			if (!ClientTags.isInWithLocalFallback(ConventionalBlockTags.ORES, Blocks.DIAMOND_ORE)) {
-				throw new AssertionError("Expected to find diamond ore in c:ores, but it was not found!");
-			}
+			ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "Tag {} contains the expected entries {}", ConventionalBlockTags.ORES, Blocks.DIAMOND_ORE);
 
-			if (ClientTags.isInWithLocalFallback(ConventionalBlockTags.ORES, Blocks.DIAMOND_BLOCK)) {
-				throw new AssertionError("Did not expect to find diamond block in c:ores, but it was found!");
-			}
+			ClientTagTestUtils.assertThrows(
+					() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", ConventionalBlockTags.ORES, Blocks.DIAMOND_BLOCK),
+					"Did not expect to find %s in %s, but it was found!"
+							.formatted(Blocks.DIAMOND_BLOCK.builtInRegistryHolder().key().identifier(), ConventionalBlockTags.ORES.location())
+			);
 
-			if (!ClientTags.isInLocal(ConventionalBiomeTags.IS_FOREST, Biomes.FOREST)) {
-				throw new AssertionError("Expected to find forest in c:is_forest, but it was not found!");
-			}
+			ClientTagTestUtils.assertInLocal(LOGGER, "Tag {} contains the expected entries {}", ConventionalBiomeTags.IS_FOREST, Biomes.FOREST);
 
-			if (ClientTags.isInWithLocalFallback(TagKey.create(Registries.BLOCK,
-					Identifier.fromNamespaceAndPath("fabric", "sword_efficient")), Blocks.DIRT)) {
-				throw new AssertionError("Expected not to find dirt in fabric:sword_efficient, but it was found!");
-			}
+			ClientTagTestUtils.assertThrows(
+					() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", BlockTags.SWORD_EFFICIENT, Blocks.DIRT),
+					"Did not expect to find %s in %s, but it was found!"
+							.formatted(Blocks.DIRT.builtInRegistryHolder().key().identifier(), ConventionalBlockTags.ORES.location())
+			);
 
 			// Success!
 			LOGGER.info("The tests for client tags passed!");
 		});
 
-		if (true) return;
-
 		// This should be tested on a server with the datapack from the builtin resourcepack.
-		// That is, fabric:sword_efficient should NOT exist on the server (can be confirmed with F3 on a dirt block),
+		// That is, minecraft:sword_efficient should NOT exist on dirt the server (can be confirmed with F3 on a dirt block),
 		// but the this test should pass as minecraft:sword_efficient will contain dirt on the server
-		ClientTickEvents.END_LEVEL_TICK.register(client -> {
-			if (!ClientTags.isInWithLocalFallback(TagKey.create(Registries.BLOCK,
-					Identifier.fromNamespaceAndPath("fabric", "sword_efficient")), Blocks.DIRT)) {
-				throw new AssertionError("Expected to find dirt in fabric:sword_efficient, but it was not found!");
+		CommonLifecycleEvents.TAGS_LOADED.register((registryAccess, client) -> {
+			if (!client || Minecraft.getInstance().hasSingleplayerServer()) {
+				return;
 			}
+
+			ClientTagTestUtils.assertThrows(
+					() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", BlockTags.SWORD_EFFICIENT, Blocks.DIRT),
+					"Did not expect to find %s in %s, but it was found!"
+							.formatted(Blocks.DIRT.builtInRegistryHolder().key().identifier(), BlockTags.SWORD_EFFICIENT.location())
+			);
 		});
 	}
 }

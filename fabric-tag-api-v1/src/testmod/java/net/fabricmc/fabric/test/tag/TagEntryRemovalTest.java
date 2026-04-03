@@ -49,11 +49,11 @@ public final class TagEntryRemovalTest implements ModInitializer {
 			LOGGER.info("Running tag entry removal tests...");
 			TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ITEM_TAG), TagTestUtils::getItemKey, Items.SNOWBALL);
 			TagTestUtils.assertThrows(
-					() -> TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ITEM_TAG), TagTestUtils::getItemKey, Items.BRICK),
+					() -> TagTestUtils.assertTagContent(LOGGER, "", registries, List.of(TEST_ITEM_TAG), TagTestUtils::getItemKey, Items.BRICK),
 					"Expected %s not to contain bricks".formatted(TEST_ITEM_TAG)
 			);
 			TagTestUtils.assertThrows(
-					() -> TagTestUtils.assertTagContent(LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ENCHANTMENT_TAG), Enchantments.UNBREAKING, Enchantments.MENDING),
+					() -> TagTestUtils.assertInTag(LOGGER, "", registries, List.of(TEST_ENCHANTMENT_TAG), Enchantments.UNBREAKING, Enchantments.MENDING),
 					"Expected %s not to contain Unbreaking or Mending".formatted(TEST_ENCHANTMENT_TAG)
 			);
 			LOGGER.info("The tests for tag entry removals passed!");
