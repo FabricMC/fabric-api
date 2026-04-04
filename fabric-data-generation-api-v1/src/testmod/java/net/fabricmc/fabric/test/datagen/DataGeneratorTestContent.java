@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -73,19 +72,6 @@ public class DataGeneratorTestContent implements ModInitializer {
 	// Empty registry
 	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic_empty"));
-
-	public static final ResourceKey<Block> NON_EXISTENT_BLOCK_KEY = ResourceKey.create(
-			Registries.BLOCK,
-			Identifier.fromNamespaceAndPath(MOD_ID, "non_existent")
-	);
-	public static final TagKey<Block> NON_EXISTENT_BLOCK_TAG_KEY = TagKey.create(
-			Registries.BLOCK,
-			Identifier.fromNamespaceAndPath(MOD_ID, "non_existent")
-	);
-	public static final TagKey<Block> FORCED_BLOCK_TAG_KEY = TagKey.create(
-			Registries.BLOCK,
-			Identifier.fromNamespaceAndPath(MOD_ID, "forced")
-	);
 
 	@Override
 	public void onInitialize() {
