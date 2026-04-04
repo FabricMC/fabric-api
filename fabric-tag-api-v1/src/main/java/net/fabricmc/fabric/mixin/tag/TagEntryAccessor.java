@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datagen;
+package net.fabricmc.fabric.mixin.tag;
 
-import java.util.List;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagEntry;
 
-public interface FabricTagBuilder {
-	void fabric_setReplace(boolean replace);
+@Mixin(TagEntry.class)
+public interface TagEntryAccessor {
+	@Invoker("<init>")
+	static TagEntry fabric_init(final Identifier id, final boolean tag, final boolean required) {
+		throw new RuntimeException("");
+	}
 
-	boolean fabric_isReplaced();
+	@Accessor("id")
+	Identifier fabric_getId();
 
-	void fabric_forceAddTag(Identifier tag);
-
-	List<TagEntry> fabric_buildRemoved();
-
-	void fabric_removeElement(Identifier id);
-
-	void fabric_removeTag(Identifier tag);
+	@Accessor("tag")
+	boolean fabric_getTag();
 }

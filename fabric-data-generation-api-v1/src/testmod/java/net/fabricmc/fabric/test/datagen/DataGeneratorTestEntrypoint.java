@@ -330,10 +330,6 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							Blocks.NETHERITE_BLOCK,
 							Blocks.OBSIDIAN
 					);
-			builder(BlockTags.NEEDS_DIAMOND_TOOL)
-					.removeOptional(NON_EXISTENT_BLOCK_KEY)
-					.removeOptionalTag(NON_EXISTENT_BLOCK_TAG_KEY)
-					.forceRemoveTag(FORCED_BLOCK_TAG_KEY);
 		}
 	}
 

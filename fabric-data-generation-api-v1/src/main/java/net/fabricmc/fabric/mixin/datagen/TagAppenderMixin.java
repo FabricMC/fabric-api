@@ -85,26 +85,8 @@ interface TagAppenderMixin<E, T> extends FabricTagAppender<E, T> {
 		}
 
 		@Override
-		public TagAppender<ResourceKey<T>, T> removeOptional(ResourceKey<T> element) {
-			((FabricTagBuilder) this.val$builder).fabric_removeOptionalElement(element.identifier());
-			return (TagAppender<ResourceKey<T>, T>) this;
-		}
-
-		@Override
 		public TagAppender<ResourceKey<T>, T> removeTag(TagKey<T> tag) {
 			((FabricTagBuilder) this.val$builder).fabric_removeTag(tag.location());
-			return (TagAppender<ResourceKey<T>, T>) this;
-		}
-
-		@Override
-		public TagAppender<ResourceKey<T>, T> removeOptionalTag(TagKey<T> tag) {
-			((FabricTagBuilder) this.val$builder).fabric_removeTag(tag.location());
-			return (TagAppender<ResourceKey<T>, T>) this;
-		}
-
-		@Override
-		public TagAppender<ResourceKey<T>, T> forceRemoveTag(TagKey<T> tag) {
-			((FabricTagBuilder) this.val$builder).fabric_forceRemoveTag(tag.location());
 			return (TagAppender<ResourceKey<T>, T>) this;
 		}
 	}
@@ -156,26 +138,8 @@ interface TagAppenderMixin<E, T> extends FabricTagAppender<E, T> {
 		}
 
 		@Override
-		public TagAppender<U, T> removeOptional(U element) {
-			val$original.removeOptional(val$converter.apply(element));
-			return (TagAppender<U, T>) this;
-		}
-
-		@Override
 		public TagAppender<U, T> removeTag(TagKey<T> tag) {
 			val$original.removeTag(tag);
-			return (TagAppender<U, T>) this;
-		}
-
-		@Override
-		public TagAppender<U, T> removeOptionalTag(TagKey<T> tag) {
-			val$original.removeOptionalTag(tag);
-			return (TagAppender<U, T>) this;
-		}
-
-		@Override
-		public TagAppender<U, T> forceRemoveTag(TagKey<T> tag) {
-			val$original.forceRemoveTag(tag);
 			return (TagAppender<U, T>) this;
 		}
 
