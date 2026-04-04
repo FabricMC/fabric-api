@@ -21,8 +21,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -34,11 +37,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
-public final class TagAliasTest implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TagAliasTest.class);
+public final class TagAliasTests {
+	private static final Logger LOGGER = LoggerFactory.getLogger(TagAliasTests.class);
 
 	// Test 1: Alias two non-empty tags
 	public static final TagKey<Item> GEMS = tagKey(Registries.ITEM, "gems");
@@ -69,30 +71,52 @@ public final class TagAliasTest implements ModInitializer {
 		return TagKey.create(registryRef, Identifier.fromNamespaceAndPath("fabric-tag-api-v1-testmod", name));
 	}
 
-	@Override
-	public void onInitialize() {
-		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-			LOGGER.info("Running tag alias tests on the {}...", client ? "client" : "server");
+	@GameTest
+	public void nonEmptyTagAlias(GameTestHelper helper) {
+		RegistryAccess registries = helper.getLevel().registryAccess();
+		TagTestUtils.assertTagContent(helper, LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(GEMS, EXPENSIVE_ROCKS), TagTestUtils::getItemKey,
+				Items.DIAMOND, Items.EMERALD);
+		helper.succeed();
+	}
 
-			TagTestUtils.assertTagContent(LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(GEMS, EXPENSIVE_ROCKS), TagTestUtils::getItemKey,
-					Items.DIAMOND, Items.EMERALD);
-			TagTestUtils.assertTagContent(LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(REDSTONE_DUSTS, REDSTONE_POWDERS), TagTestUtils::getItemKey,
-					Items.REDSTONE);
-			TagTestUtils.assertTagContent(LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(BEETROOTS, MISSING_BEETROOTS), TagTestUtils::getItemKey,
-					Items.BEETROOT);
-			TagTestUtils.assertTagContent(LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(BRICK_BLOCKS, MORE_BRICK_BLOCKS, BRICKS), TagTestUtils::getBlockKey,
-					Blocks.BRICKS, Blocks.STONE_BRICKS, Blocks.NETHER_BRICKS, Blocks.RED_NETHER_BRICKS);
-			TagTestUtils.assertTagContent(LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(CLASSIC_BIOMES, TRADITIONAL_BIOMES),
-					Biomes.PLAINS, Biomes.DESERT);
+	@GameTest
+	public void nonEmptyAndEmptyTagAlias(GameTestHelper helper) {
+		RegistryAccess registries = helper.getLevel().registryAccess();
+		TagTestUtils.assertTagContent(helper, LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(REDSTONE_DUSTS, REDSTONE_POWDERS), TagTestUtils::getItemKey,
+				Items.REDSTONE);
+		helper.succeed();
+	}
 
-			// The loot table registry isn't synced to the client.
-			if (!client) {
-				TagTestUtils.assertTagContent(LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(NETHER_BRICKS_1, NETHER_BRICKS_2),
-						Blocks.NETHER_BRICKS.getLootTable().orElseThrow(),
-						Blocks.RED_NETHER_BRICKS.getLootTable().orElseThrow());
-			}
+	@GameTest
+	public void nonEmptyAndMissingTagAlias(GameTestHelper helper) {
+		RegistryAccess registries = helper.getLevel().registryAccess();
+		TagTestUtils.assertTagContent(helper, LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(BEETROOTS, MISSING_BEETROOTS), TagTestUtils::getItemKey,
+				Items.BEETROOT);
+		helper.succeed();
+	}
 
-			LOGGER.info("Tag alias tests completed successfully!");
-		});
+	@GameTest
+	public void abcTagAlias(GameTestHelper helper) {
+		RegistryAccess registries = helper.getLevel().registryAccess();
+		TagTestUtils.assertTagContent(helper, LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(BRICK_BLOCKS, MORE_BRICK_BLOCKS, BRICKS), TagTestUtils::getBlockKey,
+				Blocks.BRICKS, Blocks.STONE_BRICKS, Blocks.NETHER_BRICKS, Blocks.RED_NETHER_BRICKS);
+		helper.succeed();
+	}
+
+	@GameTest
+	public void worldGenDynamicRegistryTagAlias(GameTestHelper helper) {
+		RegistryAccess registries = helper.getLevel().registryAccess();
+		TagTestUtils.assertTagContent(helper, LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(CLASSIC_BIOMES, TRADITIONAL_BIOMES),
+				Biomes.PLAINS, Biomes.DESERT);
+		helper.succeed();
+	}
+
+	@GameTest
+	public void reloadableRegistryTagAlias(GameTestHelper helper) {
+		HolderLookup.Provider registries = helper.getLevel().getServer().reloadableRegistries().lookup();
+		TagTestUtils.assertTagContent(helper, LOGGER, "Tags {} / {} were successfully aliased together", registries, List.of(NETHER_BRICKS_1, NETHER_BRICKS_2),
+				Blocks.NETHER_BRICKS.getLootTable().orElseThrow(),
+				Blocks.RED_NETHER_BRICKS.getLootTable().orElseThrow());
+		helper.succeed();
 	}
 }

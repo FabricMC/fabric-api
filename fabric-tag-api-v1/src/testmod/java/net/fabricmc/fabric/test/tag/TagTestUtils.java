@@ -28,7 +28,8 @@ import org.slf4j.Logger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.gametest.framework.GameTestAssertException;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -40,34 +41,39 @@ public class TagTestUtils {
 		return TagKey.create(registryRef, Identifier.fromNamespaceAndPath("fabric-tag-api-v1-testmod", name));
 	}
 
-	static ResourceKey<Block> getBlockKey(Block block) {
+	public static ResourceKey<Block> getBlockKey(Block block) {
 		return block.builtInRegistryHolder().key();
 	}
 
-	static ResourceKey<Item> getItemKey(Item item) {
+	public static ResourceKey<Item> getItemKey(Item item) {
 		return item.builtInRegistryHolder().key();
 	}
 
-	static void assertThrows(FailableRunnable<AssertionError> action, String message) {
+	static void assertThrows(GameTestHelper helper, FailableRunnable<GameTestAssertException> action, String message) {
 		boolean threw = false;
 
 		try {
 			action.run();
-		} catch (AssertionError err) {
+		} catch (GameTestAssertException err) {
 			threw = true;
 		}
 
 		if (!threw) {
-			throw new AssertionError(message);
+			throw helper.assertionException(message);
 		}
 	}
 
 	@SafeVarargs
-	static <T> void assertInTag(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, ResourceKey<T>... expected) {
-		assertInTag(logger, successFmtStr, registries, tags, Set.of(expected));
+	static <T> void assertInTag(GameTestHelper helper, Logger logger, String successFmtStr, HolderLookup.Provider registries, List<TagKey<T>> tags, Function<T, ResourceKey<T>> keyExtractor, T... expected) throws GameTestAssertException {
+		assertInTag(helper, logger, successFmtStr, registries, tags, Arrays.stream(expected).map(keyExtractor).collect(Collectors.toSet()));
 	}
 
-	static <T> void assertInTag(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, Set<ResourceKey<T>> expected) {
+	@SafeVarargs
+	static <T> void assertInTag(GameTestHelper helper, Logger logger, String successFmtStr, HolderLookup.Provider registries, List<TagKey<T>> tags, ResourceKey<T>... expected) throws GameTestAssertException {
+		assertInTag(helper, logger, successFmtStr, registries, tags, Set.of(expected));
+	}
+
+	static <T> void assertInTag(GameTestHelper helper, Logger logger, String successFmtStr, HolderLookup.Provider registries, List<TagKey<T>> tags, Set<ResourceKey<T>> expected) throws GameTestAssertException {
 		HolderLookup<T> lookup = registries.lookupOrThrow(tags.getFirst().registry());
 
 		for (TagKey<T> tag : tags) {
@@ -79,8 +85,8 @@ public class TagTestUtils {
 
 			for (ResourceKey<T> key : expected) {
 				if (!actual.contains(key)) {
-					throw new AssertionError("Expected to find %s in %s, but it was not found!"
-							.formatted(key, tag.location()));
+					throw helper.assertionException("Expected to find %s in %s, but it was not found!",
+							key, tag.location());
 				}
 			}
 		}
@@ -94,19 +100,19 @@ public class TagTestUtils {
 	}
 
 	@SafeVarargs
-	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, Function<T, ResourceKey<T>> keyExtractor, T... expected) {
+	static <T> void assertTagContent(GameTestHelper helper, Logger logger, String successFmtStr, HolderLookup.Provider registries, List<TagKey<T>> tags, Function<T, ResourceKey<T>> keyExtractor, T... expected) throws GameTestAssertException {
 		Set<ResourceKey<T>> keys = Arrays.stream(expected)
 				.map(keyExtractor)
 				.collect(Collectors.toSet());
-		assertTagContent(logger, successFmtStr, registries, tags, keys);
+		assertTagContent(helper, logger, successFmtStr, registries, tags, keys);
 	}
 
 	@SafeVarargs
-	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, ResourceKey<T>... expected) {
-		assertTagContent(logger, successFmtStr, registries, tags, Set.of(expected));
+	static <T> void assertTagContent(GameTestHelper helper, Logger logger, String successFmtStr, HolderLookup.Provider registries, List<TagKey<T>> tags, ResourceKey<T>... expected) throws GameTestAssertException {
+		assertTagContent(helper, logger, successFmtStr, registries, tags, Set.of(expected));
 	}
 
-	static <T> void assertTagContent(Logger logger, String successFmtStr, RegistryAccess registries, List<TagKey<T>> tags, Set<ResourceKey<T>> expected) {
+	static <T> void assertTagContent(GameTestHelper helper, Logger logger, String successFmtStr, HolderLookup.Provider registries, List<TagKey<T>> tags, Set<ResourceKey<T>> expected) throws GameTestAssertException {
 		HolderLookup<T> lookup = registries.lookupOrThrow(tags.getFirst().registry());
 
 		for (TagKey<T> tag : tags) {
@@ -117,8 +123,8 @@ public class TagTestUtils {
 					.collect(Collectors.toSet());
 
 			if (!actual.equals(expected)) {
-				throw new AssertionError("Expected tag %s to have contents %s, but it had %s instead"
-						.formatted(tag, expected, actual));
+				throw helper.assertionException("Expected tag %s to have contents %s, but it had %s instead",
+						tag, expected, actual);
 			}
 		}
 

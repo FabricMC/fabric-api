@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.tag.client.v1;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.function.FailableRunnable;
@@ -35,7 +36,7 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
 
 public class ClientTagTestUtils {
 	@SafeVarargs
-	static <T> void assertInWithLocalFallback(Logger logger, String successFmtStr, TagKey<T> tag, T... expected) {
+	static <T> void assertInWithLocalFallback(Logger logger, String successFmtStr, TagKey<T> tag, Function<T, ResourceKey<T>> keyExtractor, T... expected) {
 		assertInWithLocalFallback(logger, successFmtStr, tag, Arrays.stream(expected)
 				.map(value -> ClientTagsImpl.getHolder(tag, value).orElseThrow())
 				.collect(Collectors.toSet()));
