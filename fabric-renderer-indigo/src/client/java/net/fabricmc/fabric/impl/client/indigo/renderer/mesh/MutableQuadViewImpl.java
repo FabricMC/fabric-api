@@ -107,10 +107,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
-	// Much more efficient than default impl as it does not invalidate geometry
-	// FIXME FRAPI 26.1: some geometry flags should be invalidated, but partial invalidation might
-	//  add too much complexity. in all existing code, geometry is never queried after calling this
-	//  method, so the default implementation may be sufficient.
 	@Override
 	public final MutableQuadViewImpl translate(float x, float y, float z) {
 		for (int i = 0; i < 4; i++) {
@@ -120,6 +116,9 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 			data[index + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(data[index + 2]) + z);
 		}
 
+		// In reality, only the CUBIC and LIGHT_FACE flags need to be invalidated.
+		// AXIS_ALIGNED and the face normal are unchanged after translation.
+		isGeometryInvalid = true;
 		return this;
 	}
 
