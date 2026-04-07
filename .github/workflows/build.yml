@@ -46,6 +46,7 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '25'
+      - run: sudo apt-get install -y mesa-vulkan-drivers
       - run: |
           curl -L -o tracy-capture https://github.com/modmuss50/tracy-utils/releases/download/0.0.2/linux-x86_64-tracy-capture
           chmod +x tracy-capture

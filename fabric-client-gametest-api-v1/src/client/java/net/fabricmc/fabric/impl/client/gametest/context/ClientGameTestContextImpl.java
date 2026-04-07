@@ -110,8 +110,6 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		// Disable chunk fade
 		options.chunkSectionFadeInTime().set(0D);
 
-		// TODO - Figure out why vulkan is not supported in LLVMpipe/xvfb used for headless tessting.
-		options.preferredGraphicsBackend().set(PreferredGraphicsApi.OPENGL);
 
 		((OptionsAccessor) options).invokeProcessOptions(new Options.FieldAccess() {
 			@Override
