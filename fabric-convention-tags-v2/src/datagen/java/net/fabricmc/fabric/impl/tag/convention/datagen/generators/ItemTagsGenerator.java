@@ -80,41 +80,11 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		copy(ConventionalBlockTags.GLASS_PANES_COLORLESS, ConventionalItemTags.GLASS_PANES_COLORLESS);
 		valueLookupBuilder(ConventionalItemTags.SHULKER_BOXES)
 				.add(Items.SHULKER_BOX)
-				.add(Items.WHITE_SHULKER_BOX)
-				.add(Items.ORANGE_SHULKER_BOX)
-				.add(Items.MAGENTA_SHULKER_BOX)
-				.add(Items.LIGHT_BLUE_SHULKER_BOX)
-				.add(Items.YELLOW_SHULKER_BOX)
-				.add(Items.LIME_SHULKER_BOX)
-				.add(Items.PINK_SHULKER_BOX)
-				.add(Items.GRAY_SHULKER_BOX)
-				.add(Items.LIGHT_GRAY_SHULKER_BOX)
-				.add(Items.CYAN_SHULKER_BOX)
-				.add(Items.PURPLE_SHULKER_BOX)
-				.add(Items.BLUE_SHULKER_BOX)
-				.add(Items.BROWN_SHULKER_BOX)
-				.add(Items.GREEN_SHULKER_BOX)
-				.add(Items.RED_SHULKER_BOX)
-				.add(Items.BLACK_SHULKER_BOX);
+				.addAll(Items.DYED_SHULKER_BOX.asList());
 		copy(ConventionalBlockTags.GLAZED_TERRACOTTAS, ConventionalItemTags.GLAZED_TERRACOTTAS);
 		copy(ConventionalBlockTags.CONCRETES, ConventionalItemTags.CONCRETES);
 		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDERS)
-				.add(Items.WHITE_CONCRETE_POWDER)
-				.add(Items.ORANGE_CONCRETE_POWDER)
-				.add(Items.MAGENTA_CONCRETE_POWDER)
-				.add(Items.LIGHT_BLUE_CONCRETE_POWDER)
-				.add(Items.YELLOW_CONCRETE_POWDER)
-				.add(Items.LIME_CONCRETE_POWDER)
-				.add(Items.PINK_CONCRETE_POWDER)
-				.add(Items.GRAY_CONCRETE_POWDER)
-				.add(Items.LIGHT_GRAY_CONCRETE_POWDER)
-				.add(Items.CYAN_CONCRETE_POWDER)
-				.add(Items.PURPLE_CONCRETE_POWDER)
-				.add(Items.BLUE_CONCRETE_POWDER)
-				.add(Items.BROWN_CONCRETE_POWDER)
-				.add(Items.GREEN_CONCRETE_POWDER)
-				.add(Items.RED_CONCRETE_POWDER)
-				.add(Items.BLACK_CONCRETE_POWDER);
+				.addAll(Items.CONCRETE_POWDER.asList());
 
 		copy(ConventionalBlockTags.BUDDING_BLOCKS, ConventionalItemTags.BUDDING_BLOCKS);
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
@@ -190,37 +160,37 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.RED_DYES)
 				.addOptionalTag(ConventionalItemTags.BLACK_DYES);
 		valueLookupBuilder(ConventionalItemTags.BLACK_DYES)
-				.add(Items.BLACK_DYE);
+				.add(Items.DYE.black());
 		valueLookupBuilder(ConventionalItemTags.BLUE_DYES)
-				.add(Items.BLUE_DYE);
+				.add(Items.DYE.blue());
 		valueLookupBuilder(ConventionalItemTags.BROWN_DYES)
-				.add(Items.BROWN_DYE);
+				.add(Items.DYE.brown());
 		valueLookupBuilder(ConventionalItemTags.GREEN_DYES)
-				.add(Items.GREEN_DYE);
+				.add(Items.DYE.green());
 		valueLookupBuilder(ConventionalItemTags.RED_DYES)
-				.add(Items.RED_DYE);
+				.add(Items.DYE.red());
 		valueLookupBuilder(ConventionalItemTags.WHITE_DYES)
-				.add(Items.WHITE_DYE);
+				.add(Items.DYE.white());
 		valueLookupBuilder(ConventionalItemTags.YELLOW_DYES)
-				.add(Items.YELLOW_DYE);
+				.add(Items.DYE.yellow());
 		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYES)
-				.add(Items.LIGHT_BLUE_DYE);
+				.add(Items.DYE.lightBlue());
 		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYES)
-				.add(Items.LIGHT_GRAY_DYE);
+				.add(Items.DYE.lightGray());
 		valueLookupBuilder(ConventionalItemTags.LIME_DYES)
-				.add(Items.LIME_DYE);
+				.add(Items.DYE.lime());
 		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYES)
-				.add(Items.MAGENTA_DYE);
+				.add(Items.DYE.magenta());
 		valueLookupBuilder(ConventionalItemTags.ORANGE_DYES)
-				.add(Items.ORANGE_DYE);
+				.add(Items.DYE.orange());
 		valueLookupBuilder(ConventionalItemTags.PINK_DYES)
-				.add(Items.PINK_DYE);
+				.add(Items.DYE.pink());
 		valueLookupBuilder(ConventionalItemTags.CYAN_DYES)
-				.add(Items.CYAN_DYE);
+				.add(Items.DYE.cyan());
 		valueLookupBuilder(ConventionalItemTags.GRAY_DYES)
-				.add(Items.GRAY_DYE);
+				.add(Items.DYE.gray());
 		valueLookupBuilder(ConventionalItemTags.PURPLE_DYES)
-				.add(Items.PURPLE_DYE);
+				.add(Items.DYE.purple());
 	}
 
 	private void generateConsumableTags() {

@@ -20,6 +20,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -32,7 +33,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.mixin.client.rendering.GuiAccessor;
+import net.fabricmc.fabric.mixin.client.rendering.HudAccessor;
 
 public class HudStatusBarHeightsTest implements ClientModInitializer {
 	private static final Identifier HEART_CONTAINER_TEXTURE = Identifier.withDefaultNamespace("hud/heart/container");
@@ -70,11 +71,11 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
-						Gui hud = minecraft.gui;
+						Hud hud = minecraft.gui.hud;
 						int width = graphics.guiWidth() / 2 - 91;
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.HEALTH_BAR);
-						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
+						Player player = ((HudAccessor) hud).fabric$callGetCameraPlayer();
 						extractHealth(graphics, player, height, 0, 10, width);
 					}
 				});
@@ -91,11 +92,11 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
-						Gui hud = minecraft.gui;
+						Hud hud = minecraft.gui.hud;
 						int width = graphics.guiWidth() / 2 - 91;
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.ARMOR_BAR);
-						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
+						Player player = ((HudAccessor) hud).fabric$callGetCameraPlayer();
 						extractArmor(graphics, player, height, 0, 10, width);
 					}
 				});
@@ -118,10 +119,10 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
-						Gui hud = minecraft.gui;
+						Hud hud = minecraft.gui.hud;
 						int width = graphics.guiWidth() / 2 - 91;
 						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
-						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
+						Player player = ((HudAccessor) hud).fabric$callGetCameraPlayer();
 						extractToughness(graphics, player, height, 0, 10, width);
 					}
 				});
@@ -141,14 +142,14 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
-						Gui hud = minecraft.gui;
-						LivingEntity livingEntity = ((GuiAccessor) hud).fabric$callGetRiddenEntity();
+						Hud hud = minecraft.gui.hud;
+						LivingEntity livingEntity = ((HudAccessor) hud).fabric$callGetRiddenEntity();
 
-						if (((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
+						if (((HudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 							int width = graphics.guiWidth() / 2 + 91;
 							int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
 							extractStamina(graphics,
-									((GuiAccessor) hud).fabric$callGetCameraPlayer(),
+									((HudAccessor) hud).fabric$callGetCameraPlayer(),
 									height,
 									width);
 						}
@@ -159,9 +160,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 
 			if (minecraft.gameMode.canHurtPlayer()) {
 				Gui hud = minecraft.gui;
-				LivingEntity livingEntity = ((GuiAccessor) hud).fabric$callGetRiddenEntity();
+				LivingEntity livingEntity = ((HudAccessor) hud).fabric$callGetRiddenEntity();
 
-				if (((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
+				if (((HudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 					return 10;
 				}
 			}

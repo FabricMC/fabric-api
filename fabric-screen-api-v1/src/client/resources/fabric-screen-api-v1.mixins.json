@@ -2,8 +2,11 @@
   "required": true,
   "package": "net.fabricmc.fabric.mixin.screen",
   "compatibilityLevel": "JAVA_25",
-  "client": [
-    "GameRendererMixin",
+  "mixins": [
+    "KeyboardHandlerMixin",
+    "MouseHandlerMixin",
+    "ScreenAccessor",
+    "GuiMixin",
     "AbstractContainerScreenMixin",
     "MinecraftMixin",
     "ScreenMixin"
@@ -13,10 +16,5 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  },
-  "mixins": [
-    "KeyboardHandlerMixin",
-    "MouseHandlerMixin",
-    "ScreenAccessor"
-  ]
+  }
 }

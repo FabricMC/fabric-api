@@ -14,7 +14,7 @@
     "EntityRenderDispatcherMixin",
     "EntityRenderersMixin",
     "GameRendererMixin",
-    "GuiAccessor",
+    "HudAccessor",
     "GuiGraphicsExtractorMixin",
     "GuiMixin",
     "GuiRendererMixin",

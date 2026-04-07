@@ -40,6 +40,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -53,7 +54,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.StatusBarHeightProvider;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.mixin.client.rendering.GuiAccessor;
+import net.fabricmc.fabric.mixin.client.rendering.HudAccessor;
 
 public final class HudStatusBarHeightRegistryImpl implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-rendering-v1");
@@ -78,7 +79,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	static final StatusBarHeightProvider HEALTH_BAR = (Player player) -> {
 		Gui hud = Minecraft.getInstance().gui;
 		int playerHealth = Mth.ceil(player.getHealth());
-		int displayHealth = ((GuiAccessor) hud).fabric$getRenderHealthValue();
+		int displayHealth = ((HudAccessor) hud.hud).fabric$getRenderHealthValue();
 		float maxHealth = Math.max((float) player.getAttributeValue(Attributes.MAX_HEALTH),
 				Math.max(displayHealth, playerHealth));
 		int absorptionAmount = Mth.ceil(player.getAbsorptionAmount());
@@ -96,18 +97,18 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * Height provider for the vanilla mount health.
 	 */
 	static final StatusBarHeightProvider MOUNT_HEALTH = (Player player) -> {
-		Gui hud = Minecraft.getInstance().gui;
-		LivingEntity livingEntity = ((GuiAccessor) hud).fabric$callGetRiddenEntity();
-		int vehicleMaxHearts = ((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity);
-		return ((GuiAccessor) hud).fabric$callGetHeartRows(vehicleMaxHearts) * 10;
+		Hud hud = Minecraft.getInstance().gui.hud;
+		LivingEntity livingEntity = ((HudAccessor) hud).fabric$callGetRiddenEntity();
+		int vehicleMaxHearts = ((HudAccessor) hud).fabric$callGetHeartCount(livingEntity);
+		return ((HudAccessor) hud).fabric$callGetHeartRows(vehicleMaxHearts) * 10;
 	};
 	/**
 	 * Height provider for the vanilla food bar.
 	 */
 	static final StatusBarHeightProvider FOOD_BAR = (Player player) -> {
-		Gui hud = Minecraft.getInstance().gui;
-		LivingEntity livingEntity = ((GuiAccessor) hud).fabric$callGetRiddenEntity();
-		return ((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0 ? 10 : 0;
+		Hud hud = Minecraft.getInstance().gui.hud;
+		LivingEntity livingEntity = ((HudAccessor) hud).fabric$callGetRiddenEntity();
+		return ((HudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0 ? 10 : 0;
 	};
 	/**
 	 * Height provider for the vanilla air bar.
@@ -215,7 +216,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			throw new IllegalArgumentException("Unknown status bar: " + id);
 		}
 
-		Player player = ((GuiAccessor) Minecraft.getInstance().gui).fabric$callGetCameraPlayer();
+		Player player = ((HudAccessor) Minecraft.getInstance().gui.hud).fabric$callGetCameraPlayer();
 
 		if (player == null) {
 			throw new IllegalStateException("Trying to get status bar height for " + id + " without a camera player");
@@ -368,7 +369,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	private static void replaceVanillaElement(Identifier id, ResolvedHeightProvider heightProvider) {
 		HudElementRegistry.replaceElement(id, (HudElement layer) -> {
 			return (GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) -> {
-				Player player = ((GuiAccessor) Minecraft.getInstance().gui).fabric$callGetCameraPlayer();
+				Player player = ((HudAccessor) Minecraft.getInstance().gui.hud).fabric$callGetCameraPlayer();
 				int height = player != null ? heightProvider.getResolvedHeight(player) : 0;
 
 				if (height != 0) {

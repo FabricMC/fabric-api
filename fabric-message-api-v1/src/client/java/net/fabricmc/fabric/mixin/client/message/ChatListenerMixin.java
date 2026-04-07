@@ -38,12 +38,12 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 
 @Mixin(ChatListener.class)
 public abstract class ChatListenerMixin {
-	@Inject(method = "showMessageToPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;getChat()Lnet/minecraft/client/gui/components/ChatComponent;", ordinal = 0), cancellable = true)
+	@Inject(method = "showMessageToPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;getChat()Lnet/minecraft/client/gui/components/ChatComponent;", ordinal = 0), cancellable = true)
 	private void fabric_onSignedChatMessage(ChatType.Bound boundChatType, PlayerChatMessage message, Component decorated, GameProfile sender, boolean onlyShowSecureChat, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
 		fabric_onChatMessage(decorated, message, sender, boundChatType, receptionTimestamp, cir);
 	}
 
-	@Inject(method = "showMessageToPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;getChat()Lnet/minecraft/client/gui/components/ChatComponent;", ordinal = 1), cancellable = true)
+	@Inject(method = "showMessageToPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;getChat()Lnet/minecraft/client/gui/components/ChatComponent;", ordinal = 1), cancellable = true)
 	private void fabric_onFilteredSignedChatMessage(ChatType.Bound boundChatType, PlayerChatMessage message, Component decorated, GameProfile sender, boolean onlyShowSecureChat, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
 		Component filtered = message.filterMask().applyWithFormatting(message.signedContent());
 

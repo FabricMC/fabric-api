@@ -40,7 +40,7 @@ abstract class ScreenEffectRendererMixin {
 	@Nullable
 	private static BlockPos pos;
 
-	@WrapOperation(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockStateModelSet;getParticleMaterial(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/resources/model/sprite/Material$Baked;"))
+	@WrapOperation(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockStateModelSet;getParticleMaterial(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/resources/model/sprite/Material$Baked;"))
 	private static Material.Baked getParticleMaterialProxy(BlockStateModelSet models, BlockState state, Operation<Material.Baked> original, @Local(name = "player") Player player) {
 		if (pos != null && player.level() instanceof BlockAndTintGetter level) {
 			Material.Baked material = models.getParticleMaterial(state, level, pos);
@@ -51,7 +51,7 @@ abstract class ScreenEffectRendererMixin {
 		return original.call(models, state);
 	}
 
-	@Inject(method = "getViewBlockingState", at = @At("RETURN"))
+	@Inject(method = "getViewBlockingState", at = @At(value = "RETURN", ordinal = 1))
 	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos testPos) {
 		if (cir.getReturnValue() != null) {
 			pos = testPos.immutable();
