@@ -114,8 +114,8 @@ public class FabricClientGameTestRunner {
 				throw new AssertionError("Client gametest %s finished while still connected to a server".formatted(currentlyRunningGameTest.getDefinition()));
 			}
 
-			if (!(client.screen instanceof TitleScreen)) {
-				throw new AssertionError("Client gametest %s did not finish on the title screen. Current screen %s".formatted(currentlyRunningGameTest.getDefinition(), client.screen.getClass().getName()));
+			if (!(client.gui.screen() instanceof TitleScreen)) {
+				throw new AssertionError("Client gametest %s did not finish on the title screen. Current screen %s".formatted(currentlyRunningGameTest.getDefinition(), client.gui.screen().getClass().getName()));
 			}
 		});
 	}

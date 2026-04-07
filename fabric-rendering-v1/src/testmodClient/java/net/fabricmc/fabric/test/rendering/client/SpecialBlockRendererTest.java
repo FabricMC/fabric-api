@@ -64,7 +64,7 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 			poseStack.mulPose(Axis.YP.rotation((float) (Util.getMillis() * 0.001)));
 			poseStack.translate(0, -1.46875f, 0);
 			submitNodeCollector.order(0)
-					.submitCustomGeometry(poseStack, RenderTypes.solidMovingBlock(), (matricesEntry, vertexConsumer) -> allayModel.renderToBuffer(poseStack, vertexConsumer, lightCoords, overlayCoords));
+					.submitCustomGeometry(poseStack, RenderTypes.solidMovingBlock(), (matricesEntry, vertexConsumer) -> allayModel.renderToBuffer(poseStack, vertexConsumer, lightCoords, overlayCoords, outlineColor));
 			poseStack.popPose();
 		}
 

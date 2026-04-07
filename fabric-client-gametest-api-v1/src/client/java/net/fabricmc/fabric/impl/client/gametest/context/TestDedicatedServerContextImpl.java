@@ -42,7 +42,7 @@ public class TestDedicatedServerContextImpl extends TestServerContextImpl implem
 
 		context.runOnClient(client -> {
 			final var serverInfo = new ServerData("localhost", getConnectionAddress(), ServerData.Type.OTHER);
-			ConnectScreen.startConnecting(client.screen, client, ServerAddress.parseString(getConnectionAddress()), serverInfo, false, null);
+			ConnectScreen.startConnecting(client.gui.screen(), client, ServerAddress.parseString(getConnectionAddress()), serverInfo, false, null);
 		});
 
 		ClientGameTestImpl.waitForWorldLoad(context);

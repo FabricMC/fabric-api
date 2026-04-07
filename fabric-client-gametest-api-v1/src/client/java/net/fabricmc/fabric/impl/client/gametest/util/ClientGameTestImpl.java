@@ -37,11 +37,11 @@ public final class ClientGameTestImpl {
 
 	public static void waitForWorldLoad(ClientGameTestContext context) {
 		for (int i = 0; i < SharedConstants.TICKS_PER_MINUTE; i++) {
-			if (context.computeOnClient(client -> isExperimentalWarningScreen(client.screen))) {
+			if (context.computeOnClient(client -> isExperimentalWarningScreen(client.gui.screen()))) {
 				context.clickScreenButton("gui.yes");
 			}
 
-			if (context.computeOnClient(client -> client.screen instanceof BackupConfirmScreen)) {
+			if (context.computeOnClient(client -> client.gui.screen() instanceof BackupConfirmScreen)) {
 				context.clickScreenButton("selectWorld.backupJoinSkipButton");
 			}
 
@@ -70,7 +70,7 @@ public final class ClientGameTestImpl {
 	}
 
 	private static boolean isWorldLoadingFinished(Minecraft client) {
-		LOGGER.info("World loading finished: {} screen: {}", client.level, client.screen);
-		return client.level != null && !(client.screen instanceof LevelLoadingScreen);
+		LOGGER.info("World loading finished: {} screen: {}", client.level, client.gui.screen());
+		return client.level != null && !(client.gui.screen() instanceof LevelLoadingScreen);
 	}
 }

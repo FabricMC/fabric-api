@@ -90,8 +90,8 @@ public final class ClientNetworkingImpl {
 			return connection;
 		} else if (CONNECTION_SCOPED_VALUE.isBound()) {
 			return CONNECTION_SCOPED_VALUE.get();
-		} else if (Minecraft.getInstance().screen instanceof ConnectScreen) {
-			return ((ConnectScreenAccessor) Minecraft.getInstance().screen).getConnection();
+		} else if (Minecraft.getInstance().gui.screen() instanceof ConnectScreen) {
+			return ((ConnectScreenAccessor) Minecraft.getInstance().gui.screen()).getConnection();
 		}
 
 		// We are not connected to a server at all.

@@ -146,44 +146,22 @@ public final class ItemStorage {
 
 		ItemStorage.ITEM.registerForItems(
 				(itemStack, context) -> new ItemContainerContentsStorage(context, 27),
-				Items.SHULKER_BOX,
-				Items.WHITE_SHULKER_BOX,
-				Items.ORANGE_SHULKER_BOX,
-				Items.MAGENTA_SHULKER_BOX,
-				Items.LIGHT_BLUE_SHULKER_BOX,
-				Items.YELLOW_SHULKER_BOX,
-				Items.LIME_SHULKER_BOX,
-				Items.PINK_SHULKER_BOX,
-				Items.GRAY_SHULKER_BOX,
-				Items.LIGHT_GRAY_SHULKER_BOX,
-				Items.CYAN_SHULKER_BOX,
-				Items.PURPLE_SHULKER_BOX,
-				Items.BLUE_SHULKER_BOX,
-				Items.BROWN_SHULKER_BOX,
-				Items.GREEN_SHULKER_BOX,
-				Items.RED_SHULKER_BOX,
-				Items.BLACK_SHULKER_BOX
+				Items.SHULKER_BOX
 		);
+
+		Items.DYED_SHULKER_BOX.forEach(item -> ItemStorage.ITEM.registerForItems(
+				(itemStack, context) -> new ItemContainerContentsStorage(context, 27),
+				item
+		));
 
 		ItemStorage.ITEM.registerForItems(
 				(itemStack, context) -> new BundleContentsStorage(context),
-				Items.BUNDLE,
-				Items.WHITE_BUNDLE,
-				Items.ORANGE_BUNDLE,
-				Items.MAGENTA_BUNDLE,
-				Items.LIGHT_BLUE_BUNDLE,
-				Items.YELLOW_BUNDLE,
-				Items.LIME_BUNDLE,
-				Items.PINK_BUNDLE,
-				Items.GRAY_BUNDLE,
-				Items.LIGHT_GRAY_BUNDLE,
-				Items.CYAN_BUNDLE,
-				Items.PURPLE_BUNDLE,
-				Items.BLUE_BUNDLE,
-				Items.BROWN_BUNDLE,
-				Items.GREEN_BUNDLE,
-				Items.RED_BUNDLE,
-				Items.BLACK_BUNDLE
+				Items.BUNDLE
 		);
+
+		Items.DYED_BUNDLE.forEach(item -> ItemStorage.ITEM.registerForItems(
+				(itemStack, context) -> new BundleContentsStorage(context),
+				item
+		));
 	}
 }

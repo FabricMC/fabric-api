@@ -124,7 +124,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 	private static void waitForTitleScreenFade(ClientGameTestContext context) {
 		context.waitFor(client -> {
-			return (client.screen instanceof TitleScreenAccessor titleScreen) && !titleScreen.isFading();
+			return (client.gui.screen() instanceof TitleScreenAccessor titleScreen) && !titleScreen.isFading();
 		});
 	}
 

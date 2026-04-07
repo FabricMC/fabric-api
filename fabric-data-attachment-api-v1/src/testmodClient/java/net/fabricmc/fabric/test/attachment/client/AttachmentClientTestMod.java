@@ -35,7 +35,7 @@ public class AttachmentClientTestMod implements ClientModInitializer {
 
 					if (viewDistance.get() < newValue) {
 						viewDistance.set(newValue);
-						Minecraft.getInstance().gui.getChat().addClientSystemMessage(Component.nullToEmpty("The server requested to up the render distance to " + newValue));
+						Minecraft.getInstance().gui.hud.getChat().addClientSystemMessage(Component.nullToEmpty("The server requested to up the render distance to " + newValue));
 					}
 				});
 			}

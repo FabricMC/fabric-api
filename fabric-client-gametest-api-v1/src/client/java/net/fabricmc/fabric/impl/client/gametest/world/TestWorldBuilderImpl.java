@@ -111,10 +111,10 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 
 	private Path navigateCreateWorldScreen() {
 		Path saveDirectory = context.computeOnClient(client -> {
-			Screen oldScreen = client.screen;
-			CreateWorldScreen.openFresh(client, () -> client.setScreen(oldScreen));
+			Screen oldScreen = client.gui.screen();
+			CreateWorldScreen.openFresh(client, () -> client.gui.setScreen(oldScreen));
 
-			if (!(client.screen instanceof CreateWorldScreen createWorldScreen)) {
+			if (!(client.gui.screen() instanceof CreateWorldScreen createWorldScreen)) {
 				throw new AssertionError("CreateWorldScreen.show did not set the current screen");
 			}
 

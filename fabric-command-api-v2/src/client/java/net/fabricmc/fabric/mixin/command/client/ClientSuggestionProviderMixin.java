@@ -37,7 +37,7 @@ abstract class ClientSuggestionProviderMixin implements FabricClientCommandSourc
 
 	@Override
 	public void sendFeedback(Component message) {
-		this.minecraft.gui.getChat().addClientSystemMessage(message);
+		this.minecraft.gui.hud.getChat().addClientSystemMessage(message);
 		this.minecraft.getNarrator().saySystemChatQueued(message);
 	}
 

@@ -61,12 +61,12 @@ public class ContentRegistryGameTest {
 	@GameTest
 	public void testFlattenableBlockRegistry(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 1, 0);
-		helper.setBlock(pos, Blocks.RED_WOOL);
+		helper.setBlock(pos, Blocks.WOOL.red());
 		ItemStack shovel = new ItemStack(Items.NETHERITE_SHOVEL);
 		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 		player.setItemInHand(InteractionHand.MAIN_HAND, shovel);
 		helper.useBlock(pos, player);
-		helper.assertBlockPresent(Blocks.YELLOW_WOOL, pos);
+		helper.assertBlockPresent(Blocks.WOOL.yellow(), pos);
 		helper.assertValueEqual(shovel.getDamageValue(), 1, Component.literal("shovel damage"));
 		helper.succeed();
 	}
@@ -168,12 +168,12 @@ public class ContentRegistryGameTest {
 	@GameTest
 	public void testTillableBlockRegistry(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 1, 0);
-		helper.setBlock(pos, Blocks.GREEN_WOOL);
+		helper.setBlock(pos, Blocks.WOOL.green());
 		ItemStack hoe = new ItemStack(Items.NETHERITE_HOE);
 		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 		player.setItemInHand(InteractionHand.MAIN_HAND, hoe);
 		helper.useBlock(pos, player);
-		helper.assertBlockPresent(Blocks.LIME_WOOL, pos);
+		helper.assertBlockPresent(Blocks.WOOL.lime(), pos);
 		helper.assertValueEqual(hoe.getDamageValue(), 1, Component.literal("hoe damage"));
 		helper.succeed();
 	}

@@ -79,7 +79,7 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 	@Override
 	public QuadEmitter setupMesh(Matrix4fc transformation, boolean hasTranslucency) {
 		this.transformation = identityToNull(transformation);
-		renderType = hasTranslucency ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
+		renderType = hasTranslucency ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
 
 		if (mesh == null) {
 			mesh = Renderer.get().mutableMesh();

@@ -38,7 +38,7 @@ public final class LootGameTest {
 	@GameTest
 	public void testReplace(GameTestHelper helper) {
 		// Black wool should drop an iron ingot
-		LootTableDrops drops = LootTableDrops.block(helper, Blocks.BLACK_WOOL).drop();
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.WOOL.black()).drop();
 		drops.assertEquals(new ItemStack(Items.IRON_INGOT));
 		helper.succeed();
 	}
@@ -46,8 +46,8 @@ public final class LootGameTest {
 	@GameTest
 	public void testAddingPools(GameTestHelper helper) {
 		// White wool should drop a white wool and a gold ingot
-		LootTableDrops drops = LootTableDrops.block(helper, Blocks.WHITE_WOOL).drop();
-		drops.assertContains(new ItemStack(Items.WHITE_WOOL));
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.WOOL.white()).drop();
+		drops.assertContains(new ItemStack(Blocks.WOOL.white()));
 		ItemStack goldIngot = new ItemStack(Items.GOLD_INGOT);
 		goldIngot.set(DataComponents.CUSTOM_NAME, Component.literal("Gold from White Wool"));
 		drops.assertContains(goldIngot);
@@ -58,10 +58,10 @@ public final class LootGameTest {
 	public void testModifyingPools(GameTestHelper helper) {
 		// Yellow wool should drop either yellow wool or emeralds.
 		// Let's generate the drops with specific seeds to check.
-		LootTableDrops emeraldDrops = LootTableDrops.block(helper, Blocks.YELLOW_WOOL).seed(1).drop();
+		LootTableDrops emeraldDrops = LootTableDrops.block(helper, Blocks.WOOL.yellow()).seed(1).drop();
 		emeraldDrops.assertEquals(new ItemStack(Items.EMERALD));
-		LootTableDrops woolDrops = LootTableDrops.block(helper, Blocks.YELLOW_WOOL).seed(490234).drop();
-		woolDrops.assertEquals(new ItemStack(Items.YELLOW_WOOL));
+		LootTableDrops woolDrops = LootTableDrops.block(helper, Blocks.WOOL.yellow()).seed(490234).drop();
+		woolDrops.assertEquals(new ItemStack(Blocks.WOOL.yellow()));
 		helper.succeed();
 	}
 
@@ -94,7 +94,7 @@ public final class LootGameTest {
 	@GameTest
 	public void testModifyDropsDoubling(GameTestHelper helper) {
 		// Red banners should drop two red banners
-		LootTableDrops drops = LootTableDrops.block(helper, Blocks.RED_BANNER).drop();
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.BANNER.red()).drop();
 		drops.assertTotalCount(2);
 		helper.succeed();
 	}

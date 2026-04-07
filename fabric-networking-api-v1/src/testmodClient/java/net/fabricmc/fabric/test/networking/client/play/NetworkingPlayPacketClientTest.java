@@ -45,7 +45,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 			Objects.requireNonNull(context.client());
 			Objects.requireNonNull(context.player());
 
-			context.client().gui.setOverlayMessage(payload.message(), true);
+			context.client().gui.hud.setOverlayMessage(payload.message(), true);
 		}));
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(

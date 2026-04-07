@@ -114,7 +114,10 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 		// Set up required test environment
 		context.getInput().resizeWindow(2048, 1024); // Multiple of 256 to not squish the pixels of 256x overlays.
 		context.runOnClient(client -> {
-			client.options.hideGui = false;
+			if (!client.gui.hud.isHidden()) {
+				client.gui.hud.toggle();
+			}
+
 			client.options.guiScale().set(2);
 		});
 		shouldRender = true;

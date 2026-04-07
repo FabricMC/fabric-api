@@ -34,6 +34,6 @@ public final class ChunkSectionLayerHelper {
 	}
 
 	public static RenderType getRenderType(boolean translucent) {
-		return translucent ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet();
+		return translucent ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
 	}
 }

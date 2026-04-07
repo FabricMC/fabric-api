@@ -42,7 +42,7 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player != null) {
 				if (OPEN.consumeClick()) {
-					client.setScreen(new ChannelScreen(this));
+					client.gui.setScreen(new ChannelScreen(this));
 				}
 			}
 		});
@@ -50,16 +50,16 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 		ServerboundPlayChannelEvents.REGISTER.register((listener, sender, client, channels) -> {
 			SUPPORTED_SERVERBOUND_CHANNELS.addAll(channels);
 
-			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
-				((ChannelScreen) Minecraft.getInstance().screen).refresh();
+			if (Minecraft.getInstance().gui.screen() instanceof ChannelScreen) {
+				((ChannelScreen) Minecraft.getInstance().gui.screen()).refresh();
 			}
 		});
 
 		ServerboundPlayChannelEvents.UNREGISTER.register((listener, sender, client, channels) -> {
 			SUPPORTED_SERVERBOUND_CHANNELS.removeAll(channels);
 
-			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
-				((ChannelScreen) Minecraft.getInstance().screen).refresh();
+			if (Minecraft.getInstance().gui.screen() instanceof ChannelScreen) {
+				((ChannelScreen) Minecraft.getInstance().gui.screen()).refresh();
 			}
 		});
 

@@ -85,12 +85,12 @@ public final class PictureInPictureRendererRegistryImpl {
 
 	private static void registerVanillaFactories() {
 		// Vanilla creates its picture in picture renderers in the GameRenderer constructor
-		REGISTERED_FACTORIES.put(GuiEntityRenderState.class, context -> new GuiEntityRenderer(context.bufferSource(), context.minecraft().getEntityRenderDispatcher()));
-		REGISTERED_FACTORIES.put(GuiSkinRenderState.class, context -> new GuiSkinRenderer(context.bufferSource()));
-		REGISTERED_FACTORIES.put(GuiBookModelRenderState.class, context -> new GuiBookModelRenderer(context.bufferSource()));
-		REGISTERED_FACTORIES.put(GuiBannerResultRenderState.class, context -> new GuiBannerResultRenderer(context.bufferSource(), context.minecraft().getAtlasManager()));
-		REGISTERED_FACTORIES.put(GuiSignRenderState.class, context -> new GuiSignRenderer(context.bufferSource(), context.minecraft().getAtlasManager()));
-		REGISTERED_FACTORIES.put(GuiProfilerChartRenderState.class, context -> new GuiProfilerChartRenderer(context.bufferSource()));
+		REGISTERED_FACTORIES.put(GuiEntityRenderState.class, context -> new GuiEntityRenderer(context.minecraft().getEntityRenderDispatcher()));
+		REGISTERED_FACTORIES.put(GuiSkinRenderState.class, context -> new GuiSkinRenderer());
+		REGISTERED_FACTORIES.put(GuiBookModelRenderState.class, context -> new GuiBookModelRenderer());
+		REGISTERED_FACTORIES.put(GuiBannerResultRenderState.class, context -> new GuiBannerResultRenderer(context.minecraft().getAtlasManager()));
+		REGISTERED_FACTORIES.put(GuiSignRenderState.class, context -> new GuiSignRenderer(context.minecraft().getAtlasManager()));
+		REGISTERED_FACTORIES.put(GuiProfilerChartRenderState.class, context -> new GuiProfilerChartRenderer());
 	}
 
 	@VisibleForTesting

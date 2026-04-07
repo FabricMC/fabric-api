@@ -118,7 +118,7 @@ public class VanillaStorageTests {
 		BlockPos comparatorPos = new BlockPos(1, 2, 0);
 		Direction comparatorFacing = helper.getTestRotation().rotate(Direction.WEST);
 		// support block under the comparator
-		helper.setBlock(comparatorPos.relative(Direction.DOWN), Blocks.GREEN_WOOL.defaultBlockState());
+		helper.setBlock(comparatorPos.relative(Direction.DOWN), Blocks.WOOL.green().defaultBlockState());
 		// comparator
 		helper.setBlock(comparatorPos, Blocks.COMPARATOR.defaultBlockState().setValue(ComparatorBlock.FACING, comparatorFacing));
 

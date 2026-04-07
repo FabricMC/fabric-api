@@ -58,7 +58,7 @@ public class FabricFluidRenderingTestModClient implements ClientModInitializer {
 		FluidRenderingRegistry.setBlockTransparency(Blocks.WARPED_DOOR, true);
 
 		// Red stained glass will have falling fluid textures to the side
-		FluidRenderingRegistry.setBlockTransparency(Blocks.RED_STAINED_GLASS, false);
+		FluidRenderingRegistry.setBlockTransparency(Blocks.STAINED_GLASS.red(), false);
 
 		FluidRenderingRegistry.register(TestFluids.NO_OVERLAY, TestFluids.NO_OVERLAY_FLOWING, NO_OVERLAY_MODEL);
 		FluidRenderingRegistry.register(TestFluids.OVERLAY, TestFluids.OVERLAY_FLOWING, OVERLAY_MODEL);

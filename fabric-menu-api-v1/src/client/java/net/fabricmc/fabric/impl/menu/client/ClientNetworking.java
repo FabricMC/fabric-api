@@ -75,7 +75,7 @@ public final class ClientNetworking implements ClientModInitializer {
 			);
 
 			player.containerMenu = ((MenuAccess<?>) screen).getMenu();
-			client.setScreen(screen);
+			client.gui.setScreen(screen);
 		} else {
 			LOGGER.warn("Screen not registered for menu {}!", typeId);
 		}

@@ -131,7 +131,7 @@ abstract class LivingEntityMixin {
 		EventResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, state, state.getBlock() instanceof BedBlock);
 
 		// If a valid bed, replace with vanilla red bed so that the vanilla instanceof check succeeds.
-		return result.allowAction(false) ? Blocks.RED_BED.defaultBlockState() : state;
+		return result.allowAction(false) ? Blocks.BED.red().defaultBlockState() : state;
 	}
 
 	// The injector is shared because lambda$stopSleeping$23 and sleep share much of the structure here.

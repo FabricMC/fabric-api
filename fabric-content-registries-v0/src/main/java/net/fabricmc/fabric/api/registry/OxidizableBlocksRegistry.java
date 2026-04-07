@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.registry;
 
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.WeatheringCopperBlocks;
+import net.minecraft.world.level.block.WeatheringCopperCollection;
 
 import net.fabricmc.fabric.impl.content.registry.OxidizableBlocksRegistryImpl;
 
@@ -49,11 +49,11 @@ public final class OxidizableBlocksRegistry {
 	}
 
 	/**
-	 * Registers a {@link WeatheringCopperBlocks} and its oxidizing and waxing variants.
+	 * Registers a {@link WeatheringCopperCollection} and its oxidizing and waxing variants.
 	 *
-	 * @param copperBlocks the {@code WeatheringCopperBlocks} to register
+	 * @param copperBlocks the {@code WeatheringCopperCollection} to register
 	 */
-	public static void registerWeatheringCopperBlocks(WeatheringCopperBlocks copperBlocks) {
+	public static void registerWeatheringCopperBlocks(WeatheringCopperCollection<Block> copperBlocks) {
 		OxidizableBlocksRegistryImpl.registerWeatheringCopperBlocks(copperBlocks);
 	}
 }

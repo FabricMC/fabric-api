@@ -43,6 +43,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -149,7 +150,7 @@ public final class EntityEventTests implements ModInitializer {
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
 			// Can't sleep if holds blue wool
-			if (player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.BLUE_WOOL)) {
+			if (player.getItemInHand(InteractionHand.MAIN_HAND).is(Blocks.WOOL.blue().asItem())) {
 				return SLEEP_FAILURE_REASON;
 			}
 
@@ -161,7 +162,7 @@ public final class EntityEventTests implements ModInitializer {
 			BlockState bedState = entity.level().getBlockState(sleepingPos);
 
 			if (bedState.is(TEST_BED)) {
-				boolean shouldBeOccupied = !entity.getItemInHand(InteractionHand.MAIN_HAND).is(Items.ORANGE_WOOL);
+				boolean shouldBeOccupied = !entity.getItemInHand(InteractionHand.MAIN_HAND).is(Blocks.WOOL.orange().asItem());
 
 				if (bedState.getValue(TestBedBlock.OCCUPIED) != shouldBeOccupied) {
 					throw new AssertionError("Test bed should " + (!shouldBeOccupied ? "not " : "") + "be occupied");
@@ -185,9 +186,9 @@ public final class EntityEventTests implements ModInitializer {
 			// Green wool allows monsters and red wool always "detects" monsters
 			ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-			if (stack.is(Items.GREEN_WOOL)) {
+			if (stack.is(Blocks.WOOL.green().asItem())) {
 				return EventResult.ALLOW;
-			} else if (stack.is(Items.RED_WOOL)) {
+			} else if (stack.is(Blocks.WOOL.red().asItem())) {
 				return EventResult.DENY;
 			}
 
@@ -196,22 +197,22 @@ public final class EntityEventTests implements ModInitializer {
 
 		EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, sleepingPos) -> {
 			// Don't set spawn if holding white wool
-			return !player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.WHITE_WOOL);
+			return !player.getItemInHand(InteractionHand.MAIN_HAND).is(Blocks.WOOL.white().asItem());
 		});
 
 		EntitySleepEvents.ALLOW_RESETTING_TIME.register(player -> {
 			// Don't allow resetting time if holding black wool
-			return !player.getItemInHand(InteractionHand.MAIN_HAND).is(Items.BLACK_WOOL);
+			return !player.getItemInHand(InteractionHand.MAIN_HAND).is(Blocks.WOOL.black().asItem());
 		});
 
 		EntitySleepEvents.SET_BED_OCCUPATION_STATE.register((entity, sleepingPos, bedState, occupied) -> {
 			// Don't set occupied state if holding orange wool
-			return entity.getItemInHand(InteractionHand.MAIN_HAND).is(Items.ORANGE_WOOL);
+			return entity.getItemInHand(InteractionHand.MAIN_HAND).is(Blocks.WOOL.orange().asItem());
 		});
 
 		EntitySleepEvents.MODIFY_WAKE_UP_POSITION.register((entity, sleepingPos, bedState, wakeUpPos) -> {
 			// If holding cyan wool, wake up 10 blocks above the bed
-			if (entity.getItemInHand(InteractionHand.MAIN_HAND).is(Items.CYAN_WOOL)) {
+			if (entity.getItemInHand(InteractionHand.MAIN_HAND).is(Blocks.WOOL.cyan().asItem())) {
 				return Vec3.atCenterOf(sleepingPos).add(0, 10, 0);
 			}
 
@@ -243,14 +244,14 @@ public final class EntityEventTests implements ModInitializer {
 
 	private static void addSleepWools(Player player) {
 		Inventory inventory = player.getInventory();
-		inventory.placeItemBackInInventory(createNamedItem(Items.BLUE_WOOL, "Can't start sleeping"));
-		inventory.placeItemBackInInventory(createNamedItem(Items.YELLOW_WOOL, "Sleep whenever"));
-		inventory.placeItemBackInInventory(createNamedItem(Items.GREEN_WOOL, "Allow nearby monsters"));
-		inventory.placeItemBackInInventory(createNamedItem(Items.RED_WOOL, "Detect nearby monsters"));
-		inventory.placeItemBackInInventory(createNamedItem(Items.WHITE_WOOL, "Don't set spawn"));
-		inventory.placeItemBackInInventory(createNamedItem(Items.BLACK_WOOL, "Don't reset time"));
-		inventory.placeItemBackInInventory(createNamedItem(Items.ORANGE_WOOL, "Don't set occupied state"));
-		inventory.placeItemBackInInventory(createNamedItem(Items.CYAN_WOOL, "Wake up high above"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.blue().asItem(), "Can't start sleeping"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.yellow().asItem(), "Sleep whenever"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.green().asItem(), "Allow nearby monsters"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.red().asItem(), "Detect nearby monsters"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.white().asItem(), "Don't set spawn"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.black().asItem(), "Don't reset time"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.orange().asItem(), "Don't set occupied state"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.cyan().asItem(), "Wake up high above"));
 	}
 
 	private static void assertOnServerThread(MinecraftServer server) {

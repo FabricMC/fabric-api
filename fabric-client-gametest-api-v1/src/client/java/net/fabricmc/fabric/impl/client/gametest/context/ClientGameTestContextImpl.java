@@ -208,16 +208,16 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("waitForScreen");
 
 		if (screenClass == null) {
-			return waitFor(client -> client.screen == null);
+			return waitFor(client -> client.gui.screen() == null);
 		} else {
-			return waitFor(client -> screenClass.isInstance(client.screen));
+			return waitFor(client -> screenClass.isInstance(client.gui.screen()));
 		}
 	}
 
 	@Override
 	public void setScreen(Supplier<@Nullable Screen> screen) {
 		ThreadingImpl.checkOnGametestThread("setScreen");
-		runOnClient(client -> client.setScreen(screen.get()));
+		runOnClient(client -> client.gui.setScreen(screen.get()));
 	}
 
 	@Override
@@ -226,10 +226,10 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		Preconditions.checkNotNull(translationKey, "translationKey");
 
 		runOnClient(client -> {
-			if (!tryClickScreenButtonImpl(client.screen, translationKey)) {
+			if (!tryClickScreenButtonImpl(client.gui.screen(), translationKey)) {
 				throw new AssertionError("Could not find button '%s' in screen '%s'".formatted(
 					translationKey,
-					Optionull.map(client.screen, screen -> screen.getClass().getName())
+					Optionull.map(client.gui.screen(), screen -> screen.getClass().getName())
 				));
 			}
 		});
@@ -240,7 +240,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("tryClickScreenButton");
 		Preconditions.checkNotNull(translationKey, "translationKey");
 
-		return computeOnClient(client -> tryClickScreenButtonImpl(client.screen, translationKey));
+		return computeOnClient(client -> tryClickScreenButtonImpl(client.gui.screen(), translationKey));
 	}
 
 	private static boolean tryClickScreenButtonImpl(@Nullable Screen screen, String translationKey) {

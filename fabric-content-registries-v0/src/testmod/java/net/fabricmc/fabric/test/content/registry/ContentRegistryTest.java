@@ -111,7 +111,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		CompostableRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
-		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.defaultBlockState());
+		FlattenableBlockRegistry.register(Blocks.WOOL.red(), Blocks.WOOL.yellow().defaultBlockState());
 
 		FuelValueEvents.BUILD.register((builder, context) -> {
 			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, context.baseSmeltTime() / 4);
@@ -127,7 +127,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.TNT);
 		StrippableBlockRegistry.registerCopyState(Blocks.OAK_STAIRS, Blocks.SPRUCE_STAIRS);
 
-		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.changeIntoState(Blocks.LIME_WOOL.defaultBlockState()));
+		TillableBlockRegistry.register(Blocks.WOOL.green(), context -> true, HoeItem.changeIntoState(Blocks.WOOL.lime().defaultBlockState()));
 
 		OxidizableBlocksRegistry.registerNextStage(Blocks.COPPER_ORE, Blocks.IRON_ORE);
 		OxidizableBlocksRegistry.registerNextStage(Blocks.IRON_ORE, Blocks.GOLD_ORE);
@@ -152,8 +152,8 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry null test passed!");
 		}
 
-		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).setId(TEST_OXIDIZING_BLOCK_KEY)));
-		Block exposedTestOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.EXPOSED_COPPER).setId(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
+		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK.unaffected()).setId(TEST_OXIDIZING_BLOCK_KEY)));
+		Block exposedTestOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK.exposed()).setId(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
 
 		OxidizableBlocksRegistry.registerNextStage(testOxidizingBlock, exposedTestOxidizingBlock);
 

@@ -51,7 +51,7 @@ import net.fabricmc.fabric.test.rendering.client.mixin.GuiRendererAccessor;
 public class PictureInPictureRendererTest implements ClientModInitializer, FabricClientGameTest {
 	@Override
 	public void onInitializeClient() {
-		PictureInPictureRendererRegistry.register(ctx -> new BannerGuiElementRenderer(ctx.bufferSource()));
+		PictureInPictureRendererRegistry.register(ctx -> new BannerGuiElementRenderer());
 
 		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip"), (graphics, deltaTracker) -> {
 			// render it twice to test that PiPs can be added multiple times in the same frame

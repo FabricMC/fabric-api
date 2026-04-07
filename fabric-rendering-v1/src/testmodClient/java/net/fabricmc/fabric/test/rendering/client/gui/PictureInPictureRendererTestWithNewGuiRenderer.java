@@ -60,7 +60,7 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 
 			GuiRenderer guiRenderer = new GuiRenderer(newGuiRenderState, client.renderBuffers().bufferSource(), client.gameRenderer.getSubmitNodeStorage(), client.gameRenderer.getFeatureRenderDispatcher(), Collections.emptyList());
 			FogRenderer fogRenderer = new FogRenderer();
-			guiRenderer.render(fogRenderer.getBuffer(FogRenderer.FogMode.NONE));
+			guiRenderer.render();
 			fogRenderer.close();
 			guiRenderer.close();
 

@@ -21,7 +21,7 @@ import java.util.Objects;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WeatheringCopper;
-import net.minecraft.world.level.block.WeatheringCopperBlocks;
+import net.minecraft.world.level.block.WeatheringCopperCollection;
 
 public final class OxidizableBlocksRegistryImpl {
 	private OxidizableBlocksRegistryImpl() {
@@ -42,7 +42,7 @@ public final class OxidizableBlocksRegistryImpl {
 		HoneycombItem.WAXABLES.get().put(unwaxed, waxed);
 	}
 
-	public static void registerWeatheringCopperBlocks(WeatheringCopperBlocks copperBlocks) {
+	public static void registerWeatheringCopperBlocks(WeatheringCopperCollection<Block> copperBlocks) {
 		Objects.requireNonNull(copperBlocks, "copperBlocks cannot be null!");
 		copperBlocks.weatheringMapping().forEach(OxidizableBlocksRegistryImpl::registerNextStage);
 		copperBlocks.waxedMapping().forEach(OxidizableBlocksRegistryImpl::registerWaxable);

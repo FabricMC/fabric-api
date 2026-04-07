@@ -23,7 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.object.banner.BannerModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -32,8 +32,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
 public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGuiElementRenderState> {
-	protected BannerGuiElementRenderer(MultiBufferSource.BufferSource bufferSource) {
-		super(bufferSource);
+	protected BannerGuiElementRenderer() {
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGui
 	}
 
 	@Override
-	protected void renderToTexture(BannerGuiElementRenderState state, PoseStack poseStack) {
+	protected void renderToTexture(BannerGuiElementRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
 		Minecraft client = Minecraft.getInstance();
 		client.gameRenderer.getLighting().setupFor(Lighting.Entry.ITEMS_FLAT);
 		FeatureRenderDispatcher renderDispatcher = client.gameRenderer.getFeatureRenderDispatcher();
