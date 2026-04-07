@@ -159,7 +159,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 			Minecraft minecraft = Minecraft.getInstance();
 
 			if (minecraft.gameMode.canHurtPlayer()) {
-				Gui hud = minecraft.gui;
+				Hud hud = minecraft.gui.hud;
 				LivingEntity livingEntity = ((HudAccessor) hud).fabric$callGetRiddenEntity();
 
 				if (((HudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
