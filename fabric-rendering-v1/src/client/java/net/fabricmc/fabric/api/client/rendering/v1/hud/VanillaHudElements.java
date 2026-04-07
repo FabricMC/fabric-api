@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
+import net.minecraft.client.gui.Hud;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -23,7 +24,7 @@ import net.minecraft.resources.Identifier;
  *
  * <p>The identifiers in this interface are the vanilla hud layers in the order they are drawn in.
  * The first element is drawn first, which means it is at the bottom.
- * All vanilla layers except {@link #SLEEP} are in sub drawers and have a render condition attached ({@link net.minecraft.client.Options#hideGui}).
+ * All vanilla layers except {@link #SLEEP} are in sub drawers and have a render condition attached ({@link Hud#isHidden()}).
  * Operations relative to any element will generally inherit that element's render condition.
  * There is currently no mechanism to change the render condition of an element.
  *

@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
 @Mixin(Hud.class)
-abstract class GuiMixin {
+abstract class HudMixin {
 	@Shadow
 	@Final
 	private Minecraft minecraft;

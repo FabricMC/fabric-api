@@ -95,7 +95,7 @@ public interface ClientGameTestContext {
 	 * Opens a {@link Screen} on the client.
 	 *
 	 * @param screen The screen to open
-	 * @see Minecraft#setScreen(Screen)
+	 * @see net.minecraft.client.gui.Gui#setScreen(Screen)
 	 */
 	void setScreen(Supplier<@Nullable Screen> screen);
 

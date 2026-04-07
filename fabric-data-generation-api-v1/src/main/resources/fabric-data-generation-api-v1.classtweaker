@@ -244,8 +244,8 @@ transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerato
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createLeafLitter	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createFlowerBed	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createSegmentedBlock	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Ljava/util/function/Function;Lnet/minecraft/client/data/models/MultiVariant;Ljava/util/function/Function;Lnet/minecraft/client/data/models/MultiVariant;Ljava/util/function/Function;Lnet/minecraft/client/data/models/MultiVariant;Ljava/util/function/Function;)V
-transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createColoredBlockWithRandomRotations	(Lnet/minecraft/client/data/models/model/TexturedModel$Provider;[Lnet/minecraft/world/level/block/Block;)V
-transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createColoredBlockWithStateRotations	(Lnet/minecraft/client/data/models/model/TexturedModel$Provider;[Lnet/minecraft/world/level/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createColoredBlockWithRandomRotations	(Lnet/minecraft/client/data/models/model/TexturedModel$Provider;Ljava/util/List;)V
+transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createColoredBlockWithStateRotations	(Lnet/minecraft/client/data/models/model/TexturedModel$Provider;Ljava/util/List;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createGlassBlocks	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCommandBlock	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createAnvil	(Lnet/minecraft/world/level/block/Block;)V
@@ -265,7 +265,7 @@ transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerato
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCopperBulb	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	copyCopperBulbModel	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createAmethystCluster	(Lnet/minecraft/world/level/block/Block;)V
-transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createPointedDripstoneVariant	(Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/block/state/properties/DripstoneThickness;)Lnet/minecraft/client/data/models/MultiVariant;
+transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createPointedDripstoneVariant	(Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/block/state/properties/SpeleothemThickness;)Lnet/minecraft/client/data/models/MultiVariant;
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createNyliumBlock	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createRotatableColumn	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createLightningRod	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
@@ -304,10 +304,10 @@ transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerato
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	applyRotation	(Lnet/minecraft/core/FrontAndTop;)Lnet/minecraft/client/renderer/block/dispatch/VariantMutator;
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createHead	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/SkullBlock$Type;Lnet/minecraft/resources/Identifier;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCopperGolemStatue	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/WeatheringCopper$WeatherState;)V
-transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createBanner	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/item/DyeColor;)V
+transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createBanner	(Lnet/minecraft/world/item/DyeColor;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createChest	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Z)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createChest	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/renderer/MultiblockChestResources;Z)V
-transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createBed	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/item/DyeColor;)V
+transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createBed	(Lnet/minecraft/world/item/DyeColor;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	generateSimpleSpecialItemModel	(Lnet/minecraft/world/level/block/Block;Ljava/util/Optional;Lnet/minecraft/client/renderer/special/SpecialModelRenderer$Unbaked;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCopperChainItem	(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCandleAndCandleCake	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V

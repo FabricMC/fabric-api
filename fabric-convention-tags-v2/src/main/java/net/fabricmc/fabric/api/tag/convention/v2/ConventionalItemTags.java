@@ -362,7 +362,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> GLAZED_TERRACOTTAS = register("glazed_terracottas");
 	public static final TagKey<Item> CONCRETES = register("concretes");
 	/**
-	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}.
+	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDERS}.
 	 */
 	public static final TagKey<Item> CONCRETE_POWDERS = register("concrete_powders");
 

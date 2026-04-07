@@ -20,6 +20,7 @@ import java.util.function.ToIntFunction;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -31,7 +32,7 @@ import net.minecraft.world.entity.player.Player;
 @FunctionalInterface
 public interface StatusBarHeightProvider extends ToIntFunction<Player> {
 	/**
-	 * @param player the {@link Player} from {@link net.minecraft.client.gui.Gui#getCameraPlayer()}
+	 * @param player the {@link Player} from {@link Minecraft#getCameraEntity()}
 	 * @return the vertical space occupied by the status bar
 	 */
 	int getStatusBarHeight(Player player);
