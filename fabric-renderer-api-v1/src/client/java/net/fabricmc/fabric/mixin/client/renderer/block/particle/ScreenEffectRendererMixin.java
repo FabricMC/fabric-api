@@ -53,9 +53,9 @@ abstract class ScreenEffectRendererMixin {
 	}
 
 	@Inject(
-		method = "getViewBlockingState",
-		slice = @Slice(from = @At(value = "NEW", target = "net/minecraft/core/BlockPos$MutableBlockPos")),
-		at = @At(value = "RETURN")
+			method = "getViewBlockingState",
+			slice = @Slice(from = @At(value = "NEW", target = "net/minecraft/core/BlockPos$MutableBlockPos")),
+			at = @At(value = "RETURN")
 	)
 	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos testPos) {
 		if (cir.getReturnValue() != null) {

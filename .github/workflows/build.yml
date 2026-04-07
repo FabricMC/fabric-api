@@ -38,6 +38,9 @@ jobs:
 
   client_test:
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        graphics_backend: [opengl, vulkan]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -46,22 +49,24 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '25'
+      - run: sudo apt-get install -y mesa-vulkan-drivers
       - run: |
           curl -L -o tracy-capture https://github.com/modmuss50/tracy-utils/releases/download/0.0.2/linux-x86_64-tracy-capture
           chmod +x tracy-capture
           mkdir run && echo "eula=true" >> run/eula.txt
+          echo 'preferredGraphicsBackend:"${{ matrix.graphics_backend }}"' >> run/options.txt
       - run: ./gradlew runClientGametest --stacktrace --warning-mode=fail
         env:
           ENABLE_TRACY: false
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: Test Screenshots
+          name: Test Screenshots (${{ matrix.graphics_backend }})
           path: run/screenshots
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: Tracy Profile
+          name: Tracy Profile (${{ matrix.graphics_backend }})
           path: profile.tracy
 
   server_test:
