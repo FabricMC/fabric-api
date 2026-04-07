@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.ScreenEffectRenderer;
@@ -51,7 +52,11 @@ abstract class ScreenEffectRendererMixin {
 		return original.call(models, state);
 	}
 
-	@Inject(method = "getViewBlockingState", at = @At(value = "RETURN", ordinal = 1))
+	@Inject(
+		method = "getViewBlockingState",
+		slice = @Slice(from = @At(value = "NEW", target = "net/minecraft/core/BlockPos$MutableBlockPos")),
+		at = @At(value = "RETURN")
+	)
 	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos testPos) {
 		if (cir.getReturnValue() != null) {
 			pos = testPos.immutable();
