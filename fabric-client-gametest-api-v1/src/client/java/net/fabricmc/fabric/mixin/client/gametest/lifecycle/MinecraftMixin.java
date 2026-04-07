@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.gametest.lifecycle;
 
-import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Overlay;
+import net.minecraft.client.gui.Gui;
 
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
 
@@ -35,12 +35,12 @@ public class MinecraftMixin {
 	private boolean startedClientGametests = false;
 
 	@Shadow
-	@Nullable
-	private Overlay overlay;
+	@Final
+	public Gui gui;
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void onTick(CallbackInfo ci) {
-		if (!startedClientGametests && overlay == null) {
+		if (!startedClientGametests && gui.overlay() == null) {
 			startedClientGametests = true;
 			FabricClientGameTestRunner.start();
 		}

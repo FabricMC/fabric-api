@@ -13,7 +13,6 @@
     "input.InputConstantsMixin",
     "input.KeyMappingAccessor",
     "input.KeyboardHandlerAccessor",
-    "input.MinecraftMixin",
     "input.ScreenManagerMixin",
     "input.MouseHandlerAccessor",
     "input.WindowMixin",
