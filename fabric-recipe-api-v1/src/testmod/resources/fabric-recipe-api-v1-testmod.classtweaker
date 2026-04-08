@@ -1,4 +1,5 @@
-classTweaker	v1	official
+classTweaker    v2  official
+# Copied from fabric-recipe-api-v1.classtweaker
 accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setInput  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
 accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setResult  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
 extendable	class	net/minecraft/world/item/crafting/Ingredient
@@ -9,3 +10,14 @@ accessible	field	net/minecraft/server/network/ServerLoginPacketListenerImpl	conn
 transitive-inject-interface	net/minecraft/world/item/crafting/Ingredient	net/fabricmc/fabric/api/recipe/v1/ingredient/FabricIngredient
 transitive-inject-interface	net/minecraft/world/item/crafting/RecipeManager	net/fabricmc/fabric/api/recipe/v1/FabricRecipeManager
 transitive-inject-interface	net/minecraft/world/item/crafting/RecipeAccess	net/fabricmc/fabric/api/recipe/v1/FabricRecipeAccess
+
+# Enum Extensions
+extend-enum net/minecraft/world/inventory/RecipeBookType FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING
+extend-enum net/minecraft/world/inventory/RecipeBookType FABRIC_RECIPE_API_V1_TESTMOD_UNUSED
+extend-enum net/minecraft/client/gui/screens/recipebook/SearchRecipeBookCategory FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING
+
+# Test Specific AWs (Unable to get transitive access wideners)
+accessible	class	net/minecraft/world/inventory/MenuType$MenuSupplier
+accessible	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
+accessible	class	net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor

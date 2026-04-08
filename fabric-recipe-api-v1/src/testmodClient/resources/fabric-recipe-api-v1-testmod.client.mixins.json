@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.recipe.client.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "SearchRecipeBookCategoryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

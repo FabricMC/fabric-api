@@ -69,6 +69,10 @@ transitive-accessible	method	net/minecraft/server/level/ServerLevel	sendParticle
 transitive-accessible	method	net/minecraft/network/chat/TextColor	formatValue	()Ljava/lang/String;
 transitive-accessible	method	net/minecraft/network/chat/contents/TranslatableContents	getArgument	(I)Lnet/minecraft/network/chat/FormattedText;
 
+# Recipe Book
+transitive-accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setInput  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
+transitive-accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setResult  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
+
 # Villagers
 transitive-accessible	field	net/minecraft/world/entity/npc/villager/VillagerType	BY_BIOME	Ljava/util/Map;
 

@@ -5,18 +5,26 @@
   "version": "1.0.0",
   "environment": "*",
   "license": "Apache-2.0",
+  "accessWidener": "fabric-recipe-api-v1-testmod.classtweaker",
   "depends": {
+    "fabricloader": ">=0.19.0",
     "fabric-recipe-api-v1":"*"
   },
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.test.recipe.book.RecipeBookTestContent",
       "net.fabricmc.fabric.test.recipe.sync.RecipeSyncTest"
     ],
     "client": [
+      "net.fabricmc.fabric.test.recipe.client.book.RecipeBookTestClientContent",
       "net.fabricmc.fabric.test.recipe.client.sync.RecipeSyncClientTest"
     ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.recipe.ingredient.ShapelessRecipeMatchTests"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-recipe-api-v1-testmod.mixins.json",
+    "fabric-recipe-api-v1-testmod.client.mixins.json"
+  ]
 }

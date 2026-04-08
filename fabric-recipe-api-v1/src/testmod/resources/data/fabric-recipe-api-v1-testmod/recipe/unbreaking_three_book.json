@@ -1,0 +1,14 @@
+{
+  "type": "fabric-recipe-api-v1-testmod:book",
+  "group": "unbreaking",
+  "category": "enchanted_book",
+  "ingredient": "minecraft:diamond_ore",
+  "result": {
+    "id": "minecraft:enchanted_book",
+    "components": {
+      "minecraft:enchantments": {
+        "minecraft:unbreaking": 3
+      }
+    }
+  }
+}

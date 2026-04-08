@@ -30,11 +30,13 @@
   },
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.impl.recipe.book.RecipeBookImpl",
       "net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientInit",
       "net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync",
       "net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl"
     ],
     "client": [
+      "net.fabricmc.fabric.impl.recipe.book.client.RecipeBookImplClient",
       "net.fabricmc.fabric.impl.recipe.ingredient.client.CustomIngredientSyncClient",
       "net.fabricmc.fabric.impl.recipe.sync.client.RecipeSyncImplClient"
     ]

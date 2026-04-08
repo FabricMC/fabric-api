@@ -1,0 +1,13 @@
+{
+  "type": "fabric-recipe-api-v1-testmod:book",
+  "category": "enchanted_book",
+  "ingredient": "minecraft:totem_of_undying",
+  "result": {
+    "id": "minecraft:enchanted_book",
+    "components": {
+      "minecraft:enchantments": {
+        "minecraft:mending": 1
+      }
+    }
+  }
+}

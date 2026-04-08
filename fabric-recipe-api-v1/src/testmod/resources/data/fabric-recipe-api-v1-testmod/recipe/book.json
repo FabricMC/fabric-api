@@ -1,0 +1,8 @@
+{
+  "type": "fabric-recipe-api-v1-testmod:book",
+  "category": "book",
+  "ingredient": "minecraft:paper",
+  "result": {
+    "id": "minecraft:book"
+  }
+}
