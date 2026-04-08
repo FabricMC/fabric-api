@@ -104,7 +104,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	private static final Logger FABRIC_LOGGER = LoggerFactory.getLogger(SimpleRegistryMixin.class);
 
 	@Unique
-	private final Event<RegistryEntryAddedCallback<T>> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
+	private Event<RegistryEntryAddedCallback<T>> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
 			(callbacks) -> (rawId, id, object) -> {
 				for (RegistryEntryAddedCallback<T> callback : callbacks) {
 					callback.onEntryAdded(rawId, id, object);
@@ -122,7 +122,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	);
 
 	@Unique
-	private final Event<RegistryIdRemapCallback<T>> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
+	private Event<RegistryIdRemapCallback<T>> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
 			(callbacks) -> (a) -> {
 				for (RegistryIdRemapCallback<T> callback : callbacks) {
 					callback.onRemap(a);
@@ -167,7 +167,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	}
 
 	@Inject(method = "<init>(Lnet/minecraft/registry/RegistryKey;Lcom/mojang/serialization/Lifecycle;Z)V", at = @At("RETURN"))
-	private void init(RegistryKey key, Lifecycle lifecycle, boolean intrusive, CallbackInfo ci) {
+	private void init(RegistryKey<Registry<T>> key, Lifecycle lifecycle, boolean intrusive, CallbackInfo ci) {
 		fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
 			(callbacks) -> (rawId, id, object) -> {
 				for (RegistryEntryAddedCallback<T> callback : callbacks) {
@@ -194,6 +194,8 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 				}
 			}
 		);
+	}
+
 	// The rest of the registry isn't thread-safe, so this one need not be either.
 	@Unique
 	private boolean fabric_isObjectNew = false;
@@ -547,7 +549,6 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 
 	@ModifyVariable(
 			method = {
-					"getEntry(Lnet/minecraft/util/Identifier;)Ljava/util/Optional;",
 					"get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;",
 					"containsId"
 			},
@@ -561,16 +562,15 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@ModifyVariable(
 			method = {
 					"get(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/Object;",
-					"getOptional(Lnet/minecraft/registry/RegistryKey;)Ljava/util/Optional;",
+					"getEntry(Lnet/minecraft/registry/RegistryKey;)Ljava/util/Optional;",
 					"getOrCreateEntry",
-					"contains",
-					"getEntryInfo"
+					"contains"
 			},
 			at = @At("HEAD"),
 			argsOnly = true
 	)
 	private RegistryKey<T> aliasRegistryKeyParameter(RegistryKey<T> original) {
 		Identifier aliased = aliases.get(original.getValue());
-		return aliased == null ? original : RegistryKey.of(original.getRegistryRef(), aliased);
+		return aliased == null ? original : RegistryKey.of(RegistryKey.ofRegistry(original.getRegistry()), aliased);
 	}
 }
