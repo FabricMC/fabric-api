@@ -26,13 +26,4 @@ public class RecipeBookRegistry {
 	public static void registerRecipeBookType(RecipeBookType type, Identifier id) {
 		RecipeBookImpl.registerRecipeBookType(type, id);
 	}
-
-	/**
-	 * Obtains a {@link RecipeBookType} that was registered by Fabric from an ID.
-	 * @param id The id of the recipe book type.
-	 * @see RecipeBookRegistry#registerRecipeBookType(RecipeBookType, Identifier)
-	 */
-	public static RecipeBookType recipeBookTypeFromId(Identifier id) {
-		return RecipeBookImpl.fromId(id);
-	}
 }

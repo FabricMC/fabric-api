@@ -24,8 +24,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jspecify.annotations.Nullable;
+import io.netty.buffer.ByteBuf;
 
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.RecipeBookSettings;
 import net.minecraft.world.inventory.RecipeBookType;
@@ -35,13 +37,8 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class RecipeBookImpl implements ModInitializer {
 	public static final Map<RecipeBookType, RecipeBookEntry> ENTRIES = new HashMap<>();
-	private static final Codec<RecipeBookType> RECIPE_BOOK_ID_CODEC = Identifier.CODEC.flatXmap(id -> {
+	public static final Codec<RecipeBookType> REGISTERED_RECIPE_BOOK_ID_CODEC = Identifier.CODEC.flatXmap(id -> {
 		RecipeBookType type = fromId(id);
-
-		if (type == null) {
-			return DataResult.error(() -> "Could not find registered recipe book type " + id);
-		}
-
 		return DataResult.success(type);
 	}, type -> {
 		if (!ENTRIES.containsKey(type)) {
@@ -50,12 +47,24 @@ public class RecipeBookImpl implements ModInitializer {
 
 		return DataResult.success(ENTRIES.get(type).id());
 	});
-	// TODO: Rename me from fabric:settings to a more user friendly name.
 	public static final MapCodec<Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_MAP_CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			Codec.unboundedMap(RECIPE_BOOK_ID_CODEC, RecipeBookSettings.TypeSettings.CRAFTING_MAP_CODEC.codec())
+			Codec.unboundedMap(REGISTERED_RECIPE_BOOK_ID_CODEC, RecipeBookSettings.TypeSettings.CRAFTING_MAP_CODEC.codec())
 					.fieldOf("fabric:settings")
 					.forGetter(Function.identity())
 	).apply(inst, Function.identity()));
+
+	public static final StreamCodec<ByteBuf, RecipeBookType> REGISTERED_RECIPE_BOOK_ID_STREAM_CODEC = Identifier.STREAM_CODEC.map(
+			RecipeBookImpl::fromId,
+			recipeType -> RecipeBookImpl.ENTRIES.get(recipeType).id()
+	);
+	public static final StreamCodec<ByteBuf, Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_STREAM_CODEC = ByteBufCodecs.map(
+			HashMap::new,
+			Identifier.STREAM_CODEC.map(
+					RecipeBookImpl::fromId,
+					recipeType -> RecipeBookImpl.ENTRIES.get(recipeType).id()
+			),
+			RecipeBookSettings.TypeSettings.STREAM_CODEC
+	);
 
 	@Override
 	public void onInitialize() {
@@ -70,14 +79,13 @@ public class RecipeBookImpl implements ModInitializer {
 		ENTRIES.put(type, new RecipeBookEntry(id));
 	}
 
-	@Nullable
 	public static RecipeBookType fromId(Identifier id) {
 		return ENTRIES.entrySet()
 				.stream()
 				.filter(entry -> entry.getValue().id().equals(id))
 				.map(Map.Entry::getKey)
 				.findFirst()
-				.orElse(null);
+				.orElseThrow(() -> new IllegalStateException("Could not find registered recipe book type " + id));
 	}
 
 	private static boolean isVanillaType(RecipeBookType type) {

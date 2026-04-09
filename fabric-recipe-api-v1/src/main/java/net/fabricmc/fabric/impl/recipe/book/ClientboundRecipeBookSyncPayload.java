@@ -16,29 +16,18 @@
 
 package net.fabricmc.fabric.impl.recipe.book;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.RecipeBookSettings;
 import net.minecraft.world.inventory.RecipeBookType;
 
-import net.fabricmc.fabric.api.recipe.v1.book.RecipeBookRegistry;
-
 public record ClientboundRecipeBookSyncPayload(Map<RecipeBookType, RecipeBookSettings.TypeSettings> values) implements CustomPacketPayload {
 	public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundRecipeBookSyncPayload> CODEC = StreamCodec.composite(
-			ByteBufCodecs.map(
-					HashMap::new,
-					Identifier.STREAM_CODEC.map(
-							RecipeBookRegistry::recipeBookTypeFromId,
-							recipeType -> RecipeBookImpl.ENTRIES.get(recipeType).id()
-					),
-					RecipeBookSettings.TypeSettings.STREAM_CODEC
-			),
+			RecipeBookImpl.FABRIC_SETTINGS_STREAM_CODEC,
 			ClientboundRecipeBookSyncPayload::values,
 			ClientboundRecipeBookSyncPayload::new
 	);
