@@ -3,6 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.recipe.client",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "book.OverlayRecipeComponentMixin",
+    "book.RecipeBookComponentMixin",
+    "book.RecipeBookPageAccessor",
     "sync.ClientConfigurationPacketListenerImplMixin",
     "sync.ClientPacketListenerMixin",
     "sync.ClientRecipeContainerMixin"

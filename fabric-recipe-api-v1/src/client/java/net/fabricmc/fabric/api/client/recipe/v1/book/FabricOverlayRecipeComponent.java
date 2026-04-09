@@ -16,16 +16,12 @@
 
 package net.fabricmc.fabric.api.client.recipe.v1.book;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 
-/**
- * TODO: Make a Scoped Event for net.minecraft.client.ClientRecipeBook#categorizeAndGroupRecipes when scoped events are merged.
- * TODO: Events for {@link net.minecraft.client.gui.screens.recipebook.GhostSlots#extractRenderState(GuiGraphicsExtractor, Minecraft, boolean)}
- * TODO: Events for {@link net.minecraft.client.gui.screens.recipebook.GhostSlots#extractTooltip(GuiGraphicsExtractor, Minecraft, int, int, Slot)}
- */
-public class ClientRecipeBookEvents {
-	private ClientRecipeBookEvents() {
+public interface FabricOverlayRecipeComponent {
+	default OverlayRecipeComponent.OverlayRecipeButton createOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
+		throw new AssertionError("Implemented via mixin");
 	}
 }

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.recipe.v1.book;
+package net.fabricmc.fabric.mixin.recipe.client.book;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
-import net.minecraft.client.gui.screens.recipebook.SlotSelectTime;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 
-public interface FabricRecipeBookComponent {
-	default SlotSelectTime getSlotSelectTime() {
-		throw new AssertionError("Implemented via mixin");
-	}
-
-	default void setOverlay(OverlayRecipeComponent component) {
-		throw new AssertionError("Implemented via mixin");
-	}
+@Mixin(RecipeBookPage.class)
+public interface RecipeBookPageAccessor {
+	@Accessor
+	@Mutable
+	void setOverlay(OverlayRecipeComponent value);
 }
