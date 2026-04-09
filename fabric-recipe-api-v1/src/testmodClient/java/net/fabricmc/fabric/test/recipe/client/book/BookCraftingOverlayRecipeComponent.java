@@ -64,12 +64,14 @@ public class BookCraftingOverlayRecipeComponent extends OverlayRecipeComponent {
 						createGridPos(1, 1, bookRecipeDisplay.ingredient().resolveForStacks(context))
 				);
 			}
+
 			return Collections.emptyList();
 		}
 
 		@Override
 		public void extractWidgetRenderState(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
 			super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+
 			if (isHoveredOrFocused()) {
 				graphics.setTooltipForNextFrame(font, result, mouseX, mouseY);
 			}

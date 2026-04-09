@@ -29,6 +29,7 @@ public interface FabricRecipeBookComponent {
 
 	/**
 	 * Sets this book component's overlay.
+	 *
 	 * <p>This is used for modifying the overlay upon right-clicking a recipe item button.
 	 *
 	 * @apiNote This should most commonly be called within the init method of your recipe book overlay.

@@ -41,10 +41,12 @@ public class OverlayRecipeComponentMixin implements FabricOverlayRecipeComponent
 		return (E) getOverlayButton(x, y, recipe, context, canCraft);
 	}
 
+	@Override
 	public OverlayRecipeComponent.OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
 		if (this.isFurnaceMenu) {
 			return ((OverlayRecipeComponent) (Object) this).new OverlaySmeltingRecipeButton(x, y, recipe.id(), recipe.display(), context, canCraft);
 		}
+
 		return ((OverlayRecipeComponent) (Object) this).new OverlayCraftingRecipeButton(x, y, recipe.id(), recipe.display(), context, canCraft);
 	}
 }

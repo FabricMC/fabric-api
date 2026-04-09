@@ -26,10 +26,11 @@ import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 public interface FabricOverlayRecipeComponent {
 	/**
 	 * Returns the overlay button for an individual recipe entry.
+	 *
 	 * <p>This is returned upon init, when the recipe collection is populated.
 	 *
 	 * @param x The x pos for the button.
-	 * @param y The y pos for the button.
+	 * @param y The y pos for thez button.
 	 * @param recipe The associated recipe entry.
 	 * @param context The slot display context map.
 	 * @param canCraft Whether the player can craft the associated recipe.
