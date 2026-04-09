@@ -20,8 +20,23 @@ import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 
+/**
+ * Fabric-provided extensions for {@link net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent}.
+ */
 public interface FabricOverlayRecipeComponent {
-	default OverlayRecipeComponent.OverlayRecipeButton createOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
+	/**
+	 * Returns the overlay button for an individual recipe entry.
+	 * <p>This is returned upon init, when the recipe collection is populated.
+	 *
+	 * @param x The x pos for the button.
+	 * @param y The y pos for the button.
+	 * @param recipe The associated recipe entry.
+	 * @param context The slot display context map.
+	 * @param canCraft Whether the player can craft the associated recipe.
+	 *
+	 * @return The recipe button for the recipe entry.
+	 */
+	default OverlayRecipeComponent.OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
 		throw new AssertionError("Implemented via mixin");
 	}
 }
