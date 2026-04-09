@@ -11,7 +11,7 @@ transitive-inject-interface	net/minecraft/world/item/crafting/Ingredient	net/fab
 transitive-inject-interface	net/minecraft/world/item/crafting/RecipeManager	net/fabricmc/fabric/api/recipe/v1/FabricRecipeManager
 transitive-inject-interface	net/minecraft/world/item/crafting/RecipeAccess	net/fabricmc/fabric/api/recipe/v1/FabricRecipeAccess
 
-# Enum Extensions
+# Test Specific Enum Extensions
 extend-enum net/minecraft/world/inventory/RecipeBookType FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING
 extend-enum net/minecraft/world/inventory/RecipeBookType FABRIC_RECIPE_API_V1_TESTMOD_UNUSED
 extend-enum net/minecraft/client/gui/screens/recipebook/SearchRecipeBookCategory FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING
