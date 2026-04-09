@@ -51,7 +51,7 @@ abstract class BlockStateModelWrapperMixin implements BlockModel {
 	public void update(BlockModelRenderState output, BlockState blockState, BlockDisplayContext displayContext, long seed) {
 		// This could be optimized to inspect the quad output rather than calling hasMaterialFlag
 		QuadEmitter emitter = output.setupMesh(transformation, model.hasMaterialFlag(BlockAndTintGetter.EMPTY, BlockPos.ZERO, blockState, output.scratchRandomSource(seed), BakedQuad.FLAG_TRANSLUCENT));
-		// TODO FRAPI 26.1: somehow pass the level and pos here when available?
+		// TODO 26.1: somehow pass the level and pos here when available?
 		model.emitQuads(emitter, BlockAndTintGetter.EMPTY, BlockPos.ZERO, blockState, output.scratchRandomSource(seed), _ -> false);
 		updateTints(output, blockState);
 	}

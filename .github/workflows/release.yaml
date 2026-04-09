@@ -1,5 +1,7 @@
 name: Release
-on: [workflow_dispatch] # Manual trigger
+
+on:
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -10,8 +12,8 @@ jobs:
     steps:
       - uses: actions/setup-java@v5
         with:
-          distribution: 'microsoft'
-          java-version: '25'
+          distribution: microsoft
+          java-version: 25
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -19,7 +21,7 @@ jobs:
         id: changelog
         with:
           context: changelog
-          workflow_id: release.yml
+          workflow_id: release.yaml
       - uses: gradle/actions/wrapper-validation@v4
       - run: ./gradlew checkVersion build publish publishMods -x check --stacktrace --no-configuration-cache
         env:

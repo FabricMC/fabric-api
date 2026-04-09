@@ -145,7 +145,7 @@ public class AltModelBlockRendererImpl implements AltModelBlockRenderer, QuadTra
 				return false;
 			}
 		} else {
-			return (shouldCullFaceCache & cacheMask) == 1;
+			return (shouldCullFaceCache & cacheMask) != 0;
 		}
 	}
 
