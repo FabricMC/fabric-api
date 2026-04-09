@@ -49,7 +49,7 @@ public class RecipeBookImpl implements ModInitializer {
 	});
 	public static final MapCodec<Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_MAP_CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			Codec.unboundedMap(REGISTERED_RECIPE_BOOK_ID_CODEC, RecipeBookSettings.TypeSettings.CRAFTING_MAP_CODEC.codec())
-					.fieldOf("fabric:settings")
+					.fieldOf("fabric:recipe_book_settings")
 					.forGetter(Function.identity())
 	).apply(inst, Function.identity()));
 
