@@ -39,7 +39,7 @@ public class BookCraftingOverlayRecipeComponent extends OverlayRecipeComponent {
 	}
 
 	@Override
-	public OverlayRecipeButton createOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
+	public OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
 		return new BookCraftingOverlayRecipeButton(x, y, recipe.id(), recipe.display(), canCraft, context);
 	}
 
