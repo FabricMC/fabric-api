@@ -9,7 +9,6 @@ accessible	field	net/minecraft/server/network/ServerLoginPacketListenerImpl	conn
 accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setInput  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
 accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setResult  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
 accessible  class   net/minecraft/client/gui/screens/recipebook/OverlayRecipeComponent$OverlayRecipeButton
-extendable  class   net/minecraft/client/gui/screens/recipebook/OverlayRecipeComponent$OverlayRecipeButton
 accessible  class   net/minecraft/client/gui/screens/recipebook/OverlayRecipeComponent$OverlaySmeltingRecipeButton
 accessible  class   net/minecraft/client/gui/screens/recipebook/OverlayRecipeComponent$OverlayCraftingRecipeButton
 transitive-inject-interface	net/minecraft/world/item/crafting/Ingredient	net/fabricmc/fabric/api/recipe/v1/ingredient/FabricIngredient

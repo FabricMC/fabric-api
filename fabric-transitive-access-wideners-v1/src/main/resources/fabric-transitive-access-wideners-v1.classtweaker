@@ -78,7 +78,6 @@ transitive-accessible	method	net/minecraft/network/chat/contents/TranslatableCon
 transitive-accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setInput  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
 transitive-accessible  method  net/minecraft/client/gui/screens/recipebook/GhostSlots    setResult  (Lnet/minecraft/world/inventory/Slot;Lnet/minecraft/util/context/ContextMap;Lnet/minecraft/world/item/crafting/display/SlotDisplay;)V
 transitive-accessible  class   net/minecraft/client/gui/screens/recipebook/OverlayRecipeComponent$OverlayRecipeButton
-transitive-extendable  class   net/minecraft/client/gui/screens/recipebook/OverlayRecipeComponent$OverlayRecipeButton
 
 # Villagers
 transitive-accessible	field	net/minecraft/world/entity/npc/villager/VillagerType	BY_BIOME	Ljava/util/Map;
