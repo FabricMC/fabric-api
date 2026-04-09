@@ -49,6 +49,7 @@ public class BookCraftingRecipeBookComponent extends RecipeBookComponent<BookCra
 
 	public BookCraftingRecipeBookComponent(BookCraftingMenu menu) {
 		super(menu, TAB_INFOS);
+		setOverlay(new BookCraftingOverlayRecipeComponent(getSlotSelectTime()));
 	}
 
 	@Override
