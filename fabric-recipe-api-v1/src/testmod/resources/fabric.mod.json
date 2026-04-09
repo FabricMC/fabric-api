@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "accessWidener": "fabric-recipe-api-v1-testmod.classtweaker",
   "depends": {
-    "fabricloader": ">=0.19.0",
+    "fabricloader": ">=0.19.1",
     "fabric-recipe-api-v1":"*"
   },
   "entrypoints": {

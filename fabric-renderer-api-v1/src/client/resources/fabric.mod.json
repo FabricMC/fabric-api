@@ -21,7 +21,7 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.18.4",
+    "fabricloader": ">=0.19.1",
     "minecraft": ">=26.1-rc.2",
     "fabric-api-base": "*",
     "fabric-rendering-v1": "*",
