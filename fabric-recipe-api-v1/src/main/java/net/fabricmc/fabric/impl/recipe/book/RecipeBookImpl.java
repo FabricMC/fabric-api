@@ -78,7 +78,10 @@ public class RecipeBookImpl implements ModInitializer {
 			throw new IllegalArgumentException("Unable to register non-modded recipe book type");
 		}
 
-		ENTRIES.put(type, new RecipeBookEntry(id));
+		if (TYPE_TO_ID.containsValue(id)) {
+			throw new IllegalArgumentException("Duplicate recipe book type " + id);
+		}
+
 		TYPE_TO_ID.put(type, id);
 	}
 

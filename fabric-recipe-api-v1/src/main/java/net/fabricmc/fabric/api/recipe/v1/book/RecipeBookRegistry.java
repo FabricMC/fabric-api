@@ -38,7 +38,7 @@ public class RecipeBookRegistry {
 	 * @param type A recipe book type.
 	 * @param id The ID to store the recipe book type's state under in player nbt.
 	 *
-	 * @throws IllegalArgumentException If a vanilla recipe book is attempted to be registered using this method.
+	 * @throws IllegalArgumentException If a vanilla recipe book or a duplicate id is attempted to be registered using this method.
 	 */
 	public static void registerRecipeBookType(RecipeBookType type, Identifier id) {
 		RecipeBookImpl.registerRecipeBookType(type, id);
