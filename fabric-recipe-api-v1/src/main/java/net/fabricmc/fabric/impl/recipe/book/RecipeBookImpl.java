@@ -59,10 +59,7 @@ public class RecipeBookImpl implements ModInitializer {
 	);
 	public static final StreamCodec<ByteBuf, Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_STREAM_CODEC = ByteBufCodecs.map(
 			HashMap::new,
-			Identifier.STREAM_CODEC.map(
-					RecipeBookImpl::fromId,
-					recipeType -> RecipeBookImpl.ENTRIES.get(recipeType).id()
-			),
+			REGISTERED_RECIPE_BOOK_ID_STREAM_CODEC,
 			RecipeBookSettings.TypeSettings.STREAM_CODEC
 	);
 
