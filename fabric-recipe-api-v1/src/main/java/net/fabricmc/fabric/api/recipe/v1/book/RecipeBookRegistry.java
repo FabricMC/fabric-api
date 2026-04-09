@@ -21,8 +21,25 @@ import net.minecraft.world.inventory.RecipeBookType;
 
 import net.fabricmc.fabric.impl.recipe.book.RecipeBookImpl;
 
-// TODO: Document me!
+/**
+ * Helper methods related to registering contents to player recipe book data.
+ *
+ * @see net.minecraft.stats.RecipeBook
+ * @see net.minecraft.stats.RecipeBookSettings
+ */
 public class RecipeBookRegistry {
+	/**
+	 * Registers a recipe book type within Fabric API, which adds the recipe book type to
+	 * the {@link net.minecraft.stats.RecipeBookSettings}, allowing it to store the open in GUI
+	 * and filtering state for your book type.
+	 *
+	 * <p>Adding a {@link RecipeBookType} is handled using enum extending via a class tweaker of v2 or higher.
+	 *
+	 * @param type A recipe book type.
+	 * @param id The ID to store the recipe book type's state under in player NBT.
+	 *
+	 * @throws IllegalArgumentException If a vanilla recipe book is attempted to be registered using this method.
+	 */
 	public static void registerRecipeBookType(RecipeBookType type, Identifier id) {
 		RecipeBookImpl.registerRecipeBookType(type, id);
 	}
