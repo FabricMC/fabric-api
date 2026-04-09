@@ -3,8 +3,6 @@
   "package": "net.fabricmc.fabric.test.recipe.client.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "OverlayRecipeComponentAccessor",
-    "OverlayRecipeComponentOverlayRecipeButtonAccessor",
     "SearchRecipeBookCategoryMixin"
   ],
   "injectors": {
