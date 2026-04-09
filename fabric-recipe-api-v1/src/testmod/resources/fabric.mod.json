@@ -25,6 +25,9 @@
   },
   "mixins": [
     "fabric-recipe-api-v1-testmod.mixins.json",
-    "fabric-recipe-api-v1-testmod.client.mixins.json"
+    {
+      "config": "fabric-recipe-api-v1-testmod.client.mixins.json",
+      "environment": "client"
+    }
   ]
 }
