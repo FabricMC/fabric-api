@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.Keyable;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapDecoder;
 import com.mojang.serialization.MapEncoder;
@@ -47,7 +48,7 @@ public class WrapperMapCodec<A> extends MapCodec<A> {
 
 	@Override
 	public <T> Stream<T> keys(DynamicOps<T> ops) {
-		return Stream.concat(wrapped.keys(ops), wrapper.keys(ops));
+		return wrapper.keys(ops, this.wrapped);
 	}
 
 	public interface Wrapper<A> {
@@ -59,8 +60,8 @@ public class WrapperMapCodec<A> extends MapCodec<A> {
 			return wrapped.decode(ops, input);
 		}
 
-		default <T> Stream<T> keys(DynamicOps<T> ops) {
-			return Stream.empty();
+		default <T> Stream<T> keys(DynamicOps<T> ops, Keyable wrapped) {
+			return wrapped.keys(ops);
 		}
 	}
 }

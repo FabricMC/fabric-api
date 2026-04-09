@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.recipe.book;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -47,11 +46,17 @@ public class RecipeBookImpl implements ModInitializer {
 
 		return DataResult.success(ENTRIES.get(type).id());
 	});
+	public static final Codec<RecipeBookSettings.TypeSettings> TYPE_SETTINGS_CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Codec.BOOL.optionalFieldOf("isGuiOpen", false)
+					.forGetter(RecipeBookSettings.TypeSettings::open),
+			Codec.BOOL.optionalFieldOf("isFilteringCraftable", false)
+					.forGetter(RecipeBookSettings.TypeSettings::filtering)
+	).apply(inst, RecipeBookSettings.TypeSettings::new));
 	public static final MapCodec<Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_MAP_CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			Codec.unboundedMap(REGISTERED_RECIPE_BOOK_ID_CODEC, RecipeBookSettings.TypeSettings.CRAFTING_MAP_CODEC.codec())
-					.fieldOf("fabric:recipe_book_settings")
-					.forGetter(Function.identity())
-	).apply(inst, Function.identity()));
+			Codec.unboundedMap(REGISTERED_RECIPE_BOOK_ID_CODEC, TYPE_SETTINGS_CODEC)
+					.fieldOf("fabric:settings")
+					.forGetter(map -> map)
+	).apply(inst, map -> map));
 
 	public static final StreamCodec<ByteBuf, RecipeBookType> REGISTERED_RECIPE_BOOK_ID_STREAM_CODEC = Identifier.STREAM_CODEC.map(
 			RecipeBookImpl::fromId,

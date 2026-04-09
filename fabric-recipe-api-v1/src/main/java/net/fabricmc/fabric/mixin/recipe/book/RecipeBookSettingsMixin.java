@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.recipe.book;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.serialization.DataResult;
@@ -49,8 +48,8 @@ import net.fabricmc.fabric.impl.recipe.util.WrapperMapCodec;
 @Mixin(RecipeBookSettings.class)
 public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
 	@Shadow
-	@Mutable
 	@Final
+	@Mutable
 	public static MapCodec<RecipeBookSettings> MAP_CODEC;
 	@Unique
 	public final Map<RecipeBookType, RecipeBookSettings.TypeSettings> typeSettings = new HashMap<>();
@@ -61,8 +60,16 @@ public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
 			@Override
 			public <T> RecordBuilder<T> encode(RecipeBookSettings input, DynamicOps<T> ops, RecordBuilder<T> prefix, MapEncoder<RecipeBookSettings> wrapped) {
 				RecordBuilder<T> builder = wrapped.encode(input, ops, prefix);
-				Map<RecipeBookType, RecipeBookSettings.TypeSettings> settings = ((RecipeBookSettingsExtension) (Object) input).fabric_getTypeSettings();
-				return RecipeBookImpl.FABRIC_SETTINGS_MAP_CODEC.encode(settings, ops, builder);
+
+				Map<RecipeBookType, RecipeBookSettings.TypeSettings> typeSettings = new HashMap<>(((RecipeBookSettingsExtension) (Object) input).fabric_getTypeSettings());
+				// Remove anything that should be handled by default.
+				typeSettings.values().removeIf(settings -> !settings.open() && !settings.filtering());
+
+				if (!typeSettings.isEmpty()) {
+					return RecipeBookImpl.FABRIC_SETTINGS_MAP_CODEC.encode(typeSettings, ops, builder);
+				}
+
+				return builder;
 			}
 
 			@Override
@@ -74,14 +81,10 @@ public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
 								((RecipeBookSettingsExtension) (Object) settings).fabric_getTypeSettings().putAll(fabricSettings);
 								return settings;
 							}),
-							error -> dataResult
+							// The below will return if everything is the default value, ignore the error.
+							error -> DataResult.success(recipeBookSettings)
 					);
 				});
-			}
-
-			@Override
-			public <T> Stream<T> keys(DynamicOps<T> ops) {
-				return RecipeBookImpl.FABRIC_SETTINGS_MAP_CODEC.keys(ops);
 			}
 		});
 	}

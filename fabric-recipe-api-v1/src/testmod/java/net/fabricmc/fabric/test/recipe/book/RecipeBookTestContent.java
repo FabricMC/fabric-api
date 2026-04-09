@@ -63,8 +63,8 @@ public class RecipeBookTestContent implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		RecipeBookRegistry.registerRecipeBookType(RecipeBookType.FABRIC_RECIPE_API_V1_TESTMOD_UNUSED, id("book_crafting"));
 		RecipeBookRegistry.registerRecipeBookType(RecipeBookType.FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING, id("book_crafting"));
+		RecipeBookRegistry.registerRecipeBookType(RecipeBookType.FABRIC_RECIPE_API_V1_TESTMOD_UNUSED, id("unused"));
 	}
 
 	public static Identifier id(String path) {

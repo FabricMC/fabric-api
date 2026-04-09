@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.recipe.book;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,6 +28,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.RecipeBook;
 import net.minecraft.stats.RecipeBookSettings;
 import net.minecraft.stats.ServerRecipeBook;
+import net.minecraft.world.inventory.RecipeBookType;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.recipe.book.ClientboundRecipeBookSyncPayload;
@@ -35,6 +39,13 @@ public class ServerRecipeBookMixin extends RecipeBook {
 	@Inject(method = "sendInitialRecipeBook", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;<init>(I)V"))
 	private void sendModdedRecipeBookTypeSettings(ServerPlayer player, CallbackInfo ci) {
 		RecipeBookSettings settings = getBookSettings();
-		ServerPlayNetworking.send(player, new ClientboundRecipeBookSyncPayload(((RecipeBookSettingsExtension) (Object) settings).fabric_getTypeSettings()));
+
+		Map<RecipeBookType, RecipeBookSettings.TypeSettings> fabricSettings = new HashMap<>(((RecipeBookSettingsExtension) (Object) settings).fabric_getTypeSettings());
+		// Remove anything that should be handled by default.
+		fabricSettings.values().removeIf(typeSettings -> !typeSettings.open() && !typeSettings.filtering());
+
+		if (!fabricSettings.isEmpty()) {
+			ServerPlayNetworking.send(player, new ClientboundRecipeBookSyncPayload(fabricSettings));
+		}
 	}
 }
