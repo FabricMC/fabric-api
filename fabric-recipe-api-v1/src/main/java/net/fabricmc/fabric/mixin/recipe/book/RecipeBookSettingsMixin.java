@@ -91,7 +91,7 @@ public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
 
 	@Inject(method = "<init>()V", at = @At("TAIL"))
 	private void createTypeSettings(CallbackInfo ci) {
-		for (RecipeBookType type : RecipeBookImpl.ENTRIES.keySet()) {
+		for (RecipeBookType type : RecipeBookImpl.TYPE_TO_ID.keySet()) {
 			typeSettings.put(type, RecipeBookSettings.TypeSettings.DEFAULT);
 		}
 	}

@@ -35,16 +35,16 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class RecipeBookImpl implements ModInitializer {
-	public static final Map<RecipeBookType, RecipeBookEntry> ENTRIES = new HashMap<>();
+	public static final Map<RecipeBookType, Identifier> TYPE_TO_ID = new HashMap<>();
 	public static final Codec<RecipeBookType> REGISTERED_RECIPE_BOOK_ID_CODEC = Identifier.CODEC.flatXmap(id -> {
 		RecipeBookType type = fromId(id);
 		return DataResult.success(type);
 	}, type -> {
-		if (!ENTRIES.containsKey(type)) {
+		if (!TYPE_TO_ID.containsKey(type)) {
 			return DataResult.error(() -> "Type " + type + " was not registered");
 		}
 
-		return DataResult.success(ENTRIES.get(type).id());
+		return DataResult.success(TYPE_TO_ID.get(type));
 	});
 	public static final Codec<RecipeBookSettings.TypeSettings> TYPE_SETTINGS_CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.BOOL.optionalFieldOf("isGuiOpen", false)
@@ -60,7 +60,7 @@ public class RecipeBookImpl implements ModInitializer {
 
 	public static final StreamCodec<ByteBuf, RecipeBookType> REGISTERED_RECIPE_BOOK_ID_STREAM_CODEC = Identifier.STREAM_CODEC.map(
 			RecipeBookImpl::fromId,
-			recipeType -> RecipeBookImpl.ENTRIES.get(recipeType).id()
+			RecipeBookImpl.TYPE_TO_ID::get
 	);
 	public static final StreamCodec<ByteBuf, Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_STREAM_CODEC = ByteBufCodecs.map(
 			HashMap::new,
@@ -79,12 +79,13 @@ public class RecipeBookImpl implements ModInitializer {
 		}
 
 		ENTRIES.put(type, new RecipeBookEntry(id));
+		TYPE_TO_ID.put(type, id);
 	}
 
 	public static RecipeBookType fromId(Identifier id) {
-		return ENTRIES.entrySet()
+		return TYPE_TO_ID.entrySet()
 				.stream()
-				.filter(entry -> entry.getValue().id().equals(id))
+				.filter(entry -> entry.getValue().equals(id))
 				.map(Map.Entry::getKey)
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("Could not find registered recipe book type " + id));
