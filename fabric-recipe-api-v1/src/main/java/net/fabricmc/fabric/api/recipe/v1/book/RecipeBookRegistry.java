@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.recipe.book.RecipeBookImpl;
 public class RecipeBookRegistry {
 	/**
 	 * Registers a recipe book type within Fabric API, which adds the recipe book type to
-	 * the {@link net.minecraft.stats.RecipeBookSettings}, allowing it to store the open in GUI
+	 * the {@link net.minecraft.stats.RecipeBookSettings}, allowing it to store the open in gui
 	 * and filtering state for your book type.
 	 *
 	 * <p>Adding a {@link RecipeBookType} is handled using enum extending via a class tweaker of v2 or higher.
