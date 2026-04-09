@@ -36,7 +36,7 @@ public class RecipeBookRegistry {
 	 * <p>Adding a {@link RecipeBookType} is handled using enum extending via a class tweaker of v2 or higher.
 	 *
 	 * @param type A recipe book type.
-	 * @param id The ID to store the recipe book type's state under in player NBT.
+	 * @param id The ID to store the recipe book type's state under in player nbt.
 	 *
 	 * @throws IllegalArgumentException If a vanilla recipe book is attempted to be registered using this method.
 	 */
