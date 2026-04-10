@@ -6,7 +6,7 @@
   "result": {
     "id": "minecraft:enchanted_book",
     "components": {
-      "minecraft:enchantments": {
+      "minecraft:stored_enchantments": {
         "minecraft:unbreaking": 2
       }
     }

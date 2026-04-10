@@ -5,7 +5,7 @@
   "result": {
     "id": "minecraft:enchanted_book",
     "components": {
-      "minecraft:enchantments": {
+      "minecraft:stored_enchantments": {
         "minecraft:mending": 1
       }
     }
