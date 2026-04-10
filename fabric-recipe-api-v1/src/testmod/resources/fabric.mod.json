@@ -17,6 +17,7 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.recipe.client.book.RecipeBookTestClientContent",
+      "net.fabricmc.fabric.test.recipe.client.book.RecipeBookTestClientEvents",
       "net.fabricmc.fabric.test.recipe.client.sync.RecipeSyncClientTest"
     ],
     "fabric-gametest": [
