@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.recipe.v1.book;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,7 +31,12 @@ public class ClientRecipeListHelper {
 	 *
 	 * @see ClientRecipeBookEvents.ModifyClientRecipeList
 	 */
-	public void sortRecipeGroups(List<List<RecipeDisplayEntry>> recipes, Comparator<RecipeDisplayEntry> comparator) {
-		recipes.forEach(entries -> entries.sort(comparator));
+	public static void sortRecipeGroups(List<List<RecipeDisplayEntry>> recipes, Comparator<RecipeDisplayEntry> comparator) {
+		recipes.forEach(entries -> {
+			// Singular entries are always an immutable list, grouped entries are not.
+			if (entries instanceof ArrayList<RecipeDisplayEntry>) {
+				entries.sort(comparator);
+			}
+		});
 	}
 }
