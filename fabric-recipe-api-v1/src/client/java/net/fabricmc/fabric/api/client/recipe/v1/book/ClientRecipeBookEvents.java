@@ -16,16 +16,62 @@
 
 package net.fabricmc.fabric.api.client.recipe.v1.book;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.world.inventory.Slot;
+import java.util.List;
+
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.recipe.book.client.ClientRecipeBookEventsImpl;
 
 /**
- * TODO: Make a Scoped Event for net.minecraft.client.ClientRecipeBook#categorizeAndGroupRecipes when scoped events are merged.
- * TODO: Events for {@link net.minecraft.client.gui.screens.recipebook.GhostSlots#extractRenderState(GuiGraphicsExtractor, Minecraft, boolean)}
- * TODO: Events for {@link net.minecraft.client.gui.screens.recipebook.GhostSlots#extractTooltip(GuiGraphicsExtractor, Minecraft, int, int, Slot)}
+ * Holds events related to the {@link net.minecraft.client.ClientRecipeBook}.
  */
 public class ClientRecipeBookEvents {
+	public static final Event<ModifyClientRecipeListAll> MODIFY_CLIENT_RECIPE_LIST_ALL = EventFactory.createArrayBacked(ModifyClientRecipeListAll.class, callbacks -> (category, recipes) -> {
+		for (ModifyClientRecipeListAll callback : callbacks) {
+			callback.modifyClientRecipeBookList(category, recipes);
+		}
+	});
+
 	private ClientRecipeBookEvents() {
+	}
+
+	/**
+	 * Modifies the recipe book's recipe list for a specific category.
+	 *
+	 * <p>Operations such as re-ordering the recipe book's entries may be done using this.
+	 *
+	 * @param category The recipe book category to modify.
+	 * @return The event.
+	 */
+	public static Event<ModifyClientRecipeList> modifyClientRecipeList(RecipeBookCategory category) {
+		return ClientRecipeBookEventsImpl.getOrCreateModifyClientRecipeListEvent(category);
+	}
+
+	@FunctionalInterface
+	public interface ModifyClientRecipeList {
+		/**
+		 * Modifies the entries of a recipe category.
+		 *
+		 * @param recipes A list of all individual recipe slots, with recipes of the
+		 *                same group contained inside the inner list.
+		 * @see ClientRecipeListHelper
+		 */
+		void modifyClientRecipeBookList(List<List<RecipeDisplayEntry>> recipes);
+	}
+
+	@FunctionalInterface
+	public interface ModifyClientRecipeListAll {
+		/**
+		 * Modifies the entries of all recipe categories.
+		 *
+		 * @param category The category that is being modified.
+		 * @param recipes  A list of all individual recipe slots, with recipes of the
+		 *                 same group contained inside the inner list.
+		 * @see ClientRecipeListHelper
+		 */
+		void modifyClientRecipeBookList(RecipeBookCategory category, List<List<RecipeDisplayEntry>> recipes);
 	}
 }

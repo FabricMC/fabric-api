@@ -15,5 +15,8 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+    "book.ClientRecipeBookMixin"
+  ]
 }
