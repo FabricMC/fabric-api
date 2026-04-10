@@ -23,7 +23,8 @@ extend-enum net/minecraft/world/inventory/RecipeBookType FABRIC_RECIPE_API_V1_TE
 extend-enum net/minecraft/client/gui/screens/recipebook/SearchRecipeBookCategory FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING
 
 # Test Specific AWs
-accessible class net/minecraft/client/gui/screens/recipebook/OverlayRecipeComponent$OverlayRecipeButton$Pos
+accessible class net/minecraft/world/item/CreativeModeTab$ItemDisplayBuilder
+accessible field net/minecraft/world/item/CreativeModeTab displayItemsGenerator Lnet/minecraft/world/item/CreativeModeTab$DisplayItemsGenerator;
 
 # Test Specific AWs (Unable to get transitive access wideners)
 accessible	class	net/minecraft/world/inventory/MenuType$MenuSupplier

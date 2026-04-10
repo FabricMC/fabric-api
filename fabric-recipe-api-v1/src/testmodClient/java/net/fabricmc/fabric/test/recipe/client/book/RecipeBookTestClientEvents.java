@@ -16,13 +16,19 @@
 
 package net.fabricmc.fabric.test.recipe.client.book;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
@@ -39,19 +45,39 @@ public class RecipeBookTestClientEvents implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		// Sorts the Crafting Recipe Book Categories based on Creative Mode Tab order.
 		ClientRecipeBookEvents.MODIFY_CLIENT_RECIPE_LIST_ALL.register((category, recipes) -> {
 			if (isCraftingBookCategories(category)) {
+
+				Minecraft minecraft = Minecraft.getInstance();
+				assert minecraft.level != null;
+				ClientLevel level = minecraft.level;
+				CreativeModeTab.ItemDisplayParameters parameters = new CreativeModeTab.ItemDisplayParameters(
+						level.enabledFeatures(),
+						false,
+						level.registryAccess()
+				);
+
+				List<ItemStack> contents = new ArrayList<>();
+
+				for (CreativeModeTab creativeTab : BuiltInRegistries.CREATIVE_MODE_TAB.stream()
+						.sorted(Comparator.comparingInt(
+								value ->
+										(value.row() == CreativeModeTab.Row.TOP ? 0 : 5) + value.column()))
+						.toList()) {
+					CreativeModeTab.ItemDisplayBuilder displayList = new CreativeModeTab.ItemDisplayBuilder(creativeTab, parameters.enabledFeatures());
+					creativeTab.displayItemsGenerator.accept(parameters, displayList);
+					contents.addAll(displayList.tabContents);
+				}
+
 				ContextMap context = getContext();
 				recipes.sort(Comparator.comparing(entries -> {
-					int index = CreativeModeTabs.searchTab()
-							.getDisplayItems()
-							.stream()
-							.toList()
-							.indexOf(entries.getFirst().resultItems(context).getFirst());
-					if (index == -1) {
-						return Integer.MAX_VALUE;
-					}
-					return index;
+					Optional<ItemStack> stack = contents.stream()
+							.filter(content ->
+									ItemStack.isSameItemSameComponents(entries.getFirst().resultItems(context).getFirst(), content))
+							.findFirst();
+
+					return stack.map(contents::indexOf).orElse(Integer.MAX_VALUE);
 				}));
 			}
 		});
@@ -75,9 +101,9 @@ public class RecipeBookTestClientEvents implements ClientModInitializer {
 	}
 
 	private static ContextMap getContext() {
-		Minecraft client = Minecraft.getInstance();
-		assert client.level != null;
-		return SlotDisplayContext.fromLevel(client.level);
+		Minecraft minecraft = Minecraft.getInstance();
+		assert minecraft.level != null;
+		return SlotDisplayContext.fromLevel(minecraft.level);
 	}
 
 	private static boolean isCraftingBookCategories(RecipeBookCategory category) {
