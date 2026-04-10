@@ -19,13 +19,13 @@ package net.fabricmc.fabric.impl.recipe.book.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.recipe.book.ClientboundRecipeBookSyncPayload;
-import net.fabricmc.fabric.impl.recipe.book.RecipeBookSettingsExtension;
+import net.fabricmc.fabric.impl.recipe.book.RecipeBookSettingsHooks;
 
 public class RecipeBookImplClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(ClientboundRecipeBookSyncPayload.TYPE, (payload, context) ->
-				((RecipeBookSettingsExtension) (Object) context.client().player.getRecipeBook().getBookSettings()).fabric_getTypeSettings().putAll(payload.values())
+				((RecipeBookSettingsHooks) (Object) context.client().player.getRecipeBook().getBookSettings()).fabric_getTypeSettings().putAll(payload.values())
 		);
 	}
 }

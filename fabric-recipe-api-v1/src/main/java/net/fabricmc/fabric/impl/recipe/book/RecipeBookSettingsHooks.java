@@ -21,6 +21,6 @@ import java.util.Map;
 import net.minecraft.stats.RecipeBookSettings;
 import net.minecraft.world.inventory.RecipeBookType;
 
-public interface RecipeBookSettingsExtension {
+public interface RecipeBookSettingsHooks {
 	Map<RecipeBookType, RecipeBookSettings.TypeSettings> fabric_getTypeSettings();
 }

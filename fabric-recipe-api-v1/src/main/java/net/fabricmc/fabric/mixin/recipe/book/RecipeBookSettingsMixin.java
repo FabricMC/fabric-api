@@ -42,11 +42,11 @@ import net.minecraft.stats.RecipeBookSettings;
 import net.minecraft.world.inventory.RecipeBookType;
 
 import net.fabricmc.fabric.impl.recipe.book.RecipeBookImpl;
-import net.fabricmc.fabric.impl.recipe.book.RecipeBookSettingsExtension;
+import net.fabricmc.fabric.impl.recipe.book.RecipeBookSettingsHooks;
 import net.fabricmc.fabric.impl.recipe.util.WrapperMapCodec;
 
 @Mixin(RecipeBookSettings.class)
-public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
+public class RecipeBookSettingsMixin implements RecipeBookSettingsHooks {
 	@Shadow
 	@Final
 	@Mutable
@@ -61,7 +61,7 @@ public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
 			public <T> RecordBuilder<T> encode(RecipeBookSettings input, DynamicOps<T> ops, RecordBuilder<T> prefix, MapEncoder<RecipeBookSettings> wrapped) {
 				RecordBuilder<T> builder = wrapped.encode(input, ops, prefix);
 
-				Map<RecipeBookType, RecipeBookSettings.TypeSettings> typeSettings = new HashMap<>(((RecipeBookSettingsExtension) (Object) input).fabric_getTypeSettings());
+				Map<RecipeBookType, RecipeBookSettings.TypeSettings> typeSettings = new HashMap<>(((RecipeBookSettingsHooks) (Object) input).fabric_getTypeSettings());
 				// Remove anything that should be handled by default.
 				typeSettings.values().removeIf(settings -> !settings.open() && !settings.filtering());
 
@@ -78,7 +78,7 @@ public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
 					DataResult<RecipeBookSettings> dataResult = DataResult.success(recipeBookSettings);
 					return RecipeBookImpl.FABRIC_SETTINGS_MAP_CODEC.decode(ops, input).mapOrElse(
 							fabricSettings -> dataResult.map(settings -> {
-								((RecipeBookSettingsExtension) (Object) settings).fabric_getTypeSettings().putAll(fabricSettings);
+								((RecipeBookSettingsHooks) (Object) settings).fabric_getTypeSettings().putAll(fabricSettings);
 								return settings;
 							}),
 							// The below will return if everything is the default value, ignore the error.
@@ -113,13 +113,13 @@ public class RecipeBookSettingsMixin implements RecipeBookSettingsExtension {
 
 	@ModifyReturnValue(method = "copy", at = @At("RETURN"))
 	private RecipeBookSettings copyTypeSettings(RecipeBookSettings original) {
-		((RecipeBookSettingsExtension) (Object) original).fabric_getTypeSettings().putAll(this.typeSettings);
+		((RecipeBookSettingsHooks) (Object) original).fabric_getTypeSettings().putAll(this.typeSettings);
 		return original;
 	}
 
 	@Inject(method = "replaceFrom", at = @At("TAIL"))
 	private void enchiridion$replaceTypeSettings(RecipeBookSettings other, CallbackInfo ci) {
-		this.typeSettings.putAll(((RecipeBookSettingsExtension) (Object) other).fabric_getTypeSettings());
+		this.typeSettings.putAll(((RecipeBookSettingsHooks) (Object) other).fabric_getTypeSettings());
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import net.minecraft.world.inventory.RecipeBookType;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.recipe.book.ClientboundRecipeBookSyncPayload;
-import net.fabricmc.fabric.impl.recipe.book.RecipeBookSettingsExtension;
+import net.fabricmc.fabric.impl.recipe.book.RecipeBookSettingsHooks;
 
 @Mixin(ServerRecipeBook.class)
 public class ServerRecipeBookMixin extends RecipeBook {
@@ -40,7 +40,7 @@ public class ServerRecipeBookMixin extends RecipeBook {
 	private void sendModdedRecipeBookTypeSettings(ServerPlayer player, CallbackInfo ci) {
 		RecipeBookSettings settings = getBookSettings();
 
-		Map<RecipeBookType, RecipeBookSettings.TypeSettings> fabricSettings = new HashMap<>(((RecipeBookSettingsExtension) (Object) settings).fabric_getTypeSettings());
+		Map<RecipeBookType, RecipeBookSettings.TypeSettings> fabricSettings = new HashMap<>(((RecipeBookSettingsHooks) (Object) settings).fabric_getTypeSettings());
 		// Remove anything that should be handled by default.
 		fabricSettings.values().removeIf(typeSettings -> !typeSettings.open() && !typeSettings.filtering());
 
