@@ -1,0 +1,75 @@
+# This workflow is based on work originally published under the MIT License, and available here:
+# <https://github.com/modrinth/code/blob/efcc0d87b5621ac4c9656ee3967d28b5903a8fe9/.github/workflows/i18n-pull.yml>
+# The required copyright notice and the full text of the license, which apply to the original file, are reported below.
+
+# Copyright 2025 Rinth, Inc.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+name: Pull from Crowdin
+
+on:
+  schedule:
+    - cron: 37 7 * * SAT
+  workflow_dispatch:
+
+concurrency:
+  group: l10n-pull
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  l10n-pull:
+    runs-on: ubuntu-24.04
+    steps:
+      - if: startsWith(github.ref_name, 'l10n/')
+        run: |
+          echo "::error title=Wrong Branch::This workflow must not be triggered from the l10n/* branch"
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: crowdin/github-action@60debf382ee245b21794321190ad0501db89d8c1
+        with:
+          token: ${{ secrets.CROWDIN_TOKEN }}
+          crowdin_branch_name: ${{ github.event.repository.name }}/${{ github.ref_name }}
+          upload_sources: false
+          upload_translations: false
+          download_sources: false
+          download_translations: true
+          create_pull_request: false
+          push_translations: false
+      - run: sudo chown -R "${USER}:${USER}" .
+      - run: git fetch --depth=1 origin "l10n/${{ github.ref_name }}" || true
+      - id: message
+        run: |
+          prefix="l10n: $(date +%y)w$(date +%V)"
+
+          old_message="$(git show --no-patch --pretty=format:%s "origin/l10n/${{ github.ref_name }}" || true)"
+          regex="^${prefix}([a-z]+)"
+          if [[ "${old_message}" =~ ${regex} ]]; then
+            old_suffix="${BASH_REMATCH[1]}"
+            if [[ "${old_suffix}" =~ z$ ]]; then
+              suffix="${old_suffix%?}oa"
+            else
+              last_char="$(tr "a-y" "b-z" <<<"${old_suffix: -1}")"
+              suffix="${old_suffix%?}${last_char}"
+            fi
+          else
+            suffix="a"
+          fi
+
+          echo message="${prefix}${suffix}" >>"${GITHUB_OUTPUT}"
+      - uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725
+        with:
+          title: ${{ steps.message.outputs.message }}
+          body: ""
+          commit-message: ${{ steps.message.outputs.message }}
+          author: Fabric Bot <159731069+FabricMCBot@users.noreply.github.com>
+          branch: l10n/${{ github.ref_name }}
+          draft: always-true
+          maintainer-can-modify: false
