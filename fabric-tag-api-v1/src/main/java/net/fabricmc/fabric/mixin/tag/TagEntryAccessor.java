@@ -27,7 +27,7 @@ import net.minecraft.tags.TagEntry;
 public interface TagEntryAccessor {
 	@Invoker("<init>")
 	static TagEntry fabric_init(final Identifier id, final boolean tag, final boolean required) {
-		throw new RuntimeException("");
+		throw new AssertionError("Implemented via mixin");
 	}
 
 	@Accessor("id")
