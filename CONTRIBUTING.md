@@ -105,6 +105,25 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Avoid creating constant interfaces or creating an interface that is never implemented and intended only to hold `static final` fields.
     - Constant interfaces confuse users by suggesting they are intended to be implemented.
     - This is a common Java anti-pattern.
+    - Use a utility class instead.
+      ```java
+      public static final SomeEvents {
+          public static final BeforeFoo BEFORE_FOO = /* event definition */;
+          public static final AfterFoo AFTER_FOO = /* event definition */;
+      
+          public interface BeforeFoo {
+              void beforeFoo();
+          }
+      
+          public interface AfterFoo {
+              void afterFoo();
+          }
+
+          // Utility classes cannot be instantiated.
+          private SomeEvents() {
+          }
+      }
+      ```
 
 ### API design patterns to consider
 
