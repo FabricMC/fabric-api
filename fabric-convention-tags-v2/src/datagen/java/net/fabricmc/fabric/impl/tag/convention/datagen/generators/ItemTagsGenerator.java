@@ -44,14 +44,6 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		super(output, registriesFuture, blockTags);
 	}
 
-	protected BlockItemTagAppender<Item> valueLookupBuilder(final TagKey<Item> tag) {
-		return new BlockItemTagAppender<>(super.tag(tag)) {
-			protected ResourceKey<Item> convertElement(final BlockItemId element) {
-				return element.item();
-			}
-		};
-	}
-
 	@Override
 	protected void addTags(HolderLookup.Provider registries) {
 		generateToolTags();
@@ -649,10 +641,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 	}
 
 	private void generateVillagerJobSites() {
-		BlockTagsGenerator.VILLAGER_JOB_SITE_BLOCKS.stream()
-				.map(BlockItemId::item)
-				.distinct() // cauldron blocks have the same item
-				.forEach(valueLookupBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
+		valueLookupBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)
+				.addAll(BlockTagsGenerator.VILLAGER_JOB_SITE_BLOCKS.stream().map(BlockItemId::item));
 	}
 
 	private void generateCropAndSeedsTags() {

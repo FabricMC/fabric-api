@@ -25,6 +25,9 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import net.minecraft.data.tags.BlockItemTagAppender;
+import net.minecraft.references.BlockItemId;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
@@ -146,6 +149,15 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 		public BlockTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 			super(output, Registries.BLOCK, registryLookupFuture, block -> block.builtInRegistryHolder().key());
 		}
+
+		@Override
+		protected BlockItemTagAppender<Block> valueLookupBuilder(final TagKey<Block> tag) {
+			return new BlockItemTagAppender<>(super.tag(tag)) {
+				protected ResourceKey<Block> convertElement(final BlockItemId element) {
+					return element.block();
+				}
+			};
+		}
 	}
 
 	/**
@@ -196,6 +208,15 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 			TagBuilder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tags provider via constructor to use copy").apply(blockTag);
 			TagBuilder itemTagBuilder = this.getOrCreateRawBuilder(itemTag);
 			blockTagBuilder.build().forEach(itemTagBuilder::add);
+		}
+
+		@Override
+		protected BlockItemTagAppender<Item> valueLookupBuilder(final TagKey<Item> tag) {
+			return new BlockItemTagAppender<>(super.tag(tag)) {
+				protected ResourceKey<Item> convertElement(final BlockItemId element) {
+					return element.item();
+				}
+			};
 		}
 	}
 

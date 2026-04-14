@@ -66,14 +66,6 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 		super(output, registriesFuture);
 	}
 
-	protected BlockItemTagAppender<Block> valueLookupBuilder(final TagKey<Block> tag) {
-		return new BlockItemTagAppender<>(super.tag(tag)) {
-			protected ResourceKey<Block> convertElement(final BlockItemId element) {
-				return element.block();
-			}
-		};
-	}
-
 	@Override
 	protected void addTags(HolderLookup.Provider registries) {
 		valueLookupBuilder(ConventionalBlockTags.STONES)
@@ -264,8 +256,9 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 		valueLookupBuilder(ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES)
 				.add(BlockItemIds.FURNACE);
 
-		VILLAGER_JOB_SITE_BLOCKS.forEach(valueLookupBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)::add);
-		VILLAGER_JOB_SITE_BLOCKS_WITHOUT_ITEMS.forEach(valueLookupBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)::add);
+		valueLookupBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)
+				.addAll(VILLAGER_JOB_SITE_BLOCKS.stream().map(BlockItemId::block))
+				.addAll(VILLAGER_JOB_SITE_BLOCKS_WITHOUT_ITEMS);
 
 		valueLookupBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED); // Generate tag so others can see it exists through JSON.
 
