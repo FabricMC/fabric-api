@@ -106,24 +106,32 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
     - Constant interfaces confuse users by suggesting they are intended to be implemented.
     - This is a common Java anti-pattern.
     - Use a utility class instead.
-      ```java
-      public static final SomeEvents {
-          public static final BeforeFoo BEFORE_FOO = /* event definition */;
-          public static final AfterFoo AFTER_FOO = /* event definition */;
-      
-          public interface BeforeFoo {
-              void beforeFoo();
-          }
-      
-          public interface AfterFoo {
-              void afterFoo();
-          }
-
-          // Utility classes cannot be instantiated.
-          private SomeEvents() {
-          }
-      }
-      ```
+    ```java
+    public final class FooEvents {
+        public static final Event<Allow> ALLOW = ...;
+        public static final Event<Before> BEFORE = ...;
+        public static final Event<After> AFTER = ...;
+    
+        @FunctionalInterface
+        public interface Allow {
+            boolean allowFoo(/* relevant parameters */);
+        }
+    
+        @FunctionalInterface
+        public interface Before {
+            void beforeFoo(/* relevant parameters */);
+        }
+    
+        @FunctionalInterface
+        public interface Two {
+            void afterFoo(/* relevant parameters */);
+        }
+    
+        // Holder class is not meant for instantiation.
+        private ExampleEvents() {
+        }
+    }
+    ```
 
 ### API design patterns to consider
 
