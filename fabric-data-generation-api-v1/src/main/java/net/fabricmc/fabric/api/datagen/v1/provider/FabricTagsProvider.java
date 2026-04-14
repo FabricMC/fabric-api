@@ -25,17 +25,16 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import net.minecraft.data.tags.BlockItemTagAppender;
-import net.minecraft.references.BlockItemId;
-
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.BlockItemTagAppender;
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
