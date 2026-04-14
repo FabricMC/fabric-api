@@ -102,6 +102,9 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Avoid exposing java `record`s as public API.
     - Records expose more than is necessary for most APIs, which makes them difficult to evolve.
     - Prefer to expose an interface that is implemented by an impl record.
+- Avoid creating constant interfaces or creating an interface that is never implemented and intended only to hold `static final` fields.
+    - Constant interfaces confuse users by suggesting they are intended to be implemented.
+    - This is a common Java anti-pattern.
 
 ### API design patterns to consider
 
