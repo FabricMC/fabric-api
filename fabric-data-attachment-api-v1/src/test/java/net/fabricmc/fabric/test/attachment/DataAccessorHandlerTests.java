@@ -44,7 +44,7 @@ import net.minecraft.server.commands.data.DataAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
@@ -83,7 +83,7 @@ public class DataAccessorHandlerTests {
 	@BeforeEach
 	void setUp() {
 		RegistryAccess ra = CommonAttachmentTests.mockRA();
-		this.blockEntity = new BlockEntity(BlockEntityType.CHEST, BlockPos.ZERO, Blocks.CHEST.defaultBlockState()) { };
+		this.blockEntity = new BlockEntity(BlockEntityTypes.CHEST, BlockPos.ZERO, Blocks.CHEST.defaultBlockState()) { };
 		Level mockLevel = mock(Level.class);
 		when(mockLevel.registryAccess()).thenReturn(ra);
 		blockEntity.setLevel(mockLevel);

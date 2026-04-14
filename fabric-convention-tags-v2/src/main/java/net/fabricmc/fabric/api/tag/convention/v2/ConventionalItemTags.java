@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -393,7 +394,7 @@ public final class ConventionalItemTags {
 	/**
 	 * Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
 	 * Equivalent to the {@code minecraft:small_flowers} item tag.
-	 * Aliased with {@link ItemTags#SMALL_FLOWERS}.
+	 * Aliased with {@link BlockItemTags#SMALL_FLOWERS}.
 	 */
 	public static final TagKey<Item> SMALL_FLOWERS = register("flowers/small");
 	/**
@@ -409,7 +410,7 @@ public final class ConventionalItemTags {
 
 	// Fences and Fence Gates
 	/**
-	 * Aliased with {@link ItemTags#FENCES}.
+	 * Aliased with {@link BlockItemTags#FENCES}.
 	 */
 	public static final TagKey<Item> FENCES = register("fences");
 	/**

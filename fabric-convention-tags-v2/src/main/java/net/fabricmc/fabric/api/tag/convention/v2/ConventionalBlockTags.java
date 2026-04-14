@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -56,7 +57,7 @@ public final class ConventionalBlockTags {
 
 	// Ores - vanilla instances (All ores consolidated here for consistency)
 	/**
-	 * Aliased with {@link BlockTags#COAL_ORES}.
+	 * Aliased with {@link BlockItemTags#COAL_ORES}.
 	 */
 	public static final TagKey<Block> COAL_ORES = register("ores/coal");
 	/**
@@ -64,11 +65,11 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> COPPER_ORES = register("ores/copper");
 	/**
-	 * Aliased with {@link BlockTags#DIAMOND_ORES}.
+	 * Aliased with {@link BlockItemTags#DIAMOND_ORES}.
 	 */
 	public static final TagKey<Block> DIAMOND_ORES = register("ores/diamond");
 	/**
-	 * Aliased with {@link BlockTags#EMERALD_ORES}.
+	 * Aliased with {@link BlockItemTags#EMERALD_ORES}.
 	 */
 	public static final TagKey<Block> EMERALD_ORES = register("ores/emerald");
 	/**
@@ -80,13 +81,13 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> IRON_ORES = register("ores/iron");
 	/**
-	 * Aliased with {@link BlockTags#LAPIS_ORES}.
+	 * Aliased with {@link BlockItemTags#LAPIS_ORES}.
 	 */
 	public static final TagKey<Block> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Block> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 	public static final TagKey<Block> QUARTZ_ORES = register("ores/quartz");
 	/**
-	 * Aliased with {@link BlockTags#REDSTONE_ORES}.
+	 * Aliased with {@link BlockItemTags#REDSTONE_ORES}.
 	 */
 	public static final TagKey<Block> REDSTONE_ORES = register("ores/redstone");
 
