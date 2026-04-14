@@ -39,6 +39,7 @@ jobs:
   client_test:
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         graphics_backend: [opengl, vulkan]
     steps:
