@@ -122,7 +122,7 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 
 		if (pipeline.usePipelineDrawModeForGui() && pipeline.getVertexFormatMode() != VertexFormat.Mode.QUADS) {
 			RenderSystem.AutoStorageIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
-			buffer = shapeIndexBuffer.getBuffer(((StagedVertexBufferDrawAccessor)draw.fabric$Draw()).fabric$indexCount());
+			buffer = shapeIndexBuffer.getBuffer(((StagedVertexBufferDrawAccessor) draw.fabric$Draw()).fabric$indexCount());
 			indexType = shapeIndexBuffer.type();
 		}
 

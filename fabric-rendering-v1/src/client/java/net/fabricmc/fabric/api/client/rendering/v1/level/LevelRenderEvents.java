@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Mods should use these events to introduce custom rendering during {@link LevelRenderer#renderLevel}
+ * Mods should use these events to introduce custom rendering during {@link LevelRenderer#render}
  * without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
  * that make large-scale rendering changes to maintain compatibility by calling any broken event invokers directly.
  *
@@ -212,7 +212,7 @@ public final class LevelRenderEvents {
 	 * framebuffers and before fabulous translucent framebuffers are combined.
 	 *
 	 * <p><strong>Warning:</strong> after rendering things in this event, consumers should call
-	 * {@link MultiBufferSource.BufferSource#endBatch() context.bufferSource().endBatch()}, otherwise
+	 * {@link MultiBufferSource.BufferSource#endFrame()}  context.bufferSource().endFrame()}, otherwise
 	 * you may get strange rendering bugs!
 	 */
 	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {

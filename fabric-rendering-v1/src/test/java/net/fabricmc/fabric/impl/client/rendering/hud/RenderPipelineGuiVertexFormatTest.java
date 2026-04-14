@@ -47,7 +47,6 @@ public class RenderPipelineGuiVertexFormatTest {
 		RenderPipeline.Snippet snippet = FabricRenderPipeline.Snippet.withPipelineDrawModeForGui(createEmptySnippet(), true);
 		RenderPipeline pipeline = RenderPipeline.builder(
 						RenderPipelines.DEBUG_FILLED_SNIPPET,
-						RenderPipelines.MATRICES_PROJECTION_SNIPPET,
 						snippet
 				)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_454b"))
@@ -58,7 +57,6 @@ public class RenderPipelineGuiVertexFormatTest {
 
 		pipeline = RenderPipeline.builder(
 						RenderPipelines.DEBUG_FILLED_SNIPPET,
-						RenderPipelines.MATRICES_PROJECTION_SNIPPET,
 						snippet
 				)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_454cc"))
@@ -69,7 +67,6 @@ public class RenderPipelineGuiVertexFormatTest {
 
 		pipeline = RenderPipeline.builder(
 						RenderPipelines.DEBUG_FILLED_SNIPPET,
-						RenderPipelines.MATRICES_PROJECTION_SNIPPET,
 						snippet
 				)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_4547q"))
@@ -80,8 +77,7 @@ public class RenderPipelineGuiVertexFormatTest {
 	@Test
 	void testBuilderTransfersToPipeline() {
 		RenderPipeline.Builder builder = RenderPipeline.builder(
-						RenderPipelines.DEBUG_FILLED_SNIPPET,
-						RenderPipelines.MATRICES_PROJECTION_SNIPPET
+						RenderPipelines.DEBUG_FILLED_SNIPPET
 				)
 				.withUsePipelineDrawModeForGui(true)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_454gg"));
@@ -104,7 +100,7 @@ public class RenderPipelineGuiVertexFormatTest {
 		FabricRenderPipeline.Snippet snippet = RenderPipeline.builder()
 				.withUsePipelineDrawModeForGui(true)
 				.buildSnippet();
-		String expectedToString = "Snippet[vertexShader=Optional.empty, fragmentShader=Optional.empty, shaderDefines=Optional.empty, samplers=Optional.empty, uniforms=Optional.empty, colorTargetState=Optional.empty, depthStencilState=Optional.empty, polygonMode=Optional.empty, cull=Optional.empty, vertexFormat=Optional.empty, vertexFormatMode=Optional.empty, usePipelineDrawModeForGui=Optional[true]]";
+		String expectedToString = "Snippet[vertexShader=Optional.empty, fragmentShader=Optional.empty, shaderDefines=Optional.empty, bindGroupLayouts=Optional.empty, colorTargetState=Optional.empty, depthStencilState=Optional.empty, polygonMode=Optional.empty, cull=Optional.empty, vertexFormat=Optional.empty, vertexFormatMode=Optional.empty, usePipelineDrawModeForGui=Optional[true]]";
 		Assertions.assertEquals(expectedToString, snippet.toString());
 		FabricRenderPipeline.Snippet snippet2 = RenderPipeline.builder()
 				.withUsePipelineDrawModeForGui(true)
@@ -122,7 +118,7 @@ public class RenderPipelineGuiVertexFormatTest {
 		return new RenderPipeline.Snippet(
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-				Optional.empty(), Optional.empty(), Optional.empty()
+				Optional.empty(), Optional.empty()
 		);
 	}
 }

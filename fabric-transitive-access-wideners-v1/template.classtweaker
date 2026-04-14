@@ -1,6 +1,3 @@
-# Registering custom advancement criteria
-transitive-accessible	method	net/minecraft/advancements/CriteriaTriggers	register	(Ljava/lang/String;Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
-
 # Creating custom screen handler types
 transitive-accessible	class	net/minecraft/world/inventory/MenuType$MenuSupplier
 transitive-accessible	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
