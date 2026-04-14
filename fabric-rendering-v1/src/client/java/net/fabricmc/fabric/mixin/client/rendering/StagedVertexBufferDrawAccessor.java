@@ -20,11 +20,10 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(targets = "net/minecraft/client/gui/render/GuiRenderer$Draw")
-interface DrawAccessor {
-	@Accessor("pipeline")
-	RenderPipeline fabric$pipeline();
+import net.minecraft.client.renderer.StagedVertexBuffer;
 
+@Mixin(targets = "net/minecraft/client/renderer/StagedVertexBuffer$Draw")
+interface StagedVertexBufferDrawAccessor {
 	@Accessor("indexCount")
 	int fabric$indexCount();
 }
