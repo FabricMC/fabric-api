@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -399,6 +400,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 				DeltaTracker.DefaultValue deltaTracker = DeltaTrackerDefaultValueAccessor.create(options.deltaTicks);
 				client.gameRenderer.extract(deltaTracker, true);
 				client.gameRenderer.render(deltaTracker, true);
+				RenderSystem.getDevice().createCommandEncoder().submit();
 				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
 				Screenshot.takeScreenshot(client.gameRenderer.mainRenderTarget(), screenshot -> {
