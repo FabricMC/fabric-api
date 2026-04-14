@@ -21,6 +21,7 @@
     "HumanoidArmorLayerMixin",
     "HumanoidMobRendererMixin",
     "LayerDefinitionsMixin",
+    "LevelExtractorMixin",
     "LevelRendererMixin",
     "LivingEntityRendererAccessor",
     "LivingEntityRendererMixin",

@@ -28,7 +28,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.resources.model.ModelManager;
 
@@ -50,13 +49,13 @@ public class GameRendererMixin {
 	private Minecraft minecraft;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void guiRendererReady(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, RenderBuffers renderBuffers, ModelManager modelManager, CallbackInfo ci) {
+	private void guiRendererReady(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, ModelManager modelManager, CallbackInfo ci) {
 		GuiRendererExtensions guiRenderer = (GuiRendererExtensions) this.guiRenderer;
 		guiRenderer.fabric_onReady(this.submitNodeStorage);
 	}
 
 	@Inject(method = "extract", at = @At(value = "HEAD"))
 	private void beforeExtract(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo ci) {
-		((LevelRendererExtensions) (Object) minecraft.levelRenderer).fabric_prepareLevelExtractionContext(deltaTracker);
+		((LevelRendererExtensions) minecraft.levelExtractor).fabric_prepareLevelExtractionContext(deltaTracker);
 	}
 }

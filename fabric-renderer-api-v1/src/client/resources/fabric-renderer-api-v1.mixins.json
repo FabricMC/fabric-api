@@ -17,7 +17,7 @@
     "block.render.BlockFeatureRendererMixin",
     "block.render.BlockModelRenderStateMixin",
     "block.render.BlockStateModelWrapperMixin",
-    "block.render.LevelRendererMixin",
+    "block.render.LevelExtractorMixin",
     "block.render.SectionCompilerMixin",
     "item.CuboidItemModelWrapperMixin",
     "item.ItemStackRenderStateLayerRenderStateMixin",

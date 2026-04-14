@@ -34,30 +34,34 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	private GameRenderer gameRenderer;
 	private LevelRenderer levelRenderer;
 	private LevelRenderState levelRenderState;
-
-	private ChunkSectionsToRender sectionsToRender;
 	private SubmitNodeCollector nodeCollector;
+	private MultiBufferSource.BufferSource bufferSource;
+
+	@Nullable
+	private ChunkSectionsToRender sectionsToRender;
 	@Nullable
 	private PoseStack poseStack;
-	private MultiBufferSource.BufferSource bufferSource;
 
 	public void prepare(
 			GameRenderer gameRenderer,
 			LevelRenderer levelRenderer,
 			LevelRenderState levelRenderState,
-			ChunkSectionsToRender sectionsToRender,
 			SubmitNodeCollector nodeCollector,
 			MultiBufferSource.BufferSource bufferSource
 	) {
 		this.gameRenderer = gameRenderer;
 		this.levelRenderer = levelRenderer;
 		this.levelRenderState = levelRenderState;
-		this.sectionsToRender = sectionsToRender;
 
 		this.nodeCollector = nodeCollector;
 		this.bufferSource = bufferSource;
 
+		sectionsToRender = null;
 		poseStack = null;
+	}
+
+	public void setSectionsToRender(ChunkSectionsToRender sectionsToRender) {
+		this.sectionsToRender = sectionsToRender;
 	}
 
 	public void setPoseStack(@Nullable PoseStack poseStack) {
