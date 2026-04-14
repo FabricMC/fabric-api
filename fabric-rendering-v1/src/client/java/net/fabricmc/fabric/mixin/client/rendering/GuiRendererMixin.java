@@ -117,12 +117,12 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 					target = "Lcom/mojang/blaze3d/systems/RenderPass;setIndexBuffer(Lcom/mojang/blaze3d/buffers/GpuBuffer;Lcom/mojang/blaze3d/vertex/VertexFormat$IndexType;)V"
 			)
 	)
-	private void fixNonQuadIndexing(RenderPass instance, GpuBuffer buffer, VertexFormat.IndexType indexType, Operation<Void> original, @Coerce DrawAccessor draw) {
+	private void fixNonQuadIndexing(RenderPass instance, GpuBuffer buffer, VertexFormat.IndexType indexType, Operation<Void> original, @Coerce GuiRendererDrawAccessor draw) {
 		RenderPipeline pipeline = draw.fabric$pipeline();
 
 		if (pipeline.usePipelineDrawModeForGui() && pipeline.getVertexFormatMode() != VertexFormat.Mode.QUADS) {
 			RenderSystem.AutoStorageIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getVertexFormatMode());
-			buffer = shapeIndexBuffer.getBuffer(draw.fabric$indexCount());
+			buffer = shapeIndexBuffer.getBuffer(((StagedVertexBufferDrawAccessor)draw.fabric$Draw()).fabric$indexCount());
 			indexType = shapeIndexBuffer.type();
 		}
 
