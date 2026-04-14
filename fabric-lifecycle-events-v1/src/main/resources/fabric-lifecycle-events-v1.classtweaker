@@ -2,3 +2,5 @@ classTweaker	v1	official
 accessible	class	net/minecraft/server/MinecraftServer$ReloadableResources
 accessible	class	net/minecraft/client/multiplayer/ClientChunkCache$Storage
 accessible	method	net/minecraft/client/multiplayer/ClientChunkCache$Storage	inRange	(II)Z
+
+transitive-inject-interface	net/minecraft/world/entity/Entity	net/fabricmc/fabric/api/event/lifecycle/v1/EntityLoadData
