@@ -31,10 +31,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.tags.BlockItemTagAppender;
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
@@ -121,57 +119,27 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 	}
 
 	/**
-	 * Parent class for tags providers that support adding registered values directly.
-	 *
-	 * @apiNote This class should not be subclassed directly. Either use a subclass provided by
-	 * this API, or use the regular {@link FabricTagsProvider}. (Ability to add registered values
-	 * directly should be considered as deprecated.)
-	 */
-	public abstract static class FabricIntrinsicHolderTagsProvider<T> extends FabricTagsProvider<T> {
-		private final Function<T, ResourceKey<T>> valueToKey;
-
-		protected FabricIntrinsicHolderTagsProvider(FabricPackOutput output, ResourceKey<? extends Registry<T>> registryKey, CompletableFuture<HolderLookup.Provider> registryLookupFuture, Function<T, ResourceKey<T>> valueToKey) {
-			super(output, registryKey, registryLookupFuture);
-			this.valueToKey = valueToKey;
-		}
-
-		protected TagAppender<T> valueLookupBuilder(TagKey<T> tag) {
-			TagBuilder tagBuilder = this.getOrCreateRawBuilder(tag);
-			return TagAppender.<T>forBuilder(tagBuilder); // TODO 26.2 .map(this.valueToKey)
-		}
-	}
-
-	/**
 	 * Extend this class to create {@link Block} tags in the "/block" tag directory.
 	 */
-	public abstract static class BlockTagsProvider extends FabricIntrinsicHolderTagsProvider<Block> {
+	public abstract static class BlockTagsProvider extends FabricTagsProvider<Block> {
 		public BlockTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
-			super(output, Registries.BLOCK, registryLookupFuture, block -> block.builtInRegistryHolder().key());
-		}
-
-		@Override
-		protected BlockItemTagAppender<Block> valueLookupBuilder(final TagKey<Block> tag) {
-			return new BlockItemTagAppender<>(super.tag(tag)) {
-				protected ResourceKey<Block> convertElement(final BlockItemId element) {
-					return element.block();
-				}
-			};
+			super(output, Registries.BLOCK, registryLookupFuture);
 		}
 	}
 
 	/**
 	 * Extend this class to create {@link BlockEntityType} tags in the "/block_entity_type" tag directory.
 	 */
-	public abstract static class BlockEntityTypeTagsProvider extends FabricIntrinsicHolderTagsProvider<BlockEntityType<?>> {
+	public abstract static class BlockEntityTypeTagsProvider extends FabricTagsProvider<BlockEntityType<?>> {
 		public BlockEntityTypeTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
-			super(output, Registries.BLOCK_ENTITY_TYPE, registryLookupFuture, type -> type.builtInRegistryHolder().key());
+			super(output, Registries.BLOCK_ENTITY_TYPE, registryLookupFuture);
 		}
 	}
 
 	/**
 	 * Extend this class to create {@link Item} tags in the "/item" tag directory.
 	 */
-	public abstract static class ItemTagsProvider extends FabricIntrinsicHolderTagsProvider<Item> {
+	public abstract static class ItemTagsProvider extends FabricTagsProvider<Item> {
 		@Nullable
 		private final Function<TagKey<Block>, TagBuilder> blockTagBuilderProvider;
 
@@ -181,7 +149,7 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 		 * @param output The {@link FabricPackOutput} instance
 		 */
 		public ItemTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture, @Nullable BlockTagsProvider blockTagsProvider) {
-			super(output, Registries.ITEM, registryLookupFuture, item -> item.builtInRegistryHolder().key());
+			super(output, Registries.ITEM, registryLookupFuture);
 
 			this.blockTagBuilderProvider = blockTagsProvider == null ? null : blockTagsProvider::getOrCreateRawBuilder;
 		}
@@ -208,32 +176,23 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 			TagBuilder itemTagBuilder = this.getOrCreateRawBuilder(itemTag);
 			blockTagBuilder.build().forEach(itemTagBuilder::add);
 		}
-
-		@Override
-		protected BlockItemTagAppender<Item> valueLookupBuilder(final TagKey<Item> tag) {
-			return new BlockItemTagAppender<>(super.tag(tag)) {
-				protected ResourceKey<Item> convertElement(final BlockItemId element) {
-					return element.item();
-				}
-			};
-		}
 	}
 
 	/**
 	 * Extend this class to create {@link Fluid} tags in the "/fluid" tag directory.
 	 */
-	public abstract static class FluidTagsProvider extends FabricIntrinsicHolderTagsProvider<Fluid> {
+	public abstract static class FluidTagsProvider extends FabricTagsProvider<Fluid> {
 		public FluidTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
-			super(output, Registries.FLUID, registryLookupFuture, fluid -> fluid.builtInRegistryHolder().key());
+			super(output, Registries.FLUID, registryLookupFuture);
 		}
 	}
 
 	/**
 	 * Extend this class to create {@link EntityType} tags in the "/entity_type" tag directory.
 	 */
-	public abstract static class EntityTypeTagsProvider extends FabricIntrinsicHolderTagsProvider<EntityType<?>> {
+	public abstract static class EntityTypeTagsProvider extends FabricTagsProvider<EntityType<?>> {
 		public EntityTypeTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
-			super(output, Registries.ENTITY_TYPE, registryLookupFuture, type -> type.builtInRegistryHolder().key());
+			super(output, Registries.ENTITY_TYPE, registryLookupFuture);
 		}
 	}
 

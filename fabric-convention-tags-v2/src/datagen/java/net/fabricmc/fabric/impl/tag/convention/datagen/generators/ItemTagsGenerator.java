@@ -80,12 +80,12 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		copy(ConventionalBlockTags.GLASS_BLOCKS_CHEAP, ConventionalItemTags.GLASS_BLOCKS_CHEAP);
 		copy(ConventionalBlockTags.GLASS_PANES, ConventionalItemTags.GLASS_PANES);
 		copy(ConventionalBlockTags.GLASS_PANES_COLORLESS, ConventionalItemTags.GLASS_PANES_COLORLESS);
-		valueLookupBuilder(ConventionalItemTags.SHULKER_BOXES)
-				.add(BlockItemIds.SHULKER_BOX)
+		builder(ConventionalItemTags.SHULKER_BOXES)
+				.add(BlockItemIds.SHULKER_BOX.item())
 				.addAll(BlockItemIds.DYED_SHULKER_BOX.asList().stream().map(BlockItemId::item));
 		copy(ConventionalBlockTags.GLAZED_TERRACOTTAS, ConventionalItemTags.GLAZED_TERRACOTTAS);
 		copy(ConventionalBlockTags.CONCRETES, ConventionalItemTags.CONCRETES);
-		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDERS)
+		builder(ConventionalItemTags.CONCRETE_POWDERS)
 				.addAll(BlockItemIds.CONCRETE_POWDER.asList().stream().map(BlockItemId::item));
 
 		copy(ConventionalBlockTags.BUDDING_BLOCKS, ConventionalItemTags.BUDDING_BLOCKS);
@@ -144,7 +144,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 	}
 
 	private void generateDyeTags() {
-		valueLookupBuilder(ConventionalItemTags.DYES)
+		builder(ConventionalItemTags.DYES)
 				.addOptionalTag(ConventionalItemTags.WHITE_DYES)
 				.addOptionalTag(ConventionalItemTags.ORANGE_DYES)
 				.addOptionalTag(ConventionalItemTags.MAGENTA_DYES)
@@ -161,126 +161,126 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.GREEN_DYES)
 				.addOptionalTag(ConventionalItemTags.RED_DYES)
 				.addOptionalTag(ConventionalItemTags.BLACK_DYES);
-		valueLookupBuilder(ConventionalItemTags.BLACK_DYES)
+		builder(ConventionalItemTags.BLACK_DYES)
 				.add(ItemIds.DYE.black());
-		valueLookupBuilder(ConventionalItemTags.BLUE_DYES)
+		builder(ConventionalItemTags.BLUE_DYES)
 				.add(ItemIds.DYE.blue());
-		valueLookupBuilder(ConventionalItemTags.BROWN_DYES)
+		builder(ConventionalItemTags.BROWN_DYES)
 				.add(ItemIds.DYE.brown());
-		valueLookupBuilder(ConventionalItemTags.GREEN_DYES)
+		builder(ConventionalItemTags.GREEN_DYES)
 				.add(ItemIds.DYE.green());
-		valueLookupBuilder(ConventionalItemTags.RED_DYES)
+		builder(ConventionalItemTags.RED_DYES)
 				.add(ItemIds.DYE.red());
-		valueLookupBuilder(ConventionalItemTags.WHITE_DYES)
+		builder(ConventionalItemTags.WHITE_DYES)
 				.add(ItemIds.DYE.white());
-		valueLookupBuilder(ConventionalItemTags.YELLOW_DYES)
+		builder(ConventionalItemTags.YELLOW_DYES)
 				.add(ItemIds.DYE.yellow());
-		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYES)
+		builder(ConventionalItemTags.LIGHT_BLUE_DYES)
 				.add(ItemIds.DYE.lightBlue());
-		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYES)
+		builder(ConventionalItemTags.LIGHT_GRAY_DYES)
 				.add(ItemIds.DYE.lightGray());
-		valueLookupBuilder(ConventionalItemTags.LIME_DYES)
+		builder(ConventionalItemTags.LIME_DYES)
 				.add(ItemIds.DYE.lime());
-		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYES)
+		builder(ConventionalItemTags.MAGENTA_DYES)
 				.add(ItemIds.DYE.magenta());
-		valueLookupBuilder(ConventionalItemTags.ORANGE_DYES)
+		builder(ConventionalItemTags.ORANGE_DYES)
 				.add(ItemIds.DYE.orange());
-		valueLookupBuilder(ConventionalItemTags.PINK_DYES)
+		builder(ConventionalItemTags.PINK_DYES)
 				.add(ItemIds.DYE.pink());
-		valueLookupBuilder(ConventionalItemTags.CYAN_DYES)
+		builder(ConventionalItemTags.CYAN_DYES)
 				.add(ItemIds.DYE.cyan());
-		valueLookupBuilder(ConventionalItemTags.GRAY_DYES)
+		builder(ConventionalItemTags.GRAY_DYES)
 				.add(ItemIds.DYE.gray());
-		valueLookupBuilder(ConventionalItemTags.PURPLE_DYES)
+		builder(ConventionalItemTags.PURPLE_DYES)
 				.add(ItemIds.DYE.purple());
 	}
 
 	private void generateConsumableTags() {
-		valueLookupBuilder(ConventionalItemTags.BOTTLE_POTIONS)
+		builder(ConventionalItemTags.BOTTLE_POTIONS)
 				.add(ItemIds.POTION)
 				.add(ItemIds.SPLASH_POTION)
 				.add(ItemIds.LINGERING_POTION);
-		valueLookupBuilder(ConventionalItemTags.POTIONS)
+		builder(ConventionalItemTags.POTIONS)
 				.addOptionalTag(ConventionalItemTags.BOTTLE_POTIONS);
 	}
 
 	private void generateFoodTags() {
-		valueLookupBuilder(ConventionalItemTags.FRUIT_FOODS)
+		builder(ConventionalItemTags.FRUIT_FOODS)
 				.add(ItemIds.APPLE)
 				.add(ItemIds.GOLDEN_APPLE)
 				.add(ItemIds.ENCHANTED_GOLDEN_APPLE)
 				.add(ItemIds.CHORUS_FRUIT)
 				.add(ItemIds.MELON_SLICE);
 
-		valueLookupBuilder(ConventionalItemTags.VEGETABLE_FOODS)
-				.add(BlockItemIds.CARROT_CROP)
+		builder(ConventionalItemTags.VEGETABLE_FOODS)
+				.add(BlockItemIds.CARROT_CROP.item())
 				.add(ItemIds.GOLDEN_CARROT)
-				.add(BlockItemIds.POTATO_CROP)
+				.add(BlockItemIds.POTATO_CROP.item())
 				.add(ItemIds.BEETROOT);
 
-		valueLookupBuilder(ConventionalItemTags.BERRY_FOODS)
-				.add(BlockItemIds.SWEET_BERRY_CROP)
-				.add(BlockItemIds.GLOW_BERRY_CROP);
+		builder(ConventionalItemTags.BERRY_FOODS)
+				.add(BlockItemIds.SWEET_BERRY_CROP.item())
+				.add(BlockItemIds.GLOW_BERRY_CROP.item());
 
-		valueLookupBuilder(ConventionalItemTags.BREAD_FOODS)
+		builder(ConventionalItemTags.BREAD_FOODS)
 				.add(ItemIds.BREAD);
 
-		valueLookupBuilder(ConventionalItemTags.COOKIE_FOODS)
+		builder(ConventionalItemTags.COOKIE_FOODS)
 				.add(ItemIds.COOKIE);
 
-		valueLookupBuilder(ConventionalItemTags.DOUGH_FOODS);
+		builder(ConventionalItemTags.DOUGH_FOODS);
 
-		valueLookupBuilder(ConventionalItemTags.RAW_MEAT_FOODS)
+		builder(ConventionalItemTags.RAW_MEAT_FOODS)
 				.add(ItemIds.BEEF)
 				.add(ItemIds.PORKCHOP)
 				.add(ItemIds.CHICKEN)
 				.add(ItemIds.RABBIT)
 				.add(ItemIds.MUTTON);
 
-		valueLookupBuilder(ConventionalItemTags.RAW_FISH_FOODS)
+		builder(ConventionalItemTags.RAW_FISH_FOODS)
 				.add(ItemIds.COD)
 				.add(ItemIds.SALMON)
 				.add(ItemIds.TROPICAL_FISH)
 				.add(ItemIds.PUFFERFISH);
 
-		valueLookupBuilder(ConventionalItemTags.COOKED_MEAT_FOODS)
+		builder(ConventionalItemTags.COOKED_MEAT_FOODS)
 				.add(ItemIds.COOKED_BEEF)
 				.add(ItemIds.COOKED_PORKCHOP)
 				.add(ItemIds.COOKED_CHICKEN)
 				.add(ItemIds.COOKED_RABBIT)
 				.add(ItemIds.COOKED_MUTTON);
 
-		valueLookupBuilder(ConventionalItemTags.COOKED_FISH_FOODS)
+		builder(ConventionalItemTags.COOKED_FISH_FOODS)
 				.add(ItemIds.COOKED_COD)
 				.add(ItemIds.COOKED_SALMON);
 
-		valueLookupBuilder(ConventionalItemTags.SOUP_FOODS)
+		builder(ConventionalItemTags.SOUP_FOODS)
 				.add(ItemIds.BEETROOT_SOUP)
 				.add(ItemIds.MUSHROOM_STEW)
 				.add(ItemIds.RABBIT_STEW)
 				.add(ItemIds.SUSPICIOUS_STEW);
 
-		valueLookupBuilder(ConventionalItemTags.CANDY_FOODS);
+		builder(ConventionalItemTags.CANDY_FOODS);
 
-		valueLookupBuilder(ConventionalItemTags.PIE_FOODS)
+		builder(ConventionalItemTags.PIE_FOODS)
 				.add(ItemIds.PUMPKIN_PIE);
 
-		valueLookupBuilder(ConventionalItemTags.GOLDEN_FOODS)
+		builder(ConventionalItemTags.GOLDEN_FOODS)
 				.add(ItemIds.GOLDEN_APPLE)
 				.add(ItemIds.ENCHANTED_GOLDEN_APPLE)
 				.add(ItemIds.GOLDEN_CARROT);
 
-		valueLookupBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
-				.add(BlockItemIds.CAKE);
+		builder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+				.add(BlockItemIds.CAKE.item());
 
-		valueLookupBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
+		builder(ConventionalItemTags.FOOD_POISONING_FOODS)
 				.add(ItemIds.POISONOUS_POTATO)
 				.add(ItemIds.PUFFERFISH)
 				.add(ItemIds.SPIDER_EYE)
 				.add(ItemIds.CHICKEN)
 				.add(ItemIds.ROTTEN_FLESH);
 
-		valueLookupBuilder(ConventionalItemTags.ANIMAL_FOODS)
+		builder(ConventionalItemTags.ANIMAL_FOODS)
 				.addOptionalTag(ItemTags.ARMADILLO_FOOD)
 				.addOptionalTag(ItemTags.AXOLOTL_FOOD)
 				.addOptionalTag(ItemTags.BEE_FOOD)
@@ -306,7 +306,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ItemTags.TURTLE_FOOD)
 				.addOptionalTag(ItemTags.WOLF_FOOD);
 
-		valueLookupBuilder(ConventionalItemTags.FOODS)
+		builder(ConventionalItemTags.FOODS)
 				.add(ItemIds.BAKED_POTATO)
 				.add(ItemIds.PUMPKIN_PIE)
 				.add(ItemIds.HONEY_BOTTLE)
@@ -329,7 +329,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
 
-		valueLookupBuilder(ConventionalItemTags.DRINKS)
+		builder(ConventionalItemTags.DRINKS)
 				.addOptionalTag(ConventionalItemTags.WATER_DRINKS)
 				.addOptionalTag(ConventionalItemTags.WATERY_DRINKS)
 				.addOptionalTag(ConventionalItemTags.MILK_DRINKS)
@@ -338,55 +338,55 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.OMINOUS_DRINKS)
 				.addOptionalTag(ConventionalItemTags.JUICE_DRINKS);
 
-		valueLookupBuilder(ConventionalItemTags.WATER_DRINKS);
+		builder(ConventionalItemTags.WATER_DRINKS);
 
-		valueLookupBuilder(ConventionalItemTags.WATERY_DRINKS)
+		builder(ConventionalItemTags.WATERY_DRINKS)
 				.add(ItemIds.POTION)
 				.addOptionalTag(ConventionalItemTags.WATER_DRINKS);
 
-		valueLookupBuilder(ConventionalItemTags.MILK_DRINKS)
+		builder(ConventionalItemTags.MILK_DRINKS)
 				.add(ItemIds.MILK_BUCKET);
 
-		valueLookupBuilder(ConventionalItemTags.HONEY_DRINKS)
+		builder(ConventionalItemTags.HONEY_DRINKS)
 				.add(ItemIds.HONEY_BOTTLE);
 
-		valueLookupBuilder(ConventionalItemTags.MAGIC_DRINKS)
+		builder(ConventionalItemTags.MAGIC_DRINKS)
 				.add(ItemIds.POTION)
 				.addOptionalTag(ConventionalItemTags.OMINOUS_DRINKS);
 
-		valueLookupBuilder(ConventionalItemTags.OMINOUS_DRINKS)
+		builder(ConventionalItemTags.OMINOUS_DRINKS)
 				.add(ItemIds.OMINOUS_BOTTLE);
 
-		valueLookupBuilder(ConventionalItemTags.JUICE_DRINKS);
+		builder(ConventionalItemTags.JUICE_DRINKS);
 
-		valueLookupBuilder(ConventionalItemTags.DRINK_CONTAINING_BUCKET)
+		builder(ConventionalItemTags.DRINK_CONTAINING_BUCKET)
 				.add(ItemIds.MILK_BUCKET);
 
-		valueLookupBuilder(ConventionalItemTags.DRINK_CONTAINING_BOTTLE)
+		builder(ConventionalItemTags.DRINK_CONTAINING_BOTTLE)
 				.add(ItemIds.POTION)
 				.add(ItemIds.HONEY_BOTTLE)
 				.add(ItemIds.OMINOUS_BOTTLE);
 	}
 
 	private void generateBucketTags() {
-		valueLookupBuilder(ConventionalItemTags.EMPTY_BUCKETS)
+		builder(ConventionalItemTags.EMPTY_BUCKETS)
 				.add(ItemIds.BUCKET);
-		valueLookupBuilder(ConventionalItemTags.LAVA_BUCKETS)
+		builder(ConventionalItemTags.LAVA_BUCKETS)
 				.add(ItemIds.LAVA_BUCKET);
-		valueLookupBuilder(ConventionalItemTags.ENTITY_WATER_BUCKETS)
+		builder(ConventionalItemTags.ENTITY_WATER_BUCKETS)
 				.add(ItemIds.AXOLOTL_BUCKET)
 				.add(ItemIds.COD_BUCKET)
 				.add(ItemIds.PUFFERFISH_BUCKET)
 				.add(ItemIds.TADPOLE_BUCKET)
 				.add(ItemIds.TROPICAL_FISH_BUCKET)
 				.add(ItemIds.SALMON_BUCKET);
-		valueLookupBuilder(ConventionalItemTags.WATER_BUCKETS)
+		builder(ConventionalItemTags.WATER_BUCKETS)
 				.add(ItemIds.WATER_BUCKET);
-		valueLookupBuilder(ConventionalItemTags.MILK_BUCKETS)
+		builder(ConventionalItemTags.MILK_BUCKETS)
 				.add(ItemIds.MILK_BUCKET);
-		valueLookupBuilder(ConventionalItemTags.POWDER_SNOW_BUCKETS)
+		builder(ConventionalItemTags.POWDER_SNOW_BUCKETS)
 				.add(BlockItemIds.POWDER_SNOW.item());
-		valueLookupBuilder(ConventionalItemTags.BUCKETS)
+		builder(ConventionalItemTags.BUCKETS)
 				.addOptionalTag(ConventionalItemTags.EMPTY_BUCKETS)
 				.addOptionalTag(ConventionalItemTags.WATER_BUCKETS)
 				.addOptionalTag(ConventionalItemTags.LAVA_BUCKETS)
@@ -397,64 +397,64 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 
 	private void generateOreAndRelatedTags() {
 		// Categories
-		valueLookupBuilder(ConventionalItemTags.BRICKS)
+		builder(ConventionalItemTags.BRICKS)
 				.addOptionalTag(ConventionalItemTags.NORMAL_BRICKS)
 				.addOptionalTag(ConventionalItemTags.NETHER_BRICKS)
 				.addOptionalTag(ConventionalItemTags.RESIN_BRICKS);
-		valueLookupBuilder(ConventionalItemTags.DUSTS)
+		builder(ConventionalItemTags.DUSTS)
 				.addOptionalTag(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.addOptionalTag(ConventionalItemTags.REDSTONE_DUSTS);
-		valueLookupBuilder(ConventionalItemTags.CLUMPS)
+		builder(ConventionalItemTags.CLUMPS)
 				.addOptionalTag(ConventionalItemTags.RESIN_CLUMPS);
-		valueLookupBuilder(ConventionalItemTags.GEMS)
+		builder(ConventionalItemTags.GEMS)
 				.addOptionalTag(ConventionalItemTags.AMETHYST_GEMS)
 				.addOptionalTag(ConventionalItemTags.DIAMOND_GEMS)
 				.addOptionalTag(ConventionalItemTags.EMERALD_GEMS)
 				.addOptionalTag(ConventionalItemTags.LAPIS_GEMS)
 				.addOptionalTag(ConventionalItemTags.PRISMARINE_GEMS)
 				.addOptionalTag(ConventionalItemTags.QUARTZ_GEMS);
-		valueLookupBuilder(ConventionalItemTags.INGOTS)
+		builder(ConventionalItemTags.INGOTS)
 				.addOptionalTag(ConventionalItemTags.COPPER_INGOTS)
 				.addOptionalTag(ConventionalItemTags.IRON_INGOTS)
 				.addOptionalTag(ConventionalItemTags.GOLD_INGOTS)
 				.addOptionalTag(ConventionalItemTags.NETHERITE_INGOTS);
-		valueLookupBuilder(ConventionalItemTags.NUGGETS)
+		builder(ConventionalItemTags.NUGGETS)
 				.addOptionalTag(ConventionalItemTags.COPPER_NUGGETS)
 				.addOptionalTag(ConventionalItemTags.IRON_NUGGETS)
 				.addOptionalTag(ConventionalItemTags.GOLD_NUGGETS);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
-		valueLookupBuilder(ConventionalItemTags.RAW_MATERIALS)
+		builder(ConventionalItemTags.RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS);
 
 		// Vanilla instances
-		valueLookupBuilder(ConventionalItemTags.NORMAL_BRICKS)
+		builder(ConventionalItemTags.NORMAL_BRICKS)
 				.add(ItemIds.BRICK);
-		valueLookupBuilder(ConventionalItemTags.NETHER_BRICKS)
+		builder(ConventionalItemTags.NETHER_BRICKS)
 				.add(ItemIds.NETHER_BRICK);
-		valueLookupBuilder(ConventionalItemTags.RESIN_BRICKS)
+		builder(ConventionalItemTags.RESIN_BRICKS)
 				.add(ItemIds.RESIN_BRICK);
 
-		valueLookupBuilder(ConventionalItemTags.IRON_INGOTS)
+		builder(ConventionalItemTags.IRON_INGOTS)
 				.add(ItemIds.IRON_INGOT);
-		valueLookupBuilder(ConventionalItemTags.COPPER_INGOTS)
+		builder(ConventionalItemTags.COPPER_INGOTS)
 				.add(ItemIds.COPPER_INGOT);
-		valueLookupBuilder(ConventionalItemTags.GOLD_INGOTS)
+		builder(ConventionalItemTags.GOLD_INGOTS)
 				.add(ItemIds.GOLD_INGOT);
-		valueLookupBuilder(ConventionalItemTags.NETHERITE_INGOTS)
+		builder(ConventionalItemTags.NETHERITE_INGOTS)
 				.add(ItemIds.NETHERITE_INGOT);
 
-		valueLookupBuilder(ConventionalItemTags.IRON_RAW_MATERIALS)
+		builder(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.add(ItemIds.RAW_IRON);
-		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS)
+		builder(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.add(ItemIds.RAW_COPPER);
-		valueLookupBuilder(ConventionalItemTags.GOLD_RAW_MATERIALS)
+		builder(ConventionalItemTags.GOLD_RAW_MATERIALS)
 				.add(ItemIds.RAW_GOLD);
 
-		valueLookupBuilder(ConventionalItemTags.REDSTONE_DUSTS)
-				.add(BlockItemIds.REDSTONE_DUST);
-		valueLookupBuilder(ConventionalItemTags.GLOWSTONE_DUSTS)
+		builder(ConventionalItemTags.REDSTONE_DUSTS)
+				.add(BlockItemIds.REDSTONE_DUST.item());
+		builder(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.add(ItemIds.GLOWSTONE_DUST);
 
 		copy(ConventionalBlockTags.COAL_ORES, ConventionalItemTags.COAL_ORES);
@@ -468,27 +468,27 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		copy(ConventionalBlockTags.REDSTONE_ORES, ConventionalItemTags.REDSTONE_ORES);
 		copy(ConventionalBlockTags.QUARTZ_ORES, ConventionalItemTags.QUARTZ_ORES);
 
-		valueLookupBuilder(ConventionalItemTags.RESIN_CLUMPS)
-				.add(BlockItemIds.RESIN_CLUMP);
+		builder(ConventionalItemTags.RESIN_CLUMPS)
+				.add(BlockItemIds.RESIN_CLUMP.item());
 
-		valueLookupBuilder(ConventionalItemTags.QUARTZ_GEMS)
+		builder(ConventionalItemTags.QUARTZ_GEMS)
 				.add(ItemIds.QUARTZ);
-		valueLookupBuilder(ConventionalItemTags.EMERALD_GEMS)
+		builder(ConventionalItemTags.EMERALD_GEMS)
 				.add(ItemIds.EMERALD);
-		valueLookupBuilder(ConventionalItemTags.LAPIS_GEMS)
+		builder(ConventionalItemTags.LAPIS_GEMS)
 				.add(ItemIds.LAPIS_LAZULI);
-		valueLookupBuilder(ConventionalItemTags.DIAMOND_GEMS)
+		builder(ConventionalItemTags.DIAMOND_GEMS)
 				.add(ItemIds.DIAMOND);
-		valueLookupBuilder(ConventionalItemTags.AMETHYST_GEMS)
+		builder(ConventionalItemTags.AMETHYST_GEMS)
 				.add(ItemIds.AMETHYST_SHARD);
-		valueLookupBuilder(ConventionalItemTags.PRISMARINE_GEMS)
+		builder(ConventionalItemTags.PRISMARINE_GEMS)
 				.add(ItemIds.PRISMARINE_CRYSTALS);
 
-		valueLookupBuilder(ConventionalItemTags.COPPER_NUGGETS)
+		builder(ConventionalItemTags.COPPER_NUGGETS)
 				.add(ItemIds.COPPER_NUGGET);
-		valueLookupBuilder(ConventionalItemTags.IRON_NUGGETS)
+		builder(ConventionalItemTags.IRON_NUGGETS)
 				.add(ItemIds.IRON_NUGGET);
-		valueLookupBuilder(ConventionalItemTags.GOLD_NUGGETS)
+		builder(ConventionalItemTags.GOLD_NUGGETS)
 				.add(ItemIds.GOLD_NUGGET);
 
 		copy(ConventionalBlockTags.ORE_BEARING_GROUND_DEEPSLATE, ConventionalItemTags.ORE_BEARING_GROUND_DEEPSLATE);
@@ -503,7 +503,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 	}
 
 	private void generateToolTags() {
-		valueLookupBuilder(ConventionalItemTags.TOOLS)
+		builder(ConventionalItemTags.TOOLS)
 				.addOptionalTag(ItemTags.AXES)
 				.addOptionalTag(ItemTags.HOES)
 				.addOptionalTag(ItemTags.PICKAXES)
@@ -524,27 +524,27 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.MELEE_WEAPON_TOOLS)
 				.addOptionalTag(ConventionalItemTags.RANGED_WEAPON_TOOLS);
 
-		valueLookupBuilder(ConventionalItemTags.BOW_TOOLS)
+		builder(ConventionalItemTags.BOW_TOOLS)
 				.add(ItemIds.BOW);
-		valueLookupBuilder(ConventionalItemTags.CROSSBOW_TOOLS)
+		builder(ConventionalItemTags.CROSSBOW_TOOLS)
 				.add(ItemIds.CROSSBOW);
-		valueLookupBuilder(ConventionalItemTags.SHEAR_TOOLS)
+		builder(ConventionalItemTags.SHEAR_TOOLS)
 				.add(ItemIds.SHEARS);
-		valueLookupBuilder(ConventionalItemTags.SHIELD_TOOLS)
+		builder(ConventionalItemTags.SHIELD_TOOLS)
 				.add(ItemIds.SHIELD);
-		valueLookupBuilder(ConventionalItemTags.TRIDENT_TOOLS)
+		builder(ConventionalItemTags.TRIDENT_TOOLS)
 				.add(ItemIds.TRIDENT);
-		valueLookupBuilder(ConventionalItemTags.FISHING_ROD_TOOLS)
+		builder(ConventionalItemTags.FISHING_ROD_TOOLS)
 				.add(ItemIds.FISHING_ROD);
-		valueLookupBuilder(ConventionalItemTags.BRUSH_TOOLS)
+		builder(ConventionalItemTags.BRUSH_TOOLS)
 				.add(ItemIds.BRUSH);
-		valueLookupBuilder(ConventionalItemTags.IGNITER_TOOLS)
+		builder(ConventionalItemTags.IGNITER_TOOLS)
 				.add(ItemIds.FLINT_AND_STEEL);
-		valueLookupBuilder(ConventionalItemTags.MACE_TOOLS)
+		builder(ConventionalItemTags.MACE_TOOLS)
 				.add(ItemIds.MACE);
-		valueLookupBuilder(ConventionalItemTags.WRENCH_TOOLS);
+		builder(ConventionalItemTags.WRENCH_TOOLS);
 
-		valueLookupBuilder(ConventionalItemTags.MINING_TOOL_TOOLS)
+		builder(ConventionalItemTags.MINING_TOOL_TOOLS)
 				.add(ItemIds.WOODEN_PICKAXE)
 				.add(ItemIds.STONE_PICKAXE)
 				.add(ItemIds.COPPER_PICKAXE)
@@ -553,7 +553,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(ItemIds.DIAMOND_PICKAXE)
 				.add(ItemIds.NETHERITE_PICKAXE);
 
-		valueLookupBuilder(ConventionalItemTags.MELEE_WEAPON_TOOLS)
+		builder(ConventionalItemTags.MELEE_WEAPON_TOOLS)
 				.add(ItemIds.MACE)
 				.add(ItemIds.TRIDENT)
 				.add(ItemIds.WOODEN_SWORD)
@@ -578,18 +578,18 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(ItemIds.DIAMOND_SPEAR)
 				.add(ItemIds.NETHERITE_SPEAR);
 
-		valueLookupBuilder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
+		builder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
 				.add(ItemIds.BOW)
 				.add(ItemIds.CROSSBOW)
 				.add(ItemIds.TRIDENT);
 
-		valueLookupBuilder(ConventionalItemTags.ARMORS)
+		builder(ConventionalItemTags.ARMORS)
 				.addOptionalTag(ConventionalItemTags.HUMANOID_ARMORS)
 				.addOptionalTag(ConventionalItemTags.HORSE_ARMORS)
 				.addOptionalTag(ConventionalItemTags.NAUTILUS_ARMORS)
 				.addOptionalTag(ConventionalItemTags.WOLF_ARMORS);
 
-		valueLookupBuilder(ConventionalItemTags.HORSE_ARMORS)
+		builder(ConventionalItemTags.HORSE_ARMORS)
 				.add(ItemIds.LEATHER_HORSE_ARMOR)
 				.add(ItemIds.COPPER_HORSE_ARMOR)
 				.add(ItemIds.IRON_HORSE_ARMOR)
@@ -597,23 +597,23 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(ItemIds.DIAMOND_HORSE_ARMOR)
 				.add(ItemIds.NETHERITE_HORSE_ARMOR);
 
-		valueLookupBuilder(ConventionalItemTags.NAUTILUS_ARMORS)
+		builder(ConventionalItemTags.NAUTILUS_ARMORS)
 				.add(ItemIds.COPPER_NAUTILUS_ARMOR)
 				.add(ItemIds.IRON_NAUTILUS_ARMOR)
 				.add(ItemIds.GOLDEN_NAUTILUS_ARMOR)
 				.add(ItemIds.DIAMOND_NAUTILUS_ARMOR)
 				.add(ItemIds.NETHERITE_NAUTILUS_ARMOR);
 
-		valueLookupBuilder(ConventionalItemTags.WOLF_ARMORS)
+		builder(ConventionalItemTags.WOLF_ARMORS)
 				.add(ItemIds.WOLF_ARMOR);
 
-		valueLookupBuilder(ConventionalItemTags.HUMANOID_ARMORS)
+		builder(ConventionalItemTags.HUMANOID_ARMORS)
 				.addOptionalTag(ItemTags.HEAD_ARMOR)
 				.addOptionalTag(ItemTags.CHEST_ARMOR)
 				.addOptionalTag(ItemTags.LEG_ARMOR)
 				.addOptionalTag(ItemTags.FOOT_ARMOR);
 
-		valueLookupBuilder(ConventionalItemTags.ENCHANTABLES)
+		builder(ConventionalItemTags.ENCHANTABLES)
 				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
 				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
@@ -634,12 +634,12 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 	}
 
 	private void generateVillagerJobSites() {
-		valueLookupBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)
+		builder(ConventionalItemTags.VILLAGER_JOB_SITES)
 				.addAll(BlockTagsGenerator.VILLAGER_JOB_SITE_BLOCKS.stream().map(BlockItemId::item));
 	}
 
 	private void generateCropAndSeedsTags() {
-		valueLookupBuilder(ConventionalItemTags.CROPS)
+		builder(ConventionalItemTags.CROPS)
 				.addOptionalTag(ConventionalItemTags.BEETROOT_CROPS)
 				.addOptionalTag(ConventionalItemTags.CACTUS_CROPS)
 				.addOptionalTag(ConventionalItemTags.CARROT_CROPS)
@@ -651,46 +651,46 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.SUGAR_CANE_CROPS)
 				.addOptionalTag(ConventionalItemTags.WHEAT_CROPS);
 
-		valueLookupBuilder(ConventionalItemTags.BEETROOT_CROPS)
+		builder(ConventionalItemTags.BEETROOT_CROPS)
 				.add(ItemIds.BEETROOT);
-		valueLookupBuilder(ConventionalItemTags.CACTUS_CROPS)
-				.add(BlockItemIds.CACTUS);
-		valueLookupBuilder(ConventionalItemTags.CARROT_CROPS)
-				.add(BlockItemIds.CARROT_CROP);
-		valueLookupBuilder(ConventionalItemTags.COCOA_BEAN_CROPS)
-				.add(BlockItemIds.COCOA_CROP);
-		valueLookupBuilder(ConventionalItemTags.MELON_CROPS)
-				.add(BlockItemIds.MELON);
-		valueLookupBuilder(ConventionalItemTags.NETHER_WART_CROPS)
-				.add(BlockItemIds.NETHER_WART);
-		valueLookupBuilder(ConventionalItemTags.POTATO_CROPS)
-				.add(BlockItemIds.POTATO_CROP);
-		valueLookupBuilder(ConventionalItemTags.PUMPKIN_CROPS)
-				.add(BlockItemIds.PUMPKIN);
-		valueLookupBuilder(ConventionalItemTags.SUGAR_CANE_CROPS)
-				.add(BlockItemIds.SUGAR_CANE);
-		valueLookupBuilder(ConventionalItemTags.WHEAT_CROPS)
+		builder(ConventionalItemTags.CACTUS_CROPS)
+				.add(BlockItemIds.CACTUS.item());
+		builder(ConventionalItemTags.CARROT_CROPS)
+				.add(BlockItemIds.CARROT_CROP.item());
+		builder(ConventionalItemTags.COCOA_BEAN_CROPS)
+				.add(BlockItemIds.COCOA_CROP.item());
+		builder(ConventionalItemTags.MELON_CROPS)
+				.add(BlockItemIds.MELON.item());
+		builder(ConventionalItemTags.NETHER_WART_CROPS)
+				.add(BlockItemIds.NETHER_WART.item());
+		builder(ConventionalItemTags.POTATO_CROPS)
+				.add(BlockItemIds.POTATO_CROP.item());
+		builder(ConventionalItemTags.PUMPKIN_CROPS)
+				.add(BlockItemIds.PUMPKIN.item());
+		builder(ConventionalItemTags.SUGAR_CANE_CROPS)
+				.add(BlockItemIds.SUGAR_CANE.item());
+		builder(ConventionalItemTags.WHEAT_CROPS)
 				.add(ItemIds.WHEAT);
 
-		valueLookupBuilder(ConventionalItemTags.SEEDS)
+		builder(ConventionalItemTags.SEEDS)
 				.addOptionalTag(ConventionalItemTags.BEETROOT_SEEDS)
 				.addOptionalTag(ConventionalItemTags.MELON_SEEDS)
 				.addOptionalTag(ConventionalItemTags.PUMPKIN_SEEDS)
 				.addOptionalTag(ConventionalItemTags.TORCHFLOWER_SEEDS)
 				.addOptionalTag(ConventionalItemTags.PITCHER_PLANT_SEEDS)
 				.addOptionalTag(ConventionalItemTags.WHEAT_SEEDS);
-		valueLookupBuilder(ConventionalItemTags.BEETROOT_SEEDS)
-				.add(BlockItemIds.BEETROOT_CROP);
-		valueLookupBuilder(ConventionalItemTags.MELON_SEEDS)
-				.add(BlockItemIds.MELON_CROP);
-		valueLookupBuilder(ConventionalItemTags.PUMPKIN_SEEDS)
-				.add(BlockItemIds.PUMPKIN_CROP);
-		valueLookupBuilder(ConventionalItemTags.TORCHFLOWER_SEEDS)
-				.add(BlockItemIds.TORCHFLOWER_CROP);
-		valueLookupBuilder(ConventionalItemTags.PITCHER_PLANT_SEEDS)
-				.add(BlockItemIds.PITCHER_CROP);
-		valueLookupBuilder(ConventionalItemTags.WHEAT_SEEDS)
-				.add(BlockItemIds.WHEAT_CROP);
+		builder(ConventionalItemTags.BEETROOT_SEEDS)
+				.add(BlockItemIds.BEETROOT_CROP.item());
+		builder(ConventionalItemTags.MELON_SEEDS)
+				.add(BlockItemIds.MELON_CROP.item());
+		builder(ConventionalItemTags.PUMPKIN_SEEDS)
+				.add(BlockItemIds.PUMPKIN_CROP.item());
+		builder(ConventionalItemTags.TORCHFLOWER_SEEDS)
+				.add(BlockItemIds.TORCHFLOWER_CROP.item());
+		builder(ConventionalItemTags.PITCHER_PLANT_SEEDS)
+				.add(BlockItemIds.PITCHER_CROP.item());
+		builder(ConventionalItemTags.WHEAT_SEEDS)
+				.add(BlockItemIds.WHEAT_CROP.item());
 	}
 
 	private void generateFlowerTags() {
@@ -700,175 +700,175 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 	}
 
 	private void generateOtherTags() {
-		valueLookupBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
-				.add(BlockItemIds.CRAFTING_TABLE);
+		builder(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
+				.add(BlockItemIds.CRAFTING_TABLE.item());
 
-		valueLookupBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES)
-				.add(BlockItemIds.FURNACE);
+		builder(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES)
+				.add(BlockItemIds.FURNACE.item());
 
-		valueLookupBuilder(ConventionalItemTags.STRINGS)
-				.add(BlockItemIds.TRIPWIRE);
+		builder(ConventionalItemTags.STRINGS)
+				.add(BlockItemIds.TRIPWIRE.item());
 
-		valueLookupBuilder(ConventionalItemTags.LEATHERS)
+		builder(ConventionalItemTags.LEATHERS)
 				.add(ItemIds.LEATHER);
 
-		valueLookupBuilder(ConventionalItemTags.BONES)
+		builder(ConventionalItemTags.BONES)
 				.add(ItemIds.BONE);
 
-		valueLookupBuilder(ConventionalItemTags.EGGS)
+		builder(ConventionalItemTags.EGGS)
 				.add(ItemIds.EGG, ItemIds.BROWN_EGG, ItemIds.BLUE_EGG);
 
-		valueLookupBuilder(ConventionalItemTags.FEATHERS)
+		builder(ConventionalItemTags.FEATHERS)
 				.add(ItemIds.FEATHER);
 
-		valueLookupBuilder(ConventionalItemTags.GUNPOWDERS)
+		builder(ConventionalItemTags.GUNPOWDERS)
 				.add(ItemIds.GUNPOWDER);
 
-		valueLookupBuilder(ConventionalItemTags.MUSHROOMS)
-				.add(BlockItemIds.RED_MUSHROOM)
-				.add(BlockItemIds.BROWN_MUSHROOM);
+		builder(ConventionalItemTags.MUSHROOMS)
+				.add(BlockItemIds.RED_MUSHROOM.item())
+				.add(BlockItemIds.BROWN_MUSHROOM.item());
 
-		valueLookupBuilder(ConventionalItemTags.NETHER_STARS)
+		builder(ConventionalItemTags.NETHER_STARS)
 				.add(ItemIds.NETHER_STAR);
 
-		valueLookupBuilder(ConventionalItemTags.MUSIC_DISCS)
+		builder(ConventionalItemTags.MUSIC_DISCS)
 				.add(ItemIds.MUSIC_DISC_13, ItemIds.MUSIC_DISC_CAT, ItemIds.MUSIC_DISC_BLOCKS, ItemIds.MUSIC_DISC_CHIRP, ItemIds.MUSIC_DISC_FAR,
 					ItemIds.MUSIC_DISC_MALL, ItemIds.MUSIC_DISC_MELLOHI, ItemIds.MUSIC_DISC_STAL, ItemIds.MUSIC_DISC_STRAD, ItemIds.MUSIC_DISC_WARD,
 					ItemIds.MUSIC_DISC_11, ItemIds.MUSIC_DISC_WAIT, ItemIds.MUSIC_DISC_OTHERSIDE, ItemIds.MUSIC_DISC_5, ItemIds.MUSIC_DISC_PIGSTEP,
 					ItemIds.MUSIC_DISC_RELIC, ItemIds.MUSIC_DISC_CREATOR, ItemIds.MUSIC_DISC_CREATOR_MUSIC_BOX, ItemIds.MUSIC_DISC_PRECIPICE,
 					ItemIds.MUSIC_DISC_TEARS, ItemIds.MUSIC_DISC_LAVA_CHICKEN);
 
-		valueLookupBuilder(ConventionalItemTags.WOODEN_RODS)
+		builder(ConventionalItemTags.WOODEN_RODS)
 				.add(ItemIds.STICK);
 
-		valueLookupBuilder(ConventionalItemTags.BLAZE_RODS)
+		builder(ConventionalItemTags.BLAZE_RODS)
 				.add(ItemIds.BLAZE_ROD);
 
-		valueLookupBuilder(ConventionalItemTags.BREEZE_RODS)
+		builder(ConventionalItemTags.BREEZE_RODS)
 				.add(ItemIds.BREEZE_ROD);
 
-		valueLookupBuilder(ConventionalItemTags.RODS)
+		builder(ConventionalItemTags.RODS)
 				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
 				.addOptionalTag(ConventionalItemTags.BLAZE_RODS)
 				.addOptionalTag(ConventionalItemTags.BREEZE_RODS);
 
-		valueLookupBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
+		builder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
 
-		TagAppender<Item> chains = valueLookupBuilder(ConventionalItemTags.CHAINS)
-				.add(BlockItemIds.IRON_CHAIN);
+		TagAppender<Item> chains = builder(ConventionalItemTags.CHAINS)
+				.add(BlockItemIds.IRON_CHAIN.item());
 		BlockItemIds.COPPER_CHAIN.asList().stream().map(BlockItemId::item).forEach(chains::add);
 
-		valueLookupBuilder(ConventionalItemTags.ENDER_PEARLS)
+		builder(ConventionalItemTags.ENDER_PEARLS)
 				.add(ItemIds.ENDER_PEARL);
 
-		valueLookupBuilder(ConventionalItemTags.SLIME_BALLS)
+		builder(ConventionalItemTags.SLIME_BALLS)
 				.add(ItemIds.SLIME_BALL);
 
-		valueLookupBuilder(ConventionalItemTags.FERTILIZERS)
+		builder(ConventionalItemTags.FERTILIZERS)
 				.add(ItemIds.BONE_MEAL);
 
-		valueLookupBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
+		builder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}
 
 	private void generateDyedTags() {
 		// Cannot pull entries from block tag because Wall Banners do not have an item form
-		valueLookupBuilder(ConventionalItemTags.BLACK_DYED)
-				.add(BlockItemIds.BANNER.black()).add(BlockItemIds.BED.black()).add(BlockItemIds.DYED_CANDLE.black()).add(BlockItemIds.CARPET.black())
-				.add(BlockItemIds.CONCRETE.black()).add(BlockItemIds.CONCRETE_POWDER.black()).add(BlockItemIds.GLAZED_TERRACOTTA.black())
-				.add(BlockItemIds.DYED_SHULKER_BOX.black()).add(BlockItemIds.STAINED_GLASS.black()).add(BlockItemIds.STAINED_GLASS_PANE.black())
-				.add(BlockItemIds.DYED_TERRACOTTA.black()).add(BlockItemIds.WOOL.black()).add(ItemIds.DYED_BUNDLE.black()).add(ItemIds.HARNESS.black());
+		builder(ConventionalItemTags.BLACK_DYED)
+				.add(BlockItemIds.BANNER.black().item()).add(BlockItemIds.BED.black().item()).add(BlockItemIds.DYED_CANDLE.black().item()).add(BlockItemIds.CARPET.black().item())
+				.add(BlockItemIds.CONCRETE.black().item()).add(BlockItemIds.CONCRETE_POWDER.black().item()).add(BlockItemIds.GLAZED_TERRACOTTA.black().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.black().item()).add(BlockItemIds.STAINED_GLASS.black().item()).add(BlockItemIds.STAINED_GLASS_PANE.black().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.black().item()).add(BlockItemIds.WOOL.black().item()).add(ItemIds.DYED_BUNDLE.black()).add(ItemIds.HARNESS.black());
 
-		valueLookupBuilder(ConventionalItemTags.BLUE_DYED)
-				.add(BlockItemIds.BANNER.blue()).add(BlockItemIds.BED.blue()).add(BlockItemIds.DYED_CANDLE.blue()).add(BlockItemIds.CARPET.blue())
-				.add(BlockItemIds.CONCRETE.blue()).add(BlockItemIds.CONCRETE_POWDER.blue()).add(BlockItemIds.GLAZED_TERRACOTTA.blue())
-				.add(BlockItemIds.DYED_SHULKER_BOX.blue()).add(BlockItemIds.STAINED_GLASS.blue()).add(BlockItemIds.STAINED_GLASS_PANE.blue())
-				.add(BlockItemIds.DYED_TERRACOTTA.blue()).add(BlockItemIds.WOOL.blue()).add(ItemIds.DYED_BUNDLE.blue()).add(ItemIds.HARNESS.blue());
+		builder(ConventionalItemTags.BLUE_DYED)
+				.add(BlockItemIds.BANNER.blue().item()).add(BlockItemIds.BED.blue().item()).add(BlockItemIds.DYED_CANDLE.blue().item()).add(BlockItemIds.CARPET.blue().item())
+				.add(BlockItemIds.CONCRETE.blue().item()).add(BlockItemIds.CONCRETE_POWDER.blue().item()).add(BlockItemIds.GLAZED_TERRACOTTA.blue().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.blue().item()).add(BlockItemIds.STAINED_GLASS.blue().item()).add(BlockItemIds.STAINED_GLASS_PANE.blue().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.blue().item()).add(BlockItemIds.WOOL.blue().item()).add(ItemIds.DYED_BUNDLE.blue()).add(ItemIds.HARNESS.blue());
 
-		valueLookupBuilder(ConventionalItemTags.BROWN_DYED)
-				.add(BlockItemIds.BANNER.brown()).add(BlockItemIds.BED.brown()).add(BlockItemIds.DYED_CANDLE.brown()).add(BlockItemIds.CARPET.brown())
-				.add(BlockItemIds.CONCRETE.brown()).add(BlockItemIds.CONCRETE_POWDER.brown()).add(BlockItemIds.GLAZED_TERRACOTTA.brown())
-				.add(BlockItemIds.DYED_SHULKER_BOX.brown()).add(BlockItemIds.STAINED_GLASS.brown()).add(BlockItemIds.STAINED_GLASS_PANE.brown())
-				.add(BlockItemIds.DYED_TERRACOTTA.brown()).add(BlockItemIds.WOOL.brown()).add(ItemIds.DYED_BUNDLE.brown()).add(ItemIds.HARNESS.brown());
+		builder(ConventionalItemTags.BROWN_DYED)
+				.add(BlockItemIds.BANNER.brown().item()).add(BlockItemIds.BED.brown().item()).add(BlockItemIds.DYED_CANDLE.brown().item()).add(BlockItemIds.CARPET.brown().item())
+				.add(BlockItemIds.CONCRETE.brown().item()).add(BlockItemIds.CONCRETE_POWDER.brown().item()).add(BlockItemIds.GLAZED_TERRACOTTA.brown().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.brown().item()).add(BlockItemIds.STAINED_GLASS.brown().item()).add(BlockItemIds.STAINED_GLASS_PANE.brown().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.brown().item()).add(BlockItemIds.WOOL.brown().item()).add(ItemIds.DYED_BUNDLE.brown()).add(ItemIds.HARNESS.brown());
 
-		valueLookupBuilder(ConventionalItemTags.CYAN_DYED)
-				.add(BlockItemIds.BANNER.cyan()).add(BlockItemIds.BED.cyan()).add(BlockItemIds.DYED_CANDLE.cyan()).add(BlockItemIds.CARPET.cyan())
-				.add(BlockItemIds.CONCRETE.cyan()).add(BlockItemIds.CONCRETE_POWDER.cyan()).add(BlockItemIds.GLAZED_TERRACOTTA.cyan())
-				.add(BlockItemIds.DYED_SHULKER_BOX.cyan()).add(BlockItemIds.STAINED_GLASS.cyan()).add(BlockItemIds.STAINED_GLASS_PANE.cyan())
-				.add(BlockItemIds.DYED_TERRACOTTA.cyan()).add(BlockItemIds.WOOL.cyan()).add(ItemIds.DYED_BUNDLE.cyan()).add(ItemIds.HARNESS.cyan());
+		builder(ConventionalItemTags.CYAN_DYED)
+				.add(BlockItemIds.BANNER.cyan().item()).add(BlockItemIds.BED.cyan().item()).add(BlockItemIds.DYED_CANDLE.cyan().item()).add(BlockItemIds.CARPET.cyan().item())
+				.add(BlockItemIds.CONCRETE.cyan().item()).add(BlockItemIds.CONCRETE_POWDER.cyan().item()).add(BlockItemIds.GLAZED_TERRACOTTA.cyan().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.cyan().item()).add(BlockItemIds.STAINED_GLASS.cyan().item()).add(BlockItemIds.STAINED_GLASS_PANE.cyan().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.cyan().item()).add(BlockItemIds.WOOL.cyan().item()).add(ItemIds.DYED_BUNDLE.cyan()).add(ItemIds.HARNESS.cyan());
 
-		valueLookupBuilder(ConventionalItemTags.GRAY_DYED)
-				.add(BlockItemIds.BANNER.gray()).add(BlockItemIds.BED.gray()).add(BlockItemIds.DYED_CANDLE.gray()).add(BlockItemIds.CARPET.gray())
-				.add(BlockItemIds.CONCRETE.gray()).add(BlockItemIds.CONCRETE_POWDER.gray()).add(BlockItemIds.GLAZED_TERRACOTTA.gray())
-				.add(BlockItemIds.DYED_SHULKER_BOX.gray()).add(BlockItemIds.STAINED_GLASS.gray()).add(BlockItemIds.STAINED_GLASS_PANE.gray())
-				.add(BlockItemIds.DYED_TERRACOTTA.gray()).add(BlockItemIds.WOOL.gray()).add(ItemIds.DYED_BUNDLE.gray()).add(ItemIds.HARNESS.gray());
+		builder(ConventionalItemTags.GRAY_DYED)
+				.add(BlockItemIds.BANNER.gray().item()).add(BlockItemIds.BED.gray().item()).add(BlockItemIds.DYED_CANDLE.gray().item()).add(BlockItemIds.CARPET.gray().item())
+				.add(BlockItemIds.CONCRETE.gray().item()).add(BlockItemIds.CONCRETE_POWDER.gray().item()).add(BlockItemIds.GLAZED_TERRACOTTA.gray().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.gray().item()).add(BlockItemIds.STAINED_GLASS.gray().item()).add(BlockItemIds.STAINED_GLASS_PANE.gray().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.gray().item()).add(BlockItemIds.WOOL.gray().item()).add(ItemIds.DYED_BUNDLE.gray()).add(ItemIds.HARNESS.gray());
 
-		valueLookupBuilder(ConventionalItemTags.GREEN_DYED)
-				.add(BlockItemIds.BANNER.green()).add(BlockItemIds.BED.green()).add(BlockItemIds.DYED_CANDLE.green()).add(BlockItemIds.CARPET.green())
-				.add(BlockItemIds.CONCRETE.green()).add(BlockItemIds.CONCRETE_POWDER.green()).add(BlockItemIds.GLAZED_TERRACOTTA.green())
-				.add(BlockItemIds.DYED_SHULKER_BOX.green()).add(BlockItemIds.STAINED_GLASS.green()).add(BlockItemIds.STAINED_GLASS_PANE.green())
-				.add(BlockItemIds.DYED_TERRACOTTA.green()).add(BlockItemIds.WOOL.green()).add(ItemIds.DYED_BUNDLE.green()).add(ItemIds.HARNESS.green());
+		builder(ConventionalItemTags.GREEN_DYED)
+				.add(BlockItemIds.BANNER.green().item()).add(BlockItemIds.BED.green().item()).add(BlockItemIds.DYED_CANDLE.green().item()).add(BlockItemIds.CARPET.green().item())
+				.add(BlockItemIds.CONCRETE.green().item()).add(BlockItemIds.CONCRETE_POWDER.green().item()).add(BlockItemIds.GLAZED_TERRACOTTA.green().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.green().item()).add(BlockItemIds.STAINED_GLASS.green().item()).add(BlockItemIds.STAINED_GLASS_PANE.green().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.green().item()).add(BlockItemIds.WOOL.green().item()).add(ItemIds.DYED_BUNDLE.green()).add(ItemIds.HARNESS.green());
 
-		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYED)
-				.add(BlockItemIds.BANNER.lightBlue()).add(BlockItemIds.BED.lightBlue()).add(BlockItemIds.DYED_CANDLE.lightBlue()).add(BlockItemIds.CARPET.lightBlue())
-				.add(BlockItemIds.CONCRETE.lightBlue()).add(BlockItemIds.CONCRETE_POWDER.lightBlue()).add(BlockItemIds.GLAZED_TERRACOTTA.lightBlue())
-				.add(BlockItemIds.DYED_SHULKER_BOX.lightBlue()).add(BlockItemIds.STAINED_GLASS.lightBlue()).add(BlockItemIds.STAINED_GLASS_PANE.lightBlue())
-				.add(BlockItemIds.DYED_TERRACOTTA.lightBlue()).add(BlockItemIds.WOOL.lightBlue()).add(ItemIds.DYED_BUNDLE.lightBlue()).add(ItemIds.HARNESS.lightBlue());
+		builder(ConventionalItemTags.LIGHT_BLUE_DYED)
+				.add(BlockItemIds.BANNER.lightBlue().item()).add(BlockItemIds.BED.lightBlue().item()).add(BlockItemIds.DYED_CANDLE.lightBlue().item()).add(BlockItemIds.CARPET.lightBlue().item())
+				.add(BlockItemIds.CONCRETE.lightBlue().item()).add(BlockItemIds.CONCRETE_POWDER.lightBlue().item()).add(BlockItemIds.GLAZED_TERRACOTTA.lightBlue().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.lightBlue().item()).add(BlockItemIds.STAINED_GLASS.lightBlue().item()).add(BlockItemIds.STAINED_GLASS_PANE.lightBlue().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.lightBlue().item()).add(BlockItemIds.WOOL.lightBlue().item()).add(ItemIds.DYED_BUNDLE.lightBlue()).add(ItemIds.HARNESS.lightBlue());
 
-		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYED)
-				.add(BlockItemIds.BANNER.lightGray()).add(BlockItemIds.BED.lightGray()).add(BlockItemIds.DYED_CANDLE.lightGray()).add(BlockItemIds.CARPET.lightGray())
-				.add(BlockItemIds.CONCRETE.lightGray()).add(BlockItemIds.CONCRETE_POWDER.lightGray()).add(BlockItemIds.GLAZED_TERRACOTTA.lightGray())
-				.add(BlockItemIds.DYED_SHULKER_BOX.lightGray()).add(BlockItemIds.STAINED_GLASS.lightGray()).add(BlockItemIds.STAINED_GLASS_PANE.lightGray())
-				.add(BlockItemIds.DYED_TERRACOTTA.lightGray()).add(BlockItemIds.WOOL.lightGray()).add(ItemIds.DYED_BUNDLE.lightGray()).add(ItemIds.HARNESS.lightGray());
+		builder(ConventionalItemTags.LIGHT_GRAY_DYED)
+				.add(BlockItemIds.BANNER.lightGray().item()).add(BlockItemIds.BED.lightGray().item()).add(BlockItemIds.DYED_CANDLE.lightGray().item()).add(BlockItemIds.CARPET.lightGray().item())
+				.add(BlockItemIds.CONCRETE.lightGray().item()).add(BlockItemIds.CONCRETE_POWDER.lightGray().item()).add(BlockItemIds.GLAZED_TERRACOTTA.lightGray().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.lightGray().item()).add(BlockItemIds.STAINED_GLASS.lightGray().item()).add(BlockItemIds.STAINED_GLASS_PANE.lightGray().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.lightGray().item()).add(BlockItemIds.WOOL.lightGray().item()).add(ItemIds.DYED_BUNDLE.lightGray()).add(ItemIds.HARNESS.lightGray());
 
-		valueLookupBuilder(ConventionalItemTags.LIME_DYED)
-				.add(BlockItemIds.BANNER.lime()).add(BlockItemIds.BED.lime()).add(BlockItemIds.DYED_CANDLE.lime()).add(BlockItemIds.CARPET.lime())
-				.add(BlockItemIds.CONCRETE.lime()).add(BlockItemIds.CONCRETE_POWDER.lime()).add(BlockItemIds.GLAZED_TERRACOTTA.lime())
-				.add(BlockItemIds.DYED_SHULKER_BOX.lime()).add(BlockItemIds.STAINED_GLASS.lime()).add(BlockItemIds.STAINED_GLASS_PANE.lime())
-				.add(BlockItemIds.DYED_TERRACOTTA.lime()).add(BlockItemIds.WOOL.lime()).add(ItemIds.DYED_BUNDLE.lime()).add(ItemIds.HARNESS.lime());
+		builder(ConventionalItemTags.LIME_DYED)
+				.add(BlockItemIds.BANNER.lime().item()).add(BlockItemIds.BED.lime().item()).add(BlockItemIds.DYED_CANDLE.lime().item()).add(BlockItemIds.CARPET.lime().item())
+				.add(BlockItemIds.CONCRETE.lime().item()).add(BlockItemIds.CONCRETE_POWDER.lime().item()).add(BlockItemIds.GLAZED_TERRACOTTA.lime().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.lime().item()).add(BlockItemIds.STAINED_GLASS.lime().item()).add(BlockItemIds.STAINED_GLASS_PANE.lime().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.lime().item()).add(BlockItemIds.WOOL.lime().item()).add(ItemIds.DYED_BUNDLE.lime()).add(ItemIds.HARNESS.lime());
 
-		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYED)
-				.add(BlockItemIds.BANNER.magenta()).add(BlockItemIds.BED.magenta()).add(BlockItemIds.DYED_CANDLE.magenta()).add(BlockItemIds.CARPET.magenta())
-				.add(BlockItemIds.CONCRETE.magenta()).add(BlockItemIds.CONCRETE_POWDER.magenta()).add(BlockItemIds.GLAZED_TERRACOTTA.magenta())
-				.add(BlockItemIds.DYED_SHULKER_BOX.magenta()).add(BlockItemIds.STAINED_GLASS.magenta()).add(BlockItemIds.STAINED_GLASS_PANE.magenta())
-				.add(BlockItemIds.DYED_TERRACOTTA.magenta()).add(BlockItemIds.WOOL.magenta()).add(ItemIds.DYED_BUNDLE.magenta()).add(ItemIds.HARNESS.magenta());
+		builder(ConventionalItemTags.MAGENTA_DYED)
+				.add(BlockItemIds.BANNER.magenta().item()).add(BlockItemIds.BED.magenta().item()).add(BlockItemIds.DYED_CANDLE.magenta().item()).add(BlockItemIds.CARPET.magenta().item())
+				.add(BlockItemIds.CONCRETE.magenta().item()).add(BlockItemIds.CONCRETE_POWDER.magenta().item()).add(BlockItemIds.GLAZED_TERRACOTTA.magenta().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.magenta().item()).add(BlockItemIds.STAINED_GLASS.magenta().item()).add(BlockItemIds.STAINED_GLASS_PANE.magenta().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.magenta().item()).add(BlockItemIds.WOOL.magenta().item()).add(ItemIds.DYED_BUNDLE.magenta()).add(ItemIds.HARNESS.magenta());
 
-		valueLookupBuilder(ConventionalItemTags.ORANGE_DYED)
-				.add(BlockItemIds.BANNER.orange()).add(BlockItemIds.BED.orange()).add(BlockItemIds.DYED_CANDLE.orange()).add(BlockItemIds.CARPET.orange())
-				.add(BlockItemIds.CONCRETE.orange()).add(BlockItemIds.CONCRETE_POWDER.orange()).add(BlockItemIds.GLAZED_TERRACOTTA.orange())
-				.add(BlockItemIds.DYED_SHULKER_BOX.orange()).add(BlockItemIds.STAINED_GLASS.orange()).add(BlockItemIds.STAINED_GLASS_PANE.orange())
-				.add(BlockItemIds.DYED_TERRACOTTA.orange()).add(BlockItemIds.WOOL.orange()).add(ItemIds.DYED_BUNDLE.orange()).add(ItemIds.HARNESS.orange());
+		builder(ConventionalItemTags.ORANGE_DYED)
+				.add(BlockItemIds.BANNER.orange().item()).add(BlockItemIds.BED.orange().item()).add(BlockItemIds.DYED_CANDLE.orange().item()).add(BlockItemIds.CARPET.orange().item())
+				.add(BlockItemIds.CONCRETE.orange().item()).add(BlockItemIds.CONCRETE_POWDER.orange().item()).add(BlockItemIds.GLAZED_TERRACOTTA.orange().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.orange().item()).add(BlockItemIds.STAINED_GLASS.orange().item()).add(BlockItemIds.STAINED_GLASS_PANE.orange().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.orange().item()).add(BlockItemIds.WOOL.orange().item()).add(ItemIds.DYED_BUNDLE.orange()).add(ItemIds.HARNESS.orange());
 
-		valueLookupBuilder(ConventionalItemTags.PINK_DYED)
-				.add(BlockItemIds.BANNER.pink()).add(BlockItemIds.BED.pink()).add(BlockItemIds.DYED_CANDLE.pink()).add(BlockItemIds.CARPET.pink())
-				.add(BlockItemIds.CONCRETE.pink()).add(BlockItemIds.CONCRETE_POWDER.pink()).add(BlockItemIds.GLAZED_TERRACOTTA.pink())
-				.add(BlockItemIds.DYED_SHULKER_BOX.pink()).add(BlockItemIds.STAINED_GLASS.pink()).add(BlockItemIds.STAINED_GLASS_PANE.pink())
-				.add(BlockItemIds.DYED_TERRACOTTA.pink()).add(BlockItemIds.WOOL.pink()).add(ItemIds.DYED_BUNDLE.pink()).add(ItemIds.HARNESS.pink());
+		builder(ConventionalItemTags.PINK_DYED)
+				.add(BlockItemIds.BANNER.pink().item()).add(BlockItemIds.BED.pink().item()).add(BlockItemIds.DYED_CANDLE.pink().item()).add(BlockItemIds.CARPET.pink().item())
+				.add(BlockItemIds.CONCRETE.pink().item()).add(BlockItemIds.CONCRETE_POWDER.pink().item()).add(BlockItemIds.GLAZED_TERRACOTTA.pink().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.pink().item()).add(BlockItemIds.STAINED_GLASS.pink().item()).add(BlockItemIds.STAINED_GLASS_PANE.pink().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.pink().item()).add(BlockItemIds.WOOL.pink().item()).add(ItemIds.DYED_BUNDLE.pink()).add(ItemIds.HARNESS.pink());
 
-		valueLookupBuilder(ConventionalItemTags.PURPLE_DYED)
-				.add(BlockItemIds.BANNER.purple()).add(BlockItemIds.BED.purple()).add(BlockItemIds.DYED_CANDLE.purple()).add(BlockItemIds.CARPET.purple())
-				.add(BlockItemIds.CONCRETE.purple()).add(BlockItemIds.CONCRETE_POWDER.purple()).add(BlockItemIds.GLAZED_TERRACOTTA.purple())
-				.add(BlockItemIds.DYED_SHULKER_BOX.purple()).add(BlockItemIds.STAINED_GLASS.purple()).add(BlockItemIds.STAINED_GLASS_PANE.purple())
-				.add(BlockItemIds.DYED_TERRACOTTA.purple()).add(BlockItemIds.WOOL.purple()).add(ItemIds.DYED_BUNDLE.purple()).add(ItemIds.HARNESS.purple());
+		builder(ConventionalItemTags.PURPLE_DYED)
+				.add(BlockItemIds.BANNER.purple().item()).add(BlockItemIds.BED.purple().item()).add(BlockItemIds.DYED_CANDLE.purple().item()).add(BlockItemIds.CARPET.purple().item())
+				.add(BlockItemIds.CONCRETE.purple().item()).add(BlockItemIds.CONCRETE_POWDER.purple().item()).add(BlockItemIds.GLAZED_TERRACOTTA.purple().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.purple().item()).add(BlockItemIds.STAINED_GLASS.purple().item()).add(BlockItemIds.STAINED_GLASS_PANE.purple().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.purple().item()).add(BlockItemIds.WOOL.purple().item()).add(ItemIds.DYED_BUNDLE.purple()).add(ItemIds.HARNESS.purple());
 
-		valueLookupBuilder(ConventionalItemTags.RED_DYED)
-				.add(BlockItemIds.BANNER.red()).add(BlockItemIds.BED.red()).add(BlockItemIds.DYED_CANDLE.red()).add(BlockItemIds.CARPET.red())
-				.add(BlockItemIds.CONCRETE.red()).add(BlockItemIds.CONCRETE_POWDER.red()).add(BlockItemIds.GLAZED_TERRACOTTA.red())
-				.add(BlockItemIds.DYED_SHULKER_BOX.red()).add(BlockItemIds.STAINED_GLASS.red()).add(BlockItemIds.STAINED_GLASS_PANE.red())
-				.add(BlockItemIds.DYED_TERRACOTTA.red()).add(BlockItemIds.WOOL.red()).add(ItemIds.DYED_BUNDLE.red()).add(ItemIds.HARNESS.red());
+		builder(ConventionalItemTags.RED_DYED)
+				.add(BlockItemIds.BANNER.red().item()).add(BlockItemIds.BED.red().item()).add(BlockItemIds.DYED_CANDLE.red().item()).add(BlockItemIds.CARPET.red().item())
+				.add(BlockItemIds.CONCRETE.red().item()).add(BlockItemIds.CONCRETE_POWDER.red().item()).add(BlockItemIds.GLAZED_TERRACOTTA.red().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.red().item()).add(BlockItemIds.STAINED_GLASS.red().item()).add(BlockItemIds.STAINED_GLASS_PANE.red().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.red().item()).add(BlockItemIds.WOOL.red().item()).add(ItemIds.DYED_BUNDLE.red()).add(ItemIds.HARNESS.red());
 
-		valueLookupBuilder(ConventionalItemTags.WHITE_DYED)
-				.add(BlockItemIds.BANNER.white()).add(BlockItemIds.BED.white()).add(BlockItemIds.DYED_CANDLE.white()).add(BlockItemIds.CARPET.white())
-				.add(BlockItemIds.CONCRETE.white()).add(BlockItemIds.CONCRETE_POWDER.white()).add(BlockItemIds.GLAZED_TERRACOTTA.white())
-				.add(BlockItemIds.DYED_SHULKER_BOX.white()).add(BlockItemIds.STAINED_GLASS.white()).add(BlockItemIds.STAINED_GLASS_PANE.white())
-				.add(BlockItemIds.DYED_TERRACOTTA.white()).add(BlockItemIds.WOOL.white()).add(ItemIds.DYED_BUNDLE.white()).add(ItemIds.HARNESS.white());
+		builder(ConventionalItemTags.WHITE_DYED)
+				.add(BlockItemIds.BANNER.white().item()).add(BlockItemIds.BED.white().item()).add(BlockItemIds.DYED_CANDLE.white().item()).add(BlockItemIds.CARPET.white().item())
+				.add(BlockItemIds.CONCRETE.white().item()).add(BlockItemIds.CONCRETE_POWDER.white().item()).add(BlockItemIds.GLAZED_TERRACOTTA.white().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.white().item()).add(BlockItemIds.STAINED_GLASS.white().item()).add(BlockItemIds.STAINED_GLASS_PANE.white().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.white().item()).add(BlockItemIds.WOOL.white().item()).add(ItemIds.DYED_BUNDLE.white()).add(ItemIds.HARNESS.white());
 
-		valueLookupBuilder(ConventionalItemTags.YELLOW_DYED)
-				.add(BlockItemIds.BANNER.yellow()).add(BlockItemIds.BED.yellow()).add(BlockItemIds.DYED_CANDLE.yellow()).add(BlockItemIds.CARPET.yellow())
-				.add(BlockItemIds.CONCRETE.yellow()).add(BlockItemIds.CONCRETE_POWDER.yellow()).add(BlockItemIds.GLAZED_TERRACOTTA.yellow())
-				.add(BlockItemIds.DYED_SHULKER_BOX.yellow()).add(BlockItemIds.STAINED_GLASS.yellow()).add(BlockItemIds.STAINED_GLASS_PANE.yellow())
-				.add(BlockItemIds.DYED_TERRACOTTA.yellow()).add(BlockItemIds.WOOL.yellow()).add(ItemIds.DYED_BUNDLE.yellow()).add(ItemIds.HARNESS.yellow());
+		builder(ConventionalItemTags.YELLOW_DYED)
+				.add(BlockItemIds.BANNER.yellow().item()).add(BlockItemIds.BED.yellow().item()).add(BlockItemIds.DYED_CANDLE.yellow().item()).add(BlockItemIds.CARPET.yellow().item())
+				.add(BlockItemIds.CONCRETE.yellow().item()).add(BlockItemIds.CONCRETE_POWDER.yellow().item()).add(BlockItemIds.GLAZED_TERRACOTTA.yellow().item())
+				.add(BlockItemIds.DYED_SHULKER_BOX.yellow().item()).add(BlockItemIds.STAINED_GLASS.yellow().item()).add(BlockItemIds.STAINED_GLASS_PANE.yellow().item())
+				.add(BlockItemIds.DYED_TERRACOTTA.yellow().item()).add(BlockItemIds.WOOL.yellow().item()).add(ItemIds.DYED_BUNDLE.yellow()).add(ItemIds.HARNESS.yellow());
 
-		valueLookupBuilder(ConventionalItemTags.DYED)
+		builder(ConventionalItemTags.DYED)
 				.addTag(ConventionalItemTags.WHITE_DYED)
 				.addTag(ConventionalItemTags.ORANGE_DYED)
 				.addTag(ConventionalItemTags.MAGENTA_DYED)

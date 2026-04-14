@@ -324,9 +324,6 @@ transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$Gen
 transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$FloatAction
 
 # private fields of RenderPipelines
-transitive-accessible field net/minecraft/client/renderer/RenderPipelines MATRICES_PROJECTION_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-transitive-accessible field net/minecraft/client/renderer/RenderPipelines FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-transitive-accessible field net/minecraft/client/renderer/RenderPipelines GLOBALS_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines MATRICES_FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines MATRICES_FOG_LIGHT_DIR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/RenderPipelines GENERIC_BLOCKS_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;

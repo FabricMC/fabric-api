@@ -310,9 +310,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void addTags(HolderLookup.Provider registries) {
-			valueLookupBuilder(BlockTags.FIRE).add(SIMPLE_BLOCK_KEY).setReplace(true);
-			valueLookupBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK_KEY);
-			valueLookupBuilder(BlockItemTags.ACACIA_LOGS.block()).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
+			builder(BlockTags.FIRE).add(SIMPLE_BLOCK_KEY.block()).setReplace(true);
+			builder(BlockTags.DIRT).add(SIMPLE_BLOCK_KEY.block());
+			builder(BlockItemTags.ACACIA_LOGS.block()).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 
 			aliasGroup("flowers")
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);

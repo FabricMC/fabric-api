@@ -33,10 +33,10 @@ public final class EntityTypeTagsGenerator extends FabricTagsProvider.EntityType
 
 	@Override
 	protected void addTags(HolderLookup.Provider registries) {
-		valueLookupBuilder(ConventionalEntityTypeTags.BOSSES)
+		builder(ConventionalEntityTypeTags.BOSSES)
 				.add(EntityTypeIds.ENDER_DRAGON)
 				.add(EntityTypeIds.WITHER);
-		valueLookupBuilder(ConventionalEntityTypeTags.MINECARTS)
+		builder(ConventionalEntityTypeTags.MINECARTS)
 				.add(EntityTypeIds.MINECART)
 				.add(EntityTypeIds.TNT_MINECART)
 				.add(EntityTypeIds.CHEST_MINECART)
@@ -44,7 +44,7 @@ public final class EntityTypeTagsGenerator extends FabricTagsProvider.EntityType
 				.add(EntityTypeIds.COMMAND_BLOCK_MINECART)
 				.add(EntityTypeIds.HOPPER_MINECART)
 				.add(EntityTypeIds.SPAWNER_MINECART);
-		valueLookupBuilder(ConventionalEntityTypeTags.BOATS)
+		builder(ConventionalEntityTypeTags.BOATS)
 				.addOptionalTag(EntityTypeTags.BOAT)
 				.add(EntityTypeIds.OAK_CHEST_BOAT)
 				.add(EntityTypeIds.SPRUCE_CHEST_BOAT)
@@ -56,10 +56,10 @@ public final class EntityTypeTagsGenerator extends FabricTagsProvider.EntityType
 				.add(EntityTypeIds.DARK_OAK_CHEST_BOAT)
 				.add(EntityTypeIds.MANGROVE_CHEST_BOAT)
 				.add(EntityTypeIds.BAMBOO_CHEST_RAFT);
-		valueLookupBuilder(ConventionalEntityTypeTags.ITEM_FRAMES)
+		builder(ConventionalEntityTypeTags.ITEM_FRAMES)
 				.add(EntityTypeIds.ITEM_FRAME)
 				.add(EntityTypeIds.GLOW_ITEM_FRAME);
-		valueLookupBuilder(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
-		valueLookupBuilder(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED);
+		builder(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
+		builder(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED);
 	}
 }
