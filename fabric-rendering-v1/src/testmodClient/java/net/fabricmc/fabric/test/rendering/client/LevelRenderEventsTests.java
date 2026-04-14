@@ -38,6 +38,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotCompa
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.level.AbstractLevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
@@ -92,7 +93,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 	@Override
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
-		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register(
+		LevelExtractionEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register(
 				LevelRenderEventsTests::extractBlockOutline);
 		LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register(LevelRenderEventsTests::beforeBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
@@ -101,8 +102,8 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
-		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
-		LevelRenderEvents.END_EXTRACTION.register(LevelRenderEventsTests::assertExtractionContext);
+		LevelExtractionEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
+		LevelExtractionEvents.END_EXTRACTION.register(LevelRenderEventsTests::assertExtractionContext);
 		LevelRenderEvents.START_MAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.COLLECT_SUBMITS.register(LevelRenderEventsTests::assertRenderContext);

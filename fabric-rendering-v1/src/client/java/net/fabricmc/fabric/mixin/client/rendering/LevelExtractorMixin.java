@@ -33,7 +33,7 @@ import net.minecraft.client.renderer.extract.LevelExtractor;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelExtractionContextImpl;
 
@@ -63,12 +63,12 @@ public class LevelExtractorMixin implements LevelRendererExtensions {
 
 	@Inject(method = "extractBlockOutline", at = @At("RETURN"))
 	private void afterBlockOutlineExtraction(Camera camera, LevelRenderState renderStates, CallbackInfo ci) {
-		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, minecraft.hitResult);
+		LevelExtractionEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, minecraft.hitResult);
 	}
 
 	@Inject(method = "extract", at = @At("RETURN"))
 	private void afterExtractLevel(DeltaTracker deltaTracker, Camera camera, float deltaPartialTick, CallbackInfo ci) {
-		LevelRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
+		LevelExtractionEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
 	}
 
 	@Inject(method = "allChanged", at = @At("HEAD"))
