@@ -2,7 +2,7 @@
   "condition": "minecraft:entity_properties",
   "entity": "this",
   "predicate": {
-    "type": "minecraft:pig"
+    "minecraft:entity_type": "minecraft:pig"
   },
   "fabric:load_conditions": [
     {
