@@ -21,12 +21,12 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.extract.LevelExtractor;
 
 @ApiStatus.NonExtendable
 public interface LevelExtractionContext extends AbstractLevelRenderContext {
 	/**
-	 * Convenient access to {@link LevelRenderer#level}.
+	 * Convenient access to {@link LevelExtractor#level}.
 	 *
 	 * @return the level renderer's client level instance
 	 */

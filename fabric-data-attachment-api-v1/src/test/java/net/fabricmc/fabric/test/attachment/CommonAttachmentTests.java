@@ -51,7 +51,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Marker;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -250,7 +250,7 @@ public class CommonAttachmentTests {
 		RegistryAccess ra = mockRA();
 		Level mockLevel = mock(Level.class);
 		when(mockLevel.registryAccess()).thenReturn(ra);
-		Entity entity = new Marker(EntityType.MARKER, mockLevel);
+		Entity entity = new Marker(EntityTypes.MARKER, mockLevel);
 		assertFalse(entity.hasAttached(PERSISTENT));
 
 		int expected = 1;
@@ -258,7 +258,7 @@ public class CommonAttachmentTests {
 		TagValueOutput fakeSave = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
 		entity.saveWithoutId(fakeSave);
 
-		entity = new Marker(EntityType.MARKER, mockLevel); // fresh object, like on restart
+		entity = new Marker(EntityTypes.MARKER, mockLevel); // fresh object, like on restart
 		entity.setLevelCallback(mock());
 		entity.load(TagValueInput.create(ProblemReporter.DISCARDING, ra, fakeSave.buildResult()));
 		assertTrue(entity.hasAttached(PERSISTENT));
