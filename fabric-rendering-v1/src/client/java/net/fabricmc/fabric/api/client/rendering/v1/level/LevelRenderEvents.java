@@ -173,6 +173,18 @@ public final class LevelRenderEvents {
 		}
 	});
 
+	/**
+	 * @see LevelExtractionEvents#AFTER_BLOCK_OUTLINE_EXTRACTION
+	 */
+	@Deprecated
+	public static final Event<LevelExtractionEvents.AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = LevelExtractionEvents.AFTER_BLOCK_OUTLINE_EXTRACTION;
+
+	/**
+	 * @see LevelExtractionEvents#END_EXTRACTION
+	 */
+	@Deprecated
+	public static final Event<LevelExtractionEvents.EndExtraction> END_EXTRACTION = LevelExtractionEvents.END_EXTRACTION;
+
 	@FunctionalInterface
 	public interface StartMain {
 		void startMain(LevelTerrainRenderContext context);
