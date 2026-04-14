@@ -8,7 +8,6 @@
     "DataProviderMixin",
     "TagAppenderMixin",
     "TagAppenderMixin$TagAppender1Mixin",
-    "TagAppenderMixin$TagAppender2Mixin",
     "TagBuilderMixin",
     "TagsProviderMixin",
     "loot.BlockLootSubProviderAccessor",

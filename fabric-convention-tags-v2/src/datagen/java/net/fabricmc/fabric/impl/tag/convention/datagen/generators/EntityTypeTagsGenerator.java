@@ -26,6 +26,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 
+import net.minecraft.world.entity.EntityTypeIds;
+
 public final class EntityTypeTagsGenerator extends FabricTagsProvider.EntityTypeTagsProvider {
 	public EntityTypeTagsGenerator(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		super(output, registriesFuture);
@@ -34,31 +36,31 @@ public final class EntityTypeTagsGenerator extends FabricTagsProvider.EntityType
 	@Override
 	protected void addTags(HolderLookup.Provider registries) {
 		valueLookupBuilder(ConventionalEntityTypeTags.BOSSES)
-				.add(EntityType.ENDER_DRAGON)
-				.add(EntityType.WITHER);
+				.add(EntityTypeIds.ENDER_DRAGON)
+				.add(EntityTypeIds.WITHER);
 		valueLookupBuilder(ConventionalEntityTypeTags.MINECARTS)
-				.add(EntityType.MINECART)
-				.add(EntityType.TNT_MINECART)
-				.add(EntityType.CHEST_MINECART)
-				.add(EntityType.FURNACE_MINECART)
-				.add(EntityType.COMMAND_BLOCK_MINECART)
-				.add(EntityType.HOPPER_MINECART)
-				.add(EntityType.SPAWNER_MINECART);
+				.add(EntityTypeIds.MINECART)
+				.add(EntityTypeIds.TNT_MINECART)
+				.add(EntityTypeIds.CHEST_MINECART)
+				.add(EntityTypeIds.FURNACE_MINECART)
+				.add(EntityTypeIds.COMMAND_BLOCK_MINECART)
+				.add(EntityTypeIds.HOPPER_MINECART)
+				.add(EntityTypeIds.SPAWNER_MINECART);
 		valueLookupBuilder(ConventionalEntityTypeTags.BOATS)
 				.addOptionalTag(EntityTypeTags.BOAT)
-				.add(EntityType.OAK_CHEST_BOAT)
-				.add(EntityType.SPRUCE_CHEST_BOAT)
-				.add(EntityType.BIRCH_CHEST_BOAT)
-				.add(EntityType.JUNGLE_CHEST_BOAT)
-				.add(EntityType.ACACIA_CHEST_BOAT)
-				.add(EntityType.CHERRY_CHEST_BOAT)
-				.add(EntityType.PALE_OAK_CHEST_BOAT)
-				.add(EntityType.DARK_OAK_CHEST_BOAT)
-				.add(EntityType.MANGROVE_CHEST_BOAT)
-				.add(EntityType.BAMBOO_CHEST_RAFT);
+				.add(EntityTypeIds.OAK_CHEST_BOAT)
+				.add(EntityTypeIds.SPRUCE_CHEST_BOAT)
+				.add(EntityTypeIds.BIRCH_CHEST_BOAT)
+				.add(EntityTypeIds.JUNGLE_CHEST_BOAT)
+				.add(EntityTypeIds.ACACIA_CHEST_BOAT)
+				.add(EntityTypeIds.CHERRY_CHEST_BOAT)
+				.add(EntityTypeIds.PALE_OAK_CHEST_BOAT)
+				.add(EntityTypeIds.DARK_OAK_CHEST_BOAT)
+				.add(EntityTypeIds.MANGROVE_CHEST_BOAT)
+				.add(EntityTypeIds.BAMBOO_CHEST_RAFT);
 		valueLookupBuilder(ConventionalEntityTypeTags.ITEM_FRAMES)
-				.add(EntityType.ITEM_FRAME)
-				.add(EntityType.GLOW_ITEM_FRAME);
+				.add(EntityTypeIds.ITEM_FRAME)
+				.add(EntityTypeIds.GLOW_ITEM_FRAME);
 		valueLookupBuilder(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
 		valueLookupBuilder(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED);
 	}
