@@ -30,14 +30,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -106,9 +106,9 @@ public class SyncGametest implements FabricClientGameTest {
 				state.furnacePos = top;
 
 				level.setBlockAndUpdate(top, Blocks.FURNACE.defaultBlockState());
-				setSyncedWithAll(level.getBlockEntity(top, BlockEntityType.FURNACE).orElseThrow());
+				setSyncedWithAll(level.getBlockEntity(top, BlockEntityTypes.FURNACE).orElseThrow());
 
-				var villager = new Villager(EntityType.VILLAGER, level);
+				var villager = new Villager(EntityTypes.VILLAGER, level);
 				villager.setNoAi(true);
 				villager.setInvulnerable(true);
 				villager.setCustomName(Component.literal("TestVillager"));

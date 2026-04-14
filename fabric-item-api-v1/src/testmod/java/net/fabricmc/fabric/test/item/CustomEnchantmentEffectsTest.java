@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.advancements.criterion.DamageSourcePredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.EntityTypePredicate;
+import net.minecraft.advancements.predicates.DamageSourcePredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.predicates.entity.EntityTypePredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentTarget;
@@ -67,7 +67,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 								LootItemEntityPropertyCondition.hasProperties(
 										LootContext.EntityTarget.THIS,
 										EntityPredicate.Builder.entity()
-												.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE, EntityType.ZOMBIE))
+												.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE, EntityTypes.ZOMBIE))
 								)
 						);
 					}

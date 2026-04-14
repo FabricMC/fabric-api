@@ -58,7 +58,7 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 			ProjectionType orgProjectionType = RenderSystem.getProjectionType();
 			GpuBufferSlice orgShaderFog = RenderSystem.getShaderFog();
 
-			GuiRenderer guiRenderer = new GuiRenderer(newGuiRenderState, client.renderBuffers().bufferSource(), client.gameRenderer.getSubmitNodeStorage(), client.gameRenderer.getFeatureRenderDispatcher(), Collections.emptyList());
+			GuiRenderer guiRenderer = new GuiRenderer(newGuiRenderState, client.gameRenderer.renderBuffers().bufferSource(), client.gameRenderer.submitNodeStorage(), client.gameRenderer.featureRenderDispatcher(), Collections.emptyList());
 			FogRenderer fogRenderer = new FogRenderer();
 			guiRenderer.render();
 			fogRenderer.close();

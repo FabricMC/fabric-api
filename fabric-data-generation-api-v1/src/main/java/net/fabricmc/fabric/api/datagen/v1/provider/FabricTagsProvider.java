@@ -85,7 +85,7 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 	 */
 	protected abstract void addTags(HolderLookup.Provider registries);
 
-	protected TagAppender<ResourceKey<T>, T> builder(TagKey<T> tag) {
+	protected TagAppender<T> builder(TagKey<T> tag) {
 		TagBuilder tagBuilder = this.getOrCreateRawBuilder(tag);
 		return TagAppender.forBuilder(tagBuilder);
 	}
@@ -133,9 +133,9 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 			this.valueToKey = valueToKey;
 		}
 
-		protected TagAppender<T, T> valueLookupBuilder(TagKey<T> tag) {
+		protected TagAppender<T> valueLookupBuilder(TagKey<T> tag) {
 			TagBuilder tagBuilder = this.getOrCreateRawBuilder(tag);
-			return TagAppender.<T>forBuilder(tagBuilder).map(this.valueToKey);
+			return TagAppender.<T>forBuilder(tagBuilder); // TODO 26.2 .map(this.valueToKey)
 		}
 	}
 

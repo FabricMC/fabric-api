@@ -22,7 +22,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -71,7 +71,7 @@ public class FakePlayerTests {
 	public void testFakePlayerBreakBeehive(GameTestHelper helper) {
 		BlockPos basePos = new BlockPos(0, 1, 0);
 		helper.setBlock(basePos, Blocks.BEEHIVE);
-		helper.spawn(EntityType.BEE, basePos.above());
+		helper.spawn(EntityTypes.BEE, basePos.above());
 
 		ServerPlayer fakePlayer = FakePlayer.get(helper.getLevel());
 

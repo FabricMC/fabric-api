@@ -27,6 +27,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -152,8 +153,8 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry null test passed!");
 		}
 
-		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK.unaffected()).setId(TEST_OXIDIZING_BLOCK_KEY)));
-		Block exposedTestOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK.exposed()).setId(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
+		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK.weathering().unaffected()).setId(TEST_OXIDIZING_BLOCK_KEY)));
+		Block exposedTestOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK.weathering().unaffected()).setId(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
 
 		OxidizableBlocksRegistry.registerNextStage(testOxidizingBlock, exposedTestOxidizingBlock);
 
@@ -189,7 +190,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		FabricPotionBrewingBuilder.BUILD.register(builder -> {
 			builder.addContainer(dirtyPotion);
 			builder.registerItemRecipe(Items.POTION, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.DIRT)), dirtyPotion);
-			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.SMALL_FLOWERS)), Potions.HEALING);
+			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(BlockItemTags.SMALL_FLOWERS.item())), Potions.HEALING);
 
 			if (builder.getEnabledFeatures().contains(FeatureFlags.REDSTONE_EXPERIMENTS)) {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(Items.BUNDLE), Potions.LUCK);

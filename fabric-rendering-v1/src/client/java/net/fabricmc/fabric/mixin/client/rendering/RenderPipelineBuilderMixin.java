@@ -22,6 +22,7 @@ import java.util.Optional;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.pipeline.BindGroupLayout;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -76,8 +77,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			Optional<Identifier> vertexShader,
 			Optional<Identifier> fragmentShader,
 			Optional<ShaderDefines> shaderDefines,
-			Optional<List<String>> samplers,
-			Optional<List<RenderPipeline.UniformDescription>> uniforms,
+			Optional<List<BindGroupLayout>> bindGroupLayouts,
 			Optional<ColorTargetState> colorTargetState,
 			Optional<DepthStencilState> depthStencilState,
 			Optional<PolygonMode> polygonMode,
@@ -86,7 +86,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			Optional<VertexFormat.Mode> vertexFormatMode,
 			Operation<RenderPipeline.Snippet> original
 	) {
-		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(vertexShader, fragmentShader, shaderDefines, samplers, uniforms, colorTargetState, depthStencilState, polygonMode, cull, vertexFormat, vertexFormatMode), usePipelineDrawModeForGui);
+		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(vertexShader, fragmentShader, shaderDefines, bindGroupLayouts, colorTargetState, depthStencilState, polygonMode, cull, vertexFormat, vertexFormatMode), usePipelineDrawModeForGui);
 	}
 
 	@ModifyReturnValue(

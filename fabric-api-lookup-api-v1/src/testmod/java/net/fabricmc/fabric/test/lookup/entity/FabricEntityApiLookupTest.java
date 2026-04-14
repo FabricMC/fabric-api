@@ -24,6 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.monster.Creeper;
@@ -53,8 +54,8 @@ public class FabricEntityApiLookupTest {
 		INSPECTABLE.registerSelf(INSPECTABLE_PIG);
 		INSPECTABLE.registerForTypes(
 				(entity, context) -> () -> Component.literal("registerForTypes: " + entity.getClass().getName()),
-				EntityType.PLAYER,
-				EntityType.COW);
+				EntityTypes.PLAYER,
+				EntityTypes.COW);
 		INSPECTABLE.registerFallback((entity, context) -> {
 			if (entity instanceof Creeper) {
 				return () -> Component.literal("registerFallback: Creeper");

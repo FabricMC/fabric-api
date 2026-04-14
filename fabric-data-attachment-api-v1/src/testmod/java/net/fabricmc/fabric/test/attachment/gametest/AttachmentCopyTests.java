@@ -27,7 +27,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.monster.zombie.Drowned;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.level.Level;
@@ -57,7 +57,7 @@ public class AttachmentCopyTests {
 		ServerLevel end = server.getLevel(Level.END);
 		// using overworld and end to avoid portal code related to the nether
 
-		Entity entity = EntityType.PIG.create(overworld, EntitySpawnReason.SPAWN_ITEM_USE);
+		Entity entity = EntityTypes.PIG.create(overworld, EntitySpawnReason.SPAWN_ITEM_USE);
 		Objects.requireNonNull(entity, "entity was null");
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
@@ -79,13 +79,13 @@ public class AttachmentCopyTests {
 
 	@GameTest
 	public void testMobConversion(GameTestHelper helper) {
-		Zombie mob = helper.spawn(EntityType.ZOMBIE, BlockPos.ZERO);
+		Zombie mob = helper.spawn(EntityTypes.ZOMBIE, BlockPos.ZERO);
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 
 		ZombieAccessor zombieAccessor = (ZombieAccessor) mob;
-		zombieAccessor.invokeConvertTo(helper.getLevel(), EntityType.DROWNED);
-		List<Drowned> drowned = helper.getEntities(EntityType.DROWNED);
+		zombieAccessor.invokeConvertTo(helper.getLevel(), EntityTypes.DROWNED);
+		List<Drowned> drowned = helper.getEntities(EntityTypes.DROWNED);
 
 		if (drowned.size() != 1) {
 			throw helper.assertionException("Conversion failed");

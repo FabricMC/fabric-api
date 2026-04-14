@@ -26,6 +26,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.api.ModInitializer;
@@ -75,8 +76,8 @@ public class FabricApiLookupTest implements ModInitializer {
 		InventoryExtractableProvider extractableProvider = new InventoryExtractableProvider();
 		InventoryInsertableProvider insertableProvider = new InventoryInsertableProvider();
 
-		ItemApis.INSERTABLE.registerForBlockEntities(insertableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
-		ItemApis.EXTRACTABLE.registerForBlockEntities(extractableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
+		ItemApis.INSERTABLE.registerForBlockEntities(insertableProvider, BlockEntityTypes.CHEST, BlockEntityTypes.DISPENSER, BlockEntityTypes.DROPPER, BlockEntityTypes.HOPPER);
+		ItemApis.EXTRACTABLE.registerForBlockEntities(extractableProvider, BlockEntityTypes.CHEST, BlockEntityTypes.DISPENSER, BlockEntityTypes.DROPPER, BlockEntityTypes.HOPPER);
 		ItemApis.EXTRACTABLE.registerSelf(COBBLE_GEN_BLOCK_ENTITY_TYPE);
 
 		testLookupRegistry();

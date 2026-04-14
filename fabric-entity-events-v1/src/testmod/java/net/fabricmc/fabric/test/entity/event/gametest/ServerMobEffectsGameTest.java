@@ -22,7 +22,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.fish.Salmon;
 import net.minecraft.world.entity.player.Player;
@@ -149,7 +149,7 @@ public class ServerMobEffectsGameTest {
 	}
 
 	private static Salmon summonTheSalmon(GameTestHelper context) {
-		Salmon theSalmon = context.spawnWithNoFreeWill(EntityType.SALMON, context.relativeVec(new Vec3(0.0, 1.0, 0.0)));
+		Salmon theSalmon = context.spawnWithNoFreeWill(EntityTypes.SALMON, context.relativeVec(new Vec3(0.0, 1.0, 0.0)));
 		theSalmon.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.POTATO));
 		return theSalmon;
 	}

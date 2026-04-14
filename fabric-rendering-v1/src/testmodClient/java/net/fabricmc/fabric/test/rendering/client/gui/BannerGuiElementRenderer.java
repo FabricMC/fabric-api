@@ -43,8 +43,8 @@ public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGui
 	@Override
 	protected void renderToTexture(BannerGuiElementRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
 		Minecraft client = Minecraft.getInstance();
-		client.gameRenderer.getLighting().setupFor(Lighting.Entry.ITEMS_FLAT);
-		FeatureRenderDispatcher renderDispatcher = client.gameRenderer.getFeatureRenderDispatcher();
+		client.gameRenderer.lighting().setupFor(Lighting.Entry.ITEMS_FLAT);
+		FeatureRenderDispatcher renderDispatcher = client.gameRenderer.featureRenderDispatcher();
 		BannerRenderer.submitPatterns(
 				client.getAtlasManager(),
 				poseStack,

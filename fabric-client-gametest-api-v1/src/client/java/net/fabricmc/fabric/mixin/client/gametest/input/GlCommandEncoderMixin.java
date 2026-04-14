@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
 public class GlCommandEncoderMixin {
 	@WrapOperation(method = "presentTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;blitFrameBuffers(IIIIIIIIIIII)V"))
 	private void blitFrameBuffer(DirectStateAccess manager, int readFramebuffer, int drawFramebuffer, int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter, Operation<Void> original, @Local(argsOnly = true) GpuTextureView gpuTextureView) {
-		if (gpuTextureView.texture() == Minecraft.getInstance().getMainRenderTarget().getColorTexture()) {
+		if (gpuTextureView.texture() == Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTexture()) {
 			WindowHooks window = ((WindowHooks) (Object) Minecraft.getInstance().getWindow());
 			dstX1 = window.fabric_getRealFramebufferWidth();
 			dstY1 = window.fabric_getRealFramebufferHeight();

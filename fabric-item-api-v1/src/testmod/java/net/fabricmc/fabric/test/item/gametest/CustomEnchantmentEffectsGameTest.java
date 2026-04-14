@@ -28,7 +28,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +46,7 @@ public class CustomEnchantmentEffectsGameTest {
 	@GameTest
 	public void weirdImpalingSetsFireToTargets(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(3, 3, 3);
-		Creeper creeper = helper.spawn(EntityType.CREEPER, pos);
+		Creeper creeper = helper.spawn(EntityTypes.CREEPER, pos);
 		Player player = helper.makeMockPlayer(GameType.CREATIVE);
 
 		ItemStack trident = Items.TRIDENT.getDefaultInstance();
@@ -60,9 +60,9 @@ public class CustomEnchantmentEffectsGameTest {
 
 		player.setItemInHand(InteractionHand.MAIN_HAND, trident);
 
-		helper.assertEntityData(pos, EntityType.CREEPER, Entity::isOnFire, false);
+		helper.assertEntityData(pos, EntityTypes.CREEPER, Entity::isOnFire, false);
 		player.attack(creeper);
-		helper.succeedWhenEntityData(pos, EntityType.CREEPER, Entity::isOnFire, true);
+		helper.succeedWhenEntityData(pos, EntityTypes.CREEPER, Entity::isOnFire, true);
 	}
 
 	@GameTest

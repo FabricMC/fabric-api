@@ -19,12 +19,8 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Matrix4fc;
-import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -35,7 +31,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -45,10 +40,8 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 
-import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelExtractionContextImpl;
@@ -85,23 +78,24 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 				levelRenderState,
 				level,
 				deltaTracker,
-				minecraft.gameRenderer.getMainCamera());
+				minecraft.gameRenderer.mainCamera());
 	}
 
-	@Inject(method = "renderLevel", at = @At("HEAD"))
-	private void beforeRender(GraphicsResourceAllocator resourceAllocator, DeltaTracker deltaTracker, boolean renderOutline, CameraRenderState cameraState, Matrix4fc modelViewMatrix, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, ChunkSectionsToRender chunkSectionsToRender, CallbackInfo ci) {
-		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, chunkSectionsToRender, submitNodeStorage, renderBuffers.bufferSource());
-	}
-
-	@Inject(method = "extractBlockOutline", at = @At("RETURN"))
-	private void afterBlockOutlineExtraction(Camera camera, LevelRenderState renderStates, CallbackInfo ci) {
-		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, minecraft.hitResult);
-	}
-
-	@Inject(method = "extractLevel", at = @At("RETURN"))
-	private void afterExtractLevel(DeltaTracker deltaTracker, Camera camera, float deltaPartialTick, CallbackInfo ci) {
-		LevelRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
-	}
+	// TODO 26.2
+//	@Inject(method = "renderLevel", at = @At("HEAD"))
+//	private void beforeRender(GraphicsResourceAllocator resourceAllocator, DeltaTracker deltaTracker, boolean renderOutline, CameraRenderState cameraState, Matrix4fc modelViewMatrix, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, ChunkSectionsToRender chunkSectionsToRender, CallbackInfo ci) {
+//		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, chunkSectionsToRender, submitNodeStorage, renderBuffers.bufferSource());
+//	}
+//
+//	@Inject(method = "extractBlockOutline", at = @At("RETURN"))
+//	private void afterBlockOutlineExtraction(Camera camera, LevelRenderState renderStates, CallbackInfo ci) {
+//		LevelRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, minecraft.hitResult);
+//	}
+//
+//	@Inject(method = "extractLevel", at = @At("RETURN"))
+//	private void afterExtractLevel(DeltaTracker deltaTracker, Camera camera, float deltaPartialTick, CallbackInfo ci) {
+//		LevelRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
+//	}
 
 	@WrapOperation(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/blaze3d/textures/GpuSampler;)V", ordinal = 0))
 	private void wrapRenderOpaqueTerrain(ChunkSectionsToRender chunkSectionsToRender, ChunkSectionLayerGroup group, GpuSampler sampler, Operation<Void> original) {
@@ -155,8 +149,9 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		LevelRenderEvents.END_MAIN.invoker().endMain(renderContext);
 	}
 
-	@Inject(method = "allChanged()V", at = @At("HEAD"))
-	private void onReload(CallbackInfo ci) {
-		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
-	}
+	// TODO 26.2
+//	@Inject(method = "allChanged()V", at = @At("HEAD"))
+//	private void onReload(CallbackInfo ci) {
+//		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
+//	}
 }

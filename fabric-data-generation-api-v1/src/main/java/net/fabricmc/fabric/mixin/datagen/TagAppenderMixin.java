@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.TagBuilder;
@@ -35,52 +32,24 @@ import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(TagAppender.class)
-interface TagAppenderMixin<E, T> extends FabricTagAppender<E, T> {
+interface TagAppenderMixin<T> extends FabricTagAppender<T> {
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$1")
-	abstract class TagAppender1Mixin<E, T> implements TagAppenderMixin<E, T> {
+	abstract class TagAppender1Mixin<T> implements TagAppenderMixin<T> {
 		// the builder param
 		@Shadow
 		@Final
 		TagBuilder val$builder;
 
 		@Override
-		public TagAppender<E, T> setReplace(boolean replace) {
+		public TagAppender<T> setReplace(boolean replace) {
 			((FabricTagBuilder) this.val$builder).fabric_setReplace(replace);
-			return (TagAppender<E, T>) this;
+			return (TagAppender<T>) this;
 		}
 
 		@Override
-		public TagAppender<E, T> forceAddTag(TagKey<T> tag) {
+		public TagAppender<T> forceAddTag(TagKey<T> tag) {
 			((FabricTagBuilder) this.val$builder).fabric_forceAddTag(tag.location());
-			return (TagAppender<E, T>) this;
-		}
-	}
-
-	@Mixin(targets = "net.minecraft.data.tags.TagAppender$2")
-	abstract class TagAppender2Mixin<E, T> implements TagAppenderMixin<E, T> {
-		// TagAppender.this
-		@Shadow
-		@Final
-		TagAppender val$original;
-
-		@Override
-		public TagAppender<E, T> setReplace(boolean replace) {
-			((FabricTagAppender) this.val$original).setReplace(replace);
-			return (TagAppender<E, T>) this;
-		}
-
-		@Override
-		public TagAppender<E, T> forceAddTag(TagKey<T> tag) {
-			((FabricTagAppender) this.val$original).forceAddTag(tag);
-			return (TagAppender<E, T>) this;
-		}
-
-		@WrapOperation(
-				method = "addOptional",
-				at = @At(value = "INVOKE", target = "Lnet/minecraft/data/tags/TagAppender;add(Ljava/lang/Object;)Lnet/minecraft/data/tags/TagAppender;")
-		)
-		private TagAppender<E, T> fixAddOptional(TagAppender instance, E e, Operation<TagAppender<E, T>> original) {
-			return instance.addOptional(e);
+			return (TagAppender<T>) this;
 		}
 	}
 }

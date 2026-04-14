@@ -31,7 +31,7 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
@@ -50,7 +50,7 @@ public final class RenderLayerTest implements ClientModInitializer {
 			// minecraft:player SHOULD be printed twice
 			LOGGER.info(String.format("Received registration for %s", BuiltInRegistries.ENTITY_TYPE.getKey(entityType)));
 
-			if (entityType == EntityType.PLAYER) {
+			if (entityType == EntityTypes.PLAYER) {
 				this.playerRegistrations++;
 			}
 

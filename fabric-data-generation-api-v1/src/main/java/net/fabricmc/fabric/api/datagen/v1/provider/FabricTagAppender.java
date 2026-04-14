@@ -23,18 +23,18 @@ import net.minecraft.tags.TagKey;
  * Interface-injected to {@link net.minecraft.data.tags.TagAppender}.
  */
 @SuppressWarnings("unchecked")
-public interface FabricTagAppender<E, T> {
+public interface FabricTagAppender<T> {
 	/**
 	 * Sets the value of the {@code replace} flag. When set to {@code true}
 	 * this tag will replace contents of any other tag.
 	 * @param replace whether to replace the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<E, T> setReplace(boolean replace) {
-		return (TagAppender<E, T>) this;
+	default TagAppender<T> setReplace(boolean replace) {
+		return (TagAppender<T>) this;
 	}
 
-	default TagAppender<E, T> forceAddTag(TagKey<T> tag) {
-		return (TagAppender<E, T>) this;
+	default TagAppender<T> forceAddTag(TagKey<T> tag) {
+		return (TagAppender<T>) this;
 	}
 }

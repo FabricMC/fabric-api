@@ -18,13 +18,13 @@ package net.fabricmc.fabric.test.client.rendering.fluid;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
@@ -78,8 +78,8 @@ public class CustomizedFluidRenderer implements FluidRenderHandler {
 	}
 
 	private int getLight(BlockAndTintGetter level, BlockPos pos) {
-		int i = LevelRenderer.getLightCoords(level, pos);
-		int j = LevelRenderer.getLightCoords(level, pos.above());
+		int i = LightCoordsUtil.getLightCoords(level, pos);
+		int j = LightCoordsUtil.getLightCoords(level, pos.above());
 		int k = i & 255;
 		int l = j & 255;
 		int m = i >> 16 & 255;

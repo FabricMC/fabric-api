@@ -21,14 +21,14 @@ import java.util.Locale;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class EntitySelectorGameTest {
 	private void spawn(GameTestHelper helper, float health) {
-		Mob entity = helper.spawnWithNoFreeWill(EntityType.CREEPER, BlockPos.ZERO);
+		Mob entity = helper.spawnWithNoFreeWill(EntityTypes.CREEPER, BlockPos.ZERO);
 		entity.setNoAi(true);
 		entity.setHealth(health);
 	}
@@ -50,11 +50,11 @@ public class EntitySelectorGameTest {
 				CommandTest.SELECTOR_ID.toDebugFileName()
 		);
 
-		helper.assertEntitiesPresent(EntityType.CREEPER, BlockPos.ZERO, 3, 2.0);
+		helper.assertEntitiesPresent(EntityTypes.CREEPER, BlockPos.ZERO, 3, 2.0);
 		MinecraftServer server = helper.getLevel().getServer();
 		server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
 		//helper.assertTrue(result == 2, "Expected 2 entities killed, got " + result);
-		helper.assertEntitiesPresent(EntityType.CREEPER, BlockPos.ZERO, 1, 2.0);
+		helper.assertEntitiesPresent(EntityTypes.CREEPER, BlockPos.ZERO, 1, 2.0);
 		helper.succeed();
 	}
 }

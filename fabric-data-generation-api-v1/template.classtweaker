@@ -51,6 +51,6 @@ accessible	field	net/minecraft/client/data/models/ModelProvider$BlockStateGenera
 transitive-inject-interface	net/minecraft/data/loot/BlockLootSubProvider	net/fabricmc/fabric/api/datagen/v1/loot/FabricBlockLootSubProvider
 transitive-inject-interface	net/minecraft/data/loot/EntityLootSubProvider	net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootSubProvider
 transitive-inject-interface	net/minecraft/data/recipes/RecipeOutput	net/fabricmc/fabric/api/datagen/v1/recipe/FabricRecipeOutput
-transitive-inject-interface	net/minecraft/data/tags/TagAppender	net/fabricmc/fabric/api/datagen/v1/provider/FabricTagAppender<TE;TT;>
+transitive-inject-interface	net/minecraft/data/tags/TagAppender	net/fabricmc/fabric/api/datagen/v1/provider/FabricTagAppender<TT;>
 
 ### Generated access wideners below

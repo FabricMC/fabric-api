@@ -21,7 +21,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -74,7 +74,7 @@ public final class LootGameTest {
 				.getOrThrow(Enchantments.LURE);
 		EnchantmentHelper.updateEnchantments(expected, builder -> builder.set(lure, 1));
 
-		LootTableDrops drops = LootTableDrops.entity(helper, EntityType.SALMON).drop();
+		LootTableDrops drops = LootTableDrops.entity(helper, EntityTypes.SALMON).drop();
 		drops.assertContains(expected);
 		helper.succeed();
 	}

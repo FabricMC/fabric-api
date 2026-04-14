@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.CeilingHangingSignBlock;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.WallHangingSignBlock;
 import net.minecraft.world.level.block.WallSignBlock;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -66,9 +66,9 @@ public class TealSignTest implements ModInitializer {
 		Registry.register(BuiltInRegistries.ITEM, TEAL_SIGN_KEY.identifier(), TEAL_SIGN_ITEM);
 		Registry.register(BuiltInRegistries.ITEM, TEAL_HANGING_SIGN_KEY.identifier(), TEAL_HANGING_SIGN_ITEM);
 
-		BlockEntityType.SIGN.addValidBlock(TEAL_SIGN);
-		BlockEntityType.SIGN.addValidBlock(TEAL_WALL_SIGN);
-		BlockEntityType.HANGING_SIGN.addValidBlock(TEAL_HANGING_SIGN);
-		BlockEntityType.HANGING_SIGN.addValidBlock(TEAL_WALL_HANGING_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(TEAL_SIGN);
+		BlockEntityTypes.SIGN.addValidBlock(TEAL_WALL_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TEAL_HANGING_SIGN);
+		BlockEntityTypes.HANGING_SIGN.addValidBlock(TEAL_WALL_HANGING_SIGN);
 	}
 }

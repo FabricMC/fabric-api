@@ -24,7 +24,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -115,7 +115,7 @@ public class LootTest implements ModInitializer {
 		});
 
 		LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) -> {
-			if (EntityType.SALMON.getDefaultLootTable().orElse(null) == key) {
+			if (EntityTypes.SALMON.getDefaultLootTable().orElse(null) == key) {
 				Optional<Holder<Enchantment>> lure = provider.lookup(Registries.ENCHANTMENT).flatMap(registry -> registry.get(Enchantments.LURE));
 
 				lure.ifPresent((lureEnchantment) -> tableBuilder.withPool(LootPool.lootPool().add(

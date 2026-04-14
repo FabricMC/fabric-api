@@ -44,8 +44,8 @@ public final class OxidizableBlocksRegistryImpl {
 
 	public static void registerWeatheringCopperBlocks(WeatheringCopperCollection<Block> copperBlocks) {
 		Objects.requireNonNull(copperBlocks, "copperBlocks cannot be null!");
-		copperBlocks.weatheringMapping().forEach(OxidizableBlocksRegistryImpl::registerNextStage);
-		copperBlocks.waxedMapping().forEach(OxidizableBlocksRegistryImpl::registerWaxable);
+		copperBlocks.weathering().progressMapping(OxidizableBlocksRegistryImpl::registerNextStage);
+		copperBlocks.waxed().progressMapping(OxidizableBlocksRegistryImpl::registerWaxable);
 	}
 
 	private static void refreshRandomTickCache(Block block) {
