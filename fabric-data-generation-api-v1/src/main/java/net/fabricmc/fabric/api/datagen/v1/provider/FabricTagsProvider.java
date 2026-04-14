@@ -31,8 +31,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.tags.BlockItemTagAppender;
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
@@ -146,6 +148,15 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 		public BlockTagsProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 			super(output, Registries.BLOCK, registryLookupFuture, block -> block.builtInRegistryHolder().key());
 		}
+
+		@Override
+		protected BlockItemTagAppender<Block> valueLookupBuilder(final TagKey<Block> tag) {
+			return new BlockItemTagAppender<>(super.tag(tag)) {
+				protected ResourceKey<Block> convertElement(final BlockItemId element) {
+					return element.block();
+				}
+			};
+		}
 	}
 
 	/**
@@ -196,6 +207,15 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 			TagBuilder blockTagBuilder = Objects.requireNonNull(this.blockTagBuilderProvider, "Pass Block tags provider via constructor to use copy").apply(blockTag);
 			TagBuilder itemTagBuilder = this.getOrCreateRawBuilder(itemTag);
 			blockTagBuilder.build().forEach(itemTagBuilder::add);
+		}
+
+		@Override
+		protected BlockItemTagAppender<Item> valueLookupBuilder(final TagKey<Item> tag) {
+			return new BlockItemTagAppender<>(super.tag(tag)) {
+				protected ResourceKey<Item> convertElement(final BlockItemId element) {
+					return element.item();
+				}
+			};
 		}
 	}
 
