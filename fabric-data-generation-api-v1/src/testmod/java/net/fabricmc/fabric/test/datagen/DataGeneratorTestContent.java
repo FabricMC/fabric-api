@@ -23,6 +23,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -46,10 +47,15 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 public class DataGeneratorTestContent implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
 
+	public static BlockItemId SIMPLE_BLOCK_ID = id("simple_block");
 	public static Block SIMPLE_BLOCK;
+	public static BlockItemId BLOCK_WITHOUT_ITEM_ID = id("block_without_item");
 	public static Block BLOCK_WITHOUT_ITEM;
+	public static BlockItemId BLOCK_WITHOUT_LOOT_TABLE_ID = id("block_without_loot_table");
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
+	public static BlockItemId BLOCK_WITH_VANILLA_LOOT_TABLE_ID = id("block_with_vanilla_loot_table");
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
+	public static BlockItemId BLOCK_THAT_DROPS_NOTHING_ID = id("block_that_drops_nothing");
 	public static Block BLOCK_THAT_DROPS_NOTHING;
 
 	public static SoundEvent TEST_SOUND;
@@ -75,11 +81,11 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		SIMPLE_BLOCK = createBlock("simple_block", true, BlockBehaviour.Properties.of());
-		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, BlockBehaviour.Properties.of());
-		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, BlockBehaviour.Properties.of());
-		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, BlockBehaviour.Properties.of().overrideLootTable(Blocks.STONE.getLootTable()));
-		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, BlockBehaviour.Properties.of().noLootTable());
+		SIMPLE_BLOCK = createBlock(SIMPLE_BLOCK_ID, true, BlockBehaviour.Properties.of());
+		BLOCK_WITHOUT_ITEM = createBlock(BLOCK_WITHOUT_ITEM_ID, false, BlockBehaviour.Properties.of());
+		BLOCK_WITHOUT_LOOT_TABLE = createBlock(BLOCK_WITHOUT_LOOT_TABLE_ID, false, BlockBehaviour.Properties.of());
+		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock(BLOCK_WITH_VANILLA_LOOT_TABLE_ID, false, BlockBehaviour.Properties.of().overrideLootTable(Blocks.STONE.getLootTable()));
+		BLOCK_THAT_DROPS_NOTHING = createBlock(BLOCK_THAT_DROPS_NOTHING_ID, false, BlockBehaviour.Properties.of().noLootTable());
 
 		SIMPLE_ENTITY_TYPE = createEntityType("simple_entity", EntityType.Builder.createNothing(MobCategory.MISC));
 		ENTITY_TYPE_WITHOUT_LOOT_TABLE = createEntityType("entity_without_loot_table", EntityType.Builder.createNothing(MobCategory.MISC));
@@ -97,12 +103,11 @@ public class DataGeneratorTestContent implements ModInitializer {
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
-	private static Block createBlock(String name, boolean hasItem, BlockBehaviour.Properties settings) {
-		Identifier identifier = Identifier.fromNamespaceAndPath(MOD_ID, name);
-		Block block = Registry.register(BuiltInRegistries.BLOCK, identifier, new Block(settings.setId(ResourceKey.create(Registries.BLOCK, identifier))));
+	private static Block createBlock(BlockItemId id, boolean hasItem, BlockBehaviour.Properties settings) {
+		Block block = Registry.register(BuiltInRegistries.BLOCK, id.block(), new Block(settings.setId(ResourceKey.create(Registries.BLOCK, id.block().identifier()))));
 
 		if (hasItem) {
-			Registry.register(BuiltInRegistries.ITEM, identifier, new BlockItem(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, identifier))));
+			Registry.register(BuiltInRegistries.ITEM, id.item(), new BlockItem(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.item().identifier()))));
 		}
 
 		return block;
@@ -118,5 +123,10 @@ public class DataGeneratorTestContent implements ModInitializer {
 		public static final Codec<TestDatagenObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("value").forGetter(TestDatagenObject::value)
 		).apply(instance, TestDatagenObject::new));
+	}
+
+	private static BlockItemId id(String path) {
+		Identifier identifier = Identifier.fromNamespaceAndPath(MOD_ID, path);
+		return BlockItemId.create(identifier, identifier);
 	}
 }
