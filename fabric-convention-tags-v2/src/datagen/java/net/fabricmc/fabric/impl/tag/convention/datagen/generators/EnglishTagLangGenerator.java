@@ -109,6 +109,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.NETHER_BRICK_FENCES, "Nether Brick Fences");
 		translationBuilder.add(ConventionalBlockTags.FENCE_GATES, "Fence Gates");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_FENCE_GATES, "Wooden Fence Gates");
+		translationBuilder.add(ConventionalBlockTags.BARS, "Bars");
+		translationBuilder.add(ConventionalBlockTags.IRON_BARS, "Iron Bars");
+		translationBuilder.add(ConventionalBlockTags.COPPER_BARS, "Copper Bars");
 		translationBuilder.add(ConventionalBlockTags.PUMPKINS, "Pumpkins");
 		translationBuilder.add(ConventionalBlockTags.NORMAL_PUMPKINS, "Normal Pumpkins");
 		translationBuilder.add(ConventionalBlockTags.CARVED_PUMPKINS, "Carved Pumpkins");
@@ -322,6 +325,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.NETHER_BRICK_FENCES, "Nether Brick Fences");
 		translationBuilder.add(ConventionalItemTags.FENCE_GATES, "Fence Gates");
 		translationBuilder.add(ConventionalItemTags.WOODEN_FENCE_GATES, "Wooden Fence Gates");
+		translationBuilder.add(ConventionalItemTags.BARS, "Bars");
+		translationBuilder.add(ConventionalItemTags.IRON_BARS, "Iron Bars");
+		translationBuilder.add(ConventionalItemTags.COPPER_BARS, "Copper Bars");
 		translationBuilder.add(ConventionalItemTags.PUMPKINS, "Pumpkins");
 		translationBuilder.add(ConventionalItemTags.NORMAL_PUMPKINS, "Normal Pumpkins");
 		translationBuilder.add(ConventionalItemTags.CARVED_PUMPKINS, "Carved Pumpkins");
