@@ -27,10 +27,10 @@ public final class SkyRenderEvents {
 	}
 
 	/**
-	 * Called when "renderEndSky" is invoked.
+	 * Called before "renderEndSky" is invoked, determines if the end sky should render or not.
 	 */
-	public static final Event<EndSky> END_SKY = EventFactory.createArrayBacked(EndSky.class, callbacks -> context -> {
-		for (final EndSky callback : callbacks) {
+	public static final Event<PreEndSky> PRE_END_SKY = EventFactory.createArrayBacked(PreEndSky.class, callbacks -> context -> {
+		for (final PreEndSky callback : callbacks) {
 			if (!callback.execute(context)) {
 				return false;
 			}
@@ -40,10 +40,41 @@ public final class SkyRenderEvents {
 	});
 
 	/**
-	 * Called when the top/bottom sky disc is rendered.
+	 * Called after "renderEndSky" is invoked.
 	 */
-	public static final Event<SkyDisc> SKY_DISC = EventFactory.createArrayBacked(SkyDisc.class, callbacks -> context -> {
-		for (final SkyDisc callback : callbacks) {
+	public static final Event<PostEndSky> POST_END_SKY = EventFactory.createArrayBacked(PostEndSky.class, callbacks -> context -> {
+		for (final PostEndSky callback : callbacks) {
+			callback.execute(context);
+		}
+	});
+
+	/**
+	 * Called before the top/bottom sky disc is rendered, determines if it should render or not.
+	 */
+	public static final Event<PreSkyDisc> PRE_SKY_DISC = EventFactory.createArrayBacked(PreSkyDisc.class, callbacks -> context -> {
+		for (final PreSkyDisc callback : callbacks) {
+			if (!callback.execute(context)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+	/**
+	 * Called after the top/bottom sky disc is rendered.
+	 */
+	public static final Event<PostSkyDisc> POST_SKY_DISC = EventFactory.createArrayBacked(PostSkyDisc.class, callbacks -> context -> {
+		for (final PostSkyDisc callback : callbacks) {
+			callback.execute(context);
+		}
+	});
+
+	/**
+	 * Called when sunrise/sunset in the Overworld is rendered.
+	 */
+	public static final Event<PreSunriseSunset> PRE_SUNRISE_SUNSET = EventFactory.createArrayBacked(PreSunriseSunset.class, callbacks -> context -> {
+		for (final PreSunriseSunset callback : callbacks) {
 			if (!callback.execute(context)) {
 				return false;
 			}
@@ -55,30 +86,26 @@ public final class SkyRenderEvents {
 	/**
 	 * Called when sunrise/sunset in the Overworld is rendered.
 	 */
-	public static final Event<SunriseSunset> SUNRISE_SUNSET = EventFactory.createArrayBacked(SunriseSunset.class, callbacks -> context -> {
-		for (final SunriseSunset callback : callbacks) {
-			if (!callback.execute(context)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
-
-	/**
-	 * Called after the rendering of the sun/moon/stars.
-	 */
-	public static final Event<SunMoonStars> SUN_MOON_STARS = EventFactory.createArrayBacked(SunMoonStars.class, callbacks -> context -> {
-		for (final SunMoonStars callback : callbacks) {
+	public static final Event<PostSunriseSunset> POST_SUNRISE_SUNSET = EventFactory.createArrayBacked(PostSunriseSunset.class, callbacks -> context -> {
+		for (final PostSunriseSunset callback : callbacks) {
 			callback.execute(context);
 		}
 	});
 
 	/**
-	 * Called when the sun/moon/stars are rendered.
+	 * Called after the rendering of the sun/moon/stars.
 	 */
-	public static final Event<Celestial> CELESTIAL = EventFactory.createArrayBacked(Celestial.class, callbacks -> context -> {
-		for (final Celestial callback : callbacks) {
+	public static final Event<PostSunMoonStars> POST_SUN_MOON_STARS = EventFactory.createArrayBacked(PostSunMoonStars.class, callbacks -> context -> {
+		for (final PostSunMoonStars callback : callbacks) {
+			callback.execute(context);
+		}
+	});
+
+	/**
+	 * Called before the sun, moon, or stars are rendered.
+	 */
+	public static final Event<PreCelestial> PRE_CELESTIAL = EventFactory.createArrayBacked(PreCelestial.class, callbacks -> context -> {
+		for (final PreCelestial callback : callbacks) {
 			if (!callback.execute(context)) {
 				return false;
 			}
@@ -87,28 +114,57 @@ public final class SkyRenderEvents {
 		return true;
 	});
 
+	/**
+	 * Called after the sun, moon, or stars are rendered.
+	 */
+	public static final Event<PostCelestial> POST_CELESTIAL = EventFactory.createArrayBacked(PostCelestial.class, callbacks -> context -> {
+		for (final PostCelestial callback : callbacks) {
+			callback.execute(context);
+		}
+	});
+
 	@FunctionalInterface
-	public interface EndSky {
+	public interface PreEndSky {
 		boolean execute(EndSkyRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface SkyDisc {
+	public interface PostEndSky {
+		void execute(EndSkyRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PreSkyDisc {
 		boolean execute(SkyDiscRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface SunriseSunset {
+	public interface PostSkyDisc {
+		void execute(SkyDiscRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PreSunriseSunset {
 		boolean execute(SunriseSunsetRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface SunMoonStars {
+	public interface PostSunriseSunset {
+		void execute(SunriseSunsetRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PostSunMoonStars {
 		void execute(SunMoonStarsRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface Celestial {
+	public interface PreCelestial {
 		boolean execute(CelestialRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PostCelestial {
+		void execute(CelestialRenderContext context);
 	}
 }
