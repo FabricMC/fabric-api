@@ -49,6 +49,28 @@ public final class SkyRenderEvents {
 	});
 
 	/**
+	 * Called before "renderEndSky" is invoked, determines if the end sky should render or not.
+	 */
+	public static final Event<PreEndFlash> PRE_END_FLASH = EventFactory.createArrayBacked(PreEndFlash.class, callbacks -> context -> {
+		for (final PreEndFlash callback : callbacks) {
+			if (!callback.execute(context)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+	/**
+	 * Called after "renderEndSky" is invoked.
+	 */
+	public static final Event<PostEndFlash> POST_END_FLASH = EventFactory.createArrayBacked(PostEndFlash.class, callbacks -> context -> {
+		for (final PostEndFlash callback : callbacks) {
+			callback.execute(context);
+		}
+	});
+
+	/**
 	 * Called before the top/bottom sky disc is rendered, determines if it should render or not.
 	 */
 	public static final Event<PreSkyDisc> PRE_SKY_DISC = EventFactory.createArrayBacked(PreSkyDisc.class, callbacks -> context -> {
@@ -131,6 +153,16 @@ public final class SkyRenderEvents {
 	@FunctionalInterface
 	public interface PostEndSky {
 		void execute(EndSkyRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PreEndFlash {
+		boolean execute(EndFlashRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PostEndFlash {
+		void execute(EndFlashRenderContext context);
 	}
 
 	@FunctionalInterface

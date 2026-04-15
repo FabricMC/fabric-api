@@ -18,12 +18,6 @@ package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.renderer.SkyRenderer;
-import net.minecraft.client.renderer.state.level.SkyRenderState;
-
 @ApiStatus.NonExtendable
-public interface AbstractSkyRenderContext {
-	SkyRenderer skyRenderer();
-
-	SkyRenderState skyRenderState();
+public interface EndFlashRenderContext extends AbstractSkyRenderContext {
 }
