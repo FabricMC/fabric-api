@@ -145,6 +145,28 @@ public final class SkyRenderEvents {
 		}
 	});
 
+	/**
+	 * Unused by FAPI, intended for mod developers to invoke when adding custom elements to the sky when rendering allowing other mods to intercept them and do as please.
+	 */
+	public static final Event<PreCustomElement> PRE_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PreCustomElement.class, callbacks -> context -> {
+		for (final PreCustomElement callback : callbacks) {
+			if (!callback.execute(context)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+	/**
+	 * Unused by FAPI, intended for mod developers to invoke when adding custom elements to the sky when rendering allowing other mods to intercept them and do as please.
+	 */
+	public static final Event<PostCustomElement> POST_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PostCustomElement.class, callbacks -> context -> {
+		for (final PostCustomElement callback : callbacks) {
+			callback.execute(context);
+		}
+	});
+
 	@FunctionalInterface
 	public interface PreEndSky {
 		boolean execute(EndSkyRenderContext context);
@@ -198,5 +220,15 @@ public final class SkyRenderEvents {
 	@FunctionalInterface
 	public interface PostCelestial {
 		void execute(CelestialRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PreCustomElement {
+		boolean execute(Object context);
+	}
+
+	@FunctionalInterface
+	public interface PostCustomElement {
+		void execute(Object context);
 	}
 }
