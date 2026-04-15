@@ -5,7 +5,8 @@
   "client": [
     "MultiPlayerGameModeMixin",
     "KeyMappingAccessor",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
