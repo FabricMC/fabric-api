@@ -5,6 +5,7 @@
   "mixins": [
     "HashCacheProviderCacheMixin",
     "HashCacheMixin",
+    "BlockItemTagAppenderMixin",
     "DataProviderMixin",
     "TagAppenderMixin",
     "TagAppenderMixin$TagAppender1Mixin",

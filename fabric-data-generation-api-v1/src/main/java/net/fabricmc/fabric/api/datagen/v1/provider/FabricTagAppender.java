@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import net.minecraft.data.tags.TagAppender;
+import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 
 /**
@@ -36,5 +37,9 @@ public interface FabricTagAppender<T> {
 
 	default TagAppender<T> forceAddTag(TagKey<T> tag) {
 		return (TagAppender<T>) this;
+	}
+
+	default TagBuilder getBuilder() {
+		return null;
 	}
 }

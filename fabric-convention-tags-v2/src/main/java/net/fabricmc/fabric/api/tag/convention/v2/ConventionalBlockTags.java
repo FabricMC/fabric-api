@@ -177,6 +177,14 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Block> WOODEN_FENCE_GATES = register("fence_gates/wooden");
 
+	// Bars
+	/**
+	 * Aliased with {@link BlockTags#BARS}.
+	 */
+	public static final TagKey<Block> BARS = register("bars");
+	public static final TagKey<Block> IRON_BARS = register("bars/iron");
+	public static final TagKey<Block> COPPER_BARS = register("bars/copper");
+
 	// Pumpkins
 	public static final TagKey<Block> PUMPKINS = register("pumpkins");
 	/**

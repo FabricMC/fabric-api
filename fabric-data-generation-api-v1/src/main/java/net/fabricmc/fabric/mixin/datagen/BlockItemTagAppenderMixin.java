@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.data.tags.BlockItemTagAppender;
 import net.minecraft.data.tags.TagAppender;
-import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagAppender;
@@ -31,30 +31,28 @@ import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
  * Extends TagAppender to support setting the replace field.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-@Mixin(TagAppender.class)
-interface TagAppenderMixin<T> extends FabricTagAppender<T> {
-	@Mixin(targets = "net.minecraft.data.tags.TagAppender$1")
-	abstract class TagAppender1Mixin<T> implements TagAppenderMixin<T> {
-		// the builder param
-		@Shadow
-		@Final
-		TagBuilder val$builder;
+@Mixin(BlockItemTagAppender.class)
+abstract class BlockItemTagAppenderMixin<T> implements FabricTagAppender<T> {
+	// the builder param
+	@Shadow
+	@Final
+	TagAppender<T> original;
 
-		@Override
-		public TagAppender<T> setReplace(boolean replace) {
-			((FabricTagBuilder) this.val$builder).fabric_setReplace(replace);
-			return (TagAppender<T>) this;
+	@Override
+	public BlockItemTagAppender<T> setReplace(boolean replace) {
+		if (this.original.getBuilder() instanceof FabricTagBuilder builder) {
+			builder.fabric_setReplace(replace);
 		}
 
-		@Override
-		public TagAppender<T> forceAddTag(TagKey<T> tag) {
-			((FabricTagBuilder) this.val$builder).fabric_forceAddTag(tag.location());
-			return (TagAppender<T>) this;
+		return (BlockItemTagAppender<T>) (Object) this;
+	}
+
+	@Override
+	public BlockItemTagAppender<T> forceAddTag(TagKey<T> tag) {
+		if (this.original.getBuilder() instanceof FabricTagBuilder builder) {
+			builder.fabric_forceAddTag(tag.location());
 		}
 
-		@Override
-		public TagBuilder getBuilder() {
-			return val$builder;
-		}
+		return (BlockItemTagAppender<T>) (Object) this;
 	}
 }
