@@ -70,6 +70,8 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 	@Final
 	private RenderBuffers renderBuffers;
 	@Shadow
+	private @Nullable SkyRenderer skyRenderer;
+	@Shadow
 	@Final
 	private LevelRenderState levelRenderState;
 	@Shadow
@@ -79,8 +81,6 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 	@Final
 	private SubmitNodeStorage submitNodeStorage;
 
-	@Shadow
-	private @Nullable SkyRenderer skyRenderer;
 	@Unique
 	private final LevelRenderContextImpl renderContext = new LevelRenderContextImpl();
 	@Unique
