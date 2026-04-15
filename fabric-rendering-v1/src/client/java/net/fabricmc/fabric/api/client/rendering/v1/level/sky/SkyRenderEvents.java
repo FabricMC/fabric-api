@@ -27,30 +27,42 @@ public final class SkyRenderEvents {
 	}
 
 	/**
-	 * Called during the rendering of the End skybox.
+	 * Called when "renderEndSky" is invoked.
 	 */
 	public static final Event<EndSky> END_SKY = EventFactory.createArrayBacked(EndSky.class, callbacks -> context -> {
 		for (final EndSky callback : callbacks) {
-			callback.execute(context);
+			if (!callback.execute(context)) {
+				return false;
+			}
 		}
+
+		return true;
 	});
 
 	/**
-	 * Called during the rendering of the top/bottom half the skybox.
+	 * Called when the top/bottom sky disc is rendered.
 	 */
 	public static final Event<SkyDisc> SKY_DISC = EventFactory.createArrayBacked(SkyDisc.class, callbacks -> context -> {
 		for (final SkyDisc callback : callbacks) {
-			callback.execute(context);
+			if (!callback.execute(context)) {
+				return false;
+			}
 		}
+
+		return true;
 	});
 
 	/**
-	 * Called during the rendering of the sunrise/sunset in the Overworld.
+	 * Called when sunrise/sunset in the Overworld is rendered.
 	 */
 	public static final Event<SunriseSunset> SUNRISE_SUNSET = EventFactory.createArrayBacked(SunriseSunset.class, callbacks -> context -> {
 		for (final SunriseSunset callback : callbacks) {
-			callback.execute(context);
+			if (!callback.execute(context)) {
+				return false;
+			}
 		}
+
+		return true;
 	});
 
 	/**
@@ -63,27 +75,31 @@ public final class SkyRenderEvents {
 	});
 
 	/**
-	 * Called during the rendering of the sun/moon/stars.
+	 * Called when the sun/moon/stars are rendered.
 	 */
 	public static final Event<Celestial> CELESTIAL = EventFactory.createArrayBacked(Celestial.class, callbacks -> context -> {
 		for (final Celestial callback : callbacks) {
-			callback.execute(context);
+			if (!callback.execute(context)) {
+				return false;
+			}
 		}
+
+		return true;
 	});
 
 	@FunctionalInterface
 	public interface EndSky {
-		void execute(EndSkyRenderContext context);
+		boolean execute(EndSkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface SkyDisc {
-		void execute(SkyDiscRenderContext context);
+		boolean execute(SkyDiscRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface SunriseSunset {
-		void execute(SunriseSunsetRenderContext context);
+		boolean execute(SunriseSunsetRenderContext context);
 	}
 
 	@FunctionalInterface
@@ -93,6 +109,6 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface Celestial {
-		void execute(CelestialRenderContext context);
+		boolean execute(CelestialRenderContext context);
 	}
 }
