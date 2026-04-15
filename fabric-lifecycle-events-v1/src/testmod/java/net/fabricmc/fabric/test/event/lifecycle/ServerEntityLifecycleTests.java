@@ -54,7 +54,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 
 		ServerEntityEvents.ALLOW_LOAD.register(((entity, level, spawnReason, isLoadedFromDisk) -> {
 			if (entity instanceof Sniffer && spawnReason == EntitySpawnReason.COMMAND) {
-				ServerLifecycleTests.LOGGER.info("Stopped sniffer from spawning via command.");
+				logger.info("Stopped sniffer from spawning via command.");
 				return false;
 			}
 
