@@ -23,6 +23,12 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyRenderEvents;
+import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyRenderContextImpl;
+
+import net.minecraft.client.renderer.state.level.SkyRenderState;
+
 import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
@@ -42,6 +48,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SkyRenderer;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
@@ -72,10 +79,14 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 	@Final
 	private SubmitNodeStorage submitNodeStorage;
 
+	@Shadow
+	private @Nullable SkyRenderer skyRenderer;
 	@Unique
 	private final LevelRenderContextImpl renderContext = new LevelRenderContextImpl();
 	@Unique
 	private final LevelExtractionContextImpl extractionContext = new LevelExtractionContextImpl();
+	@Unique
+	private static final SkyRenderContextImpl skyRenderContext = new SkyRenderContextImpl();
 
 	@Override
 	public void fabric_prepareLevelExtractionContext(DeltaTracker deltaTracker) {
@@ -86,6 +97,7 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 				level,
 				deltaTracker,
 				minecraft.gameRenderer.getMainCamera());
+		skyRenderContext.prepare(skyRenderer, levelRenderState.skyRenderState);
 	}
 
 	@Inject(method = "renderLevel", at = @At("HEAD"))
@@ -159,5 +171,60 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 	@Inject(method = "allChanged()V", at = @At("HEAD"))
 	private void onReload(CallbackInfo ci) {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
+	}
+
+	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderEndSky()V"))
+	private static void onEndSkyRender(SkyRenderer instance, Operation<Void> original) {
+		final boolean cancelled = SkyRenderEvents.PRE_END_SKY.invoker().execute(skyRenderContext);
+		if (!cancelled) {
+			original.call(instance);
+		}
+
+		SkyRenderEvents.POST_END_SKY.invoker().execute(skyRenderContext);
+	}
+
+	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderEndFlash(Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V"))
+	private static void onEndFlashRender(SkyRenderer instance, PoseStack poseStack, float intensity, float flashXAngle, float flashYAngle, Operation<Void> original) {
+		final boolean cancelled = SkyRenderEvents.PRE_END_FLASH.invoker().execute(skyRenderContext);
+		if (!cancelled) {
+			original.call(instance, poseStack, intensity, flashXAngle, flashYAngle);
+		}
+
+		SkyRenderEvents.POST_END_FLASH.invoker().execute(skyRenderContext);
+	}
+
+	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSkyDisc(I)V"))
+	private static void onTopSkyDiscRender(SkyRenderer instance, int skyColor, Operation<Void> original) {
+		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext);
+		if (!cancelled) {
+			original.call(instance, skyColor);
+		}
+
+		SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext);
+	}
+
+	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSunriseAndSunset(Lcom/mojang/blaze3d/vertex/PoseStack;FI)V"))
+	private static void onSunriseSunsetRender(SkyRenderer instance, PoseStack poseStack, float sunAngle, int sunriseAndSunsetColor, Operation<Void> original) {
+		final boolean cancelled = SkyRenderEvents.PRE_SUNRISE_SUNSET.invoker().execute(skyRenderContext);
+		if (!cancelled) {
+			original.call(instance, poseStack, sunAngle, sunriseAndSunsetColor);
+		}
+
+		SkyRenderEvents.POST_SUNRISE_SUNSET.invoker().execute(skyRenderContext);
+	}
+
+	@Inject(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSunMoonAndStars(Lcom/mojang/blaze3d/vertex/PoseStack;FFFLnet/minecraft/world/level/MoonPhase;FF)V", shift = At.Shift.AFTER))
+	private static void afterSunMoonStars(GpuBufferSlice skyFog, SkyRenderState state, SkyRenderer skyRenderer, CallbackInfo ci) {
+		SkyRenderEvents.POST_SUN_MOON_STARS.invoker().execute(skyRenderContext);
+	}
+
+	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderDarkDisc()V"))
+	private static void onBottomSkyDiscRender(SkyRenderer instance, Operation<Void> original) {
+		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext);
+		if (!cancelled) {
+			original.call(instance);
+		}
+
+		SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext);
 	}
 }

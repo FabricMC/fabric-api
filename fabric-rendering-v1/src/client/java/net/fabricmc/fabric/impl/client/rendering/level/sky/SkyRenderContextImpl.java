@@ -19,15 +19,14 @@ package net.fabricmc.fabric.impl.client.rendering.level.sky;
 import net.minecraft.client.renderer.SkyRenderer;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 
-import net.fabricmc.fabric.api.client.rendering.v1.level.sky.AbstractSkyRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.sky.CelestialRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyDiscRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyRenderContext;
 
-public class SkyRenderContextImpl implements AbstractSkyRenderContext {
-	private final SkyRenderer skyRenderer;
-	private final SkyRenderState skyRenderState;
+public class SkyRenderContextImpl implements SkyRenderContext {
+	private SkyRenderer skyRenderer;
+	private SkyRenderState skyRenderState;
 
-	public SkyRenderContextImpl(final SkyRenderer skyRenderer, final SkyRenderState skyRenderState) {
+	public void prepare(final SkyRenderer skyRenderer, final SkyRenderState skyRenderState) {
 		this.skyRenderer = skyRenderer;
 		this.skyRenderState = skyRenderState;
 	}
@@ -42,25 +41,10 @@ public class SkyRenderContextImpl implements AbstractSkyRenderContext {
 		return this.skyRenderState;
 	}
 
-	public static class SkyDiscContextImpl extends SkyRenderContextImpl implements SkyDiscRenderContext {
-		private final float eyeDepth;
-
-		public SkyDiscContextImpl(final SkyRenderer skyRenderer, final SkyRenderState skyRenderState, final float eyeDepth) {
-			super(skyRenderer, skyRenderState);
-			this.eyeDepth = eyeDepth;
-		}
-
-		@Override
-		public float eyeDepth() {
-			return this.eyeDepth;
-		}
-	}
-
 	public static class CelestialContextImpl extends SkyRenderContextImpl implements CelestialRenderContext {
-		private final Type type;
+		private Type type;
 
-		public CelestialContextImpl(final SkyRenderer skyRenderer, final SkyRenderState skyRenderState, final Type type) {
-			super(skyRenderer, skyRenderState);
+		public void setType(final Type type) {
 			this.type = type;
 		}
 

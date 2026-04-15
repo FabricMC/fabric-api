@@ -33,12 +33,12 @@ public final class SkyRenderEvents {
 	 */
 	public static final Event<PreEndSky> PRE_END_SKY = EventFactory.createArrayBacked(PreEndSky.class, callbacks -> context -> {
 		for (final PreEndSky callback : callbacks) {
-			if (!callback.execute(context)) {
-				return false;
+			if (callback.execute(context)) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	});
 
 	/**
@@ -55,12 +55,12 @@ public final class SkyRenderEvents {
 	 */
 	public static final Event<PreEndFlash> PRE_END_FLASH = EventFactory.createArrayBacked(PreEndFlash.class, callbacks -> context -> {
 		for (final PreEndFlash callback : callbacks) {
-			if (!callback.execute(context)) {
-				return false;
+			if (callback.execute(context)) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	});
 
 	/**
@@ -77,12 +77,12 @@ public final class SkyRenderEvents {
 	 */
 	public static final Event<PreSkyDisc> PRE_SKY_DISC = EventFactory.createArrayBacked(PreSkyDisc.class, callbacks -> context -> {
 		for (final PreSkyDisc callback : callbacks) {
-			if (!callback.execute(context)) {
-				return false;
+			if (callback.execute(context)) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	});
 
 	/**
@@ -99,12 +99,12 @@ public final class SkyRenderEvents {
 	 */
 	public static final Event<PreSunriseSunset> PRE_SUNRISE_SUNSET = EventFactory.createArrayBacked(PreSunriseSunset.class, callbacks -> context -> {
 		for (final PreSunriseSunset callback : callbacks) {
-			if (!callback.execute(context)) {
-				return false;
+			if (callback.execute(context)) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	});
 
 	/**
@@ -130,12 +130,12 @@ public final class SkyRenderEvents {
 	 */
 	public static final Event<PreCelestial> PRE_CELESTIAL = EventFactory.createArrayBacked(PreCelestial.class, callbacks -> context -> {
 		for (final PreCelestial callback : callbacks) {
-			if (!callback.execute(context)) {
-				return false;
+			if (callback.execute(context)) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	});
 
 	/**
@@ -152,12 +152,12 @@ public final class SkyRenderEvents {
 	 */
 	public static final Event<PreCustomElement> PRE_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PreCustomElement.class, callbacks -> (key, context) -> {
 		for (final PreCustomElement callback : callbacks) {
-			if (!callback.execute(key, context)) {
-				return false;
+			if (callback.execute(key, context)) {
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	});
 
 	/**
@@ -171,47 +171,47 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PreEndSky {
-		boolean execute(EndSkyRenderContext context);
+		boolean execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PostEndSky {
-		void execute(EndSkyRenderContext context);
+		void execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PreEndFlash {
-		boolean execute(EndFlashRenderContext context);
+		boolean execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PostEndFlash {
-		void execute(EndFlashRenderContext context);
+		void execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PreSkyDisc {
-		boolean execute(SkyDiscRenderContext context);
+		boolean execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PostSkyDisc {
-		void execute(SkyDiscRenderContext context);
+		void execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PreSunriseSunset {
-		boolean execute(SunriseSunsetRenderContext context);
+		boolean execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PostSunriseSunset {
-		void execute(SunriseSunsetRenderContext context);
+		void execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface PostSunMoonStars {
-		void execute(SunMoonStarsRenderContext context);
+		void execute(SkyRenderContext context);
 	}
 
 	@FunctionalInterface

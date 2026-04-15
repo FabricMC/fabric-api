@@ -30,6 +30,7 @@
     "RenderPipelineBuilderMixin",
     "RenderPipelineMixin",
     "RenderPipelineSnippetMixin",
+    "SkyRendererMixin",
     "SpriteSourcesAccessor",
     "SubtitleOverlayMixin",
     "advancement.AdvancementsScreenMixin",
