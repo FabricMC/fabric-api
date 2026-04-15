@@ -47,7 +47,7 @@ public final class FluidVariantRendering {
 			@Override
 			public int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
 				if (level == null || pos == null) {
-					return 0x3F76E4;
+					return 0xFF3F76E4;
 				}
 
 				return FluidVariantRenderHandler.super.getColor(fluidVariant, level, pos);
