@@ -173,6 +173,19 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
 
+	@Inject(method = "lambda$addSkyPass$0", at = @At("HEAD"), cancellable = true)
+	private static void beforeSky(GpuBufferSlice skyFog, SkyRenderState state, SkyRenderer skyRenderer, CallbackInfo ci) {
+		final boolean cancelled = SkyRenderEvents.PRE_SKY.invoker().execute(skyRenderContext);
+		if (cancelled) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "lambda$addSkyPass$0", at = @At("TAIL"))
+	private static void afterSky(GpuBufferSlice skyFog, SkyRenderState state, SkyRenderer skyRenderer, CallbackInfo ci) {
+		SkyRenderEvents.POST_SKY.invoker().execute(skyRenderContext);
+	}
+
 	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderEndSky()V"))
 	private static void onEndSkyRender(SkyRenderer instance, Operation<Void> original) {
 		final boolean cancelled = SkyRenderEvents.PRE_END_SKY.invoker().execute(skyRenderContext);

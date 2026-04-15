@@ -29,6 +29,28 @@ public final class SkyRenderEvents {
 	}
 
 	/**
+	 * Called at the start of the "addSkyPass" lambda.
+	 */
+	public static final Event<PreSky> PRE_SKY = EventFactory.createArrayBacked(PreSky.class, callbacks -> context -> {
+		for (final PreSky callback : callbacks) {
+			if (callback.execute(context)) {
+				return true;
+			}
+		}
+
+		return false;
+	});
+
+	/**
+	 * Called at the end of the "addSkyPass" lambda.
+	 */
+	public static final Event<PostSky> POST_SKY = EventFactory.createArrayBacked(PostSky.class, callbacks -> context -> {
+		for (final PostSky callback : callbacks) {
+			callback.execute(context);
+		}
+	});
+
+	/**
 	 * Called before "renderEndSky" is invoked, determines if the end sky should render or not.
 	 */
 	public static final Event<PreEndSky> PRE_END_SKY = EventFactory.createArrayBacked(PreEndSky.class, callbacks -> context -> {
@@ -168,6 +190,16 @@ public final class SkyRenderEvents {
 			callback.execute(key, context);
 		}
 	});
+
+	@FunctionalInterface
+	public interface PreSky {
+		boolean execute(SkyRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface PostSky {
+		void execute(SkyRenderContext context);
+	}
 
 	@FunctionalInterface
 	public interface PreEndSky {
