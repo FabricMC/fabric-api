@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.NonExtendable
-public interface CelestialRenderContext extends AbstractSkyInjectionContext {
+public interface CelestialRenderContext extends AbstractSkyRenderContext {
 	Type type();
 
 	enum Type {

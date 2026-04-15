@@ -19,5 +19,5 @@ package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.NonExtendable
-public interface EndSkyRenderContext extends AbstractSkyInjectionContext {
+public interface EndSkyRenderContext extends AbstractSkyRenderContext {
 }

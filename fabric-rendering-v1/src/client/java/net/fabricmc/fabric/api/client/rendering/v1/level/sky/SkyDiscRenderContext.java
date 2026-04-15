@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.NonExtendable
-public interface SkyDiscRenderContext extends AbstractSkyInjectionContext {
+public interface SkyDiscRenderContext extends AbstractSkyRenderContext {
 	/**
 	 * The top sky disc will always return eyeDepth of 0 as it is only used during the rendering of the bottom portion of the sky disc.
 	 */
