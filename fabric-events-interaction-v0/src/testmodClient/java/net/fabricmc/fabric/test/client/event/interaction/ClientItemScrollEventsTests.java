@@ -70,15 +70,15 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 					}
 
 					if (ctx.before) {
-						throw new IllegalStateException("client item scroll before invoked twice");
+						throw new IllegalStateException("Client item scroll BEFORE invoked twice");
 					}
 
 					if (ctx.after) {
-						throw new IllegalStateException("client item scroll after invoked before before event");
+						throw new IllegalStateException("Client item scroll AFTER invoked before BEFORE event");
 					}
 
 					if (inventory.getItem(newSlot).is(Items.BLAZE_POWDER)) {
-						throw new IllegalStateException("client item scroll before invoked on canceled item scroll event");
+						throw new IllegalStateException("Client item scroll BEFORE invoked on canceled item scroll event");
 					}
 
 					ctx.before = true;
@@ -89,15 +89,15 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 					}
 
 					if (ctx.after) {
-						throw new IllegalStateException("client item scroll after invoked twice");
+						throw new IllegalStateException("Client item scroll AFTER invoked twice");
 					}
 
 					if (!ctx.before) {
-						throw new IllegalStateException("client item scroll after invoked before before event");
+						throw new IllegalStateException("Client item scroll AFTER invoked before BEFORE event");
 					}
 
 					if (inventory.getItem(newSlot).is(Items.BLAZE_POWDER)) {
-						throw new IllegalStateException("client item scroll after invoked on canceled item scroll event");
+						throw new IllegalStateException("Client item scroll AFTER invoked on canceled item scroll event");
 					}
 
 					ctx.after = true;
@@ -110,7 +110,7 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 							.getSelectedSlot() == ctx.selectedSlot + 1);
 
 			if (!ctx.before || !ctx.after) {
-				throw new IllegalStateException("before/after client item scroll events never fired");
+				throw new IllegalStateException("The before- and after- client item scroll events never fired");
 			}
 
 			context.getInput().scroll(-1.0);
