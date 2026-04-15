@@ -66,10 +66,6 @@ public interface FluidVariantRenderHandler {
 		if (level != null && pos != null) {
 			return fluidModel.tintSource().colorInWorld(Blocks.AIR.defaultBlockState(), level, pos);
 		} else {
-			if (fluidState.is(Fluids.WATER) || fluidState.is(Fluids.FLOWING_WATER)) {
-				return 0xFF3F76E4;
-			}
-
 			return fluidModel.tintSource().color(Blocks.AIR.defaultBlockState());
 		}
 	}
