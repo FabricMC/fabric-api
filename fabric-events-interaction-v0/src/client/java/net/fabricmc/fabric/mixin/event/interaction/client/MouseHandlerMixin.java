@@ -2,6 +2,7 @@ package net.fabricmc.fabric.mixin.event.interaction.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -16,14 +17,21 @@ public abstract class MouseHandlerMixin {
 			method = "onScroll",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedSlot(I)V")
 	)
-	private void wrapSelectedSlot(Inventory instance, int selected, Operation<Void> original) {
+	private void wrapSelectedSlot(
+			Inventory instance,
+			int selected,
+			Operation<Void> original,
+			// we must use scaled offsets so that the scroll sensitivity applies
+			@Local(name = "scaledXOffset") double scaledXOffset,
+			@Local(name = "scaledYOffset") double scaledYOffset
+	) {
 		int currentSlot = instance.getSelectedSlot();
-		boolean allow = ClientItemScrollEvents.ALLOW.invoker().allowScroll(instance, currentSlot, selected);
+		boolean allow = ClientItemScrollEvents.ALLOW.invoker().allowScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
 
 		if (allow) {
-			ClientItemScrollEvents.BEFORE.invoker().beforeScroll(instance, currentSlot, selected);
+			ClientItemScrollEvents.BEFORE.invoker().beforeScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
 			original.call(instance, selected);
-			ClientItemScrollEvents.AFTER.invoker().afterScroll(instance, currentSlot, selected);
+			ClientItemScrollEvents.AFTER.invoker().afterScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
 		}
 	}
 }

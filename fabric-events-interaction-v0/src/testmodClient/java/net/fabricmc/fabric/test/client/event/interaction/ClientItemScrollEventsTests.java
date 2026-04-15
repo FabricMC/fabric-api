@@ -35,7 +35,7 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 				int selectedSlot1 = playerInventory.getSelectedSlot();
 				ctx.selectedSlot = selectedSlot1;
 				playerInventory.setItem(selectedSlot1, new ItemStack(Items.BLAZE_POWDER));
-				ClientItemScrollEvents.ALLOW.register((inventory, currentSlot, _) -> {
+				ClientItemScrollEvents.ALLOW.register((inventory, currentSlot, _, _, _) -> {
 					if (!ctx.inScope) {
 						return true;
 					}
@@ -48,7 +48,7 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 
 					return allow;
 				});
-				ClientItemScrollEvents.BEFORE.register(((inventory, _, newSlot) -> {
+				ClientItemScrollEvents.BEFORE.register(((inventory, _, newSlot, _, _) -> {
 					if (!ctx.inScope) {
 						return;
 					}
@@ -67,7 +67,7 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 
 					ctx.before = true;
 				}));
-				ClientItemScrollEvents.AFTER.register(((inventory, _, newSlot) -> {
+				ClientItemScrollEvents.AFTER.register(((inventory, _, newSlot, _, _) -> {
 					if (!ctx.inScope) {
 						return;
 					}

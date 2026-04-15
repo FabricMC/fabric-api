@@ -15,9 +15,9 @@ public final class ClientItemScrollEvents {
 	 * <p>Returning {@code false} cancels the inventory selection change without running anymore
 	 * registered callbacks.
 	 */
-	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, listeners -> (inventory, currentSlot, newSlot) -> {
+	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, listeners -> (inventory, currentSlot, newSlot, xOffset, yOffset) -> {
 		for (Allow listener : listeners) {
-			boolean allow = listener.allowScroll(inventory, currentSlot, newSlot);
+			boolean allow = listener.allowScroll(inventory, currentSlot, newSlot, xOffset, yOffset);
 
 			if (!allow) {
 				return false;
@@ -32,9 +32,9 @@ public final class ClientItemScrollEvents {
 	 *
 	 * <p>This event is only fired if the result of {@link #ALLOW} is {@code true}.
 	 */
-	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class, listeners -> (inventory, currentSlot, newSlot) -> {
+	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class, listeners -> (inventory, currentSlot, newSlot, xOffset, yOffset) -> {
 		for (Before listener : listeners) {
-			listener.beforeScroll(inventory, currentSlot, newSlot);
+			listener.beforeScroll(inventory, currentSlot, newSlot, xOffset, yOffset);
 		}
 	});
 
@@ -43,9 +43,9 @@ public final class ClientItemScrollEvents {
 	 *
 	 * <p>This event is only fired if the result of {@link #ALLOW} is {@code true}.
 	 */
-	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class, listeners -> (inventory, currentSlot, newSlot) -> {
+	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class, listeners -> (inventory, currentSlot, newSlot, xOffset, yOffset) -> {
 		for (After listener : listeners) {
-			listener.afterScroll(inventory, currentSlot, newSlot);
+			listener.afterScroll(inventory, currentSlot, newSlot, xOffset, yOffset);
 		}
 	});
 
@@ -57,10 +57,12 @@ public final class ClientItemScrollEvents {
 		 * @param inventory The player's inventory.
 		 * @param currentSlot The currently selected slot before changing.
 		 * @param newSlot The slot about to be selected.
+		 * @param xOffset The X scroll offset.
+		 * @param yOffset The Y scroll offset.
 		 * @return {@code true} if the selected slot will change to {@code newSlot}, otherwise
 		 * {@code false} if the slot will remain {@code currentSlot}.
 		 */
-		boolean allowScroll(Inventory inventory, int currentSlot, int newSlot);
+		boolean allowScroll(Inventory inventory, int currentSlot, int newSlot, double xOffset, double yOffset);
 	}
 
 	@FunctionalInterface
@@ -71,8 +73,10 @@ public final class ClientItemScrollEvents {
 		 * @param inventory The player's inventory.
 		 * @param currentSlot The currently selected slot before changing.
 		 * @param newSlot The slot about to be selected.
+		 * @param xOffset The X scroll offset.
+		 * @param yOffset The Y scroll offset.
 		 */
-		void beforeScroll(Inventory inventory, int currentSlot, int newSlot);
+		void beforeScroll(Inventory inventory, int currentSlot, int newSlot, double xOffset, double yOffset);
 	}
 
 	@FunctionalInterface
@@ -83,8 +87,10 @@ public final class ClientItemScrollEvents {
 		 * @param inventory The player's inventory.
 		 * @param currentSlot The currently selected slot before changing.
 		 * @param newSlot The slot about to be selected.
+		 * @param xOffset The X scroll offset.
+		 * @param yOffset The Y scroll offset.
 		 */
-		void afterScroll(Inventory inventory, int currentSlot, int newSlot);
+		void afterScroll(Inventory inventory, int currentSlot, int newSlot, double xOffset, double yOffset);
 	}
 
 	private ClientItemScrollEvents() {
