@@ -28,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
@@ -65,6 +66,10 @@ public interface FluidVariantRenderHandler {
 		if (level != null && pos != null) {
 			return fluidModel.tintSource().colorInWorld(Blocks.AIR.defaultBlockState(), level, pos);
 		} else {
+			if (fluidState.is(Fluids.WATER) || fluidState.is(Fluids.FLOWING_WATER)) {
+				return 0xFF3F76E4;
+			}
+
 			return fluidModel.tintSource().color(Blocks.AIR.defaultBlockState());
 		}
 	}

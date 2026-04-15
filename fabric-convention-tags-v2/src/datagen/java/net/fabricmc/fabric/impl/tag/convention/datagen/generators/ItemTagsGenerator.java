@@ -165,6 +165,10 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		copy(ConventionalBlockTags.FENCE_GATES, ConventionalItemTags.FENCE_GATES);
 		copy(ConventionalBlockTags.WOODEN_FENCE_GATES, ConventionalItemTags.WOODEN_FENCE_GATES);
 
+		copy(ConventionalBlockTags.BARS, ConventionalItemTags.BARS);
+		copy(ConventionalBlockTags.IRON_BARS, ConventionalItemTags.IRON_BARS);
+		copy(ConventionalBlockTags.COPPER_BARS, ConventionalItemTags.COPPER_BARS);
+
 		copy(ConventionalBlockTags.PUMPKINS, ConventionalItemTags.PUMPKINS);
 		copy(ConventionalBlockTags.NORMAL_PUMPKINS, ConventionalItemTags.NORMAL_PUMPKINS);
 		copy(ConventionalBlockTags.CARVED_PUMPKINS, ConventionalItemTags.CARVED_PUMPKINS);
@@ -930,6 +934,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		aliasGroup("fences").add(ItemTags.FENCES, ConventionalItemTags.FENCES);
 		aliasGroup("fences/wooden").add(ItemTags.WOODEN_FENCES, ConventionalItemTags.WOODEN_FENCES);
 		aliasGroup("fence_gates").add(ItemTags.FENCE_GATES, ConventionalItemTags.FENCE_GATES);
+
+		aliasGroup("bars").add(ItemTags.BARS, ConventionalItemTags.BARS);
 
 		aliasGroup("flowers/small").add(ItemTags.SMALL_FLOWERS, ConventionalItemTags.SMALL_FLOWERS);
 		aliasGroup("dyes").add(ItemTags.DYES, ConventionalItemTags.DYES);
