@@ -32,19 +32,49 @@ import com.google.common.collect.MapMaker;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.loader.api.FabricLoader;
 
-public final class EventFactoryImpl {
+public class EventFactoryImpl {
+	public static final EventFactoryImpl INSTANCE;
 	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS
 			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
-	private EventFactoryImpl() { }
+	static {
+		final String eventScopeModule = "fabric-test-api-v1";
+
+		if (FabricLoader.getInstance().isModLoaded(eventScopeModule)) {
+			String clazzName = FabricLoader.getInstance()
+					.getModContainer(eventScopeModule)
+					.orElseThrow()
+					.getMetadata()
+					.getCustomValue("fabric-api-base:event_factory_impl")
+					.getAsString();
+			try {
+				Class<?> clazz = Class.forName(clazzName);
+				INSTANCE = (EventFactoryImpl) MethodHandles.publicLookup()
+						.findConstructor(clazz, MethodType.methodType(void.class))
+						.invoke();
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		} else {
+			INSTANCE = new EventFactoryImpl();
+		}
+	}
+
+	protected EventFactoryImpl() {
+	}
 
 	public static void invalidate() {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
 	}
 
-	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
-		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, invokerFactory);
+	protected <T> ArrayBackedEvent<T> doCreateArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
+		return new ArrayBackedEvent<>(type, invokerFactory);
+	}
+
+	public final <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
+		ArrayBackedEvent<T> event = doCreateArrayBacked(type, invokerFactory);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
 	}
