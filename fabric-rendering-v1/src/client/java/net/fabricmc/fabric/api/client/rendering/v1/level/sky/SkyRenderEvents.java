@@ -51,7 +51,7 @@ public final class SkyRenderEvents {
 	});
 
 	/**
-	 * Called before "renderEndSky" is invoked, determines if the end sky should render or not.
+	 * Called before "renderEndFlash" is invoked, determines if the end flash should render or not.
 	 */
 	public static final Event<PreEndFlash> PRE_END_FLASH = EventFactory.createArrayBacked(PreEndFlash.class, callbacks -> context -> {
 		for (final PreEndFlash callback : callbacks) {
@@ -64,7 +64,7 @@ public final class SkyRenderEvents {
 	});
 
 	/**
-	 * Called after "renderEndSky" is invoked.
+	 * Called after "renderEndFlash" is invoked.
 	 */
 	public static final Event<PostEndFlash> POST_END_FLASH = EventFactory.createArrayBacked(PostEndFlash.class, callbacks -> context -> {
 		for (final PostEndFlash callback : callbacks) {
