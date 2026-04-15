@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 
+import net.minecraft.resources.Identifier;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -148,9 +150,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Unused by FAPI, intended for mod developers to invoke when adding custom elements to the sky when rendering allowing other mods to intercept them and do as please.
 	 */
-	public static final Event<PreCustomElement> PRE_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PreCustomElement.class, callbacks -> context -> {
+	public static final Event<PreCustomElement> PRE_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PreCustomElement.class, callbacks -> (key, context) -> {
 		for (final PreCustomElement callback : callbacks) {
-			if (!callback.execute(context)) {
+			if (!callback.execute(key, context)) {
 				return false;
 			}
 		}
@@ -161,9 +163,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Unused by FAPI, intended for mod developers to invoke when adding custom elements to the sky when rendering allowing other mods to intercept them and do as please.
 	 */
-	public static final Event<PostCustomElement> POST_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PostCustomElement.class, callbacks -> context -> {
+	public static final Event<PostCustomElement> POST_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PostCustomElement.class, callbacks -> (key, context) -> {
 		for (final PostCustomElement callback : callbacks) {
-			callback.execute(context);
+			callback.execute(key, context);
 		}
 	});
 
@@ -224,11 +226,11 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PreCustomElement {
-		boolean execute(Object context);
+		boolean execute(Identifier key, Object context);
 	}
 
 	@FunctionalInterface
 	public interface PostCustomElement {
-		void execute(Object context);
+		void execute(Identifier key, Object context);
 	}
 }
