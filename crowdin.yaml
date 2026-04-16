@@ -1,6 +1,6 @@
 files:
-  - source: /*/src/*/resources/assets/*/lang/en_us.json
+  - source: "/*/src/*/resources/assets/*/lang/en_us.json"
     translation: "%original_path%/%locale_with_underscore%.json"
-    ignore: [/*/src/test*/**/*]
+    ignore: ["/*/src/test*/resources/assets/*/lang/en_us.json"]
 preserve_hierarchy: true
 project_id: "647524"
