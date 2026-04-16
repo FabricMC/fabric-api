@@ -49,9 +49,9 @@ public final class ServerEntityEvents {
 	/**
 	 * Called right before an {@link Entity} is loaded into a {@link ServerLevel}. Mods can cancel this to prevent the entity from loading in.
 	 */
-	public static final Event<ServerEntityEvents.AllowFreshLoad> ALLOW_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.AllowFreshLoad.class, callbacks -> (entity, level, spawnReason, isLoadedFromDisk) -> {
-		for (AllowFreshLoad callback : callbacks) {
-			if (!callback.onAllowFreshLoad(entity, level, spawnReason, isLoadedFromDisk)) {
+	public static final Event<AllowLoad> ALLOW_LOAD = EventFactory.createArrayBacked(AllowLoad.class, callbacks -> (entity, level, spawnReason, isLoadedFromDisk) -> {
+		for (AllowLoad callback : callbacks) {
+			if (!callback.onAllowLoad(entity, level, spawnReason, isLoadedFromDisk)) {
 				return false;
 			}
 		}
@@ -88,13 +88,13 @@ public final class ServerEntityEvents {
 	}
 
 	@FunctionalInterface
-	public interface AllowFreshLoad {
+	public interface AllowLoad {
 		/**
 		 * Called right before an {@link Entity} is loaded into a {@link ServerLevel}.
 		 *
 		 * @return true to allow the load, false to cancel the load.
 		 */
-		boolean onAllowFreshLoad(Entity entity, ServerLevel level, @Nullable EntitySpawnReason spawnReason, boolean isLoadedFromDisk);
+		boolean onAllowLoad(Entity entity, ServerLevel level, @Nullable EntitySpawnReason spawnReason, boolean isLoadedFromDisk);
 	}
 
 	@FunctionalInterface

@@ -36,7 +36,7 @@ public class PersistentEntitySectionManagerMixin {
 		Entity entity = (Entity) entityAccess;
 		((EntityLoadDataSetter) entity).fabric_setLoadedFromDisk(loaded);
 
-		if (!ServerEntityEvents.ALLOW_LOAD.invoker().onAllowFreshLoad(entity, (ServerLevel) entity.level(), entity.spawnReason(), loaded)) {
+		if (!ServerEntityEvents.ALLOW_LOAD.invoker().onAllowLoad(entity, (ServerLevel) entity.level(), entity.spawnReason(), loaded)) {
 			cir.cancel();
 		}
 	}
