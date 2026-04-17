@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalPotionTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalStructureTags;
 
 public class EnglishTagLangGenerator extends FabricLanguageProvider {
@@ -437,6 +438,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS, "Entity Speed Enhancements");
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS, "Entity Auxiliary Movement Enhancements");
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS, "Entity Defense Enhancements");
+		translationBuilder.add(ConventionalEnchantmentTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 
 		// Entity Types
 		translationBuilder.add(ConventionalEntityTypeTags.BOSSES, "Bosses");
@@ -558,5 +560,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.IS_NETHER_FOREST, "Nether Forest");
 		translationBuilder.add(ConventionalBiomeTags.IS_END, "The End");
 		translationBuilder.add(ConventionalBiomeTags.IS_OUTER_END_ISLAND, "Outer End Island");
+
+		// Potions
+		translationBuilder.add(ConventionalPotionTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 	}
 }

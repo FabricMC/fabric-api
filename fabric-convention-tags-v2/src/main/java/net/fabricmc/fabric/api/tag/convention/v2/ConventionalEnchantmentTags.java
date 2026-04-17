@@ -52,6 +52,11 @@ public final class ConventionalEnchantmentTags {
 	 * For enchantments that decrease damage taken or otherwise benefit, in regard to damage, the entity wearing armor enchanted with it.
 	 */
 	public static final TagKey<Enchantment> ENTITY_DEFENSE_ENHANCEMENTS = register("entity_defense_enhancements");
+	/**
+	 * Tag that holds all enchantments that recipe viewers should not show to users.
+	 * Recipe viewers may use this to automatically find the corresponding Enchanted Book to hide.
+	 */
+	public static final TagKey<Enchantment> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
 	private static TagKey<Enchantment> register(String tagId) {
 		return TagRegistration.ENCHANTMENT_TAG.registerC(tagId);
