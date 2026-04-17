@@ -29,6 +29,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -40,6 +41,22 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 public final class FluidVariantRendering {
 	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantRenderHandler DEFAULT_HANDLER = new FluidVariantRenderHandler() { };
+
+	static {
+		var waterRenderHandler = new FluidVariantRenderHandler() {
+			@Override
+			public int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
+				if (level == null || pos == null) {
+					return 0xFF3F76E4;
+				}
+
+				return FluidVariantRenderHandler.super.getColor(fluidVariant, level, pos);
+			}
+		};
+
+		register(Fluids.WATER, waterRenderHandler);
+		register(Fluids.FLOWING_WATER, waterRenderHandler);
+	}
 
 	private FluidVariantRendering () {
 	}

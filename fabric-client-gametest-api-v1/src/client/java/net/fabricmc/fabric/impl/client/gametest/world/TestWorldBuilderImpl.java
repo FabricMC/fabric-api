@@ -142,5 +142,6 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		creator.getGameRules().set(GameRules.ADVANCE_TIME, false, null);
 		creator.getGameRules().set(GameRules.ADVANCE_WEATHER, false, null);
 		creator.getGameRules().set(GameRules.SPAWN_MOBS, false, null);
+		creator.getGameRules().set(GameRules.RESPAWN_RADIUS, 0, null);
 	}
 }
