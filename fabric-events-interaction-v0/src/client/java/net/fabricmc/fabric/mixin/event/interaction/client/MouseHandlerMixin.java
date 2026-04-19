@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.world.entity.player.Inventory;
 
-import net.fabricmc.fabric.api.event.client.player.ClientItemScrollEvents;
+import net.fabricmc.fabric.api.event.client.player.ClientHotbarScrollEvents;
 
 @Mixin(MouseHandler.class)
 public abstract class MouseHandlerMixin {
@@ -42,12 +42,12 @@ public abstract class MouseHandlerMixin {
 			@Local(name = "scaledYOffset") double scaledYOffset
 	) {
 		int currentSlot = instance.getSelectedSlot();
-		boolean allow = ClientItemScrollEvents.ALLOW.invoker().allowScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
+		boolean allow = ClientHotbarScrollEvents.ALLOW.invoker().allowScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
 
 		if (allow) {
-			ClientItemScrollEvents.BEFORE.invoker().beforeScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
+			ClientHotbarScrollEvents.BEFORE.invoker().beforeScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
 			original.call(instance, selected);
-			ClientItemScrollEvents.AFTER.invoker().afterScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
+			ClientHotbarScrollEvents.AFTER.invoker().afterScroll(instance, currentSlot, selected, scaledXOffset, scaledYOffset);
 		}
 	}
 }

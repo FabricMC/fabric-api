@@ -22,13 +22,13 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Events pertaining to using the scroll wheel in the inventory to change the selected item.
+ * Events pertaining to using the scroll wheel in the hotbar to change the selected item.
  */
-public final class ClientItemScrollEvents {
+public final class ClientHotbarScrollEvents {
 	/**
-	 * An event that checks whether the player's scrolling will change the selected inventory slot.
+	 * An event that checks whether the player's scrolling will change the selected hotbar slot.
 	 *
-	 * <p>Returning {@code false} cancels the inventory selection change without running anymore
+	 * <p>Returning {@code false} cancels the hotbar selection change without running anymore
 	 * registered callbacks.
 	 */
 	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, listeners -> (inventory, currentSlot, newSlot, xOffset, yOffset) -> {
@@ -44,7 +44,7 @@ public final class ClientItemScrollEvents {
 	});
 
 	/**
-	 * An event that is invoked before player scrolling changes the selected inventory slot.
+	 * An event that is invoked before player scrolling changes the selected hotbar slot.
 	 *
 	 * <p>This event is only fired if the result of {@link #ALLOW} is {@code true}.
 	 */
@@ -55,7 +55,7 @@ public final class ClientItemScrollEvents {
 	});
 
 	/**
-	 * An event that is invoked after player scrolling changes the selected inventory slot.
+	 * An event that is invoked after player scrolling changes the selected hotbar slot.
 	 *
 	 * <p>This event is only fired if the result of {@link #ALLOW} is {@code true}.
 	 */
@@ -109,6 +109,6 @@ public final class ClientItemScrollEvents {
 		void afterScroll(Inventory inventory, int currentSlot, int newSlot, double xOffset, double yOffset);
 	}
 
-	private ClientItemScrollEvents() {
+	private ClientHotbarScrollEvents() {
 	}
 }

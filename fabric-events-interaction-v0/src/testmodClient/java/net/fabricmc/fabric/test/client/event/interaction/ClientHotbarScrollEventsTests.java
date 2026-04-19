@@ -27,9 +27,9 @@ import net.minecraft.world.item.Items;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.fabricmc.fabric.api.event.client.player.ClientItemScrollEvents;
+import net.fabricmc.fabric.api.event.client.player.ClientHotbarScrollEvents;
 
-public class ClientItemScrollEventsTests implements FabricClientGameTest {
+public class ClientHotbarScrollEventsTests implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		try (
@@ -51,7 +51,7 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 				int selectedSlot1 = playerInventory.getSelectedSlot();
 				ctx.selectedSlot = selectedSlot1;
 				playerInventory.setItem(selectedSlot1, new ItemStack(Items.BLAZE_POWDER));
-				ClientItemScrollEvents.ALLOW.register((inventory, currentSlot, _, _, _) -> {
+				ClientHotbarScrollEvents.ALLOW.register((inventory, currentSlot, _, _, _) -> {
 					if (!ctx.inScope) {
 						return true;
 					}
@@ -64,7 +64,7 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 
 					return allow;
 				});
-				ClientItemScrollEvents.BEFORE.register(((inventory, _, newSlot, _, _) -> {
+				ClientHotbarScrollEvents.BEFORE.register(((inventory, _, newSlot, _, _) -> {
 					if (!ctx.inScope) {
 						return;
 					}
@@ -83,7 +83,7 @@ public class ClientItemScrollEventsTests implements FabricClientGameTest {
 
 					ctx.before = true;
 				}));
-				ClientItemScrollEvents.AFTER.register(((inventory, _, newSlot, _, _) -> {
+				ClientHotbarScrollEvents.AFTER.register(((inventory, _, newSlot, _, _) -> {
 					if (!ctx.inScope) {
 						return;
 					}
