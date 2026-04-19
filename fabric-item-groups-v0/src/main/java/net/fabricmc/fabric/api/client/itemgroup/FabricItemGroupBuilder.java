@@ -113,7 +113,11 @@ public final class FabricItemGroupBuilder {
 	 */
 	public ItemGroup build() {
 		((ItemGroupExtensions) ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
-		return new ItemGroup(ItemGroup.GROUPS.length - 1, String.format("%s.%s", identifier.getNamespace(), identifier.getPath())) {
+		String groupKey = identifier.getNamespace();
+		if (!identifier.getPath().isEmpty()) {
+			groupKey = String.format("%s.%s", identifier.getNamespace(), identifier.getPath())
+		}
+		return new ItemGroup(ItemGroup.GROUPS.length - 1, groupKey) {
 			@Override
 			public ItemStack createIcon() {
 				return stackSupplier.get();
