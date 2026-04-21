@@ -107,12 +107,12 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		LevelRenderEvents.START_MAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.COLLECT_SUBMITS.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.AFTER_SOLID_FEATURES.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.AFTER_SOLID_FEATURES.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
+		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
 		LevelRenderEvents.BEFORE_GIZMOS.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.END_MAIN.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
+		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
+		LevelRenderEvents.END_MAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
@@ -133,10 +133,14 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 	}
 
 	private static void assertRenderContext(LevelRenderContext context) {
-		assertTerrainRenderContext(context);
 		assertNotNull(context.submitNodeCollector(), "submitNodeCollector is null");
 		assertNotNull(context.poseStack(), "poseStack is null");
 		assertNotNull(context.bufferSource(), "bufferSource is null");
+	}
+
+	private static void assertRenderContextWithTerrain(LevelRenderContext context) {
+		assertRenderContext(context);
+		assertTerrainRenderContext(context);
 	}
 
 	private static void assertTerrainRenderContext(LevelTerrainRenderContext context) {
