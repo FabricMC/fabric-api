@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
-import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
+import net.minecraft.client.renderer.feature.BlockModelFeatureRenderer;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -55,7 +55,7 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * respectively, instead.
  *
  * <p>Renderers must patch {@link ItemFeatureRenderer} to support
- * {@link FabricSubmitNodeCollection#getExtendedItemSubmits()}. {@link BlockFeatureRenderer} is automatically patched
+ * {@link FabricSubmitNodeCollection#getExtendedItemSubmits()}. {@link BlockModelFeatureRenderer} is automatically patched
  * to support {@link FabricSubmitNodeCollection#getExtendedBlockModelSubmits()} and {@link BlockStateModel#emitQuads}.
  */
 public interface Renderer {

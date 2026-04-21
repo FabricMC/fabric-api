@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
@@ -36,8 +36,8 @@ abstract class ItemFeatureRendererMixin {
 	private final AltItemRenderer altItemRenderer = new AltItemRenderer();
 
 	@Inject(method = "renderSolid", at = @At("RETURN"))
-	private void onReturnRenderSolid(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
-		altItemRenderer.prepare(bufferSource, outlineBufferSource, false);
+	private void onReturnRenderSolid(SubmitNodeCollection nodeCollection, FeatureFrameContext context, CallbackInfo ci) {
+		altItemRenderer.prepare((MultiBufferSource.BufferSource) context.bufferSource(), context.outlineBufferSource(), false);
 
 		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : nodeCollection.getExtendedItemSubmits()) {
 			altItemRenderer.renderItem(submit);
@@ -47,8 +47,8 @@ abstract class ItemFeatureRendererMixin {
 	}
 
 	@Inject(method = "renderTranslucent", at = @At("RETURN"))
-	private void onReturnRenderTranslucent(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
-		altItemRenderer.prepare(bufferSource, outlineBufferSource, true);
+	private void onReturnRenderTranslucent(SubmitNodeCollection nodeCollection, FeatureFrameContext context, CallbackInfo ci) {
+		altItemRenderer.prepare((MultiBufferSource.BufferSource) context.bufferSource(), context.outlineBufferSource(), true);
 
 		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : nodeCollection.getExtendedItemSubmits()) {
 			altItemRenderer.renderItem(submit);

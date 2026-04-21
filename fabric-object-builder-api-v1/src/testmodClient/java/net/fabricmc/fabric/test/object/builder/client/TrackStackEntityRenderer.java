@@ -52,7 +52,7 @@ public class TrackStackEntityRenderer extends MobRenderer<TrackStackEntity, Trac
 		poseStack.translate(0, -2, 0);
 
 		for (Component line : labelLines) {
-			submitNodeCollector.order(0).submitNameTag(poseStack, renderState.nameTagAttachment, 0, line, !renderState.isDiscrete, renderState.lightCoords, renderState.distanceToCameraSq, cameraState);
+			submitNodeCollector.order(0).submitNameTag(poseStack, renderState.nameTagAttachment, 0, line, !renderState.isDiscrete, renderState.lightCoords, cameraState);
 			poseStack.translate(0, 0.25875f, 0);
 		}
 

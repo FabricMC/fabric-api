@@ -23,10 +23,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.SubmitNodeCollection;
-import net.minecraft.client.renderer.SubmitNodeStorage.BlockModelSubmit;
-import net.minecraft.client.renderer.SubmitNodeStorage.ItemSubmit;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.feature.BlockModelFeatureRenderer;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -57,13 +57,13 @@ public interface FabricSubmitNodeCollection {
 
 	// CHECKSTYLE:OFF MatchXpath
 	/**
-	 * An alternative to {@link BlockModelSubmit} that accepts a {@link Mesh}.
+	 * An alternative to {@link BlockModelFeatureRenderer.Submit} that accepts a {@link Mesh}.
 	 */
 	record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, boolean translucent, List<BlockStateModelPart> modelParts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
 	}
 
 	/**
-	 * An alternative to {@link ItemSubmit} that accepts a {@link MeshView}.
+	 * An alternative to {@link ItemFeatureRenderer.Submit} that accepts a {@link MeshView}.
 	 */
 	record ExtendedItemSubmit(PoseStack.Pose pose, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 	}

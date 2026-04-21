@@ -81,18 +81,18 @@ public abstract class LevelRendererMixin {
 		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.invoker().afterOpaqueTerrain(renderContext);
 	}
 
-	@ModifyExpressionValue(method = "lambda$addMainPass$0", at = @At(value = "NEW", target = "Lcom/mojang/blaze3d/vertex/PoseStack;"))
+	@ModifyExpressionValue(method = "submitFeatures", at = @At(value = "NEW", target = "Lcom/mojang/blaze3d/vertex/PoseStack;"))
 	private PoseStack onCreatePoseStack(PoseStack poseStack) {
 		renderContext.setPoseStack(poseStack);
 		return poseStack;
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=renderSolidFeatures"))
+	@Inject(method = "submitFeatures", at = @At("RETURN"))
 	private void afterCollectSubmits(CallbackInfo ci) {
 		LevelRenderEvents.COLLECT_SUBMITS.invoker().collectSubmits(renderContext);
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V", ordinal = 0))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiling/ProfilerFiller;pop()V", ordinal = 0))
 	private void afterRenderSolidFeatures(CallbackInfo ci) {
 		LevelRenderEvents.AFTER_SOLID_FEATURES.invoker().afterSolidFeatures(renderContext);
 	}
@@ -109,7 +109,7 @@ public abstract class LevelRendererMixin {
 		}
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;finalizeGizmoCollection()V"))
+	@Inject(method = "submitFeatures", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;finalizeGizmoCollection()V"))
 	private void beforeCollectGizmos(CallbackInfo ci) {
 		LevelRenderEvents.BEFORE_GIZMOS.invoker().beforeGizmos(renderContext);
 	}
