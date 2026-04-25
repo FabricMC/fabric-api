@@ -18,12 +18,12 @@ package net.fabricmc.fabric.mixin.tag;
 
 import java.util.List;
 import java.util.Map;
-import java.util.SequencedSet;
-import java.util.function.Consumer;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,29 +41,18 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
-import net.fabricmc.fabric.impl.tag.TagLoaderEntryWithSourceHooks;
+import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
-	private void addRemovableTagEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "tagContents") List<TagLoader.EntryWithSource> tagContents, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
-		((TagFileHooks) (Object) parsedContents).fabric_removed().forEach(tagEntry -> {
-			TagEntryAccessor entryAccessor = (TagEntryAccessor) tagEntry;
-			TagLoader.EntryWithSource entryWithSource = new TagLoader.EntryWithSource(TagEntryAccessor.fabric_init(entryAccessor.fabric_getId(), entryAccessor.fabric_getTag(), false), sourceId);
-			((TagLoaderEntryWithSourceHooks) (Object) entryWithSource).fabric_setRemove(true);
-			tagContents.add(entryWithSource);
-		});
+	private void addRemovableTagEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
+		TagRemovalInternals.loadRemoveEntries(id, ((TagFileHooks) (Object) parsedContents).fabric_removed(), sourceId);
 	}
 
-	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagEntry;build(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/function/Consumer;)Z"))
-	private <T> boolean swapRemovalIdConsumer(TagEntry instance, TagEntry.Lookup<T> lookup, Consumer<T> output, Operation<Boolean> original, @Local(argsOnly = true) List<TagLoader.EntryWithSource> entries, @Local(name = "values") SequencedSet<T> values, @Local(name = "entry") TagLoader.EntryWithSource entry) {
-		return original.call(
-				instance,
-				lookup,
-				((TagLoaderEntryWithSourceHooks) (Object) entry).fabric_remove()
-						? (Consumer<T>) values::remove
-						: output
-		);
+	@ModifyReturnValue(method = "build", at = @At("RETURN"))
+	private <T> Map<Identifier, List<T>> swapRemovalIdConsumer(Map<Identifier, List<T>> original, @Local(name = "newTags") Map<Identifier, List<T>> newTags, @Local(name = "lookup") TagEntry.Lookup<T> lookup) {
+		return TagRemovalInternals.removeEntriesFromTags(newTags, lookup);
 	}
 
 	// Fixes a likely vanilla bug causing loot table tags to not get loaded.
