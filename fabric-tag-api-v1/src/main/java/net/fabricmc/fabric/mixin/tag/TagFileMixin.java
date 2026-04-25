@@ -31,11 +31,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 
+import net.fabricmc.fabric.api.tag.v1.FabricTagFile;
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
 import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagFile.class)
-public class TagFileMixin implements TagFileHooks {
+public class TagFileMixin implements FabricTagFile, TagFileHooks {
 	@Unique
 	private List<TagEntry> remove = Collections.emptyList();
 
@@ -50,7 +51,7 @@ public class TagFileMixin implements TagFileHooks {
 	}
 
 	@Override
-	public List<TagEntry> fabric_remove() {
+	public List<TagEntry> remove() {
 		return Collections.unmodifiableList(remove);
 	}
 

@@ -41,8 +41,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
-import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.TagAliasGenerator;
+import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
 
 @Mixin(TagsProvider.class)
@@ -60,9 +60,9 @@ public class TagsProviderMixin<T> {
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
 	private T addRemove(T value, @Local(name = "builder") TagBuilder builder) {
-		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
+		if (builder instanceof TagBuilderHooks tagBuilderHooks) {
 			// Expected to always be TagFile, there are MANY other issues if this is not the case.
-			((TagFileHooks) value).fabric_setRemove(fabricTagBuilder.fabric_getRemove());
+			((TagFileHooks) value).fabric_setRemove(tagBuilderHooks.fabric_getRemove());
 			return value;
 		}
 
@@ -71,8 +71,8 @@ public class TagsProviderMixin<T> {
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
 	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder builder) {
-		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
-			return fabricTagBuilder.fabric_isReplaced();
+		if (builder instanceof TagBuilderHooks tagBuilderHooks) {
+			return tagBuilderHooks.fabric_isReplaced();
 		}
 
 		return replaced;

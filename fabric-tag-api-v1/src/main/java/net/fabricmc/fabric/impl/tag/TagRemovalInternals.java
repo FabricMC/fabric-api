@@ -33,6 +33,8 @@ import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.util.DependencySorter;
 
+import net.fabricmc.fabric.api.tag.v1.FabricTagFile;
+
 public class TagRemovalInternals {
 	private static final ThreadLocal<Map<Identifier, List<TagLoader.EntryWithSource>>> REMOVE_ENTRIES = new ThreadLocal<>();
 
@@ -43,7 +45,7 @@ public class TagRemovalInternals {
 				TagEntry.CODEC
 						.listOf()
 						.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
-						.forGetter(tagFile -> ((TagFileHooks) (Object) tagFile).fabric_remove())
+						.forGetter(FabricTagFile::remove)
 		).apply(i, (tagFile, remove) -> {
 			((TagFileHooks) (Object) tagFile).fabric_setRemove(remove);
 			return tagFile;

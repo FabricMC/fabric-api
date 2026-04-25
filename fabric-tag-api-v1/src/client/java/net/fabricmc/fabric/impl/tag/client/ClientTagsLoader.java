@@ -41,7 +41,6 @@ import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StrictJsonParser;
 
-import net.fabricmc.fabric.impl.tag.TagFileHooks;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -69,7 +68,7 @@ public class ClientTagsLoader {
 					}
 
 					values.addAll(maybeTagFile.entries());
-					remove.addAll(((TagFileHooks) (Object) maybeTagFile).fabric_remove());
+					remove.addAll(maybeTagFile.remove());
 				}
 			} catch (IOException e) {
 				LOGGER.error("Error loading tag: {}", tagKey, e);

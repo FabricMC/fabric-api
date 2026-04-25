@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag;
+package net.fabricmc.fabric.api.tag.v1;
 
 import java.util.List;
 
 import net.minecraft.tags.TagEntry;
 
-public interface TagFileHooks {
-	void fabric_setRemove(List<TagEntry> remove);
+/**
+ * Fabric-provided extensions for the {@link net.minecraft.tags.TagFile} class.
+ */
+public interface FabricTagFile {
+	/**
+	 * A list of entries defined via the {@code fabric:remove} field.
+	 */
+	default List<TagEntry> remove() {
+		throw new AssertionError("Must be implemented via interface injection");
+	}
 }

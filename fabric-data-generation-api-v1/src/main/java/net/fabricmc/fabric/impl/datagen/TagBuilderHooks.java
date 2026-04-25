@@ -21,7 +21,7 @@ import java.util.List;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagEntry;
 
-public interface FabricTagBuilder {
+public interface TagBuilderHooks {
 	void fabric_setReplace(boolean replace);
 
 	boolean fabric_isReplaced();
