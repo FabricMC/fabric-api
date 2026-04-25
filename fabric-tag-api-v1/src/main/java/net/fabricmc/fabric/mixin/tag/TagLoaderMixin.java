@@ -45,13 +45,13 @@ import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
-	private void addRemovableTagEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
+	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
 		TagRemovalInternals.loadRemoveEntries(id, ((TagFileHooks) (Object) parsedContents).fabric_remove(), sourceId);
 	}
 
 	@ModifyReturnValue(method = "build", at = @At("RETURN"))
-	private <T> Map<Identifier, List<T>> swapRemovalIdConsumer(Map<Identifier, List<T>> original, @Local(name = "newTags") Map<Identifier, List<T>> newTags, @Local(name = "lookup") TagEntry.Lookup<T> lookup) {
-		return TagRemovalInternals.removeEntriesFromTags(newTags, lookup);
+	private <T> Map<Identifier, List<T>> removeEntriesFromTags(Map<Identifier, List<T>> original, @Local(name = "lookup") TagEntry.Lookup<T> lookup) {
+		return TagRemovalInternals.removeEntriesFromTags(original, lookup);
 	}
 
 	// Fixes a likely vanilla bug causing loot table tags to not get loaded.
