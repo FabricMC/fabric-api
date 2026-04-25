@@ -43,6 +43,11 @@ import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
+	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V"))
+	private void replaceRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id) {
+		TagRemovalInternals.replaceRemoveEntries(id);
+	}
+
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
 	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
 		TagRemovalInternals.loadRemoveEntries(id, parsedContents.remove(), sourceId);

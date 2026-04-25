@@ -36,7 +36,7 @@ import net.minecraft.util.DependencySorter;
 import net.fabricmc.fabric.api.tag.v1.FabricTagFile;
 
 public class TagRemovalInternals {
-	private static final ThreadLocal<Map<Identifier, List<TagLoader.EntryWithSource>>> REMOVE_ENTRIES = new ThreadLocal<>();
+	private static final ThreadLocal<Map<Identifier, List<TagLoader.EntryWithSource>>> REMOVE_ENTRIES = ThreadLocal.withInitial(HashMap::new);
 
 	public static Codec<TagFile> modifyTagFileCodec(Codec<TagFile> originalCodec) {
 		return RecordCodecBuilder.create(i -> i.group(
@@ -52,11 +52,15 @@ public class TagRemovalInternals {
 		}));
 	}
 
-	public static void loadRemoveEntries(Identifier tagId, List<TagEntry> removeEntries, String sourceId) {
-		if (REMOVE_ENTRIES.get() == null) {
-			REMOVE_ENTRIES.set(new HashMap<>());
-		}
+	public static void replaceRemoveEntries(Identifier tagId) {
+		Map<Identifier, List<TagLoader.EntryWithSource>> removeEntries = REMOVE_ENTRIES.get();
 
+		if (removeEntries.containsKey(tagId)) {
+			removeEntries.get(tagId).clear();
+		}
+	}
+
+	public static void loadRemoveEntries(Identifier tagId, List<TagEntry> removeEntries, String sourceId) {
 		List<TagLoader.EntryWithSource> entriesWithSources = new ArrayList<>();
 
 		for (TagEntry entry : removeEntries) {
@@ -67,7 +71,7 @@ public class TagRemovalInternals {
 	}
 
 	public static <T> Map<Identifier, List<T>> removeEntriesFromTags(Map<Identifier, List<T>> newTags, TagEntry.Lookup<T> lookup) {
-		Map<Identifier, List<TagLoader.EntryWithSource>> removeEntries = REMOVE_ENTRIES.get() == null ? Collections.emptyMap() : REMOVE_ENTRIES.get();
+		Map<Identifier, List<TagLoader.EntryWithSource>> removeEntries = REMOVE_ENTRIES.get();
 
 		DependencySorter<Identifier, TagLoader.SortingEntry> removeSorter = new DependencySorter<>();
 
@@ -89,7 +93,7 @@ public class TagRemovalInternals {
 			newTags.put(tagId, Collections.unmodifiableList(newTag));
 		});
 
-		REMOVE_ENTRIES.remove();
+		REMOVE_ENTRIES.get().clear();
 		return newTags;
 	}
 }
