@@ -42,7 +42,6 @@ public class RecipeBookTestContent implements ModInitializer {
 	private static final String MOD_ID = "fabric-recipe-api-v1-testmod";
 
 	public static final RecipeSerializer<BookRecipe> BOOK_RECIPE_SERIALIZER = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, id("book"), new RecipeSerializer<>(BookRecipe.MAP_CODEC, BookRecipe.STREAM_CODEC));
-	public static final RecipeDisplay.Type<BookRecipeDisplay> BOOK_RECIPE_DISPLAY_TYPE = Registry.register(BuiltInRegistries.RECIPE_DISPLAY, id("book"), BookRecipeDisplay.TYPE);
 
 	public static final RecipeBookCategory BOOK_CATEGORY = Registry.register(BuiltInRegistries.RECIPE_BOOK_CATEGORY, id("book"), new RecipeBookCategory());
 	public static final RecipeBookCategory KNOWLEDGE_BOOK_CATEGORY = Registry.register(BuiltInRegistries.RECIPE_BOOK_CATEGORY, id("knowledge_book"), new RecipeBookCategory());
@@ -63,6 +62,7 @@ public class RecipeBookTestContent implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Registry.register(BuiltInRegistries.RECIPE_DISPLAY, id("book"), BookRecipeDisplay.TYPE);
 		RecipeBookRegistry.registerRecipeBookType(RecipeBookType.FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING, id("book_crafting"));
 		RecipeBookRegistry.registerRecipeBookType(RecipeBookType.FABRIC_RECIPE_API_V1_TESTMOD_UNUSED, id("unused"));
 	}
