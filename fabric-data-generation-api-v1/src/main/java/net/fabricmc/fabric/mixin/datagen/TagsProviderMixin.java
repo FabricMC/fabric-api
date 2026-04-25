@@ -85,6 +85,6 @@ public class TagsProviderMixin<T> {
 			newFutures[index++] = TagAliasGenerator.writeTagAlias(cache, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
 		}
 
-		return original.call(newFutures);
+		return original.call((Object) newFutures);
 	}
 }
