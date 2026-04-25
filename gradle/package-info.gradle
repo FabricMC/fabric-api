@@ -104,8 +104,16 @@ abstract class GeneratePackageInfos extends DefaultTask {
 }
 
 abstract class CheckPackageInfos extends DefaultTask {
+	@Input
+	abstract Property<String> getProjectName()
+
+	@SkipWhenEmpty
 	@InputDirectory
-	abstract DirectoryProperty getSourceRoot()
+	final DirectoryProperty sourceRoot = project.objects.directoryProperty()
+
+	CheckPackageInfos() {
+		projectName.set(project.name)
+	}
 
 	@TaskAction
 	def run() {
@@ -121,12 +129,26 @@ abstract class CheckPackageInfos extends DefaultTask {
 				return
 			}
 
+			def relativePath = root.relativize(it)
+			def packageName = relativePath.toString().replace(File.separator, '.')
+
+			if (packageName == "net.fabricmc.fabric.api.util" && projectName.get() == "fabric-content-registries-v0") {
+				// Hack: This package clashes with api-base, so no annotations are generated for it.
+				return
+			}
+
+			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
+			def isImpl = relativePath.toString() =~ implPattern
+
 			def existingPackageInfo = it.resolve('package-info.java')
 			if (!Files.exists(existingPackageInfo)) {
-				errors << "Missing package-info.java in package: " + root.relativize(it).toString().replace(File.separator, '.')
+				errors << "Missing package-info.java in package: " + packageName
 				return
 			} else if (!existingPackageInfo.text.contains("@NullMarked")) {
 				errors << "package-info.java ${existingPackageInfo} is missing @NullMarked annotation."
+				return
+			} else if (isImpl && !existingPackageInfo.text.contains("@ApiStatus.Internal")) {
+				errors << "Impl package-info.java ${existingPackageInfo} is missing @ApiStatus.Internal annotation."
 				return
 			}
 		}
