@@ -53,7 +53,7 @@ public class ClientTagsLoader {
 	 */
 	public static LoadedTag loadTag(TagKey<?> tagKey) {
 		var values = new HashSet<TagEntry>();
-		var removed = new HashSet<TagEntry>();
+		var remove = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.location());
 
 		for (Path tagPath : tagFiles) {
@@ -65,11 +65,11 @@ public class ClientTagsLoader {
 				if (maybeTagFile != null) {
 					if (maybeTagFile.replace()) {
 						values.clear();
-						removed.clear();
+						remove.clear();
 					}
 
 					values.addAll(maybeTagFile.entries());
-					removed.addAll(((TagFileHooks) (Object) maybeTagFile).fabric_removed());
+					remove.addAll(((TagFileHooks) (Object) maybeTagFile).fabric_remove());
 				}
 			} catch (IOException e) {
 				LOGGER.error("Error loading tag: {}", tagKey, e);
@@ -77,11 +77,11 @@ public class ClientTagsLoader {
 		}
 
 		HashSet<Identifier> completeIds = new HashSet<>();
-		HashSet<Identifier> removedIds = new HashSet<>();
+		HashSet<Identifier> removeIds = new HashSet<>();
 		HashSet<Identifier> immediateChildIds = new HashSet<>();
-		HashSet<Identifier> immediateRemovedChildIds = new HashSet<>();
+		HashSet<Identifier> immediateRemoveChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
-		HashSet<TagKey<?>> immediateRemovedChildTags = new HashSet<>();
+		HashSet<TagKey<?>> immediateRemoveChildTags = new HashSet<>();
 
 		for (TagEntry tagEntry : values) {
 			tagEntry.build(new TagEntry.Lookup<>() {
@@ -101,11 +101,11 @@ public class ClientTagsLoader {
 			}, completeIds::add);
 		}
 
-		for (TagEntry removedEntry : removed) {
-			removedEntry.build(new TagEntry.Lookup<>() {
+		for (TagEntry removeEntry : remove) {
+			removeEntry.build(new TagEntry.Lookup<>() {
 				@Override
 				public Identifier element(Identifier id, boolean required) {
-					immediateRemovedChildIds.add(id);
+					immediateRemoveChildIds.add(id);
 					return id;
 				}
 
@@ -113,24 +113,24 @@ public class ClientTagsLoader {
 				@Override
 				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
-					immediateRemovedChildTags.add(tag);
-					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).removedIds;
+					immediateRemoveChildTags.add(tag);
+					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).removeIds;
 				}
-			}, removedIds::add);
+			}, removeIds::add);
 		}
 
 		// Ensure that the tag does not refer to itself
 		immediateChildTags.remove(tagKey);
-		immediateRemovedChildTags.remove(tagKey);
+		immediateRemoveChildTags.remove(tagKey);
 
-		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(removedIds),
-				Collections.unmodifiableSet(immediateChildTags), Collections.unmodifiableSet(immediateRemovedChildTags),
-				Collections.unmodifiableSet(immediateChildIds), Collections.unmodifiableSet(immediateRemovedChildIds));
+		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(removeIds),
+				Collections.unmodifiableSet(immediateChildTags), Collections.unmodifiableSet(immediateRemoveChildTags),
+				Collections.unmodifiableSet(immediateChildIds), Collections.unmodifiableSet(immediateRemoveChildIds));
 	}
 
-	public record LoadedTag(Set<Identifier> completeIds, Set<Identifier> removedIds,
-							Set<TagKey<?>> immediateChildTags, Set<TagKey<?>> immediateRemovedChildTags,
-							Set<Identifier> immediateChildIds, Set<Identifier> immediateRemovedChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds, Set<Identifier> removeIds,
+							Set<TagKey<?>> immediateChildTags, Set<TagKey<?>> immediateRemoveChildTags,
+							Set<Identifier> immediateChildIds, Set<Identifier> immediateRemoveChildIds) {
 	}
 
 	/**

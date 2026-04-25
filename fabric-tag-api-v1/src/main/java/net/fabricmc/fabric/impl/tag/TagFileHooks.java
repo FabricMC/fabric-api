@@ -22,9 +22,9 @@ import java.util.List;
 import net.minecraft.tags.TagEntry;
 
 public interface TagFileHooks {
-	default List<TagEntry> fabric_removed() {
+	default List<TagEntry> fabric_remove() {
 		return Collections.emptyList();
 	}
 
-	void fabric_setRemoved(List<TagEntry> removed);
+	void fabric_setRemove(List<TagEntry> remove);
 }

@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 @Mixin(TagFile.class)
 public class TagFileMixin implements TagFileHooks {
 	@Unique
-	private List<TagEntry> removed = Collections.emptyList();
+	private List<TagEntry> remove = Collections.emptyList();
 
 	@Shadow
 	@Mutable
@@ -50,12 +50,12 @@ public class TagFileMixin implements TagFileHooks {
 	}
 
 	@Override
-	public List<TagEntry> fabric_removed() {
-		return removed;
+	public List<TagEntry> fabric_remove() {
+		return remove;
 	}
 
 	@Override
-	public void fabric_setRemoved(List<TagEntry> removed) {
-		this.removed = removed;
+	public void fabric_setRemove(List<TagEntry> remove) {
+		this.remove = remove;
 	}
 }

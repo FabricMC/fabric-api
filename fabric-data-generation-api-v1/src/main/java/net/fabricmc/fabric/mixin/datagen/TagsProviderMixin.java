@@ -59,10 +59,10 @@ public class TagsProviderMixin<T> {
 	}
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
-	private T addRemoved(T value, @Local(name = "builder") TagBuilder builder) {
+	private T addRemove(T value, @Local(name = "builder") TagBuilder builder) {
 		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
 			// Expected to always be TagFile, there are MANY other issues if this is not the case.
-			((TagFileHooks) value).fabric_setRemoved(fabricTagBuilder.fabric_getRemoved());
+			((TagFileHooks) value).fabric_setRemove(fabricTagBuilder.fabric_getRemove());
 			return value;
 		}
 

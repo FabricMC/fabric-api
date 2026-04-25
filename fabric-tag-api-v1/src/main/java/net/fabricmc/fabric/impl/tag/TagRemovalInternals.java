@@ -43,9 +43,9 @@ public class TagRemovalInternals {
 				TagEntry.CODEC
 						.listOf()
 						.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
-						.forGetter(tagFile -> ((TagFileHooks) (Object) tagFile).fabric_removed())
-		).apply(i, (tagFile, removed) -> {
-			((TagFileHooks) (Object) tagFile).fabric_setRemoved(removed);
+						.forGetter(tagFile -> ((TagFileHooks) (Object) tagFile).fabric_remove())
+		).apply(i, (tagFile, remove) -> {
+			((TagFileHooks) (Object) tagFile).fabric_setRemove(remove);
 			return tagFile;
 		}));
 	}

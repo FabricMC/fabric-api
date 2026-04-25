@@ -37,7 +37,7 @@ public abstract class TagBuilderMixin implements FabricTagBuilder {
 	public abstract TagBuilder add(TagEntry entry);
 
 	@Unique
-	private final List<TagEntry> removed = new ArrayList<>();
+	private final List<TagEntry> remove = new ArrayList<>();
 	@Unique
 	private boolean replace = false;
 
@@ -57,17 +57,17 @@ public abstract class TagBuilderMixin implements FabricTagBuilder {
 	}
 
 	@Override
-	public List<TagEntry> fabric_getRemoved() {
-		return Collections.unmodifiableList(removed);
+	public List<TagEntry> fabric_getRemove() {
+		return Collections.unmodifiableList(remove);
 	}
 
 	@Override
 	public void fabric_removeElement(Identifier id) {
-		removed.add(TagEntry.element(id));
+		remove.add(TagEntry.element(id));
 	}
 
 	@Override
 	public void fabric_removeTag(Identifier tag) {
-		removed.add(TagEntry.tag(tag));
+		remove.add(TagEntry.tag(tag));
 	}
 }
