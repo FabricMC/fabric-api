@@ -15,7 +15,7 @@ name: Push to Crowdin
 on:
   push:
     paths:
-      - ".github/workflows/l10n-push.yaml"
+      - ".github/workflows/l10n-push.yml"
       - "crowdin.yaml"
       - "*/src/*/resources/assets/*/lang/en_us.json"
   workflow_dispatch:
