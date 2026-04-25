@@ -51,7 +51,7 @@ public class TagFileMixin implements TagFileHooks {
 
 	@Override
 	public List<TagEntry> fabric_remove() {
-		return remove;
+		return Collections.unmodifiableList(remove);
 	}
 
 	@Override
