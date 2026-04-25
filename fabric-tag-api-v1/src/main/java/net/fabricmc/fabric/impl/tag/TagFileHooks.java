@@ -16,15 +16,12 @@
 
 package net.fabricmc.fabric.impl.tag;
 
-import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.tags.TagEntry;
 
 public interface TagFileHooks {
-	default List<TagEntry> fabric_remove() {
-		return Collections.emptyList();
-	}
+	List<TagEntry> fabric_remove();
 
 	void fabric_setRemove(List<TagEntry> remove);
 }
