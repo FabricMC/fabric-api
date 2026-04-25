@@ -50,16 +50,18 @@
  * in a higher-priority data pack to unlink them.
  *
  * <h1>Removing entries from tags</h1>
- * <dfn>Tag entry removals</dfn> may be used to just remove entries you may not want in a tag.
+ * <dfn>Tag entry removals</dfn> may be used to remove entries from a tag.
  *
- * <p>{@link net.minecraft.tags.TagFile} contains an additional field with the key {@code fabric:remove}, which is an
- * array of entries you wish to remove, following the same syntax as the {@code values} field. These entries may be
- * referenced via Java code using {@link net.minecraft.tags.TagFile#remove()}.
+ * <p>These may be used to remove values from gameplay facing tags, to exclude specific entries from
+ * referenced tags from being applied via a tag's {@linkplain net.minecraft.tags.TagFile#entries() values}
+ * field, or to just remove unwanted values.
+ *
+ * <p>All tag files contain an additional field: {@code fabric:remove} which is an array of entries
+ * you wish to remove, following the same syntax as the {@code values} field.
  *
  * <p>Entries within the {@code fabric:remove} field are handled after all values are added to the tag,
  * these entries should never be required, meaning they will never throw exceptions if not present in
  * the associated registry.
- *
  */
 @NullMarked
 package net.fabricmc.fabric.api.tag.v1;
