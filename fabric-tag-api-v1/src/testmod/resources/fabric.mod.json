@@ -9,6 +9,9 @@
     "fabric-tag-api-v1": "*"
   },
   "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.tag.TagTest"
+    ],
     "client": [
       "net.fabricmc.fabric.test.tag.client.v1.ClientTagTest"
     ],

@@ -8,7 +8,9 @@
     "MappedRegistryMixin",
     "MappedRegistryTagSet2Accessor",
     "ReloadableServerResourcesMixin",
+    "TagEntryAccessor",
     "TagFileMixin",
+    "TagLoaderEntryWithSourceMixin",
     "TagLoaderMixin"
   ],
   "injectors": {

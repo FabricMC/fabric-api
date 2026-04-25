@@ -1,7 +1,6 @@
 {
   "pack": {
-    "min_format": 101,
-    "max_format": 101,
+    "pack_format": 9,
     "description": "Test Dirt in SwordEfficient"
   }
 }

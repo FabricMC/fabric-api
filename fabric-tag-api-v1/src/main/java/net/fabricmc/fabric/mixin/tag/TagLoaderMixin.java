@@ -19,10 +19,12 @@ package net.fabricmc.fabric.mixin.tag;
 import java.util.List;
 import java.util.Map;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.impl.tag.EntryWithSourceHooks;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,23 +41,23 @@ import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 
-import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
-
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
-	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V"))
-	private void replaceRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id) {
-		TagRemovalInternals.replaceRemoveEntries(id);
-	}
-
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
-	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
-		TagRemovalInternals.loadRemoveEntries(id, parsedContents.remove(), sourceId);
+	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "tagContents") List<TagLoader.EntryWithSource> tagContents, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
+		for (TagEntry entry : parsedContents.remove()) {
+			TagLoader.EntryWithSource entryWithSource = new TagLoader.EntryWithSource(entry, sourceId);
+			((EntryWithSourceHooks) (Object) entryWithSource).fabric_setRemove(true);
+			tagContents.add(entryWithSource);
+		}
 	}
 
-	@ModifyReturnValue(method = "build", at = @At("RETURN"))
-	private <T> Map<Identifier, List<T>> removeEntriesFromTags(Map<Identifier, List<T>> original, @Local(name = "lookup") TagEntry.Lookup<T> lookup) {
-		return TagRemovalInternals.removeEntriesFromTags(original, lookup);
+	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
+	private <T> boolean removeEntriesFromTags(List<T> instance, T t, Operation<Boolean> original, @Local(name = "entry") TagLoader.EntryWithSource entry) {
+		if (((EntryWithSourceHooks) (Object) entry).fabric_remove()) {
+			return instance.remove(t);
+		}
+		return original.call(instance, t);
 	}
 
 	// Fixes a likely vanilla bug causing loot table tags to not get loaded.

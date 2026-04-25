@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biomes;
@@ -63,6 +64,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 
 			try (TestServerConnection connection = serverContext.connect()) {
 				context.runOnClient(ClientTagGameTests::clientTagDedicatedServerTests);
+				context.runOnClient(ClientTagGameTests::reAddRemovedClientValue);
 			}
 		}
 	}
@@ -131,5 +133,50 @@ public class ClientTagGameTests implements FabricClientGameTest {
 
 		// Success!
 		LOGGER.info("The tests for dedicated client tag tests passed!");
+	}
+
+	/**
+	 * @see net.fabricmc.fabric.test.tag.TagEntryRemovalTests#reAddRemovedValue(GameTestHelper)
+	 */
+	private static void reAddRemovedClientValue(Minecraft client) {
+		removeThenTestMelonInSwordEfficient(client);
+		addThenTestMelonInSwordEfficient(client);
+		removeThenTestMelonInSwordEfficient(client);
+	}
+
+	private static void removeThenTestMelonInSwordEfficient(Minecraft client) {
+		if (!client.getResourcePackRepository().removePack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString())) {
+			throw new IllegalStateException("Could not unload '" + ClientTagTest.ADD_BACK_MELON_PACK_ID + "' data pack");
+		}
+
+		client.reloadResourcePacks();
+
+		ClientTagTestUtils.assertThrows(
+				() -> ClientTagTestUtils.assertInWithLocalFallback(
+						LOGGER,
+						"",
+						BlockTags.SWORD_EFFICIENT,
+						TagTestUtils::getBlockKey,
+						Blocks.MELON
+				),
+				"Did not expect to find %s in %s, but it was found!"
+						.formatted(Blocks.COCOA.builtInRegistryHolder().key().identifier(), BlockTags.SWORD_EFFICIENT.location())
+		);
+	}
+
+	private static void addThenTestMelonInSwordEfficient(Minecraft client) {
+		if (!client.getResourcePackRepository().addPack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString())) {
+			throw new IllegalStateException("Could not load '" + ClientTagTest.ADD_BACK_MELON_PACK_ID + "' resource pack");
+		}
+
+		client.reloadResourcePacks();
+
+		ClientTagTestUtils.assertInWithLocalFallback(
+				LOGGER,
+				"",
+				BlockTags.SWORD_EFFICIENT,
+				TagTestUtils::getBlockKey,
+				Blocks.MELON
+		);
 	}
 }

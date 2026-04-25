@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.tag.client.v1;
 
+import static net.fabricmc.fabric.test.tag.TagTest.MOD_ID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,15 +32,19 @@ import net.fabricmc.loader.api.ModContainer;
 public class ClientTagTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagTest.class);
 
-	public static final String MOD_ID = "fabric-tag-api-v1-testmod";
 	protected static final Identifier BUILT_IN_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "test");
+	protected static final Identifier ADD_BACK_MELON_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "add_back_melon");
 
 	@Override
 	public void onInitializeClient() {
 		final ModContainer container = FabricLoader.getInstance().getModContainer(MOD_ID).get();
 
-		if (!ResourceLoader.registerBuiltinPack(BUILT_IN_PACK_ID, container, PackActivationType.DEFAULT_ENABLED)) {
-			throw new IllegalStateException("Could not register built-in resource pack.");
+		if (!ResourceLoader.registerBuiltinPack(BUILT_IN_PACK_ID, container, PackActivationType.ALWAYS_ENABLED)) {
+			throw new IllegalStateException("Could not register '%s' built-in resource pack.".formatted(BUILT_IN_PACK_ID));
+		}
+
+		if (!ResourceLoader.registerBuiltinPack(ADD_BACK_MELON_PACK_ID, container, PackActivationType.NORMAL)) {
+			throw new IllegalStateException("Could not register '%s' built-in resource pack.".formatted(ADD_BACK_MELON_PACK_ID));
 		}
 	}
 }
