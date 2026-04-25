@@ -34,6 +34,7 @@ public class TagRemovalInternals {
 		if (REMOVE_ENTRIES.get() == null) {
 			REMOVE_ENTRIES.set(new HashMap<>());
 		}
+
 		List<TagLoader.EntryWithSource> entriesWithSources = new ArrayList<>();
 
 		for (TagEntry entry : removeEntries) {
@@ -44,16 +45,17 @@ public class TagRemovalInternals {
 	}
 
 	public static <T> Map<Identifier, List<T>> removeEntriesFromTags(Map<Identifier, List<T>> newTags, TagEntry.Lookup<T> lookup) {
-		Map<Identifier, List<TagLoader.EntryWithSource>> removeEntries = REMOVE_ENTRIES.get() == null
-				? Collections.emptyMap()
-				: REMOVE_ENTRIES.get();
+		Map<Identifier, List<TagLoader.EntryWithSource>> removeEntries = REMOVE_ENTRIES.get() == null ? Collections.emptyMap() : REMOVE_ENTRIES.get();
 
 		DependencySorter<Identifier, TagLoader.SortingEntry> removeSorter = new DependencySorter<>();
+
 		for (Map.Entry<Identifier, List<TagLoader.EntryWithSource>> removeEntry : removeEntries.entrySet()) {
 			removeSorter.addEntry(removeEntry.getKey(), new TagLoader.SortingEntry(removeEntry.getValue()));
 		}
+
 		removeSorter.orderByDependencies((tagId, sortingEntry) -> {
 			List<T> newTag = new ArrayList<>(newTags.getOrDefault(tagId, Collections.emptyList()));
+
 			for (TagLoader.EntryWithSource entry : sortingEntry.entries()) {
 				TagEntry tagEntry = entry.entry();
 				tagEntry.build(
@@ -61,10 +63,11 @@ public class TagRemovalInternals {
 						newTag::remove
 				);
 			}
+
 			newTags.put(tagId, Collections.unmodifiableList(newTag));
 		});
+
 		REMOVE_ENTRIES.remove();
 		return newTags;
 	}
-
 }
