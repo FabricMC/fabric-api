@@ -61,15 +61,6 @@ public class TagsProviderMixin<T> {
 		tagAliasPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, TagAliasGenerator.getDirectory(registryRef));
 	}
 
-	@WrapOperation(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Ljava/util/List;stream()Ljava/util/stream/Stream;", ordinal = 1))
-	private Stream<TagEntry> entries(List<TagEntry> instance, Operation<Stream<TagEntry>> original, @Local(name = "builder") TagBuilder builder) {
-		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
-			return Stream.concat(original.call(instance), fabricTagBuilder.fabric_getRemoved().stream());
-		}
-
-		return original.call(instance);
-	}
-
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
 	private T addRemoved(T value, @Local(name = "builder") TagBuilder builder) {
 		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
