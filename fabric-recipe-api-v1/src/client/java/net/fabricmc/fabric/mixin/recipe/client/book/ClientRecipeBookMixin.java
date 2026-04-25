@@ -47,6 +47,7 @@ public class ClientRecipeBookMixin {
 
 			ClientRecipeBookEvents.MODIFY_CLIENT_RECIPE_LIST_ALL.invoker().modifyClientRecipeBookList(category, entries);
 		}
+
 		return result;
 	}
 }

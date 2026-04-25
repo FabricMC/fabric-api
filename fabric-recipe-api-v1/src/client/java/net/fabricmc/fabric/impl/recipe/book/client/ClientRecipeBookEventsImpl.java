@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.recipe.book.client;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 

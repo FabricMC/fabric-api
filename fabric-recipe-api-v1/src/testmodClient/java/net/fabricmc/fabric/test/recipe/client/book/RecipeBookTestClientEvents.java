@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.recipe.client.book;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -41,17 +42,13 @@ import net.fabricmc.fabric.api.client.recipe.v1.book.ClientRecipeListHelper;
 import net.fabricmc.fabric.test.recipe.book.RecipeBookTestContent;
 
 public class RecipeBookTestClientEvents implements ClientModInitializer {
-
-
 	@Override
 	public void onInitializeClient() {
 		// Sorts the Crafting Recipe Book Categories based on Creative Mode Tab order.
 		ClientRecipeBookEvents.MODIFY_CLIENT_RECIPE_LIST_ALL.register((category, recipes) -> {
 			if (isCraftingBookCategories(category)) {
-
 				Minecraft minecraft = Minecraft.getInstance();
-				assert minecraft.level != null;
-				ClientLevel level = minecraft.level;
+				ClientLevel level = Objects.requireNonNull(minecraft.level);
 				CreativeModeTab.ItemDisplayParameters parameters = new CreativeModeTab.ItemDisplayParameters(
 						level.enabledFeatures(),
 						false,
@@ -102,8 +99,7 @@ public class RecipeBookTestClientEvents implements ClientModInitializer {
 
 	private static ContextMap getContext() {
 		Minecraft minecraft = Minecraft.getInstance();
-		assert minecraft.level != null;
-		return SlotDisplayContext.fromLevel(minecraft.level);
+		return SlotDisplayContext.fromLevel(Objects.requireNonNull(minecraft.level));
 	}
 
 	private static boolean isCraftingBookCategories(RecipeBookCategory category) {
