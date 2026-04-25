@@ -21,10 +21,7 @@ import java.util.List;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.serialization.Codec;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -39,11 +36,6 @@ import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 public class TagFileMixin implements FabricTagFile, TagFileHooks {
 	@Unique
 	private List<TagEntry> remove = Collections.emptyList();
-
-	@Shadow
-	@Mutable
-	@Final
-	public static Codec<TagFile> CODEC;
 
 	@ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;"))
 	private static Codec<TagFile> modifyCodec(Codec<TagFile> original) {
