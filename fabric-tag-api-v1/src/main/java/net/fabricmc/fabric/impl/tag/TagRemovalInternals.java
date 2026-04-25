@@ -21,14 +21,34 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagEntry;
+import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.util.DependencySorter;
 
 public class TagRemovalInternals {
 	private static final ThreadLocal<Map<Identifier, List<TagLoader.EntryWithSource>>> REMOVE_ENTRIES = new ThreadLocal<>();
+
+	public static Codec<TagFile> modifyTagFileCodec(Codec<TagFile> originalCodec) {
+		return RecordCodecBuilder.create(i -> i.group(
+				MapCodec.assumeMapUnsafe(originalCodec)
+						.forGetter(Function.identity()),
+				TagEntry.CODEC
+						.listOf()
+						.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
+						.forGetter(tagFile -> ((TagFileHooks) (Object) tagFile).fabric_removed())
+		).apply(i, (tagFile, removed) -> {
+			((TagFileHooks) (Object) tagFile).fabric_setRemoved(removed);
+			return tagFile;
+		}));
+	}
 
 	public static void loadRemoveEntries(Identifier tagId, List<TagEntry> removeEntries, String sourceId) {
 		if (REMOVE_ENTRIES.get() == null) {

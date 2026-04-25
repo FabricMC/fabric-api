@@ -19,26 +19,20 @@ package net.fabricmc.fabric.mixin.tag;
 import java.util.Collections;
 import java.util.List;
 
-import com.mojang.datafixers.util.Pair;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Encoder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
-import net.fabricmc.fabric.impl.tag.util.WrapperCodec;
+import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagFile.class)
 public class TagFileMixin implements TagFileHooks {
@@ -50,36 +44,9 @@ public class TagFileMixin implements TagFileHooks {
 	@Final
 	public static Codec<TagFile> CODEC;
 
-	@Inject(method = "<clinit>", at = @At("TAIL"))
-	private static void modifyCodec(CallbackInfo ci) {
-		Codec<List<TagEntry>> removeEntryCodec = TagEntry.CODEC
-				.listOf()
-				.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
-				.codec();
-
-		CODEC = new WrapperCodec<>(CODEC, new WrapperCodec.Wrapper<>() {
-			@Override
-			public <T> DataResult<T> encode(TagFile input, DynamicOps<T> ops, T prefix, Encoder<TagFile> wrapped) {
-				return wrapped.encode(input, ops, prefix).flatMap(
-						result -> removeEntryCodec.encode(
-								((TagFileHooks) (Object) input).fabric_removed(),
-								ops,
-								result
-						)
-				);
-			}
-
-			@Override
-			public <T> DataResult<Pair<TagFile, T>> decode(DynamicOps<T> ops, T input, Decoder<TagFile> wrapped) {
-				return removeEntryCodec.decode(ops, input).flatMap(
-						result ->
-								wrapped.decode(ops, input).map(pair -> pair.mapFirst(tagFile -> {
-									((TagFileHooks) (Object) tagFile).fabric_setRemoved(result.getFirst());
-									return tagFile;
-								}))
-				);
-			}
-		});
+	@ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;"))
+	private static Codec<TagFile> modifyCodec(Codec<TagFile> original) {
+		return TagRemovalInternals.modifyTagFileCodec(original);
 	}
 
 	@Override
