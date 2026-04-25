@@ -318,6 +318,11 @@ allprojects {
 	}
 	check.dependsOn "validateMixinNames"
 
+	tasks.register('applyFixups') {
+		group = "verification"
+		dependsOn spotlessApply, generateClientPackageInfos, generateMainPackageInfos
+	}
+
 	// Apply to each valid subproject.
 	apply from: rootProject.file('gradle/package-info.gradle')
 	apply from: rootProject.file('gradle/validate-annotations.gradle')
