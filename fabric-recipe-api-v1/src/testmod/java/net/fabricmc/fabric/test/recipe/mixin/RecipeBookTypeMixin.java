@@ -23,5 +23,5 @@ import net.minecraft.world.inventory.RecipeBookType;
 @Mixin(RecipeBookType.class)
 public enum RecipeBookTypeMixin {
 	FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING,
-	FABRIC_RECIPE_API_V1_TESTMOD_UNUSED;
+	FABRIC_RECIPE_API_V1_TESTMOD_UNUSED
 }
