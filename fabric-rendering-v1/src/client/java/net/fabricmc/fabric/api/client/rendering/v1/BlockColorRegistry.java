@@ -25,6 +25,10 @@ import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockColorRegistryImpl;
 
+import net.minecraft.world.level.block.state.BlockState;
+
+import org.jspecify.annotations.Nullable;
+
 /**
  * The registry for {@link BlockTintSource}s.
  */
@@ -43,5 +47,26 @@ public final class BlockColorRegistry {
 	 */
 	public static void register(List<BlockTintSource> layers, Block... blocks) {
 		BlockColorRegistryImpl.register(layers, blocks);
+	}
+
+	/**
+	 * Register a block tint factory for one or more blocks. Overriding existing registration is allowed.
+	 *
+	 * @param factory The factory which allows dynamic tinting.
+	 * @param blocks The blocks which should be colored using the given factory.
+	 */
+	public static void register(BlockTintsFactory factory, Block... blocks) {
+		BlockColorRegistryImpl.register(factory, blocks);
+	}
+
+	/**
+	 * Retrieves the current {@link BlockTintsFactory factory}, or {@code null} if no factory exists,
+	 * for the given {@link BlockState block state}.
+	 *
+	 * @param blockState The block state to look up.
+	 * @return The factory.
+	 */
+	public static @Nullable BlockTintsFactory factoryFor(BlockState blockState) {
+		return BlockColorRegistryImpl.factoryFor(blockState);
 	}
 }

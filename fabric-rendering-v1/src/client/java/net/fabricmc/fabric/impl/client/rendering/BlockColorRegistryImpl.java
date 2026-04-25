@@ -20,6 +20,11 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
+
+import net.minecraft.world.level.block.state.BlockState;
+
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.color.block.BlockColors;
@@ -31,6 +36,8 @@ public final class BlockColorRegistryImpl {
 	private static BlockColors blockColors;
 	@Nullable
 	private static Map<Block, List<BlockTintSource>> map = new IdentityHashMap<>();
+
+	private static Map<Block, BlockTintsFactory> factories = new IdentityHashMap<>();
 
 	public static void initialize(BlockColors blockColors) {
 		if (BlockColorRegistryImpl.blockColors != null) {
@@ -51,5 +58,18 @@ public final class BlockColorRegistryImpl {
 				map.put(block, layers);
 			}
 		}
+	}
+
+	public static void register(final BlockTintsFactory factory, final Block[] blocks)
+	{
+		for (final Block block : blocks)
+		{
+			factories.put(block, factory);
+		}
+	}
+
+	public static @Nullable BlockTintsFactory factoryFor(final BlockState blockState)
+	{
+		return factories.get(blockState.getBlock());
 	}
 }

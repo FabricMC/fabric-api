@@ -22,6 +22,10 @@ import java.util.function.Predicate;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
+
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -201,6 +205,19 @@ public class AltModelBlockRendererImpl implements AltModelBlockRenderer, QuadTra
 		if (!tintSourcesInitialized) {
 			configureTintCache(state);
 			tintSourcesInitialized = true;
+
+			if (this.tintSources.isEmpty()) {
+				final BlockTintsFactory factory = BlockColorRegistry.factoryFor(state);
+				if (factory != null) {
+					factory.collect(state, level, pos, this.computedTintValues);
+				}
+
+				if (!this.computedTintValues.isEmpty()) {
+					for (int i = 0; i < this.computedTintValues.size(); i++) {
+						this.tintSources.add(null);
+					}
+				}
+			}
 		}
 
 		if (tintIndex >= tintSources.size()) {
