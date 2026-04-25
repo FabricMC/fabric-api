@@ -327,6 +327,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							Blocks.NETHERITE_BLOCK,
 							Blocks.OBSIDIAN
 					);
+			valueLookupBuilder(BlockTags.CLIMBABLE)
+					.add(Blocks.BLUE_GLAZED_TERRACOTTA)
+					.add(Blocks.BROWN_GLAZED_TERRACOTTA)
+					.remove(Blocks.BLUE_GLAZED_TERRACOTTA);
 		}
 	}
 

@@ -64,7 +64,7 @@ public class TagsProviderMixin<T> {
 	@WrapOperation(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Ljava/util/List;stream()Ljava/util/stream/Stream;", ordinal = 1))
 	private Stream<TagEntry> entries(List<TagEntry> instance, Operation<Stream<TagEntry>> original, @Local(name = "builder") TagBuilder builder) {
 		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
-			return Stream.concat(original.call(instance), fabricTagBuilder.fabric_buildRemoved().stream());
+			return Stream.concat(original.call(instance), fabricTagBuilder.fabric_getRemoved().stream());
 		}
 
 		return original.call(instance);
@@ -74,7 +74,7 @@ public class TagsProviderMixin<T> {
 	private T addRemoved(T value, @Local(name = "builder") TagBuilder builder) {
 		if (builder instanceof FabricTagBuilder fabricTagBuilder) {
 			// Expected to always be TagFile, there are MANY other issues if this is not the case.
-			((TagFileHooks) value).fabric_setRemoved(fabricTagBuilder.fabric_buildRemoved());
+			((TagFileHooks) value).fabric_setRemoved(fabricTagBuilder.fabric_getRemoved());
 			return value;
 		}
 
