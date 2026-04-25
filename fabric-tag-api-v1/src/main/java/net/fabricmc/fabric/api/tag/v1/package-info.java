@@ -33,7 +33,7 @@
  * <p>If multiple tag alias groups include a tag, the groups will be combined and each tag will be an alias
  * for the same contents.
  *
- * <h4>Tag aliases in the {@code c} namespace</h4>
+ * <h3>Tag aliases in the {@code c} namespace</h3>
  *
  * <p>For the names of shared {@code c} tag alias groups, it's important that you use a short and descriptive name.
  * A good way to do this is reusing the name of a contained {@code c} tag that follows the naming conventions.
