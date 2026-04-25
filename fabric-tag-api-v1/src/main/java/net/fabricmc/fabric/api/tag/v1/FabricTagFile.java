@@ -28,6 +28,6 @@ public interface FabricTagFile {
 	 * A list of entries defined via the {@code fabric:remove} field.
 	 */
 	default List<TagEntry> remove() {
-		throw new AssertionError("Must be implemented via interface injection");
+		throw new AssertionError("Implemented via mixin");
 	}
 }

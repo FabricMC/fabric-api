@@ -34,7 +34,7 @@ public interface FabricTagAppender<E, T> {
 	 * @return this, for chaining
 	 */
 	default TagAppender<E, T> setReplace(boolean replace) {
-		return (TagAppender<E, T>) this;
+		throw new AssertionError("Implemented via mixin");
 	}
 
 	/**
@@ -44,7 +44,7 @@ public interface FabricTagAppender<E, T> {
 	 * @return this, for chaining
 	 */
 	default TagAppender<E, T> forceAddTag(TagKey<T> tag) {
-		return (TagAppender<E, T>) this;
+		throw new AssertionError("Implemented via mixin");
 	}
 
 	/**
@@ -53,7 +53,7 @@ public interface FabricTagAppender<E, T> {
 	 * @return this, for chaining
 	 */
 	default TagAppender<E, T> remove(E element) {
-		return (TagAppender<E, T>) this;
+		throw new AssertionError("Implemented via mixin");
 	}
 
 	/**
@@ -62,7 +62,7 @@ public interface FabricTagAppender<E, T> {
 	 * @return this, for chaining
 	 */
 	default TagAppender<E, T> remove(final E... elements) {
-		return (TagAppender<E, T>) this;
+		throw new AssertionError("Implemented via mixin");
 	}
 
 	/**
@@ -71,7 +71,7 @@ public interface FabricTagAppender<E, T> {
 	 * @return this, for chaining
 	 */
 	default TagAppender<E, T> removeAll(final Collection<E> elements) {
-		return (TagAppender<E, T>) this;
+		throw new AssertionError("Implemented via mixin");
 	}
 
 	/**
@@ -80,7 +80,7 @@ public interface FabricTagAppender<E, T> {
 	 * @return this, for chaining
 	 */
 	default TagAppender<E, T> removeAll(final Stream<E> elements) {
-		return (TagAppender<E, T>) this;
+		throw new AssertionError("Implemented via mixin");
 	}
 
 	/**
@@ -89,6 +89,6 @@ public interface FabricTagAppender<E, T> {
 	 * @return this, for chaining
 	 */
 	default TagAppender<E, T> removeTag(TagKey<T> tag) {
-		return (TagAppender<E, T>) this;
+		throw new AssertionError("Implemented via mixin");
 	}
 }
