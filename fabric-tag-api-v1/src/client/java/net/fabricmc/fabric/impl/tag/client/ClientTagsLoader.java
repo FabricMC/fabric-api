@@ -65,6 +65,7 @@ public class ClientTagsLoader {
 				if (maybeTagFile != null) {
 					if (maybeTagFile.replace()) {
 						values.clear();
+						removed.clear();
 					}
 
 					values.addAll(maybeTagFile.entries());
