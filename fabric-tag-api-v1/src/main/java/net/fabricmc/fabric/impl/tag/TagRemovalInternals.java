@@ -93,7 +93,7 @@ public class TagRemovalInternals {
 			newTags.put(tagId, Collections.unmodifiableList(newTag));
 		});
 
-		REMOVE_ENTRIES.get().clear();
+		REMOVE_ENTRIES.remove();
 		return newTags;
 	}
 }
