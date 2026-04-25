@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagAppender;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
 /**
- * Extends TagAppender to support setting the {@code replace} and {@code fabric:removed} fields.
+ * Extends TagAppender to support setting the {@code replace} and {@code fabric:remove} fields.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(TagAppender.class)
