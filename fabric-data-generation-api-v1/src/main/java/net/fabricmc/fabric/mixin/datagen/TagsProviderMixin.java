@@ -60,12 +60,7 @@ public class TagsProviderMixin<T> {
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
 	private T addRemove(T value, @Local(name = "builder") TagBuilder builder) {
-		if (builder instanceof TagBuilderHooks tagBuilderHooks) {
-			// Expected to always be TagFile, there are MANY other issues if this is not the case.
-			((TagFileHooks) value).fabric_setRemove(tagBuilderHooks.fabric_getRemove());
-			return value;
-		}
-
+		((TagFileHooks) value).fabric_setRemove(((TagBuilderHooks) builder).fabric_getRemove());
 		return value;
 	}
 
@@ -80,20 +75,16 @@ public class TagsProviderMixin<T> {
 
 	@SuppressWarnings("unchecked")
 	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput writer) {
-		if ((Object) this instanceof FabricTagsProvider<?>) {
-			// Note: no pattern matching instanceof so that we can cast directly to FabricTagsProvider<T> instead of a wildcard
-			Map<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> builders = ((FabricTagsProvider<T>) (Object) this).getAliasGroupBuilders();
-			CompletableFuture<?>[] newFutures = Arrays.copyOf(futures, futures.length + builders.size());
-			int index = futures.length;
+	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] cfs, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput cache) {
+		// Note: no pattern matching instanceof so that we can cast directly to FabricTagsProvider<T> instead of a wildcard
+		Map<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> builders = ((FabricTagsProvider<T>) (Object) this).getAliasGroupBuilders();
+		CompletableFuture<?>[] newFutures = Arrays.copyOf(cfs, cfs.length + builders.size());
+		int index = cfs.length;
 
-			for (Map.Entry<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> entry : builders.entrySet()) {
-				newFutures[index++] = TagAliasGenerator.writeTagAlias(writer, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
-			}
-
-			return original.call((Object) newFutures);
-		} else {
-			return original.call((Object) futures);
+		for (Map.Entry<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> entry : builders.entrySet()) {
+			newFutures[index++] = TagAliasGenerator.writeTagAlias(cache, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
 		}
+
+		return original.call(newFutures);
 	}
 }
