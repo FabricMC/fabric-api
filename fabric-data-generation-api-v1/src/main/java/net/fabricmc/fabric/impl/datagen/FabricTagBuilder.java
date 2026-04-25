@@ -28,7 +28,7 @@ public interface FabricTagBuilder {
 
 	void fabric_forceAddTag(Identifier tag);
 
-	List<TagEntry> fabric_buildRemoved();
+	List<TagEntry> fabric_getRemoved();
 
 	void fabric_removeElement(Identifier id);
 

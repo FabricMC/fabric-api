@@ -57,7 +57,7 @@ public abstract class TagBuilderMixin implements FabricTagBuilder {
 	}
 
 	@Override
-	public List<TagEntry> fabric_buildRemoved() {
+	public List<TagEntry> fabric_getRemoved() {
 		return Collections.unmodifiableList(removed);
 	}
 
