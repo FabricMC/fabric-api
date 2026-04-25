@@ -20,18 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.MapDecoder;
-import com.mojang.serialization.MapEncoder;
-import com.mojang.serialization.MapLike;
-import com.mojang.serialization.RecordBuilder;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,50 +35,15 @@ import net.minecraft.world.inventory.RecipeBookType;
 
 import net.fabricmc.fabric.impl.recipe.book.RecipeBookImpl;
 import net.fabricmc.fabric.impl.recipe.book.RecipeBookSettingsHooks;
-import net.fabricmc.fabric.impl.recipe.util.WrapperMapCodec;
 
 @Mixin(RecipeBookSettings.class)
 public class RecipeBookSettingsMixin implements RecipeBookSettingsHooks {
-	@Shadow
-	@Final
-	@Mutable
-	public static MapCodec<RecipeBookSettings> MAP_CODEC;
 	@Unique
 	public final Map<RecipeBookType, RecipeBookSettings.TypeSettings> typeSettings = new HashMap<>();
 
-	@Inject(method = "<clinit>", at = @At("TAIL"))
-	private static void modifyRecipeBookSettingsCodecs(CallbackInfo ci) {
-		MAP_CODEC = new WrapperMapCodec<>(MAP_CODEC, new WrapperMapCodec.Wrapper<>() {
-			@Override
-			public <T> RecordBuilder<T> encode(RecipeBookSettings input, DynamicOps<T> ops, RecordBuilder<T> prefix, MapEncoder<RecipeBookSettings> wrapped) {
-				RecordBuilder<T> builder = wrapped.encode(input, ops, prefix);
-
-				Map<RecipeBookType, RecipeBookSettings.TypeSettings> typeSettings = new HashMap<>(((RecipeBookSettingsHooks) (Object) input).fabric_getTypeSettings());
-				// Remove anything that should be handled by default.
-				typeSettings.values().removeIf(settings -> !settings.open() && !settings.filtering());
-
-				if (!typeSettings.isEmpty()) {
-					return RecipeBookImpl.FABRIC_SETTINGS_MAP_CODEC.encode(typeSettings, ops, builder);
-				}
-
-				return builder;
-			}
-
-			@Override
-			public <T> DataResult<RecipeBookSettings> decode(DynamicOps<T> ops, MapLike<T> input, MapDecoder<RecipeBookSettings> wrapped) {
-				return wrapped.decode(ops, input).flatMap(recipeBookSettings -> {
-					DataResult<RecipeBookSettings> dataResult = DataResult.success(recipeBookSettings);
-					return RecipeBookImpl.FABRIC_SETTINGS_MAP_CODEC.decode(ops, input).mapOrElse(
-							fabricSettings -> dataResult.map(settings -> {
-								((RecipeBookSettingsHooks) (Object) settings).fabric_getTypeSettings().putAll(fabricSettings);
-								return settings;
-							}),
-							// The below will return if everything is the default value, ignore the error.
-							error -> DataResult.success(recipeBookSettings)
-					);
-				});
-			}
-		});
+	@ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;mapCodec(Ljava/util/function/Function;)Lcom/mojang/serialization/MapCodec;"))
+	private static MapCodec<RecipeBookSettings> modifyRecipeBookSettingsCodecs(MapCodec<RecipeBookSettings> original) {
+		return RecipeBookImpl.modifyRecipeBookSettingsCodec(original);
 	}
 
 	@Inject(method = "<init>()V", at = @At("TAIL"))

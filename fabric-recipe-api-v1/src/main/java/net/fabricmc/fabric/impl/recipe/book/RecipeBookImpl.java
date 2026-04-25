@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.impl.recipe.book;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -36,7 +38,8 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class RecipeBookImpl implements ModInitializer {
 	public static final Map<RecipeBookType, Identifier> TYPE_TO_ID = new HashMap<>();
-	public static final Codec<RecipeBookType> REGISTERED_RECIPE_BOOK_ID_CODEC = Identifier.CODEC.flatXmap(id -> {
+
+	private static final Codec<RecipeBookType> REGISTERED_RECIPE_BOOK_ID_CODEC = Identifier.CODEC.flatXmap(id -> {
 		RecipeBookType type = fromId(id);
 		return DataResult.success(type);
 	}, type -> {
@@ -46,17 +49,7 @@ public class RecipeBookImpl implements ModInitializer {
 
 		return DataResult.success(TYPE_TO_ID.get(type));
 	});
-	public static final Codec<RecipeBookSettings.TypeSettings> TYPE_SETTINGS_CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			Codec.BOOL.optionalFieldOf("isGuiOpen", false)
-					.forGetter(RecipeBookSettings.TypeSettings::open),
-			Codec.BOOL.optionalFieldOf("isFilteringCraftable", false)
-					.forGetter(RecipeBookSettings.TypeSettings::filtering)
-	).apply(inst, RecipeBookSettings.TypeSettings::new));
-	public static final MapCodec<Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_MAP_CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			Codec.unboundedMap(REGISTERED_RECIPE_BOOK_ID_CODEC, TYPE_SETTINGS_CODEC)
-					.fieldOf("fabric:settings")
-					.forGetter(map -> map)
-	).apply(inst, map -> map));
+	private static final Codec<Map<RecipeBookType, RecipeBookSettings.TypeSettings>> FABRIC_SETTINGS_CODEC = Codec.unboundedMap(REGISTERED_RECIPE_BOOK_ID_CODEC, RecipeBookSettings.TypeSettings.CRAFTING_MAP_CODEC.codec());
 
 	public static final StreamCodec<ByteBuf, RecipeBookType> REGISTERED_RECIPE_BOOK_ID_STREAM_CODEC = Identifier.STREAM_CODEC.map(
 			RecipeBookImpl::fromId,
@@ -92,6 +85,25 @@ public class RecipeBookImpl implements ModInitializer {
 				.map(Map.Entry::getKey)
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("Could not find registered recipe book type " + id));
+	}
+
+	public static MapCodec<RecipeBookSettings> modifyRecipeBookSettingsCodec(MapCodec<RecipeBookSettings> originalCodec) {
+		return RecordCodecBuilder.mapCodec(i -> i.group(
+				originalCodec.forGetter(Function.identity()),
+				FABRIC_SETTINGS_CODEC
+						.optionalFieldOf("fabric:recipe_book_settings", Collections.emptyMap())
+						.forGetter(RecipeBookImpl::filterTypeSettingsToNonDefault)
+		).apply(i, (settings, fabricSettings) -> {
+			((RecipeBookSettingsHooks) (Object) settings).fabric_getTypeSettings().putAll(fabricSettings);
+			return settings;
+		}));
+	}
+
+	// Avoids encoding empty data within the fabric:recipe_book_settings field.
+	private static Map<RecipeBookType, RecipeBookSettings.TypeSettings> filterTypeSettingsToNonDefault(RecipeBookSettings recipeBookSettings) {
+		Map<RecipeBookType, RecipeBookSettings.TypeSettings> fabricTypeSettings = new HashMap<>(((RecipeBookSettingsHooks) (Object) recipeBookSettings).fabric_getTypeSettings());
+		fabricTypeSettings.values().removeIf(typeSettings -> !typeSettings.open() && !typeSettings.filtering());
+		return Collections.unmodifiableMap(fabricTypeSettings);
 	}
 
 	private static boolean isVanillaType(RecipeBookType type) {
