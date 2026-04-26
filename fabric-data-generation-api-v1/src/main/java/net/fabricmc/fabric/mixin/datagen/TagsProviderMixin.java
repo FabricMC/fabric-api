@@ -66,11 +66,7 @@ public class TagsProviderMixin<T> {
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
 	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder builder) {
-		if (builder instanceof TagBuilderHooks tagBuilderHooks) {
-			return tagBuilderHooks.fabric_isReplaced();
-		}
-
-		return replaced;
+		return ((TagBuilderHooks) builder).fabric_isReplaced();
 	}
 
 	@SuppressWarnings("unchecked")
