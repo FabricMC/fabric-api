@@ -43,7 +43,7 @@ public final class TagEntryRemovalTests {
 	@GameTest
 	public void snowballsWithoutBricksOnlyContainsSnowballs(GameTestHelper helper) {
 		RegistryAccess registries = helper.getLevel().registryAccess();
-		TagTestUtils.assertInTag(helper, LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ITEM_TAG), TagTestUtils::getItemKey, Items.SNOWBALL);
+		TagTestUtils.assertTagContent(helper, LOGGER, "Tag {} / {} contains expected entries", registries, List.of(TEST_ITEM_TAG), TagTestUtils::getItemKey, Items.SNOWBALL);
 		helper.succeed();
 	}
 
