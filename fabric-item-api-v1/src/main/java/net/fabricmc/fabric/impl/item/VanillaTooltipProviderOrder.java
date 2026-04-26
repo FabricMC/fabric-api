@@ -42,6 +42,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
 
 public final class VanillaTooltipProviderOrder {
 	private static final List<DataComponentType<?>> VANILLA_ORDER = scrapeVanillaOrder();
@@ -137,42 +138,47 @@ public final class VanillaTooltipProviderOrder {
 	}
 
 	private static Type remapMethodDesc(Type desc) {
-		var args = desc.getArgumentTypes();
-		var out = new Type[args.length];
+		Type[] args = desc.getArgumentTypes();
+		Type[] out = new Type[args.length];
+
 		for (int i = 0; i < args.length; i++) {
 			out[i] = unmapObjectOrArrayDesc(args[i]);
 		}
+
 		return Type.getMethodType(unmapObjectOrArrayDesc(desc.getReturnType()), out);
 	}
 
 	private static Type unmapObjectOrArrayDesc(Type desc) {
-		var remapper = FabricLoader.getInstance().getMappingResolver();
+		MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
 		return switch (desc.getSort()) {
-			case Type.ARRAY -> {
-				var component = desc.getElementType();
-				if (component.getSort() == Type.OBJECT) {
-					yield Type.getType(
-							"[".repeat(desc.getDimensions())
-									+ "L"
-									+ remapper.unmapClassName(
-											"official",
-											component.getClassName()
-									)
-									.replace(".", "/")
-									+ ";"
-					);
-				} else yield component;
+		case Type.ARRAY -> {
+			Type component = desc.getElementType();
+
+			if (component.getSort() == Type.OBJECT) {
+				yield Type.getType(
+						"[".repeat(desc.getDimensions())
+								+ "L"
+								+ remapper.unmapClassName(
+										"official",
+										component.getClassName()
+								)
+								.replace(".", "/")
+								+ ";"
+				);
+			} else {
+				yield component;
 			}
-			case Type.OBJECT -> Type.getType(
-					"L"
-							+ remapper.unmapClassName(
-									"official",
-									desc.getClassName()
-							)
-							.replace(".", "/")
-							+ ";"
-			);
-			default -> desc;
+		}
+		case Type.OBJECT -> Type.getType(
+				"L"
+						+ remapper.unmapClassName(
+								"official",
+								desc.getClassName()
+						)
+						.replace(".", "/")
+						+ ";"
+		);
+		default -> desc;
 		};
 	}
 }
