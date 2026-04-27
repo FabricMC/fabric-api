@@ -58,5 +58,6 @@ public final class EnchantmentTagsGenerator extends FabricTagsProvider<Enchantme
 				.add(Enchantments.FIRE_PROTECTION)
 				.add(Enchantments.RESPIRATION)
 				.add(Enchantments.FEATHER_FALLING);
+		builder(ConventionalEnchantmentTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}
 }
