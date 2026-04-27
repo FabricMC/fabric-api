@@ -18,12 +18,9 @@ package net.fabricmc.fabric.mixin.tag;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,6 +30,7 @@ import net.minecraft.tags.TagFile;
 
 import net.fabricmc.fabric.api.tag.v1.FabricTagFile;
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
+import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagFile.class)
 public class TagFileMixin implements FabricTagFile, TagFileHooks {
@@ -41,17 +39,7 @@ public class TagFileMixin implements FabricTagFile, TagFileHooks {
 
 	@ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;"))
 	private static Codec<TagFile> modifyCodec(Codec<TagFile> original) {
-		return RecordCodecBuilder.create(i -> i.group(
-				MapCodec.assumeMapUnsafe(original)
-						.forGetter(Function.identity()),
-				TagEntry.CODEC
-						.listOf()
-						.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
-						.forGetter(FabricTagFile::remove)
-		).apply(i, (tagFile, remove) -> {
-			((TagFileHooks) (Object) tagFile).fabric_setRemove(remove);
-			return tagFile;
-		}));
+		return TagRemovalInternals.modifyTagFileCodec(original);
 	}
 
 	@Override

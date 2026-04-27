@@ -21,13 +21,36 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagEntry;
+import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagLoader;
+
+import net.fabricmc.fabric.api.tag.v1.FabricTagFile;
 
 public class TagRemovalInternals {
 	public static final ScopedValue<Identifier> TAG_ID_SCOPED_VALUE = ScopedValue.newInstance();
 	private static final ThreadLocal<Map<Identifier, Set<TagLoader.EntryWithSource>>> REMOVE_REFERENCE = ThreadLocal.withInitial(HashMap::new);
+
+	public static Codec<TagFile> modifyTagFileCodec(Codec<TagFile> originalCodec) {
+		return RecordCodecBuilder.create(i -> i.group(
+				MapCodec.assumeMapUnsafe(originalCodec)
+						.forGetter(Function.identity()),
+				TagEntry.CODEC
+						.listOf()
+						.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
+						.forGetter(FabricTagFile::remove)
+		).apply(i, (tagFile, remove) -> {
+			((TagFileHooks) (Object) tagFile).fabric_setRemove(remove);
+			return tagFile;
+		}));
+	}
 
 	public static void addEntryToRemoveReference(Identifier tagId, TagLoader.EntryWithSource entry) {
 		if (!REMOVE_REFERENCE.get().containsKey(tagId)) {
