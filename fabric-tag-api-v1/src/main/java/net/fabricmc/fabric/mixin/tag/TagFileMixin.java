@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.tag.TagFileHooks;
 import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagFile.class)
-public class TagFileMixin implements FabricTagFile, TagFileHooks {
+class TagFileMixin implements FabricTagFile, TagFileHooks {
 	@Unique
 	private List<TagEntry> remove = Collections.emptyList();
 
