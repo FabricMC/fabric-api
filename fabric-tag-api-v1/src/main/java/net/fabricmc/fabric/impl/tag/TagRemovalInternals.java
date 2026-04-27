@@ -16,23 +16,35 @@
 
 package net.fabricmc.fabric.impl.tag;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
-import it.unimi.dsi.fastutil.objects.ReferenceSet;
-
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagLoader;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class TagRemovalInternals {
-	private static final ThreadLocal<ReferenceSet<TagLoader.EntryWithSource>> REMOVE_ENTRIES = ThreadLocal.withInitial(ReferenceArraySet::new);
+	public static final ScopedValue<Identifier> TAG_ID_SCOPED_VALUE = ScopedValue.newInstance();
+	private static final ThreadLocal<Map<Identifier, Set<TagLoader.EntryWithSource>>> REMOVE_ENTRIES = ThreadLocal.withInitial(HashMap::new);
 
-	public static void setEntryAsRemove(TagLoader.EntryWithSource entry) {
-		REMOVE_ENTRIES.get().add(entry);
+	public static void addEntryToRemoveSet(Identifier tagId, TagLoader.EntryWithSource entry) {
+		if (!REMOVE_ENTRIES.get().containsKey(tagId)) {
+			REMOVE_ENTRIES.get().put(tagId, new HashSet<>());
+		}
+		REMOVE_ENTRIES.get()
+				.get(tagId)
+				.add(entry);
 	}
 
-	public static boolean isEntryRemove(TagLoader.EntryWithSource entry) {
-		return REMOVE_ENTRIES.get().contains(entry);
+	public static boolean isEntryInRemoveSet(TagLoader.EntryWithSource entry) {
+		return REMOVE_ENTRIES.get()
+				.getOrDefault(TAG_ID_SCOPED_VALUE.get(), Collections.emptySet())
+				.contains(entry);
 	}
 
-	public static void removeRemoveEntriesReference() {
+	public static void removeRemoveSet() {
 		REMOVE_ENTRIES.remove();
 	}
 }

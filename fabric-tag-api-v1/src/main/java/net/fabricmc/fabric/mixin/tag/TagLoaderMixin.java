@@ -46,17 +46,22 @@ import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
-	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "tagContents") List<TagLoader.EntryWithSource> tagContents, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
+	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "tagContents") List<TagLoader.EntryWithSource> tagContents, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
 		for (TagEntry entry : parsedContents.remove()) {
 			TagLoader.EntryWithSource entryWithSource = new TagLoader.EntryWithSource(entry, sourceId);
-			TagRemovalInternals.setEntryAsRemove(entryWithSource);
+			TagRemovalInternals.addEntryToRemoveSet(id, entryWithSource);
 			tagContents.add(entryWithSource);
 		}
 	}
 
+	@WrapOperation(method = "lambda$build$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagLoader;tryBuildTag(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/List;)Lcom/mojang/datafixers/util/Either;"))
+	private <T> Either<List<TagLoader.EntryWithSource>, List<T>> scopeIdToTryBuildTag(TagLoader<T> instance, TagEntry.Lookup<T> lookup, List<TagLoader.EntryWithSource> entries, Operation<Either<List<TagLoader.EntryWithSource>, List<T>>> original, @Local(argsOnly = true) Identifier id) {
+		return ScopedValue.where(TagRemovalInternals.TAG_ID_SCOPED_VALUE, id).call(() -> original.call(instance, lookup, entries));
+	}
+
 	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagEntry;build(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/function/Consumer;)Z"))
 	private <T> boolean removeEntriesFromTags(TagEntry instance, TagEntry.Lookup<T> lookup, Consumer<T> output, Operation<Boolean> original, @Local(name = "values") SequencedSet<T> values, @Local(name = "entry") TagLoader.EntryWithSource entry) {
-		if (TagRemovalInternals.isEntryRemove(entry)) {
+		if (TagRemovalInternals.isEntryInRemoveSet(entry)) {
 			instance.build(lookup, values::remove);
 			return true;
 		}
@@ -64,9 +69,9 @@ public class TagLoaderMixin {
 		return original.call(instance, lookup, output);
 	}
 
-	@Inject(method = "tryBuildTag", at = @At("RETURN"))
-	private <T> void removeRemoveEntriesReference(TagEntry.Lookup<T> lookup, List<TagLoader.EntryWithSource> entries, CallbackInfoReturnable<Either<List<TagLoader.EntryWithSource>, List<T>>> cir) {
-		TagRemovalInternals.removeRemoveEntriesReference();
+	@Inject(method = "build", at = @At("RETURN"))
+	private <T> void removeRemoveEntriesReference(Map<Identifier, List<TagLoader.EntryWithSource>> builders, CallbackInfoReturnable<Map<Identifier, List<T>>> cir) {
+		TagRemovalInternals.removeRemoveSet();
 	}
 
 	// Fixes a likely vanilla bug causing loot table tags to not get loaded.
