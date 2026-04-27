@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.impl.tag;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -36,7 +37,8 @@ import net.fabricmc.fabric.api.tag.v1.FabricTagFile;
 
 public class TagRemovalInternals {
 	public static final ScopedValue<Identifier> TAG_ID_SCOPED_VALUE = ScopedValue.newInstance();
-	private static final ThreadLocal<Map<Identifier, Set<TagLoader.EntryWithSource>>> REMOVE_REFERENCE = ThreadLocal.withInitial(HashMap::new);
+	private static final ThreadLocal<Map<Identifier, List<String>>> TAG_SOURCE_ORDER = ThreadLocal.withInitial(HashMap::new);
+	private static final ThreadLocal<Map<Identifier, List<TagLoader.EntryWithSource>>> REMOVE_ENTRIES = ThreadLocal.withInitial(HashMap::new);
 
 	public static Codec<TagFile> modifyTagFileCodec(Codec<TagFile> originalCodec) {
 		return RecordCodecBuilder.create(i -> i.group(
@@ -52,23 +54,52 @@ public class TagRemovalInternals {
 		}));
 	}
 
-	public static void addEntryToRemoveReference(Identifier tagId, TagLoader.EntryWithSource entry) {
-		if (!REMOVE_REFERENCE.get().containsKey(tagId)) {
-			REMOVE_REFERENCE.get().put(tagId, new HashSet<>());
+	public static void addTagSource(Identifier tagId, String source) {
+		if (!TAG_SOURCE_ORDER.get().containsKey(tagId)) {
+			TAG_SOURCE_ORDER.get().put(tagId, new ArrayList<>());
 		}
 
-		REMOVE_REFERENCE.get()
+		TAG_SOURCE_ORDER.get()
+				.get(tagId)
+				.add(source);
+	}
+
+	public static void addRemoveEntry(Identifier tagId, TagLoader.EntryWithSource entry) {
+		if (!REMOVE_ENTRIES.get().containsKey(tagId)) {
+			REMOVE_ENTRIES.get().put(tagId, new ArrayList<>());
+		}
+
+		REMOVE_ENTRIES.get()
 				.get(tagId)
 				.add(entry);
 	}
 
-	public static boolean isEntryInRemoveReference(TagLoader.EntryWithSource entry) {
-		return REMOVE_REFERENCE.get()
-				.getOrDefault(TAG_ID_SCOPED_VALUE.get(), Collections.emptySet())
+	public static boolean isEntryRemove(TagLoader.EntryWithSource entry) {
+		return REMOVE_ENTRIES.get()
+				.getOrDefault(TAG_ID_SCOPED_VALUE.get(), Collections.emptyList())
 				.contains(entry);
 	}
 
-	public static void removeRemoveReference() {
-		REMOVE_REFERENCE.remove();
+	public static List<TagLoader.EntryWithSource> mergeAddedAndRemovedEntries(Identifier tagId, List<TagLoader.EntryWithSource> entries) {
+		List<TagLoader.EntryWithSource> newEntries = new ArrayList<>();
+
+		for (String sourceId : TAG_SOURCE_ORDER.get().getOrDefault(tagId, Collections.emptyList())) {
+			newEntries.addAll(Stream.concat(
+					// 'values' key should be added before 'fabric:remove' key.
+					entries.stream()
+							.filter(entry -> entry.source().equals(sourceId)),
+					REMOVE_ENTRIES.get()
+							.getOrDefault(tagId, Collections.emptyList())
+							.stream()
+							.filter(entry -> entry.source().equals(sourceId))
+			).toList());
+		}
+
+		return newEntries;
+	}
+
+	public static void removeTagRemovalReferences() {
+		TAG_SOURCE_ORDER.remove();
+		REMOVE_ENTRIES.remove();
 	}
 }
