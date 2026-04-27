@@ -10,7 +10,6 @@
     "ReloadableServerResourcesMixin",
     "TagEntryAccessor",
     "TagFileMixin",
-    "TagLoaderEntryWithSourceMixin",
     "TagLoaderMixin"
   ],
   "injectors": {
