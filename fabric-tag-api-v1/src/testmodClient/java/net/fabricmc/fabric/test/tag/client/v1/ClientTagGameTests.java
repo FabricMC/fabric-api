@@ -163,7 +163,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 						Blocks.MELON
 				),
 				"Did not expect to find %s in %s, but it was found!"
-						.formatted(Blocks.COCOA.builtInRegistryHolder().key().identifier(), BlockTags.SWORD_EFFICIENT.location())
+						.formatted(Blocks.MELON.builtInRegistryHolder().key().identifier(), BlockTags.SWORD_EFFICIENT.location())
 		);
 	}
 
