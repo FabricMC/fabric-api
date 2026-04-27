@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(TagLoader.EntryWithSource.class)
 public class TagLoaderEntryWithSourceMixin implements EntryWithSourceHooks {
 	@Unique
-	private boolean remove;
+	private boolean remove = false;
 
 	@Override
 	public boolean fabric_remove() {

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.tag;
 
 import java.util.List;
 import java.util.Map;
+import java.util.SequencedSet;
+import java.util.function.Consumer;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -52,12 +54,13 @@ public class TagLoaderMixin {
 		}
 	}
 
-	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
-	private <T> boolean removeEntriesFromTags(List<T> instance, T t, Operation<Boolean> original, @Local(name = "entry") TagLoader.EntryWithSource entry) {
+	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagEntry;build(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/function/Consumer;)Z"))
+	private <T> boolean removeEntriesFromTags(TagEntry instance, TagEntry.Lookup<T> lookup, Consumer<T> output, Operation<Boolean> original, @Local(name = "values") SequencedSet<T> values, @Local(name = "entry") TagLoader.EntryWithSource entry) {
 		if (((EntryWithSourceHooks) (Object) entry).fabric_remove()) {
-			return instance.remove(t);
+			instance.build(lookup, values::remove);
+			return true;
 		}
-		return original.call(instance, t);
+		return original.call(instance, lookup, output);
 	}
 
 	// Fixes a likely vanilla bug causing loot table tags to not get loaded.
