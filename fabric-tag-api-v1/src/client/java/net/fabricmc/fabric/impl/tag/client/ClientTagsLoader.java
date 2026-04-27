@@ -78,12 +78,10 @@ public class ClientTagsLoader {
 		HashSet<Identifier> completeIds = new HashSet<>();
 		HashSet<Identifier> removeIds = new HashSet<>();
 		HashSet<Identifier> immediateChildIds = new HashSet<>();
-		HashSet<Identifier> immediateRemoveChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
-		HashSet<TagKey<?>> immediateRemoveChildTags = new HashSet<>();
 
 		for (TagEntry tagEntry : values) {
-			tagEntry.build(new TagEntry.Lookup<>() {
+			tagEntry.build(new TagEntry.Lookup<Identifier>() {
 				@Override
 				public Identifier element(Identifier id, boolean required) {
 					immediateChildIds.add(id);
@@ -97,14 +95,16 @@ public class ClientTagsLoader {
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
 				}
-			}, completeIds::add);
+			}, id -> {
+				removeIds.remove(id);
+				completeIds.add(id);
+			});
 		}
 
 		for (TagEntry removeEntry : remove) {
-			removeEntry.build(new TagEntry.Lookup<>() {
+			removeEntry.build(new TagEntry.Lookup<Identifier>() {
 				@Override
 				public Identifier element(Identifier id, boolean required) {
-					immediateRemoveChildIds.add(id);
 					return id;
 				}
 
@@ -112,24 +112,29 @@ public class ClientTagsLoader {
 				@Override
 				public Collection<Identifier> tag(Identifier id) {
 					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
-					immediateRemoveChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).removeIds;
 				}
-			}, removeIds::add);
+			}, id -> {
+				completeIds.remove(id);
+				removeIds.add(id);
+			});
 		}
 
 		// Ensure that the tag does not refer to itself
 		immediateChildTags.remove(tagKey);
-		immediateRemoveChildTags.remove(tagKey);
 
-		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(removeIds),
-				Collections.unmodifiableSet(immediateChildTags), Collections.unmodifiableSet(immediateRemoveChildTags),
-				Collections.unmodifiableSet(immediateChildIds), Collections.unmodifiableSet(immediateRemoveChildIds));
+		return new LoadedTag(
+				Collections.unmodifiableSet(completeIds),
+				Collections.unmodifiableSet(removeIds),
+				Collections.unmodifiableSet(immediateChildTags),
+				Collections.unmodifiableSet(immediateChildIds)
+		);
 	}
 
-	public record LoadedTag(Set<Identifier> completeIds, Set<Identifier> removeIds,
-							Set<TagKey<?>> immediateChildTags, Set<TagKey<?>> immediateRemoveChildTags,
-							Set<Identifier> immediateChildIds, Set<Identifier> immediateRemoveChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds,
+							Set<Identifier> removeIds,
+							Set<TagKey<?>> immediateChildTags,
+							Set<Identifier> immediateChildIds) {
 	}
 
 	/**

@@ -66,16 +66,8 @@ public class ClientTagsImpl {
 
 		Identifier id = holder.unwrapKey().get().identifier();
 
-		if (loadedTag.immediateRemoveChildIds().contains(id)) {
+		if (loadedTag.removeIds().contains(id)) {
 			return false;
-		}
-
-		for (TagKey<?> key : loadedTag.immediateRemoveChildTags()) {
-			if (isInWithLocalFallback((TagKey<T>) key, holder, checked)) {
-				return false;
-			}
-
-			checked.add((TagKey<T>) key);
 		}
 
 		if (loadedTag.immediateChildIds().contains(id)) {
