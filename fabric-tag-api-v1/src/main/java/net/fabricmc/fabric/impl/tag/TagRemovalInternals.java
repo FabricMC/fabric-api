@@ -29,14 +29,7 @@ public class TagRemovalInternals {
 	}
 
 	public static boolean isEntryRemove(TagLoader.EntryWithSource entry) {
-		boolean isRemove = REMOVE_ENTRIES.get().contains(entry);
-
-		if (isRemove) {
-			REMOVE_ENTRIES.get().remove(entry);
-			return true;
-		}
-
-		return false;
+		return REMOVE_ENTRIES.get().contains(entry);
 	}
 
 	public static void removeRemoveEntriesReference() {
