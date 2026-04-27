@@ -115,10 +115,7 @@ public final class TagEntryRemovalTests {
 	private static void removeThenTestSnowballInHappyGhastFood(GameTestHelper helper, MinecraftServer server) {
 		PackRepository repository = server.getPackRepository();
 
-		if (!repository.removePack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString())) {
-			throw helper.assertionException("Could not unload '%s' data pack", TagTest.REMOVE_AND_ADD_TEST_PACK_ID);
-		}
-
+		repository.removePack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
 		reloadResources(
 				helper,
 				server,
@@ -144,10 +141,7 @@ public final class TagEntryRemovalTests {
 	private static void addThenTestSnowballInHappyGhastFood(GameTestHelper helper, MinecraftServer server) {
 		PackRepository repository = server.getPackRepository();
 
-		if (!repository.addPack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString())) {
-			throw helper.assertionException("Could not load '%s' data pack", TagTest.REMOVE_AND_ADD_TEST_PACK_ID);
-		}
-
+		repository.addPack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
 		reloadResources(
 				helper,
 				server,

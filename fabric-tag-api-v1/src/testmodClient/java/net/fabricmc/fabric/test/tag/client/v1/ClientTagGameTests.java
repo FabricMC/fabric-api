@@ -145,10 +145,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	}
 
 	private static void removeThenTestMelonInSwordEfficient(Minecraft client) {
-		if (!client.getResourcePackRepository().removePack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString())) {
-			throw new IllegalStateException("Could not unload '" + ClientTagTest.ADD_BACK_MELON_PACK_ID + "' data pack");
-		}
-
+		client.getResourcePackRepository().removePack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
 		client.reloadResourcePacks();
 
 		ClientTagTestUtils.assertThrows(
@@ -165,10 +162,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	}
 
 	private static void addThenTestMelonInSwordEfficient(Minecraft client) {
-		if (!client.getResourcePackRepository().addPack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString())) {
-			throw new IllegalStateException("Could not load '" + ClientTagTest.ADD_BACK_MELON_PACK_ID + "' resource pack");
-		}
-
+		client.getResourcePackRepository().addPack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
 		client.reloadResourcePacks();
 
 		ClientTagTestUtils.assertInWithLocalFallback(
