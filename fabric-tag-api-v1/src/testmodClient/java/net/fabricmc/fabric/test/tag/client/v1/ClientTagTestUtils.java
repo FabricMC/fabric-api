@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.function.FailableRunnable;
@@ -29,6 +30,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
@@ -103,5 +105,11 @@ public class ClientTagTestUtils {
 		if (!threw) {
 			throw new AssertionError(message);
 		}
+	}
+
+	static void reloadResources(MinecraftServer server, Supplier<AssertionError> onException) {
+		server.reloadResources(server.getPackRepository().getSelectedIds()).exceptionally((throwable) -> {
+			throw onException.get();
+		});
 	}
 }

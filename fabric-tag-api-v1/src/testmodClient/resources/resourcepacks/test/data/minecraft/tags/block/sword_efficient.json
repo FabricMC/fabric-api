@@ -8,7 +8,6 @@
         }
     ],
     "fabric:remove": [
-      "minecraft:cocoa",
-      "minecraft:melon"
+      "minecraft:cocoa"
     ]
 }

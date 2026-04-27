@@ -2,6 +2,6 @@
   "pack": {
     "min_format": 101,
     "max_format": 101,
-    "description": "Test adding back a client tag entry after removing it"
+    "description": "Add melon tag to server"
   }
 }

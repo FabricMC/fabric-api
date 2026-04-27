@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biomes;
@@ -43,6 +43,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagGameTests.class);
 
 	private static final TagKey<Block> REMOVAL_TEST_TAG = TagTestUtils.tagKey(Registries.BLOCK, "dirt_and_mud_with_client_exclusions");
+	private static final TagKey<Block> READD_MELONS_TEST_TAG = TagTestUtils.tagKey(Registries.BLOCK, "readd_melons");
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -64,7 +65,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 
 			try (TestServerConnection connection = serverContext.connect()) {
 				context.runOnClient(ClientTagGameTests::clientTagDedicatedServerTests);
-				context.runOnClient(ClientTagGameTests::reAddRemovedClientValue);
+				serverContext.runOnServer(ClientTagGameTests::reloadAndAddServerTagTests);
 			}
 		}
 	}
@@ -118,12 +119,12 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		);
 
 		// Success!
-		LOGGER.info("The tests for singleplayer client tag tests passed!");
+		LOGGER.info("The tests for singleplayer client tags passed!");
 	}
 
 	private static void clientTagDedicatedServerTests(Minecraft client) {
-		// minecraft:sword_efficient should NOT exist on dirt the serverContext (can be confirmed with F3 on a dirt block),
-		// but the this test should pass as minecraft:sword_efficient will contain dirt on the serverContext
+		// minecraft:sword_efficient should NOT exist on dirt the client context (can be confirmed with F3 on a dirt block),
+		// but the this test should pass as minecraft:sword_efficient will contain dirt on the server context
 		ClientTagTestUtils.assertThrows(
 				() -> ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "", BlockTags.SWORD_EFFICIENT, TagTestUtils::getBlockKey, Blocks.DIRT),
 				"Did not expect to find %s in %s, but it was found!"
@@ -132,27 +133,32 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		ClientTagTestUtils.assertInWithLocalFallback(LOGGER, "Client tag {} contains the expected entries {}", BlockTags.SWORD_EFFICIENT, TagTestUtils::getBlockKey, Blocks.COCOA);
 
 		// Success!
-		LOGGER.info("The tests for dedicated client tag tests passed!");
+		LOGGER.info("The tests for dedicated client tags passed!");
 	}
 
-	/**
-	 * @see net.fabricmc.fabric.test.tag.TagEntryRemovalTests#reAddRemovedValue(GameTestHelper)
-	 */
-	private static void reAddRemovedClientValue(Minecraft client) {
-		removeThenTestMelonInSwordEfficient(client);
-		addThenTestMelonInSwordEfficient(client);
-		removeThenTestMelonInSwordEfficient(client);
+	private static void reloadAndAddServerTagTests(MinecraftServer server) {
+		// fabric-tag-api-v1-testmod:add_back_melon is assumed to not exist on the server whilst the pack is removed for this test.
+		// Client tags are only read from the root data directory in the JAR, so you are unable to modify their values using built-in packs.
+		removeThenTestMelonInReAddMelonsTestTag(server);
+		addThenTestMelonInReAddMelonsTestTag(server);
+		removeThenTestMelonInReAddMelonsTestTag(server);
+
+		// Success!
+		LOGGER.info("The tests for adding tags to the server passed!");
 	}
 
-	private static void removeThenTestMelonInSwordEfficient(Minecraft client) {
-		client.getResourcePackRepository().removePack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
-		client.reloadResourcePacks();
+	private static void removeThenTestMelonInReAddMelonsTestTag(MinecraftServer server) {
+		server.getPackRepository().removePack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
+		ClientTagTestUtils.reloadResources(
+				server,
+				() -> new AssertionError("Failed to reload after removing '%s' data pack".formatted(ClientTagTest.ADD_BACK_MELON_PACK_ID))
+		);
 
 		ClientTagTestUtils.assertThrows(
 				() -> ClientTagTestUtils.assertInWithLocalFallback(
 						LOGGER,
 						"",
-						BlockTags.SWORD_EFFICIENT,
+						READD_MELONS_TEST_TAG,
 						TagTestUtils::getBlockKey,
 						Blocks.MELON
 				),
@@ -161,14 +167,17 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		);
 	}
 
-	private static void addThenTestMelonInSwordEfficient(Minecraft client) {
-		client.getResourcePackRepository().addPack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
-		client.reloadResourcePacks();
+	private static void addThenTestMelonInReAddMelonsTestTag(MinecraftServer server) {
+		server.getPackRepository().addPack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
+		ClientTagTestUtils.reloadResources(
+				server,
+				() -> new AssertionError("Failed to reload after adding '%s' data pack".formatted(ClientTagTest.ADD_BACK_MELON_PACK_ID))
+		);
 
 		ClientTagTestUtils.assertInWithLocalFallback(
 				LOGGER,
 				"",
-				BlockTags.SWORD_EFFICIENT,
+				READD_MELONS_TEST_TAG,
 				TagTestUtils::getBlockKey,
 				Blocks.MELON
 		);

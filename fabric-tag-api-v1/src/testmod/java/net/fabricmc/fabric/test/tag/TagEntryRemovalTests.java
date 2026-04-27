@@ -18,16 +18,13 @@ package net.fabricmc.fabric.test.tag;
 
 import static net.fabricmc.fabric.test.tag.TagTestUtils.tagKey;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.repository.PackRepository;
@@ -116,10 +113,9 @@ public final class TagEntryRemovalTests {
 		PackRepository repository = server.getPackRepository();
 
 		repository.removePack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
-		reloadResources(
+		TagTestUtils.reloadResources(
 				helper,
 				server,
-				repository.getSelectedIds(),
 				h -> h.assertionException("Failed to reload after removing '%s' data pack", TagTest.REMOVE_AND_ADD_TEST_PACK_ID)
 		);
 
@@ -142,10 +138,9 @@ public final class TagEntryRemovalTests {
 		PackRepository repository = server.getPackRepository();
 
 		repository.addPack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
-		reloadResources(
+		TagTestUtils.reloadResources(
 				helper,
 				server,
-				repository.getSelectedIds(),
 				h -> h.assertionException("Failed to reload after adding '%s' data pack", TagTest.REMOVE_AND_ADD_TEST_PACK_ID)
 		);
 
@@ -158,11 +153,5 @@ public final class TagEntryRemovalTests {
 				TagTestUtils::getItemKey,
 				Items.SNOWBALL
 		);
-	}
-
-	private static void reloadResources(GameTestHelper helper, MinecraftServer server, Collection<String> selectedIDS, Function<GameTestHelper, GameTestAssertException> onException) {
-		server.reloadResources(selectedIDS).exceptionally((throwable) -> {
-			throw onException.apply(helper);
-		});
 	}
 }
