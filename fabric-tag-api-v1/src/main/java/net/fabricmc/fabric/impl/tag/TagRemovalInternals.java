@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.impl.tag;
 
-import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagLoader;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagLoader;
 
 public class TagRemovalInternals {
 	public static final ScopedValue<Identifier> TAG_ID_SCOPED_VALUE = ScopedValue.newInstance();
@@ -33,6 +33,7 @@ public class TagRemovalInternals {
 		if (!REMOVE_ENTRIES.get().containsKey(tagId)) {
 			REMOVE_ENTRIES.get().put(tagId, new HashSet<>());
 		}
+
 		REMOVE_ENTRIES.get()
 				.get(tagId)
 				.add(entry);
