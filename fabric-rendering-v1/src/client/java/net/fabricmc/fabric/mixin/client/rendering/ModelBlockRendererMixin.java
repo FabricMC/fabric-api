@@ -51,7 +51,7 @@ public abstract class ModelBlockRendererMixin
 			final int tintIndex,
 			final CallbackInfoReturnable<Integer> cir) {
 		if (this.tintSources.isEmpty()) {
-			final BlockTintsFactory factory = BlockColorRegistry.factoryFor(state);
+			final BlockTintsFactory factory = BlockColorRegistry.getFactory(state);
 			if (factory != null) {
 				factory.collect(state, level, pos, this.computedTintValues);
 			}

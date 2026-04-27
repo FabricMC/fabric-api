@@ -188,7 +188,9 @@ public class AltModelBlockRendererImpl implements AltModelBlockRenderer, QuadTra
 		}
 	}
 
-	private void configureTintCache(final BlockState blockState) {
+	private void configureTintCache(final BlockState blockState,
+			final BlockAndTintGetter level,
+			final BlockPos pos) {
 		List<BlockTintSource> tintSources = blockColors.getTintSources(blockState);
 		int tintSourceCount = tintSources.size();
 
@@ -198,26 +200,24 @@ public class AltModelBlockRendererImpl implements AltModelBlockRenderer, QuadTra
 			for (int i = 0; i < tintSourceCount; ++i) {
 				computedTintValues.add(-1);
 			}
+		} else {
+			final BlockTintsFactory factory = BlockColorRegistry.getFactory(blockState);
+			if (factory != null) {
+				factory.collect(blockState, level, pos, computedTintValues);
+			}
+
+			if (!this.computedTintValues.isEmpty()) {
+				for (int i = 0; i < this.computedTintValues.size(); i++) {
+					this.tintSources.add(null);
+				}
+			}
 		}
 	}
 
 	private int computeTintColor(final BlockAndTintGetter level, final BlockState state, final BlockPos pos, final int tintIndex) {
 		if (!tintSourcesInitialized) {
-			configureTintCache(state);
+			configureTintCache(state, level, pos);
 			tintSourcesInitialized = true;
-
-			if (this.tintSources.isEmpty()) {
-				final BlockTintsFactory factory = BlockColorRegistry.factoryFor(state);
-				if (factory != null) {
-					factory.collect(state, level, pos, this.computedTintValues);
-				}
-
-				if (!this.computedTintValues.isEmpty()) {
-					for (int i = 0; i < this.computedTintValues.size(); i++) {
-						this.tintSources.add(null);
-					}
-				}
-			}
 		}
 
 		if (tintIndex >= tintSources.size()) {

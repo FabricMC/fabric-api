@@ -66,7 +66,7 @@ public final class BlockColorRegistry {
 	 * @param blockState The block state to look up.
 	 * @return The factory.
 	 */
-	public static @Nullable BlockTintsFactory factoryFor(BlockState blockState) {
-		return BlockColorRegistryImpl.factoryFor(blockState);
+	public static @Nullable BlockTintsFactory getFactory(BlockState blockState) {
+		return BlockColorRegistryImpl.getFactory(blockState);
 	}
 }

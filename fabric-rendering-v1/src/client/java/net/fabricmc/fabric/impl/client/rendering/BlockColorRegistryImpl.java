@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
 
 import net.minecraft.world.level.block.state.BlockState;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.color.block.BlockColors;
@@ -51,6 +50,15 @@ public final class BlockColorRegistryImpl {
 	}
 
 	public static void register(List<BlockTintSource> layers, Block... blocks) {
+		for (final Block block : blocks)
+		{
+			if (factories.containsKey(block)) {
+				throw new IllegalStateException("A dynamic block color factory for the block %s has already been registered and as such no static usage is allowed!".formatted(
+						block
+				));
+			}
+		}
+
 		if (blockColors != null) {
 			blockColors.register(layers, blocks);
 		} else {
@@ -64,11 +72,22 @@ public final class BlockColorRegistryImpl {
 	{
 		for (final Block block : blocks)
 		{
+			if (map != null && map.containsKey(block)) {
+				throw new IllegalStateException(
+						"A static block color provider for the block: %s has already been registered and as such no dynamic usage is allowed!".formatted(
+								block));
+			}
+			if (blockColors != null && !blockColors.getTintSources(block.defaultBlockState()).isEmpty()) {
+				throw new IllegalStateException(
+						"A static block color provider for the block: %s has already been registered and as such no dynamic usage is allowed!".formatted(
+								block));
+			}
+
 			factories.put(block, factory);
 		}
 	}
 
-	public static @Nullable BlockTintsFactory factoryFor(final BlockState blockState)
+	public static @Nullable BlockTintsFactory getFactory(final BlockState blockState)
 	{
 		return factories.get(blockState.getBlock());
 	}

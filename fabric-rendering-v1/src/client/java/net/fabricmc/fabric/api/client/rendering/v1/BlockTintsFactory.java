@@ -33,6 +33,11 @@ public interface BlockTintsFactory
 	 *     given position and model are rendered, but may not be stored beyond that time window,
 	 *     especially not beyond any given frame being rendered.
 	 * </p>
+	 * <p>
+	 *     The given tint list is guaranteed to be empty.
+	 *     It is recommended to call the {@link IntList#size(int) size} method if you at the start of the method, ahead of time, how many
+	 *     tints your system will eventually register as this will pre-allocate enough memory to hold your ints.
+	 * </p>
 	 *
 	 * @param state The state for which the tints are retrieved.
 	 * @param level The level in which they are retrieved.
