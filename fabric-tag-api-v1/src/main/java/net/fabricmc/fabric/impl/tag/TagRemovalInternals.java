@@ -27,25 +27,25 @@ import net.minecraft.tags.TagLoader;
 
 public class TagRemovalInternals {
 	public static final ScopedValue<Identifier> TAG_ID_SCOPED_VALUE = ScopedValue.newInstance();
-	private static final ThreadLocal<Map<Identifier, Set<TagLoader.EntryWithSource>>> REMOVE_ENTRIES = ThreadLocal.withInitial(HashMap::new);
+	private static final ThreadLocal<Map<Identifier, Set<TagLoader.EntryWithSource>>> REMOVE_REFERENCE = ThreadLocal.withInitial(HashMap::new);
 
-	public static void addEntryToRemoveSet(Identifier tagId, TagLoader.EntryWithSource entry) {
-		if (!REMOVE_ENTRIES.get().containsKey(tagId)) {
-			REMOVE_ENTRIES.get().put(tagId, new HashSet<>());
+	public static void addEntryToRemoveReference(Identifier tagId, TagLoader.EntryWithSource entry) {
+		if (!REMOVE_REFERENCE.get().containsKey(tagId)) {
+			REMOVE_REFERENCE.get().put(tagId, new HashSet<>());
 		}
 
-		REMOVE_ENTRIES.get()
+		REMOVE_REFERENCE.get()
 				.get(tagId)
 				.add(entry);
 	}
 
-	public static boolean isEntryInRemoveSet(TagLoader.EntryWithSource entry) {
-		return REMOVE_ENTRIES.get()
+	public static boolean isEntryInRemoveReference(TagLoader.EntryWithSource entry) {
+		return REMOVE_REFERENCE.get()
 				.getOrDefault(TAG_ID_SCOPED_VALUE.get(), Collections.emptySet())
 				.contains(entry);
 	}
 
-	public static void removeRemoveSet() {
-		REMOVE_ENTRIES.remove();
+	public static void removeRemoveReference() {
+		REMOVE_REFERENCE.remove();
 	}
 }

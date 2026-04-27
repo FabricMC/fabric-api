@@ -49,7 +49,7 @@ public class TagLoaderMixin {
 	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "tagContents") List<TagLoader.EntryWithSource> tagContents, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
 		for (TagEntry entry : parsedContents.remove()) {
 			TagLoader.EntryWithSource entryWithSource = new TagLoader.EntryWithSource(entry, sourceId);
-			TagRemovalInternals.addEntryToRemoveSet(id, entryWithSource);
+			TagRemovalInternals.addEntryToRemoveReference(id, entryWithSource);
 			tagContents.add(entryWithSource);
 		}
 	}
@@ -61,7 +61,7 @@ public class TagLoaderMixin {
 
 	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagEntry;build(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/function/Consumer;)Z"))
 	private <T> boolean removeEntriesFromTags(TagEntry instance, TagEntry.Lookup<T> lookup, Consumer<T> output, Operation<Boolean> original, @Local(name = "values") SequencedSet<T> values, @Local(name = "entry") TagLoader.EntryWithSource entry) {
-		if (TagRemovalInternals.isEntryInRemoveSet(entry)) {
+		if (TagRemovalInternals.isEntryInRemoveReference(entry)) {
 			instance.build(lookup, values::remove);
 			return true;
 		}
@@ -70,8 +70,8 @@ public class TagLoaderMixin {
 	}
 
 	@Inject(method = "build", at = @At("RETURN"))
-	private <T> void removeRemoveEntriesReference(Map<Identifier, List<TagLoader.EntryWithSource>> builders, CallbackInfoReturnable<Map<Identifier, List<T>>> cir) {
-		TagRemovalInternals.removeRemoveSet();
+	private <T> void removeRemoveSet(Map<Identifier, List<TagLoader.EntryWithSource>> builders, CallbackInfoReturnable<Map<Identifier, List<T>>> cir) {
+		TagRemovalInternals.removeRemoveReference();
 	}
 
 	// Fixes a likely vanilla bug causing loot table tags to not get loaded.
