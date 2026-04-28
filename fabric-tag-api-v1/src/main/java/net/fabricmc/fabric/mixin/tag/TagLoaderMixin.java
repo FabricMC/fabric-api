@@ -45,6 +45,11 @@ import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagLoader.class)
 public class TagLoaderMixin {
+	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V"))
+	private void removeTagRemovalReferenceOnReplace(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id) {
+		TagRemovalInternals.removeTagRemovalReference(id);
+	}
+
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
 	private void loadRemoveEntries(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id, @Local(name = "parsedContents") TagFile parsedContents, @Local(name = "sourceId") String sourceId) {
 		for (TagEntry entry : parsedContents.remove()) {
@@ -73,7 +78,7 @@ public class TagLoaderMixin {
 	}
 
 	@Inject(method = "build", at = @At("RETURN"))
-	private <T> void removeRemoveSet(Map<Identifier, List<TagLoader.EntryWithSource>> builders, CallbackInfoReturnable<Map<Identifier, List<T>>> cir) {
+	private <T> void removeTagRemovalReferencesWhenFinished(Map<Identifier, List<TagLoader.EntryWithSource>> builders, CallbackInfoReturnable<Map<Identifier, List<T>>> cir) {
 		TagRemovalInternals.removeTagRemovalReferences();
 	}
 

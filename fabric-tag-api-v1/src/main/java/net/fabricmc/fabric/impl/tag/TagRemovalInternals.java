@@ -83,6 +83,10 @@ public class TagRemovalInternals {
 	public static List<TagLoader.EntryWithSource> mergeAddedAndRemovedEntries(Identifier tagId, List<TagLoader.EntryWithSource> entries) {
 		List<TagLoader.EntryWithSource> newEntries = new ArrayList<>();
 
+		if (REMOVE_ENTRIES.get().isEmpty()) {
+			return entries;
+		}
+
 		for (String sourceId : TAG_SOURCE_ORDER.get().getOrDefault(tagId, Collections.emptyList())) {
 			newEntries.addAll(Stream.concat(
 					// 'values' key should be added before 'fabric:remove' key.
@@ -96,6 +100,11 @@ public class TagRemovalInternals {
 		}
 
 		return newEntries;
+	}
+
+	public static void removeTagRemovalReference(Identifier tagKey) {
+		TAG_SOURCE_ORDER.get().remove(tagKey);
+		REMOVE_ENTRIES.get().remove(tagKey);
 	}
 
 	public static void removeTagRemovalReferences() {
