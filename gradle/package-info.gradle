@@ -53,16 +53,6 @@ abstract class GeneratePackageInfos extends DefaultTask {
 				return
 			}
 
-			// Check existing package-info.java to ensure it has @NullMarked
-			def existingPackageInfo = it.resolve('package-info.java')
-			if (Files.exists(existingPackageInfo)) {
-				if (!existingPackageInfo.text.contains("@NullMarked")) {
-					throw new RuntimeException("package-info.java ${existingPackageInfo} is missing @NullMarked annotation.")
-				}
-
-				return
-			}
-
 			def relativePath = root.relativize(it)
 			def packageName = relativePath.toString().replace(File.separator, '.')
 
@@ -73,6 +63,18 @@ abstract class GeneratePackageInfos extends DefaultTask {
 
 			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
 			def isImpl = relativePath.toString() =~ implPattern
+
+			// Check existing package-info.java to ensure it has @NullMarked / @ApiStatus.Internal
+			def existingPackageInfo = it.resolve('package-info.java')
+			if (Files.exists(existingPackageInfo)) {
+				if (!existingPackageInfo.text.contains("@NullMarked")) {
+					throw new RuntimeException("package-info.java ${existingPackageInfo} is missing @NullMarked annotation.")
+				} else if (isImpl && !existingPackageInfo.text.contains("@ApiStatus.Internal")) {
+					throw new RuntimeException("Impl package-info.java ${existingPackageInfo} is missing @ApiStatus.Internal annotation.");
+				}
+
+				return
+			}
 
 			it.resolve('package-info.java').withWriter {
 				if (isImpl) {
