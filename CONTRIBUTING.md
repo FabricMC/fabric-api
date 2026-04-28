@@ -123,12 +123,12 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
         }
     
         @FunctionalInterface
-        public interface Two {
+        public interface After {
             void afterFoo(/* relevant parameters */);
         }
     
         // Holder class is not meant for instantiation.
-        private ExampleEvents() {
+        private FooEvents() {
         }
     }
     ```
@@ -222,12 +222,12 @@ public final class FooEvents {
     }
 
     @FunctionalInterface
-    public interface Two {
+    public interface After {
         void afterFoo(/* relevant parameters */);
     }
 
     // Holder class is not meant for instantiation.
-    private ExampleEvents() {
+    private FooEvents() {
     }
 }
 ```
@@ -444,8 +444,8 @@ One highly likely cause of a production failure is the use of `remap=false` in a
 
 ## Checklist before submitting a pull request
 
-### Apply license headers
-There is a Gradle task that can automate this for you. Simply run `gradlew spotlessApply`.
+### Apply fixups
+The `gradlew applyFixups` task automates applying license headers and generating package-infos.
 
 ### Run checks
 - The `gradlew check` task runs all the style checks and game tests.
