@@ -29,6 +29,7 @@ import com.mojang.serialization.JsonOps;
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
@@ -41,6 +42,7 @@ import net.minecraft.server.jsonrpc.internalapi.MinecraftGameRuleService;
 import net.minecraft.server.jsonrpc.internalapi.MinecraftGameRuleServiceImpl;
 import net.minecraft.server.jsonrpc.methods.ClientInfo;
 import net.minecraft.server.jsonrpc.methods.GameRulesService;
+import net.minecraft.server.notifications.NotificationManager;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRules;
@@ -58,10 +60,19 @@ public class MinecraftGameRuleServiceImplTest {
 	private static final JsonRpcLogger MANAGEMENT_LOGGER = new JsonRpcLogger();
 	private final GameRules gameRules = new GameRules(FeatureFlagSet.of());
 
+	DedicatedServer server;
+	NotificationManager notificationManager;
+
+	@BeforeEach
+	void setUp() {
+		server = mockServer();
+		notificationManager = new NotificationManager();
+		notificationManager.setServer(server);
+	}
+
 	@Test
 	void testUpdateDouble() {
-		DedicatedServer server = mockServer();
-		MinecraftGameRuleService service = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		MinecraftGameRuleService service = new GameRuleManagementHandlerTestImpl(notificationManager, MANAGEMENT_LOGGER);
 
 		GameRulesService.GameRuleUpdate<Double> result = service.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
 
@@ -76,8 +87,7 @@ public class MinecraftGameRuleServiceImplTest {
 
 	@Test
 	void testFabricId() {
-		DedicatedServer server = mockServer();
-		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(notificationManager, MANAGEMENT_LOGGER);
 
 		GameRulesService.GameRuleUpdate<Boolean> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRulesTestMod.RED_BOOLEAN, false), CONNECTION_ID);
 
@@ -88,8 +98,7 @@ public class MinecraftGameRuleServiceImplTest {
 
 	@Test
 	void testUpdateEnum() {
-		DedicatedServer server = mockServer();
-		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(notificationManager, MANAGEMENT_LOGGER);
 
 		GameRulesService.GameRuleUpdate<Direction> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, Direction.EAST), CONNECTION_ID);
 
@@ -105,8 +114,7 @@ public class MinecraftGameRuleServiceImplTest {
 
 	@Test
 	void testUpdateVanillaBoolean() {
-		DedicatedServer server = mockServer();
-		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(notificationManager, MANAGEMENT_LOGGER);
 
 		GameRulesService.GameRuleUpdate<Boolean> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
 
@@ -121,8 +129,7 @@ public class MinecraftGameRuleServiceImplTest {
 
 	@Test
 	void testUpdateVanillaInt() {
-		DedicatedServer server = mockServer();
-		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(notificationManager, MANAGEMENT_LOGGER);
 
 		GameRulesService.GameRuleUpdate<Integer> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
 
@@ -149,8 +156,8 @@ public class MinecraftGameRuleServiceImplTest {
 	}
 
 	private static final class GameRuleManagementHandlerTestImpl extends MinecraftGameRuleServiceImpl {
-		private GameRuleManagementHandlerTestImpl(DedicatedServer server, JsonRpcLogger logger) {
-			super(server, logger);
+		private GameRuleManagementHandlerTestImpl(NotificationManager notificationManager, JsonRpcLogger jsonrpcLogger) {
+			super(notificationManager, jsonrpcLogger);
 		}
 
 		public Stream<GameRule<?>> getAvailableGameRules() {

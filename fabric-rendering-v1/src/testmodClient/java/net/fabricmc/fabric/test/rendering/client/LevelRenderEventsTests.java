@@ -67,7 +67,9 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 			poseStack.scale(0.5f, 0.5f, 0.5f);
 			AABB box = new AABB(0, 0, 0, 1, 1, 1);
 			int green = ARGB.colorFromFloat(1.0f, 0, 1, 0);
-//			TestRenderUtils.drawFilledBox(poseStack, context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, green);
+			context.submitNodeCollector().submitCustomGeometry(poseStack, RenderTypes.debugFilledBox(), (pose, buffer) -> {
+				TestRenderUtils.drawFilledBox(pose, buffer, box, green);
+			});
 			poseStack.popPose();
 		}
 
@@ -85,7 +87,9 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 		AABB box = new AABB(BlockPos.ZERO.above(100));
 		int color = ARGB.colorFromFloat(0.5f, 0, 1, 0);
-//		TestRenderUtils.drawFilledBox(context.poseStack(), context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, color);
+		context.submitNodeCollector().submitCustomGeometry(context.poseStack(), RenderTypes.debugFilledBox(), (pose, buffer) -> {
+			TestRenderUtils.drawFilledBox(pose, buffer, box, color);
+		});
 
 		context.poseStack().popPose();
 	}

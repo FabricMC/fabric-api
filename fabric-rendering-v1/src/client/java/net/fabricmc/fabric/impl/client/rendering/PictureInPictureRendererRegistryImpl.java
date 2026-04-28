@@ -33,7 +33,6 @@ import net.minecraft.client.gui.render.pip.GuiProfilerChartRenderer;
 import net.minecraft.client.gui.render.pip.GuiSignRenderer;
 import net.minecraft.client.gui.render.pip.GuiSkinRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.gui.pip.GuiBannerResultRenderState;
 import net.minecraft.client.renderer.state.gui.pip.GuiBookModelRenderState;
 import net.minecraft.client.renderer.state.gui.pip.GuiEntityRenderState;

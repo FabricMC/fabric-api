@@ -28,7 +28,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.resources.model.ModelManager;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
