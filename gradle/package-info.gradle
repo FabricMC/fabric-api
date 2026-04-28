@@ -70,7 +70,7 @@ abstract class GeneratePackageInfos extends DefaultTask {
 				if (!existingPackageInfo.text.contains("@NullMarked")) {
 					throw new RuntimeException("package-info.java ${existingPackageInfo} is missing @NullMarked annotation.")
 				} else if (isImpl && !existingPackageInfo.text.contains("@ApiStatus.Internal")) {
-					throw new RuntimeException("Impl package-info.java ${existingPackageInfo} is missing @ApiStatus.Internal annotation.");
+					throw new RuntimeException("Impl package-info.java ${existingPackageInfo} is missing @ApiStatus.Internal annotation.")
 				}
 
 				return
