@@ -48,7 +48,7 @@ public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGui
 		BannerRenderer.submitPatterns(
 				client.getAtlasManager(),
 				poseStack,
-				renderDispatcher.getSubmitNodeStorage(),
+				submitNodeCollector,
 				LightCoordsUtil.FULL_BRIGHT,
 				OverlayTexture.NO_OVERLAY,
 				new BannerModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.STANDING_BANNER_FLAG).getChild("flag")),
@@ -57,7 +57,6 @@ public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGui
 				state.color(),
 				BannerPatternLayers.EMPTY,
 				null);
-		renderDispatcher.renderAllFeatures();
 	}
 
 	@Override

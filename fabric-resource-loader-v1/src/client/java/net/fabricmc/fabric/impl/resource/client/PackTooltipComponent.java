@@ -19,11 +19,11 @@ package net.fabricmc.fabric.impl.resource.client;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
@@ -83,7 +83,7 @@ public record PackTooltipComponent(Optional<Component> name, Optional<List<Forma
 			graphics.fill(
 					x, y + font.lineHeight + 4,
 					x + this.getWidth(font), y + font.lineHeight + 5,
-					0xff000000 | ChatFormatting.GRAY.getColor()
+					0xff000000 | TextColor.GRAY.getValue()
 			);
 		}
 	}

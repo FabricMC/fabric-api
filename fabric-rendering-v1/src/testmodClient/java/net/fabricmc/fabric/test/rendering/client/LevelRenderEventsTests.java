@@ -67,7 +67,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 			poseStack.scale(0.5f, 0.5f, 0.5f);
 			AABB box = new AABB(0, 0, 0, 1, 1, 1);
 			int green = ARGB.colorFromFloat(1.0f, 0, 1, 0);
-			TestRenderUtils.drawFilledBox(poseStack, context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, green);
+//			TestRenderUtils.drawFilledBox(poseStack, context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, green);
 			poseStack.popPose();
 		}
 
@@ -85,7 +85,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 		AABB box = new AABB(BlockPos.ZERO.above(100));
 		int color = ARGB.colorFromFloat(0.5f, 0, 1, 0);
-		TestRenderUtils.drawFilledBox(context.poseStack(), context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, color);
+//		TestRenderUtils.drawFilledBox(context.poseStack(), context.bufferSource().getBuffer(RenderTypes.debugFilledBox()), box, color);
 
 		context.poseStack().popPose();
 	}
@@ -135,7 +135,6 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 	private static void assertRenderContext(LevelRenderContext context) {
 		assertNotNull(context.submitNodeCollector(), "submitNodeCollector is null");
 		assertNotNull(context.poseStack(), "poseStack is null");
-		assertNotNull(context.bufferSource(), "bufferSource is null");
 	}
 
 	private static void assertRenderContextWithTerrain(LevelRenderContext context) {

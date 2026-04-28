@@ -50,10 +50,6 @@ public class IngredientMixin implements FabricIngredient {
 	@Final
 	public static Codec<Ingredient> CODEC;
 
-	@Shadow
-	@Final
-	private HolderSet<Item> values;
-
 	@ModifyExpressionValue(
 			method = "<clinit>",
 			at = @At(
@@ -111,10 +107,5 @@ public class IngredientMixin implements FabricIngredient {
 			// ingredients can never be equal.
 			cir.setReturnValue(false);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return values.hashCode();
 	}
 }

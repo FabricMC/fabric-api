@@ -22,7 +22,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.MobCategory;
@@ -31,7 +30,6 @@ import net.minecraft.world.entity.monster.Creeper;
 
 import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.fabric.test.lookup.FabricApiLookupTest;
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
@@ -40,11 +38,9 @@ public class FabricEntityApiLookupTest {
 	public static final EntityApiLookup<Inspectable, Void> INSPECTABLE =
 			EntityApiLookup.get(Identifier.fromNamespaceAndPath(FabricApiLookupTest.MOD_ID, "inspectable"), Inspectable.class, Void.class);
 
-	public static final EntityType<InspectablePig> INSPECTABLE_PIG = FabricEntityTypeBuilder.create()
-			.mobCategory(MobCategory.CREATURE)
-			.entityFactory(InspectablePig::new)
-			.dimensions(EntityDimensions.scalable(0.9F, 0.9F))
-			.trackRangeChunks(10)
+	public static final EntityType<InspectablePig> INSPECTABLE_PIG = EntityType.Builder.of(InspectablePig::new, MobCategory.CREATURE)
+			.sized(0.9F, 0.9F)
+			.clientTrackingRange(10)
 			.build(INSPECTABLE_PIG_KEY);
 
 	public static void onInitialize() {

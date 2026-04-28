@@ -33,7 +33,6 @@ import net.minecraft.client.gui.render.pip.GuiProfilerChartRenderer;
 import net.minecraft.client.gui.render.pip.GuiSignRenderer;
 import net.minecraft.client.gui.render.pip.GuiSkinRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.gui.pip.GuiBannerResultRenderState;
 import net.minecraft.client.renderer.state.gui.pip.GuiBookModelRenderState;
@@ -62,12 +61,12 @@ public final class PictureInPictureRendererRegistryImpl {
 	}
 
 	// Called after the vanilla PiP renderers are created.
-	public static void onReady(Minecraft client, MultiBufferSource.BufferSource immediate, SubmitNodeCollector submitNodeCollector, Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> specialElementRenderers) {
+	public static void onReady(Minecraft client, Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> specialElementRenderers) {
 		frozen = true;
 
 		registerVanillaFactories();
 
-		ContextImpl context = new ContextImpl(client, immediate, submitNodeCollector);
+		ContextImpl context = new ContextImpl(client);
 
 		for (PictureInPictureRendererRegistry.Factory factory : FACTORIES) {
 			PictureInPictureRenderer<?> elementRenderer = factory.createRenderer(context);
@@ -78,9 +77,9 @@ public final class PictureInPictureRendererRegistryImpl {
 
 	// null for render states registered outside FAPI
 	@Nullable
-	public static <S extends PictureInPictureRenderState> PictureInPictureRenderer<S> createNewRenderer(S state, Minecraft client, MultiBufferSource.BufferSource immediate, SubmitNodeCollector submitNodeCollector) {
+	public static <S extends PictureInPictureRenderState> PictureInPictureRenderer<S> createNewRenderer(S state, Minecraft client) {
 		PictureInPictureRendererRegistry.Factory factory = REGISTERED_FACTORIES.get(state.getClass());
-		return factory == null ? null : (PictureInPictureRenderer<S>) factory.createRenderer(new ContextImpl(client, immediate, submitNodeCollector));
+		return factory == null ? null : (PictureInPictureRenderer<S>) factory.createRenderer(new ContextImpl(client));
 	}
 
 	private static void registerVanillaFactories() {
@@ -98,5 +97,5 @@ public final class PictureInPictureRendererRegistryImpl {
 		return REGISTERED_FACTORIES.keySet();
 	}
 
-	record ContextImpl(Minecraft minecraft, MultiBufferSource.BufferSource bufferSource, SubmitNodeCollector submitNodeCollector) implements PictureInPictureRendererRegistry.Context { }
+	record ContextImpl(Minecraft minecraft) implements PictureInPictureRendererRegistry.Context { }
 }

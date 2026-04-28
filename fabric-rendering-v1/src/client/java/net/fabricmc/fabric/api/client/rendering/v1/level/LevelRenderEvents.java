@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 
@@ -162,10 +161,6 @@ public final class LevelRenderEvents {
 	 * Called at the end of the main render pass, after terrain, entities, block entities, and particles are drawn to
 	 * the appropriate framebuffers, and before clouds, weather, and late debug are drawn to the appropriate
 	 * framebuffers and before fabulous translucent framebuffers are combined.
-	 *
-	 * <p><strong>Warning:</strong> after rendering things in this event, consumers should call
-	 * {@link MultiBufferSource.BufferSource#endFrame()}  context.bufferSource().endFrame()}, otherwise
-	 * you may get strange rendering bugs!
 	 */
 	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
 		for (final EndMain callback : callbacks) {

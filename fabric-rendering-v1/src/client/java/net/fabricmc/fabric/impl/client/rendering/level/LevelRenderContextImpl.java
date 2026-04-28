@@ -21,7 +21,6 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -35,7 +34,6 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	private LevelRenderer levelRenderer;
 	private LevelRenderState levelRenderState;
 	private SubmitNodeCollector nodeCollector;
-	private MultiBufferSource.BufferSource bufferSource;
 
 	@Nullable
 	private ChunkSectionsToRender sectionsToRender;
@@ -46,15 +44,13 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 			GameRenderer gameRenderer,
 			LevelRenderer levelRenderer,
 			LevelRenderState levelRenderState,
-			SubmitNodeCollector nodeCollector,
-			MultiBufferSource.BufferSource bufferSource
+			SubmitNodeCollector nodeCollector
 	) {
 		this.gameRenderer = gameRenderer;
 		this.levelRenderer = levelRenderer;
 		this.levelRenderState = levelRenderState;
 
 		this.nodeCollector = nodeCollector;
-		this.bufferSource = bufferSource;
 
 		sectionsToRender = null;
 		poseStack = null;
@@ -97,10 +93,5 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	@Nullable
 	public PoseStack poseStack() {
 		return poseStack;
-	}
-
-	@Override
-	public MultiBufferSource.BufferSource bufferSource() {
-		return bufferSource;
 	}
 }

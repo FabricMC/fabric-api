@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
-import net.minecraft.client.renderer.SubmitNodeStorage;
-
 public interface GuiRendererExtensions {
-	void fabric_onReady(SubmitNodeStorage submitNodeStorage);
+	void fabric_onReady();
 }

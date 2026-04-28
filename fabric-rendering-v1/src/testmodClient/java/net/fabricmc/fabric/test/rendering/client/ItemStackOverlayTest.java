@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ARGB;
 
@@ -35,7 +35,7 @@ public class ItemStackOverlayTest implements ClientModInitializer {
 						s,
 						x + 19 - 2 - font.width(s),
 						y + 6 + 3,
-						ARGB.opaque(ChatFormatting.YELLOW.getColor()),
+						ARGB.opaque(TextColor.YELLOW.getValue()),
 						true);
 				graphics.pose().popMatrix();
 			}

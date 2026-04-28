@@ -42,16 +42,12 @@ public class GameRendererMixin {
 
 	@Shadow
 	@Final
-	private SubmitNodeStorage submitNodeStorage;
-
-	@Shadow
-	@Final
 	private Minecraft minecraft;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void guiRendererReady(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, ModelManager modelManager, CallbackInfo ci) {
 		GuiRendererExtensions guiRenderer = (GuiRendererExtensions) this.guiRenderer;
-		guiRenderer.fabric_onReady(this.submitNodeStorage);
+		guiRenderer.fabric_onReady();
 	}
 
 	@Inject(method = "extract", at = @At(value = "HEAD"))
