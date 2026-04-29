@@ -59,10 +59,10 @@
  * <p>All tag files contain an additional field: {@code fabric:remove} which is an array of entries
  * you wish to remove, following the same syntax as the {@code values} field.
  *
- * <p>Entries within the {@code fabric:remove} field are handled after all the current file's values are added to the tag.
+ * <p>Entries within the {@code fabric:remove} field are handled after all of the current file's values are added to the tag.
  * These entries should never be required, meaning they will never throw exceptions if not present in the associated registry.
  *
- * <p>Tag entries may always be added back by data packs that load after the pack that removes the respective value(s)
+ * <p>Tag entries may always be added back by data packs that load after the pack that removes the respective value(s).
  */
 @NullMarked
 package net.fabricmc.fabric.api.tag.v1;
