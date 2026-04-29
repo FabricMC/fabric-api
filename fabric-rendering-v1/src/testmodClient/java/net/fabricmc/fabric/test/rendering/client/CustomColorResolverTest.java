@@ -18,9 +18,15 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import java.util.List;
 
+import it.unimi.dsi.fastutil.ints.IntList;
+
+import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
+
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -50,9 +56,27 @@ public class CustomColorResolverTest implements ClientModInitializer {
 		}
 	};
 
+	private static final BlockTintsFactory TINTS_FACTORY = new BlockTintsFactory() {
+
+		private final RandomSource RANDOM = RandomSource.createThreadLocalInstance(42L);
+
+		@Override
+		public void collect(
+				final BlockState state,
+				final BlockAndTintGetter level,
+				final BlockPos pos,
+				final IntList tintValues)
+		{
+			tintValues.size(2);
+			tintValues.set(0, ARGB.color(255, RANDOM.nextInt()));
+			tintValues.set(1, ARGB.color(255, RANDOM.nextInt()));
+		}
+	};
+
 	@Override
 	public void onInitializeClient() {
 		ColorResolverRegistry.register(TEST_COLOR_RESOLVER);
 		BlockColorRegistry.register(List.of(TINT_SOURCE), CustomColorResolverTestInit.CUSTOM_COLOR_BLOCK);
+		BlockColorRegistry.register(TINTS_FACTORY, CustomColorResolverTestInit.CUSTOM_COLOR_BLOCK_DYNAMIC);
 	}
 }

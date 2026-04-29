@@ -53,6 +53,8 @@ public interface BlockTintsFactory
 	 *     The given tint list is guaranteed to be empty.
 	 *     It is recommended to call the {@link IntList#size(int) size} method if you at the start of the method, ahead of time, how many
 	 *     tints your system will eventually register as this will pre-allocate enough memory to hold your ints.
+	 *     If you use this mechanic, remember to use {@link IntList#set(int, int) set} instead of {@link IntList#add(int) add}
+	 *     to put the tint into the list, because add will always append to the end, even if pre-sized.
 	 * </p>
 	 *
 	 * @param state The state for which the tints are retrieved.
