@@ -20,15 +20,14 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
-
-import net.minecraft.world.level.block.state.BlockState;
-
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
+import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
 
 public final class BlockColorRegistryImpl {
 	@Nullable

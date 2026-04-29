@@ -22,10 +22,6 @@ import java.util.function.Predicate;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
-import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
-
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -49,6 +45,8 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadTransform;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ExtraLightCoordsUtil;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.FlatLighter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;

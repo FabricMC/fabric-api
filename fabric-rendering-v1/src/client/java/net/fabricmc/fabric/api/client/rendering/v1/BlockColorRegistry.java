@@ -18,16 +18,15 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
-
-import net.fabricmc.fabric.impl.client.rendering.BlockColorRegistryImpl;
-
 import net.minecraft.world.level.block.state.BlockState;
 
-import org.jspecify.annotations.Nullable;
+import net.fabricmc.fabric.impl.client.rendering.BlockColorRegistryImpl;
 
 /**
  * The registry for {@link BlockTintSource}s.
