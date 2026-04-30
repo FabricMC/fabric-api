@@ -18,17 +18,20 @@ package net.fabricmc.fabric.api.datagen.v1.advancement;
 
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.Identifier;
 
+@ApiStatus.NonExtendable
 public interface FabricAdvancementBuilder {
 	/**
 	 * Builds and saves the advancement.
-	 * @param output The output to save the advancement to.
-	 * @param id The id of the advancement.
-	 * @return A new holder containing the saved enchantment.
+	 * @param output The output to save the advancement to
+	 * @param id The id of the advancement
+	 * @return A new holder containing the saved enchantment
 	 */
 	default AdvancementHolder save(Consumer<AdvancementHolder> output, Identifier id) {
-		throw new AssertionError("Implemented via mixin");
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }
