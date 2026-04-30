@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -27,8 +26,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyRenderContextImpl;
-
-import net.minecraft.client.renderer.state.level.SkyRenderState;
 
 import org.joml.Matrix4fc;
 import org.joml.Vector4f;
@@ -40,6 +37,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Camera;
@@ -174,13 +172,15 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}
 
-	@WrapMethod(method = "lambda$addSkyPass$0")
-	private static void onSkyRender(GpuBufferSlice skyFog, SkyRenderState state, SkyRenderer skyRenderer, Operation<Void> original) {
-		final boolean cancelled = SkyRenderEvents.PRE_SKY.invoker().execute(skyRenderContext);
-		if (!cancelled) {
-			original.call(skyFog, state, skyRenderer);
-			SkyRenderEvents.POST_SKY.invoker().execute(skyRenderContext);
-		}
+	@ModifyArg(method = "addSkyPass", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/framegraph/FramePass;executes(Ljava/lang/Runnable;)V"))
+	private static Runnable onSkyRender(Runnable task) {
+		return () -> {
+			final boolean cancelled = SkyRenderEvents.PRE_SKY.invoker().execute(skyRenderContext);
+			if (!cancelled) {
+				task.run();
+				SkyRenderEvents.POST_SKY.invoker().execute(skyRenderContext);
+			}
+		};
 	}
 
 	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderEndSky()V"))
@@ -220,7 +220,7 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 	}
 
 	@Inject(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSunMoonAndStars(Lcom/mojang/blaze3d/vertex/PoseStack;FFFLnet/minecraft/world/level/MoonPhase;FF)V", shift = At.Shift.AFTER))
-	private static void afterSunMoonStars(GpuBufferSlice skyFog, SkyRenderState state, SkyRenderer skyRenderer, CallbackInfo ci) {
+	private static void afterSunMoonStars(CallbackInfo ci) {
 		SkyRenderEvents.POST_SUN_MOON_STARS.invoker().execute(skyRenderContext);
 	}
 
