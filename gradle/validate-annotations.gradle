@@ -31,16 +31,17 @@ abstract class ValidateAnnotations extends SourceTask {
 				}
 
 				def contents = it.text
+				def name = it.name
 
 				// @Environment is never allowed
 				if (ENVIRONMENT.matcher(contents).find()) {
 					throw new RuntimeException("Found @Environment annotation in file: $it")
 				}
 
-				// @ApiStatus.Internal is only allowed in api packages (it's auto-generated for impl and mixin packages)
-				if (dir != "api") {
+				// @ApiStatus.Internal is only allowed in api packages (it's auto-generated for impl and mixin package-infos)
+				if (dir != "api" && name != "package-info.java") {
 					if (API_STATUS_INTERNAL.matcher(contents).find()) {
-						throw new RuntimeException("Found @ApiStatus.Internal in implementation file: " + it)
+						throw new RuntimeException("Found @ApiStatus.Internal in non package-info implementation file: " + it)
 					}
 				}
 			}
