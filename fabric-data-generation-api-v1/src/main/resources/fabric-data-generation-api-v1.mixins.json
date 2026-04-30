@@ -11,6 +11,7 @@
     "TagAppenderMixin$TagAppender2Mixin",
     "TagBuilderMixin",
     "TagsProviderMixin",
+    "advancement.AdvancementBuilderMixin",
     "loot.BlockLootSubProviderAccessor",
     "loot.BlockLootSubProviderMixin",
     "loot.EntityLootSubProviderAccessor",
