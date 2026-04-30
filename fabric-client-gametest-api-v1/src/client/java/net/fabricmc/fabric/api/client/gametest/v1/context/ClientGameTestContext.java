@@ -215,5 +215,5 @@ public interface ClientGameTestContext {
 	 * @param <E> The type of the checked exception that the function throws
 	 * @throws E When the function throws an exception
 	 */
-	<T, E extends Throwable> T computeOnClient(FailableFunction<Minecraft, T, E> function) throws E;
+	<T extends @Nullable Object, E extends Throwable> T computeOnClient(FailableFunction<Minecraft, T, E> function) throws E;
 }

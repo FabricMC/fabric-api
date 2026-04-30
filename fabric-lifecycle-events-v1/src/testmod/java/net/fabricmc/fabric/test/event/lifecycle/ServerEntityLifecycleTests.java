@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.animal.sniffer.Sniffer;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -46,9 +48,18 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			this.serverEntities.add(entity);
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
-				logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+				logger.info("[SERVER] LOADED {} with reason {} and isFromDisk {} - Entities: {}", entity.toString(), entity.spawnReason(), entity.isLoadedFromDisk(), this.serverEntities.size());
 			}
 		});
+
+		ServerEntityEvents.ALLOW_LOAD.register(((entity, level, spawnReason, isLoadedFromDisk) -> {
+			if (entity instanceof Sniffer && spawnReason == EntitySpawnReason.COMMAND) {
+				logger.info("Stopped sniffer from spawning via command.");
+				return false;
+			}
+
+			return true;
+		}));
 
 		ServerEntityEvents.ENTITY_UNLOAD.register((entity, level) -> {
 			this.serverEntities.remove(entity);
