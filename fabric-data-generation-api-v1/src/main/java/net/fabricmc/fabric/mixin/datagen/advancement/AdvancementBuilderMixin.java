@@ -28,7 +28,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.datagen.v1.advancement.FabricAdvancementBuilder;
 
 @Mixin(Advancement.Builder.class)
-public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
+abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
 	@Shadow
 	public abstract AdvancementHolder build(Identifier id);
 
