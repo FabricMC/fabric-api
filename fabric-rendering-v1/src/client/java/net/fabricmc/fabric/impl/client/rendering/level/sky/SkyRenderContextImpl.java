@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.client.rendering.level.sky;
 
 import net.minecraft.client.renderer.SkyRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.sky.CelestialRenderContext;
@@ -25,10 +26,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyRenderContext;
 public class SkyRenderContextImpl implements SkyRenderContext {
 	private SkyRenderer skyRenderer;
 	private SkyRenderState skyRenderState;
+	private CameraRenderState cameraRenderState;
 
-	public void prepare(final SkyRenderer skyRenderer, final SkyRenderState skyRenderState) {
+	public void prepare(final SkyRenderer skyRenderer, final SkyRenderState skyRenderState, final CameraRenderState cameraRenderState) {
 		this.skyRenderer = skyRenderer;
 		this.skyRenderState = skyRenderState;
+		this.cameraRenderState = cameraRenderState;
 	}
 
 	@Override
@@ -39,6 +42,11 @@ public class SkyRenderContextImpl implements SkyRenderContext {
 	@Override
 	public SkyRenderState skyRenderState() {
 		return this.skyRenderState;
+	}
+
+	@Override
+	public CameraRenderState cameraRenderState() {
+		return this.cameraRenderState;
 	}
 
 	public static class CelestialContextImpl extends SkyRenderContextImpl implements CelestialRenderContext {

@@ -16,18 +16,19 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.renderer.SkyRenderer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 
 @ApiStatus.NonExtendable
-public interface SkyRenderContext {
-	SkyRenderer skyRenderer();
+public interface SkyExtractionContext {
+	ClientLevel level();
 
-	SkyRenderState skyRenderState();
+	Camera camera();
 
-	CameraRenderState cameraRenderState();
+	SkyRenderState state();
+
+	float partialTicks();
 }

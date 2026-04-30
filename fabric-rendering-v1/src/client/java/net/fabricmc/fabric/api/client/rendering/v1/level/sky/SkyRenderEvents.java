@@ -16,17 +16,32 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * To be used when adding custom skies or to modify existing aspects of the skys rendering.
+ * To be used when adding custom skies or to modify existing aspects of the sky's rendering.
  */
 public final class SkyRenderEvents {
 	private SkyRenderEvents() {
 	}
+
+	/**
+	 * Called after all render states are extracted, before any are drawn.
+	 * Use this to extract general custom data needed for rendering.
+	 *
+	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
+	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.multiplayer.ClientLevel}.
+	 */
+	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> context -> {
+		for (final EndExtraction callback : callbacks) {
+			callback.execute(context);
+		}
+	});
 
 	/**
 	 * Called at the start of the "addSkyPass" lambda.
@@ -190,6 +205,11 @@ public final class SkyRenderEvents {
 			callback.execute(key, context);
 		}
 	});
+
+	@FunctionalInterface
+	public interface EndExtraction {
+		void execute(SkyExtractionContext context);
+	}
 
 	@FunctionalInterface
 	public interface PreSky {

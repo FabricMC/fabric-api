@@ -28,11 +28,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SkyRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.world.level.MoonPhase;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.sky.CelestialRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyRenderEvents;
+import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyExtractionContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyRenderContextImpl;
 
 @Mixin(SkyRenderer.class)
@@ -42,7 +44,14 @@ public abstract class SkyRendererMixin {
 
 	@Inject(method = "extractRenderState", at = @At("HEAD"))
 	private void setupContext(ClientLevel level, float partialTicks, Camera camera, SkyRenderState skyRenderState, CallbackInfo ci) {
-		celestialContext.prepare((SkyRenderer) (Object) this, skyRenderState);
+		final CameraRenderState cameraRenderState = new CameraRenderState();
+		camera.extractRenderState(cameraRenderState, partialTicks);
+		celestialContext.prepare((SkyRenderer) (Object) this, skyRenderState, cameraRenderState);
+	}
+
+	@Inject(method = "extractRenderState", at = @At("TAIL"))
+	private void afterExtractSky(ClientLevel level, float partialTicks, Camera camera, SkyRenderState state, CallbackInfo ci) {
+		SkyRenderEvents.END_EXTRACTION.invoker().execute(new SkyExtractionContextImpl(level, camera, state, partialTicks));
 	}
 
 	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSun(FLcom/mojang/blaze3d/vertex/PoseStack;)V"))

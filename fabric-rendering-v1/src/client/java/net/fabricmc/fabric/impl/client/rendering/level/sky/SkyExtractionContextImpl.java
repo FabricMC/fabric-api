@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
+package net.fabricmc.fabric.impl.client.rendering.level.sky;
 
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-
-import org.jetbrains.annotations.ApiStatus;
-
-import net.minecraft.client.renderer.SkyRenderer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 
-@ApiStatus.NonExtendable
-public interface SkyRenderContext {
-	SkyRenderer skyRenderer();
+import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyExtractionContext;
 
-	SkyRenderState skyRenderState();
-
-	CameraRenderState cameraRenderState();
+public record SkyExtractionContextImpl(ClientLevel level, Camera camera, SkyRenderState state, float partialTicks) implements SkyExtractionContext {
 }
