@@ -388,10 +388,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.display(SIMPLE_BLOCK,
 							Component.translatable("advancements.test.adventure_child.title"),
 							Component.translatable("advancements.test.adventure_child.description"),
-									Identifier.withDefaultNamespace("textures/gui/advancements/backgrounds/end.png"),
-									AdvancementType.GOAL,
-									false, false, false
-							)
+							Identifier.withDefaultNamespace("textures/gui/advancements/backgrounds/end.png"),
+							AdvancementType.GOAL,
+							false, false, false
+					)
 					.addCriterion("killed_something", KilledTrigger.TriggerInstance.playerKilledEntity())
 					.parent(createPlaceholder(Identifier.withDefaultNamespace("adventure/root")))
 					.save(consumer, Identifier.fromNamespaceAndPath(MOD_ID, "test/adventure_child"));
