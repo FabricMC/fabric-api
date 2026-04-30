@@ -23,6 +23,9 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.Identifier;
 
+/**
+ * Advancement builder extensions provided by Fabric.
+ */
 @ApiStatus.NonExtendable
 public interface FabricAdvancementBuilder {
 	/**
