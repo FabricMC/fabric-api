@@ -81,10 +81,10 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	/**
 	 * Creates a reference to an existing advancement.
 	 *
-	 * <pre>{@code
+	 * {@snippet :
 	 * Advancement.Builder builder = ...;
 	 * builder.parent(createPlaceholder(Identifier.withDefaultNamespace("adventure/root")))
-	 * }</pre>
+	 * }
 	 *
 	 * @param id The identifier to create a reference for.
 	 * @return A new holder containing the provided id.
