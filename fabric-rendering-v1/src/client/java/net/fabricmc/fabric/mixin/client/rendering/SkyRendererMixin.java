@@ -61,9 +61,8 @@ public abstract class SkyRendererMixin {
 		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(celestialContext);
 		if (!cancelled) {
 			original.call(instance, rainBrightness, poseStack);
+			SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
 		}
-
-		SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
 	}
 
 	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderMoon(Lnet/minecraft/world/level/MoonPhase;FLcom/mojang/blaze3d/vertex/PoseStack;)V"))
@@ -73,9 +72,8 @@ public abstract class SkyRendererMixin {
 		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(celestialContext);
 		if (!cancelled) {
 			original.call(instance, moonPhase, rainBrightness, poseStack);
+			SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
 		}
-
-		SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
 	}
 
 	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderStars(FLcom/mojang/blaze3d/vertex/PoseStack;)V"))
@@ -85,8 +83,7 @@ public abstract class SkyRendererMixin {
 		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(celestialContext);
 		if (!cancelled) {
 			original.call(instance, rainBrightness, poseStack);
+			SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
 		}
-
-		SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
 	}
 }
