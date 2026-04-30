@@ -32,7 +32,7 @@ public interface FabricAdvancementBuilder {
 	 * Builds and saves the advancement.
 	 * @param output The output to save the advancement to
 	 * @param id The id of the advancement
-	 * @return A new holder containing the saved enchantment
+	 * @return A new holder containing the saved advancement
 	 */
 	default AdvancementHolder save(Consumer<AdvancementHolder> output, Identifier id) {
 		throw new UnsupportedOperationException("Implemented via mixin");
