@@ -16,22 +16,21 @@
 
 package net.fabricmc.fabric.mixin.datagen.advancement;
 
-import net.fabricmc.fabric.api.datagen.v1.advancement.FabricAdvancementBuilder;
-
-import net.minecraft.advancements.Advancement;
-
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.Identifier;
+import java.util.function.Consumer;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.util.function.Consumer;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.resources.Identifier;
+
+import net.fabricmc.fabric.api.datagen.v1.advancement.FabricAdvancementBuilder;
 
 @Mixin(Advancement.Builder.class)
 public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
 	@Shadow
-	public abstract AdvancementHolder build(final Identifier id);
+	public abstract AdvancementHolder build(Identifier id);
 
 	@Override
 	public AdvancementHolder save(Consumer<AdvancementHolder> output, Identifier id) {

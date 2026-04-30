@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.datagen.v1.advancement;
 
+import java.util.function.Consumer;
+
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.Identifier;
-
-import java.util.function.Consumer;
 
 public interface FabricAdvancementBuilder {
 	/**
