@@ -327,7 +327,7 @@
         <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent issues with some locales -->
         <module name="MatchXpath">
             <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
-            <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, English recommended"/>
+            <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, Locale.ROOT recommended"/>
         </module>
     </module>
 </module>
