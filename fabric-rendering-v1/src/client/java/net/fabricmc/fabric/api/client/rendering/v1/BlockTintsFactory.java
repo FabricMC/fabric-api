@@ -56,6 +56,12 @@ public interface BlockTintsFactory
 	 *     If you use this mechanic, remember to use {@link IntList#set(int, int) set} instead of {@link IntList#add(int) add}
 	 *     to put the tint into the list, because add will always append to the end, even if pre-sized.
 	 * </p>
+	 * <p>
+	 *     This method will be invoked from multiple threads simultaneously, primarily from the chunk meshing threads,
+	 *     as such it is of the up most importance that you consider that while implementing this method.
+	 *     In particular use the block entity render data system to access custom data, instead of directly
+	 *     accessing the underlying block entity in the given position.
+	 * </p>
 	 *
 	 * @param state The state for which the tints are retrieved.
 	 * @param level The level in which they are retrieved.
