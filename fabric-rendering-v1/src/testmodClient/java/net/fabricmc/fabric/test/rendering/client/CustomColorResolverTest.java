@@ -20,8 +20,6 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
-
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
@@ -32,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorResolverRegistry;
 import net.fabricmc.fabric.test.rendering.CustomColorResolverTestInit;
 
