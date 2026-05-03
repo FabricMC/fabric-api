@@ -200,6 +200,7 @@ public class AltModelBlockRendererImpl implements AltModelBlockRenderer, QuadTra
 			}
 		} else {
 			final BlockTintsFactory factory = BlockColorRegistry.getFactory(blockState);
+
 			if (factory != null) {
 				factory.collect(blockState, level, pos, computedTintValues);
 			}

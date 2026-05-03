@@ -49,8 +49,7 @@ public final class BlockColorRegistryImpl {
 	}
 
 	public static void register(List<BlockTintSource> layers, Block... blocks) {
-		for (final Block block : blocks)
-		{
+		for (final Block block : blocks) {
 			if (factories.containsKey(block)) {
 				throw new IllegalStateException("A dynamic block color factory for the block %s has already been registered and as such no static usage is allowed!".formatted(
 						block
@@ -67,15 +66,13 @@ public final class BlockColorRegistryImpl {
 		}
 	}
 
-	public static void register(final BlockTintsFactory factory, final Block[] blocks)
-	{
-		for (final Block block : blocks)
-		{
+	public static void register(final BlockTintsFactory factory, final Block[] blocks) {
+		for (final Block block : blocks) {
 			if (map != null && map.containsKey(block)) {
-				throw new IllegalStateException(
-						"A static block color provider for the block: %s has already been registered and as such no dynamic usage is allowed!".formatted(
-								block));
+				throw new IllegalStateException("A static block color provider for the block: %s has already been registered and as such no dynamic usage is allowed!".formatted(
+						block));
 			}
+
 			if (blockColors != null && !blockColors.getTintSources(block.defaultBlockState()).isEmpty()) {
 				throw new IllegalStateException(
 						"A static block color provider for the block: %s has already been registered and as such no dynamic usage is allowed!".formatted(
@@ -86,8 +83,7 @@ public final class BlockColorRegistryImpl {
 		}
 	}
 
-	public static @Nullable BlockTintsFactory getFactory(final BlockState blockState)
-	{
+	public static @Nullable BlockTintsFactory getFactory(final BlockState blockState) {
 		return factories.get(blockState.getBlock());
 	}
 }

@@ -38,12 +38,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
 
 @Mixin(ModelBlockRenderer.class)
-public abstract class ModelBlockRendererMixin
-{
-
+public abstract class ModelBlockRendererMixin {
 	@Shadow
 	@Final
-	private IntList                         computedTintValues;
+	private IntList computedTintValues;
 	@Shadow
 	@Final
 	private List<@Nullable BlockTintSource> tintSources;
@@ -66,6 +64,7 @@ public abstract class ModelBlockRendererMixin
 			final CallbackInfoReturnable<Integer> cir) {
 		if (this.tintSources.isEmpty()) {
 			final BlockTintsFactory factory = BlockColorRegistry.getFactory(state);
+
 			if (factory != null) {
 				factory.collect(state, level, pos, this.computedTintValues);
 			}
