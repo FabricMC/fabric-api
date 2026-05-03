@@ -56,7 +56,6 @@ public class CustomColorResolverTest implements ClientModInitializer {
 	};
 
 	private static final BlockTintsFactory TINTS_FACTORY = new BlockTintsFactory() {
-
 		private final ThreadLocal<RandomSource> RANDOM = ThreadLocal.withInitial(() -> RandomSource.createThreadLocalInstance(42L));
 
 		@Override
@@ -64,8 +63,7 @@ public class CustomColorResolverTest implements ClientModInitializer {
 				final BlockState state,
 				final BlockAndTintGetter level,
 				final BlockPos pos,
-				final IntList tintValues)
-		{
+				final IntList tintValues) {
 			tintValues.size(2);
 			tintValues.set(0, ARGB.color(255, RANDOM.get().nextInt()));
 			tintValues.set(1, ARGB.color(255, RANDOM.get().nextInt()));
