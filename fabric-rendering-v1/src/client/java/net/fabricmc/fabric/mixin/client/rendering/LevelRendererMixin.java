@@ -179,8 +179,8 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 			final boolean cancelled = SkyRenderEvents.PRE_SKY.invoker().execute(skyRenderContext);
 			if (!cancelled) {
 				task.run();
-				SkyRenderEvents.POST_SKY.invoker().execute(skyRenderContext);
 			}
+			SkyRenderEvents.POST_SKY.invoker().execute(skyRenderContext, cancelled);
 		};
 	}
 
@@ -189,8 +189,8 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		final boolean cancelled = SkyRenderEvents.PRE_END_SKY.invoker().execute(skyRenderContext);
 		if (!cancelled) {
 			original.call(instance);
-			SkyRenderEvents.POST_END_SKY.invoker().execute(skyRenderContext);
 		}
+		SkyRenderEvents.POST_END_SKY.invoker().execute(skyRenderContext, cancelled);
 	}
 
 	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSkyDisc(I)V"))
@@ -198,8 +198,8 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.TOP);
 		if (!cancelled) {
 			original.call(instance, skyColor);
-			SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.TOP);
 		}
+		SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.TOP, cancelled);
 	}
 
 	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSunriseAndSunset(Lcom/mojang/blaze3d/vertex/PoseStack;FI)V"))
@@ -207,8 +207,8 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		final boolean cancelled = SkyRenderEvents.PRE_SUNRISE_SUNSET.invoker().execute(skyRenderContext);
 		if (!cancelled) {
 			original.call(instance, poseStack, sunAngle, sunriseAndSunsetColor);
-			SkyRenderEvents.POST_SUNRISE_SUNSET.invoker().execute(skyRenderContext);
 		}
+		SkyRenderEvents.POST_SUNRISE_SUNSET.invoker().execute(skyRenderContext, cancelled);
 	}
 
 	@Inject(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSunMoonAndStars(Lcom/mojang/blaze3d/vertex/PoseStack;FFFLnet/minecraft/world/level/MoonPhase;FF)V", shift = At.Shift.AFTER))
@@ -221,7 +221,7 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.BOTTOM);
 		if (!cancelled) {
 			original.call(instance);
-			SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.BOTTOM);
 		}
+		SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.BOTTOM, cancelled);
 	}
 }

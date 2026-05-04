@@ -57,9 +57,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called at the end of the "addSkyPass" lambda.
 	 */
-	public static final Event<PostSky> POST_SKY = EventFactory.createArrayBacked(PostSky.class, callbacks -> context -> {
+	public static final Event<PostSky> POST_SKY = EventFactory.createArrayBacked(PostSky.class, callbacks -> (context, cancelled) -> {
 		for (final PostSky callback : callbacks) {
-			callback.execute(context);
+			callback.execute(context, cancelled);
 		}
 	});
 
@@ -79,9 +79,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called after "renderEndSky" is invoked.
 	 */
-	public static final Event<PostEndSky> POST_END_SKY = EventFactory.createArrayBacked(PostEndSky.class, callbacks -> context -> {
+	public static final Event<PostEndSky> POST_END_SKY = EventFactory.createArrayBacked(PostEndSky.class, callbacks -> (context, cancelled) -> {
 		for (final PostEndSky callback : callbacks) {
-			callback.execute(context);
+			callback.execute(context, cancelled);
 		}
 	});
 
@@ -101,9 +101,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called after the top/bottom sky disc is rendered.
 	 */
-	public static final Event<PostSkyDisc> POST_SKY_DISC = EventFactory.createArrayBacked(PostSkyDisc.class, callbacks -> (context, type) -> {
+	public static final Event<PostSkyDisc> POST_SKY_DISC = EventFactory.createArrayBacked(PostSkyDisc.class, callbacks -> (context, type, cancelled) -> {
 		for (final PostSkyDisc callback : callbacks) {
-			callback.execute(context, type);
+			callback.execute(context, type, cancelled);
 		}
 	});
 
@@ -123,9 +123,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called when sunrise/sunset in the Overworld is rendered.
 	 */
-	public static final Event<PostSunriseSunset> POST_SUNRISE_SUNSET = EventFactory.createArrayBacked(PostSunriseSunset.class, callbacks -> context -> {
+	public static final Event<PostSunriseSunset> POST_SUNRISE_SUNSET = EventFactory.createArrayBacked(PostSunriseSunset.class, callbacks -> (context, cancelled) -> {
 		for (final PostSunriseSunset callback : callbacks) {
-			callback.execute(context);
+			callback.execute(context, cancelled);
 		}
 	});
 
@@ -154,9 +154,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called after the sun, moon, or stars are rendered.
 	 */
-	public static final Event<PostCelestial> POST_CELESTIAL = EventFactory.createArrayBacked(PostCelestial.class, callbacks -> (context, type) -> {
+	public static final Event<PostCelestial> POST_CELESTIAL = EventFactory.createArrayBacked(PostCelestial.class, callbacks -> (context, type, cancelled) -> {
 		for (final PostCelestial callback : callbacks) {
-			callback.execute(context, type);
+			callback.execute(context, type, cancelled);
 		}
 	});
 
@@ -176,9 +176,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Unused by FAPI, intended for mod developers to invoke when adding custom elements to the sky when rendering allowing other mods to intercept them and do as please.
 	 */
-	public static final Event<PostCustomElement> POST_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PostCustomElement.class, callbacks -> (key, context) -> {
+	public static final Event<PostCustomElement> POST_CUSTOM_ELEMENT = EventFactory.createArrayBacked(PostCustomElement.class, callbacks -> (key, context, cancelled) -> {
 		for (final PostCustomElement callback : callbacks) {
-			callback.execute(key, context);
+			callback.execute(key, context, cancelled);
 		}
 	});
 
@@ -194,7 +194,7 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PostSky {
-		void execute(SkyRenderContext context);
+		void execute(SkyRenderContext context, boolean cancelled);
 	}
 
 	@FunctionalInterface
@@ -204,7 +204,7 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PostEndSky {
-		void execute(SkyRenderContext context);
+		void execute(SkyRenderContext context, boolean cancelled);
 	}
 
 	@FunctionalInterface
@@ -214,7 +214,7 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PostSkyDisc {
-		void execute(SkyRenderContext context, SkyDiscType type);
+		void execute(SkyRenderContext context, SkyDiscType type, boolean cancelled);
 	}
 
 	@FunctionalInterface
@@ -224,7 +224,7 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PostSunriseSunset {
-		void execute(SkyRenderContext context);
+		void execute(SkyRenderContext context, boolean cancelled);
 	}
 
 	@FunctionalInterface
@@ -239,7 +239,7 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PostCelestial {
-		void execute(SkyRenderContext context, CelestialType type);
+		void execute(SkyRenderContext context, CelestialType type, boolean cancelled);
 	}
 
 	@FunctionalInterface
@@ -249,6 +249,6 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PostCustomElement {
-		void execute(Identifier key, Object context);
+		void execute(Identifier key, Object context, boolean cancelled);
 	}
 }
