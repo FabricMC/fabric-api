@@ -51,4 +51,15 @@ public class RegistriesMixin {
 
 		return original;
 	}
+
+	@ModifyReturnValue(method = "componentsDirPath", at = @At("RETURN"))
+	private static String prependComponentDirectoryWithNamespace(String original, @Local(argsOnly = true) ResourceKey<? extends Registry<?>> registryRef) {
+		Identifier id = registryRef.identifier();
+
+		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+			return "components/" + id.getNamespace() + "/" + id.getPath();
+		}
+
+		return original;
+	}
 }
