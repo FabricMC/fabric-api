@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.holder.component;
+package net.fabricmc.fabric.api.holder.component.v1;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializersImpl;
 
-import net.minecraft.server.packs.resources.ResourceManager;
+public final class FabricDataComponentInitializers {
+	private FabricDataComponentInitializers() {
+	}
 
-import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializer;
-
-public class FabricDataComponentInitializersImpl {
-	public static final List<FabricDataComponentInitializer> INITIALIZERS = new ArrayList<>();
-
-	public static final ScopedValue<ResourceManager> RESOURCE_MANAGER = ScopedValue.newInstance();
+	public static void register(FabricDataComponentInitializer initializer) {
+		FabricDataComponentInitializersImpl.INITIALIZERS.add(initializer);
+	}
 }

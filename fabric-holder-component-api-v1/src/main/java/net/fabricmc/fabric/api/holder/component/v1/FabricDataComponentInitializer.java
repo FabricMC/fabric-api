@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.holder.component;
-
-import java.util.Map;
+package net.fabricmc.fabric.api.holder.component.v1;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializer;
+/// Extended version of [DataComponentInitializers.Initializer] that allows adding components to arbitrary holders instead of having to define what holders are to be given components at registration.
+@FunctionalInterface
+public interface FabricDataComponentInitializer {
+	void run(Context context);
 
-public record FabricDataComponentInitContextImpl(
-		HolderLookup.Provider lookupProvider,
-		ResourceManager resourceManager,
-		Map<ResourceKey<?>, DataComponentMap.Builder> builders
-) implements FabricDataComponentInitializer.Context {
-	@Override
-	public DataComponentMap.Builder builder(ResourceKey<?> key) {
-		return builders.computeIfAbsent(key, _ -> DataComponentMap.builder());
+	interface Context {
+		HolderLookup.Provider lookupProvider();
+		ResourceManager resourceManager();
+
+		DataComponentMap.Builder builder(ResourceKey<?> key);
 	}
 }

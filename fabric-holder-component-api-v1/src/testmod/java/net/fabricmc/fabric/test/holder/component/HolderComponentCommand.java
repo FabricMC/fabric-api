@@ -1,4 +1,28 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.holder.component;
+
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -28,15 +52,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
-import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
 
 public class HolderComponentCommand {
 	private static final DynamicCommandExceptionType INVALID_REGISTRY = new DynamicCommandExceptionType(
@@ -121,9 +136,10 @@ public class HolderComponentCommand {
 		for (Holder<?> holder : registry.asHolderIdMap()) {
 			holder.unwrapKey().ifPresent(
 					key -> {
-						var val = holder.components().get(component);
+						Object val = holder.components().get(component);
+
 						if (val != null) {
-							var builder = builders.computeIfAbsent(key.identifier(), _ -> DataComponentPatch.builder());
+							DataComponentPatch.Builder builder = builders.computeIfAbsent(key.identifier(), _ -> DataComponentPatch.builder());
 
 							builder.set(holder.components());
 						}
@@ -141,7 +157,6 @@ public class HolderComponentCommand {
 						.getOrThrow()), true);
 		return Command.SINGLE_SUCCESS;
 	}
-
 
 	private static int get(CommandContext<CommandSourceStack> context, ResourceKey<Registry<?>> registryKey, Identifier holderId) {
 		RegistryAccess registryManager = context.getSource().registryAccess();
