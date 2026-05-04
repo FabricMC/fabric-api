@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-holder-component-api-v1-testmod",
+  "name": "Fabric Holder Component API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "entrypoints": {
+    "main" : [
+      "net.fabricmc.fabric.test.holder.component.HolderComponentTestModEntrypoint"
+    ]
+  }
+}
