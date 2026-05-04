@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.level.sky;
 
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
-
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -88,33 +86,11 @@ public final class SkyRenderEvents {
 	});
 
 	/**
-	 * Called before "renderEndFlash" is invoked, determines if the end flash should render or not.
-	 */
-	public static final Event<PreEndFlash> PRE_END_FLASH = EventFactory.createArrayBacked(PreEndFlash.class, callbacks -> context -> {
-		for (final PreEndFlash callback : callbacks) {
-			if (callback.execute(context)) {
-				return true;
-			}
-		}
-
-		return false;
-	});
-
-	/**
-	 * Called after "renderEndFlash" is invoked.
-	 */
-	public static final Event<PostEndFlash> POST_END_FLASH = EventFactory.createArrayBacked(PostEndFlash.class, callbacks -> context -> {
-		for (final PostEndFlash callback : callbacks) {
-			callback.execute(context);
-		}
-	});
-
-	/**
 	 * Called before the top/bottom sky disc is rendered, determines if it should render or not.
 	 */
-	public static final Event<PreSkyDisc> PRE_SKY_DISC = EventFactory.createArrayBacked(PreSkyDisc.class, callbacks -> context -> {
+	public static final Event<PreSkyDisc> PRE_SKY_DISC = EventFactory.createArrayBacked(PreSkyDisc.class, callbacks -> (context, type) -> {
 		for (final PreSkyDisc callback : callbacks) {
-			if (callback.execute(context)) {
+			if (callback.execute(context, type)) {
 				return true;
 			}
 		}
@@ -125,9 +101,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called after the top/bottom sky disc is rendered.
 	 */
-	public static final Event<PostSkyDisc> POST_SKY_DISC = EventFactory.createArrayBacked(PostSkyDisc.class, callbacks -> context -> {
+	public static final Event<PostSkyDisc> POST_SKY_DISC = EventFactory.createArrayBacked(PostSkyDisc.class, callbacks -> (context, type) -> {
 		for (final PostSkyDisc callback : callbacks) {
-			callback.execute(context);
+			callback.execute(context, type);
 		}
 	});
 
@@ -165,9 +141,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called before the sun, moon, or stars are rendered.
 	 */
-	public static final Event<PreCelestial> PRE_CELESTIAL = EventFactory.createArrayBacked(PreCelestial.class, callbacks -> context -> {
+	public static final Event<PreCelestial> PRE_CELESTIAL = EventFactory.createArrayBacked(PreCelestial.class, callbacks -> (context, type) -> {
 		for (final PreCelestial callback : callbacks) {
-			if (callback.execute(context)) {
+			if (callback.execute(context, type)) {
 				return true;
 			}
 		}
@@ -178,9 +154,9 @@ public final class SkyRenderEvents {
 	/**
 	 * Called after the sun, moon, or stars are rendered.
 	 */
-	public static final Event<PostCelestial> POST_CELESTIAL = EventFactory.createArrayBacked(PostCelestial.class, callbacks -> context -> {
+	public static final Event<PostCelestial> POST_CELESTIAL = EventFactory.createArrayBacked(PostCelestial.class, callbacks -> (context, type) -> {
 		for (final PostCelestial callback : callbacks) {
-			callback.execute(context);
+			callback.execute(context, type);
 		}
 	});
 
@@ -232,23 +208,13 @@ public final class SkyRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface PreEndFlash {
-		boolean execute(SkyRenderContext context);
-	}
-
-	@FunctionalInterface
-	public interface PostEndFlash {
-		void execute(SkyRenderContext context);
-	}
-
-	@FunctionalInterface
 	public interface PreSkyDisc {
-		boolean execute(SkyRenderContext context);
+		boolean execute(SkyRenderContext context, SkyDiscType type);
 	}
 
 	@FunctionalInterface
 	public interface PostSkyDisc {
-		void execute(SkyRenderContext context);
+		void execute(SkyRenderContext context, SkyDiscType type);
 	}
 
 	@FunctionalInterface
@@ -268,12 +234,12 @@ public final class SkyRenderEvents {
 
 	@FunctionalInterface
 	public interface PreCelestial {
-		boolean execute(CelestialRenderContext context);
+		boolean execute(SkyRenderContext context, CelestialType type);
 	}
 
 	@FunctionalInterface
 	public interface PostCelestial {
-		void execute(CelestialRenderContext context);
+		void execute(SkyRenderContext context, CelestialType type);
 	}
 
 	@FunctionalInterface

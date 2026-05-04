@@ -32,7 +32,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.world.level.MoonPhase;
 
-import net.fabricmc.fabric.api.client.rendering.v1.level.sky.CelestialRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.sky.CelestialType;
 import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyExtractionContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyRenderContextImpl;
@@ -40,13 +40,13 @@ import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyRenderContextImpl;
 @Mixin(SkyRenderer.class)
 public abstract class SkyRendererMixin {
 	@Unique
-	private final SkyRenderContextImpl.CelestialContextImpl celestialContext = new SkyRenderContextImpl.CelestialContextImpl();
+	private final SkyRenderContextImpl skyRenderContext = new SkyRenderContextImpl();
 
 	@Inject(method = "extractRenderState", at = @At("HEAD"))
 	private void setupContext(ClientLevel level, float partialTicks, Camera camera, SkyRenderState skyRenderState, CallbackInfo ci) {
 		final CameraRenderState cameraRenderState = new CameraRenderState();
 		camera.extractRenderState(cameraRenderState, partialTicks);
-		celestialContext.prepare((SkyRenderer) (Object) this, skyRenderState, cameraRenderState);
+		skyRenderContext.prepare((SkyRenderer) (Object) this, skyRenderState, cameraRenderState);
 	}
 
 	@Inject(method = "extractRenderState", at = @At("TAIL"))
@@ -56,34 +56,28 @@ public abstract class SkyRendererMixin {
 
 	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSun(FLcom/mojang/blaze3d/vertex/PoseStack;)V"))
 	private void onSunRender(SkyRenderer instance, float rainBrightness, PoseStack poseStack, Operation<Void> original) {
-		celestialContext.setType(CelestialRenderContext.Type.SUN);
-
-		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(celestialContext);
+		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(skyRenderContext, CelestialType.SUN);
 		if (!cancelled) {
 			original.call(instance, rainBrightness, poseStack);
-			SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
+			SkyRenderEvents.POST_CELESTIAL.invoker().execute(skyRenderContext, CelestialType.SUN);
 		}
 	}
 
 	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderMoon(Lnet/minecraft/world/level/MoonPhase;FLcom/mojang/blaze3d/vertex/PoseStack;)V"))
 	private void onMoonRender(SkyRenderer instance, MoonPhase moonPhase, float rainBrightness, PoseStack poseStack, Operation<Void> original) {
-		celestialContext.setType(CelestialRenderContext.Type.MOON);
-
-		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(celestialContext);
+		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(skyRenderContext, CelestialType.MOON);
 		if (!cancelled) {
 			original.call(instance, moonPhase, rainBrightness, poseStack);
-			SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
+			SkyRenderEvents.POST_CELESTIAL.invoker().execute(skyRenderContext, CelestialType.MOON);
 		}
 	}
 
 	@WrapOperation(method = "renderSunMoonAndStars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderStars(FLcom/mojang/blaze3d/vertex/PoseStack;)V"))
 	private void onStarsRender(SkyRenderer instance, float rainBrightness, PoseStack poseStack, Operation<Void> original) {
-		celestialContext.setType(CelestialRenderContext.Type.STARS);
-
-		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(celestialContext);
+		final boolean cancelled = SkyRenderEvents.PRE_CELESTIAL.invoker().execute(skyRenderContext, CelestialType.STARS);
 		if (!cancelled) {
 			original.call(instance, rainBrightness, poseStack);
-			SkyRenderEvents.POST_CELESTIAL.invoker().execute(celestialContext);
+			SkyRenderEvents.POST_CELESTIAL.invoker().execute(skyRenderContext, CelestialType.STARS);
 		}
 	}
 }

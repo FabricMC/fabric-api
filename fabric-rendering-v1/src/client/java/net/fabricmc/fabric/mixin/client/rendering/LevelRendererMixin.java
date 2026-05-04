@@ -24,6 +24,7 @@ import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyDiscType;
 import net.fabricmc.fabric.api.client.rendering.v1.level.sky.SkyRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.level.sky.SkyRenderContextImpl;
 
@@ -192,21 +193,12 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 		}
 	}
 
-	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderEndFlash(Lcom/mojang/blaze3d/vertex/PoseStack;FFF)V"))
-	private static void onEndFlashRender(SkyRenderer instance, PoseStack poseStack, float intensity, float flashXAngle, float flashYAngle, Operation<Void> original) {
-		final boolean cancelled = SkyRenderEvents.PRE_END_FLASH.invoker().execute(skyRenderContext);
-		if (!cancelled) {
-			original.call(instance, poseStack, intensity, flashXAngle, flashYAngle);
-			SkyRenderEvents.POST_END_FLASH.invoker().execute(skyRenderContext);
-		}
-	}
-
 	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderSkyDisc(I)V"))
 	private static void onTopSkyDiscRender(SkyRenderer instance, int skyColor, Operation<Void> original) {
-		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext);
+		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.TOP);
 		if (!cancelled) {
 			original.call(instance, skyColor);
-			SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext);
+			SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.TOP);
 		}
 	}
 
@@ -226,10 +218,10 @@ public abstract class LevelRendererMixin implements LevelRendererExtensions {
 
 	@WrapOperation(method = "lambda$addSkyPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SkyRenderer;renderDarkDisc()V"))
 	private static void onBottomSkyDiscRender(SkyRenderer instance, Operation<Void> original) {
-		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext);
+		final boolean cancelled = SkyRenderEvents.PRE_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.BOTTOM);
 		if (!cancelled) {
 			original.call(instance);
-			SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext);
+			SkyRenderEvents.POST_SKY_DISC.invoker().execute(skyRenderContext, SkyDiscType.BOTTOM);
 		}
 	}
 }
