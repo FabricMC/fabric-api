@@ -1,0 +1,39 @@
+# This workflow is based on work originally published under the MIT License, and available here:
+# <https://github.com/modrinth/code/blob/efcc0d87b5621ac4c9656ee3967d28b5903a8fe9/.github/workflows/i18n-push.yml>
+# The required copyright notice and the full text of the license, which apply to the original file, are reported below.
+
+# Copyright 2025 Rinth, Inc.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+name: Push to Crowdin
+
+on:
+  push:
+    paths:
+      - ".github/workflows/l10n-push.yml"
+      - "crowdin.yaml"
+      - "*/src/*/resources/assets/*/lang/en_us.json"
+  workflow_dispatch:
+
+concurrency:
+  group: l10n-push
+
+jobs:
+  l10n-push:
+    runs-on: ubuntu-24.04
+    if: github.ref_name == github.event.repository.default_branch
+    steps:
+      - uses: actions/checkout@v4
+      - uses: crowdin/github-action@60debf382ee245b21794321190ad0501db89d8c1
+        with:
+          token: ${{ secrets.CROWDIN_TOKEN }}
+          crowdin_branch_name: ${{ github.event.repository.name }}/${{ github.ref_name }}
+          upload_sources: true
+          upload_translations: false
+          download_sources: false
+          download_translations: false

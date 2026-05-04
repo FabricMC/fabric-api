@@ -25,21 +25,27 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.Mannequin;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.HopperBlock;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.world.phys.AABB;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
@@ -240,6 +246,166 @@ public class ContentRegistryGameTest {
 		brew(helper, new ItemStack(Items.DIRT), PotionContents.createItemStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
 			ItemStack bottle = brewingStand.getItem(0);
 			helper.assertTrue(bottle.getItem() instanceof ContentRegistryTest.DirtyPotionItem, Component.literal("potion became dirty"));
+			helper.succeed();
+		});
+	}
+
+	private void setupFluidTestBoxAndEntities(GameTestHelper helper, Block block, boolean jump) {
+		BlockState state = block.defaultBlockState();
+		BlockState wall = Blocks.GLASS.defaultBlockState();
+
+		int fluidHeight = jump ? 4 : 8;
+
+		for (int x = 0; x <= 8; x++) {
+			for (int z = 0; z <= 8; z++) {
+				helper.setBlock(x, 0, z, wall);
+				BlockState inner = x == 0 || x == 8 || z == 0 || z == 8 ? wall : state;
+
+				for (int y = 1; y < fluidHeight; y++) {
+					helper.setBlock(x, y, z, inner);
+				}
+			}
+		}
+
+		helper.spawn(EntityType.ACACIA_BOAT, 2, 5, 2);
+		Mannequin mannequin = helper.spawn(EntityType.MANNEQUIN, 4, 5, 4);
+		Villager villager = helper.spawn(EntityType.VILLAGER, 5, 5, 4);
+		helper.spawn(EntityType.ARMOR_STAND, 7, 1, 7);
+
+		if (jump) {
+			helper.onEachTick(() -> {
+				mannequin.setJumping(true);
+				villager.setJumping(true);
+			});
+		} else {
+			villager.removeFreeWill();
+		}
+	}
+
+	@GameTest(maxTicks = 110)
+	public void entityFloatInWater(GameTestHelper helper) {
+		setupFluidTestBoxAndEntities(helper, Blocks.WATER, true);
+
+		var box = new AABB(0, 4, 0, 8, 6, 8);
+
+		helper.runAtTickTime(100, () -> {
+			helper.assertEntityPresent(EntityType.ACACIA_BOAT, box);
+			helper.assertEntityPresent(EntityType.MANNEQUIN, box);
+			helper.assertEntityPresent(EntityType.VILLAGER, box);
+			helper.assertEntityNotPresent(EntityType.ARMOR_STAND, box);
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 110)
+	public void entityFloatInWaterLike(GameTestHelper helper) {
+		setupFluidTestBoxAndEntities(helper, ContentRegistryTest.WATER_LIKE_FLUID_BLOCK, true);
+
+		var box = new AABB(0, 4, 0, 8, 6, 8);
+
+		helper.runAtTickTime(100, () -> {
+			helper.assertEntityPresent(EntityType.ACACIA_BOAT, box);
+			helper.assertEntityPresent(EntityType.MANNEQUIN, box);
+			helper.assertEntityPresent(EntityType.VILLAGER, box);
+			helper.assertEntityNotPresent(EntityType.ARMOR_STAND, box);
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 110)
+	public void entityFloatInCustom(GameTestHelper helper) {
+		setupFluidTestBoxAndEntities(helper, ContentRegistryTest.TEST_FLUID_BLOCK, true);
+		var box = new AABB(0, 4, 0, 8, 6, 8);
+
+		helper.runAtTickTime(100, () -> {
+			helper.assertEntityPresent(EntityType.ACACIA_BOAT, box);
+			helper.assertEntityPresent(EntityType.MANNEQUIN, box);
+			helper.assertEntityPresent(EntityType.VILLAGER, box);
+			helper.assertEntityPresent(EntityType.ARMOR_STAND, box);
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 800)
+	public void entityDrownsInWater(GameTestHelper helper) {
+		setupFluidTestBoxAndEntities(helper, Blocks.WATER, false);
+
+		helper.runAtTickTime(700, () -> {
+			helper.assertEntityNotPresent(EntityType.MANNEQUIN);
+			helper.assertEntityNotPresent(EntityType.VILLAGER);
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 800)
+	public void entityDrownsInWaterLike(GameTestHelper helper) {
+		setupFluidTestBoxAndEntities(helper, ContentRegistryTest.WATER_LIKE_FLUID_BLOCK, false);
+
+		helper.runAtTickTime(700, () -> {
+			helper.assertEntityNotPresent(EntityType.MANNEQUIN);
+			helper.assertEntityNotPresent(EntityType.VILLAGER);
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 800)
+	public void entityDrownsInCustom(GameTestHelper helper) {
+		setupFluidTestBoxAndEntities(helper, ContentRegistryTest.TEST_FLUID_BLOCK, false);
+
+		helper.runAtTickTime(700, () -> {
+			helper.assertEntityPresent(EntityType.MANNEQUIN);
+			helper.assertEntityPresent(EntityType.VILLAGER);
+			helper.succeed();
+		});
+	}
+
+	private void setupPushAndMove(GameTestHelper helper, Block block) {
+		BlockState state = block.defaultBlockState();
+		BlockState wall = Blocks.GLASS.defaultBlockState();
+
+		helper.setBlock(0, 1, 4, wall);
+		helper.setBlock(0, 2, 4, wall);
+
+		for (int x = 1; x < 8; x++) {
+			helper.setBlock(x, 1, 4, state.setValue(LiquidBlock.LEVEL, 8 - x));
+			helper.setBlock(x, 0, 4, wall);
+			helper.setBlock(x, 1, 5, wall);
+			helper.setBlock(x, 1, 3, wall);
+			helper.setBlock(x, 2, 5, wall);
+			helper.setBlock(x, 2, 3, wall);
+		}
+
+		helper.setBlock(1, 1, 4, state.setValue(LiquidBlock.LEVEL, 0));
+
+		helper.setBlock(8, 1, 4, wall);
+		helper.setBlock(8, 2, 4, wall);
+
+		helper.spawn(EntityType.MANNEQUIN, 4, 1, 4);
+	}
+
+	@GameTest(maxTicks = 110)
+	public void entityPushingAndMovementInWater(GameTestHelper helper) {
+		setupPushAndMove(helper, Blocks.WATER);
+		helper.runAtTickTime(100, () -> {
+			helper.assertEntityPresent(EntityType.MANNEQUIN, 7, 1, 4);
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 110)
+	public void entityPushingAndMovementInWaterLike(GameTestHelper helper) {
+		setupPushAndMove(helper, ContentRegistryTest.WATER_LIKE_FLUID_BLOCK);
+		helper.runAtTickTime(100, () -> {
+			helper.assertEntityPresent(EntityType.MANNEQUIN, 7, 1, 4);
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 110)
+	public void entityPushingAndMovementInCustom(GameTestHelper helper) {
+		setupPushAndMove(helper, ContentRegistryTest.TEST_FLUID_BLOCK);
+		helper.runAtTickTime(100, () -> {
+			helper.assertEntityPresent(EntityType.MANNEQUIN, new BlockPos(1, 1, 4), 1f);
 			helper.succeed();
 		});
 	}

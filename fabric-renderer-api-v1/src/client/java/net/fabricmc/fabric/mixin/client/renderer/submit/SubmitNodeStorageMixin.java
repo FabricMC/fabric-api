@@ -17,13 +17,16 @@
 package net.fabricmc.fabric.mixin.client.renderer.submit;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -35,8 +38,8 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 @Mixin(SubmitNodeStorage.class)
 abstract class SubmitNodeStorageMixin implements SubmitNodeCollector {
 	@Override
-	public void submitBlockModel(PoseStack poseStack, RenderType renderType, List<BlockStateModelPart> parts, Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
-		order(0).submitBlockModel(poseStack, renderType, parts, mesh, tintLayers, lightCoords, overlayCoords, outlineColor);
+	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, boolean translucent, List<BlockStateModelPart> parts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
+		order(0).submitBlockModel(poseStack, renderTypeFunction, translucent, parts, mesh, tintLayers, lightCoords, overlayCoords, outlineColor);
 	}
 
 	@Override

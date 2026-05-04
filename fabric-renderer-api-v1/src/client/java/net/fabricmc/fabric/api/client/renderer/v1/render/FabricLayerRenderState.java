@@ -28,9 +28,6 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
  * injection.
  */
 public interface FabricLayerRenderState {
-	// TODO FRAPI 26.1: consider automatically marking the state as animated if any quads with
-	//  animated quads or guaranteed glint are added to this emitter. the only concern is
-	//  efficiency.
 	/**
 	 * Retrieves the {@link QuadEmitter} used to append quads to this layer. Calling this method a second time
 	 * invalidates any prior result. Geometry added to this emitter will not be visible in
@@ -39,7 +36,7 @@ public interface FabricLayerRenderState {
 	 * positions of geometry added to this emitter will automatically be output on
 	 * {@link ItemStackRenderState#visitExtents(Consumer)} ({@link ItemStackRenderState.LayerRenderState#setExtents(Supplier)} must still
 	 * be used to add positions of {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads}). Adding quads
-	 * that use animated sprites to this emitter will not automatically call {@link ItemStackRenderState#setAnimated()}. Any
+	 * that use animated sprites or guaranteed glint to this emitter will not automatically call {@link ItemStackRenderState#setAnimated()}. Any
 	 * quads added to this emitter will be cleared on {@link ItemStackRenderState.LayerRenderState#clear()}.
 	 *
 	 * <p>Do not retain references outside the context of this layer.

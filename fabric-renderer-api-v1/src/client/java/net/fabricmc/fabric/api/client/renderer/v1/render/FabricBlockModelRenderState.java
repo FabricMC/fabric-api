@@ -16,25 +16,30 @@
 
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
+import java.util.function.Predicate;
+
 import org.joml.Matrix4fc;
 
 import net.minecraft.client.renderer.block.BlockModelRenderState;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.client.renderer.v1.model.FabricBlockStateModelPart;
 
 /**
  * Note: This interface is automatically implemented on {@link BlockModelRenderState} via Mixin and interface injection.
  */
 public interface FabricBlockModelRenderState {
-	// TODO FRAPI 26.1: the design here is not ideal because both setupModel and setupMesh override the transformation and renderType fields.
-	//  if a user wants to use both methods, that's unnecessary and unintuitive. might not be worth changing as the part list is always initialized by setupModel.
-	//  also, the user might not know hasTranslucency a priori.
 	/**
 	 * Alternative to {@link BlockModelRenderState#setupModel(Matrix4fc, boolean)} that returns a
-	 * {@link QuadEmitter}.
+	 * {@link QuadEmitter} that adds geometry to this state. Calling this method a second time
+	 * clears all previously added geometry and any changes made to the emitter.
 	 *
-	 * @return a quad emitter to use with {@link BlockStateModel#emitQuads}.
+	 * <p>Calling this method or {@link BlockModelRenderState#setupModel(Matrix4fc, boolean)} clears
+	 * both this state's vanilla model parts and mesh (whose quad emitter is returned by this
+	 * method). If you must use both vanilla model parts and a quad emitter, use this method in
+	 * conjunction with {@link FabricBlockStateModelPart#emitQuads(QuadEmitter, Predicate)}.
+	 *
+	 * @return a quad emitter that appends geometry to this state.
 	 */
 	default QuadEmitter setupMesh(Matrix4fc transformation, boolean hasTranslucency) {
 		throw new IllegalStateException("Implemented via Mixin.");

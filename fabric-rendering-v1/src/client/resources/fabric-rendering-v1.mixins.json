@@ -24,6 +24,7 @@
     "LevelRendererMixin",
     "LivingEntityRendererAccessor",
     "LivingEntityRendererMixin",
+    "ModelBlockRendererMixin",
     "ModelLayersAccessor",
     "ModelMixin",
     "ModelPartAccessor",

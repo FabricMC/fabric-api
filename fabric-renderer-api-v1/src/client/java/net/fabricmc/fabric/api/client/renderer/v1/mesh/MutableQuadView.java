@@ -380,7 +380,7 @@ public interface MutableQuadView extends QuadView {
 	 */
 	MutableQuadView chunkLayer(ChunkSectionLayer layer);
 
-	// TODO FRAPI 26.1: allow using any RenderType
+	// TODO: allow using any RenderType
 
 	/**
 	 * Controls how this quad should be rendered after buffering in item contexts. The atlas texture used by the set

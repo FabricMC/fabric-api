@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -39,6 +40,7 @@ public record TagRegistration<T>(ResourceKey<Registry<T>> registryKey) {
 	public static final TagRegistration<Fluid> FLUID_TAG = new TagRegistration<>(Registries.FLUID);
 	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG = new TagRegistration<>(Registries.ENTITY_TYPE);
 	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG = new TagRegistration<>(Registries.ENCHANTMENT);
+	public static final TagRegistration<Potion> POTION_TAG = new TagRegistration<>(Registries.POTION);
 
 	public TagKey<T> registerFabric(String tagId) {
 		return TagKey.create(registryKey, Identifier.fromNamespaceAndPath(TagUtil.FABRIC_TAG_NAMESPACE, tagId));

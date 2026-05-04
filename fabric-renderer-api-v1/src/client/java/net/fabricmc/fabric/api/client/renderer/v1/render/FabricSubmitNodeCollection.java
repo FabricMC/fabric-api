@@ -17,13 +17,16 @@
 package net.fabricmc.fabric.api.client.renderer.v1.render;
 
 import java.util.List;
+import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeStorage.BlockModelSubmit;
 import net.minecraft.client.renderer.SubmitNodeStorage.ItemSubmit;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -56,7 +59,7 @@ public interface FabricSubmitNodeCollection {
 	/**
 	 * An alternative to {@link BlockModelSubmit} that accepts a {@link Mesh}.
 	 */
-	record ExtendedBlockModelSubmit(PoseStack.Pose pose, RenderType renderType, List<BlockStateModelPart> modelParts, Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
+	record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, boolean translucent, List<BlockStateModelPart> modelParts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
 	}
 
 	/**

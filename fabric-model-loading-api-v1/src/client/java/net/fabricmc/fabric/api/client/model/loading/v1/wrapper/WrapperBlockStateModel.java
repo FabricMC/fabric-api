@@ -82,4 +82,15 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return wrapped.particleMaterial(level, pos, state);
 	}
+
+	@Override
+	@BakedQuad.MaterialFlags
+	public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		return wrapped.materialFlags(level, pos, state, random);
+	}
+
+	@Override
+	public boolean hasMaterialFlag(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, @BakedQuad.MaterialFlags int flag) {
+		return wrapped.hasMaterialFlag(level, pos, state, random, flag);
+	}
 }
