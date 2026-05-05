@@ -23,11 +23,9 @@ import java.util.Map;
 import com.google.gson.JsonElement;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
-
-import net.minecraft.core.Holder;
-
 import org.slf4j.Logger;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentMap;

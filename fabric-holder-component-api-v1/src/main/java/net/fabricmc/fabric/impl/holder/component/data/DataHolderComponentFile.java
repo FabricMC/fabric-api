@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.impl.holder.component.data;
 
-import java.util.Map;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceKey;
 
 // TODO: Make public api and use for datagen
 public record DataHolderComponentFile(

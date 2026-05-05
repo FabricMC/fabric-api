@@ -8,6 +8,9 @@
   "entrypoints": {
     "main" : [
       "net.fabricmc.fabric.test.holder.component.HolderComponentTestModEntrypoint"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.holder.component.HolderComponentGameTest"
     ]
   }
 }

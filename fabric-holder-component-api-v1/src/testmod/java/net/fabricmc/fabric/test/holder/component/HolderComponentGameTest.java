@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.holder.component.extension;
+package net.fabricmc.fabric.test.holder.component;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Blocks;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentHolder;
-import net.minecraft.core.component.DataComponentMap;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
-@Mixin(Holder.class)
-public interface HolderMixin extends DataComponentHolder {
-	@Shadow
-	DataComponentMap components();
+public class HolderComponentGameTest {
+	@GameTest
+	public void testBasicUsage(GameTestHelper helper) {
+		helper.assertValueEqual(
+				Blocks.ACACIA_SLAB.get(DataComponents.CUSTOM_NAME),
+				Component.literal("Hello, world!"),
+				"custom_name_component"
+		);
 
-	@Override
-	default DataComponentMap getComponents() {
-		return components();
+		helper.succeed();
 	}
 }
