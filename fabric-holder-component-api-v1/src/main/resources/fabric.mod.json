@@ -27,6 +27,7 @@
       "net.fabricmc.fabric.impl.holder.component.HolderComponentEntrypoint"
     ]
   },
+  "accessWidener": "fabric-holder-component-api-v1.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "experimental"
   }
