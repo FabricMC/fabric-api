@@ -22,21 +22,17 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceKey;
 
 // TODO: Make public api and use for datagen
-public record DataHolderComponentFile<T, C>(
+public record DataHolderComponentFile(
 		boolean replace,
-		Map<ResourceKey<T>, C> components
+		DataComponentMap components
 ) {
-	public static <T, C> Codec<DataHolderComponentFile<T, C>> codec(ResourceKey<? extends Registry<T>> registryKey, DataComponentType<C> componentType) {
-		return RecordCodecBuilder.create(instance -> instance.group(
-				Codec.BOOL.optionalFieldOf("replace", false).forGetter(DataHolderComponentFile::replace),
-				Codec.unboundedMap(
-						ResourceKey.codec(registryKey),
-						componentType.codecOrThrow()
-				).fieldOf("components").forGetter(DataHolderComponentFile::components)
-		).apply(instance, DataHolderComponentFile::new));
-	}
+	public static final Codec<DataHolderComponentFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.BOOL.optionalFieldOf("replace", false).forGetter(DataHolderComponentFile::replace),
+			DataComponentMap.CODEC.fieldOf("components").forGetter(DataHolderComponentFile::components)
+	).apply(instance, DataHolderComponentFile::new));
 }
