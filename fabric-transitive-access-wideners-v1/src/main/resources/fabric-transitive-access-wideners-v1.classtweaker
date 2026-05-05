@@ -47,6 +47,9 @@ transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEnti
 # Registering custom entity renderers
 transitive-accessible	method	net/minecraft/client/renderer/entity/EntityRenderers	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V
 
+# Resolving block models
+transitive-accessible	field	net/minecraft/client/Minecraft blockModelResolver	Lnet/minecraft/client/renderer/block/BlockModelResolver;
+
 # Adding custom item model types
 transitive-accessible	field	net/minecraft/client/renderer/item/ItemModels	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
 transitive-accessible	field	net/minecraft/client/color/item/ItemTintSources	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;

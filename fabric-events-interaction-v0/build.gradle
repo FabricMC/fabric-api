@@ -1,3 +1,7 @@
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, ['fabric-api-base', 'fabric-networking-api-v1'])
+
+testDependencies(project, [
+    'fabric-client-gametest-api-v1'
+])

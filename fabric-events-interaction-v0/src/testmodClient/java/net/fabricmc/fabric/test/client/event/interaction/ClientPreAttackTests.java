@@ -29,7 +29,7 @@ public class ClientPreAttackTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
+		ClientPreAttackCallback.EVENT.register((_, player, clickCount) -> {
 			if (!player.isSpectator() && player.getMainHandItem().getItem() == Items.TORCH) {
 				LOGGER.info("Attacking using torch intercepted. Attack key clicks: {}", clickCount != 0);
 				return true;

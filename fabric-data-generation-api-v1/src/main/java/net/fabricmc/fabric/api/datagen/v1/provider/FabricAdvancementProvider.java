@@ -78,6 +78,21 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 		};
 	}
 
+	/**
+	 * Creates a reference to an existing advancement.
+	 *
+	 * {@snippet :
+	 * Advancement.Builder builder = ...;
+	 * builder.parent(createPlaceholder(Identifier.withDefaultNamespace("adventure/root")))
+	 * }
+	 *
+	 * @param id The identifier to create a reference for.
+	 * @return A new holder containing the provided id.
+	 */
+	public static AdvancementHolder createPlaceholder(Identifier id) {
+		return Advancement.Builder.advancement().build(id);
+	}
+
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
 		return this.registryLookup.thenCompose(lookup -> {
