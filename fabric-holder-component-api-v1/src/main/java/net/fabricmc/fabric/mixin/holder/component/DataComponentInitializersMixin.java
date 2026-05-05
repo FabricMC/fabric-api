@@ -63,7 +63,7 @@ public class DataComponentInitializersMixin {
 				original
 		);
 
-		for (FabricDataComponentInitializer initializer : FabricDataComponentInitializersImpl.INITIALIZERS) {
+		for (FabricDataComponentInitializer initializer : FabricDataComponentInitializersImpl.sort()) {
 			initializer.run(context);
 		}
 

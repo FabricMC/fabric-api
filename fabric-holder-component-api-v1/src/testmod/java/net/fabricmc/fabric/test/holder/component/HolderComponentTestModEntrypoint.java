@@ -18,12 +18,32 @@ package net.fabricmc.fabric.test.holder.component;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializers;
+
+import net.minecraft.resources.Identifier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HolderComponentTestModEntrypoint implements ModInitializer {
+	public static final String MODID = "fabric-holder-component-api-v1-testmod";
+	private static final Logger LOGGER = LoggerFactory.getLogger(MODID);
+
 	@Override
 	public void onInitialize() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
 			HolderComponentCommand.register(dispatcher, buildContext);
 		});
+
+		final Identifier first = Identifier.fromNamespaceAndPath("fabric", "first");
+		final Identifier second = Identifier.fromNamespaceAndPath("fabric", "second");
+		final Identifier third = Identifier.fromNamespaceAndPath("fabric", "third");
+
+		FabricDataComponentInitializers.registerInitializer(third, _ -> LOGGER.info("I should be third!"));
+		FabricDataComponentInitializers.registerInitializer(first, _ -> LOGGER.info("I should be first!"));
+		FabricDataComponentInitializers.registerInitializer(second, _ -> LOGGER.info("I should be second!"));
+
+		FabricDataComponentInitializers.addInitializerOrdering(first, second);
+		FabricDataComponentInitializers.addInitializerOrdering(second, third);
 	}
 }

@@ -22,6 +22,9 @@ import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitialize
 public class HolderComponentEntrypoint implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		FabricDataComponentInitializers.register(new DataHolderComponentInitializer());
+		FabricDataComponentInitializers.registerInitializer(
+				FabricDataComponentInitializers.DATA_HOLDER_COMPONENTS,
+				new DataHolderComponentInitializer()
+		);
 	}
 }

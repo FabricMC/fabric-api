@@ -18,11 +18,20 @@ package net.fabricmc.fabric.api.holder.component.v1;
 
 import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializersImpl;
 
+import net.minecraft.resources.Identifier;
+
 public final class FabricDataComponentInitializers {
+	/// @see FabricDataComponentInitializers#addInitializerOrdering(Identifier, Identifier)
+	public static final Identifier DATA_HOLDER_COMPONENTS = Identifier.fromNamespaceAndPath("fabric", "data_holder_components");
+
 	private FabricDataComponentInitializers() {
 	}
 
-	public static void register(FabricDataComponentInitializer initializer) {
-		FabricDataComponentInitializersImpl.INITIALIZERS.add(initializer);
+	public static void registerInitializer(Identifier id, FabricDataComponentInitializer initializer) {
+		FabricDataComponentInitializersImpl.registerInitializer(id, initializer);
+	}
+
+	public static void addInitializerOrdering(Identifier first, Identifier second) {
+		FabricDataComponentInitializersImpl.addInitializerOrdering(first, second);
 	}
 }
