@@ -23,15 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
-import net.fabricmc.fabric.impl.base.toposort.SortableNode;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializer;
-
-import org.jspecify.annotations.Nullable;
+import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
+import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 
 public class FabricDataComponentInitializersImpl {
 	private static final Map<Identifier, PhaseData> initializers = new LinkedHashMap<>();

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.holder.component;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializers;
+import net.fabricmc.fabric.impl.holder.component.data.DataHolderComponentInitializer;
 
 public class HolderComponentEntrypoint implements ModInitializer {
 	@Override

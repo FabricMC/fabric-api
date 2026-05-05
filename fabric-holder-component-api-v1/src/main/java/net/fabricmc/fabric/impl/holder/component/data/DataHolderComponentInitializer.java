@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.holder.component;
+package net.fabricmc.fabric.impl.holder.component.data;
 
 import java.io.Reader;
 import java.util.List;

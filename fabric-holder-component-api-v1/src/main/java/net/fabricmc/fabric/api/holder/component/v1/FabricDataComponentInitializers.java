@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.holder.component.v1;
 
-import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializersImpl;
-
 import net.minecraft.resources.Identifier;
+
+import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializersImpl;
 
 public final class FabricDataComponentInitializers {
 	/// @see FabricDataComponentInitializers#addInitializerOrdering(Identifier, Identifier)

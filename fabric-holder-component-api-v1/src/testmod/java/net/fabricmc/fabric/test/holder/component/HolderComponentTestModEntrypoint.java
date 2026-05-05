@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.test.holder.component;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.resources.Identifier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializers;
 
 public class HolderComponentTestModEntrypoint implements ModInitializer {
 	public static final String MODID = "fabric-holder-component-api-v1-testmod";
