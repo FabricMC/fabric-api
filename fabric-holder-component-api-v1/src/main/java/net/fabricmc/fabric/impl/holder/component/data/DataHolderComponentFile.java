@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.holder.component.data;
 
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
