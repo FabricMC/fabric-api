@@ -51,6 +51,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.OBSIDIANS, "Obsidians");
 		translationBuilder.add(ConventionalBlockTags.NORMAL_OBSIDIANS, "Normal Obsidians");
 		translationBuilder.add(ConventionalBlockTags.CRYING_OBSIDIANS, "Crying Obsidians");
+		translationBuilder.add(ConventionalBlockTags.FROGLIGHTS, "Froglights");
 		translationBuilder.add(ConventionalBlockTags.ORES, "Ores");
 		translationBuilder.add(ConventionalBlockTags.COAL_ORES, "Coal Ores");
 		translationBuilder.add(ConventionalBlockTags.COPPER_ORES, "Copper Ores");
@@ -179,6 +180,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.OBSIDIANS, "Obsidians");
 		translationBuilder.add(ConventionalItemTags.NORMAL_OBSIDIANS, "Normal Obsidians");
 		translationBuilder.add(ConventionalItemTags.CRYING_OBSIDIANS, "Crying Obsidians");
+		translationBuilder.add(ConventionalItemTags.FROGLIGHTS, "Froglights");
 		translationBuilder.add(ConventionalItemTags.TOOLS, "Tools");
 		translationBuilder.add(ConventionalItemTags.SHEAR_TOOLS, "Shears");
 		translationBuilder.add(ConventionalItemTags.TRIDENT_TOOLS, "Tridents");

@@ -50,6 +50,8 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> NORMAL_OBSIDIANS = register("obsidians/normal");
 	public static final TagKey<Item> CRYING_OBSIDIANS = register("obsidians/crying");
+	/// Light-emitting blocks created when a Frog eats a Magma Cube.
+	public static final TagKey<Item> FROGLIGHTS = register("froglights");
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");

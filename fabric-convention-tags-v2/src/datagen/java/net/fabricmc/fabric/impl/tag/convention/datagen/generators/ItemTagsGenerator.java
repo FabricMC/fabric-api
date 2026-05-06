@@ -65,6 +65,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		copy(ConventionalBlockTags.OBSIDIANS, ConventionalItemTags.OBSIDIANS);
 		copy(ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalItemTags.NORMAL_OBSIDIANS);
 		copy(ConventionalBlockTags.CRYING_OBSIDIANS, ConventionalItemTags.CRYING_OBSIDIANS);
+		copy(ConventionalBlockTags.FROGLIGHTS, ConventionalItemTags.FROGLIGHTS);
 		copy(ConventionalBlockTags.BARRELS, ConventionalItemTags.BARRELS);
 		copy(ConventionalBlockTags.WOODEN_BARRELS, ConventionalItemTags.WOODEN_BARRELS);
 		copy(ConventionalBlockTags.BOOKSHELVES, ConventionalItemTags.BOOKSHELVES);
