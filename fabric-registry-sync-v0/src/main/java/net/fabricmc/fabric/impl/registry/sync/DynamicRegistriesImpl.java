@@ -79,7 +79,7 @@ public final class DynamicRegistriesImpl {
 		Objects.requireNonNull(key, "Registry key cannot be null");
 		Objects.requireNonNull(serverCodec, "Server codec cannot be null");
 
-		if (!VANILLA_DYNAMIC_REGISTRY_KEYS.contains(key) && !FABRIC_DYNAMIC_REGISTRY_KEYS.contains(key)) {
+		if (VANILLA_DYNAMIC_REGISTRY_KEYS.contains(key) || FABRIC_DYNAMIC_REGISTRY_KEYS.contains(key)) {
 			throw new IllegalArgumentException("Dynamic registry " + key + " has already been registered!");
 		}
 
