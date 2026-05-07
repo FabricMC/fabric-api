@@ -26,13 +26,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.resources.RegistryDataLoader;
 
-import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
 @Mixin(RegistryPatchGenerator.class)
 class RegistryPatchGeneratorMixin {
 	@Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLDGEN_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC), method = "lambda$createLookup$0")
 	private static List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		// Register cloners for all dynamic registries.
-		return DynamicRegistries.getDynamicRegistries();
+		// Register cloners for fabric dynamic registries.
+		return DynamicRegistriesImpl.WORLDGEN_LIKE_DYNAMIC_REGISTRIES;
 	}
 }
