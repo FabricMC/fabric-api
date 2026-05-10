@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.minecraft.core.RegistrySynchronization;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.multiplayer.RegistryDataCollector;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.component.DataComponentInitializers;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
@@ -50,7 +48,8 @@ public class RegistryDataCollectorMixin implements FabricRegistryDataCollector {
 
 	@Override
 	public void fabric$appendComponents(ClientboundUpdateComponentsPayload payload) {
-		for (var entry : payload.registryToComponents().entrySet()) {
+		// please change checkstyle to let me use var here this is suffering
+		for (Map.Entry<ResourceKey<? extends Registry<?>>, Map<Identifier, Map<Identifier, Tag>>> entry : payload.registryToComponents().entrySet()) {
 			Map<Identifier, Map<Identifier, Tag>> registryMaps =
 					components.computeIfAbsent(entry.getKey(), _ -> new HashMap<>(entry.getValue().size()));
 

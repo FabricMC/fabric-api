@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.holder.component.sync;
 
-
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

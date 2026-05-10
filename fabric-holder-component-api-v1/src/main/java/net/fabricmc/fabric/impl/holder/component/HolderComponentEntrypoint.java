@@ -26,7 +26,6 @@ public class HolderComponentEntrypoint implements ModInitializer {
 	// TODO: This size is enormous, I copied it straight out of FabricRegistryInit. This should be smaller but I don't know how to choose a good value.
 	private static final int MAX_PACKET_SIZE = Integer.getInteger("fabric.holder.component.sync.max_packet_size", 128 * 1024 * 1024);
 
-
 	@Override
 	public void onInitialize() {
 		FabricDataComponentInitializers.registerInitializer(
