@@ -20,11 +20,18 @@
   },
   "description": "Allows conveniently attaching data to holders via datapack",
   "mixins": [
-    "fabric-holder-component-api-v1.mixins.json"
+    "fabric-holder-component-api-v1.mixins.json",
+    {
+      "config": "fabric-holder-component-api-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.impl.holder.component.HolderComponentEntrypoint"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.client.holder.component.HolderComponentClientEntrypoint"
     ]
   },
   "accessWidener": "fabric-holder-component-api-v1.classtweaker",

@@ -3,14 +3,16 @@
   "package": "net.fabricmc.fabric.mixin.holder.component",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "DataComponentInitializersMixin",
+    "PlayerListMixin",
+    "ReloadableServerResourcesMixin",
+    "SynchronizeRegistriesTaskMixin",
     "extension.BlockEntityTypeMixin",
     "extension.BlockMixin",
-    "DataComponentInitializersMixin",
     "extension.EntityTypeMixin",
     "extension.FluidMixin",
     "extension.HolderMixin",
-    "extension.ItemMixin",
-    "ReloadableServerResourcesMixin"
+    "extension.ItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

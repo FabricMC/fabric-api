@@ -22,6 +22,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.component.DataComponentMap;
 
 // TODO: Make public api and use for datagen
+// TODO: Switch to DataComponentPatch for removal syntax (would require a more advanced version of DataComponentMap.Builder)
 public record DataHolderComponentFile(
 		boolean replace,
 		DataComponentMap components
