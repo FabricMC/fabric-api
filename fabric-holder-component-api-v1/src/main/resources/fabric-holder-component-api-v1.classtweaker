@@ -1,8 +1,8 @@
 classTweaker	v1	official
-transitive-inject-interface net/minecraft/world/level/block/entity/BlockEntityType net/minecraft/core/component/DataComponentHolder
-transitive-inject-interface net/minecraft/world/level/block/Block                  net/minecraft/core/component/DataComponentHolder
-transitive-inject-interface net/minecraft/world/entity/EntityType                  net/minecraft/core/component/DataComponentHolder
-transitive-inject-interface net/minecraft/world/level/material/Fluid               net/minecraft/core/component/DataComponentHolder
-transitive-inject-interface net/minecraft/core/Holder                              net/minecraft/core/component/DataComponentHolder
-transitive-inject-interface net/minecraft/world/item/Item                          net/minecraft/core/component/DataComponentHolder
+transitive-inject-interface net/minecraft/world/level/block/entity/BlockEntityType net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
+transitive-inject-interface net/minecraft/world/level/block/Block                  net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
+transitive-inject-interface net/minecraft/world/entity/EntityType                  net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
+transitive-inject-interface net/minecraft/world/level/material/Fluid               net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
+transitive-inject-interface net/minecraft/core/Holder                              net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
+transitive-inject-interface net/minecraft/world/item/Item                          net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
 
