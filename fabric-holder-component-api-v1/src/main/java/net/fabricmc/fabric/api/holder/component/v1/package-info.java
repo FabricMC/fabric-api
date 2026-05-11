@@ -16,6 +16,8 @@
 
 /**
  * API code for fabric-holder-component-api-v1.
+ *
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 @NullMarked
 @ApiStatus.Experimental
