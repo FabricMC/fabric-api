@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.holder.component.sync;
 
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import net.minecraft.core.Registry;
@@ -43,7 +43,7 @@ public record ClientboundUpdateComponentsPayload(
 	// (crime against humanity in codec form)
 	public static final StreamCodec<FriendlyByteBuf, ClientboundUpdateComponentsPayload> STREAM_CODEC =
 			ByteBufCodecs.<FriendlyByteBuf, ResourceKey<? extends Registry<?>>, Map<Identifier, Map<Identifier, Tag>>, Map<ResourceKey<? extends Registry<?>>, Map<Identifier, Map<Identifier, Tag>>>>map(
-					Object2ObjectOpenHashMap::new,
+					Reference2ObjectOpenHashMap::new,
 					StreamCodec.ofMember(
 							(key, buf) -> buf.writeResourceKey(key),
 							FriendlyByteBuf::readRegistryKey
@@ -53,8 +53,8 @@ public record ClientboundUpdateComponentsPayload(
 							Identifier.STREAM_CODEC,
 							ByteBufCodecs.map(
 									size -> size < 8 // this is straight out of the DataComponentMap.CODEC
-											? new Reference2ObjectArrayMap<>(size)
-											: new Reference2ObjectOpenHashMap<>(size),
+											? new Object2ObjectArrayMap<>(size)
+											: new Object2ObjectOpenHashMap<>(size),
 									Identifier.STREAM_CODEC,
 									ByteBufCodecs.TAG
 							)
