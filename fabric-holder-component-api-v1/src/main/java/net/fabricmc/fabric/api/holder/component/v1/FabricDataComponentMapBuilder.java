@@ -8,4 +8,8 @@ public interface FabricDataComponentMapBuilder {
 	default DataComponentMap.Builder apply(DataComponentPatch patch) {
 		throw new UnsupportedOperationException("Implemented via mixin.");
 	}
+
+	default DataComponentMap.Builder clear() {
+		throw new UnsupportedOperationException("Implemented via mixin.");
+	}
 }

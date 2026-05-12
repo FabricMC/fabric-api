@@ -85,6 +85,8 @@ public class DataHolderComponentInitializer implements FabricDataComponentInitia
 				DataHolderComponentFile file = DataHolderComponentFile.CODEC.parse(ops, element).getOrThrow();
 
 				DataComponentMap.Builder builder = context.builder(holder.key());
+
+				if (file.replace()) builder.clear();
 				builder.apply(file.components());
 			} catch (Exception e) {
 				LOGGER.error("Couldn't read component list {} from {} in data pack {}", id, location, resource.sourcePackId(), e);
