@@ -1,0 +1,6 @@
+{
+  "components": {
+    "minecraft:rarity": "rare",
+    "!minecraft:item_model": {}
+  }
+}

@@ -20,15 +20,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 
 // TODO: Make public api and use for datagen
-// TODO: Switch to DataComponentPatch for removal syntax (would require a more advanced version of DataComponentMap.Builder)
 public record DataHolderComponentFile(
 		boolean replace,
-		DataComponentMap components
+		DataComponentPatch components
 ) {
 	public static final Codec<DataHolderComponentFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.optionalFieldOf("replace", false).forGetter(DataHolderComponentFile::replace),
-			DataComponentMap.CODEC.fieldOf("components").forGetter(DataHolderComponentFile::components)
+			DataComponentPatch.CODEC.fieldOf("components").forGetter(DataHolderComponentFile::components)
 	).apply(instance, DataHolderComponentFile::new));
 }

@@ -1,4 +1,6 @@
 classTweaker	v1	official
+transitive-inject-interface net/minecraft/core/component/DataComponentMap$Builder  net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentMapBuilder
+
 transitive-inject-interface net/minecraft/world/level/block/entity/BlockEntityType net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
 transitive-inject-interface net/minecraft/world/level/block/Block                  net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder
 transitive-inject-interface net/minecraft/world/entity/EntityType                  net/fabricmc/fabric/api/holder/component/v1/FabricDataComponentHolder

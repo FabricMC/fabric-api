@@ -82,11 +82,10 @@ public class DataHolderComponentInitializer implements FabricDataComponentInitia
 			try (Reader reader = resource.openAsReader()) {
 				JsonElement element = StrictJsonParser.parse(reader);
 
-				// TODO: Implement replace, also add required
 				DataHolderComponentFile file = DataHolderComponentFile.CODEC.parse(ops, element).getOrThrow();
 
 				DataComponentMap.Builder builder = context.builder(holder.key());
-				builder.addAll(file.components());
+				builder.apply(file.components());
 			} catch (Exception e) {
 				LOGGER.error("Couldn't read component list {} from {} in data pack {}", id, location, resource.sourcePackId(), e);
 			}

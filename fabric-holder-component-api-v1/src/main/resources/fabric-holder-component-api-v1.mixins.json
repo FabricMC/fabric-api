@@ -9,6 +9,7 @@
     "SynchronizeRegistriesTaskMixin",
     "extension.BlockEntityTypeMixin",
     "extension.BlockMixin",
+    "extension.DataComponentMap$BuilderMixin",
     "extension.EntityTypeMixin",
     "extension.FluidMixin",
     "extension.HolderMixin",
