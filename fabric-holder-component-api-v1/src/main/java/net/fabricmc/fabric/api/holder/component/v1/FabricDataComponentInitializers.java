@@ -16,10 +16,17 @@
 
 package net.fabricmc.fabric.api.holder.component.v1;
 
+import net.minecraft.core.component.DataComponentInitializers;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializersImpl;
 
+/// Allows registration of custom [Data Component Initializers][DataComponentInitializers.Initializer].
+///
+/// [Data Component Initializers][DataComponentInitializers.Initializer] are used to add components to [Holders][net.minecraft.core.Holder]. They are run right before the end of a resource reload.
+/// @see DataComponentInitializers
+/// @see FabricDataComponentInitializer
+// TODO: Finish docs
 public final class FabricDataComponentInitializers {
 	/// @see FabricDataComponentInitializers#addInitializerOrdering(Identifier, Identifier)
 	public static final Identifier DATA_HOLDER_COMPONENTS = Identifier.fromNamespaceAndPath("fabric", "data_holder_components");
