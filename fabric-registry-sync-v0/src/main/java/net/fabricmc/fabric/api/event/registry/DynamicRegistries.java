@@ -34,8 +34,8 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * Custom dynamic registries can be registered with {@link #register(ResourceKey, Codec)}. These registries will not be
  * <a href="#sync">synced to the client</a>.
  *
- * <p>The list of all dynamic registries, whether from vanilla or mods, can be accessed using
- * {@link #getDynamicRegistries()}.
+ * <p>The list of all world registries, whether from vanilla or mods, can be accessed using
+ * {@link #getWorldRegistries()}.
  *
  * <p>The list of all bootstrapping registries, whether from vanilla or mods, can be accessed using
  *  * {@link #getBootstrappingRegistries()}.
@@ -82,14 +82,17 @@ public final class DynamicRegistries {
 	}
 
 	/**
-	 * Returns an unmodifiable list of all dynamic registries, including non-bootstrapping ones (such as <code>minecraft:dimension</code>) and modded ones.
+	 * Returns an unmodifiable list of all world registries, including and modded ones.
 	 *
 	 * <p>The list will not reflect any changes caused by later registrations.
 	 *
 	 * @return an unmodifiable list of all dynamic registries
+	 *
+	 * @apiNote A world registry is defined as a registry which is loaded from datapacks.
+	 * <br>Those registries are loaded by the game at different times, and some are not patched.
 	 */
-	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		return DynamicRegistriesImpl.getDynamicRegistries();
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getWorldRegistries() {
+		return DynamicRegistriesImpl.getWorldRegistries();
 	}
 
 	/**
@@ -98,8 +101,21 @@ public final class DynamicRegistries {
 	 * <p>The list will not reflect any changes caused by later registrations.
 	 *
 	 * @return an unmodifiable list of all bootstrapping registries
+	 *
+	 * @apiNote A bootstrapping registry is defined as a registry with entries being data-generated in vanilla from its own registry builder.
+	 * <br>Those registries are the ones that should be loaded for any data-generation purpose.
+	 * <br>For example, it does not include the <code>minecraft:dimension</code> registry.
 	 */
 	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
+		return DynamicRegistriesImpl.getBootstrappingRegistries();
+	}
+
+	/**
+	 * @deprecated Either use {@link #getWorldRegistries()} if you wish to get all world registries, including <code>minecraft:dimension</code>,
+	 * or use {@link #getBootstrappingRegistries()} if you wish to avoid the latter.
+	 */
+	@Deprecated
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
 		return DynamicRegistriesImpl.getBootstrappingRegistries();
 	}
 

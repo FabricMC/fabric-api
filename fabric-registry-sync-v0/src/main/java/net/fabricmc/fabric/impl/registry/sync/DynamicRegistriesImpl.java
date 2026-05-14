@@ -35,8 +35,9 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
+
+	private static final List<RegistryDataLoader.RegistryData<?>> WORLD_REGISTRIES;
 	private static final List<RegistryDataLoader.RegistryData<?>> BOOTSTRAPPING_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
-	private static final List<RegistryDataLoader.RegistryData<?>> DYNAMIC_REGISTRIES;
 
 	private static final Set<ResourceKey<? extends Registry<?>>> VANILLA_DYNAMIC_REGISTRY_KEYS;
 	public static final Set<ResourceKey<? extends Registry<?>>> FABRIC_DYNAMIC_REGISTRY_KEYS = new HashSet<>();
@@ -44,8 +45,8 @@ public final class DynamicRegistriesImpl {
 	public static final Set<ResourceKey<? extends Registry<?>>> SKIP_EMPTY_SYNC_REGISTRIES = new HashSet<>();
 
 	static {
-		DYNAMIC_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
-		DYNAMIC_REGISTRIES.addAll(RegistryDataLoader.DIMENSION_REGISTRIES);
+		WORLD_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
+		WORLD_REGISTRIES.addAll(RegistryDataLoader.DIMENSION_REGISTRIES);
 		Set<ResourceKey<? extends Registry<?>>> vanillaDynamicRegistryKeys = new HashSet<>();
 
 		for (RegistryDataLoader.RegistryData<?> worldgenEntry : RegistryDataLoader.WORLDGEN_REGISTRIES) {
@@ -62,8 +63,8 @@ public final class DynamicRegistriesImpl {
 	private DynamicRegistriesImpl() {
 	}
 
-	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		return List.copyOf(DYNAMIC_REGISTRIES);
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getWorldRegistries() {
+		return List.copyOf(WORLD_REGISTRIES);
 	}
 
 	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
@@ -73,7 +74,7 @@ public final class DynamicRegistriesImpl {
 	private static void addDynamicRegistryData(ResourceKey<? extends Registry<?>> key, RegistryDataLoader.RegistryData<?> data) {
 		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
 		BOOTSTRAPPING_REGISTRIES.add(data);
-		DYNAMIC_REGISTRIES.add(data);
+		WORLD_REGISTRIES.add(data);
 	}
 
 	public static <T> RegistryDataLoader.RegistryData<T> register(ResourceKey<? extends Registry<T>> key, Codec<T> serverCodec) {
