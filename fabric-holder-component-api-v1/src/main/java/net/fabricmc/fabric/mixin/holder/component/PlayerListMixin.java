@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.mixin.holder.component;
 
+import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
+
+import net.minecraft.network.protocol.common.ClientCommonPacketListener;
+import net.minecraft.server.level.ServerPlayer;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,6 +37,8 @@ import net.minecraft.server.players.PlayerList;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
 
+import java.util.List;
+
 @Mixin(PlayerList.class)
 public abstract class PlayerListMixin {
 	@Shadow
@@ -41,11 +48,23 @@ public abstract class PlayerListMixin {
 	@Final
 	private LayeredRegistryAccess<RegistryLayer> registries;
 
+	@Shadow
+	@Final
+	private List<ServerPlayer> players;
+
 	@Inject(method = "reloadResources", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V", shift = At.Shift.AFTER))
 	private void sendComponents(CallbackInfo ci) {
-		broadcastAll(ServerPlayNetworking.createClientboundPacket(HolderComponentSynchronization.serialize(
-				registries.compositeAccess().createSerializationContext(NbtOps.INSTANCE),
-				registries
-		)));
+		Packet<ClientCommonPacketListener> payload = ServerPlayNetworking.createClientboundPacket(
+				HolderComponentSynchronization.serialize(
+						registries.compositeAccess().createSerializationContext(NbtOps.INSTANCE),
+						registries
+				)
+		);
+
+		for (ServerPlayer player : this.players) {
+			if (ServerPlayNetworking.canSend(player, ClientboundUpdateComponentsPayload.TYPE)) {
+				player.connection.send(payload);
+			}
+		}
 	}
 }
