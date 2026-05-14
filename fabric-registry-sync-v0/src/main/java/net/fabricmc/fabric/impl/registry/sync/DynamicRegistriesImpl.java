@@ -35,7 +35,6 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
-
 	private static final List<RegistryDataLoader.RegistryData<?>> WORLD_REGISTRIES;
 	private static final List<RegistryDataLoader.RegistryData<?>> BOOTSTRAPPING_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
 
