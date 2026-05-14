@@ -48,9 +48,8 @@ public class SynchronizeRegistriesTaskMixin {
 	private void sendComponents(
 			Consumer<Packet<?>> connection,
 			Set<KnownPack> negotiatedPacks,
-			CallbackInfo ci,
-			@Local DynamicOps<Tag> ops
+			CallbackInfo ci
 	) {
-		connection.accept(ServerConfigurationNetworking.createClientboundPacket(HolderComponentSynchronization.serialize(ops, registries)));
+		connection.accept(ServerConfigurationNetworking.createClientboundPacket(HolderComponentSynchronization.serialize(registries)));
 	}
 }

@@ -55,10 +55,7 @@ public abstract class PlayerListMixin {
 	@Inject(method = "reloadResources", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V", shift = At.Shift.AFTER))
 	private void sendComponents(CallbackInfo ci) {
 		Packet<ClientCommonPacketListener> payload = ServerPlayNetworking.createClientboundPacket(
-				HolderComponentSynchronization.serialize(
-						registries.compositeAccess().createSerializationContext(NbtOps.INSTANCE),
-						registries
-				)
+				HolderComponentSynchronization.serialize(registries)
 		);
 
 		for (ServerPlayer player : this.players) {

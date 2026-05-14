@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import io.netty.buffer.ByteBuf;
+
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.LayeredRegistryAccess;
@@ -37,31 +37,25 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.RegistryLayer;
 
 public class HolderComponentSynchronization {
-	public static ClientboundUpdateComponentsPayload serialize(
-			DynamicOps<Tag> ops,
-			LayeredRegistryAccess<RegistryLayer> registries
-	) {
+	public static ClientboundUpdateComponentsPayload serialize(LayeredRegistryAccess<RegistryLayer> registries) {
 		return new ClientboundUpdateComponentsPayload(
 				RegistrySynchronization.networkSafeRegistries(registries)
 						.collect(Collectors.toMap(
 								RegistryAccess.RegistryEntry::key,
-								entry -> serialize(ops, entry.value())
+								entry -> serialize(registries.compositeAccess(), entry.value())
 						))
 		);
 	}
 
 	private static Map<Identifier, List<PackedComponentMap>> serialize(
-			DynamicOps<Tag> ops,
+			RegistryAccess registries,
 			Registry<?> registry
 	) {
 		Map<Identifier, List<PackedComponentMap>> result = new HashMap<>();
@@ -72,17 +66,23 @@ public class HolderComponentSynchronization {
 			List<PackedComponentMap> serialized = result.computeIfAbsent(holder.key().identifier(), _ -> new ArrayList<>());
 			for (TypedDataComponent<?> component : holder.components()) {
 				Identifier id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(component.type());
+				RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), registries);
+				encode(component, buf);
 
 				serialized.add(
 						new PackedComponentMap(
 								id,
-								component.encodeValue(ops).getOrThrow(s -> new IllegalArgumentException("Failed to serialize " + id + ": " + s))
+								buf
 						)
 				);
 			}
 		});
 
 		return result;
+	}
+
+	private static <T> void encode(TypedDataComponent<T> component, RegistryFriendlyByteBuf buf) {
+		component.type().streamCodec().encode(buf, component.value());
 	}
 
 	private record BakedEntry<T>(Holder.Reference<T> element, DataComponentMap components) {
@@ -95,18 +95,16 @@ public class HolderComponentSynchronization {
 			ClientboundUpdateComponentsPayload payload,
 			RegistryAccess registries
 	) {
-		RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
-
 		List<DataComponentInitializers.PendingComponents<?>> result = new ArrayList<>();
 
 		payload.registryToComponents().forEach((registryKey, holderComponents) -> {
-			result.add(deserialize(ops, registries.lookupOrThrow(registryKey), holderComponents));
+			result.add(deserialize(registries, registries.lookupOrThrow(registryKey), holderComponents));
 		});
 
 		return result;
 	}
 
-	private static <T> DataComponentInitializers.PendingComponents<T> deserialize(RegistryOps<Tag> ops, Registry<T> registry, Map<Identifier, List<PackedComponentMap>> holderComponents) {
+	private static <T> DataComponentInitializers.PendingComponents<T> deserialize(RegistryAccess registries, Registry<T> registry, Map<Identifier, List<PackedComponentMap>> holderComponents) {
 		List<BakedEntry<T>> entries = new ArrayList<>();
 
 		holderComponents.forEach((id, components) -> {
@@ -114,7 +112,9 @@ public class HolderComponentSynchronization {
 
 			for (PackedComponentMap map : components) {
 				DataComponentType<?> type = BuiltInRegistries.DATA_COMPONENT_TYPE.getOptional(map.id).orElseThrow();
-				parse(ops, type, map.data, builder);
+				parse(registries, type, map.data, builder);
+
+				map.data.release();
 			}
 
 			entries.add(new BakedEntry<>(registry.get(id).orElseThrow(), builder.build()));
@@ -142,18 +142,24 @@ public class HolderComponentSynchronization {
 		};
 	}
 
-	private static <T> void parse(RegistryOps<Tag> ops, DataComponentType<T> type, Tag tag, DataComponentMap.Builder builder) {
-		DataResult<T> result = type.codecOrThrow().parse(ops, tag);
+	private static <T> void parse(RegistryAccess registries, DataComponentType<T> type, ByteBuf buf, DataComponentMap.Builder builder) {
+		T result = type.streamCodec().decode(new RegistryFriendlyByteBuf(buf, registries));
 		builder.set(
 				type,
-				result.getOrThrow()
+				result
 		);
 	}
 
-	public record PackedComponentMap(Identifier id, Tag data) {
+	public record PackedComponentMap(Identifier id, ByteBuf data) {
 		public static final StreamCodec<ByteBuf, PackedComponentMap> STREAM_CODEC = StreamCodec.composite(
 				Identifier.STREAM_CODEC, PackedComponentMap::id,
-				ByteBufCodecs.TAG, PackedComponentMap::data,
+				StreamCodec.of(
+						(output, value) -> {
+							output.writeInt(value.readableBytes());
+							output.writeBytes(value);
+						},
+						buf -> buf.readRetainedSlice(buf.readInt())
+				), PackedComponentMap::data,
 				PackedComponentMap::new
 		);
 	}
