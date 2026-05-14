@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:non_treasure",
+    "#minecraft:treasure"
+  ],
+  "fabric:remove": [
+    "minecraft:mending",
+    "minecraft:unbreaking"
+  ]
+}

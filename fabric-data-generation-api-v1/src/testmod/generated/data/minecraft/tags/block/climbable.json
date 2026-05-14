@@ -1,0 +1,9 @@
+{
+  "fabric:remove": [
+    "minecraft:blue_glazed_terracotta"
+  ],
+  "values": [
+    "minecraft:blue_glazed_terracotta",
+    "minecraft:brown_glazed_terracotta"
+  ]
+}

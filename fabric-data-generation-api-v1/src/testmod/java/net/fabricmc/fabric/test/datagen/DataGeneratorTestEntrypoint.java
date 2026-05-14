@@ -26,6 +26,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_I
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_ITEM_KEY;
+import static net.minecraft.data.server.advancement.AdvancementTabGenerator.reference;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -44,6 +45,7 @@ import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.OnKilledCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockKeys;
+import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.data.DataOutput;
@@ -66,7 +68,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.ExperimentalRegistriesValidator;
 import net.minecraft.registry.Registerable;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryBuilder;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -175,7 +176,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
-					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, Registries.ITEM.getId(Items.DIAMOND_BLOCK))));
+					.offerTo(withConditions(exporter, ResourceConditions.registryContains(RegistryKeys.ITEM, net.minecraft.registry.Registries.ITEM.getId(Items.DIAMOND_BLOCK))));
 			ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, Items.EMERALD, 4).input(Items.ITEM_FRAME, 2)
 					.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
 					.offerTo(withConditions(exporter, ResourceConditions.registryContains(BiomeKeys.PLAINS, BiomeKeys.BADLANDS)));
@@ -322,6 +323,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			getOrCreateTagBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
+
+			getOrCreateTagBuilder(BlockTags.AZALEA_ROOT_REPLACEABLE)
+					.remove(Blocks.RED_SAND.getRegistryEntry().registryKey())
+					.removeTag(BlockTags.DIRT);
+
+			getOrCreateTagBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
+					.remove(
+							Blocks.ANCIENT_DEBRIS.getRegistryEntry().registryKey(),
+							Blocks.NETHERITE_BLOCK.getRegistryEntry().registryKey(),
+							Blocks.OBSIDIAN.getRegistryEntry().registryKey()
+					);
+			getOrCreateTagBuilder(BlockTags.CLIMBABLE)
+					.add(Blocks.BLUE_GLAZED_TERRACOTTA.getRegistryEntry().registryKey())
+					.add(Blocks.BROWN_GLAZED_TERRACOTTA.getRegistryEntry().registryKey())
+					.remove(Blocks.BLUE_GLAZED_TERRACOTTA.getRegistryEntry().registryKey());
 		}
 	}
 
@@ -388,6 +404,17 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(withConditions(consumer, NEVER_LOADED), MOD_ID + ":test/root_not_loaded");
+			AdvancementEntry adventureChild = Advancement.Builder.create()
+					.display(SIMPLE_BLOCK,
+							Text.translatable("advancements.test.adventure_child.title"),
+							Text.translatable("advancements.test.adventure_child.description"),
+							Identifier.ofVanilla("textures/gui/advancements/backgrounds/end.png"),
+							AdvancementFrame.GOAL,
+							false, false, false
+					)
+					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
+					.parent(reference("minecraft:adventure/root"))
+					.build(consumer, MOD_ID + ":test/adventure_child");
 		}
 	}
 

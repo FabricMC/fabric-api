@@ -1,0 +1,13 @@
+{
+    "replace": false,
+    "values": [
+        "minecraft:dirt",
+        {
+            "id": "",
+            "required": false
+        }
+    ],
+    "fabric:remove": [
+      "minecraft:cocoa"
+    ]
+}

@@ -24,16 +24,19 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import net.minecraft.data.server.tag.TagProvider;
 import net.minecraft.registry.tag.TagBuilder;
 
-import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
+import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
+import net.fabricmc.fabric.impl.tag.TagFileHooks;
 
 @Mixin(TagProvider.class)
-public class TagProviderMixin {
-	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/tag/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
-	private boolean addReplaced(boolean replaced, @Local TagBuilder tagBuilder) {
-		if (tagBuilder instanceof FabricTagBuilder fabricTagBuilder) {
-			return fabricTagBuilder.fabric_isReplaced();
-		}
+public class TagProviderMixin<T> {
+	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;writeCodecToPath(Lnet/minecraft/data/DataWriter;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
+	private T addRemove(T value, @Local TagBuilder builder) {
+		((TagFileHooks) value).fabric_setRemove(((TagBuilderHooks) builder).fabric_getRemove());
+		return value;
+	}
 
-		return replaced;
+	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/tag/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
+	private boolean addReplaced(boolean replaced, @Local TagBuilder builder) {
+		return ((TagBuilderHooks) builder).fabric_isReplaced();
 	}
 }

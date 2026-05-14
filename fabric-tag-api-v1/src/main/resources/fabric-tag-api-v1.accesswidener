@@ -1,0 +1,3 @@
+accessWidener	v2	named
+transitive-accessible  class   net/minecraft/registry/tag/TagGroupLoader$TagDependencies
+accessible field net/minecraft/registry/entry/RegistryEntryList$Named entries Ljava/util/List;
