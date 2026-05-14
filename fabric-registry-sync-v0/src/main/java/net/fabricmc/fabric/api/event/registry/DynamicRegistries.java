@@ -102,8 +102,8 @@ public final class DynamicRegistries {
 	 *
 	 * @return an unmodifiable list of all bootstrapping registries
 	 *
-	 * @apiNote A bootstrapping registry is defined as a registry with entries being data-generated in vanilla from its own registry builder.
-	 * <br>Those registries are the ones that should be loaded for any data-generation purpose.
+	 * @apiNote A bootstrapping registry is defined as a registry with entries being data generated in vanilla from its own registry builder.
+	 * <br>Those registries are the ones that should be built for data generation backends.
 	 * <br>For example, it does not include the <code>minecraft:dimension</code> registry.
 	 */
 	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
