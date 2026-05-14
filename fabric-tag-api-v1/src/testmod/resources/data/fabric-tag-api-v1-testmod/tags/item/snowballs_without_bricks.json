@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "fabric:remove": [
+    "brick",
+    "#fabric-tag-api-v1-testmod:bricks"
+  ],
+  "values": [
+    "snowball",
+    "brick",
+    "nether_brick"
+  ]
+}

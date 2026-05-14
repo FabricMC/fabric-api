@@ -1,9 +1,13 @@
 version = getSubprojectVersion(project)
 
-moduleDependencies(project, ['fabric-api-base'])
+moduleDependencies(project, [
+	'fabric-api-base',
+	'fabric-tag-api-v1'
+])
 
 testDependencies(project, [
 	':fabric-convention-tags-v1',
 	':fabric-lifecycle-events-v1',
 	':fabric-resource-loader-v0',
+	':fabric-tag-api-v1'
 ])

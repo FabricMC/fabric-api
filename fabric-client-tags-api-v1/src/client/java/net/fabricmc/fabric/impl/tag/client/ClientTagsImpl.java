@@ -29,6 +29,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 
 public class ClientTagsImpl {
 	private static final Map<TagKey<?>, ClientTagsLoader.LoadedTag> LOCAL_TAG_HIERARCHY = new ConcurrentHashMap<>();
@@ -61,13 +62,19 @@ public class ClientTagsImpl {
 		}
 
 		// Recursively search the entries contained with the tag
-		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
+		ClientTagsLoader.LoadedTag loadedTag = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
 
-		if (wt.immediateChildIds().contains(registryEntry.getKey().get().getValue())) {
+		Identifier id = registryEntry.getKey().get().getValue();
+
+		if (loadedTag.removeIds().contains(id)) {
+			return false;
+		}
+
+		if (loadedTag.immediateChildIds().contains(id)) {
 			return true;
 		}
 
-		for (TagKey<?> key : wt.immediateChildTags()) {
+		for (TagKey<?> key : loadedTag.immediateChildTags()) {
 			if (isInWithLocalFallback((TagKey<T>) key, registryEntry, checked)) {
 				return true;
 			}

@@ -1,0 +1,7 @@
+{
+  "fabric:remove": [
+    "minecraft:red_sand",
+    "#minecraft:dirt"
+  ],
+  "values": []
+}

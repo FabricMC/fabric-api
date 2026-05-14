@@ -16,18 +16,30 @@
 
 package net.fabricmc.fabric.mixin.datagen;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.registry.tag.TagBuilder;
+import net.minecraft.registry.tag.TagEntry;
+import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
+import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 
 /**
  * Extends Tag.Builder to support setting the replace field.
  */
 @Mixin(TagBuilder.class)
-public class TagBuilderMixin implements FabricTagBuilder {
+public abstract class TagBuilderMixin implements TagBuilderHooks {
+	@Shadow
+	public abstract TagBuilder add(TagEntry entry);
+
+	@Unique
+	private final List<TagEntry> remove = new ArrayList<>();
 	@Unique
 	private boolean replace = false;
 
@@ -39,5 +51,20 @@ public class TagBuilderMixin implements FabricTagBuilder {
 	@Override
 	public boolean fabric_isReplaced() {
 		return replace;
+	}
+
+	@Override
+	public List<TagEntry> fabric_getRemove() {
+		return Collections.unmodifiableList(remove);
+	}
+
+	@Override
+	public void fabric_removeElement(Identifier id) {
+		remove.add(TagEntry.create(id));
+	}
+
+	@Override
+	public void fabric_removeTag(Identifier tag) {
+		remove.add(TagEntry.createTag(tag));
 	}
 }

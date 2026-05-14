@@ -25,6 +25,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_B
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_ITEM_KEY;
+import static net.minecraft.data.server.advancement.AdvancementTabGenerator.reference;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -302,6 +303,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			getOrCreateTagBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
+
+			getOrCreateTagBuilder(BlockTags.AZALEA_ROOT_REPLACEABLE)
+					.remove(Blocks.RED_SAND.getRegistryEntry().registryKey())
+					.removeTag(BlockTags.DIRT);
+
+			getOrCreateTagBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
+					.remove(
+							Blocks.ANCIENT_DEBRIS.getRegistryEntry().registryKey(),
+							Blocks.NETHERITE_BLOCK.getRegistryEntry().registryKey(),
+							Blocks.OBSIDIAN.getRegistryEntry().registryKey()
+					);
+			getOrCreateTagBuilder(BlockTags.CLIMBABLE)
+					.add(Blocks.BLUE_GLAZED_TERRACOTTA.getRegistryEntry().registryKey())
+					.add(Blocks.BROWN_GLAZED_TERRACOTTA.getRegistryEntry().registryKey())
+					.remove(Blocks.BLUE_GLAZED_TERRACOTTA.getRegistryEntry().registryKey());
 		}
 	}
 
@@ -356,6 +372,17 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(withConditions(consumer, NEVER_LOADED), MOD_ID + ":test/root_not_loaded");
+			AdvancementEntry adventureChild = Advancement.Builder.create()
+					.display(SIMPLE_BLOCK,
+							Text.translatable("advancements.test.adventure_child.title"),
+							Text.translatable("advancements.test.adventure_child.description"),
+							Identifier.ofVanilla("textures/gui/advancements/backgrounds/end.png"),
+							AdvancementFrame.GOAL,
+							false, false, false
+					)
+					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
+					.parent(reference("minecraft:adventure/root"))
+					.build(consumer, MOD_ID + ":test/adventure_child");
 		}
 	}
 
