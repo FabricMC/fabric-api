@@ -6,5 +6,8 @@
             "id": "",
             "required": false
         }
+    ],
+    "fabric:remove": [
+      "minecraft:cocoa"
     ]
 }

@@ -16,12 +16,21 @@
 
 package net.fabricmc.fabric.impl.datagen;
 
-import net.minecraft.resources.Identifier;
+import java.util.List;
 
-public interface FabricTagBuilder {
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagEntry;
+
+public interface TagBuilderHooks {
 	void fabric_setReplace(boolean replace);
 
 	boolean fabric_isReplaced();
 
 	void fabric_forceAddTag(Identifier tag);
+
+	List<TagEntry> fabric_getRemove();
+
+	void fabric_removeElement(Identifier id);
+
+	void fabric_removeTag(Identifier tag);
 }

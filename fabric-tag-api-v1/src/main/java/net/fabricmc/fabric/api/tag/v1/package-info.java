@@ -17,7 +17,7 @@
 /**
  * The Fabric Tag API for working with {@linkplain net.minecraft.tags.TagKey tags}.
  *
- * <h1>Aliasing tags</h1>
+ * <h2>Aliasing tags</h2>
  * <dfn>Tag alias groups</dfn> are lists of tags that refer to the same set of registry entries.
  * The contained tags will be linked together and get the combined set of entries
  * of all the aliased tags in a group.
@@ -33,7 +33,7 @@
  * <p>If multiple tag alias groups include a tag, the groups will be combined and each tag will be an alias
  * for the same contents.
  *
- * <h2>Tag aliases in the {@code c} namespace</h2>
+ * <h3>Tag aliases in the {@code c} namespace</h3>
  *
  * <p>For the names of shared {@code c} tag alias groups, it's important that you use a short and descriptive name.
  * A good way to do this is reusing the name of a contained {@code c} tag that follows the naming conventions.
@@ -48,6 +48,21 @@
  * in your tag file directly. That way, data packs can modify your tag separately. Tag aliases make their contained
  * tags almost fully indistinguishable since they get the exact same content, and you have to override the alias group
  * in a higher-priority data pack to unlink them.
+ *
+ * <h2>Removing entries from tags</h2>
+ * <dfn>Tag entry removals</dfn> may be used to remove entries from a tag.
+ *
+ * <p>These may be used to remove values from gameplay facing tags, to exclude specific entries from
+ * referenced tags from being applied via a tag's {@linkplain net.minecraft.tags.TagFile#entries() values}
+ * field, or to just remove unwanted values.
+ *
+ * <p>All tag files contain an additional field: {@code fabric:remove} which is an array of entries
+ * you wish to remove, following the same syntax as the {@code values} field.
+ *
+ * <p>Entries within the {@code fabric:remove} field are handled after all of the current file's values are added to the tag.
+ * These entries should never be required, meaning they will never throw exceptions if not present in the associated registry.
+ *
+ * <p>Tag entries may always be added back by data packs that load after the pack that removes the respective value(s).
  */
 @NullMarked
 package net.fabricmc.fabric.api.tag.v1;
