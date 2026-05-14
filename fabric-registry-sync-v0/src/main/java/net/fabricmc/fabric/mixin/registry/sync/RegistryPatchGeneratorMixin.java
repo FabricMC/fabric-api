@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.registry.sync;
 
 import java.util.List;
 
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,13 +28,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.resources.RegistryDataLoader;
 
-import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
-
 @Mixin(RegistryPatchGenerator.class)
 class RegistryPatchGeneratorMixin {
 	@Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLDGEN_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC), method = "lambda$createLookup$0")
 	private static List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		// Register cloners for modded dynamic registries.
-		return DynamicRegistriesImpl.BOOTSTRAPPING_REGISTRIES;
+		// Register cloners for all bootstrapping registries (including modded ones).
+		return DynamicRegistries.getBootstrappingRegistries();
 	}
 }
