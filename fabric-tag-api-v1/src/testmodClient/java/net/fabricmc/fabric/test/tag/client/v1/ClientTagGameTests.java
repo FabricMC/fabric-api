@@ -20,10 +20,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -37,6 +43,7 @@ import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
+import net.fabricmc.fabric.test.tag.TagTest;
 import net.fabricmc.fabric.test.tag.TagTestUtils;
 
 public class ClientTagGameTests implements FabricClientGameTest {
@@ -44,6 +51,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 
 	private static final TagKey<Block> REMOVAL_TEST_TAG = TagTestUtils.tagKey(Registries.BLOCK, "dirt_and_mud_with_client_exclusions");
 	private static final TagKey<Block> READD_MELONS_TEST_TAG = TagTestUtils.tagKey(Registries.BLOCK, "readd_melons");
+	private static final TagKey<Item> HAPPY_GHAST_FOOD_TAG = ItemTags.HAPPY_GHAST_FOOD;
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -66,6 +74,12 @@ public class ClientTagGameTests implements FabricClientGameTest {
 			try (TestServerConnection connection = serverContext.connect()) {
 				context.runOnClient(ClientTagGameTests::clientTagDedicatedServerTests);
 				serverContext.runOnServer(ClientTagGameTests::reloadAndAddServerTagTests);
+			}
+		}
+
+		try (TestDedicatedServerContext serverContext = context.worldBuilder().createServer()) {
+			try (TestServerConnection connection = serverContext.connect()) {
+				serverContext.runOnServer(ClientTagGameTests::reAddRemovedValueTests);
 			}
 		}
 	}
@@ -147,6 +161,16 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		LOGGER.info("The tests for adding tags to the server passed!");
 	}
 
+	private static void reAddRemovedValueTests(MinecraftServer server) {
+		// Run this hook to make sure that failed runs with the 'remove_and_add_test' data pack do not error due to having it enabled.
+		removeThenTestSnowballInHappyGhastFood(server);
+		addThenTestSnowballInHappyGhastFood(server);
+		// Remove it again to make sure that we have a default state for other tests.
+		removeThenTestSnowballInHappyGhastFood(server);
+
+		LOGGER.info("The tests for re-adding removed tag values passed!");
+	}
+
 	private static void removeThenTestMelonInReAddMelonsTestTag(MinecraftServer server) {
 		server.getPackRepository().removePack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
 		ClientTagTestUtils.reloadResources(
@@ -181,5 +205,40 @@ public class ClientTagGameTests implements FabricClientGameTest {
 				TagTestUtils::getBlockKey,
 				Blocks.MELON
 		);
+	}
+
+	private static void removeThenTestSnowballInHappyGhastFood(MinecraftServer server) {
+		server.getPackRepository().removePack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
+		ClientTagTestUtils.reloadResources(
+				server,
+				() -> new AssertionError("Failed to reload after removing '%s' data pack".formatted(TagTest.REMOVE_AND_ADD_TEST_PACK_ID))
+		);
+
+		RegistryAccess registries = server.registryAccess();
+		ClientTagTestUtils.assertThrows(
+				() -> assertSnowballInHappyGhastFood(registries),
+				"Expected %s not to contain snowball after removing pack".formatted(HAPPY_GHAST_FOOD_TAG)
+		);
+	}
+
+	private static void addThenTestSnowballInHappyGhastFood(MinecraftServer server) {
+		server.getPackRepository().addPack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
+		ClientTagTestUtils.reloadResources(
+				server,
+				() -> new AssertionError("Failed to reload after adding '%s' data pack".formatted(TagTest.REMOVE_AND_ADD_TEST_PACK_ID))
+		);
+
+		assertSnowballInHappyGhastFood(server.registryAccess());
+		LOGGER.info("Tag {} contains snowball after adding pack", HAPPY_GHAST_FOOD_TAG);
+	}
+
+	private static void assertSnowballInHappyGhastFood(RegistryAccess registries) {
+		Registry<Item> lookup = registries.lookupOrThrow(Registries.ITEM);
+		HolderSet.Named<Item> holderSet = lookup.getOrThrow(HAPPY_GHAST_FOOD_TAG);
+		boolean contains = holderSet.stream().anyMatch(h -> h.value() == Items.SNOWBALL);
+
+		if (!contains) {
+			throw new AssertionError("Expected %s to contain snowball".formatted(HAPPY_GHAST_FOOD_TAG));
+		}
 	}
 }

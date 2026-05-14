@@ -27,7 +27,7 @@ import net.fabricmc.loader.api.ModContainer;
 public class TagTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-tag-api-v1-testmod";
 
-	protected static final Identifier REMOVE_AND_ADD_TEST_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "remove_and_add_test");
+	public static final Identifier REMOVE_AND_ADD_TEST_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "remove_and_add_test");
 
 	@Override
 	public void onInitialize() {

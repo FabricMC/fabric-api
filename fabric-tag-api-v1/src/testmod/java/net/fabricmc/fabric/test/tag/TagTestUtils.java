@@ -32,7 +32,6 @@ import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -135,11 +134,5 @@ public class TagTestUtils {
 					.map(Identifier::toString)
 					.collect(Collectors.joining(", ")));
 		}
-	}
-
-	static void reloadResources(GameTestHelper helper, MinecraftServer server, Function<GameTestHelper, GameTestAssertException> onException) {
-		server.reloadResources(server.getPackRepository().getSelectedIds()).exceptionally((throwable) -> {
-			throw onException.apply(helper);
-		});
 	}
 }
