@@ -82,7 +82,7 @@ public final class DynamicRegistries {
 	}
 
 	/**
-	 * Returns an unmodifiable list of all world registries, including and modded ones.
+	 * Returns an unmodifiable list of all world registries, including modded ones.
 	 *
 	 * <p>The list will not reflect any changes caused by later registrations.
 	 *
