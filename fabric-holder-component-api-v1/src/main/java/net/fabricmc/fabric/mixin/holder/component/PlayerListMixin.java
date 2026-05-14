@@ -26,11 +26,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.players.PlayerList;
 
-import net.fabricmc.fabric.impl.holder.component.sync.DataComponentNetworkSerialization;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
 
 @Mixin(PlayerList.class)
 public abstract class PlayerListMixin {
@@ -43,7 +43,7 @@ public abstract class PlayerListMixin {
 
 	@Inject(method = "reloadResources", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V", shift = At.Shift.AFTER))
 	private void sendComponents(CallbackInfo ci) {
-		broadcastAll(new ClientboundCustomPayloadPacket(DataComponentNetworkSerialization.serialize(
+		broadcastAll(ServerPlayNetworking.createClientboundPacket(HolderComponentSynchronization.serialize(
 				registries.compositeAccess().createSerializationContext(NbtOps.INSTANCE),
 				registries
 		)));

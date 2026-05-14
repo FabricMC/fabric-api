@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.LayeredRegistryAccess;
@@ -34,16 +35,22 @@ import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.component.DataComponentInitializers;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.RegistryLayer;
 
-public class DataComponentNetworkSerialization {
-	public static ClientboundUpdateComponentsPayload serialize(DynamicOps<Tag> ops, LayeredRegistryAccess<RegistryLayer> registries) {
+public class HolderComponentSynchronization {
+	public static ClientboundUpdateComponentsPayload serialize(
+			DynamicOps<Tag> ops,
+			LayeredRegistryAccess<RegistryLayer> registries
+	) {
 		return new ClientboundUpdateComponentsPayload(
 				RegistrySynchronization.networkSafeRegistries(registries)
 						.collect(Collectors.toMap(
@@ -53,19 +60,26 @@ public class DataComponentNetworkSerialization {
 		);
 	}
 
-	private static Map<Identifier, Map<Identifier, Tag>> serialize(DynamicOps<Tag> ops, Registry<?> registry) {
-		Map<Identifier, Map<Identifier, Tag>> result = new HashMap<>();
+	private static Map<Identifier, List<PackedComponentMap>> serialize(
+			DynamicOps<Tag> ops,
+			Registry<?> registry
+	) {
+		Map<Identifier, List<PackedComponentMap>> result = new HashMap<>();
 
 		registry.listElements().forEach(holder -> {
 			if (holder.components().isEmpty()) return;
 
-			Map<Identifier, Tag> serialized = result.computeIfAbsent(holder.key().identifier(), _ -> new HashMap<>());
-			holder.components().forEach(component -> {
-				serialized.put(
-						BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(component.type()),
-						component.encodeValue(ops).getOrThrow()
+			List<PackedComponentMap> serialized = result.computeIfAbsent(holder.key().identifier(), _ -> new ArrayList<>());
+			for (TypedDataComponent<?> component : holder.components()) {
+				Identifier id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(component.type());
+
+				serialized.add(
+						new PackedComponentMap(
+								id,
+								component.encodeValue(ops).getOrThrow(s -> new IllegalArgumentException("Failed to serialize " + id + ": " + s))
+						)
 				);
-			});
+			}
 		});
 
 		return result;
@@ -78,30 +92,30 @@ public class DataComponentNetworkSerialization {
 	}
 
 	public static List<DataComponentInitializers.PendingComponents<?>> deserialize(
-			Map<ResourceKey<? extends Registry<?>>, Map<Identifier, Map<Identifier, Tag>>> registryToComponents,
+			ClientboundUpdateComponentsPayload payload,
 			RegistryAccess registries
 	) {
 		RegistryOps<Tag> ops = registries.createSerializationContext(NbtOps.INSTANCE);
 
 		List<DataComponentInitializers.PendingComponents<?>> result = new ArrayList<>();
 
-		registryToComponents.forEach((registryKey, holderComponents) -> {
+		payload.registryToComponents().forEach((registryKey, holderComponents) -> {
 			result.add(deserialize(ops, registries.lookupOrThrow(registryKey), holderComponents));
 		});
 
 		return result;
 	}
 
-	private static <T> DataComponentInitializers.PendingComponents<T> deserialize(RegistryOps<Tag> ops, Registry<T> registry, Map<Identifier, Map<Identifier, Tag>> holderComponents) {
+	private static <T> DataComponentInitializers.PendingComponents<T> deserialize(RegistryOps<Tag> ops, Registry<T> registry, Map<Identifier, List<PackedComponentMap>> holderComponents) {
 		List<BakedEntry<T>> entries = new ArrayList<>();
 
 		holderComponents.forEach((id, components) -> {
 			DataComponentMap.Builder builder = DataComponentMap.builder();
 
-			components.forEach((componentId, encodedValue) -> {
-				DataComponentType<?> type = BuiltInRegistries.DATA_COMPONENT_TYPE.getOptional(componentId).orElseThrow();
-				parse(ops, type, encodedValue, builder);
-			});
+			for (PackedComponentMap map : components) {
+				DataComponentType<?> type = BuiltInRegistries.DATA_COMPONENT_TYPE.getOptional(map.id).orElseThrow();
+				parse(ops, type, map.data, builder);
+			}
 
 			entries.add(new BakedEntry<>(registry.get(id).orElseThrow(), builder.build()));
 		});
@@ -133,6 +147,14 @@ public class DataComponentNetworkSerialization {
 		builder.set(
 				type,
 				result.getOrThrow()
+		);
+	}
+
+	public record PackedComponentMap(Identifier id, Tag data) {
+		public static final StreamCodec<ByteBuf, PackedComponentMap> STREAM_CODEC = StreamCodec.composite(
+				Identifier.STREAM_CODEC, PackedComponentMap::id,
+				ByteBufCodecs.TAG, PackedComponentMap::data,
+				PackedComponentMap::new
 		);
 	}
 }

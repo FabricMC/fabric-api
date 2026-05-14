@@ -21,9 +21,6 @@ import java.util.function.Consumer;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.DynamicOps;
-
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,12 +31,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.network.config.SynchronizeRegistriesTask;
 import net.minecraft.server.packs.repository.KnownPack;
 
-import net.fabricmc.fabric.impl.holder.component.sync.DataComponentNetworkSerialization;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
 
 @Mixin(SynchronizeRegistriesTask.class)
 public class SynchronizeRegistriesTaskMixin {
@@ -54,6 +51,6 @@ public class SynchronizeRegistriesTaskMixin {
 			CallbackInfo ci,
 			@Local DynamicOps<Tag> ops
 	) {
-		connection.accept(ServerConfigurationNetworking.createClientboundPacket(DataComponentNetworkSerialization.serialize(ops, registries)));
+		connection.accept(ServerConfigurationNetworking.createClientboundPacket(HolderComponentSynchronization.serialize(ops, registries)));
 	}
 }

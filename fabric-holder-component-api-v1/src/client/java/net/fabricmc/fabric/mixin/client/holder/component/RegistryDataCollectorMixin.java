@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.holder.component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,35 +29,32 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.multiplayer.RegistryDataCollector;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.component.DataComponentInitializers;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceProvider;
 
 import net.fabricmc.fabric.impl.client.holder.component.FabricRegistryDataCollector;
 import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
-import net.fabricmc.fabric.impl.holder.component.sync.DataComponentNetworkSerialization;
+import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
 
 @Mixin(RegistryDataCollector.class)
 public class RegistryDataCollectorMixin implements FabricRegistryDataCollector {
 	@Unique
-	private final Map<ResourceKey<? extends Registry<?>>, Map<Identifier, Map<Identifier, Tag>>> components = new HashMap<>();
+	private final ClientboundUpdateComponentsPayload components = new ClientboundUpdateComponentsPayload(new HashMap<>());
 
 	@Override
 	public void fabric$appendComponents(ClientboundUpdateComponentsPayload payload) {
-		// please change checkstyle to let me use var here this is suffering
-		for (Map.Entry<ResourceKey<? extends Registry<?>>, Map<Identifier, Map<Identifier, Tag>>> entry : payload.registryToComponents().entrySet()) {
-			Map<Identifier, Map<Identifier, Tag>> registryMaps =
-					components.computeIfAbsent(entry.getKey(), _ -> new HashMap<>(entry.getValue().size()));
+		payload.registryToComponents().forEach((key, value) -> {
+			Map<Identifier, List<HolderComponentSynchronization.PackedComponentMap>> holderMaps =
+					components.registryToComponents()
+							.computeIfAbsent(key, _ -> new HashMap<>(value.size()));
 
-			entry.getValue().forEach((holder, components) -> {
-				registryMaps.computeIfAbsent(holder, _ -> new HashMap<>()).putAll(components);
+			value.forEach((holder, components) -> {
+				holderMaps.computeIfAbsent(holder, _ -> new ArrayList<>()).addAll(components);
 			});
-		}
+		});
 	}
 
 	@Inject(method = "collectGameRegistries", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/RegistryDataCollector;updateComponents(Lnet/minecraft/core/RegistryAccess$Frozen;Z)V", shift = At.Shift.AFTER))
@@ -67,7 +65,10 @@ public class RegistryDataCollectorMixin implements FabricRegistryDataCollector {
 			CallbackInfoReturnable<RegistryAccess.Frozen> cir,
 			@Local(name = "frozenRegistries") RegistryAccess.Frozen frozenRegistries
 	) {
-		List<DataComponentInitializers.PendingComponents<?>> pending = DataComponentNetworkSerialization.deserialize(components, frozenRegistries);
+		List<DataComponentInitializers.PendingComponents<?>> pending = HolderComponentSynchronization.deserialize(
+				components,
+				frozenRegistries
+		);
 
 		boolean includeSharedRegistries = !tagsAndComponentsForSynchronizedRegistriesOnly;
 

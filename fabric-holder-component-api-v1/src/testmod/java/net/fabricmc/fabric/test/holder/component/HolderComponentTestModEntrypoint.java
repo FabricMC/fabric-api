@@ -16,14 +16,6 @@
 
 package net.fabricmc.fabric.test.holder.component;
 
-import net.minecraft.core.component.DataComponentHolder;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.references.BlockIds;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.equipment.Equippable;
-import net.minecraft.world.level.block.Blocks;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

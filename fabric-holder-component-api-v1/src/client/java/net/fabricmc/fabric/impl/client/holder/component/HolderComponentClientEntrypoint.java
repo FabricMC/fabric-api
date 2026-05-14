@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworkin
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
-import net.fabricmc.fabric.impl.holder.component.sync.DataComponentNetworkSerialization;
+import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
 import net.fabricmc.fabric.mixin.client.holder.component.ClientConfigurationPacketListenerImplAccessor;
 
 public class HolderComponentClientEntrypoint implements ClientModInitializer {
@@ -45,8 +45,8 @@ public class HolderComponentClientEntrypoint implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(
 				ClientboundUpdateComponentsPayload.TYPE,
 				(payload, context) -> {
-					List<DataComponentInitializers.PendingComponents<?>> pending = DataComponentNetworkSerialization.deserialize(
-							payload.registryToComponents(),
+					List<DataComponentInitializers.PendingComponents<?>> pending = HolderComponentSynchronization.deserialize(
+							payload,
 							context.packetContext().orElseThrow(PacketContext.REGISTRY_ACCESS)
 					);
 
