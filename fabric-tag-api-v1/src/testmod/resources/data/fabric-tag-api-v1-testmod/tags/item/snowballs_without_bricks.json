@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "fabric:remove": [
+    "brick"
+  ],
+  "values": [
+    "snowball",
+    "brick"
+  ]
+}

@@ -316,6 +316,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
 			aliasGroup(Identifier.fromNamespaceAndPath("other_namespace", "flowers"))
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
+
+			valueLookupBuilder(BlockTags.SUPPORTS_WARPED_FUNGUS)
+					.remove(Blocks.SOUL_SOIL)
+					.removeTag(BlockTags.DIRT);
+
+			valueLookupBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
+					.remove(
+							Blocks.ANCIENT_DEBRIS,
+							Blocks.NETHERITE_BLOCK,
+							Blocks.OBSIDIAN
+					);
+			valueLookupBuilder(BlockTags.CLIMBABLE)
+					.add(Blocks.BLUE_GLAZED_TERRACOTTA)
+					.add(Blocks.BROWN_GLAZED_TERRACOTTA)
+					.remove(Blocks.BLUE_GLAZED_TERRACOTTA);
 		}
 	}
 

@@ -51,7 +51,8 @@ public class ClientTagsLoader {
 	 * Parsing based on {@link net.minecraft.tags.TagLoader#load(net.minecraft.server.packs.resources.ResourceManager)}
 	 */
 	public static LoadedTag loadTag(TagKey<?> tagKey) {
-		var tags = new HashSet<TagEntry>();
+		var values = new HashSet<TagEntry>();
+		var remove = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.location());
 
 		for (Path tagPath : tagFiles) {
@@ -62,23 +63,25 @@ public class ClientTagsLoader {
 
 				if (maybeTagFile != null) {
 					if (maybeTagFile.replace()) {
-						tags.clear();
+						values.clear();
+						remove.clear();
 					}
 
-					tags.addAll(maybeTagFile.entries());
+					values.addAll(maybeTagFile.entries());
+					remove.addAll(maybeTagFile.remove());
 				}
 			} catch (IOException e) {
-				LOGGER.error("Error loading tag: " + tagKey, e);
+				LOGGER.error("Error loading tag: {}", tagKey, e);
 			}
 		}
 
 		HashSet<Identifier> completeIds = new HashSet<>();
+		HashSet<Identifier> removeIds = new HashSet<>();
 		HashSet<Identifier> immediateChildIds = new HashSet<>();
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
-		for (TagEntry tagEntry : tags) {
-			tagEntry.build(new TagEntry.Lookup<>() {
-				@Nullable
+		for (TagEntry tagEntry : values) {
+			tagEntry.build(new TagEntry.Lookup<Identifier>() {
 				@Override
 				public Identifier element(Identifier id, boolean required) {
 					immediateChildIds.add(id);
@@ -92,17 +95,46 @@ public class ClientTagsLoader {
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
 				}
-			}, completeIds::add);
+			}, id -> {
+				removeIds.remove(id);
+				completeIds.add(id);
+			});
+		}
+
+		for (TagEntry removeEntry : remove) {
+			removeEntry.build(new TagEntry.Lookup<Identifier>() {
+				@Override
+				public Identifier element(Identifier id, boolean required) {
+					return id;
+				}
+
+				@Nullable
+				@Override
+				public Collection<Identifier> tag(Identifier id) {
+					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
+					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).removeIds;
+				}
+			}, id -> {
+				completeIds.remove(id);
+				removeIds.add(id);
+			});
 		}
 
 		// Ensure that the tag does not refer to itself
 		immediateChildTags.remove(tagKey);
 
-		return new LoadedTag(Collections.unmodifiableSet(completeIds), Collections.unmodifiableSet(immediateChildTags),
-				Collections.unmodifiableSet(immediateChildIds));
+		return new LoadedTag(
+				Collections.unmodifiableSet(completeIds),
+				Collections.unmodifiableSet(removeIds),
+				Collections.unmodifiableSet(immediateChildTags),
+				Collections.unmodifiableSet(immediateChildIds)
+		);
 	}
 
-	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
+	public record LoadedTag(Set<Identifier> completeIds,
+							Set<Identifier> removeIds,
+							Set<TagKey<?>> immediateChildTags,
+							Set<Identifier> immediateChildIds) {
 	}
 
 	/**

@@ -92,12 +92,12 @@ abstract class MappedRegistryMixin<T> implements MappedRegistryExtension, TagAli
 					entries.addAll(entryList.contents);
 				} else {
 					LOGGER.info("[Fabric] Creating a new empty tag {} for unknown tag used in a tag alias group in {}", tag.location(), tag.registry().identifier());
-					Map<TagKey<T>, HolderSet.Named<T>> tagMap = ((SimpleRegistryTagLookup2Accessor<T>) allTags).fabric_getTagMap();
+					Map<TagKey<T>, HolderSet.Named<T>> tagMap = ((MappedRegistryTagSet2Accessor<T>) allTags).fabric_getTagMap();
 
 					if (!(tagMap instanceof HashMap<?, ?>)) {
 						// Unfreeze the backing map.
 						tagMap = new HashMap<>(tagMap);
-						((SimpleRegistryTagLookup2Accessor<T>) allTags).fabric_setTagMap(tagMap);
+						((MappedRegistryTagSet2Accessor<T>) allTags).fabric_setTagMap(tagMap);
 					}
 
 					tagMap.put((TagKey<T>) tag, createTag((TagKey<T>) tag));

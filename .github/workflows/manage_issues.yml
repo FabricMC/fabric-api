@@ -8,7 +8,7 @@ jobs:
   labels:
     runs-on: ubuntu-24.04
     steps:
-      - uses: FabricMC/fabric-action-scripts@v2
+      - uses: FabricMC/fabric-action-scripts@v3
         with:
           context: ${{ github.event.action }}
           label: ${{ github.event.label.name }}
