@@ -79,7 +79,7 @@ public final class DynamicRegistries {
 	}
 
 	/**
-	 * Returns an unmodifiable list of all dynamic registries, including modded ones.
+	 * Returns an unmodifiable list of all dynamic registries, including non-bootstrapping ones (such as <code>minecraft:dimension</code>) and modded ones.
 	 *
 	 * <p>The list will not reflect any changes caused by later registrations.
 	 *
@@ -87,6 +87,17 @@ public final class DynamicRegistries {
 	 */
 	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
 		return DynamicRegistriesImpl.getDynamicRegistries();
+	}
+
+	/**
+	 * Returns an unmodifiable list of all bootstrapping dynamic registries, including modded ones.
+	 *
+	 * <p>The list will not reflect any changes caused by later registrations.
+	 *
+	 * @return an unmodifiable list of all bootstrapping registries
+	 */
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
+		return DynamicRegistriesImpl.getBootstrappingRegistries();
 	}
 
 	/**

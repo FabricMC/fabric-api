@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 class RegistryPatchGeneratorMixin {
 	@Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLDGEN_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC), method = "lambda$createLookup$0")
 	private static List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		// Register cloners for fabric dynamic registries.
-		return DynamicRegistriesImpl.WORLDGEN_LIKE_DYNAMIC_REGISTRIES;
+		// Register cloners for modded dynamic registries.
+		return DynamicRegistriesImpl.BOOTSTRAPPING_REGISTRIES;
 	}
 }

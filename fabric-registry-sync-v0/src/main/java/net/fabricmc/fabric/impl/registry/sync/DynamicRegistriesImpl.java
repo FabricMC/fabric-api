@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
 	private static final List<RegistryDataLoader.RegistryData<?>> VANILLA_DYNAMIC_REGISTRIES;
-	public static final List<RegistryDataLoader.RegistryData<?>> WORLDGEN_LIKE_DYNAMIC_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
+	public static final List<RegistryDataLoader.RegistryData<?>> BOOTSTRAPPING_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
 	private static final List<RegistryDataLoader.RegistryData<?>> ALL_DYNAMIC_REGISTRIES;
 
 	private static final Set<ResourceKey<? extends Registry<?>>> VANILLA_DYNAMIC_REGISTRY_KEYS;
@@ -69,9 +69,13 @@ public final class DynamicRegistriesImpl {
 		return List.copyOf(ALL_DYNAMIC_REGISTRIES);
 	}
 
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
+		return List.copyOf(BOOTSTRAPPING_REGISTRIES);
+	}
+
 	private static void addDynamicRegistryData(ResourceKey<? extends Registry<?>> key, RegistryDataLoader.RegistryData<?> data) {
 		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
-		WORLDGEN_LIKE_DYNAMIC_REGISTRIES.add(data);
+		BOOTSTRAPPING_REGISTRIES.add(data);
 		ALL_DYNAMIC_REGISTRIES.add(data);
 	}
 
