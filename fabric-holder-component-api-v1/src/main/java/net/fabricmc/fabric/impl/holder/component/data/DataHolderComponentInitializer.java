@@ -58,7 +58,7 @@ public class DataHolderComponentInitializer implements FabricDataComponentInitia
 		@SuppressWarnings("unchecked") ResourceKey<? extends Registry<T>> key = (ResourceKey<? extends Registry<T>>) key1;
 
 		HolderLookup.RegistryLookup<T> lookup = context.lookupProvider().lookupOrThrow(key);
-		FileToIdConverter lister = FileToIdConverter.json(Registries.componentsDirPath(lookup.key()));
+		FileToIdConverter lister = FileToIdConverter.json("fabric/" + Registries.componentsDirPath(lookup.key()));
 
 		for (Map.Entry<Identifier, List<Resource>> entry : lister.listMatchingResourceStacks(context.resourceManager()).entrySet()) {
 			Identifier location = entry.getKey();
