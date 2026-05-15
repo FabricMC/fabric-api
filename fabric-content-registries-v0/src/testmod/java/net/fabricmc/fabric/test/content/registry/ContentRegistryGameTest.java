@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -42,7 +43,10 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
+import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
+import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.AABB;
@@ -60,7 +64,7 @@ public class ContentRegistryGameTest {
 		// If on level 0, composting always increases composter level
 		helper.useBlock(pos, player);
 		helper.assertBlockProperty(pos, ComposterBlock.LEVEL, 1);
-		helper.assertValueEqual(obsidian.getCount(), 63, Component.literal("obsidian stack count"));
+		helper.assertValueEqual(obsidian.getCount(), 63, Component.literal("obsidian blockStack count"));
 		helper.succeed();
 	}
 
@@ -97,7 +101,7 @@ public class ContentRegistryGameTest {
 		// Insert the fuel into the hopper, which transfers it into the furnace
 		hopper.setItem(0, fuelStack.copy());
 
-		// Insert the item that should be smelted into the furnace
+		// Insert the item that should blockEntity smelted into the furnace
 		// Smelting a single item takes 200 fuel time
 		furnace.setItem(0, new ItemStack(Items.RAW_IRON, 1));
 
@@ -199,6 +203,22 @@ public class ContentRegistryGameTest {
 		helper.assertBlockPresent(Blocks.IRON_ORE, pos);
 		helper.useBlock(pos, player);
 		helper.assertBlockPresent(Blocks.COPPER_ORE, pos);
+		helper.succeed();
+	}
+
+	@GameTest
+	public void testDecoratedPotPatternRegistry(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(0, 1, 0);
+		helper.setBlock(pos, Blocks.DECORATED_POT);
+		helper.getBlockEntity(pos, DecoratedPotBlockEntity.class).applyComponentsFromItemStack(DecoratedPotBlockEntity.createDecoratedPotInstance(new PotDecorations(
+				Optional.of(Items.PAPER), Optional.empty(),
+				Optional.empty(), Optional.empty()
+		)));
+		helper.assertBlockEntityData(
+			pos, DecoratedPotBlockEntity.class,
+			be -> DecoratedPotPatterns.getPatternFromItem(be.getDecorations().back().orElseThrow()) == ContentRegistryTest.FABRIC,
+			() -> Component.literal("Decorated Pot Pattern for paper item is wrong")
+		);
 		helper.succeed();
 	}
 
