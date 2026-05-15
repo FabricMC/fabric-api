@@ -28,7 +28,8 @@ public class DecoratedPotPatternRegistryImpl {
 	}
 
 	public static void registerPattern(ItemLike sherd, ResourceKey<DecoratedPotPattern> pattern) {
-		Objects.requireNonNull(sherd, "Sherd item cannot be null!");
+		Objects.requireNonNull(sherd, "Sherd item-like cannot be null!");
+		Objects.requireNonNull(sherd.asItem(), "Sherd item cannot be null!");
 		Objects.requireNonNull(pattern, "Pattern key cannot be null!");
 		DecoratedPotPatterns.ITEM_TO_POT_TEXTURE.put(sherd.asItem(), pattern);
 	}
