@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.registry;
 
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 
@@ -35,7 +36,7 @@ public final class DecoratedPotPatternRegistry {
 	 * @param sherd the sherd-like item
 	 * @param pattern the pattern resource key
 	 */
-	public static void registerPattern(ItemLike sherd, ResourceKey<DecoratedPotPattern> pattern) {
+	public static void registerPattern(Item sherd, ResourceKey<DecoratedPotPattern> pattern) {
 		DecoratedPotPatternRegistryImpl.registerPattern(sherd, pattern);
 	}
 }

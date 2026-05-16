@@ -21,15 +21,14 @@ import java.util.Objects;
 import net.fabricmc.fabric.mixin.content.registry.DecoratedPotPatternsAccessor;
 
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 
 public class DecoratedPotPatternRegistryImpl {
 	private DecoratedPotPatternRegistryImpl() {
 	}
 
-	public static void registerPattern(ItemLike sherd, ResourceKey<DecoratedPotPattern> pattern) {
-		Objects.requireNonNull(sherd, "Sherd item-like cannot be null!");
+	public static void registerPattern(Item sherd, ResourceKey<DecoratedPotPattern> pattern) {
 		Objects.requireNonNull(sherd.asItem(), "Sherd item cannot be null!");
 		Objects.requireNonNull(pattern, "Pattern key cannot be null!");
 		DecoratedPotPatternsAccessor.fabric_getDecoratedPotPatternsMap().put(sherd.asItem(), pattern);
