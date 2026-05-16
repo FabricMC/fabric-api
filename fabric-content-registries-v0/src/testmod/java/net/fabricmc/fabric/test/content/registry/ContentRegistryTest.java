@@ -184,6 +184,8 @@ public final class ContentRegistryTest implements ModInitializer {
 		try {
 			DecoratedPotPatternRegistry.registerPattern(null, POT_PATTERN_FABRIC);
 			DecoratedPotPatternRegistry.registerPattern(Items.PAPER, null);
+
+			throw new AssertionError("DecoratedPotPatternRegistry didn't throw when values were null!");
 		} catch (NullPointerException e) {
 			// expected behavior
 			LOGGER.info("DecoratedPotPatternRegistry null test passed!");
