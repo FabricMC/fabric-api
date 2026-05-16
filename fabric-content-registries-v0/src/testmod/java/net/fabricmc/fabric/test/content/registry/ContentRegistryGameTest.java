@@ -215,9 +215,9 @@ public class ContentRegistryGameTest {
 				Optional.empty(), Optional.empty()
 		)));
 		helper.assertBlockEntityData(
-			pos, DecoratedPotBlockEntity.class,
-			be -> DecoratedPotPatterns.getPatternFromItem(be.getDecorations().back().orElseThrow()) == ContentRegistryTest.FABRIC,
-			() -> Component.literal("Decorated Pot Pattern for paper item is wrong")
+				pos, DecoratedPotBlockEntity.class,
+				be -> DecoratedPotPatterns.getPatternFromItem(be.getDecorations().back().orElseThrow()) == ContentRegistryTest.FABRIC,
+				() -> Component.literal("Decorated Pot Pattern for paper item is wrong")
 		);
 		helper.succeed();
 	}
