@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -29,6 +29,6 @@ import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 public class DecoratedPotPatternsMixin {
 	@ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Ljava/util/Map;ofEntries([Ljava/util/Map$Entry;)Ljava/util/Map;"))
 	private static <K, V> Map<K, V> turnToMutable(Map<K, V> original) {
-		return new Object2ObjectOpenHashMap<>(original);
+		return new IdentityHashMap<>(original);
 	}
 }
