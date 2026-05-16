@@ -114,7 +114,7 @@ def generateNoiseRouterDataFieldsAndMethods(List<String> lines, FileSystem fs) {
 		}
 	}
 
-	lines.add("# private methods of NoiseRouterData")
+	lines.add("# private and protected methods of NoiseRouterData")
 
 	for (def method : node.methods) {
 		// Every method can be useful, but using the vanilla namespace is not recommended

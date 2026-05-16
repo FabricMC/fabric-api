@@ -365,7 +365,7 @@ transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData N
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData PILLARS Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SPAGHETTI_2D_THICKNESS_MODULATOR Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SPAGHETTI_2D Lnet/minecraft/resources/ResourceKey;
-# private methods of NoiseRouterData
+# private and protected methods of NoiseRouterData
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerTerrainNoises (Lnet/minecraft/data/worldgen/BootstrapContext;Lnet/minecraft/core/HolderGetter;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/core/Holder;Lnet/minecraft/core/Holder;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Z)V
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData offsetToDepth (Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerAndWrap (Lnet/minecraft/data/worldgen/BootstrapContext;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
