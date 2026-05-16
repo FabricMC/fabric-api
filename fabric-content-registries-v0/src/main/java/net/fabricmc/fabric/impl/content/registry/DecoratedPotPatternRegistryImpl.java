@@ -31,6 +31,6 @@ public class DecoratedPotPatternRegistryImpl {
 	public static void registerPattern(Item sherd, ResourceKey<DecoratedPotPattern> pattern) {
 		Objects.requireNonNull(sherd, "Sherd item cannot be null!");
 		Objects.requireNonNull(pattern, "Pattern key cannot be null!");
-		DecoratedPotPatternsAccessor.fabric_getDecoratedPotPatternsMap().put(sherd.asItem(), pattern);
+		DecoratedPotPatternsAccessor.fabric_getDecoratedPotPatternsMap().put(sherd, pattern);
 	}
 }
