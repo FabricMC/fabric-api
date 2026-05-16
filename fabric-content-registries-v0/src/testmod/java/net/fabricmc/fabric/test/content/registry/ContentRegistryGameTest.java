@@ -64,7 +64,7 @@ public class ContentRegistryGameTest {
 		// If on level 0, composting always increases composter level
 		helper.useBlock(pos, player);
 		helper.assertBlockProperty(pos, ComposterBlock.LEVEL, 1);
-		helper.assertValueEqual(obsidian.getCount(), 63, Component.literal("obsidian blockStack count"));
+		helper.assertValueEqual(obsidian.getCount(), 63, Component.literal("obsidian stack count"));
 		helper.succeed();
 	}
 
@@ -101,7 +101,7 @@ public class ContentRegistryGameTest {
 		// Insert the fuel into the hopper, which transfers it into the furnace
 		hopper.setItem(0, fuelStack.copy());
 
-		// Insert the item that should blockEntity smelted into the furnace
+		// Insert the item that should be smelted into the furnace
 		// Smelting a single item takes 200 fuel time
 		furnace.setItem(0, new ItemStack(Items.RAW_IRON, 1));
 
