@@ -25,11 +25,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.util.ARGB;
-
-import net.minecraft.util.ColorRGBA;
-
 import org.slf4j.Logger;
 
 import net.minecraft.client.renderer.texture.SpriteContents;
@@ -41,6 +36,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceMetadata;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import net.fabricmc.api.ClientModInitializer;

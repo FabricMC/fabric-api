@@ -1,11 +1,11 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.fabricmc.fabric.impl.client.rendering.AtlasRegistryImpl;
+import java.util.Set;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.metadata.MetadataSectionType;
 
-import java.util.Set;
+import net.fabricmc.fabric.impl.client.rendering.AtlasRegistryImpl;
 
 /**
  * A registry to add atlases to {@link net.minecraft.client.resources.model.sprite.AtlasManager}.
