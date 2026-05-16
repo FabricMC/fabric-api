@@ -10,6 +10,7 @@
     "AxeItemMixin",
     "BlockBehaviourAccessor",
     "BlockBehaviourBlockStateBaseMixin",
+    "DecoratedPotPatternsAccessor",
     "DecoratedPotPatternsMixin",
     "FireBlockMixin",
     "FuelValuesMixin",

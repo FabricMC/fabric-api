@@ -18,10 +18,11 @@ package net.fabricmc.fabric.impl.content.registry;
 
 import java.util.Objects;
 
+import net.fabricmc.fabric.mixin.content.registry.DecoratedPotPatternsAccessor;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
-import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 
 public class DecoratedPotPatternRegistryImpl {
 	private DecoratedPotPatternRegistryImpl() {
@@ -31,6 +32,6 @@ public class DecoratedPotPatternRegistryImpl {
 		Objects.requireNonNull(sherd, "Sherd item-like cannot be null!");
 		Objects.requireNonNull(sherd.asItem(), "Sherd item cannot be null!");
 		Objects.requireNonNull(pattern, "Pattern key cannot be null!");
-		DecoratedPotPatterns.ITEM_TO_POT_TEXTURE.put(sherd.asItem(), pattern);
+		DecoratedPotPatternsAccessor.fabric_getDecoratedPotPatternsMap().put(sherd.asItem(), pattern);
 	}
 }
