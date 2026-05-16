@@ -216,7 +216,7 @@ public class ContentRegistryGameTest {
 		)));
 		helper.assertBlockEntityData(
 				pos, DecoratedPotBlockEntity.class,
-				be -> DecoratedPotPatterns.getPatternFromItem(be.getDecorations().back().orElseThrow()) == ContentRegistryTest.FABRIC,
+				be -> DecoratedPotPatterns.getPatternFromItem(be.getDecorations().back().orElseThrow()) == ContentRegistryTest.POT_PATTERN_FABRIC,
 				() -> Component.literal("Decorated Pot Pattern for paper item is wrong")
 		);
 		helper.succeed();

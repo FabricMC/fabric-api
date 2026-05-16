@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.registry;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 
 import net.fabricmc.fabric.impl.content.registry.DecoratedPotPatternRegistryImpl;

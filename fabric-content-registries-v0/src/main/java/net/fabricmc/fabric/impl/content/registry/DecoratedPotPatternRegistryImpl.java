@@ -18,11 +18,11 @@ package net.fabricmc.fabric.impl.content.registry;
 
 import java.util.Objects;
 
-import net.fabricmc.fabric.mixin.content.registry.DecoratedPotPatternsAccessor;
-
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
+
+import net.fabricmc.fabric.mixin.content.registry.DecoratedPotPatternsAccessor;
 
 public class DecoratedPotPatternRegistryImpl {
 	private DecoratedPotPatternRegistryImpl() {

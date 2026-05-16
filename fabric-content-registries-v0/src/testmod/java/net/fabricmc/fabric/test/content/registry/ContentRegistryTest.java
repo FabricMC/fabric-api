@@ -76,7 +76,7 @@ public final class ContentRegistryTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-content-registries-v0-testmod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
 
-	public static final ResourceKey<DecoratedPotPattern> FABRIC = ResourceKey.create(Registries.DECORATED_POT_PATTERN, id("fabric"));
+	public static final ResourceKey<DecoratedPotPattern> POT_PATTERN_FABRIC = ResourceKey.create(Registries.DECORATED_POT_PATTERN, id("fabric"));
 
 	public static final Item SMELTING_FUEL_INCLUDED_BY_ITEM = registerItem("smelting_fuel_included_by_item");
 	public static final Item SMELTING_FUEL_INCLUDED_BY_TAG = registerItem("smelting_fuel_included_by_tag");
@@ -177,12 +177,12 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry null test passed!");
 		}
 
-		Registry.register(BuiltInRegistries.DECORATED_POT_PATTERN, FABRIC, new DecoratedPotPattern(id("fabric_pottery_pattern")));
-		DecoratedPotPatternRegistry.registerPattern(Items.PAPER, FABRIC);
+		Registry.register(BuiltInRegistries.DECORATED_POT_PATTERN, POT_PATTERN_FABRIC, new DecoratedPotPattern(id("fabric_pottery_pattern")));
+		DecoratedPotPatternRegistry.registerPattern(Items.PAPER, POT_PATTERN_FABRIC);
 
 		// assert that DecoratedPotPatternRegistry throws for null values
 		try {
-			DecoratedPotPatternRegistry.registerPattern(null, FABRIC);
+			DecoratedPotPatternRegistry.registerPattern(null, POT_PATTERN_FABRIC);
 			DecoratedPotPatternRegistry.registerPattern(Items.PAPER, null);
 		} catch (NullPointerException e) {
 			// expected behavior
