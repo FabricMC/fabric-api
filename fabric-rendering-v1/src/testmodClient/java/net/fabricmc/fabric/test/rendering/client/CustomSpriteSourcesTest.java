@@ -25,6 +25,11 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.util.ARGB;
+
+import net.minecraft.util.ColorRGBA;
+
 import org.slf4j.Logger;
 
 import net.minecraft.client.renderer.texture.SpriteContents;
@@ -129,7 +134,7 @@ public class CustomSpriteSourcesTest implements ClientModInitializer {
 				int offsetX = frameWidth / 16;
 				int offsetY = frameHeight / 16;
 
-				NativeImage doubleImage = new NativeImage(image.format(), image.getWidth(), image.getHeight(), false);
+				NativeImage doubleImage = new NativeImage(image.format(), image.getWidth(), image.getHeight(), true);
 
 				for (int frameY = 0; frameY < frameCountY; frameY++) {
 					for (int frameX = 0; frameX < frameCountX; frameX++) {
@@ -144,8 +149,9 @@ public class CustomSpriteSourcesTest implements ClientModInitializer {
 			private static void blendRect(NativeImage src, NativeImage dst, int srcX, int srcY, int destX, int destY, int width, int height) {
 				for (int y = 0; y < height; ++y) {
 					for (int x = 0; x < width; ++x) {
-						int c = src.getPixel(srcX + x, srcY + y);
-						dst.setPixel(destX + x, destY + y, c);
+						int sc = src.getPixel(srcX + x, srcY + y);
+						int dc = dst.getPixel(destX + x, destY + y);
+						dst.setPixel(destX + x, destY + y, ARGB.alphaBlend(dc, sc));
 					}
 				}
 			}
