@@ -3,7 +3,12 @@
     {
       "type": "fabric-rendering-v1-testmod:double",
       "resource": "minecraft:item/iron_ingot",
-      "sprite": "fabric-rendering-v1-testmod:item/double_iron_ingot"
+      "sprite": "fabric-rendering-v1-testmod:test_atlas/double_iron_ingot"
+    },
+    {
+      "type": "directory",
+      "prefix": "test_atlas/",
+      "source": "test_atlas"
     }
   ]
 }

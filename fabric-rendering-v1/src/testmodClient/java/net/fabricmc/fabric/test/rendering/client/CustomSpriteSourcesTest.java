@@ -139,7 +139,7 @@ public class CustomSpriteSourcesTest implements ClientModInitializer {
 					}
 				}
 
-				return new SpriteContents(spriteId, dimensions, doubleImage, Optional.of(animationMetadata), List.of(), Optional.empty());
+				return new SpriteContents(spriteId, dimensions, doubleImage, Optional.of(animationMetadata), List.of(AtlasTests.COLOR.withValue(0xFFFFAAAA)), Optional.empty());
 			}
 
 			private static void blendRect(NativeImage src, NativeImage dst, int srcX, int srcY, int destX, int destY, int width, int height) {

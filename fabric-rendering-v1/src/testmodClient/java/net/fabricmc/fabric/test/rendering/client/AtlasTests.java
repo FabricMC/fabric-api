@@ -16,40 +16,60 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.AtlasManager;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
+import net.minecraft.util.ExtraCodecs;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.AtlasRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
 public class AtlasTests implements ClientModInitializer {
 	private static final Identifier TEXTURE_ID = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "textures/atlases/test_atlas.png");
 	private static final Identifier ATLAS_ID = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "test_atlas");
+	private static final SpriteId[] SPRITES = new SpriteId[] {
+			new SpriteId(
+					TEXTURE_ID,
+					Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "test_atlas/double_iron_ingot")
+			),
+			new SpriteId(
+					TEXTURE_ID,
+					Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "test_atlas/blank")
+			)
+	};
+	private static final Identifier HUD_ID = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "atlas_hud");
+	public static final MetadataSectionType<Integer> COLOR = new MetadataSectionType<>("color", ExtraCodecs.STRING_ARGB_COLOR);
 
 	@Override
 	public void onInitializeClient() {
-		AtlasRegistry.register(TEXTURE_ID, ATLAS_ID, false);
+		AtlasRegistry.register(TEXTURE_ID, ATLAS_ID, false, Set.of(COLOR));
 
-		LevelRenderEvents.COLLECT_SUBMITS.register(context -> {
-			final TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(ATLAS_ID).getSprite(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "item/double_iron_ingot"));
-			context.submitNodeCollector().submitCustomGeometry(
-					context.poseStack(),
-					RenderTypes.entityCutoutCull(TEXTURE_ID),
-					(pose, consumer) -> {
-						final VertexConsumer spriteConsumer = sprite.wrap(consumer);
-						spriteConsumer.addVertex(0, 0, 1, -1, 0, 1, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_BRIGHT, 0, 0, 1);
-						spriteConsumer.addVertex(0, 1, 1, -1, 0, 0, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_BRIGHT, 0, 0, 1);
-						spriteConsumer.addVertex(1, 1, 1, -1, 1, 0, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_BRIGHT, 0, 0, 1);
-						spriteConsumer.addVertex(1, 0, 1, -1, 1, 1, OverlayTexture.NO_OVERLAY, LightCoordsUtil.FULL_BRIGHT, 0, 0, 1);
+		HudElementRegistry.addLast(
+				HUD_ID,
+				(graphics, deltaTracker) -> {
+					final AtlasManager atlasManager = Minecraft.getInstance().getAtlasManager();
+					final int y = 0;
+
+					int x = 100;
+
+					for (SpriteId spriteId : SPRITES) {
+						final TextureAtlasSprite sprite = atlasManager.get(spriteId);
+						final SpriteContents contents = sprite.contents();
+						final int color = sprite.contents().getAdditionalMetadata(COLOR).orElse(-1);
+
+						graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, contents.width(), contents.height(), color);
+
+						x += contents.width() + 2;
 					}
-			);
-		});
+				}
+		);
 	}
 }
