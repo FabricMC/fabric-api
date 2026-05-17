@@ -37,26 +37,20 @@ public final class AtlasRegistryImpl {
 	}
 
 	public static void register(Identifier textureId, Identifier atlasId, boolean createMipmaps, Set<MetadataSectionType<?>> additionalMetadata) {
-		Objects.requireNonNull(textureId, "textureId must not be null.");
-		Objects.requireNonNull(textureId, "atlasId must not be null.");
-		Objects.requireNonNull(additionalMetadata, "additionalMetadata must not be null.");
+		Objects.requireNonNull(textureId, "textureId must not be null");
+		Objects.requireNonNull(textureId, "atlasId must not be null");
+		Objects.requireNonNull(additionalMetadata, "additionalMetadata must not be null");
 
 		if (frozen) {
 			throw new IllegalStateException("Atlas registry is frozen.");
 		}
 
 		if (REGISTERED_TEXTURES.contains(textureId)) {
-			throw new IllegalArgumentException(String.format(
-					"An atlas with texture %s has already exists.",
-					textureId
-			));
+			throw new IllegalArgumentException("An atlas with texture " + textureId + " has already exists.");
 		}
 
 		if (REGISTERED_ATLASES.contains(atlasId)) {
-			throw new IllegalArgumentException(String.format(
-					"Atlas %s already exists.",
-					atlasId
-			));
+			throw new IllegalArgumentException("Atlas " + atlasId + " already exists.");
 		}
 
 		REGISTERED_CONFIGS.add(new AtlasManager.AtlasConfig(textureId, atlasId, createMipmaps, additionalMetadata));
