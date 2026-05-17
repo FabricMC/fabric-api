@@ -42,15 +42,15 @@ public final class AtlasRegistryImpl {
 		Objects.requireNonNull(additionalMetadata, "additionalMetadata must not be null");
 
 		if (frozen) {
-			throw new IllegalStateException("Atlas registry is frozen.");
+			throw new IllegalStateException("The atlas registry has already been finalized.");
 		}
 
 		if (REGISTERED_TEXTURES.contains(textureId)) {
-			throw new IllegalArgumentException("An atlas with texture " + textureId + " has already exists.");
+			throw new IllegalArgumentException("An atlas with texture " + textureId + " has already been registered.");
 		}
 
 		if (REGISTERED_ATLASES.contains(atlasId)) {
-			throw new IllegalArgumentException("Atlas " + atlasId + " already exists.");
+			throw new IllegalArgumentException("Atlas " + atlasId + " has already been registered.");
 		}
 
 		REGISTERED_CONFIGS.add(new AtlasManager.AtlasConfig(textureId, atlasId, createMipmaps, additionalMetadata));
