@@ -56,9 +56,8 @@ public class AtlasTests implements ClientModInitializer {
 				HUD_ID,
 				(graphics, deltaTracker) -> {
 					final AtlasManager atlasManager = Minecraft.getInstance().getAtlasManager();
-					final int y = 0;
-
-					int x = 100;
+					final int y = 18;
+					int x = 0;
 
 					for (SpriteId spriteId : SPRITES) {
 						final TextureAtlasSprite sprite = atlasManager.get(spriteId);
