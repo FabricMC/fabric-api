@@ -33,7 +33,7 @@ public final class AtlasRegistry {
 	 * @param textureId The id of the texture that will be generated.
 	 * @param atlasId The id of the registered atlas.
 	 * @param hasMipmaps Whether to generate mipmaps for the atlas.
-	 * @param additionalMetadata Additional metadata for use in atlas sources.
+	 * @param additionalMetadata Additional metadata to be set in .mcmeta files.
 	 */
 	public static void register(Identifier textureId, Identifier atlasId, boolean hasMipmaps, Set<MetadataSectionType<?>> additionalMetadata) {
 		AtlasRegistryImpl.register(textureId, atlasId, hasMipmaps, additionalMetadata);
