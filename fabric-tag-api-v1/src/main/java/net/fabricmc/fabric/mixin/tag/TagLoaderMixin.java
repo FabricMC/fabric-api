@@ -69,7 +69,7 @@ public class TagLoaderMixin {
 	}
 
 	@ModifyArg(method = "lambda$build$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagLoader$SortingEntry;<init>(Ljava/util/List;)V"))
-	private static List<TagLoader.EntryWithSource> addTagRemovalReferencesToDependencySorter(List<TagLoader.EntryWithSource> entries, @Local(argsOnly = true, name = "id") Identifier id) {
+	private static List<TagLoader.EntryWithSource> addTagRemovalReferencesToDependencySorter(List<TagLoader.EntryWithSource> entries, @Local(argsOnly = true) Identifier id) {
 		return TagRemovalInternals.mergeAddedAndRemovedEntries(id, entries);
 	}
 
