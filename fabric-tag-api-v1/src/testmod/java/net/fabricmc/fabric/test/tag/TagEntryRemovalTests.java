@@ -75,6 +75,25 @@ public final class TagEntryRemovalTests {
 	}
 
 	@GameTest
+	public void snowballsWithoutBricksDoesNotContainNetherBrick(GameTestHelper helper) {
+		RegistryAccess registries = helper.getLevel().registryAccess();
+		TagTestUtils.assertThrows(
+				helper,
+				() -> TagTestUtils.assertInTag(
+						helper,
+						LOGGER,
+						"",
+						registries,
+						List.of(TEST_ITEM_TAG),
+						TagTestUtils::getItemKey,
+						Items.NETHER_BRICK
+				),
+				"Expected %s not to contain nether bricks".formatted(TEST_ITEM_TAG)
+		);
+		helper.succeed();
+	}
+
+	@GameTest
 	public void allEnchantmentTagsWithoutDurabilityEnchantmentsDoesNotContainUnbreakingOrMending(GameTestHelper helper) {
 		RegistryAccess registries = helper.getLevel().registryAccess();
 		TagTestUtils.assertThrows(
