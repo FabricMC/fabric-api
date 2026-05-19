@@ -8,6 +8,7 @@
     "MappedRegistryMixin",
     "MappedRegistryTagSet2Accessor",
     "ReloadableServerResourcesMixin",
+    "TagEntryAccessor",
     "TagFileMixin",
     "TagLoaderMixin"
   ],
