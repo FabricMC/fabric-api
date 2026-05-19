@@ -31,6 +31,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.trading.VillagerTrade;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
@@ -39,6 +40,7 @@ public final class TagEntryRemovalTests {
 
 	private static final TagKey<Enchantment> TEST_ENCHANTMENT_TAG = tagKey(Registries.ENCHANTMENT, "all_enchantments_without_durability_enchantments");
 	private static final TagKey<Item> TEST_ITEM_TAG = tagKey(Registries.ITEM, "snowballs_without_bricks");
+	private static final TagKey<VillagerTrade> TEST_VILLAGER_TRADE_TAG = tagKey(Registries.VILLAGER_TRADE, "test");
 
 	@GameTest
 	public void snowballsWithoutBricksOnlyContainsSnowballs(GameTestHelper helper) {

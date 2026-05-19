@@ -71,9 +71,7 @@ public class TagRemovalInternals {
 		}
 
 		TagEntryAccessor accessor = ((TagEntryAccessor) entry.entry());
-		TagEntry optional = accessor.fabric_getTag()
-				? TagEntry.optionalTag(accessor.fabric_getId())
-				: TagEntry.optionalElement(accessor.fabric_getId());
+		TagEntry optional = accessor.fabric_getTag() ? TagEntry.optionalTag(accessor.fabric_getId()) : TagEntry.optionalElement(accessor.fabric_getId());
 
 		REMOVE_ENTRIES.get()
 				.get(tagId)
