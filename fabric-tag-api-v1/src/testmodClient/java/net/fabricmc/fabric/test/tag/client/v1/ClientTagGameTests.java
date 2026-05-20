@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.tag.client.v1;
 
+import static net.fabricmc.fabric.test.tag.TagTestUtils.resourceKey;
+import static net.fabricmc.fabric.test.tag.TagTestUtils.tagKey;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +27,8 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -49,9 +54,12 @@ import net.fabricmc.fabric.test.tag.TagTestUtils;
 public class ClientTagGameTests implements FabricClientGameTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagGameTests.class);
 
-	private static final TagKey<Block> REMOVAL_TEST_TAG = TagTestUtils.tagKey(Registries.BLOCK, "dirt_and_mud_with_client_exclusions");
-	private static final TagKey<Block> READD_MELONS_TEST_TAG = TagTestUtils.tagKey(Registries.BLOCK, "readd_melons");
+	private static final TagKey<Block> REMOVAL_TEST_TAG = tagKey(Registries.BLOCK, "dirt_and_mud_with_client_exclusions");
+	private static final TagKey<Block> READD_MELONS_TEST_TAG = tagKey(Registries.BLOCK, "readd_melons");
 	private static final TagKey<Item> HAPPY_GHAST_FOOD_TAG = ItemTags.HAPPY_GHAST_FOOD;
+
+	private static final TagKey<Item> NON_PRESENT_REMOVAL_TAG = tagKey(Registries.ITEM, "non_present_removal");
+	private static final ResourceKey<Item> NON_PRESENT_ITEM = resourceKey(Registries.ITEM, "non_present");
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -66,10 +74,20 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		}
 
 		try (
+				TestSingleplayerContext singleplayerContext = context.worldBuilder()
+						.create()
+		) {
+			singleplayerContext.getServer().runOnServer(ClientTagGameTests::removeValuesAreOptionalTests);
+		} catch (IllegalStateException ex) {
+			throw new AssertionError("Did not consider '%s' remove entry as an optional entry in tag '%s'"
+					.formatted(NON_PRESENT_ITEM.identifier(), NON_PRESENT_REMOVAL_TAG.location()));
+		}
+
+		try (
 				TestDedicatedServerContext serverContext = context.worldBuilder()
 						.createServer()
 		) {
-			serverContext.runCommand("datapack disable \"fabric-tag-api-v1-testmod:test\"");
+			serverContext.runOnServer(server -> ClientTagGameTests.removePackAndReload(server, ClientTagTest.BUILT_IN_PACK_ID));
 
 			try (TestServerConnection connection = serverContext.connect()) {
 				context.runOnClient(ClientTagGameTests::clientTagDedicatedServerTests);
@@ -77,7 +95,10 @@ public class ClientTagGameTests implements FabricClientGameTest {
 			}
 		}
 
-		try (TestDedicatedServerContext serverContext = context.worldBuilder().createServer()) {
+		try (
+				TestDedicatedServerContext serverContext = context.worldBuilder()
+						.createServer()
+		) {
 			try (TestServerConnection connection = serverContext.connect()) {
 				serverContext.runOnServer(ClientTagGameTests::reAddRemovedValueTests);
 			}
@@ -150,6 +171,13 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		LOGGER.info("The tests for dedicated client tags passed!");
 	}
 
+	private static void removeValuesAreOptionalTests(MinecraftServer server) {
+		// Because this is a new world, we can get away with just adding the pack to the server once, no removals needed.
+		addPackAndReload(server, TagTest.NON_PRESENT_REMOVAL_PACK_ID);
+		// Success!
+		LOGGER.info("The tests for remove entries being defaulted to optional in tags passed!");
+	}
+
 	private static void reloadAndAddServerTagTests(MinecraftServer server) {
 		// fabric-tag-api-v1-testmod:add_back_melon is assumed to not exist on the server whilst the pack is removed for this test.
 		// Client tags are only read from the root data directory in the JAR, so you are unable to modify their values using built-in packs.
@@ -172,12 +200,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	}
 
 	private static void removeThenTestMelonInReAddMelonsTestTag(MinecraftServer server) {
-		server.getPackRepository().removePack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
-		ClientTagTestUtils.reloadResources(
-				server,
-				() -> new AssertionError("Failed to reload after removing '%s' data pack".formatted(ClientTagTest.ADD_BACK_MELON_PACK_ID))
-		);
-
+		removePackAndReload(server, ClientTagTest.ADD_BACK_MELON_PACK_ID);
 		ClientTagTestUtils.assertThrows(
 				() -> ClientTagTestUtils.assertInWithLocalFallback(
 						LOGGER,
@@ -192,12 +215,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	}
 
 	private static void addThenTestMelonInReAddMelonsTestTag(MinecraftServer server) {
-		server.getPackRepository().addPack(ClientTagTest.ADD_BACK_MELON_PACK_ID.toString());
-		ClientTagTestUtils.reloadResources(
-				server,
-				() -> new AssertionError("Failed to reload after adding '%s' data pack".formatted(ClientTagTest.ADD_BACK_MELON_PACK_ID))
-		);
-
+		addPackAndReload(server, ClientTagTest.ADD_BACK_MELON_PACK_ID);
 		ClientTagTestUtils.assertInWithLocalFallback(
 				LOGGER,
 				"",
@@ -208,12 +226,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	}
 
 	private static void removeThenTestSnowballInHappyGhastFood(MinecraftServer server) {
-		server.getPackRepository().removePack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
-		ClientTagTestUtils.reloadResources(
-				server,
-				() -> new AssertionError("Failed to reload after removing '%s' data pack".formatted(TagTest.REMOVE_AND_ADD_TEST_PACK_ID))
-		);
-
+		removePackAndReload(server, TagTest.REMOVE_AND_ADD_TEST_PACK_ID);
 		RegistryAccess registries = server.registryAccess();
 		ClientTagTestUtils.assertThrows(
 				() -> assertSnowballInHappyGhastFood(registries),
@@ -222,12 +235,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	}
 
 	private static void addThenTestSnowballInHappyGhastFood(MinecraftServer server) {
-		server.getPackRepository().addPack(TagTest.REMOVE_AND_ADD_TEST_PACK_ID.toString());
-		ClientTagTestUtils.reloadResources(
-				server,
-				() -> new AssertionError("Failed to reload after adding '%s' data pack".formatted(TagTest.REMOVE_AND_ADD_TEST_PACK_ID))
-		);
-
+		addPackAndReload(server, TagTest.REMOVE_AND_ADD_TEST_PACK_ID);
 		assertSnowballInHappyGhastFood(server.registryAccess());
 		LOGGER.info("Tag {} contains snowball after adding pack", HAPPY_GHAST_FOOD_TAG);
 	}
@@ -240,5 +248,21 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		if (!contains) {
 			throw new AssertionError("Expected %s to contain snowball".formatted(HAPPY_GHAST_FOOD_TAG));
 		}
+	}
+
+	private static void addPackAndReload(MinecraftServer server, Identifier packId) {
+		server.getPackRepository().addPack(packId.toString());
+		ClientTagTestUtils.reloadResources(
+				server,
+				() -> new AssertionError("Failed to reload after removing '%s' data pack".formatted(ClientTagTest.ADD_BACK_MELON_PACK_ID))
+		);
+	}
+
+	private static void removePackAndReload(MinecraftServer server, Identifier packId) {
+		server.getPackRepository().removePack(packId.toString());
+		ClientTagTestUtils.reloadResources(
+				server,
+				() -> new AssertionError("Failed to reload after removing '%s' data pack".formatted(ClientTagTest.ADD_BACK_MELON_PACK_ID))
+		);
 	}
 }

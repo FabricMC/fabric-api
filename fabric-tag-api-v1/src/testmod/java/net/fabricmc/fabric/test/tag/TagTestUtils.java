@@ -37,8 +37,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public class TagTestUtils {
+	public static <T> ResourceKey<T> resourceKey(ResourceKey<? extends Registry<T>> registryRef, String name) {
+		return ResourceKey.create(registryRef, Identifier.fromNamespaceAndPath(TagTest.MOD_ID, name));
+	}
+
 	public static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registryRef, String name) {
-		return TagKey.create(registryRef, Identifier.fromNamespaceAndPath("fabric-tag-api-v1-testmod", name));
+		return TagKey.create(registryRef, Identifier.fromNamespaceAndPath(TagTest.MOD_ID, name));
 	}
 
 	public static ResourceKey<Block> getBlockKey(Block block) {

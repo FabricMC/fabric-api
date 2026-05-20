@@ -30,8 +30,6 @@ import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -102,7 +100,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			this.fabric_markChanged(type);
 
 			if (this.fabric_shouldTryToSync() && type.isSynced()) {
-				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getRegistryAccess());
+				AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
 				acknowledgeSyncedEntry(type, change);
 				this.fabric_syncChange(type, change);
 			}
@@ -160,7 +158,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		if (this.fabric_shouldTryToSync() && this.dataAttachments != null) {
 			this.dataAttachments.forEach((type, value) -> {
 				if (type.isSynced()) {
-					acknowledgeSynced(type, value, input.lookup());
+					acknowledgeSynced(type, value);
 				}
 			});
 
@@ -180,9 +178,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Unique
-	private void acknowledgeSynced(AttachmentType<?> type, Object value, HolderLookup.Provider registries) {
-		RegistryAccess registryAccess = (registries instanceof RegistryAccess ra) ? ra : fabric_getRegistryAccess();
-		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, registryAccess));
+	private void acknowledgeSynced(AttachmentType<?> type, Object value) {
+		acknowledgeSyncedEntry(type, new AttachmentChange(fabric_getSyncTargetInfo(), type, value));
 	}
 
 	@Unique
@@ -237,7 +234,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			AttachmentChange change = syncedAttachments.get(type);
 
 			if (change == null) { // attachment was removed
-				change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, null, fabric_getRegistryAccess());
+				change = new AttachmentChange(fabric_getSyncTargetInfo(), type, null);
 			}
 
 			return change;

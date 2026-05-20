@@ -34,6 +34,7 @@ import net.minecraft.tags.TagFile;
 import net.minecraft.tags.TagLoader;
 
 import net.fabricmc.fabric.api.tag.v1.FabricTagFile;
+import net.fabricmc.fabric.mixin.tag.TagEntryAccessor;
 
 public class TagRemovalInternals {
 	public static final ScopedValue<Identifier> TAG_ID_SCOPED_VALUE = ScopedValue.newInstance();
@@ -69,9 +70,12 @@ public class TagRemovalInternals {
 			REMOVE_ENTRIES.get().put(tagId, new ArrayList<>());
 		}
 
+		TagEntryAccessor accessor = ((TagEntryAccessor) entry.entry());
+		TagEntry optional = accessor.fabric_getTag() ? TagEntry.optionalTag(accessor.fabric_getId()) : TagEntry.optionalElement(accessor.fabric_getId());
+
 		REMOVE_ENTRIES.get()
 				.get(tagId)
-				.add(entry);
+				.add(new TagLoader.EntryWithSource(optional, entry.source()));
 	}
 
 	public static boolean isEntryRemove(TagLoader.EntryWithSource entry) {
