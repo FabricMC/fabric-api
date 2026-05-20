@@ -18,19 +18,15 @@ package net.fabricmc.fabric.impl.attachment.sync;
 
 import java.util.Objects;
 
-import io.netty.buffer.Unpooled;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
@@ -41,69 +37,78 @@ import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 
-public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
-	public static final StreamCodec<FriendlyByteBuf, AttachmentChange> PACKET_CODEC = StreamCodec.composite(
-			AttachmentTargetInfo.PACKET_CODEC, AttachmentChange::targetInfo,
-			Identifier.STREAM_CODEC.map(
-					id -> Objects.requireNonNull(AttachmentRegistryImpl.get(id)),
-					AttachmentType::identifier
-			), AttachmentChange::type,
-			ByteBufCodecs.BYTE_ARRAY, AttachmentChange::data,
-			AttachmentChange::new
-	);
+public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value) {
+	public static final StreamCodec<RegistryFriendlyByteBuf, AttachmentChange> PACKET_CODEC = StreamCodec.ofMember(AttachmentChange::encodePacket, AttachmentChange::decodePacket);
+
 	private static final boolean DISCONNECT_ON_UNKNOWN_TARGETS = System.getProperty("fabric.attachment.disconnect_on_unknown_targets") != null;
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentChange.class);
 
-	@SuppressWarnings("unchecked")
-	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess registryAccess) {
-		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
-		Objects.requireNonNull(codec, "attachment stream codec cannot be null");
-		Objects.requireNonNull(registryAccess, "registry access cannot be null");
+	private void encodePacket(RegistryFriendlyByteBuf buf) {
+		AttachmentTypeImpl<?> type = (AttachmentTypeImpl<?>) this.type;
 
-		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), registryAccess);
+		AttachmentTargetInfo.PACKET_CODEC.encode(buf, this.targetInfo());
+		Identifier.STREAM_CODEC.encode(buf, Objects.requireNonNull(this.type.identifier()));
 
-		if (value != null) {
-			buf.writeBoolean(true);
-			codec.encode(buf, value);
-		} else {
+		if (this.value == null) {
+			// Todo: Legacy Format, writeVarInt should be removed for 26.2
+			buf.writeVarInt(1);
 			buf.writeBoolean(false);
+			return;
 		}
 
-		// buf.array() returns the backing array directly, which often contains unused space
-		byte[] encoded = new byte[buf.readableBytes()];
-		buf.readBytes(encoded);
-		int maxDataSize = ((AttachmentTypeImpl<?>) type).maxSyncSize();
+		//noinspection unchecked
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) type.streamCodec();
+		Objects.requireNonNull(codec, "attachment stream codec cannot be null");
 
-		if (encoded.length > maxDataSize) {
+		// Todo: Legacy Format, buf2 should be removed and replaced with buf for 26.2
+		// Todo: int currentLength = buf.readableBytes();
+		RegistryFriendlyByteBuf buf2 = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), buf.registryAccess());
+
+		buf2.writeBoolean(true);
+		codec.encode(buf2, value);
+
+		// Todo: Legacy Format, `buf2.readableBytes()` should be replaced with `buf.readableBytes() - currentLength` for 26.2
+		validateMaxPayloadSize(type, buf2.readableBytes());
+
+		// Todo: Legacy Format, remove buf2 for 26.2
+		buf.writeVarInt(buf2.readableBytes());
+		buf.writeBytes(buf2);
+	}
+
+	private static AttachmentChange decodePacket(RegistryFriendlyByteBuf buf) {
+		AttachmentTargetInfo<?> target = AttachmentTargetInfo.PACKET_CODEC.decode(buf);
+		AttachmentTypeImpl<?> type = (AttachmentTypeImpl<?>) AttachmentRegistryImpl.get(Identifier.STREAM_CODEC.decode(buf));
+		Objects.requireNonNull(type, "attachment type cannot be null");
+
+		// Todo: Legacy Format, readVarInt should be replaced with buf.readableBytes() for 26.2
+		int size = buf.readVarInt();
+		validateMaxPayloadSize(type, size);
+
+		if (!buf.readBoolean()) {
+			return new AttachmentChange(target, type, null);
+		}
+
+		//noinspection unchecked
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) type.streamCodec();
+		Objects.requireNonNull(codec, "attachment stream codec cannot be null");
+
+		return new AttachmentChange(target, type, codec.decode(buf));
+	}
+
+	private static void validateMaxPayloadSize(AttachmentTypeImpl<?> type, int length) {
+		int maxDataSize = type.maxSyncSize();
+
+		if (length > maxDataSize) {
 			throw new IllegalArgumentException("Data for attachment '%s' was too big (%d bytes, over maximum %d)".formatted(
 					type.identifier(),
-					encoded.length,
+					length,
 					maxDataSize
 			));
 		}
-
-		return new AttachmentChange(targetInfo, type, encoded);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Nullable
-	public Object decodeValue(RegistryAccess registryAccess) {
-		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
-		Objects.requireNonNull(codec, "codec was null");
-		Objects.requireNonNull(registryAccess, "registry access cannot be null");
-
-		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.copiedBuffer(data), registryAccess);
-
-		if (!buf.readBoolean()) {
-			return null;
-		}
-
-		return codec.decode(buf);
 	}
 
 	public void tryApply(Level level) throws AttachmentSyncException {
 		AttachmentTarget target = targetInfo.getTarget(level);
-		Object value = decodeValue(level.registryAccess());
 
 		if (target == null) {
 			final MutableComponent errorMessageComponent = Component.empty();
@@ -138,6 +143,6 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	}
 
 	public AttachmentChange withNewTarget(AttachmentTargetInfo<?> newTargetInfo) {
-		return new AttachmentChange(newTargetInfo, this.type, this.data);
+		return new AttachmentChange(newTargetInfo, this.type, this.value);
 	}
 }

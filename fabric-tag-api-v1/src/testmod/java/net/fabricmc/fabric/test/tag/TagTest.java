@@ -28,6 +28,7 @@ public class TagTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-tag-api-v1-testmod";
 
 	public static final Identifier REMOVE_AND_ADD_TEST_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "remove_and_add_test");
+	public static final Identifier NON_PRESENT_REMOVAL_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "non_present_removal");
 
 	@Override
 	public void onInitialize() {
@@ -35,6 +36,10 @@ public class TagTest implements ModInitializer {
 
 		if (!ResourceLoader.registerBuiltinPack(REMOVE_AND_ADD_TEST_PACK_ID, container, PackActivationType.NORMAL)) {
 			throw new IllegalStateException("Could not register '%s' built-in resource pack.".formatted(REMOVE_AND_ADD_TEST_PACK_ID));
+		}
+
+		if (!ResourceLoader.registerBuiltinPack(NON_PRESENT_REMOVAL_PACK_ID, container, PackActivationType.NORMAL)) {
+			throw new IllegalStateException("Could not register '%s' built-in resource pack.".formatted(NON_PRESENT_REMOVAL_PACK_ID));
 		}
 	}
 }

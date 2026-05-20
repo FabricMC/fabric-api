@@ -28,6 +28,7 @@ import com.mojang.datafixers.util.Either;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.Holder;
@@ -64,7 +65,12 @@ public class TagLoaderMixin {
 	private <T> Either<List<TagLoader.EntryWithSource>, List<T>> scopeIdToTryBuildTag(TagLoader<T> instance, TagEntry.Lookup<T> lookup, List<TagLoader.EntryWithSource> entries, Operation<Either<List<TagLoader.EntryWithSource>, List<T>>> original, @Local(argsOnly = true) Identifier id) {
 		// List is merged here to make
 		return ScopedValue.where(TagRemovalInternals.TAG_ID_SCOPED_VALUE, id)
-				.call(() -> original.call(instance, lookup, TagRemovalInternals.mergeAddedAndRemovedEntries(id, entries)));
+				.call(() -> original.call(instance, lookup, entries));
+	}
+
+	@ModifyArg(method = "lambda$build$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagLoader$SortingEntry;<init>(Ljava/util/List;)V"))
+	private static List<TagLoader.EntryWithSource> addTagRemovalReferencesToDependencySorter(List<TagLoader.EntryWithSource> entries, @Local(argsOnly = true) Identifier id) {
+		return TagRemovalInternals.mergeAddedAndRemovedEntries(id, entries);
 	}
 
 	@WrapOperation(method = "tryBuildTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagEntry;build(Lnet/minecraft/tags/TagEntry$Lookup;Ljava/util/function/Consumer;)Z"))

@@ -41,6 +41,8 @@ tasks.register('generateClassTweaker') {
 			lines.add("")
 			generateEnchantmentMethods(lines, fs)
 			lines.add("")
+			generateNoiseRouterDataFieldsAndMethods(lines, fs)
+			lines.add("")
 		}
 
 		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar.path
@@ -95,6 +97,28 @@ def generateRenderPipelinesFields(List<String> lines, FileSystem fs) {
 
 	for (def method : node.methods) {
 		if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0) {
+			lines.add("transitive-accessible method $node.name $method.name $method.desc")
+		}
+	}
+}
+
+def generateNoiseRouterDataFieldsAndMethods(List<String> lines, FileSystem fs) {
+	lines.add("# private fields of NoiseRouterData")
+
+	def node = loadClass(fs.getPath("net/minecraft/world/level/levelgen/NoiseRouterData.class"))
+
+	for (def field : node.fields) {
+		// Every field can be useful
+		if ((field.access & Opcodes.ACC_PRIVATE) != 0) {
+			lines.add("transitive-accessible field $node.name $field.name $field.desc")
+		}
+	}
+
+	lines.add("# private and protected methods of NoiseRouterData")
+
+	for (def method : node.methods) {
+		// Every method can be useful, but using the vanilla namespace is not recommended
+		if ((method.access & (Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) && !method.name.startsWith("lambda") && method.name != "createKey") {
 			lines.add("transitive-accessible method $node.name $method.name $method.desc")
 		}
 	}
