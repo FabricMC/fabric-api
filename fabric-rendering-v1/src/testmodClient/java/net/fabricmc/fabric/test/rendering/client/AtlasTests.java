@@ -33,8 +33,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.AtlasRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
 public class AtlasTests implements ClientModInitializer {
-	private static final Identifier TEXTURE_ID = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "textures/atlases/test_atlas.png");
 	private static final Identifier ATLAS_ID = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "test_atlas");
+	private static final Identifier TEXTURE_ID = AtlasRegistry.createTextureLocation(ATLAS_ID);
 	private static final SpriteId[] SPRITES = new SpriteId[] {
 			new SpriteId(
 					TEXTURE_ID,

@@ -58,6 +58,11 @@ public final class AtlasRegistryImpl {
 		REGISTERED_TEXTURES.add(textureId);
 	}
 
+	public static Identifier createTextureLocation(Identifier atlasId) {
+		Objects.requireNonNull(atlasId, "atlasId must not be null");
+		return atlasId.withPath(path -> "textures/atlas/" + path + ".png");
+	}
+
 	public static List<AtlasManager.AtlasConfig> finalizeConfigs() {
 		frozen = true;
 		return List.copyOf(REGISTERED_CONFIGS);

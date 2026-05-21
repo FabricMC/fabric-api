@@ -50,5 +50,14 @@ public final class AtlasRegistry {
 		AtlasRegistryImpl.register(textureId, atlasId, hasMipmaps);
 	}
 
+	/**
+	 * Generates a texture id based on an atlas id.
+	 * @param atlasId The atlas id to generate a texture id for.
+	 * @return The generated texture id.
+	 */
+	public static Identifier createTextureLocation(Identifier atlasId) {
+		return AtlasRegistryImpl.createTextureLocation(atlasId);
+	}
+
 	private AtlasRegistry() { }
 }
