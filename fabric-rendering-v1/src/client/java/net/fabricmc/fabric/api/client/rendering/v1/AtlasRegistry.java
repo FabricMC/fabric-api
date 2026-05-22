@@ -31,7 +31,7 @@ public final class AtlasRegistry {
 	 * Registers an atlas using a given texture and atlas id.
 	 *
 	 * @param textureId The id of the texture that will be generated.
-	 * @param atlasId The id of the registered atlas.
+	 * @param atlasId The id of the registered atlas. Can be generated with {@link AtlasRegistry#createTextureLocation(Identifier)}.
 	 * @param hasMipmaps Whether to generate mipmaps for the atlas.
 	 * @param additionalMetadata Additional metadata to be set in .mcmeta files.
 	 */
@@ -42,7 +42,7 @@ public final class AtlasRegistry {
 	/**
 	 * Registers an atlas using a given texture and atlas id.
 	 *
-	 * @param textureId The id of the texture that will be generated.
+	 * @param textureId The id of the texture that will be generated. Can be generated with {@link AtlasRegistry#createTextureLocation(Identifier)}.
 	 * @param atlasId The id of the registered atlas.
 	 * @param hasMipmaps Whether to generate mipmaps for the atlas.
 	 */
