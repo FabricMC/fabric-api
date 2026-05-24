@@ -6,7 +6,7 @@
   "client": [
     "BlockModelLighterAccessor",
     "ItemFeatureRendererAccessor",
-    "ItemFeatureRendererMixin"
+    "feature.FeatureRenderDispatcherMixin"
   ],
   "injectors": {
     "defaultRequire": 1

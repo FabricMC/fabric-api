@@ -20,18 +20,20 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
@@ -53,8 +55,26 @@ abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 	@Final
 	private boolean useAmbientOcclusion;
 
-	@Inject(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/geometry/QuadCollection;getAll()Ljava/util/List;"))
-	private static void analyzeMesh(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockStateModelPart> cir, @Local(name = "geometry") QuadCollection geometry, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
+	@Unique
+	private static ModelBaker modelBakery;
+
+	@WrapOperation(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/SimpleModelWrapper;findNonBlockSprites(Lnet/minecraft/client/resources/model/geometry/QuadCollection;)Lcom/google/common/collect/Multimap;"))
+	private static @Nullable Multimap<Identifier, Identifier> storeModelBakery(QuadCollection geometry, Operation<Multimap<Identifier, Identifier>> original, @Local(name = "modelBakery") ModelBaker modelBakery) {
+		// Store the model bakery so we can use it in the other method below
+		SimpleModelWrapperMixin.modelBakery = modelBakery;
+		Multimap<Identifier, Identifier> result = original.call(geometry);
+		SimpleModelWrapperMixin.modelBakery = null;
+
+		return result;
+	}
+
+	@Inject(method = "findNonBlockSprites", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/geometry/QuadCollection;getAll()Ljava/util/List;"))
+	private static void analyzeMesh(QuadCollection geometry, CallbackInfoReturnable<Multimap<Identifier, Identifier>> cir, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
+		// This can also be called from ModelBakery.MissingModels, but it's maybe not necessary to hook there?
+		if (SimpleModelWrapperMixin.modelBakery == null) {
+			return;
+		}
+
 		if (geometry instanceof MeshQuadCollection meshQuadCollection) {
 			meshQuadCollection.getMesh().forEach(quad -> {
 				if (quad.atlas() != QuadAtlas.BLOCK) {
@@ -65,7 +85,7 @@ abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 						forbiddenSpritesRef.set(forbiddenSprites);
 					}
 
-					TextureAtlasSprite sprite = modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
+					TextureAtlasSprite sprite = SimpleModelWrapperMixin.modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
 					forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
 				}
 			});

@@ -19,11 +19,15 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.feature.FeatureFrameContext;
+import net.minecraft.client.renderer.feature.RenderTypeFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -40,7 +44,7 @@ import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemFeatureRendererAcces
 /**
  * Used during item buffering to support geometry added through {@link FabricLayerRenderState#emitter()}.
  */
-public class AltItemRenderer {
+public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<FabricSubmitNodeCollection.ExtendedItemSubmit> {
 	private final MutableQuadViewImpl emitter = new MutableQuadViewImpl() {
 		{
 			data = new int[EncodingFormat.TOTAL_STRIDE];
@@ -53,30 +57,18 @@ public class AltItemRenderer {
 		}
 	};
 
-	private MultiBufferSource bufferSource;
-	private OutlineBufferSource outlineBufferSource;
-	private boolean translucent;
-
 	private FabricSubmitNodeCollection.ExtendedItemSubmit submit;
 	private PoseStack.@Nullable Pose foilDecalPose;
 
-	public void prepare(MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, boolean translucent) {
-		this.bufferSource = bufferSource;
-		this.outlineBufferSource = outlineBufferSource;
-		this.translucent = translucent;
-	}
-
-	public void clear() {
-		bufferSource = null;
-		outlineBufferSource = null;
+	@Override
+	protected void buildGroup(FeatureFrameContext context, List<FabricSubmitNodeCollection.ExtendedItemSubmit> submits) {
+		for (FabricSubmitNodeCollection.ExtendedItemSubmit submit : submits) {
+			this.renderItem(submit);
+		}
 	}
 
 	public void renderItem(FabricSubmitNodeCollection.ExtendedItemSubmit submit) {
 		this.submit = submit;
-
-		if (submit.outlineColor() != 0) {
-			outlineBufferSource.setColor(submit.outlineColor());
-		}
 
 		bufferQuads(submit.quads(), submit.mesh());
 
@@ -100,10 +92,6 @@ public class AltItemRenderer {
 	private void bufferQuad(MutableQuadViewImpl quad) {
 		final RenderType renderType = quad.itemRenderType();
 
-		if (renderType.hasBlending() != translucent) {
-			return;
-		}
-
 		shadeQuad(quad, quad.emissive());
 		tintQuad(quad);
 
@@ -123,15 +111,21 @@ public class AltItemRenderer {
 				foilDecalPose = null;
 			}
 
-			final VertexConsumer foilBuffer = ItemFeatureRendererAccessor.fabric_getFoilBuffer(bufferSource, renderType, foilDecalPose);
+			final VertexConsumer foilBuffer = this.getFoilBuffer(renderType, foilDecalPose);
 			quad.buffer(submit.overlayCoords(), submit.pose(), foilBuffer);
 		}
 
-		if (submit.outlineColor() != 0) {
-			quad.buffer(submit.overlayCoords(), submit.pose(), outlineBufferSource.getBuffer(renderType));
+		quad.buffer(submit.overlayCoords(), submit.pose(), this.getVertexBuilder(renderType));
+	}
+
+	private VertexConsumer getFoilBuffer(final RenderType renderType, final PoseStack.@Nullable Pose foilDecalPose) {
+		RenderType foilRenderType = ItemFeatureRendererAccessor.fabric_useTransparentGlint(renderType) ? RenderTypes.glintTranslucent() : RenderTypes.glint();
+		VertexConsumer foilBuffer = this.getVertexBuilder(foilRenderType);
+		if (foilDecalPose != null) {
+			foilBuffer = new SheetedDecalTextureGenerator(foilBuffer, foilDecalPose, 0.0078125F);
 		}
 
-		quad.buffer(submit.overlayCoords(), submit.pose(), bufferSource.getBuffer(renderType));
+		return foilBuffer;
 	}
 
 	private void shadeQuad(MutableQuadViewImpl quad, boolean emissive) {
@@ -143,10 +137,14 @@ public class AltItemRenderer {
 	}
 
 	private void tintQuad(MutableQuadViewImpl quad) {
-		final int tintIndex = quad.tintIndex();
+		if (submit.outlineColor() != 0) {
+			quad.multiplyColor(submit.outlineColor());
+		} else {
+			final int tintIndex = quad.tintIndex();
 
-		if (tintIndex >= 0 && tintIndex < submit.tintLayers().length) {
-			quad.multiplyColor(submit.tintLayers()[tintIndex]);
+			if (tintIndex >= 0 && tintIndex < submit.tintLayers().length) {
+				quad.multiplyColor(submit.tintLayers()[tintIndex]);
+			}
 		}
 	}
 }

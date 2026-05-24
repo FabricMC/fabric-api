@@ -16,28 +16,28 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import java.util.List;
+
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.MovingBlockFeatureRenderer;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.feature.RenderTypeFeatureRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
@@ -46,24 +46,20 @@ import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ChunkSectionLayerHelper;
 
 @Mixin(MovingBlockFeatureRenderer.class)
-abstract class MovingBlockFeatureRendererMixin {
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.<init>(ZZLnet/minecraft/client/color/block/BlockColors;)V"))
-	private void beforeInitBlockRenderer(SubmitNodeCollection nodeCollection, FeatureFrameContext context, boolean translucent, CallbackInfo ci, @Local(name = "poseStack") PoseStack poseStack, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
+abstract class MovingBlockFeatureRendererMixin extends RenderTypeFeatureRenderer<MovingBlockFeatureRenderer.Submit> {
+	@Shadow
+	@Final
+	private PoseStack poseStack;
+
+	@Inject(method = "buildGroup", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.<init>(ZZLnet/minecraft/client/color/block/BlockColors;)V"))
+	private void beforeInitBlockRenderer(FeatureFrameContext context, List<MovingBlockFeatureRenderer.Submit> submits, CallbackInfo ci, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
 		altBlockRenderer.set(Renderer.get().altModelBlockRenderer(context.options().ambientOcclusion, false, Minecraft.getInstance().getBlockColors()));
 		altQuadOutput.set(Renderer.get().quadEmitter(quad -> {
-			quad.buffer(0, poseStack.last(), context.bufferSource().getBuffer(ChunkSectionLayerHelper.getMovingBlockRenderType(quad.chunkLayer())));
+			quad.buffer(0, this.poseStack.last(), this.getVertexBuilder(ChunkSectionLayerHelper.getMovingBlockRenderType(quad.chunkLayer())));
 		}));
 	}
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;hasMaterialFlag(I)Z"))
-	private boolean hasMaterialFlagProxy(BlockStateModel model, @BakedQuad.MaterialFlags int flag, @Local(name = "movingBlockRenderState") MovingBlockRenderState movingBlockRenderState, @Local(name = "blockState") BlockState blockState) {
-		RandomSource random = RandomSource.createThreadLocalInstance(0L);
-		long blockSeed = blockState.getSeed(movingBlockRenderState.randomSeedPos);
-		random.setSeed(blockSeed);
-		return model.hasMaterialFlag(movingBlockRenderState, movingBlockRenderState.blockPos, blockState, random, flag);
-	}
-
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.tesselateBlock(Lnet/minecraft/client/renderer/block/BlockQuadOutput;FFFLnet/minecraft/client/renderer/block/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;J)V"))
+	@Redirect(method = "buildGroup", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.tesselateBlock(Lnet/minecraft/client/renderer/block/BlockQuadOutput;FFFLnet/minecraft/client/renderer/block/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;J)V"))
 	private void tesselateBlockProxy(ModelBlockRenderer blockRenderer, BlockQuadOutput output, float x, float y, float z, BlockAndTintGetter level, BlockPos pos, BlockState blockState, BlockStateModel model, long seed, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput) {
 		altBlockRenderer.get().tesselateBlock(altQuadOutput.get(), x, y, z, level, pos, blockState, model, seed);
 	}

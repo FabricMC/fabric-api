@@ -41,7 +41,7 @@ public final class QuadConsumers {
 		public int overlayCoords;
 		public PoseStack.Pose pose;
 		public Function<ChunkSectionLayer, RenderType> renderTypeFunction;
-		public BlockModelBufferCache bufferCache;
+		public Function<RenderType, VertexConsumer> vertexConsumerFunction;
 
 		@Override
 		public void accept(MutableQuadView quad) {
@@ -58,12 +58,7 @@ public final class QuadConsumers {
 			}
 
 			RenderType renderType = renderTypeFunction.apply(quad.chunkLayer());
-			quad.buffer(overlayCoords, pose, bufferCache.getBuffer(renderType));
-			VertexConsumer outlineBuffer = bufferCache.getOutlineBuffer(renderType);
-
-			if (outlineBuffer != null) {
-				quad.buffer(overlayCoords, pose, outlineBuffer);
-			}
+			quad.buffer(overlayCoords, pose, vertexConsumerFunction.apply(renderType));
 		}
 	}
 

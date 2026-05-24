@@ -26,7 +26,9 @@ import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.BlockModelFeatureRenderer;
+import net.minecraft.client.renderer.feature.FeatureRendererType;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.feature.submit.TranslucentSubmit;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -39,33 +41,49 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
  * Note: This interface is automatically implemented on {@link SubmitNodeCollection} via Mixin and interface injection.
  */
 public interface FabricSubmitNodeCollection {
-	/**
-	 * @return {@linkplain ExtendedBlockModelSubmit extended block model submits} in this
-	 * {@link SubmitNodeCollection}.
-	 */
-	default List<ExtendedBlockModelSubmit> getExtendedBlockModelSubmits() {
-		throw new UnsupportedOperationException("Implemented via Mixin.");
-	}
-
-	/**
-	 * @return {@linkplain ExtendedItemSubmit extended item submits} in this
-	 * {@link SubmitNodeCollection}.
-	 */
-	default List<ExtendedItemSubmit> getExtendedItemSubmits() {
-		throw new UnsupportedOperationException("Implemented via Mixin.");
-	}
-
 	// CHECKSTYLE:OFF MatchXpath
 	/**
 	 * An alternative to {@link BlockModelFeatureRenderer.Submit} that accepts a {@link Mesh}.
 	 */
-	record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, boolean translucent, List<BlockStateModelPart> modelParts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
+	record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, List<BlockStateModelPart> modelParts, @Nullable Mesh mesh, int tintColor, int[] tintLayers, int lightCoords, int overlayCoords) implements TranslucentSubmit {
+		public static final FeatureRendererType<FabricSubmitNodeCollection.ExtendedBlockModelSubmit> TYPE = FeatureRendererType.create("Extended Block Model");
+
+		@Override
+		public float distanceToCameraSq() {
+			return TranslucentSubmit.computeDistanceToCameraSq(this.pose.pose(), 0.5F, 0.5F, 0.5F);
+		}
+
+		@Override
+		public FeatureRendererType<? extends TranslucentSubmit> featureType() {
+			return ExtendedBlockModelSubmit.TYPE;
+		}
 	}
 
 	/**
 	 * An alternative to {@link ItemFeatureRenderer.Submit} that accepts a {@link MeshView}.
 	 */
-	record ExtendedItemSubmit(PoseStack.Pose pose, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
+	record ExtendedItemSubmit(PoseStack.Pose pose, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) implements TranslucentSubmit {
+		public static final FeatureRendererType<FabricSubmitNodeCollection.ExtendedItemSubmit> TYPE = FeatureRendererType.create("Extended Item");
+
+		@Override
+		public float distanceToCameraSq() {
+			return TranslucentSubmit.computeDistanceToCameraSq(this.pose.pose(), 0.5F, 0.5F, 0.5F);
+		}
+
+		@Override
+		public FeatureRendererType<? extends TranslucentSubmit> featureType() {
+			return ExtendedItemSubmit.TYPE;
+		}
+
+		public boolean hasTranslucency() {
+			for (BakedQuad quad : this.quads()) {
+				if (quad.materialInfo().itemRenderType().hasBlending()) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 
 	// CHECKSTYLE:ON MatchXpath
