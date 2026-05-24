@@ -26,10 +26,21 @@ import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.metadata.MetadataSectionType;
 
+import net.fabricmc.fabric.mixin.client.rendering.AtlasManagerAccessor;
+
 public final class AtlasRegistryImpl {
+	private static final List<AtlasManager.AtlasConfig> REGISTERED_CONFIGS = new ArrayList<>();
+
 	private static final Set<Identifier> REGISTERED_TEXTURES = new HashSet<>();
 	private static final Set<Identifier> REGISTERED_ATLASES = new HashSet<>();
-	private static final List<AtlasManager.AtlasConfig> REGISTERED_CONFIGS = new ArrayList<>();
+
+	static {
+		for (final AtlasManager.AtlasConfig knownAtlas : AtlasManagerAccessor.getKnownAtlases()) {
+			REGISTERED_TEXTURES.add(knownAtlas.textureId());
+			REGISTERED_ATLASES.add(knownAtlas.definitionLocation());
+		}
+	}
+
 	private static boolean frozen;
 
 	public static void register(Identifier textureId, Identifier atlasId, boolean createMipmaps) {
