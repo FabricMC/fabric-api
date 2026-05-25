@@ -33,10 +33,10 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedItemFeatur
 public class FeatureRenderDispatcherMixin {
 	@Shadow
 	@Final
-	private FeatureRendererMap featureRenderers;
+	public FeatureRendererMap featureRenderers;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void registerBlockModelFeatureRenderer(CallbackInfo ci) {
+	private void registerItemFeatureRenderer(CallbackInfo ci) {
 		this.featureRenderers.put(
 				FabricSubmitNodeCollection.ExtendedItemSubmit.TYPE,
 				new ExtendedItemFeatureRenderer()
