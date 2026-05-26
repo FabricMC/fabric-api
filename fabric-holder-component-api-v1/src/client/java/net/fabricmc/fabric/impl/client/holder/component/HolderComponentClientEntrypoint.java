@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.holder.component;
 
 import java.util.List;
 
+import net.fabricmc.fabric.impl.holder.component.HolderComponentEntrypoint;
+
 import net.minecraft.client.multiplayer.RegistryDataCollector;
 import net.minecraft.core.component.DataComponentInitializers;
 
@@ -50,8 +52,11 @@ public class HolderComponentClientEntrypoint implements ClientModInitializer {
 							context.packetContext().orElseThrow(PacketContext.REGISTRY_ACCESS)
 					);
 
-					// if we are not on an integrated server
-					if (!context.packetContext().orElseThrow(PacketContext.CONNECTION).isMemoryConnection()) {
+					// we already check for integrated server when sending, but anything could send a packet and applying it will cause serious issues.
+					if (context.packetContext().orElseThrow(PacketContext.CONNECTION).isMemoryConnection()) {
+						// RFC: Should this be a crash?
+						HolderComponentEntrypoint.LOGGER.warn("A ClientboundUpdateComponentsPayload was sent to the integrated server host. This is a bug, whichever mod sent this packet should check if the receiver is the server host before sending it.");
+					} else {
 						pending.forEach(DataComponentInitializers.PendingComponents::apply);
 					}
 				}

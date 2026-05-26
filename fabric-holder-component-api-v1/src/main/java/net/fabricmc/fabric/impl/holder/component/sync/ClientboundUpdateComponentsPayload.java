@@ -22,6 +22,10 @@ import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -29,6 +33,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 
 public record ClientboundUpdateComponentsPayload(
 		// component values have to be sent as nbt tags as the StreamCodecs for them require RegistryFriendlyByteBuf which we don't have during configure
@@ -57,5 +62,10 @@ public record ClientboundUpdateComponentsPayload(
 	@Override
 	public Type<ClientboundUpdateComponentsPayload> type() {
 		return TYPE;
+	}
+
+	public static boolean shouldSend(ServerPlayer player) {
+		return ServerPlayNetworking.canSend(player, ClientboundUpdateComponentsPayload.TYPE) &&
+				!player.getPacketContext().orElseThrow(PacketContext.CONNECTION).isMemoryConnection();
 	}
 }

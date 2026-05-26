@@ -42,9 +42,6 @@ import java.util.List;
 @Mixin(PlayerList.class)
 public abstract class PlayerListMixin {
 	@Shadow
-	public abstract void broadcastAll(Packet<?> packet);
-
-	@Shadow
 	@Final
 	private LayeredRegistryAccess<RegistryLayer> registries;
 
@@ -59,7 +56,7 @@ public abstract class PlayerListMixin {
 		);
 
 		for (ServerPlayer player : this.players) {
-			if (ServerPlayNetworking.canSend(player, ClientboundUpdateComponentsPayload.TYPE)) {
+			if (ClientboundUpdateComponentsPayload.shouldSend(player)) {
 				player.connection.send(payload);
 			}
 		}

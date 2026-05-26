@@ -38,20 +38,16 @@ import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializers
 
 @Mixin(DataComponentInitializers.class)
 public class DataComponentInitializersMixin {
-	@Unique
-	private static final Logger LOGGER = LogUtils.getLogger();
-
 	@ModifyReturnValue(method = "runInitializers", at = @At("RETURN"))
 	private Map<ResourceKey<?>, DataComponentMap.Builder> runFabricInitializers(
 			Map<ResourceKey<?>, DataComponentMap.Builder> original,
 			@Local(argsOnly = true) HolderLookup.Provider holders
 	) {
 		if (!FabricDataComponentInitializersImpl.RESOURCE_MANAGER.isBound()) {
-			// we got called either by the report or by a mod
-			// if a mod called this, it is doing something cursed, and cant get our components
-			// if this is the component report, it didnt need our components
-			// TODO: More descriptive error
-			LOGGER.warn("DataComponentInitializers.runInitializers() was called, but RESOURCE_MANAGER is not bound!");
+			// I would like to include a warning here if another mod calls this method, but we do expect vanilla to call it-
+			// with this unbound in RegistryDataCollector. I could probably stackwalk but that seems like a lot of effort.
+
+			// LOGGER.warn("DataComponentInitializers.runInitializers() was called, but RESOURCE_MANAGER is not bound!");
 			return original;
 		}
 
