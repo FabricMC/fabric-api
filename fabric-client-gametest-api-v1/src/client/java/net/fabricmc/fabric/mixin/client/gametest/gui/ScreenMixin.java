@@ -16,16 +16,18 @@
 
 package net.fabricmc.fabric.mixin.client.gametest.gui;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 @Mixin(Screen.class)
 public class ScreenMixin {
-	@ModifyReturnValue(method = "panoramaShouldSpin", at = @At("RETURN"))
-	private boolean disableRotatingPanoramaForClientGameTests(boolean original) {
-		return false;
+	@Inject(method = "extractPanorama", at = @At("HEAD"))
+	private void disableRotatingPanoramaForClientGameTests(CallbackInfo ci) {
+		Minecraft.getInstance().gameRenderer.panorama().holdSpin();
 	}
 }
