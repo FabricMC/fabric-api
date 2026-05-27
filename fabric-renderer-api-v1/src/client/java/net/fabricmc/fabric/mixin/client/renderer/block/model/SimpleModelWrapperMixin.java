@@ -56,24 +56,21 @@ abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 	private boolean useAmbientOcclusion;
 
 	@Unique
-	private static ModelBaker modelBakery;
+	private static final ScopedValue<ModelBaker> MODEL_BAKERY = ScopedValue.newInstance();
 
 	@WrapOperation(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/SimpleModelWrapper;findNonBlockSprites(Lnet/minecraft/client/resources/model/geometry/QuadCollection;)Lcom/google/common/collect/Multimap;"))
 	private static @Nullable Multimap<Identifier, Identifier> storeModelBakery(QuadCollection geometry, Operation<Multimap<Identifier, Identifier>> original, @Local(name = "modelBakery") ModelBaker modelBakery) {
-		// Store the model bakery so we can use it in the other method below
-		SimpleModelWrapperMixin.modelBakery = modelBakery;
-		Multimap<Identifier, Identifier> result = original.call(geometry);
-		SimpleModelWrapperMixin.modelBakery = null;
-
-		return result;
+		return ScopedValue.where(MODEL_BAKERY, modelBakery).call(() -> original.call(geometry));
 	}
 
 	@Inject(method = "findNonBlockSprites", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/geometry/QuadCollection;getAll()Ljava/util/List;"))
 	private static void analyzeMesh(QuadCollection geometry, CallbackInfoReturnable<Multimap<Identifier, Identifier>> cir, @Local(name = "forbiddenSprites") LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
 		// This can also be called from ModelBakery.MissingModels, but it's maybe not necessary to hook there?
-		if (SimpleModelWrapperMixin.modelBakery == null) {
+		if (!MODEL_BAKERY.isBound()) {
 			return;
 		}
+
+		ModelBaker modelBakery = MODEL_BAKERY.get();
 
 		if (geometry instanceof MeshQuadCollection meshQuadCollection) {
 			meshQuadCollection.getMesh().forEach(quad -> {
@@ -85,7 +82,7 @@ abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 						forbiddenSpritesRef.set(forbiddenSprites);
 					}
 
-					TextureAtlasSprite sprite = SimpleModelWrapperMixin.modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
+					TextureAtlasSprite sprite = modelBakery.materials().spriteFinder(quad.atlas()).find(quad);
 					forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
 				}
 			});
