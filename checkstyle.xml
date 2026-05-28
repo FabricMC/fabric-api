@@ -323,5 +323,11 @@
             <property name="query" value="//ANNOTATION/IDENT[@text='NotNull']"/>
             <message key="matchxpath.match" value="@NotNull annotation is not allowed"/>
         </module>
-	</module>
+
+        <!-- Prevent String#toLowerCase/toUpperCase without a given Locale to prevent issues with some locales -->
+        <module name="MatchXpath">
+            <property name="query" value="//METHOD_CALL[./DOT/IDENT[@text='toLowerCase' or @text='toUpperCase']]/ELIST[count(./*) = 0]"/>
+            <message key="matchxpath.match" value="String#toLowerCase/toUpperCase calls must specify a locale, Locale.ROOT recommended"/>
+        </module>
+    </module>
 </module>

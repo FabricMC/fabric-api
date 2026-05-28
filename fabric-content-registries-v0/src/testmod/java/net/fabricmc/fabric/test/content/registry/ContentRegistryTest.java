@@ -44,16 +44,21 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.WeatheringCopperFullBlock;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostableRegistry;
+import net.fabricmc.fabric.api.registry.DecoratedPotPatternRegistry;
 import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
@@ -64,10 +69,14 @@ import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
+import net.fabricmc.fabric.api.registry.fluid.EntityFluidInteractionRegistry;
+import net.fabricmc.fabric.api.registry.fluid.FluidBehavior;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-content-registries-v0-testmod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
+
+	public static final ResourceKey<DecoratedPotPattern> POT_PATTERN_FABRIC = ResourceKey.create(Registries.DECORATED_POT_PATTERN, id("fabric"));
 
 	public static final Item SMELTING_FUEL_INCLUDED_BY_ITEM = registerItem("smelting_fuel_included_by_item");
 	public static final Item SMELTING_FUEL_INCLUDED_BY_TAG = registerItem("smelting_fuel_included_by_tag");
@@ -83,6 +92,20 @@ public final class ContentRegistryTest implements ModInitializer {
 
 	public static final ResourceKey<Block> TEST_OXIDIZING_BLOCK_KEY = ResourceKey.create(Registries.BLOCK, id("test_oxidizing"));
 	public static final ResourceKey<Block> EXPOSED_TEST_OXIDIZING_BLOCK_KEY = ResourceKey.create(Registries.BLOCK, id("exposed_test_oxidizing"));
+
+	public static final FlowingFluid TEST_FLUID = Registry.register(BuiltInRegistries.FLUID, id("test_fluid"), new TestFluid.Still());
+	public static final FlowingFluid TEST_FLUID_FLOWING = Registry.register(BuiltInRegistries.FLUID, id("test_fluid_flowing"), new TestFluid.Flowing());
+	public static final LiquidBlock TEST_FLUID_BLOCK = Registry.register(BuiltInRegistries.BLOCK, id("test_fluid"), new LiquidBlock(TEST_FLUID, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).setId(ResourceKey.create(Registries.BLOCK, id("test_fluid")))) {
+	});
+
+	public static final TagKey<Fluid> TEST_FLUID_KEY = TagKey.create(Registries.FLUID, id("test_fluid"));
+
+	public static final FlowingFluid WATER_LIKE_FLUID = Registry.register(BuiltInRegistries.FLUID, id("water_like_fluid"), new WaterLikeFluid.Still());
+	public static final FlowingFluid WATER_LIKE_FLUID_FLOWING = Registry.register(BuiltInRegistries.FLUID, id("water_like_fluid_flowing"), new WaterLikeFluid.Flowing());
+	public static final LiquidBlock WATER_LIKE_FLUID_BLOCK = Registry.register(BuiltInRegistries.BLOCK, id("water_like_fluid"), new LiquidBlock(WATER_LIKE_FLUID, BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).setId(ResourceKey.create(Registries.BLOCK, id("test_fluid")))) {
+	});
+
+	public static final TagKey<Fluid> WATER_LIKE_FLUID_KEY = TagKey.create(Registries.FLUID, id("water_like"));
 
 	@Override
 	public void onInitialize() {
@@ -100,6 +123,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 		//  - the 'test_oxidizing' block will randomly tick to oxidize into an 'exposed_test_oxidizing' block
+		//  - paper item now has a fabric icon decorated pot pattern
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
 		//  - villagers can now collect oak saplings
 		//  - assign a loot table to the nitwit villager type
@@ -107,6 +131,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
 		//  - if Redstone Experiments experiment is enabled, luck potions can be brewed from awkward potions with a bundle
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
+		//  - new test fluids acts as a proper liquid like water / lava
 
 		CompostableRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
@@ -152,6 +177,20 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry null test passed!");
 		}
 
+		Registry.register(BuiltInRegistries.DECORATED_POT_PATTERN, POT_PATTERN_FABRIC, new DecoratedPotPattern(id("fabric_pottery_pattern")));
+		DecoratedPotPatternRegistry.registerPattern(Items.PAPER, POT_PATTERN_FABRIC);
+
+		// assert that DecoratedPotPatternRegistry throws for null values
+		try {
+			DecoratedPotPatternRegistry.registerPattern(null, POT_PATTERN_FABRIC);
+			DecoratedPotPatternRegistry.registerPattern(Items.PAPER, null);
+
+			throw new AssertionError("DecoratedPotPatternRegistry didn't throw when values were null!");
+		} catch (NullPointerException e) {
+			// expected behavior
+			LOGGER.info("DecoratedPotPatternRegistry null test passed!");
+		}
+
 		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).setId(TEST_OXIDIZING_BLOCK_KEY)));
 		Block exposedTestOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.EXPOSED_COPPER).setId(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
 
@@ -195,6 +234,13 @@ public final class ContentRegistryTest implements ModInitializer {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(Items.BUNDLE), Potions.LUCK);
 			}
 		});
+
+		EntityFluidInteractionRegistry.register(TEST_FLUID_KEY, FluidBehavior.simple()
+				.allowBoats(true).allowMovingDown(true).allowSwimming(false).enableDrowning(false)
+				.gravityMultiplier(-0.25f).makeMobsFloat(true).flowingPushScale(-0.02f)
+				.movementSpeed(0.02f).movementSlowdown(0.8f, 0.6f).fallDistanceModifier(0.8f).build());
+
+		EntityFluidInteractionRegistry.register(WATER_LIKE_FLUID_KEY, FluidBehavior.WATER_LIKE);
 	}
 
 	public static class TestEventBlock extends Block {

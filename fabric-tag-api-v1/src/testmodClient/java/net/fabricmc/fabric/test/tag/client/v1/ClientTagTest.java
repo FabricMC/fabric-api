@@ -16,76 +16,35 @@
 
 package net.fabricmc.fabric.test.tag.client.v1;
 
+import static net.fabricmc.fabric.test.tag.TagTest.MOD_ID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
-import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class ClientTagTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagTest.class);
-	private static final String MOD_ID = "fabric-tag-api-v1-testmod";
+
+	protected static final Identifier BUILT_IN_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "test");
+	protected static final Identifier ADD_BACK_MELON_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "add_back_melon");
 
 	@Override
 	public void onInitializeClient() {
 		final ModContainer container = FabricLoader.getInstance().getModContainer(MOD_ID).get();
 
-		if (!ResourceLoader.registerBuiltinPack(Identifier.fromNamespaceAndPath(MOD_ID, "test2"),
-				container, PackActivationType.ALWAYS_ENABLED)) {
-			throw new IllegalStateException("Could not register built-in resource pack.");
+		if (!ResourceLoader.registerBuiltinPack(BUILT_IN_PACK_ID, container, PackActivationType.ALWAYS_ENABLED)) {
+			throw new IllegalStateException("Could not register '%s' built-in resource pack.".formatted(BUILT_IN_PACK_ID));
 		}
 
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS) == null) {
-				throw new AssertionError("Expected to load c:fortune, but it was not found!");
-			}
-
-			if (!ClientTags.isInWithLocalFallback(ConventionalBlockTags.ORES, Blocks.DIAMOND_ORE)) {
-				throw new AssertionError("Expected to find diamond ore in c:ores, but it was not found!");
-			}
-
-			if (ClientTags.isInWithLocalFallback(ConventionalBlockTags.ORES, Blocks.DIAMOND_BLOCK)) {
-				throw new AssertionError("Did not expect to find diamond block in c:ores, but it was found!");
-			}
-
-			if (!ClientTags.isInLocal(ConventionalBiomeTags.IS_FOREST, Biomes.FOREST)) {
-				throw new AssertionError("Expected to find forest in c:forest, but it was not found!");
-			}
-
-			if (ClientTags.isInWithLocalFallback(TagKey.create(BuiltInRegistries.BLOCK.key(),
-					Identifier.fromNamespaceAndPath("fabric", "sword_efficient")), Blocks.DIRT)) {
-				throw new AssertionError("Expected not to find dirt in fabric:sword_efficient, but it was found!");
-			}
-
-			// Success!
-			LOGGER.info("The tests for client tags passed!");
-		});
-
-		if (true) return;
-
-		// This should be tested on a server with the datapack from the builtin resourcepack.
-		// That is, fabric:sword_efficient should NOT exist on the server (can be confirmed with F3 on a dirt block),
-		// but the this test should pass as minecraft:sword_efficient will contain dirt on the server
-		ClientTickEvents.END_LEVEL_TICK.register(client -> {
-			if (!ClientTags.isInWithLocalFallback(TagKey.create(BuiltInRegistries.BLOCK.key(),
-					Identifier.fromNamespaceAndPath("fabric", "sword_efficient")), Blocks.DIRT)) {
-				throw new AssertionError("Expected to find dirt in fabric:sword_efficient, but it was not found!");
-			}
-		});
+		if (!ResourceLoader.registerBuiltinPack(ADD_BACK_MELON_PACK_ID, container, PackActivationType.NORMAL)) {
+			throw new IllegalStateException("Could not register '%s' built-in resource pack.".formatted(ADD_BACK_MELON_PACK_ID));
+		}
 	}
 }

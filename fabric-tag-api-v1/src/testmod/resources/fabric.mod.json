@@ -10,10 +10,17 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.tag.TagAliasTest"
+      "net.fabricmc.fabric.test.tag.TagTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.tag.client.v1.ClientTagTest"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.tag.TagAliasTests",
+      "net.fabricmc.fabric.test.tag.TagEntryRemovalTests"
+    ],
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.tag.client.v1.ClientTagGameTests"
     ]
   }
 }

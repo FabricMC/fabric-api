@@ -10,6 +10,7 @@
     "ConnectionMixin",
     "CustomPayloadStreamCodecMixin",
     "DebugConfigCommandMixin",
+    "FriendlyByteBufMixin",
     "IdDispatchCodecMixin",
     "PacketDecoderMixin",
     "PacketEncoderMixin",

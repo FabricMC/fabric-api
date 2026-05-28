@@ -1,0 +1,29 @@
+{
+  "parent": "minecraft:adventure/root",
+  "criteria": {
+    "killed_something": {
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/end.png",
+    "description": {
+      "translate": "advancements.test.adventure_child.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "fabric-data-gen-api-v1-testmod:simple_block"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.test.adventure_child.title"
+    }
+  },
+  "requirements": [
+    [
+      "killed_something"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

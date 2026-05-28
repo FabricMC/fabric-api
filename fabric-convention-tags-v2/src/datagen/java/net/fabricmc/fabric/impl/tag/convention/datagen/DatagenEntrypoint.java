@@ -25,6 +25,7 @@ import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnglishTagLang
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagsGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagsGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagsGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.PotionTagsGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.StructureTagsGenerator;
 
 public class DatagenEntrypoint implements DataGeneratorEntrypoint {
@@ -36,6 +37,7 @@ public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider((output, registriesFuture) -> new ItemTagsGenerator(output, registriesFuture, blockTags));
 		pack.addProvider(FluidTagsGenerator::new);
 		pack.addProvider(EnchantmentTagsGenerator::new);
+		pack.addProvider(PotionTagsGenerator::new);
 		pack.addProvider(BiomeTagsGenerator::new);
 		pack.addProvider(StructureTagsGenerator::new);
 		pack.addProvider(EntityTypeTagsGenerator::new);

@@ -23,7 +23,11 @@
   },
   "description": "Adds registries for vanilla mechanics that are missing them.",
   "mixins": [
-    "fabric-content-registries-v0.mixins.json"
+    "fabric-content-registries-v0.mixins.json",
+    {
+      "config": "fabric-content-registries-v0.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "accessWidener" : "fabric-content-registries-v0.classtweaker",
   "custom": {

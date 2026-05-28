@@ -30,12 +30,18 @@ import net.fabricmc.api.ModInitializer;
 
 public class CustomColorResolverTestInit implements ModInitializer {
 	public static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "custom_color_block"));
+	public static final ResourceKey<Block> KEY_DYNAMIC = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "custom_color_block_dynamic"));
 	public static final Block CUSTOM_COLOR_BLOCK = new Block(BlockBehaviour.Properties.of().setId(KEY));
+	public static final Block CUSTOM_COLOR_BLOCK_DYNAMIC = new Block(BlockBehaviour.Properties.of().setId(KEY_DYNAMIC));
+
 	public static final Item CUSTOM_COLOR_BLOCK_ITEM = new BlockItem(CUSTOM_COLOR_BLOCK, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, KEY.identifier())));
+	public static final Item CUSTOM_COLOR_BLOCK_ITEM_DYNAMIC = new BlockItem(CUSTOM_COLOR_BLOCK_DYNAMIC, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, KEY_DYNAMIC.identifier())));
 
 	@Override
 	public void onInitialize() {
 		Registry.register(BuiltInRegistries.BLOCK, KEY, CUSTOM_COLOR_BLOCK);
+		Registry.register(BuiltInRegistries.BLOCK, KEY_DYNAMIC, CUSTOM_COLOR_BLOCK_DYNAMIC);
 		Registry.register(BuiltInRegistries.ITEM, KEY.identifier(), CUSTOM_COLOR_BLOCK_ITEM);
+		Registry.register(BuiltInRegistries.ITEM, KEY_DYNAMIC.identifier(), CUSTOM_COLOR_BLOCK_ITEM_DYNAMIC);
 	}
 }

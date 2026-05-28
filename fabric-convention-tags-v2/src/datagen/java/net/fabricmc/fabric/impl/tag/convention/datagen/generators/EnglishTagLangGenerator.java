@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalPotionTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalStructureTags;
 
 public class EnglishTagLangGenerator extends FabricLanguageProvider {
@@ -50,6 +51,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.OBSIDIANS, "Obsidians");
 		translationBuilder.add(ConventionalBlockTags.NORMAL_OBSIDIANS, "Normal Obsidians");
 		translationBuilder.add(ConventionalBlockTags.CRYING_OBSIDIANS, "Crying Obsidians");
+		translationBuilder.add(ConventionalBlockTags.FROGLIGHTS, "Froglights");
 		translationBuilder.add(ConventionalBlockTags.ORES, "Ores");
 		translationBuilder.add(ConventionalBlockTags.COAL_ORES, "Coal Ores");
 		translationBuilder.add(ConventionalBlockTags.COPPER_ORES, "Copper Ores");
@@ -178,6 +180,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.OBSIDIANS, "Obsidians");
 		translationBuilder.add(ConventionalItemTags.NORMAL_OBSIDIANS, "Normal Obsidians");
 		translationBuilder.add(ConventionalItemTags.CRYING_OBSIDIANS, "Crying Obsidians");
+		translationBuilder.add(ConventionalItemTags.FROGLIGHTS, "Froglights");
 		translationBuilder.add(ConventionalItemTags.TOOLS, "Tools");
 		translationBuilder.add(ConventionalItemTags.SHEAR_TOOLS, "Shears");
 		translationBuilder.add(ConventionalItemTags.TRIDENT_TOOLS, "Tridents");
@@ -437,6 +440,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS, "Entity Speed Enhancements");
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_AUXILIARY_MOVEMENT_ENHANCEMENTS, "Entity Auxiliary Movement Enhancements");
 		translationBuilder.add(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS, "Entity Defense Enhancements");
+		translationBuilder.add(ConventionalEnchantmentTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 
 		// Entity Types
 		translationBuilder.add(ConventionalEntityTypeTags.BOSSES, "Bosses");
@@ -558,5 +562,8 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.IS_NETHER_FOREST, "Nether Forest");
 		translationBuilder.add(ConventionalBiomeTags.IS_END, "The End");
 		translationBuilder.add(ConventionalBiomeTags.IS_OUTER_END_ISLAND, "Outer End Island");
+
+		// Potions
+		translationBuilder.add(ConventionalPotionTags.HIDDEN_FROM_RECIPE_VIEWERS, "Hidden From Recipe Viewers");
 	}
 }

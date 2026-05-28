@@ -41,6 +41,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
+
 public final class VanillaTooltipProviderOrder {
 	private static final List<DataComponentType<?>> VANILLA_ORDER = scrapeVanillaOrder();
 
@@ -56,8 +59,7 @@ public final class VanillaTooltipProviderOrder {
 		try {
 			ClassNode itemStackNode = MixinService.getService().getBytecodeProvider().getClassNode(Type.getInternalName(ItemStack.class));
 
-			String methodName = "addDetailsToTooltip";
-			String methodDesc = Type.getMethodDescriptor(
+			Type methodDescType = Type.getMethodType(
 					Type.VOID_TYPE,
 					Type.getType(Item.TooltipContext.class),
 					Type.getType(TooltipDisplay.class),
@@ -65,19 +67,34 @@ public final class VanillaTooltipProviderOrder {
 					Type.getType(TooltipFlag.class),
 					Type.getType(Consumer.class)
 			);
+			String methodDesc = methodDescType.getDescriptor();
 
-			String appendAttributeModifiersTooltipName = "addAttributeTooltips";
-			String appendAttributeModifiersTooltipDesc = Type.getMethodDescriptor(
+			String methodName = FabricLoader.getInstance().getMappingResolver().mapMethodName(
+					"official",
+					"net.minecraft.world.item.ItemStack",
+					"addDetailsToTooltip",
+					remapMethodDesc(methodDescType).getDescriptor()
+			);
+
+			Type appendAttributeModifiersTooltipDescType = Type.getMethodType(
 					Type.VOID_TYPE,
 					Type.getType(Consumer.class),
 					Type.getType(TooltipDisplay.class),
 					Type.getType(Player.class)
 			);
+			String appendAttributeModifiersTooltipDesc = appendAttributeModifiersTooltipDescType.getDescriptor();
+
+			String appendAttributeModifiersTooltipName = FabricLoader.getInstance().getMappingResolver().mapMethodName(
+					"official",
+					"net.minecraft.world.item.ItemStack",
+					"addAttributeTooltips",
+					remapMethodDesc(appendAttributeModifiersTooltipDescType).getDescriptor()
+			);
 
 			MethodNode appendTooltipMethod = itemStackNode.methods.stream()
 					.filter(method -> method.name.equals(methodName) && method.desc.equals(methodDesc))
 					.findAny()
-					.orElseThrow(() -> new IllegalStateException("No appendTooltip method in ItemStack"));
+					.orElseThrow(() -> new IllegalStateException("No addDetailsToTooltip method in ItemStack"));
 
 			// Search for data component accesses within this method
 			List<DataComponentType<?>> componentTypes = new ArrayList<>();
@@ -118,5 +135,50 @@ public final class VanillaTooltipProviderOrder {
 
 	public static List<DataComponentType<?>> getVanillaOrder() {
 		return VANILLA_ORDER;
+	}
+
+	private static Type remapMethodDesc(Type desc) {
+		Type[] args = desc.getArgumentTypes();
+		Type[] out = new Type[args.length];
+
+		for (int i = 0; i < args.length; i++) {
+			out[i] = unmapObjectOrArrayDesc(args[i]);
+		}
+
+		return Type.getMethodType(unmapObjectOrArrayDesc(desc.getReturnType()), out);
+	}
+
+	private static Type unmapObjectOrArrayDesc(Type desc) {
+		MappingResolver remapper = FabricLoader.getInstance().getMappingResolver();
+		return switch (desc.getSort()) {
+		case Type.ARRAY -> {
+			Type component = desc.getElementType();
+
+			if (component.getSort() == Type.OBJECT) {
+				yield Type.getType(
+						"[".repeat(desc.getDimensions())
+								+ "L"
+								+ remapper.unmapClassName(
+										"official",
+										component.getClassName()
+								)
+								.replace(".", "/")
+								+ ";"
+				);
+			} else {
+				yield component;
+			}
+		}
+		case Type.OBJECT -> Type.getType(
+				"L"
+						+ remapper.unmapClassName(
+								"official",
+								desc.getClassName()
+						)
+						.replace(".", "/")
+						+ ";"
+		);
+		default -> desc;
+		};
 	}
 }
