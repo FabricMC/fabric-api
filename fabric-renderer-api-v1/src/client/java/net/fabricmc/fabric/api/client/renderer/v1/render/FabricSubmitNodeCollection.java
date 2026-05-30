@@ -45,7 +45,7 @@ public interface FabricSubmitNodeCollection {
 	/**
 	 * An alternative to {@link BlockModelFeatureRenderer.Submit} that accepts a {@link Mesh}.
 	 */
-	record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, List<BlockStateModelPart> modelParts, @Nullable Mesh mesh, int tintColor, int[] tintLayers, int lightCoords, int overlayCoords) implements TranslucentSubmit {
+	record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction, List<BlockStateModelPart> modelParts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int tintColor) implements TranslucentSubmit {
 		public static final FeatureRendererType<FabricSubmitNodeCollection.ExtendedBlockModelSubmit> TYPE = FeatureRendererType.create("Extended Block Model");
 
 		@Override

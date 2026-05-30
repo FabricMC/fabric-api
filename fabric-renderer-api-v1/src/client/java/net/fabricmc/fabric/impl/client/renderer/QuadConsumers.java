@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -40,11 +41,17 @@ public final class QuadConsumers {
 		public int lightCoords;
 		public int overlayCoords;
 		public PoseStack.Pose pose;
-		public Function<ChunkSectionLayer, RenderType> renderTypeFunction;
+		public Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction;
 		public Function<RenderType, VertexConsumer> vertexConsumerFunction;
 
 		@Override
 		public void accept(MutableQuadView quad) {
+			RenderType renderType = renderTypeFunction.apply(quad.chunkLayer());
+
+			if (renderType == null) {
+				return;
+			}
+
 			if (quad.emissive()) {
 				quad.lightmap(LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT);
 			} else {
@@ -57,7 +64,6 @@ public final class QuadConsumers {
 				quad.multiplyColor(tintLayers[tintIndex]);
 			}
 
-			RenderType renderType = renderTypeFunction.apply(quad.chunkLayer());
 			quad.buffer(overlayCoords, pose, vertexConsumerFunction.apply(renderType));
 		}
 	}

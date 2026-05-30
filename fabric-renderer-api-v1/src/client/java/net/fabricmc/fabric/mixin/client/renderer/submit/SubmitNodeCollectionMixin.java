@@ -63,10 +63,15 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	@Final
 	public TranslucentFeatureRenderPhase translucentBlocksAndItems;
 
+	@Shadow
+	private static @Nullable RenderType getOutlineRenderType(RenderType renderType) {
+		return null;
+	}
+
 	@Override
 	public void submitBlockModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, boolean translucent, List<BlockStateModelPart> parts, @Nullable Mesh mesh, int[] tintLayers, int lightCoords, int overlayCoords, int outlineColor) {
 		PoseStack.Pose pose = poseStack.last().copy();
-		ExtendedBlockModelSubmit submit = new ExtendedBlockModelSubmit(pose, renderTypeFunction, parts, mesh, -1, tintLayers, lightCoords, overlayCoords);
+		ExtendedBlockModelSubmit submit = new ExtendedBlockModelSubmit(pose, renderTypeFunction, parts, mesh, tintLayers, lightCoords, overlayCoords, -1);
 
 		if (translucent) {
 			this.translucentBlocksAndItems.submit(submit);
@@ -75,8 +80,9 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 		}
 
 		if (outlineColor != 0) {
-			// TODO: Outline render type
-			this.outline.submit(new ExtendedBlockModelSubmit(pose, renderTypeFunction, parts, mesh, outlineColor, BlockModelRenderState.EMPTY_TINTS, 15728880, OverlayTexture.NO_OVERLAY));
+			Function<ChunkSectionLayer, RenderType> function = layer -> getOutlineRenderType(renderTypeFunction.apply(layer));
+
+			this.outline.submit(new ExtendedBlockModelSubmit(pose, function, parts, mesh, BlockModelRenderState.EMPTY_TINTS, 15728880, OverlayTexture.NO_OVERLAY, outlineColor));
 		}
 	}
 

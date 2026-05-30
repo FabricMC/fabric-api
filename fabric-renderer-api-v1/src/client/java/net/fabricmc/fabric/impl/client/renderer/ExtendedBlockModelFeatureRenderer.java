@@ -22,6 +22,7 @@ import java.util.function.Function;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -48,7 +49,7 @@ public class ExtendedBlockModelFeatureRenderer extends RenderTypeFeatureRenderer
 		for (FabricSubmitNodeCollection.ExtendedBlockModelSubmit submit : submits) {
 			PoseStack.Pose pose = submit.pose();
 			int[] tintLayers = submit.tintLayers();
-			Function<ChunkSectionLayer, RenderType> renderTypeFunction = submit.renderTypeFunction();
+			Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction = submit.renderTypeFunction();
 
 			quadInstance.setLightCoords(submit.lightCoords());
 			quadInstance.setOverlayCoords(submit.overlayCoords());
@@ -69,16 +70,26 @@ public class ExtendedBlockModelFeatureRenderer extends RenderTypeFeatureRenderer
 		}
 	}
 
-	private void putPartQuads(BlockStateModelPart part, PoseStack.Pose pose, QuadInstance quadInstance, int baseTintColor, int[] tintLayers, Function<ChunkSectionLayer, RenderType> renderTypeFunction) {
+	private void putPartQuads(BlockStateModelPart part, PoseStack.Pose pose, QuadInstance quadInstance, int baseTintColor, int[] tintLayers, Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction) {
 		for (Direction direction : DIRECTIONS) {
 			for (BakedQuad quad : part.getQuads(direction)) {
 				RenderType renderType = renderTypeFunction.apply(quad.materialInfo().layer());
+
+				if (renderType == null) {
+					continue;
+				}
+
 				putQuad(pose, quad, quadInstance, baseTintColor, tintLayers, this.getVertexBuilder(renderType));
 			}
 		}
 
 		for (BakedQuad quad : part.getQuads(null)) {
 			RenderType renderType = renderTypeFunction.apply(quad.materialInfo().layer());
+
+			if (renderType == null) {
+				continue;
+			}
+
 			putQuad(pose, quad, quadInstance, baseTintColor, tintLayers, this.getVertexBuilder(renderType));
 		}
 	}
