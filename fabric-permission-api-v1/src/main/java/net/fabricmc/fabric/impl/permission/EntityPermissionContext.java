@@ -23,7 +23,6 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +34,7 @@ public class EntityPermissionContext implements PermissionContext {
 	private final Type type;
 	private final Set<Key<?>> keys;
 	private final @Nullable MinecraftServer server;
+	private @Nullable PermissionLevel permissionLevel;
 
 	public EntityPermissionContext(Entity entity) {
 		this.entity = entity;
@@ -79,9 +79,11 @@ public class EntityPermissionContext implements PermissionContext {
 
 	@Override
 	public PermissionLevel permissionLevel() {
-		return entity instanceof Player player && player.permissions() instanceof LevelBasedPermissionSet levelBasedPermissionSet
-				? levelBasedPermissionSet.level()
-				: PermissionLevel.ALL;
+		if (this.permissionLevel == null) {
+			this.permissionLevel = this.entity instanceof Player player ? CommandPermissionContext.extractPermissionLevel(player.permissions()) : PermissionLevel.ALL;
+		}
+
+		return this.permissionLevel;
 	}
 
 	@Override

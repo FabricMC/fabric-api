@@ -16,20 +16,33 @@
 
 package net.fabricmc.fabric.impl.permission;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.mojang.datafixers.util.Pair;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.permissions.LevelBasedPermissionSet;
+import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.server.permissions.Permissions;
 
 import net.fabricmc.fabric.api.permission.v1.PermissionContext;
 
 public class CommandPermissionContext implements PermissionContext {
+	private static final List<Pair<PermissionLevel, Permission>> PERMISSION_LEVEL_CHECKS = List.of(
+			Pair.of(PermissionLevel.MODERATORS, Permissions.COMMANDS_MODERATOR),
+			Pair.of(PermissionLevel.GAMEMASTERS, Permissions.COMMANDS_GAMEMASTER),
+			Pair.of(PermissionLevel.ADMINS, Permissions.COMMANDS_ADMIN),
+			Pair.of(PermissionLevel.OWNERS, Permissions.COMMANDS_OWNER)
+	);
+
 	private final CommandSourceStack source;
+	private @Nullable PermissionLevel permissionLevel;
 
 	public CommandPermissionContext(CommandSourceStack source) {
 		this.source = source;
@@ -59,7 +72,35 @@ public class CommandPermissionContext implements PermissionContext {
 
 	@Override
 	public PermissionLevel permissionLevel() {
-		return this.source.permissions() instanceof LevelBasedPermissionSet levelBasedPermissionSet ? levelBasedPermissionSet.level() : PermissionLevel.ALL;
+		if (this.permissionLevel == null) {
+			this.permissionLevel = extractPermissionLevel(this.source.permissions());
+		}
+
+		return this.permissionLevel;
+	}
+
+	public static PermissionLevel extractPermissionLevel(PermissionSet permissions) {
+		if (permissions instanceof LevelBasedPermissionSet levelBasedPermissionSet) {
+			return levelBasedPermissionSet.level();
+		} else if (permissions == PermissionSet.ALL_PERMISSIONS) {
+			return PermissionLevel.OWNERS;
+		} else if (permissions == PermissionSet.NO_PERMISSIONS) {
+			return PermissionLevel.ALL;
+		}
+
+		PermissionLevel level = PermissionLevel.ALL;
+
+		// Search for closest permission level, starting from the lowest to highest.
+		// Not the ideal solution, but should handle any custom PermissionSet implementation.
+		for (Pair<PermissionLevel, Permission> pair : PERMISSION_LEVEL_CHECKS) {
+			if (!permissions.hasPermission(pair.getSecond())) {
+				break;
+			}
+
+			level = pair.getFirst();
+		}
+
+		return level;
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTags;
@@ -48,6 +49,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.WeatheringCopperFullBlock;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -58,6 +60,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostableRegistry;
+import net.fabricmc.fabric.api.registry.DecoratedPotPatternRegistry;
 import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
@@ -74,6 +77,8 @@ import net.fabricmc.fabric.api.registry.fluid.FluidBehavior;
 public final class ContentRegistryTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-content-registries-v0-testmod";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ContentRegistryTest.class);
+
+	public static final ResourceKey<DecoratedPotPattern> POT_PATTERN_FABRIC = ResourceKey.create(Registries.DECORATED_POT_PATTERN, id("fabric"));
 
 	public static final Item SMELTING_FUEL_INCLUDED_BY_ITEM = registerItem("smelting_fuel_included_by_item");
 	public static final Item SMELTING_FUEL_INCLUDED_BY_TAG = registerItem("smelting_fuel_included_by_tag");
@@ -120,6 +125,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 		//  - the 'test_oxidizing' block will randomly tick to oxidize into an 'exposed_test_oxidizing' block
+		//  - paper item now has a fabric icon decorated pot pattern
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
 		//  - villagers can now collect oak saplings
 		//  - assign a loot table to the nitwit villager type
@@ -171,6 +177,20 @@ public final class ContentRegistryTest implements ModInitializer {
 		} catch (NullPointerException e) {
 			// expected behavior
 			LOGGER.info("OxidizableBlocksRegistry null test passed!");
+		}
+
+		Registry.register(BuiltInRegistries.DECORATED_POT_PATTERN, POT_PATTERN_FABRIC, new DecoratedPotPattern(id("fabric_pottery_pattern")));
+		DecoratedPotPatternRegistry.registerPattern(ItemIds.PAPER, POT_PATTERN_FABRIC);
+
+		// assert that DecoratedPotPatternRegistry throws for null values
+		try {
+			DecoratedPotPatternRegistry.registerPattern(null, POT_PATTERN_FABRIC);
+			DecoratedPotPatternRegistry.registerPattern(ItemIds.PAPER, null);
+
+			throw new AssertionError("DecoratedPotPatternRegistry didn't throw when values were null!");
+		} catch (NullPointerException e) {
+			// expected behavior
+			LOGGER.info("DecoratedPotPatternRegistry null test passed!");
 		}
 
 		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK.weathering().unaffected()).setId(TEST_OXIDIZING_BLOCK_KEY)));

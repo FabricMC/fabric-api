@@ -43,6 +43,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.RandomSource;
@@ -53,6 +54,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.permission.v1.MutablePermissionContext;
 import net.fabricmc.fabric.api.permission.v1.PermissionContext;
 import net.fabricmc.fabric.api.permission.v1.PermissionEvents;
@@ -80,6 +83,7 @@ public class PermissionTestMod implements ModInitializer, PermissionEvents.OnReq
 
 		this.runBasicTest();
 		ServerLifecycleEvents.SERVER_STARTED.register(this::runServerTest);
+		ServerPlayConnectionEvents.JOIN.register(this::runPlayerTest);
 	}
 
 	private void runBasicTest() {
@@ -111,6 +115,17 @@ public class PermissionTestMod implements ModInitializer, PermissionEvents.OnReq
 				throw new IllegalStateException("Permission check failed! valueMainCheck != value, d=" + (valueMainCheck - value));
 			}
 		}, server);
+	}
+
+	@SuppressWarnings("ConstantValue")
+	private void runPlayerTest(ServerGamePacketListenerImpl listener, PacketSender packetSender, MinecraftServer server) {
+		if (listener.player.getPermissionContext().permissionLevel() == null) {
+			throw new IllegalStateException("Player entity permission level is null!");
+		}
+
+		if (listener.player.createCommandSourceStack().getPermissionContext().permissionLevel() == null) {
+			throw new IllegalStateException("Player command source permission level is null!");
+		}
 	}
 
 	private void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection selection) {
