@@ -55,8 +55,8 @@ public final class AtlasRegistry {
 	 * @param atlasId The atlas id to generate a texture id for.
 	 * @return The generated texture id.
 	 */
-	public static Identifier createTextureLocation(Identifier atlasId) {
-		return AtlasRegistryImpl.createTextureLocation(atlasId);
+	public static Identifier generateTextureLocation(Identifier atlasId) {
+		return AtlasRegistryImpl.generateTextureLocation(atlasId);
 	}
 
 	private AtlasRegistry() { }

@@ -69,7 +69,7 @@ public final class AtlasRegistryImpl {
 		REGISTERED_TEXTURES.add(textureId);
 	}
 
-	public static Identifier createTextureLocation(Identifier atlasId) {
+	public static Identifier generateTextureLocation(Identifier atlasId) {
 		Objects.requireNonNull(atlasId, "atlasId must not be null");
 		return atlasId.withPath(path -> "textures/atlas/" + path + ".png");
 	}
