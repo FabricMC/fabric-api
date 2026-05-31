@@ -67,9 +67,13 @@ public final class AtlasRegistryImpl {
 		return atlasId.withPath(path -> "textures/atlas/" + path + ".png");
 	}
 
+	public static List<AtlasManager.AtlasConfig> getAtlases() {
+		return List.copyOf(REGISTERED_CONFIGS);
+	}
+
 	public static List<AtlasManager.AtlasConfig> finalizeConfigs() {
 		frozen = true;
-		return List.copyOf(REGISTERED_CONFIGS);
+		return getAtlases();
 	}
 
 	private AtlasRegistryImpl() { }

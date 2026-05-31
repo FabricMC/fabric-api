@@ -21,6 +21,8 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.AtlasRegistryImpl;
 
+import java.util.List;
+
 /**
  * A registry to add atlases to {@link net.minecraft.client.resources.model.sprite.AtlasManager}.
  */
@@ -41,6 +43,15 @@ public final class AtlasRegistry {
 	 */
 	public static Identifier generateTextureLocation(Identifier atlasId) {
 		return AtlasRegistryImpl.generateTextureLocation(atlasId);
+	}
+
+	/**
+	 * Get all registered atlases.
+	 *
+	 * @return The currently registered atlases.
+	 */
+	public static List<AtlasManager.AtlasConfig> getAtlases() {
+		return AtlasRegistryImpl.getAtlases();
 	}
 
 	private AtlasRegistry() { }
