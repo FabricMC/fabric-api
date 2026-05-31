@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import java.util.Set;
-
+import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.metadata.MetadataSectionType;
 
 import net.fabricmc.fabric.impl.client.rendering.AtlasRegistryImpl;
 
@@ -28,26 +26,12 @@ import net.fabricmc.fabric.impl.client.rendering.AtlasRegistryImpl;
  */
 public final class AtlasRegistry {
 	/**
-	 * Registers an atlas using a given texture and atlas id.
+	 * Registers an atlas using an atlas config.
 	 *
-	 * @param textureId The id of the texture that will be generated.
-	 * @param atlasId The id of the registered atlas. Can be generated with {@link AtlasRegistry#createTextureLocation(Identifier)}.
-	 * @param hasMipmaps Whether to generate mipmaps for the atlas.
-	 * @param additionalMetadata Additional metadata to be set in .mcmeta files.
+	 * @param config The atlas config to register.
 	 */
-	public static void register(Identifier textureId, Identifier atlasId, boolean hasMipmaps, Set<MetadataSectionType<?>> additionalMetadata) {
-		AtlasRegistryImpl.register(textureId, atlasId, hasMipmaps, additionalMetadata);
-	}
-
-	/**
-	 * Registers an atlas using a given texture and atlas id.
-	 *
-	 * @param textureId The id of the texture that will be generated. Can be generated with {@link AtlasRegistry#createTextureLocation(Identifier)}.
-	 * @param atlasId The id of the registered atlas.
-	 * @param hasMipmaps Whether to generate mipmaps for the atlas.
-	 */
-	public static void register(Identifier textureId, Identifier atlasId, boolean hasMipmaps) {
-		AtlasRegistryImpl.register(textureId, atlasId, hasMipmaps);
+	public static void register(AtlasManager.AtlasConfig config) {
+		AtlasRegistryImpl.register(config);
 	}
 
 	/**

@@ -24,7 +24,6 @@ import java.util.Set;
 
 import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.metadata.MetadataSectionType;
 
 import net.fabricmc.fabric.mixin.client.rendering.AtlasManagerAccessor;
 
@@ -43,30 +42,24 @@ public final class AtlasRegistryImpl {
 
 	private static boolean frozen;
 
-	public static void register(Identifier textureId, Identifier atlasId, boolean createMipmaps) {
-		register(textureId, atlasId, createMipmaps, Set.of());
-	}
-
-	public static void register(Identifier textureId, Identifier atlasId, boolean createMipmaps, Set<MetadataSectionType<?>> additionalMetadata) {
-		Objects.requireNonNull(textureId, "textureId must not be null");
-		Objects.requireNonNull(textureId, "atlasId must not be null");
-		Objects.requireNonNull(additionalMetadata, "additionalMetadata must not be null");
+	public static void register(AtlasManager.AtlasConfig config) {
+		Objects.requireNonNull(config, "config must not be null");
 
 		if (frozen) {
 			throw new IllegalStateException("The atlas registry has already been finalized.");
 		}
 
-		if (REGISTERED_TEXTURES.contains(textureId)) {
-			throw new IllegalArgumentException("An atlas with texture " + textureId + " has already been registered.");
+		if (REGISTERED_TEXTURES.contains(config.textureId())) {
+			throw new IllegalArgumentException("An atlas with texture " + config.textureId() + " has already been registered.");
 		}
 
-		if (REGISTERED_ATLASES.contains(atlasId)) {
-			throw new IllegalArgumentException("Atlas " + atlasId + " has already been registered.");
+		if (REGISTERED_ATLASES.contains(config.definitionLocation())) {
+			throw new IllegalArgumentException("Atlas " + config.definitionLocation() + " has already been registered.");
 		}
 
-		REGISTERED_CONFIGS.add(new AtlasManager.AtlasConfig(textureId, atlasId, createMipmaps, additionalMetadata));
-		REGISTERED_ATLASES.add(atlasId);
-		REGISTERED_TEXTURES.add(textureId);
+		REGISTERED_CONFIGS.add(config);
+		REGISTERED_ATLASES.add(config.definitionLocation());
+		REGISTERED_TEXTURES.add(config.textureId());
 	}
 
 	public static Identifier generateTextureLocation(Identifier atlasId) {

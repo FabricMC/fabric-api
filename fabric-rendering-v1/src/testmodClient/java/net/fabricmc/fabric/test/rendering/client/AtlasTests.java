@@ -50,7 +50,7 @@ public class AtlasTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		AtlasRegistry.register(TEXTURE_ID, ATLAS_ID, false, Set.of(COLOR));
+		AtlasRegistry.register(new AtlasManager.AtlasConfig(TEXTURE_ID, ATLAS_ID, false, Set.of(COLOR)));
 
 		HudElementRegistry.addLast(
 				HUD_ID,
