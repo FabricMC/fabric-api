@@ -46,7 +46,7 @@ public abstract class MinecraftServerMixin implements MinecraftServerHooks {
 	@Shadow
 	private MinecraftServer.ReloadableResources resources;
 	@Unique
-	protected final AtomicBoolean fabric$startupReady = new AtomicBoolean(false);
+	protected final AtomicBoolean startupReady = new AtomicBoolean(false);
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z"), method = "runServer")
 	private void beforeSetupServer(CallbackInfo info) {
@@ -118,12 +118,12 @@ public abstract class MinecraftServerMixin implements MinecraftServerHooks {
 
 	@Override
 	public boolean fabric$isStartupReady() {
-		return this.fabric$startupReady.get();
+		return this.startupReady.get();
 	}
 
 	@Unique
 	protected void afterServerStartedEvent() {
-		if (this.fabric$startupReady.getAndSet(true)) {
+		if (this.startupReady.getAndSet(true)) {
 			throw new IllegalStateException();
 		}
 	}
