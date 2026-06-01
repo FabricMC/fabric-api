@@ -30,6 +30,7 @@ import net.minecraft.world.flag.FeatureFlag;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AndResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AnyModsLoadedResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.FalseResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.FeaturesEnabledResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.NotResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.OrResourceCondition;
@@ -81,6 +82,13 @@ public final class ResourceConditions {
 	 */
 	public static ResourceCondition alwaysTrue() {
 		return new TrueResourceCondition();
+	}
+
+	/**
+	 * A condition that always passes. Has ID {@code fabric:false}.
+	 */
+	public static ResourceCondition alwaysFalse() {
+		return new FalseResourceCondition();
 	}
 
 	/**
