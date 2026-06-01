@@ -35,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.notifications.NotificationManager;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -45,6 +46,10 @@ import net.fabricmc.fabric.impl.event.lifecycle.MinecraftServerHooks;
 public abstract class MinecraftServerMixin implements MinecraftServerHooks {
 	@Shadow
 	private MinecraftServer.ReloadableResources resources;
+
+	@Shadow
+	public abstract NotificationManager notificationManager();
+
 	@Unique
 	protected final AtomicBoolean startupReady = new AtomicBoolean(false);
 
@@ -124,7 +129,7 @@ public abstract class MinecraftServerMixin implements MinecraftServerHooks {
 	@Unique
 	protected void afterServerStartedEvent() {
 		if (this.startupReady.getAndSet(true)) {
-			throw new IllegalStateException();
+			throw new IllegalStateException("Fabric: Server is already marked as started");
 		}
 	}
 }
