@@ -47,7 +47,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		EnchantmentEvents.MODIFY.register(
+		EnchantmentEvents.MODIFY_WITH_LOOKUP.register(
 				(key, builder, source, registries) -> {
 					if (source.isBuiltin() && key == WEIRD_IMPALING) {
 						// make impaling set things on fire
@@ -73,7 +73,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 						);
 
 						// make it exclusive with treasure enchantments
-						builder.exclusiveWith(registries.getOrThrow(EnchantmentTags.TREASURE));
+						builder.exclusiveWith(registries.lookup(Registries.ENCHANTMENT).orElseThrow().getter().getOrThrow(EnchantmentTags.TREASURE));
 					}
 				}
 		);

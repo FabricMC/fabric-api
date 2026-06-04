@@ -22,8 +22,8 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.Resource;
@@ -40,7 +40,7 @@ public class EnchantmentUtil {
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, HolderGetter<Enchantment> registries) {
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
 		Enchantment.Builder builder = Enchantment.enchantment(originalEnchantment.definition());
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 		BuilderExtensions builderExtensions = (BuilderExtensions) builder;
@@ -60,7 +60,7 @@ public class EnchantmentUtil {
 		// Reset the modified flag before invoking the event as we setup the builder above
 		builderExtensions.fabric$resetModified();
 
-		EnchantmentEvents.MODIFY.invoker().modify(key, builder, source, registries);
+		EnchantmentEvents.MODIFY_WITH_LOOKUP.invoker().modify(key, builder, source, registryInfoLookup);
 
 		if (builderExtensions.fabric$didModify()) {
 			LOGGER.debug("Enchantment {} was modified", key.identifier());
