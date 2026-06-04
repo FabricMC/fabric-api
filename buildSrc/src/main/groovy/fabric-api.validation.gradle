@@ -1,6 +1,6 @@
-import net.fabricmc.fabric.build.GeneratePackageInfosTask
-import net.fabricmc.fabric.build.ValidateAnnotationsTask
-import net.fabricmc.fabric.build.ValidateModuleTask
+import net.fabricmc.fabric.impl.build.GeneratePackageInfosTask
+import net.fabricmc.fabric.impl.build.ValidateAnnotationsTask
+import net.fabricmc.fabric.impl.build.ValidateModuleTask
 
 tasks.register("validateModules", ValidateModuleTask)
 tasks.check.dependsOn("validateModules")
@@ -23,9 +23,9 @@ for (def sourceSet in [sourceSets.main, sourceSets.client]) {
 	def task = tasks.register(taskName, GeneratePackageInfosTask) {
 		group = 'fabric'
 		description = "Generates package-info files for $sourceSetName packages."
-		sourceRoot = file("src/$sourceSetName/java")
-		header = rootProject.file('HEADER')
-		outputDir = file("src/generated/$sourceSetName")
+		sourceRoot.set(file("src/$sourceSetName/java"))
+		header.set(rootProject.file('HEADER'))
+		outputDir.set(file("src/generated/$sourceSetName"))
 	}
 	sourceSet.java.srcDir task
 

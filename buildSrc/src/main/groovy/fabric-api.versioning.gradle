@@ -1,5 +1,5 @@
-import net.fabricmc.fabric.build.BumpVersionTask
-import net.fabricmc.fabric.build.FabricApiBuildUtils
+import net.fabricmc.fabric.impl.build.BumpVersionTask
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
 
 if (project == rootProject) {
 	version = FabricApiBuildUtils.rootVersion(project)

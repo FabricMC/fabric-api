@@ -1,5 +1,5 @@
 import groovy.xml.XmlSlurper
-import net.fabricmc.fabric.build.FabricApiBuildUtils
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.external.javadoc.JavadocMemberLevel
 

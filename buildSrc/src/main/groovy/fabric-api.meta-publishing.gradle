@@ -1,4 +1,4 @@
-import net.fabricmc.fabric.build.FabricApiBuildUtils
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
 
 plugins {
 	id "maven-publish"

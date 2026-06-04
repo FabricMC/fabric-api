@@ -1,4 +1,4 @@
-import net.fabricmc.fabric.build.FabricApiBuildUtils
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
 import org.gradle.api.publish.maven.MavenPublication
 
 plugins {

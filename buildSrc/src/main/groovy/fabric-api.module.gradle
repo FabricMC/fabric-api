@@ -1,4 +1,4 @@
-import net.fabricmc.fabric.build.FabricApiModuleExtension
+import net.fabricmc.fabric.impl.build.FabricApiModuleExtension
 
 plugins {
 	id "fabric-api.versioning"
