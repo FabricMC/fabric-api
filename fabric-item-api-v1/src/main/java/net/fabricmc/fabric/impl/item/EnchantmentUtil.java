@@ -60,7 +60,6 @@ public class EnchantmentUtil {
 		// Reset the modified flag before invoking the event as we setup the builder above
 		builderExtensions.fabric$resetModified();
 
-
 		EnchantmentEvents.MODIFY.invoker().modify(key, builder, source, registries);
 
 		if (builderExtensions.fabric$didModify()) {
