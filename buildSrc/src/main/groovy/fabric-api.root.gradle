@@ -211,6 +211,37 @@ tasks.publishMods.dependsOn checkVersion
 publish.mustRunAfter checkVersion
 
 gradle.projectsEvaluated {
+	loom.runs.configureEach {
+		if (it.name == "gametest" || it.name == "autoTestServer") {
+			it.source sourceSets.testmod
+		}
+
+		if (it.name == "clientGametest") {
+			it.source sourceSets.testmodClient
+		}
+	}
+
+	def nestedTestModJars = project.files()
+	for (def moduleProject : includedModuleProjects) {
+		if (!(moduleProject.file("src/testmod").exists() || moduleProject.file("src/testmodClient").exists())) {
+			continue
+		}
+
+		nestedTestModJars.from(moduleProject.tasks.named("testmodJar"))
+	}
+
+	tasks.named("runGametest") {
+		classpath(nestedTestModJars)
+	}
+
+	tasks.named("runAutoTestServer") {
+		classpath(nestedTestModJars)
+	}
+
+	tasks.named("runClientGametest") {
+		classpath(nestedTestModJars)
+	}
+
 	for (def moduleProject : includedModuleProjects) {
 		loom.mods.register(moduleProject.name) {
 			sourceSet moduleProject.sourceSets.main
@@ -223,14 +254,6 @@ gradle.projectsEvaluated {
 		}
 	}
 
-	def nestedTestModJars = project.files()
-	for (def moduleProject : includedModuleProjects) {
-		if (!(moduleProject.file("src/testmod").exists() || moduleProject.file("src/testmodClient").exists())) {
-			continue
-		}
-
-		nestedTestModJars.from(moduleProject.tasks.named("testmodJar"))
-	}
 	loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
 
 	for (def moduleProject : includedModuleProjects) {
