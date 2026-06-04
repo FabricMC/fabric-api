@@ -17,16 +17,24 @@
 package net.fabricmc.fabric.mixin.item;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Either;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryLoadTask;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceManagerRegistryLoadTask;
 import net.minecraft.server.packs.resources.Resource;
@@ -36,11 +44,14 @@ import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
 @Mixin(ResourceManagerRegistryLoadTask.class)
 public class ResourceManagerRegistryLoadTaskMixin {
+	@Unique
+	private HolderGetter<Enchantment> registries;
+
 	@WrapOperation(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryLoadTask$PendingRegistration"))
 	private <T> RegistryLoadTask.PendingRegistration<?> modify(ResourceKey<T> key, Either<T, Exception> value, RegistrationInfo registrationInfo, Operation<RegistryLoadTask.PendingRegistration<T>> original, @Local(argsOnly = true) Resource resource) {
 		if (value.left().isPresent()) {
 			if (value.left().get() instanceof Enchantment enchantment) {
-				Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) key, enchantment, EnchantmentUtil.determineSource(resource));
+				Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) key, enchantment, EnchantmentUtil.determineSource(resource), registries);
 
 				if (modified != null) {
 					// Clear the knownPackInfo to force the server to sync the data pack to the client
@@ -51,5 +62,10 @@ public class ResourceManagerRegistryLoadTaskMixin {
 		}
 
 		return original.call(key, value, registrationInfo);
+	}
+
+	@Inject(method = "load", at = @At("HEAD"))
+	private void captureRegistries(RegistryOps.RegistryInfoLookup context, Executor executor, CallbackInfoReturnable<CompletableFuture<?>> cir) {
+		this.registries = context.lookup(Registries.ENCHANTMENT).orElseThrow().getter();
 	}
 }

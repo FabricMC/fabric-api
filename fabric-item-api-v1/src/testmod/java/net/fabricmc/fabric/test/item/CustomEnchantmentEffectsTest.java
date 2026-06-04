@@ -23,6 +23,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -47,7 +48,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		EnchantmentEvents.MODIFY.register(
-				(key, builder, source) -> {
+				(key, builder, source, registries) -> {
 					if (source.isBuiltin() && key == WEIRD_IMPALING) {
 						// make impaling set things on fire
 						builder.withEffect(
@@ -70,6 +71,9 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 												.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE, EntityTypes.ZOMBIE))
 								)
 						);
+
+						// make it exclusive with treasure enchantments
+						builder.exclusiveWith(registries.getOrThrow(EnchantmentTags.TREASURE));
 					}
 				}
 		);

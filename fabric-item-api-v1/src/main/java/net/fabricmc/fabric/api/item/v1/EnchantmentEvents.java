@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -79,9 +80,9 @@ public final class EnchantmentEvents {
 	 */
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
 			Modify.class,
-			callbacks -> (key, builder, source) -> {
+			callbacks -> (key, builder, source, registries) -> {
 				for (Modify callback : callbacks) {
-					callback.modify(key, builder, source);
+					callback.modify(key, builder, source, registries);
 				}
 			}
 	);
@@ -113,11 +114,13 @@ public final class EnchantmentEvents {
 		 * @param key The ID of the enchantment
 		 * @param builder The enchantment builder
 		 * @param source The source of the enchantment
+		 * @param registries Read-Only enchantment registry getter
 		 */
 		void modify(
 				ResourceKey<Enchantment> key,
 				Enchantment.Builder builder,
-				EnchantmentSource source
+				EnchantmentSource source,
+				HolderGetter<Enchantment> registries
 		);
 	}
 }
