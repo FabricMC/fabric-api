@@ -1,4 +1,6 @@
-version = getSubprojectVersion(project)
+plugins {
+	id 'fabric-api.module'
+}
 
 loom {
 	accessWidenerPath = file('src/main/resources/fabric-block-getter-api-v2.classtweaker')

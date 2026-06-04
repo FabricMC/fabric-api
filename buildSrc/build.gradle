@@ -1,10 +1,20 @@
 plugins {
+	id 'groovy-gradle-plugin'
 	id 'checkstyle'
 	id "com.diffplug.spotless" version "6.20.0"
 }
 
 repositories {
+	maven {
+		name = 'Fabric'
+		url = 'https://maven.fabricmc.net/'
+	}
+	gradlePluginPortal()
 	mavenCentral()
+}
+
+dependencies {
+	implementation "net.fabricmc:fabric-loom:1.16.2"
 }
 
 checkstyle {

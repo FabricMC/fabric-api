@@ -1,16 +1,18 @@
-version = getSubprojectVersion(project)
+plugins {
+	id 'fabric-api.module'
+}
 
 loom {
 	accessWidenerPath = file('src/client/resources/fabric-rendering-v1.classtweaker')
 }
 
-moduleDependencies(project, [
+fabricApiModule.moduleDependencies([
 	':fabric-api-base',
 	':fabric-transitive-access-wideners-v1',
 	':fabric-lifecycle-events-v1'
 ])
 
-testDependencies(project, [
+fabricApiModule.testDependencies([
 	':fabric-client-gametest-api-v1',
 	':fabric-item-api-v1',
 	':fabric-object-builder-api-v1',

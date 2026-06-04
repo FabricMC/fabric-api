@@ -1,33 +1,17 @@
+package net.fabricmc.fabric.build
+
 import java.nio.file.Files
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SkipWhenEmpty
+import org.gradle.api.tasks.TaskAction
 
-for (def sourceSet in [
-			sourceSets.main,
-			sourceSets.client
-		]) {
-	// We have to capture the source set name for the lazy string literals,
-	// otherwise it'll just be whatever the last source set is in the list.
-	def sourceSetName = sourceSet.name
-	def taskName = sourceSet.getTaskName('generate', 'PackageInfos')
-	def task = tasks.register(taskName, GeneratePackageInfos) {
-		group = 'fabric'
-		description = "Generates package-info files for $sourceSetName packages."
-
-		// Only apply to default source directory since we also add the generated
-		// sources to the source set.
-		sourceRoot = file("src/$sourceSetName/java")
-		header = rootProject.file('HEADER')
-		outputDir = file("src/generated/$sourceSetName")
-	}
-	sourceSet.java.srcDir task
-
-	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'PackageInfos'), Delete) {
-		group = 'fabric'
-		delete file("src/generated/$sourceSetName")
-	}
-	clean.dependsOn cleanTask
-}
-
-abstract class GeneratePackageInfos extends DefaultTask {
+abstract class GeneratePackageInfosTask extends DefaultTask {
 	@InputFile
 	File header
 
@@ -41,27 +25,26 @@ abstract class GeneratePackageInfos extends DefaultTask {
 	@OutputDirectory
 	final DirectoryProperty outputDir = project.objects.directoryProperty()
 
-	GeneratePackageInfos() {
+	GeneratePackageInfosTask() {
 		projectName.set(project.name)
 	}
 
 	@TaskAction
-	def run() {
+	void run() {
 		def output = outputDir.get().asFile.toPath()
 		output.deleteDir()
-		def headerText = header.readLines().join("\n") // normalize line endings
+		def headerText = header.readLines().join("\n")
 		def root = sourceRoot.get().asFile.toPath()
 
 		root.eachDirRecurse {
-			def containsJava = Files.list(it).any {
-				Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+			def containsJava = Files.list(it).withCloseable { stream ->
+				stream.anyMatch { path -> Files.isRegularFile(path) && path.fileName.toString().endsWith('.java') }
 			}
 
 			if (!containsJava) {
 				return
 			}
 
-			// Check existing package-info.java to ensure it has @NullMarked
 			def existingPackageInfo = it.resolve('package-info.java')
 			if (Files.exists(existingPackageInfo)) {
 				if (!existingPackageInfo.text.contains("@NullMarked")) {
@@ -78,12 +61,10 @@ abstract class GeneratePackageInfos extends DefaultTask {
 			def packageName = relativePath.toString().replace(File.separator, '.')
 
 			if (packageName == "net.fabricmc.fabric.api.util" && projectName.get() == "fabric-content-registries-v0") {
-				// Hack: This package clashes with api-base, don't generate any annotations for it.
 				return
 			}
 
-			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
-			def isImpl = relativePath.toString() =~ implPattern
+			def isImpl = relativePath.toString() =~ /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
 
 			target.resolve('package-info.java').withWriter {
 				if (isImpl) {

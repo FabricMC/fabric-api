@@ -1,36 +1,30 @@
+package net.fabricmc.fabric.build
 
-/**
- * This task should be used to easily bump the major/minor/patch version of a fabric-api module.
- * It will automatically bump the versions of dependent modules.
- */
-tasks.register('bumpVersions', BumpVersionTask)
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-class BumpVersionTask extends DefaultTask {
+abstract class BumpVersionTask extends DefaultTask {
 	BumpVersionTask() {
 		group = "publishing"
-
 		outputs.upToDateWhen { false }
 	}
 
 	@TaskAction
 	void runTask() {
 		def scanner = new Scanner(System.in)
-
 		def toUpdate = [:]
 
 		while (true) {
 			println "Enter module name to update, or done to continue"
-
 			def input = scanner.nextLine()
 
 			if (input == "done") {
 				break
 			}
 
-			// Bump all versions. To be used when buildscript changes are made.
 			if (input == "allPatch") {
 				project.getChildProjects().values().forEach {
-					if (it.name == "deprecated" || it.name == "fabric-api-bom" || it.name == "fabric-api-catalog") {
+					if (!FabricApiBuildUtils.isFabricModule(it)) {
 						return
 					}
 
@@ -70,18 +64,15 @@ class BumpVersionTask extends DefaultTask {
 
 			toUpdate.keySet().forEach { p ->
 				project.allprojects.each { cp ->
-					if (cp.name == "deprecated" || cp.name == "fabric-api" || cp.name == "fabric-api-bom" || cp.name == "fabric-api-catalog") {
+					if (!FabricApiBuildUtils.isFabricModule(cp) || cp == project) {
 						return
 					}
 
-					def config = cp.configurations.api
-					config.allDependencies.forEach { dep ->
-						if (dep.name == p.name) {
-							if (!toUpdate.containsKey(cp)) {
-								println "Bumping patch of ${cp.name} as it depends on ${p.name}"
-
-								temp.put(cp, 2) // Bump patch
-							}
+					def config = cp.configurations.findByName("api")
+					config?.allDependencies?.forEach { dep ->
+						if (dep.name == p.name && !toUpdate.containsKey(cp)) {
+							println "Bumping patch of ${cp.name} as it depends on ${p.name}"
+							temp.put(cp, 2)
 						}
 					}
 				}
@@ -107,7 +98,7 @@ class BumpVersionTask extends DefaultTask {
 
 			def split = version.split("\\.")
 			split[i] = (split[i] as Integer) + 1
-			for (j in (i + 1) ..< split.length) {
+			for (j in (i + 1)..<split.length) {
 				split[j] = 0
 			}
 			def newVersion = split.join(".")

@@ -1,32 +1,14 @@
+package net.fabricmc.fabric.build
+
 import groovy.json.JsonSlurper
+import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.TaskAction
 
-/*
- * This buildscript contains tasks related to the validation of each module in fabric api.
- *
- * Right now this task verifies each Fabric API module has a module lifecycle specified.
- * More functionality will probably be added in the future.
- */
-
-subprojects {
-	if (it.name == "deprecated" || it.name == "fabric-api-bom" || it.name == "fabric-api-catalog") {
-		return
-	}
-
-	// Create the task
-	def validateModules = tasks.register("validateModules", ValidateModuleTask)
-	tasks.check.dependsOn(validateModules)
-}
-
-/**
- * Verifies that each module has the required custom values for module lifecycle in it's FMJ.
- *
- * <p>Example:
- * <pre>{@code
- * "custom": {
- *   "fabric-api:module-lifecycle": "stable"
- * }
- * }</pre>
- */
 abstract class ValidateModuleTask extends DefaultTask {
 	@InputFile
 	abstract RegularFileProperty getFmj()
@@ -42,8 +24,6 @@ abstract class ValidateModuleTask extends DefaultTask {
 
 	ValidateModuleTask() {
 		group = "verification"
-
-		// No outputs
 		outputs.upToDateWhen { true }
 
 		def file = project.file("src/main/resources/fabric.mod.json")
@@ -53,7 +33,6 @@ abstract class ValidateModuleTask extends DefaultTask {
 		}
 
 		fmj.set(file)
-
 		projectName.set(project.name)
 		projectPath.set(project.path)
 		loaderVersion.set(project.loader_version)
@@ -61,9 +40,7 @@ abstract class ValidateModuleTask extends DefaultTask {
 
 	@TaskAction
 	void validate() {
-		def file = fmj.get().asFile
-
-		def json = new JsonSlurper().parse(file)
+		def json = new JsonSlurper().parse(fmj.get().asFile)
 
 		if (json.custom == null) {
 			throw new GradleException("Module ${projectName.get()} does not have a custom value containing module lifecycle!")
@@ -75,11 +52,10 @@ abstract class ValidateModuleTask extends DefaultTask {
 			throw new GradleException("Module ${projectName.get()} does not have module lifecycle in custom values!")
 		}
 
-		if (!moduleLifecycle instanceof String) {
+		if (!(moduleLifecycle instanceof String)) {
 			throw new GradleException("Module ${projectName.get()} has an invalid module lifecycle value. The value must be a string but read a ${moduleLifecycle.class}")
 		}
 
-		// Validate the lifecycle value
 		switch (moduleLifecycle) {
 			case "stable":
 			case "experimental":
@@ -90,7 +66,7 @@ abstract class ValidateModuleTask extends DefaultTask {
 				}
 				break
 			default:
-				throw new GradleException("Module ${projectName.get()} has an invalid module lifecycle ${json.custom.get('fabric-api:module-lifecycle')}")
+				throw new GradleException("Module ${projectName.get()} has an invalid module lifecycle ${moduleLifecycle}")
 		}
 
 		if (json.depends == null) {
@@ -98,7 +74,7 @@ abstract class ValidateModuleTask extends DefaultTask {
 		}
 
 		if (json.depends.fabricloader != ">=${loaderVersion.get()}") {
-			throw new GradleException("Module ${projectName.get()} does not have a valid fabricloader value! Got \"${json.depends.fabricloader}\" but expected \">=${project.loader_version}\"")
+			throw new GradleException("Module ${projectName.get()} does not have a valid fabricloader value! Got \"${json.depends.fabricloader}\" but expected \">=${loaderVersion.get()}\"")
 		}
 	}
 }

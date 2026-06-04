@@ -1,0 +1,10 @@
+import net.fabricmc.fabric.build.BumpVersionTask
+import net.fabricmc.fabric.build.FabricApiBuildUtils
+
+if (project == rootProject) {
+	version = FabricApiBuildUtils.rootVersion(project)
+	logger.lifecycle("Building Fabric: " + version)
+	tasks.register('bumpVersions', BumpVersionTask)
+} else {
+	version = FabricApiBuildUtils.moduleVersion(project)
+}

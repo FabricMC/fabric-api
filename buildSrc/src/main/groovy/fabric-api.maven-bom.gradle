@@ -1,0 +1,30 @@
+import org.gradle.api.publish.maven.MavenPublication
+
+plugins {
+	id "java-platform"
+	id "fabric-api.meta-publishing"
+}
+
+version = rootProject.version
+
+publishing.publications {
+	register('mavenJava', MavenPublication) {
+		from(components['javaPlatform'])
+	}
+}
+
+tasks.withType(GenerateModuleMetadata).configureEach {
+	enabled = true
+}
+
+dependencies {
+	constraints {
+		for (proj in rootProject.allprojects) {
+			if (proj == project || proj.name == 'fabric-api-catalog') {
+				continue
+			}
+
+			api(project(proj.path))
+		}
+	}
+}

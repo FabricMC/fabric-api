@@ -1,31 +1,3 @@
 plugins {
-	id 'java-platform'
-}
-
-version = rootProject.version
-
-publishing.publications {
-	register('mavenJava', MavenPublication) {
-		from(components['javaPlatform'])
-	}
-}
-
-tasks.withType(GenerateModuleMetadata) {
-	// todo: RemoteSignJar fails when this is false (as set by parent build script)
-	enabled = true
-}
-
-dependencies {
-	constraints {
-		for (proj in rootProject.allprojects) {
-			if (proj == project) { // the bom itself
-				continue
-			}
-			if (proj.name == 'fabric-api-catalog') {
-				continue
-			}
-
-			api(project(proj.path))
-		}
-	}
+	id 'fabric-api.maven-bom'
 }

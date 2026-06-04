@@ -1,0 +1,36 @@
+plugins {
+	id "checkstyle"
+	id "com.diffplug.spotless"
+}
+
+checkstyle {
+	configFile = rootProject.file("checkstyle.xml")
+	toolVersion = "13.3.0"
+}
+
+spotless {
+	lineEndings = 'UNIX'
+
+	java {
+		licenseHeaderFile(rootProject.file("HEADER"))
+		removeUnusedImports()
+		importOrder('java', 'javax', '', 'net.minecraft', 'net.fabricmc')
+		leadingSpacesToTabs()
+		trimTrailingWhitespace()
+	}
+
+	json {
+		target 'src/**/lang/en_us.json'
+		targetExclude 'src/**/generated/**'
+		gson().indentWithSpaces(2).sortByKeys()
+	}
+}
+
+if (project == rootProject) {
+	spotless {
+		groovyGradle {
+			target 'src/**/*.gradle', '*.gradle', 'gradle/*.gradle'
+			greclipse()
+		}
+	}
+}

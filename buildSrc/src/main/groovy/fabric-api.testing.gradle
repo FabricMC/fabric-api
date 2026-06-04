@@ -1,0 +1,92 @@
+import net.fabricmc.fabric.build.FabricApiBuildUtils
+import net.fabricmc.loom.task.ValidateMixinNameTask
+
+sourceSets {
+	testmod {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+	}
+
+	testmodClient {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+		compileClasspath += client.compileClasspath
+		runtimeClasspath += client.runtimeClasspath
+
+		compileClasspath += testmod.compileClasspath
+		runtimeClasspath += testmod.runtimeClasspath
+	}
+
+	test {
+		compileClasspath += testmodClient.compileClasspath
+		runtimeClasspath += testmodClient.runtimeClasspath
+	}
+}
+
+loom {
+	runs {
+		testmodClient {
+			client()
+			ideConfigGenerated project.rootProject == project
+			name = "Testmod Client"
+			source sourceSets.testmodClient
+		}
+		testmodServer {
+			server()
+			ideConfigGenerated project.rootProject == project
+			name = "Testmod Server"
+			source sourceSets.testmod
+		}
+	}
+}
+
+loom.runs.configureEach {
+	vmArgs(FabricApiBuildUtils.DEBUG_ARGS)
+}
+
+dependencies {
+	testmodImplementation sourceSets.main.output
+	testmodClientImplementation sourceSets.main.output
+	testmodClientImplementation sourceSets.client.output
+	testmodClientImplementation sourceSets.testmod.output
+
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+	testImplementation sourceSets.testmodClient.output
+	testImplementation 'org.mockito:mockito-core:5.23.0'
+}
+
+test {
+	useJUnitPlatform()
+	jvmArgs(FabricApiBuildUtils.DEBUG_ARGS)
+}
+
+tasks.register('testmodJar', Jar) {
+	from sourceSets.testmod.output
+	from sourceSets.testmodClient.output
+	archiveClassifier = "testmod"
+}
+
+build.dependsOn testmodJar
+
+tasks.register('validateMixinNames', ValidateMixinNameTask) {
+	source(sourceSets.main.output)
+	source(sourceSets.client.output)
+	source(sourceSets.testmod.output)
+	outputs.upToDateWhen { true }
+}
+
+check.dependsOn "validateMixinNames"
+
+dependencies {
+	if (project.name != "fabric-gametest-api-v1" && rootProject.findProject(":fabric-gametest-api-v1") != null) {
+		testmodImplementation project(path: ':fabric-gametest-api-v1')
+		testmodClientImplementation rootProject.project(":fabric-gametest-api-v1").sourceSets.client.output
+		testmodImplementation project(path: ':fabric-resource-loader-v1')
+		testmodClientImplementation rootProject.project(":fabric-resource-loader-v1").sourceSets.client.output
+	}
+
+	if (project.name != "fabric-registry-sync-v0" && rootProject.findProject(":fabric-registry-sync-v0") != null) {
+		testmodRuntimeOnly project(path: ':fabric-registry-sync-v0')
+		testmodClientImplementation rootProject.project(":fabric-registry-sync-v0").sourceSets.client.output
+	}
+}

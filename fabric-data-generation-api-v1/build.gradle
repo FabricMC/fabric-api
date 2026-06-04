@@ -1,6 +1,8 @@
-version = getSubprojectVersion(project)
+plugins {
+	id 'fabric-api.module'
+}
 
-moduleDependencies(project, [
+fabricApiModule.moduleDependencies([
 	'fabric-convention-tags-v2',
 	'fabric-recipe-api-v1',
 	'fabric-registry-sync-v0',
@@ -8,7 +10,7 @@ moduleDependencies(project, [
 	'fabric-tag-api-v1',
 ])
 
-testDependencies(project, [
+fabricApiModule.testDependencies([
 	':fabric-creative-tab-api-v1',
     ':fabric-object-builder-api-v1'
 ])

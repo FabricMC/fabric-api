@@ -1,0 +1,287 @@
+import groovy.xml.XmlSlurper
+import net.fabricmc.fabric.build.FabricApiBuildUtils
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.external.javadoc.JavadocMemberLevel
+
+plugins {
+	id "fabric-api.module"
+	id "me.modmuss50.mod-publish-plugin"
+}
+
+if (!file("src/client/java").exists()) {
+	tasks.named("compileClientJava", JavaCompile) {
+		classpath = files()
+	}
+}
+
+if (!file("src/testmod/java").exists()) {
+	tasks.named("compileTestmodJava", JavaCompile) {
+		classpath = files()
+	}
+}
+
+if (!file("src/testmodClient/java").exists()) {
+	tasks.named("compileTestmodClientJava", JavaCompile) {
+		classpath = files()
+	}
+}
+
+tasks.named("validateModules") {
+	enabled = false
+}
+
+loom {
+	accessWidenerPath = file("gradle/javadoc.classtweaker")
+
+	runs {
+		gametest {
+			inherit testmodServer
+			name "Game Test"
+			vmArg "-Dfabric-api.gametest"
+			vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file("junit.xml").get().getAsFile()}"
+			runDir "build/gametest"
+		}
+		autoTestServer {
+			inherit testmodServer
+			name "Auto Test Server"
+			vmArg "-Dfabric.autoTest"
+		}
+		clientGametest {
+			inherit testmodClient
+			name "Client Game Test"
+			vmArg "-Dfabric.client.gametest"
+			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
+			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
+		}
+	}
+}
+
+runGametest {
+	outputs.file project.layout.buildDirectory.file("junit.xml")
+}
+
+javadoc {
+	enabled = true
+
+	options {
+		source = "25"
+		encoding = "UTF-8"
+		charSet = "UTF-8"
+		memberLevel = JavadocMemberLevel.PACKAGE
+		addStringOption("Xdoclint:all,-missing", "-quiet")
+		addBooleanOption("-syntax-highlight", true)
+
+		tags(
+				'apiNote:a:API Note:',
+				'implSpec:a:Implementation Requirements:',
+				'implNote:a:Implementation Note:'
+				)
+	}
+
+	include("**/api/**")
+	failOnError = true
+}
+
+tasks.register('javadocJar', Jar) {
+	dependsOn javadoc
+	from javadoc.destinationDir
+	archiveClassifier = "fatjavadoc"
+}
+
+build.dependsOn javadocJar
+
+configurations {
+	nestedJars {
+		transitive = false
+	}
+}
+
+def includedModuleProjects = rootProject.allprojects.findAll {
+	FabricApiBuildUtils.isFabricModule(it) && it != project
+}
+
+dependencies {
+	for (def moduleProject : includedModuleProjects) {
+		api project(path: moduleProject.path)
+
+		if (!FabricApiBuildUtils.DEV_ONLY_MODULES.contains(moduleProject.name)) {
+			nestedJars project(moduleProject.path)
+		}
+	}
+}
+
+for (def moduleProject : includedModuleProjects) {
+	moduleProject.pluginManager.withPlugin("fabric-api.module") {
+		dependencies {
+			clientImplementation moduleProject.sourceSets.client.output
+			testmodImplementation moduleProject.sourceSets.testmod.output
+			testmodClientImplementation moduleProject.sourceSets.testmodClient.output
+		}
+	}
+}
+
+loom.nestJars(tasks.named("jar"), configurations.nestedJars)
+
+tasks.register("checkNoDuplicateFiles", Zip) {
+	inputs.files configurations.nestedJars
+	destinationDirectory = layout.buildDirectory.dir("test")
+
+	from {
+		configurations.nestedJars.files.collect { zipTree(it) }
+	}
+
+	exclude 'META-INF/**'
+	exclude 'fabric.mod.json'
+}
+
+check.dependsOn "checkNoDuplicateFiles"
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(signJar.output) {
+				builtBy(signJar)
+			}
+
+			artifact(sourcesJar) {
+				builtBy sourcesJar
+			}
+
+			artifact javadocJar
+			artifact testmodJar
+
+			pom {
+				FabricApiBuildUtils.addPomMetadataInformation(rootProject, pom)
+			}
+		}
+	}
+}
+
+loom.disableDeprecatedPomGeneration(publishing.publications.mavenJava)
+
+publishMods {
+	file = signJar.output
+	changelog = providers.environmentVariable("CHANGELOG").getOrElse("No changelog provided")
+	type = project.prerelease == "true" ? BETA : STABLE
+	displayName = "[${project.minecraft_version}] Fabric API $project.version"
+	modLoaders.add("fabric")
+	dryRun = providers.environmentVariable("CURSEFORGE_API_KEY").getOrNull() == null
+
+	curseforge {
+		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+		projectId = "306612"
+		project.curseforge_minecraft_versions.split(",").each { minecraftVersions.add(it.trim()) }
+	}
+
+	modrinth {
+		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+		projectId = "P7dR8mSH"
+		minecraftVersions.add(project.minecraft_version)
+		if (project.modrinth_extra_minecraft_versions) {
+			project.modrinth_extra_minecraft_versions.split(",").each { minecraftVersions.add(it.trim()) }
+		}
+	}
+
+	github {
+		accessToken = providers.environmentVariable("GITHUB_TOKEN")
+		repository = providers.environmentVariable("GITHUB_REPOSITORY").getOrElse("FabricMC/dryrun")
+		commitish = providers.environmentVariable("GITHUB_REF_NAME").getOrElse("dryrun")
+	}
+}
+
+assemble.dependsOn signJar
+
+tasks.register('outJar', Copy) {
+	from signJar.output
+	into layout.buildDirectory.dir("out")
+}
+
+tasks.register('checkVersion') {
+	doFirst {
+		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text
+		def metadata = new XmlSlurper().parseText(xml)
+		def versions = metadata.versioning.versions.version*.text()
+		if (versions.contains(version)) {
+			throw new RuntimeException("${version} has already been released!")
+		}
+	}
+}
+
+tasks.publishMods.dependsOn checkVersion
+publish.mustRunAfter checkVersion
+
+gradle.projectsEvaluated {
+	for (def moduleProject : includedModuleProjects) {
+		loom.mods.register(moduleProject.name) {
+			sourceSet moduleProject.sourceSets.main
+			sourceSet moduleProject.sourceSets.client
+		}
+
+		loom.mods.register(moduleProject.name + "-testmod") {
+			sourceSet moduleProject.sourceSets.testmod
+			sourceSet moduleProject.sourceSets.testmodClient
+		}
+	}
+
+	def nestedTestModJars = project.files()
+	for (def moduleProject : includedModuleProjects) {
+		if (!(moduleProject.file("src/testmod").exists() || moduleProject.file("src/testmodClient").exists())) {
+			continue
+		}
+
+		nestedTestModJars.from(moduleProject.tasks.named("testmodJar"))
+	}
+	loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
+
+	for (def moduleProject : includedModuleProjects) {
+		javadoc.source(moduleProject.sourceSets.main.allJava)
+		javadoc.source(moduleProject.sourceSets.client.allJava)
+	}
+	javadoc.dependsOn(includedModuleProjects.collect { it.tasks.named("classes") })
+	javadoc.dependsOn(includedModuleProjects.collect { it.tasks.named("clientClasses") })
+	javadoc.classpath = files(
+			sourceSets.main.compileClasspath,
+			sourceSets.client.compileClasspath,
+			includedModuleProjects.collect { it.layout.buildDirectory.dir("classes/java/main") },
+			includedModuleProjects.collect { it.layout.buildDirectory.dir("classes/java/client") },
+			includedModuleProjects.collect { it.layout.buildDirectory.dir("resources/main") },
+			includedModuleProjects.collect { it.layout.buildDirectory.dir("resources/client") }
+			)
+
+	publishing.publications.mavenJava {
+		def dependencies = []
+
+		for (def moduleProject : includedModuleProjects) {
+			if (moduleProject.path.startsWith(":deprecated")) {
+				continue
+			}
+
+			dependencies.add([
+				'groupId': moduleProject.group,
+				'artifactId': moduleProject.name,
+				'version': FabricApiBuildUtils.moduleVersion(moduleProject),
+				'scope': 'compile'
+			])
+		}
+
+		def thisGroup = group
+		def thisVersion = version
+
+		pom.withXml {
+			def depsNode = asNode().appendNode("dependencies")
+			for (dep in dependencies) {
+				def depNode = depsNode.appendNode("dependency")
+				depNode.appendNode("groupId", dep['groupId'])
+				depNode.appendNode("artifactId", dep['artifactId'])
+				depNode.appendNode("version", dep['version'])
+				depNode.appendNode("scope", dep['scope'])
+			}
+
+			def depNode = depsNode.appendNode("dependency")
+			depNode.appendNode("groupId", thisGroup)
+			depNode.appendNode("artifactId", "fabric-api-deprecated")
+			depNode.appendNode("version", thisVersion)
+			depNode.appendNode("scope", "compile")
+		}
+	}
+}

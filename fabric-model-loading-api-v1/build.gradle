@@ -1,11 +1,13 @@
-version = getSubprojectVersion(project)
+plugins {
+	id 'fabric-api.module'
+}
 
-moduleDependencies(project, [
+fabricApiModule.moduleDependencies([
 	'fabric-api-base',
 	'fabric-renderer-api-v1'
 ])
 
-testDependencies(project, [
+fabricApiModule.testDependencies([
 	':fabric-renderer-api-v1',
 	':fabric-renderer-indigo',
 	':fabric-rendering-v1',

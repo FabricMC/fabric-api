@@ -1,0 +1,13 @@
+import net.fabricmc.fabric.build.FabricApiModuleExtension
+
+plugins {
+	id "fabric-api.versioning"
+	id "fabric-api.java"
+	id "fabric-api.lint"
+	id "fabric-api.loom"
+	id "fabric-api.testing"
+	id "fabric-api.validation"
+	id "fabric-api.publishing"
+}
+
+extensions.create("fabricApiModule", FabricApiModuleExtension, project)

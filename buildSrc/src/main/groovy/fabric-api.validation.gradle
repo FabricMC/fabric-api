@@ -1,0 +1,37 @@
+import net.fabricmc.fabric.build.GeneratePackageInfosTask
+import net.fabricmc.fabric.build.ValidateAnnotationsTask
+import net.fabricmc.fabric.build.ValidateModuleTask
+
+tasks.register("validateModules", ValidateModuleTask)
+tasks.check.dependsOn("validateModules")
+
+tasks.register('validateAnnotations', ValidateAnnotationsTask) {
+	group = 'fabric'
+	description = "Validate annotations used in Fabric API code."
+	outputs.upToDateWhen { true }
+
+	source file("src/client/java")
+	source file("src/main/java")
+	source file("src/testmod/java")
+	source file("src/testmodClient/java")
+}
+tasks.check.dependsOn "validateAnnotations"
+
+for (def sourceSet in [sourceSets.main, sourceSets.client]) {
+	def sourceSetName = sourceSet.name
+	def taskName = sourceSet.getTaskName('generate', 'PackageInfos')
+	def task = tasks.register(taskName, GeneratePackageInfosTask) {
+		group = 'fabric'
+		description = "Generates package-info files for $sourceSetName packages."
+		sourceRoot = file("src/$sourceSetName/java")
+		header = rootProject.file('HEADER')
+		outputDir = file("src/generated/$sourceSetName")
+	}
+	sourceSet.java.srcDir task
+
+	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'PackageInfos'), Delete) {
+		group = 'fabric'
+		delete file("src/generated/$sourceSetName")
+	}
+	clean.dependsOn cleanTask
+}

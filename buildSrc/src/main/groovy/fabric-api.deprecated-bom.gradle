@@ -1,0 +1,32 @@
+import net.fabricmc.fabric.build.FabricApiBuildUtils
+import org.gradle.api.publish.maven.MavenPublication
+
+plugins {
+	id "fabric-api.meta-publishing"
+}
+
+version = rootProject.version
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = 'fabric-api-deprecated'
+
+			pom.withXml {
+				def depsNode = asNode().appendNode("dependencies")
+
+				rootProject.allprojects.each {
+					if (it.name == "deprecated" || !it.path.startsWith(":deprecated")) {
+						return
+					}
+
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", it.group)
+					depNode.appendNode("artifactId", it.name)
+					depNode.appendNode("version", FabricApiBuildUtils.moduleVersion(it))
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,33 @@
+import net.fabricmc.loom.task.tool.ModEnigmaTask
+
+plugins {
+	id "net.fabricmc.fabric-loom"
+}
+
+loom {
+	splitEnvironmentSourceSets()
+	runtimeOnlyLog4j = true
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
+	api "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+tasks.withType(ProcessResources).configureEach {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": inputs.properties.version
+	}
+}
+
+tasks.register('generateResources') {
+	group = "fabric"
+}
+
+tasks.register('enigma', ModEnigmaTask) {
+	def clientOnly = file('src/client').exists() && !file('src/main').exists()
+	def dir = clientOnly ? file('src/client/resources') : file('src/main/resources')
+	mappingFile = new File(dir, project.name + '.mapping')
+}
