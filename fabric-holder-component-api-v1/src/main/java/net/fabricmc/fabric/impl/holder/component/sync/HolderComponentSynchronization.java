@@ -38,6 +38,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.VarInt;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -155,10 +156,10 @@ public class HolderComponentSynchronization {
 				Identifier.STREAM_CODEC, PackedComponentMap::id,
 				StreamCodec.of(
 						(output, value) -> {
-							output.writeInt(value.readableBytes());
+							VarInt.write(output, value.readableBytes());
 							output.writeBytes(value);
 						},
-						buf -> buf.readRetainedSlice(buf.readInt())
+						buf -> buf.readRetainedSlice(VarInt.read(buf))
 				), PackedComponentMap::data,
 				PackedComponentMap::new
 		);
