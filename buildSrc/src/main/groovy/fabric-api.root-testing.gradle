@@ -1,0 +1,84 @@
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
+
+plugins {
+	id "fabric-api.testing"
+}
+
+def includedModuleProjects = rootProject.allprojects.findAll {
+	FabricApiBuildUtils.isFabricModule(it) && it != project
+}
+
+loom {
+	runs {
+		gametest {
+			inherit testmodServer
+			name "Game Test"
+			vmArg "-Dfabric-api.gametest"
+			vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file("junit.xml").get().getAsFile()}"
+			runDir "build/gametest"
+		}
+		autoTestServer {
+			inherit testmodServer
+			name "Auto Test Server"
+			vmArg "-Dfabric.autoTest"
+		}
+		clientGametest {
+			inherit testmodClient
+			name "Client Game Test"
+			vmArg "-Dfabric.client.gametest"
+			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
+			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
+		}
+	}
+}
+
+runGametest {
+	outputs.file project.layout.buildDirectory.file("junit.xml")
+}
+
+gradle.projectsEvaluated {
+	loom.runs.configureEach {
+		if (it.name == "gametest" || it.name == "autoTestServer") {
+			it.source sourceSets.testmod
+		}
+
+		if (it.name == "clientGametest") {
+			it.source sourceSets.testmodClient
+		}
+	}
+
+	def nestedTestModJars = project.files()
+	for (def moduleProject : includedModuleProjects) {
+		if (!(moduleProject.file("src/testmod").exists() || moduleProject.file("src/testmodClient").exists())) {
+			continue
+		}
+
+		nestedTestModJars.from(moduleProject.tasks.named("testmodJar"))
+	}
+
+	tasks.named("runGametest") {
+		classpath(nestedTestModJars)
+	}
+
+	tasks.named("runAutoTestServer") {
+		classpath(nestedTestModJars)
+	}
+
+	tasks.named("runClientGametest") {
+		classpath(nestedTestModJars)
+	}
+
+	for (def moduleProject : includedModuleProjects) {
+		loom.mods.register(moduleProject.name) {
+			sourceSet moduleProject.sourceSets.main
+			sourceSet moduleProject.sourceSets.client
+		}
+
+		loom.mods.register(moduleProject.name + "-testmod") {
+			sourceSet moduleProject.sourceSets.testmod
+			sourceSet moduleProject.sourceSets.testmodClient
+		}
+	}
+
+	loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
+}
