@@ -6,11 +6,13 @@ loom {
 	accessWidenerPath = file("src/client/resources/fabric-renderer-indigo.classtweaker")
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-renderer-api-v1',
-	'fabric-rendering-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-renderer-api-v1',
+		'fabric-rendering-v1'
+	)
+}
 
 sourceSets {
 	mixinConfig {

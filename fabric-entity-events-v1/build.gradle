@@ -6,11 +6,15 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-entity-events-v1.classtweaker')
 }
 
-fabricApiModule.moduleDependencies(['fabric-api-base'])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-command-api-v2',
-	':fabric-networking-api-v1',
-	':fabric-registry-sync-v0',
-	':fabric-rendering-v1'
-])
+	testDependencies(
+		':fabric-command-api-v2',
+		':fabric-networking-api-v1',
+		':fabric-registry-sync-v0',
+		':fabric-rendering-v1'
+	)
+}

@@ -2,4 +2,8 @@ plugins {
 	id 'fabric-api.module'
 }
 
-fabricApiModule.moduleDependencies(['fabric-api-base'])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base'
+	)
+}

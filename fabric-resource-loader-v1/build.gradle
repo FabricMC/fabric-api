@@ -6,14 +6,18 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-resource-loader-v1.classtweaker")
 }
 
-fabricApiModule.moduleDependencies(['fabric-api-base'])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-lifecycle-events-v1',
-	':fabric-api-base',
-	':fabric-gametest-api-v1',
-	':fabric-resource-loader-v1'
-])
+	testDependencies(
+		':fabric-lifecycle-events-v1',
+		':fabric-api-base',
+		':fabric-gametest-api-v1',
+		':fabric-resource-loader-v1'
+	)
+}
 
 // Setup 3 test mods used for testing resource sorting
 sourceSets {

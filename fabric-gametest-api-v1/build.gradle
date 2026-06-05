@@ -17,8 +17,10 @@ loom {
 	}
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-registry-sync-v0',
-	'fabric-resource-loader-v1',
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-registry-sync-v0',
+		'fabric-resource-loader-v1',
+	)
+}

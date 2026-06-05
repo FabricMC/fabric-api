@@ -2,17 +2,19 @@ plugins {
 	id 'fabric-api.module'
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-renderer-api-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-renderer-api-v1'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-renderer-api-v1',
-	':fabric-renderer-indigo',
-	':fabric-rendering-v1',
-	':fabric-resource-loader-v1'
-])
+	testDependencies(
+		':fabric-renderer-api-v1',
+		':fabric-renderer-indigo',
+		':fabric-rendering-v1',
+		':fabric-resource-loader-v1'
+	)
+}
 
 loom {
 	accessWidenerPath = file('src/client/resources/fabric-model-loading-api-v1.classtweaker')

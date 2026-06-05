@@ -2,11 +2,15 @@ plugins {
 	id 'fabric-api.module'
 }
 
-fabricApiModule.moduleDependencies(['fabric-api-base'])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-lifecycle-events-v1',
-])
+	testDependencies(
+		':fabric-lifecycle-events-v1',
+	)
+}
 
 loom {
 	accessWidenerPath = file('src/main/resources/fabric-command-api-v2.classtweaker')

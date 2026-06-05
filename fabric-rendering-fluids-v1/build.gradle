@@ -6,4 +6,8 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-rendering-fluids-v1.classtweaker')
 }
 
-fabricApiModule.moduleDependencies(['fabric-api-base'])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base'
+	)
+}

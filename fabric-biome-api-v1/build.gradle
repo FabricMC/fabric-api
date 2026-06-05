@@ -6,12 +6,14 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-biome-api-v1.classtweaker")
 }
 
-fabricApiModule.testDependencies([
-	':fabric-api-base',
-	':fabric-resource-loader-v1',
-	':fabric-registry-sync-v0',
-	':fabric-data-generation-api-v1'
-])
+fabricApiModule {
+	testDependencies(
+		':fabric-api-base',
+		':fabric-resource-loader-v1',
+		':fabric-registry-sync-v0',
+		':fabric-data-generation-api-v1'
+	)
+}
 
 fabricApi {
 	configureDataGeneration {

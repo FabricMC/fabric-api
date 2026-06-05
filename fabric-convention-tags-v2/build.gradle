@@ -6,14 +6,16 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-convention-tags-v2.classtweaker')
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-lifecycle-events-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-lifecycle-events-v1'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-lifecycle-events-v1',
-])
+	testDependencies(
+		':fabric-lifecycle-events-v1',
+	)
+}
 
 fabricApi {
 	configureDataGeneration {

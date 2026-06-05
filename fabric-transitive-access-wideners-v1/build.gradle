@@ -6,11 +6,12 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-transitive-access-wideners-v1.classtweaker')
 }
 
-fabricApiModule.testDependencies([
-	':fabric-rendering-v1',
-	':fabric-object-builder-api-v1'
-])
-
+fabricApiModule {
+	testDependencies(
+		':fabric-rendering-v1',
+		':fabric-object-builder-api-v1'
+	)
+}
 
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor

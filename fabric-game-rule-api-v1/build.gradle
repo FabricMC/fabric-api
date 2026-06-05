@@ -6,10 +6,14 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-game-rule-api-v1.classtweaker")
 }
 
-fabricApiModule.moduleDependencies(['fabric-api-base'])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-api-base',
-	':fabric-lifecycle-events-v1',
-	':fabric-resource-loader-v1'
-])
+	testDependencies(
+		':fabric-api-base',
+		':fabric-lifecycle-events-v1',
+		':fabric-resource-loader-v1'
+	)
+}

@@ -2,18 +2,20 @@ plugins {
 	id 'fabric-api.module'
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-convention-tags-v2',
-	'fabric-recipe-api-v1',
-	'fabric-registry-sync-v0',
-	'fabric-resource-conditions-api-v1',
-	'fabric-tag-api-v1',
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-convention-tags-v2',
+		'fabric-recipe-api-v1',
+		'fabric-registry-sync-v0',
+		'fabric-resource-conditions-api-v1',
+		'fabric-tag-api-v1',
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-creative-tab-api-v1',
-    ':fabric-object-builder-api-v1'
-])
+	testDependencies(
+		':fabric-creative-tab-api-v1',
+		':fabric-object-builder-api-v1'
+	)
+}
 
 dependencies {
 }

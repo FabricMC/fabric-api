@@ -2,12 +2,14 @@ plugins {
 	id 'fabric-api.module'
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-lifecycle-events-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-lifecycle-events-v1'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-resource-loader-v1',
-	':fabric-client-gametest-api-v1'
-])
+	testDependencies(
+		':fabric-resource-loader-v1',
+		':fabric-client-gametest-api-v1'
+	)
+}

@@ -6,14 +6,16 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-tag-api-v1.classtweaker')
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-resource-loader-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-resource-loader-v1'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-convention-tags-v2',
-	':fabric-client-gametest-api-v1',
-	':fabric-lifecycle-events-v1',
-	':fabric-resource-loader-v1',
-])
+	testDependencies(
+		':fabric-convention-tags-v2',
+		':fabric-client-gametest-api-v1',
+		':fabric-lifecycle-events-v1',
+		':fabric-resource-loader-v1',
+	)
+}

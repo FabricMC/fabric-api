@@ -38,12 +38,12 @@ public class FabricApiModuleExtension {
 		this.project = project;
 	}
 
-	public void moduleDependencies(List<String> dependencyNames) {
-		project.getPluginManager().withPlugin("java", plugin -> configureModuleDependencies(dependencyNames));
+	public void moduleDependencies(String... dependencyNames) {
+		project.getPluginManager().withPlugin("java", plugin -> configureModuleDependencies(List.of(dependencyNames)));
 	}
 
-	public void testDependencies(List<String> dependencyNames) {
-		project.getPluginManager().withPlugin("java", plugin -> configureTestDependencies(dependencyNames));
+	public void testDependencies(String... dependencyNames) {
+		project.getPluginManager().withPlugin("java", plugin -> configureTestDependencies(List.of(dependencyNames)));
 	}
 
 	private void configureModuleDependencies(List<String> dependencyNames) {

@@ -6,18 +6,20 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-data-attachment-api-v1.classtweaker')
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	':fabric-entity-events-v1',
-	':fabric-object-builder-api-v1',
-	':fabric-networking-api-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		':fabric-entity-events-v1',
+		':fabric-object-builder-api-v1',
+		':fabric-networking-api-v1'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-lifecycle-events-v1',
-	':fabric-biome-api-v1',
-	':fabric-command-api-v2',
-	':fabric-rendering-v1',
-	':fabric-client-gametest-api-v1',
-	':fabric-events-interaction-v0',
-])
+	testDependencies(
+		':fabric-lifecycle-events-v1',
+		':fabric-biome-api-v1',
+		':fabric-command-api-v2',
+		':fabric-rendering-v1',
+		':fabric-client-gametest-api-v1',
+		':fabric-events-interaction-v0',
+	)
+}

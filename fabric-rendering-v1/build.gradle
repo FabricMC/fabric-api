@@ -6,15 +6,17 @@ loom {
 	accessWidenerPath = file('src/client/resources/fabric-rendering-v1.classtweaker')
 }
 
-fabricApiModule.moduleDependencies([
-	':fabric-api-base',
-	':fabric-transitive-access-wideners-v1',
-	':fabric-lifecycle-events-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		':fabric-api-base',
+		':fabric-transitive-access-wideners-v1',
+		':fabric-lifecycle-events-v1'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-client-gametest-api-v1',
-	':fabric-item-api-v1',
-	':fabric-object-builder-api-v1',
-	':fabric-screen-api-v1'
-])
+	testDependencies(
+		':fabric-client-gametest-api-v1',
+		':fabric-item-api-v1',
+		':fabric-object-builder-api-v1',
+		':fabric-screen-api-v1'
+	)
+}

@@ -2,13 +2,15 @@ plugins {
 	id 'fabric-api.module'
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-lifecycle-events-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-lifecycle-events-v1'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-rendering-v1',
-	':fabric-object-builder-api-v1',
-	':fabric-transitive-access-wideners-v1'
-])
+	testDependencies(
+		':fabric-rendering-v1',
+		':fabric-object-builder-api-v1',
+		':fabric-transitive-access-wideners-v1'
+	)
+}

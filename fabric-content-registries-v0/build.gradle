@@ -6,8 +6,10 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-content-registries-v0.classtweaker")
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-lifecycle-events-v1',
-	'fabric-resource-loader-v1'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-lifecycle-events-v1',
+		'fabric-resource-loader-v1'
+	)
+}

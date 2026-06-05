@@ -6,14 +6,16 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-menu-api-v1.classtweaker')
 }
 
-fabricApiModule.moduleDependencies([
-	'fabric-api-base',
-	'fabric-networking-api-v1',
-	'fabric-registry-sync-v0'
-])
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base',
+		'fabric-networking-api-v1',
+		'fabric-registry-sync-v0'
+	)
 
-fabricApiModule.testDependencies([
-	':fabric-object-builder-api-v1',
-	':fabric-resource-loader-v1',
-	':fabric-transitive-access-wideners-v1'
-])
+	testDependencies(
+		':fabric-object-builder-api-v1',
+		':fabric-resource-loader-v1',
+		':fabric-transitive-access-wideners-v1'
+	)
+}
