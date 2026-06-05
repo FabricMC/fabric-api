@@ -46,7 +46,7 @@ public final class DefaultItemComponentEvents {
 
 	public interface ModifyContext {
 		/**
-		 * Modify the default data components of the specified item.
+		 * ModifyWithLookup the default data components of the specified item.
 		 *
 		 * @param itemPredicate A predicate to match items to modify
 		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
@@ -54,7 +54,7 @@ public final class DefaultItemComponentEvents {
 		void modify(Predicate<Item> itemPredicate, ModifyConsumer builderConsumer);
 
 		/**
-		 * Modify the default data components of the specified item.
+		 * ModifyWithLookup the default data components of the specified item.
 		 *
 		 * @param item The item to modify
 		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
@@ -64,7 +64,7 @@ public final class DefaultItemComponentEvents {
 		}
 
 		/**
-		 * Modify the default data components of the specified items.
+		 * ModifyWithLookup the default data components of the specified items.
 		 *
 		 * @param items The items to modify
 		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
@@ -74,7 +74,7 @@ public final class DefaultItemComponentEvents {
 		}
 
 		/**
-		 * Modify the default data components of the specified item.
+		 * ModifyWithLookup the default data components of the specified item.
 		 *
 		 * @param itemPredicate A predicate to match items to modify
 		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
@@ -84,7 +84,7 @@ public final class DefaultItemComponentEvents {
 		}
 
 		/**
-		 * Modify the default data components of the specified item.
+		 * ModifyWithLookup the default data components of the specified item.
 		 *
 		 * @param item The item to modify
 		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
@@ -94,7 +94,7 @@ public final class DefaultItemComponentEvents {
 		}
 
 		/**
-		 * Modify the default data components of the specified items.
+		 * ModifyWithLookup the default data components of the specified items.
 		 * @param items The items to modify
 		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
 		 */
@@ -106,7 +106,7 @@ public final class DefaultItemComponentEvents {
 	@FunctionalInterface
 	public interface ModifyCallback {
 		/**
-		 * Modify the default data components of items using the provided {@link ModifyContext} instance.
+		 * ModifyWithLookup the default data components of items using the provided {@link ModifyContext} instance.
 		 *
 		 * @param context The context to modify items
 		 */

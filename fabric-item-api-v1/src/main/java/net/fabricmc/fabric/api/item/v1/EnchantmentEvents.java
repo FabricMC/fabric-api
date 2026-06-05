@@ -80,11 +80,11 @@ public final class EnchantmentEvents {
 	 *
 	 * @deprecated Use {@link #MODIFY_WITH_LOOKUP} instead, which provides registry access via {@link RegistryOps.RegistryInfoLookup}
 	 */
-	@Deprecated(forRemoval = true)
-	public static final Event<ModifyNoRegistries> MODIFY = EventFactory.createArrayBacked(
-			ModifyNoRegistries.class,
+	@Deprecated
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
+			Modify.class,
 			callbacks -> (key, builder, source) -> {
-				for (ModifyNoRegistries callback : callbacks) {
+				for (Modify callback : callbacks) {
 					callback.modify(key, builder, source);
 				}
 			}
@@ -99,12 +99,15 @@ public final class EnchantmentEvents {
 	 * <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
 	 * for more information.
 	 *
+	 * <p>Note: If you wish to modify the exclusive set of the enchantment, consider extending the
+	 * {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
+	 *
 	 * <p>This is the preferred replacement for {@link #MODIFY}, providing access to registry information via {@link RegistryOps.RegistryInfoLookup}.
 	 */
-	public static final Event<Modify> MODIFY_WITH_LOOKUP = EventFactory.createArrayBacked(
-			Modify.class,
+	public static final Event<ModifyWithLookup> MODIFY_WITH_LOOKUP = EventFactory.createArrayBacked(
+			ModifyWithLookup.class,
 			callbacks -> (key, builder, source, registries) -> {
-				for (Modify callback : callbacks) {
+				for (ModifyWithLookup callback : callbacks) {
 					callback.modify(key, builder, source, registries);
 				}
 			}
@@ -130,7 +133,8 @@ public final class EnchantmentEvents {
 	}
 
 	@FunctionalInterface
-	public interface ModifyNoRegistries {
+	@Deprecated
+	public interface Modify {
 		/**
 		 * Modifies the effects of an {@link Enchantment}.
 		 *
@@ -146,7 +150,7 @@ public final class EnchantmentEvents {
 	}
 
 	@FunctionalInterface
-	public interface Modify {
+	public interface ModifyWithLookup {
 		/**
 		 * Modifies the effects of an {@link Enchantment}.
 		 *
