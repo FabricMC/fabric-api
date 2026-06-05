@@ -8,6 +8,32 @@ def includedModuleProjects = rootProject.allprojects.findAll {
 	FabricApiBuildUtils.isFabricModule(it) && it != project
 }
 
+def nestedTestModJars = project.files()
+
+for (def moduleProject : includedModuleProjects) {
+	def currentModuleProject = moduleProject
+	currentModuleProject.afterEvaluate {
+		if (currentModuleProject.file("src/testmod").exists() || currentModuleProject.file("src/testmodClient").exists()) {
+			nestedTestModJars.from(currentModuleProject.tasks.named("testmodJar"))
+		}
+
+		loom.mods.register(currentModuleProject.name) {
+			sourceSet currentModuleProject.sourceSets.main
+			sourceSet currentModuleProject.sourceSets.client
+		}
+
+		loom.mods.register(currentModuleProject.name + "-testmod") {
+			sourceSet currentModuleProject.sourceSets.testmod
+			sourceSet currentModuleProject.sourceSets.testmodClient
+		}
+
+		dependencies {
+			testmodImplementation currentModuleProject.sourceSets.testmod.output
+			testmodClientImplementation currentModuleProject.sourceSets.testmodClient.output
+		}
+	}
+}
+
 loom {
 	runs {
 		gametest {
@@ -16,11 +42,13 @@ loom {
 			vmArg "-Dfabric-api.gametest"
 			vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file("junit.xml").get().getAsFile()}"
 			runDir "build/gametest"
+			source sourceSets.testmod
 		}
 		autoTestServer {
 			inherit testmodServer
 			name "Auto Test Server"
 			vmArg "-Dfabric.autoTest"
+			source sourceSets.testmod
 		}
 		clientGametest {
 			inherit testmodClient
@@ -28,6 +56,7 @@ loom {
 			vmArg "-Dfabric.client.gametest"
 			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
 			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
+			source sourceSets.testmodClient
 		}
 	}
 }
@@ -36,49 +65,4 @@ runGametest {
 	outputs.file project.layout.buildDirectory.file("junit.xml")
 }
 
-gradle.projectsEvaluated {
-	loom.runs.configureEach {
-		if (it.name == "gametest" || it.name == "autoTestServer") {
-			it.source sourceSets.testmod
-		}
-
-		if (it.name == "clientGametest") {
-			it.source sourceSets.testmodClient
-		}
-	}
-
-	def nestedTestModJars = project.files()
-	for (def moduleProject : includedModuleProjects) {
-		if (!(moduleProject.file("src/testmod").exists() || moduleProject.file("src/testmodClient").exists())) {
-			continue
-		}
-
-		nestedTestModJars.from(moduleProject.tasks.named("testmodJar"))
-	}
-
-	tasks.named("runGametest") {
-		classpath(nestedTestModJars)
-	}
-
-	tasks.named("runAutoTestServer") {
-		classpath(nestedTestModJars)
-	}
-
-	tasks.named("runClientGametest") {
-		classpath(nestedTestModJars)
-	}
-
-	for (def moduleProject : includedModuleProjects) {
-		loom.mods.register(moduleProject.name) {
-			sourceSet moduleProject.sourceSets.main
-			sourceSet moduleProject.sourceSets.client
-		}
-
-		loom.mods.register(moduleProject.name + "-testmod") {
-			sourceSet moduleProject.sourceSets.testmod
-			sourceSet moduleProject.sourceSets.testmodClient
-		}
-	}
-
-	loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
-}
+loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
