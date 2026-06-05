@@ -34,6 +34,13 @@ javadoc {
 	failOnError = true
 }
 
+for (def moduleProject : includedModuleProjects) {
+	moduleProject.plugins.withId("fabric-api.module") {
+		javadoc.source(moduleProject.sourceSets.main.allJava)
+		javadoc.source(moduleProject.sourceSets.client.allJava)
+	}
+}
+
 tasks.register('javadocJar', Jar) {
 	dependsOn javadoc
 	from javadoc.destinationDir
@@ -117,21 +124,6 @@ tasks.publishMods.dependsOn checkVersion
 publish.mustRunAfter checkVersion
 
 gradle.projectsEvaluated {
-	for (def moduleProject : includedModuleProjects) {
-		javadoc.source(moduleProject.sourceSets.main.allJava)
-		javadoc.source(moduleProject.sourceSets.client.allJava)
-	}
-	javadoc.dependsOn(includedModuleProjects.collect { it.tasks.named("classes") })
-	javadoc.dependsOn(includedModuleProjects.collect { it.tasks.named("clientClasses") })
-	javadoc.classpath = files(
-			sourceSets.main.compileClasspath,
-			sourceSets.client.compileClasspath,
-			includedModuleProjects.collect { it.layout.buildDirectory.dir("classes/java/main") },
-			includedModuleProjects.collect { it.layout.buildDirectory.dir("classes/java/client") },
-			includedModuleProjects.collect { it.layout.buildDirectory.dir("resources/main") },
-			includedModuleProjects.collect { it.layout.buildDirectory.dir("resources/client") }
-			)
-
 	publishing.publications.mavenJava {
 		def dependencies = []
 
