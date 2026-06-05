@@ -4,7 +4,13 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.external.javadoc.JavadocMemberLevel
 
 plugins {
-	id "fabric-api.module"
+	id "fabric-api.root-versioning"
+	id "fabric-api.java"
+	id "fabric-api.lint"
+	id "fabric-api.loom"
+	id "fabric-api.testing"
+	id "fabric-api.validation"
+	id "fabric-api.publishing"
 	id "me.modmuss50.mod-publish-plugin"
 }
 

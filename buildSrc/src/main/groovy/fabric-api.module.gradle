@@ -1,7 +1,7 @@
 import net.fabricmc.fabric.impl.build.FabricApiModuleExtension
 
 plugins {
-	id "fabric-api.versioning"
+	id "fabric-api.module-versioning"
 	id "fabric-api.java"
 	id "fabric-api.lint"
 	id "fabric-api.loom"

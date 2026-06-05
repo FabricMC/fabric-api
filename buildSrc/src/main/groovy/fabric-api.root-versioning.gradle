@@ -1,0 +1,26 @@
+import net.fabricmc.fabric.impl.build.BumpVersionTask
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
+
+version = FabricApiBuildUtils.rootVersion(project)
+logger.lifecycle("Building Fabric: " + version)
+
+def bumpVersions = tasks.register('bumpVersions', BumpVersionTask) {
+	gradlePropertiesFile.set(layout.projectDirectory.file("gradle.properties"))
+}
+
+gradle.projectsEvaluated {
+	def moduleProjects = rootProject.allprojects.findAll {
+		FabricApiBuildUtils.isFabricModule(it) && it != rootProject
+	}
+
+	bumpVersions.configure {
+		moduleNames.set(moduleProjects.collect { it.name })
+		moduleVersions.set(moduleProjects.collectEntries {
+			[(it.name): it.findProperty("${it.name}-version").toString()]
+		})
+		apiDependencies.set(moduleProjects.collectEntries {
+			def api = it.configurations.findByName("api")
+			[(it.name): api == null ? "" : api.allDependencies.collect { dependency -> dependency.name }.join(",")]
+		})
+	}
+}
