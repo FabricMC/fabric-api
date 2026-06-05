@@ -18,10 +18,11 @@ dependencies {
 }
 
 tasks.withType(ProcessResources).configureEach {
-	inputs.property "version", project.version
+	def modVersion = project.version.toString()
+	inputs.property "version", modVersion
 
 	filesMatching("fabric.mod.json") {
-		expand "version": inputs.properties.version
+		expand "version": modVersion
 	}
 }
 
