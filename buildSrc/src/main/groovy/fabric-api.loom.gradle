@@ -7,6 +7,9 @@ plugins {
 loom {
 	splitEnvironmentSourceSets()
 	runtimeOnlyLog4j = true
+	runs.configureEach {
+		preferGradleTask = true
+	}
 }
 
 dependencies {

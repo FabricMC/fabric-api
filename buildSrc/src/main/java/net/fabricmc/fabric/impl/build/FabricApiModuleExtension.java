@@ -56,11 +56,8 @@ public class FabricApiModuleExtension {
 
 		addDependencyClientOutputs("clientImplementation", clientSourceSet, dependencyProjects);
 		dependsOnDependencyClientClasses("compileClientJava", dependencyProjects);
-
-		project.afterEvaluate(evaluatedProject -> {
-			addClientClassDirsToCompileTask("compileClientJava", dependencyProjects);
-			addClientClassDirsToCompileTask("compileTestmodClientJava", dependencyProjects);
-		});
+		addClientClassDirsToCompileTask("compileClientJava", dependencyProjects);
+		addClientClassDirsToCompileTask("compileTestmodClientJava", dependencyProjects);
 
 		List<Map<String, String>> dependencyNodes = new ArrayList<>();
 
@@ -91,8 +88,7 @@ public class FabricApiModuleExtension {
 
 		addDependencyClientOutputs("testmodClientImplementation", testmodClientSourceSet, dependencyProjects);
 		dependsOnDependencyClientClasses("compileTestmodClientJava", dependencyProjects);
-
-		project.afterEvaluate(evaluatedProject -> addClientClassDirsToCompileTask("compileTestmodClientJava", dependencyProjects));
+		addClientClassDirsToCompileTask("compileTestmodClientJava", dependencyProjects);
 	}
 
 	private List<Project> dependencyProjects(List<String> dependencyNames) {
@@ -126,11 +122,11 @@ public class FabricApiModuleExtension {
 	}
 
 	private void addClientClassDirsToCompileTask(String taskName, List<Project> dependencyProjects) {
-		project.getTasks().named(taskName, JavaCompile.class).configure(task -> task.doFirst(t -> {
-			List<?> clientClassDirs = dependencyProjects.stream()
-					.map(dependencyProject -> dependencyProject.getLayout().getBuildDirectory().dir("classes/java/client"))
-					.toList();
-			task.setClasspath(task.getClasspath().plus(project.files(clientClassDirs)));
-		}));
+		List<?> clientClassDirs = dependencyProjects.stream()
+				.map(dependencyProject -> dependencyProject.getLayout().getBuildDirectory().dir("classes/java/client"))
+				.toList();
+		FileCollection clientClasses = project.files(clientClassDirs);
+
+		project.getTasks().named(taskName, JavaCompile.class).configure(task -> task.setClasspath(task.getClasspath().plus(clientClasses)));
 	}
 }
