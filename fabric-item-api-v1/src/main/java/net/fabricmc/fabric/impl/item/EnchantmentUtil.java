@@ -38,7 +38,7 @@ import net.fabricmc.fabric.mixin.item.EnchantmentBuilderAccessor;
 public class EnchantmentUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnchantmentUtil.class);
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "deprecation"})
 	@Nullable
 	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
 		Enchantment.Builder builder = Enchantment.enchantment(originalEnchantment.definition());
