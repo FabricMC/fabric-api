@@ -1,30 +1,8 @@
 plugins {
 	id 'fabric-api.module'
+	id 'fabric-api.mixin-config'
 }
 
 loom {
 	accessWidenerPath = file('src/client/resources/fabric-client-gametest-api-v1.classtweaker')
-}
-
-sourceSets {
-	mixinConfig {
-		compileClasspath += configurations.loaderLibraries
-	}
-	client {
-		compileClasspath += mixinConfig.output
-		runtimeClasspath += mixinConfig.output
-	}
-}
-
-configurations {
-	clientImplementation.extendsFrom mixinConfigImplementation
-	clientRuntimeOnly.extendsFrom mixinConfigRuntimeOnly
-}
-
-dependencies {
-	mixinConfigImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-}
-
-jar {
-	from sourceSets.mixinConfig.output
 }
