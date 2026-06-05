@@ -47,7 +47,7 @@ public class ItemInHandRendererMixin {
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void modifyProgressAnimation(CallbackInfo ci) {
-		// ModifyWithLookup main hand
+		// Modify main hand
 		ItemStack newMainStack = minecraft.player.getMainHandItem();
 
 		if (mainHandItem.getItem() == newMainStack.getItem()) {
@@ -56,7 +56,7 @@ public class ItemInHandRendererMixin {
 			}
 		}
 
-		// ModifyWithLookup off hand
+		// Modify off hand
 		ItemStack newOffStack = minecraft.player.getOffhandItem();
 
 		if (offHandItem.getItem() == newOffStack.getItem()) {
