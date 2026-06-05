@@ -1,5 +1,14 @@
-import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
 import net.fabricmc.loom.task.ValidateMixinNameTask
+
+def debugArgs = [
+		"-enableassertions",
+		"-Dmixin.debug.verify=true",
+		"-Dmixin.debug.countInjections=true",
+		"-XX:+UseZGC",
+		"-XX:+UseCompactObjectHeaders",
+		"-XX:+AlwaysPreTouch",
+		"-XX:+UseStringDeduplication"
+]
 
 sourceSets {
 	testmod {
@@ -41,7 +50,7 @@ loom {
 }
 
 loom.runs.configureEach {
-	vmArgs(FabricApiBuildUtils.DEBUG_ARGS)
+	vmArgs(debugArgs)
 }
 
 dependencies {
@@ -57,7 +66,7 @@ dependencies {
 
 test {
 	useJUnitPlatform()
-	jvmArgs(FabricApiBuildUtils.DEBUG_ARGS)
+	jvmArgs(debugArgs)
 }
 
 tasks.register('testmodJar', Jar) {

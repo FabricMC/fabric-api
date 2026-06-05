@@ -41,16 +41,6 @@ public final class FabricApiBuildUtils {
 			"fabric-api-catalog"
 	);
 
-	public static final List<String> DEBUG_ARGS = List.of(
-			"-enableassertions",
-			"-Dmixin.debug.verify=true",
-			"-Dmixin.debug.countInjections=true",
-			"-XX:+UseZGC",
-			"-XX:+UseCompactObjectHeaders",
-			"-XX:+AlwaysPreTouch",
-			"-XX:+UseStringDeduplication"
-	);
-
 	public static final List<String> DEV_ONLY_MODULES = List.of(
 			"fabric-client-gametest-api-v1",
 			"fabric-gametest-api-v1"
