@@ -26,10 +26,15 @@ spotless {
 	lineEndings = com.diffplug.spotless.LineEnding.UNIX
 
 	java {
+		target("src/main/java/**/*.java")
 		licenseHeaderFile(file("../HEADER"))
 		removeUnusedImports()
 		importOrder('java', 'javax', '', 'net.minecraft', 'net.fabricmc')
 		indentWithTabs()
 		trimTrailingWhitespace()
 	}
+}
+
+tasks.withType(Checkstyle).configureEach {
+	source = fileTree("src/main/java")
 }

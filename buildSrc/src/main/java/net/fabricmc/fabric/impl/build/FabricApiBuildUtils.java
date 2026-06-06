@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.build;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -26,6 +27,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import groovy.json.JsonSlurper;
@@ -70,7 +72,7 @@ public final class FabricApiBuildUtils {
 	}
 
 	public static String rootVersion(Project project) {
-		var branchProvider = project.getProviders().of(GitBranchValueSource.class, spec -> { });
+		Provider<String> branchProvider = project.getProviders().of(GitBranchValueSource.class, spec -> { });
 		String suffix = project.getProviders().environmentVariable("CI").isPresent()
 				? branchProvider.get().replace("/", "_")
 				: "local";
@@ -88,7 +90,7 @@ public final class FabricApiBuildUtils {
 			return version + "+local";
 		}
 
-		var hashProvider = project.getProviders().of(CommitHashValueSource.class, spec -> {
+		Provider<String> hashProvider = project.getProviders().of(CommitHashValueSource.class, spec -> {
 			spec.getParameters().getDirectory().set(project.getName());
 		});
 
@@ -128,19 +130,19 @@ public final class FabricApiBuildUtils {
 		}
 
 		String artifactPath = "https://maven.fabricmc.net/net/fabricmc/fabric-api/%s/%s/%s-%s.pom".formatted(projectName, projectVersion, projectName, projectVersion);
-		var request = HttpRequest.newBuilder()
+		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(artifactPath))
 				.method("HEAD", HttpRequest.BodyPublishers.noBody())
 				.build();
 
-		try (var client = HttpClient.newHttpClient()) {
+		try (HttpClient client = HttpClient.newHttpClient()) {
 			HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
 			return response.statusCode() == 200;
 		}
 	}
 
 	public static void addPomMetadataInformation(Project project, MavenPom pom) {
-		var modJsonFile = project.file("src/main/resources/fabric.mod.json");
+		File modJsonFile = project.file("src/main/resources/fabric.mod.json");
 
 		if (!modJsonFile.exists()) {
 			modJsonFile = project.file("src/client/resources/fabric.mod.json");
@@ -176,7 +178,7 @@ public final class FabricApiBuildUtils {
 		for (Map<String, String> dependency : dependencies) {
 			Node depNode = depsNode.appendNode("dependency");
 
-			for (var entry : dependency.entrySet()) {
+			for (Entry<String, String> entry : dependency.entrySet()) {
 				depNode.appendNode(entry.getKey(), entry.getValue());
 			}
 		}
@@ -185,7 +187,7 @@ public final class FabricApiBuildUtils {
 	private static String sha256Hex(String input) {
 		try {
 			byte[] digest = MessageDigest.getInstance("SHA-256").digest(input.getBytes(StandardCharsets.UTF_8));
-			var builder = new StringBuilder(digest.length * 2);
+			StringBuilder builder = new StringBuilder(digest.length * 2);
 
 			for (byte value : digest) {
 				builder.append(String.format("%02x", value));

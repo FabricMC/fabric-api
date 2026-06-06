@@ -18,11 +18,15 @@ package net.fabricmc.fabric.impl.build;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.gradle.api.DefaultTask;
@@ -65,7 +69,7 @@ public abstract class AbstractGenerateClassTweakerTask extends DefaultTask {
 		lines.add("# DO NOT EDIT BY HAND! This file is generated automatically.");
 		lines.add("# Edit \"template.classtweaker\" instead then run \"gradlew generateClassTweaker\".");
 		lines.add("");
-		var template = getTemplate().get().getAsFile().toPath();
+		Path template = getTemplate().get().getAsFile().toPath();
 		lines.addAll(Files.readAllLines(template, StandardCharsets.UTF_8));
 
 		if (preserveTemplateTrailingNewline && Files.readString(template, StandardCharsets.UTF_8).endsWith("\n")) {
@@ -107,8 +111,8 @@ public abstract class AbstractGenerateClassTweakerTask extends DefaultTask {
 
 	private static void readClasses(File input, Map<String, ClassNode> classes) throws IOException {
 		try (ZipFile zip = new ZipFile(input)) {
-			for (var entries = zip.entries(); entries.hasMoreElements(); ) {
-				var entry = entries.nextElement();
+			for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements(); ) {
+				ZipEntry entry = entries.nextElement();
 
 				if (!entry.getName().endsWith(".class")) {
 					continue;
@@ -154,13 +158,13 @@ public abstract class AbstractGenerateClassTweakerTask extends DefaultTask {
 	}
 
 	private static ClassNode readClass(ZipFile zip, String path, int flags) throws IOException {
-		var entry = zip.getEntry(path);
+		ZipEntry entry = zip.getEntry(path);
 
 		if (entry == null) {
 			throw new IOException("Missing class " + path + " in " + zip.getName());
 		}
 
-		try (var inputStream = zip.getInputStream(entry)) {
+		try (InputStream inputStream = zip.getInputStream(entry)) {
 			ClassReader reader = new ClassReader(inputStream);
 			ClassNode classNode = new ClassNode();
 			reader.accept(classNode, flags);

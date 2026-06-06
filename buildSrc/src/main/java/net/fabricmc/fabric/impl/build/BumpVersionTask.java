@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.impl.build;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.gradle.api.DefaultTask;
@@ -53,11 +54,11 @@ public abstract class BumpVersionTask extends DefaultTask {
 
 	@TaskAction
 	public void runTask() throws IOException {
-		var toUpdate = new LinkedHashMap<String, Integer>();
+		LinkedHashMap<String, Integer> toUpdate = new LinkedHashMap<>();
 		readInteractiveUpdates(toUpdate);
 
 		while (true) {
-			var temp = new LinkedHashMap<String, Integer>();
+			LinkedHashMap<String, Integer> temp = new LinkedHashMap<>();
 
 			for (String projectName : toUpdate.keySet()) {
 				getApiDependencies().get().forEach((childProjectName, dependencies) -> {
@@ -75,10 +76,10 @@ public abstract class BumpVersionTask extends DefaultTask {
 			toUpdate.putAll(temp);
 		}
 
-		var gradlePropertiesFile = getGradlePropertiesFile().get().getAsFile();
+		File gradlePropertiesFile = getGradlePropertiesFile().get().getAsFile();
 		String text = java.nio.file.Files.readString(gradlePropertiesFile.toPath(), StandardCharsets.UTF_8);
 
-		for (var entry : toUpdate.entrySet()) {
+		for (Map.Entry<String, Integer> entry : toUpdate.entrySet()) {
 			String projectName = entry.getKey();
 			int index = entry.getValue();
 			String version = getModuleVersions().get().get(projectName);
@@ -103,7 +104,7 @@ public abstract class BumpVersionTask extends DefaultTask {
 	}
 
 	private void readInteractiveUpdates(LinkedHashMap<String, Integer> toUpdate) {
-		var scanner = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in);
 
 		while (true) {
 			System.out.println("Enter module name to update, or done to continue");

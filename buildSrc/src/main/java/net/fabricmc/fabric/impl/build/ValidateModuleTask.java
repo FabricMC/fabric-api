@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.build;
 
+import java.io.File;
 import java.util.Map;
 
 import groovy.json.JsonSlurper;
@@ -44,7 +45,7 @@ public abstract class ValidateModuleTask extends DefaultTask {
 		setGroup("verification");
 		getOutputs().upToDateWhen(task -> true);
 
-		var file = getProject().file("src/main/resources/fabric.mod.json");
+		File file = getProject().file("src/main/resources/fabric.mod.json");
 
 		if (!file.exists()) {
 			file = getProject().file("src/client/resources/fabric.mod.json");
