@@ -190,4 +190,4 @@ tasks.register('generateClassTweaker', GenerateTransitiveAccessWidenersClassTwea
 }
 
 generateResources.dependsOn generateClassTweaker
-processResources.dependsOn generateClassTweaker
+processResources.mustRunAfter generateClassTweaker

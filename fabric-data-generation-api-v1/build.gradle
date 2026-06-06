@@ -199,4 +199,4 @@ tasks.register('generateClassTweaker', GenerateDataClassTweakerTask) {
 
 generateResources.dependsOn generateClassTweaker
 generateResources.dependsOn runDatagenClient
-processResources.dependsOn generateClassTweaker
+processResources.mustRunAfter generateClassTweaker
