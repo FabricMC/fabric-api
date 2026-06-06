@@ -1,0 +1,20 @@
+[versions]
+fabric-loader = "0.18.4"
+fabric-installer = "1.0.1"
+fabric-loom = "1.17.0-alpha.19"
+spotless = "8.6.0"
+remote-sign = "0.5.0"
+mod-publish = "2.0.0-beta.1"
+checkstyle = "13.5.0"
+mockito = "5.23.0"
+
+[libraries]
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+fabric-loader-junit = { module = "net.fabricmc:fabric-loader-junit", version.ref = "fabric-loader" }
+fabric-loom = { module = "net.fabricmc:fabric-loom", version.ref = "fabric-loom" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+
+[plugins]
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+remote-sign = { id = "me.modmuss50.remotesign", version.ref = "remote-sign" }
+mod-publish = { id = "me.modmuss50.mod-publish-plugin", version.ref = "mod-publish" }

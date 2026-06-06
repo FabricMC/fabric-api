@@ -1,3 +1,5 @@
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
+
 plugins {
 	id "checkstyle"
 	id "com.diffplug.spotless"
@@ -5,7 +7,7 @@ plugins {
 
 checkstyle {
 	configFile = rootProject.file("checkstyle.xml")
-	toolVersion = "13.3.0"
+	toolVersion = FabricApiBuildUtils.version(project, "checkstyle")
 }
 
 spotless {

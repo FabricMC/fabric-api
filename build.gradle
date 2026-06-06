@@ -1,6 +1,6 @@
 plugins {
-	id "com.diffplug.spotless" version "8.5.1" apply false
-	id "me.modmuss50.remotesign" version "0.5.0" apply false
-	id "me.modmuss50.mod-publish-plugin" version "2.0.0-beta.1" apply false
+	alias(libs.plugins.spotless) apply false
+	alias(libs.plugins.remote.sign) apply false
+	alias(libs.plugins.mod.publish) apply false
 	id "fabric-api.root"
 }

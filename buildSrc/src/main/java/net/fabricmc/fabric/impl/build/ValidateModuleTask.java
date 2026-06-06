@@ -53,7 +53,7 @@ public abstract class ValidateModuleTask extends DefaultTask {
 		getFmj().set(file);
 		getProjectName().set(getProject().getName());
 		getProjectPath().set(getProject().getPath());
-		getLoaderVersion().set(getProject().property("loader_version").toString());
+		getLoaderVersion().set(FabricApiBuildUtils.version(getProject(), "fabric-loader"));
 	}
 
 	@TaskAction

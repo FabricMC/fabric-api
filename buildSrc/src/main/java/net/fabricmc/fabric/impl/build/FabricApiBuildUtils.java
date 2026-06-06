@@ -31,7 +31,11 @@ import java.util.Set;
 import groovy.json.JsonSlurper;
 import groovy.util.Node;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.MinimalExternalModuleDependency;
+import org.gradle.api.artifacts.VersionCatalog;
+import org.gradle.api.artifacts.VersionCatalogsExtension;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.maven.MavenPom;
 
 public final class FabricApiBuildUtils {
@@ -89,6 +93,21 @@ public final class FabricApiBuildUtils {
 		});
 
 		return version + "+" + hashProvider.get().substring(0, 8) + sha256Hex(project.getRootProject().property("minecraft_version").toString()).substring(0, 2);
+	}
+
+	public static String version(Project project, String alias) {
+		return libs(project).findVersion(alias)
+				.orElseThrow(() -> new IllegalStateException("Missing version catalog entry: " + alias))
+				.getRequiredVersion();
+	}
+
+	public static Provider<MinimalExternalModuleDependency> library(Project project, String alias) {
+		return libs(project).findLibrary(alias)
+				.orElseThrow(() -> new IllegalStateException("Missing version catalog entry: " + alias));
+	}
+
+	private static VersionCatalog libs(Project project) {
+		return project.getExtensions().getByType(VersionCatalogsExtension.class).named("libs");
 	}
 
 	public static void setupRepositories(Project project, RepositoryHandler repositories) {

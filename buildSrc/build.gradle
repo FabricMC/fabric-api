@@ -1,7 +1,7 @@
 plugins {
 	id 'groovy-gradle-plugin'
 	id 'checkstyle'
-	id "com.diffplug.spotless" version "6.20.0"
+	alias(libs.plugins.spotless)
 }
 
 repositories {
@@ -14,12 +14,12 @@ repositories {
 }
 
 dependencies {
-	implementation "net.fabricmc:fabric-loom:1.17.0-alpha.19"
+	implementation libs.fabric.loom
 }
 
 checkstyle {
 	configFile = file("../checkstyle.xml")
-	toolVersion = "10.20.2"
+	toolVersion = libs.versions.checkstyle.get()
 }
 
 spotless {

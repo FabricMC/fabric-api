@@ -1,3 +1,5 @@
+import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
+
 plugins {
 	id "fabric-api.module"
 }
@@ -18,7 +20,7 @@ configurations {
 }
 
 dependencies {
-	mixinConfigImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	mixinConfigImplementation FabricApiBuildUtils.library(project, "fabric-loader")
 }
 
 tasks.named("jar", Jar) {
