@@ -1,3 +1,11 @@
+import net.fabricmc.fabric.impl.build.AbstractGenerateClassTweakerTask
+
+import org.gradle.api.tasks.TaskAction
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
+
 plugins {
 	id 'fabric-api.module'
 }
@@ -13,215 +21,181 @@ fabricApiModule {
 	)
 }
 
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassVisitor
-import org.objectweb.asm.MethodVisitor
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.Type
-import org.objectweb.asm.tree.ClassNode
+abstract class GenerateTransitiveAccessWidenersClassTweakerTask extends AbstractGenerateClassTweakerTask {
+	@TaskAction
+	void run() {
+		List<String> lines = new ArrayList<>()
+		addHeader(lines, "accessWidener v2 official")
 
-import java.nio.file.FileSystem
-import java.nio.file.FileSystems
-import java.nio.file.Files
-import java.nio.file.Path
-
-tasks.register('generateClassTweaker') {
-	doLast {
-		List<String> lines = new ArrayList<>();
-		lines.add("accessWidener v2 official")
+		generateBlockConstructors(lines)
 		lines.add("")
-		lines.add("# DO NOT EDIT BY HAND! This file is generated automatically.")
-		lines.add("# Edit \"template.classtweaker\" instead then run \"gradlew generateClassTweaker\".")
+		generateCreatorEntityTrackedDataMethods(lines)
 		lines.add("")
-		lines.addAll(file("template.classtweaker").text.lines().toList())
-
-		Path commonJar = loom.namedMinecraftProvider.parentMinecraftProvider.commonJar.path
-
-		FileSystems.newFileSystem(URI.create("jar:${commonJar.toUri()}"), [create: false]).withCloseable { fs ->
-			generateBlockConstructors(lines, fs)
-			lines.add("")
-			generateCreatorEntityTrackedDataMethods(lines, fs)
-			lines.add("")
-			generateEnchantmentMethods(lines, fs)
-			lines.add("")
-			generateNoiseRouterDataFieldsAndMethods(lines, fs)
-			lines.add("")
-		}
-
-		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar.path
-
-		FileSystems.newFileSystem(URI.create("jar:${clientJar.toUri()}"), [create: false]).withCloseable { fs ->
-			generateRenderPipelinesFields(lines, fs)
-		}
-
-		file('src/main/resources/fabric-transitive-access-wideners-v1.classtweaker').text = String.join('\n', lines) + '\n'
+		generateEnchantmentMethods(lines)
+		lines.add("")
+		generateNoiseRouterDataFieldsAndMethods(lines)
+		lines.add("")
+		generateRenderPipelinesFields(lines)
 
 		validateAccessWidener(lines)
+		writeOutput(lines)
 	}
-}
 
-def generateBlockConstructors(List<String> lines, FileSystem fs) {
-	lines.add("# Constructors of non-abstract block classes")
-	Files.list(fs.getPath("net/minecraft/world/level/block/"))
-			.filter { Files.isRegularFile(it) && it.toString().endsWith(".class") }
-			.map { loadClass(it) }
-			.sorted(Comparator.comparing { it.name })
-			.filter { (it.access & Opcodes.ACC_ABSTRACT) == 0 }
-			.forEach { node ->
-				for (def method : node.methods) {
-					// Checklist for finding block constructors as of 1.19.3:
-					//  - class directly in net.minecraft.block (excluding subpackages)
-					//  - method name == <init> (by definition)
-					//  - contains an AbstractBlock$Settings parameter
-					//  - only taking into account non-abstract classes and non-public constructors
+	private void generateBlockConstructors(List<String> lines) {
+		lines.add("# Constructors of non-abstract block classes")
 
-					// Block constructor...
-					if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/world/level/block/state/BlockBehaviour$Properties' }) {
-						// ...and non-public
-						if ((method.access & Opcodes.ACC_PUBLIC) == 0) {
-							lines.add("transitive-accessible method $node.name <init> $method.desc")
+		readPackageClasses("net/minecraft/world/level/block")
+				.toSorted { it.name }
+				.findAll { (it.access & Opcodes.ACC_ABSTRACT) == 0 }
+				.forEach { node ->
+					for (def method : node.methods) {
+						def takesBlockProperties = Type.getArgumentTypes(method.desc).any {
+							it.internalName == "net/minecraft/world/level/block/state/BlockBehaviour\$Properties"
+						}
+
+						if (method.name == "<init>" && takesBlockProperties && (method.access & Opcodes.ACC_PUBLIC) == 0) {
+							lines.add("transitive-accessible method ${node.name} <init> ${method.desc}")
 						}
 					}
 				}
+	}
+
+	private void generateRenderPipelinesFields(List<String> lines) {
+		lines.add("# private fields of RenderPipelines")
+		def node = readClass("net/minecraft/client/renderer/RenderPipelines")
+
+		for (def field : node.fields) {
+			if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/blaze3d/pipeline/RenderPipeline\$Snippet;") {
+				lines.add("transitive-accessible field ${node.name} ${field.name} ${field.desc}")
 			}
-}
+		}
 
-def generateRenderPipelinesFields(List<String> lines, FileSystem fs) {
-	lines.add("# private fields of RenderPipelines")
-
-	def node = loadClass(fs.getPath("net/minecraft/client/renderer/RenderPipelines.class"))
-
-	for (def field : node.fields) {
-		// All private fields of RenderPipelines of type RenderPipeline.Snippet
-		if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/blaze3d/pipeline/RenderPipeline\$Snippet;") {
-			lines.add("transitive-accessible field $node.name ${field.name} ${field.desc}")
+		for (def method : node.methods) {
+			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0) {
+				lines.add("transitive-accessible method ${node.name} ${method.name} ${method.desc}")
+			}
 		}
 	}
 
-	for (def method : node.methods) {
-		if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0) {
-			lines.add("transitive-accessible method $node.name $method.name $method.desc")
+	private void generateNoiseRouterDataFieldsAndMethods(List<String> lines) {
+		lines.add("# private fields of NoiseRouterData")
+		def node = readClass("net/minecraft/world/level/levelgen/NoiseRouterData")
+
+		for (def field : node.fields) {
+			if ((field.access & Opcodes.ACC_PRIVATE) != 0) {
+				lines.add("transitive-accessible field ${node.name} ${field.name} ${field.desc}")
+			}
+		}
+
+		lines.add("# private and protected methods of NoiseRouterData")
+
+		for (def method : node.methods) {
+			if ((method.access & (Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) != 0 && !method.name.startsWith("lambda") && method.name != "createKey") {
+				lines.add("transitive-accessible method ${node.name} ${method.name} ${method.desc}")
+			}
 		}
 	}
-}
 
-def generateNoiseRouterDataFieldsAndMethods(List<String> lines, FileSystem fs) {
-	lines.add("# private fields of NoiseRouterData")
+	private void generateTrackedDataFields(String className, List<String> lines, String... extraMethods) {
+		Set<String> collectedWideners = new LinkedHashSet<>()
 
-	def node = loadClass(fs.getPath("net/minecraft/world/level/levelgen/NoiseRouterData.class"))
-
-	for (def field : node.fields) {
-		// Every field can be useful
-		if ((field.access & Opcodes.ACC_PRIVATE) != 0) {
-			lines.add("transitive-accessible field $node.name $field.name $field.desc")
-		}
-	}
-
-	lines.add("# private and protected methods of NoiseRouterData")
-
-	for (def method : node.methods) {
-		// Every method can be useful, but using the vanilla namespace is not recommended
-		if ((method.access & (Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) && !method.name.startsWith("lambda") && method.name != "createKey") {
-			lines.add("transitive-accessible method $node.name $method.name $method.desc")
-		}
-	}
-}
-
-def generateTrackedDataFields(String className, List<String> lines, FileSystem fs, String... extraMethods) {
-	// using a set to prevent duplicates from multiple dataTracker references in a single method
-	// linked to preserve order and improve generated access widener readability
-	Set<String> collectedWideners = new LinkedHashSet<>()
-
-	loadClass(fs.getPath("${className}.class")).accept(
-		new ClassVisitor(Opcodes.ASM9) {
+		readClass(className).accept(new ClassVisitor(Opcodes.ASM9) {
 			@Override
 			MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
 				boolean isExtra = extraMethods.contains(name)
-				if (!isExtra) {
-					// check for desired methods
-					if (!name.startsWith("get") && !name.startsWith("set")) {
-						return null
-					}
 
-					// check methods as genuine basic getter/setters
-					int parameterCount = Type.getArgumentCount(descriptor)
-
-					if (name.startsWith("get") && parameterCount != 0) {
-						return null
-					}
-
-					if (name.startsWith("set") && parameterCount != 1) {
-						return null
-					}
-				} else {
-					println name
+				if (!isExtra && !isTrackedDataAccessor(name, descriptor)) {
+					return null
 				}
 
 				return new MethodVisitor(Opcodes.ASM9) {
 					@Override
 					void visitFieldInsn(int opcode, String owner, String fieldName, String fieldDescriptor) {
-						// check references its dataTracker field
-						if (isExtra || (fieldName == "entityData" && opcode == Opcodes.GETFIELD)) {
-							collectedWideners.add("transitive-accessible method $className $name $descriptor")
+						if (isExtra || fieldName == "entityData" && opcode == Opcodes.GETFIELD) {
+							collectedWideners.add("transitive-accessible method ${className} ${name} ${descriptor}")
 						}
 					}
 				}
 			}
-		}
-	)
+		})
 
-	lines.addAll(collectedWideners)
-}
+		lines.addAll(collectedWideners)
+	}
 
-def generateCreatorEntityTrackedDataMethods(List<String> lines, FileSystem fs) {
-	lines.add("# Private tracked data related methods of DisplayEntity (plus its subclasses) and InteractionEntity")
+	private void generateCreatorEntityTrackedDataMethods(List<String> lines) {
+		lines.add("# Private tracked data related methods of DisplayEntity (plus its subclasses) and InteractionEntity")
+		generateTrackedDataFields("net/minecraft/world/entity/Display", lines, "getTransformation")
+		generateTrackedDataFields("net/minecraft/world/entity/Display\$ItemDisplay", lines)
+		generateTrackedDataFields("net/minecraft/world/entity/Display\$BlockDisplay", lines)
+		generateTrackedDataFields("net/minecraft/world/entity/Display\$TextDisplay", lines)
+		generateTrackedDataFields("net/minecraft/world/entity/Interaction", lines, "shouldRespond")
+	}
 
-	generateTrackedDataFields("net/minecraft/world/entity/Display", lines, fs, "getTransformation")
-	generateTrackedDataFields("net/minecraft/world/entity/Display\$ItemDisplay", lines, fs)
-	generateTrackedDataFields("net/minecraft/world/entity/Display\$BlockDisplay", lines, fs)
-	generateTrackedDataFields("net/minecraft/world/entity/Display\$TextDisplay", lines, fs)
-	generateTrackedDataFields("net/minecraft/world/entity/Interaction", lines, fs, "shouldRespond")
-}
+	private void generateEnchantmentMethods(List<String> lines) {
+		lines.add("# Private methods of Enchantment and EnchantmentHelper")
 
-def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
-	lines.add("# Private methods of Enchantment and EnchantmentHelper")
-
-	for (def node : [ loadClass(fs.getPath("net/minecraft/world/item/enchantment/EnchantmentHelper.class")), loadClass(fs.getPath("net/minecraft/world/item/enchantment/Enchantment.class")) ]) {
-		for (def method : node.methods) {
-			// All private inner methods of EnchantmentHelper
-			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("lambda\$")) {
-				lines.add("transitive-accessible method $node.name $method.name $method.desc")
+		for (def node : [
+				readClass("net/minecraft/world/item/enchantment/EnchantmentHelper"),
+				readClass("net/minecraft/world/item/enchantment/Enchantment")
+		]) {
+			for (def method : node.methods) {
+				if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("lambda\$")) {
+					lines.add("transitive-accessible method ${node.name} ${method.name} ${method.desc}")
+				}
 			}
 		}
-	}
-	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor')
-	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor')
-	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$GenericAction')
-	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$FloatAction')
-}
 
-ClassNode loadClass(Path path) {
-	def node = new ClassNode()
-
-	Files.newInputStream(path).withCloseable { is ->
-		new ClassReader(is).accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
+		lines.add("transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper\$EnchantmentVisitor")
+		lines.add("transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper\$EnchantmentInSlotVisitor")
+		lines.add("transitive-accessible class net/minecraft/world/item/enchantment/Enchantment\$GenericAction")
+		lines.add("transitive-accessible class net/minecraft/world/item/enchantment/Enchantment\$FloatAction")
 	}
 
-	return node
-}
+	private static boolean isTrackedDataAccessor(String name, String descriptor) {
+		int parameterCount = Type.getArgumentCount(descriptor)
 
-def validateAccessWidener(List<String> lines) {
-	List<String> exceptions = new ArrayList<>()
+		if (name.startsWith("get")) {
+			return parameterCount == 0
+		}
 
-	for (int i = 0; i < lines.size(); i++) {
-		String line = lines.get(i)
-		if (line.isBlank() || line.startsWith("#") || line.startsWith("transitive-") || line.startsWith("accessWidener")) continue
+		if (name.startsWith("set")) {
+			return parameterCount == 1
+		}
+
+		return false
+	}
+
+	private static void validateAccessWidener(List<String> lines) {
+		List<String> exceptions = new ArrayList<>()
+
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i)
+
+			if (line.isBlank() || line.startsWith("#") || line.startsWith("transitive-") || line.startsWith("accessWidener")) {
+				continue
+			}
+
 			exceptions.add(String.valueOf(i + 1))
-	}
+		}
 
-	if (exceptions.size() > 0) {
-		throw new InvalidUserDataException("\"fabric-transitive-access-wideners-v1.classtweaker\" contains non-transitive access modifiers at lines: [" + String.join(", ", exceptions) + "]")
+		if (!exceptions.isEmpty()) {
+			throw new RuntimeException("\"fabric-transitive-access-wideners-v1.classtweaker\" contains non-transitive access modifiers at lines: [${String.join(", ", exceptions)}]")
+		}
+	}
+}
+
+tasks.register('generateClassTweaker', GenerateTransitiveAccessWidenersClassTweakerTask) {
+	template = file("template.classtweaker")
+	outputFile = file("src/main/resources/fabric-transitive-access-wideners-v1.classtweaker")
+}
+
+afterEvaluate {
+	tasks.named('generateClassTweaker', GenerateTransitiveAccessWidenersClassTweakerTask) {
+		// Use parent provider to get the jar before the AWs are applied.
+		def minecraftProvider = loom.namedMinecraftProvider.parentMinecraftProvider
+		minecraftJars.from(files(minecraftProvider.commonJar.path.toFile(), minecraftProvider.clientOnlyJar.path.toFile()))
 	}
 }
 
 generateResources.dependsOn generateClassTweaker
+processResources.dependsOn generateClassTweaker

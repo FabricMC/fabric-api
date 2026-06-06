@@ -1,3 +1,11 @@
+import net.fabricmc.fabric.impl.build.AbstractGenerateClassTweakerTask
+
+import org.gradle.api.tasks.TaskAction
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.ClassNode
+
+import java.lang.reflect.Modifier
+
 plugins {
 	id 'fabric-api.module'
 }
@@ -76,145 +84,127 @@ tasks.register('datapackZip', Zip) {
 
 build.dependsOn datapackZip
 
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.tree.ClassNode
+abstract class GenerateDataClassTweakerTask extends AbstractGenerateClassTweakerTask {
+	@TaskAction
+	void run() {
+		def classes = readClasses()
+		def task = this
+		List<String> lines = new ArrayList<>()
+		addHeader(lines, "classTweaker\tv1\tofficial", true)
 
-import java.lang.reflect.Modifier
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-
-tasks.register('generateClassTweaker') {
-	inputs.files(loom.getNamedMinecraftJars())
-
-	doLast {
-		// Use parent provider to get the jar before the AWs are applied
-		def minecraftProvider = loom.namedMinecraftProvider.parentMinecraftProvider
-		def commonJar = minecraftProvider.commonJar.path.toFile()
-		def clientJar = minecraftProvider.clientOnlyJar.path.toFile()
-		def classes = getClasses([commonJar, clientJar])
-
-		String out = "classTweaker\tv1\tofficial\n"
-		out += "\n"
-		out += "# DO NOT EDIT BY HAND! This file is generated automatically.\n"
-		out += "# Edit \"template.classtweaker\" instead then run \"gradlew generateClassTweaker\".\n"
-		out += "\n"
-		out += file("template.classtweaker").text + "\n"
-
-		visitMethods(classes["net/minecraft/data/recipes/RecipeProvider"]) { name, desc, owner ->
-			if (it.name == "generate")
+		visitMethods(classes.get("net/minecraft/data/recipes/RecipeProvider")) { method, owner ->
+			if (method.name == "generate") {
 				return
+			}
 
-			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+			task.addMethod(lines, "transitive-accessible", owner, method)
 		}
 
-		visitMethods(classes["net/minecraft/client/data/models/BlockModelGenerators"]) { name, desc, owner ->
-			if (desc == "()V")
-				// Skip over methods that dont take any arguments, as they are specific to minecraft.
+		visitMethods(classes.get("net/minecraft/client/data/models/BlockModelGenerators")) { method, owner ->
+			if (method.desc == "()V") {
 				return
+			}
 
-			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+			task.addMethod(lines, "transitive-accessible", owner, method)
 		}
 
-		visitMethods(classes["net/minecraft/data/loot/BlockLootSubProvider"]) { name, desc, owner ->
-			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		visitMethods(classes.get("net/minecraft/data/loot/BlockLootSubProvider")) { method, owner ->
+			task.addMethod(lines, "transitive-accessible", owner, method)
 		}
 
-		visitMethods(classes["net/minecraft/client/data/models/ItemModelGenerators"]) { name, desc, owner ->
-			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
+		visitMethods(classes.get("net/minecraft/client/data/models/ItemModelGenerators")) { method, owner ->
+			task.addMethod(lines, "transitive-accessible", owner, method)
 		}
 
 		classes.values().forEach { classNode ->
-			visitFinalMethods(classNode) { name, desc, owner ->
-				if (name != "getName" || desc != "()Ljava/lang/String;") {
-					// Not the method we are after
+			visitFinalMethods(classNode) { method, owner ->
+				if (method.name != "getName" || method.desc != "()Ljava/lang/String;") {
 					return
 				}
 
-				if (!hasAncestor(classNode, classes, "net/minecraft/data/DataProvider")) {
-					// Not a descendant of DataProvider
+				if (!task.hasAncestor(classNode, classes, "net/minecraft/data/DataProvider")) {
 					return
 				}
 
-				out += "transitive-extendable\tmethod\t${owner}\t${name}\t${desc}\n"
+				task.addMethod(lines, "transitive-extendable", owner, method)
 			}
 		}
 
-		file("src/main/resources/fabric-data-generation-api-v1.classtweaker").text = out
+		writeOutput(lines)
 	}
-}
 
-static def visitMethods(ClassNode classNode, closure) {
-	classNode.methods.forEach {
-		if ((it.access & Opcodes.ACC_SYNTHETIC) != 0 || (it.access & Opcodes.ACC_PUBLIC) != 0)
-			return
-
-		if (it.name.startsWith("<"))
-			return
-
-		closure(it.name, it.desc, classNode.name)
+	void addMethod(List<String> lines, String access, String owner, method) {
+		lines.add("${access}\tmethod\t${owner}\t${method.name}\t${method.desc}")
 	}
-}
 
-static def visitFinalMethods(ClassNode classNode, closure) {
-	classNode.methods.forEach {
-		if (!Modifier.isFinal(it.access))
-			return
+	void visitMethods(ClassNode classNode, Closure visitor) {
+		classNode.methods.forEach { method ->
+			if ((method.access & Opcodes.ACC_SYNTHETIC) != 0 || (method.access & Opcodes.ACC_PUBLIC) != 0) {
+				return
+			}
 
-		if (it.name.startsWith("<"))
-			return
+			if (method.name.startsWith("<")) {
+				return
+			}
 
-		closure(it.name, it.desc, classNode.name)
+			visitor(method, classNode.name)
+		}
 	}
-}
 
-// Return a map of all class names to classNodes
-static def getClasses(List<File> inputs) {
-	Map<String, ClassNode> classes = new TreeMap<>()
+	void visitFinalMethods(ClassNode classNode, Closure visitor) {
+		classNode.methods.forEach { method ->
+			if (!Modifier.isFinal(method.access)) {
+				return
+			}
 
-	for (File input : inputs) {
-		new ZipFile(input).withCloseable { ZipFile zip  ->
-			zip.entries().toList().forEach { ZipEntry entry ->
-				if (!entry.name.endsWith(".class")) {
-					return
-				}
+			if (method.name.startsWith("<")) {
+				return
+			}
 
-				zip.getInputStream(entry).withCloseable { is ->
-					ClassReader reader = new ClassReader(is)
-					ClassNode classNode = new ClassNode()
-					reader.accept(classNode, ClassReader.SKIP_CODE)
+			visitor(method, classNode.name)
+		}
+	}
 
-					classes.put(classNode.name, classNode)
-				}
+	boolean hasAncestor(ClassNode classNode, Map<String, ClassNode> classes, String ancestorName) {
+		if (classNode.superName == ancestorName) {
+			return true
+		}
+
+		def superClass = classes.get(classNode.superName)
+
+		if (superClass != null && hasAncestor(superClass, classes, ancestorName)) {
+			return true
+		}
+
+		for (String interfaceName : classNode.interfaces) {
+			if (interfaceName == ancestorName) {
+				return true
+			}
+
+			def ifaceClass = classes.get(interfaceName)
+
+			if (ifaceClass != null && hasAncestor(ifaceClass, classes, ancestorName)) {
+				return true
 			}
 		}
-	}
 
-	return classes
+		return false
+	}
 }
 
-def hasAncestor(ClassNode classNode, Map<String, ClassNode> classes, String ancestorName) {
-	if (classNode.superName == ancestorName) {
-		return true
-	}
+tasks.register('generateClassTweaker', GenerateDataClassTweakerTask) {
+	template = file("template.classtweaker")
+	outputFile = file("src/main/resources/fabric-data-generation-api-v1.classtweaker")
+}
 
-	// Recuse through the super classes
-	def superClass = classes.get(classNode.superName)
-	if (superClass != null && hasAncestor(superClass, classes, ancestorName)) {
-		return true
-	}
-
-	for (def interfaceName : classNode.interfaces) {
-		if (interfaceName == ancestorName) {
-			return true
-		}
-
-		def ifaceClass = classes.get(interfaceName)
-		if (ifaceClass != null && hasAncestor(ifaceClass, classes, ancestorName)) {
-			return true
-		}
+afterEvaluate {
+	tasks.named('generateClassTweaker', GenerateDataClassTweakerTask) {
+		// Use parent provider to get the jar before the AWs are applied.
+		def minecraftProvider = loom.namedMinecraftProvider.parentMinecraftProvider
+		minecraftJars.from(files(minecraftProvider.commonJar.path.toFile(), minecraftProvider.clientOnlyJar.path.toFile()))
 	}
 }
 
 generateResources.dependsOn generateClassTweaker
 generateResources.dependsOn runDatagenClient
+processResources.dependsOn generateClassTweaker
