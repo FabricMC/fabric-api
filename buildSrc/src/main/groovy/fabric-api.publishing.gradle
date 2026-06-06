@@ -2,33 +2,14 @@ import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
 import org.gradle.api.publish.maven.MavenPublication
 
 plugins {
-	id "maven-publish"
-	id "me.modmuss50.remotesign"
+	id "fabric-api.base-publishing"
 }
 
-group = "net.fabricmc.fabric-api"
 base {
 	archivesName = project.name
 }
 
-tasks.withType(GenerateModuleMetadata).configureEach {
-	enabled = false
-}
-
-remoteSign {
-	requestUrl = providers.environmentVariable("SIGNING_SERVER")
-	pgpAuthKey = providers.environmentVariable("SIGNING_PGP_KEY")
-	jarAuthKey = providers.environmentVariable("SIGNING_JAR_KEY")
-	useDummyForTesting = !providers.environmentVariable("SIGNING_SERVER").present
-
-	afterEvaluate {
-		sign publishing.publications.mavenJava
-	}
-}
-
 publishing {
-	FabricApiBuildUtils.setupRepositories(project, repositories)
-
 	publications {
 		mavenJava(MavenPublication) {
 			pom {

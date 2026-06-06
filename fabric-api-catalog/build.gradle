@@ -2,7 +2,7 @@ import org.gradle.api.publish.maven.MavenPublication
 
 plugins {
 	id "version-catalog"
-	id "fabric-api.meta-publishing"
+	id "fabric-api.base-publishing"
 }
 
 version = rootProject.version

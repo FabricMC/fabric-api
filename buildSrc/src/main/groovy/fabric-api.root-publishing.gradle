@@ -4,7 +4,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.external.javadoc.JavadocMemberLevel
 
 plugins {
-	id "fabric-api.publishing"
+	id "fabric-api.base-publishing"
 	id "me.modmuss50.mod-publish-plugin"
 }
 
@@ -48,6 +48,17 @@ tasks.register('javadocJar', Jar) {
 }
 
 build.dependsOn javadocJar
+
+remoteSign {
+	sign jar
+}
+
+String archivesName = project.base.archivesName.get()
+[jar, sourcesJar].each {
+	it.from(rootProject.file("LICENSE")) {
+		rename { "${it}-${archivesName}" }
+	}
+}
 
 publishing {
 	publications {
