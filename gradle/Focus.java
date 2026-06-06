@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  */
 public class Focus {
 	// Matches the content of moduleDependencies and testDependencies
-	private static final Pattern OUTER_PATTERN = Pattern.compile("(?:moduleDependencies|testDependencies)\\s*\\(.*?\\[\\s*([\\s\\S]*?)\\s*\\]\\s*\\)\n");
+	private static final Pattern OUTER_PATTERN = Pattern.compile("(?:moduleDependencies|testDependencies)\\s*\\(\\s*([\\s\\S]*?)\\s*\\)");
 	// Matches the dependency string
 	private static final Pattern INNER_PATTERN = Pattern.compile("['\\\"]([^'\\\"]+)['\\\"]");
 
