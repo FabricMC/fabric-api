@@ -30,7 +30,7 @@ spotless {
 		licenseHeaderFile(file("../HEADER"))
 		removeUnusedImports()
 		importOrder('java', 'javax', '', 'net.minecraft', 'net.fabricmc')
-		indentWithTabs()
+		leadingSpacesToTabs()
 		trimTrailingWhitespace()
 	}
 }
