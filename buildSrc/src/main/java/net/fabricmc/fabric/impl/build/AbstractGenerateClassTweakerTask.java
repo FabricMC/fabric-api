@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.ZipFile;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
-
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.RegularFileProperty;
@@ -36,6 +33,11 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+
+import net.fabricmc.loom.LoomGradleExtension;
+import net.fabricmc.loom.api.mappings.layered.MappingsNamespace;
 
 public abstract class AbstractGenerateClassTweakerTask extends DefaultTask {
 	@InputFiles
@@ -48,6 +50,10 @@ public abstract class AbstractGenerateClassTweakerTask extends DefaultTask {
 
 	@OutputFile
 	public abstract RegularFileProperty getOutputFile();
+
+	public AbstractGenerateClassTweakerTask() {
+		getMinecraftJars().from(getProject().provider(() -> LoomGradleExtension.get(getProject()).getMinecraftJars(MappingsNamespace.OFFICIAL)));
+	}
 
 	protected void addHeader(List<String> lines, String format) throws IOException {
 		addHeader(lines, format, false);

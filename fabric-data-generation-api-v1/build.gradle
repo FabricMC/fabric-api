@@ -197,14 +197,6 @@ tasks.register('generateClassTweaker', GenerateDataClassTweakerTask) {
 	outputFile = file("src/main/resources/fabric-data-generation-api-v1.classtweaker")
 }
 
-afterEvaluate {
-	tasks.named('generateClassTweaker', GenerateDataClassTweakerTask) {
-		// Use parent provider to get the jar before the AWs are applied.
-		def minecraftProvider = loom.namedMinecraftProvider.parentMinecraftProvider
-		minecraftJars.from(files(minecraftProvider.commonJar.path.toFile(), minecraftProvider.clientOnlyJar.path.toFile()))
-	}
-}
-
 generateResources.dependsOn generateClassTweaker
 generateResources.dependsOn runDatagenClient
 processResources.dependsOn generateClassTweaker

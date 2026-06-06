@@ -189,13 +189,5 @@ tasks.register('generateClassTweaker', GenerateTransitiveAccessWidenersClassTwea
 	outputFile = file("src/main/resources/fabric-transitive-access-wideners-v1.classtweaker")
 }
 
-afterEvaluate {
-	tasks.named('generateClassTweaker', GenerateTransitiveAccessWidenersClassTweakerTask) {
-		// Use parent provider to get the jar before the AWs are applied.
-		def minecraftProvider = loom.namedMinecraftProvider.parentMinecraftProvider
-		minecraftJars.from(files(minecraftProvider.commonJar.path.toFile(), minecraftProvider.clientOnlyJar.path.toFile()))
-	}
-}
-
 generateResources.dependsOn generateClassTweaker
 processResources.dependsOn generateClassTweaker
