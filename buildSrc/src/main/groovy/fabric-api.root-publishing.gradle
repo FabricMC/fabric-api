@@ -84,6 +84,8 @@ publishMods {
 		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
 		projectId = "306612"
 		project.curseforge_minecraft_versions.split(",").each { minecraftVersions.add(it.trim()) }
+		client = true
+		server = true
 	}
 
 	modrinth {
