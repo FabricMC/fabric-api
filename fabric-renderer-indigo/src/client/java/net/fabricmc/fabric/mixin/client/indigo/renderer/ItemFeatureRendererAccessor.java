@@ -26,13 +26,13 @@ import net.minecraft.world.item.ItemDisplayContext;
 
 @Mixin(ItemFeatureRenderer.class)
 public interface ItemFeatureRendererAccessor {
-	@Invoker("useTransparentGlint")
-	static boolean fabric_useTransparentGlint(RenderType renderType) {
+	@Invoker("computeFoilDecalPose")
+	static PoseStack.Pose fabric_computeFoilDecalPose(ItemDisplayContext type, PoseStack.Pose pose) {
 		throw new AssertionError();
 	}
 
-	@Invoker("computeFoilDecalPose")
-	static PoseStack.Pose fabric_computeFoilDecalPose(ItemDisplayContext type, PoseStack.Pose pose) {
+	@Invoker("useTransparentGlint")
+	static boolean fabric_useTransparentGlint(RenderType renderType) {
 		throw new AssertionError();
 	}
 }

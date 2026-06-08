@@ -54,7 +54,7 @@ abstract class ModelManagerBlockOnlyMaterialBakerMixin implements FabricMaterial
 				result = missingSpriteFinder;
 
 				if (result == null) {
-					missingSpriteFinder = result = new MissingSpriteFinderImpl(this.blockAtlas.missing());
+					missingSpriteFinder = result = new MissingSpriteFinderImpl(blockAtlas.missing());
 				}
 			}
 		}

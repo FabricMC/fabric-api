@@ -17,10 +17,12 @@
 package net.fabricmc.fabric.impl.client.renderer;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.QuadInstance;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
@@ -32,65 +34,65 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
+import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedBlockModelSubmit;
 
-public class ExtendedBlockModelFeatureRenderer extends RenderTypeFeatureRenderer<FabricSubmitNodeCollection.ExtendedBlockModelSubmit> {
+public class ExtendedBlockModelFeatureRenderer extends RenderTypeFeatureRenderer<ExtendedBlockModelSubmit> {
 	private static final Direction[] DIRECTIONS = Direction.values();
 	private final QuadInstance quadInstance = new QuadInstance();
 
 	@Override
-	protected void buildGroup(FeatureFrameContext context, List<FabricSubmitNodeCollection.ExtendedBlockModelSubmit> submits) {
-		QuadConsumers.BlockModel quadConsumer = new QuadConsumers.BlockModel();
+	protected void buildGroup(FeatureFrameContext context, List<ExtendedBlockModelSubmit> submits) {
+		BufferCache bufferCache = new BufferCache();
+		QuadConsumer quadConsumer = new QuadConsumer(bufferCache);
 		QuadEmitter output = Renderer.get().quadEmitter(quadConsumer);
 
-		for (FabricSubmitNodeCollection.ExtendedBlockModelSubmit submit : submits) {
-			PoseStack.Pose pose = submit.pose();
-			int[] tintLayers = submit.tintLayers();
-			Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction = submit.renderTypeFunction();
+		for (ExtendedBlockModelSubmit submit : submits) {
+			bufferCache.prepare(submit.renderTypeFunction(), submit.sheetedDecalPose());
 
 			quadInstance.setLightCoords(submit.lightCoords());
 			quadInstance.setOverlayCoords(submit.overlayCoords());
 
 			for (BlockStateModelPart part : submit.modelParts()) {
-				putPartQuads(part, pose, quadInstance, submit.tintColor(), tintLayers, renderTypeFunction);
+				putPartQuads(part, submit.pose(), quadInstance, submit.tintColor(), submit.tintLayers(), bufferCache);
 			}
 
 			if (submit.mesh() != null) {
-				quadConsumer.tintLayers = tintLayers;
+				quadConsumer.pose = submit.pose();
+				quadConsumer.tintLayers = submit.tintLayers();
 				quadConsumer.lightCoords = submit.lightCoords();
 				quadConsumer.overlayCoords = submit.overlayCoords();
-				quadConsumer.pose = pose;
-				quadConsumer.renderTypeFunction = renderTypeFunction;
-				quadConsumer.vertexConsumerFunction = this::getVertexBuilder;
+				quadConsumer.baseTintColor = submit.tintColor();
 				submit.mesh().outputTo(output);
 			}
 		}
 	}
 
-	private void putPartQuads(BlockStateModelPart part, PoseStack.Pose pose, QuadInstance quadInstance, int baseTintColor, int[] tintLayers, Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction) {
+	private void putPartQuads(BlockStateModelPart part, PoseStack.Pose pose, QuadInstance quadInstance, int baseTintColor, int[] tintLayers, BufferCache bufferCache) {
 		for (Direction direction : DIRECTIONS) {
 			for (BakedQuad quad : part.getQuads(direction)) {
-				RenderType renderType = renderTypeFunction.apply(quad.materialInfo().layer());
+				VertexConsumer buffer = bufferCache.getBuffer(quad.materialInfo().layer());
 
-				if (renderType == null) {
+				if (buffer == null) {
 					continue;
 				}
 
-				putQuad(pose, quad, quadInstance, baseTintColor, tintLayers, this.getVertexBuilder(renderType));
+				putQuad(pose, quad, quadInstance, baseTintColor, tintLayers, buffer);
 			}
 		}
 
 		for (BakedQuad quad : part.getQuads(null)) {
-			RenderType renderType = renderTypeFunction.apply(quad.materialInfo().layer());
+			VertexConsumer buffer = bufferCache.getBuffer(quad.materialInfo().layer());
 
-			if (renderType == null) {
+			if (buffer == null) {
 				continue;
 			}
 
-			putQuad(pose, quad, quadInstance, baseTintColor, tintLayers, this.getVertexBuilder(renderType));
+			putQuad(pose, quad, quadInstance, baseTintColor, tintLayers, buffer);
 		}
 	}
 
@@ -99,5 +101,72 @@ public class ExtendedBlockModelFeatureRenderer extends RenderTypeFeatureRenderer
 		boolean useTintLayer = tintIndex != -1 && tintIndex < tintLayers.length;
 		instance.setColor(useTintLayer ? ARGB.multiply(baseTintColor, tintLayers[tintIndex]) : baseTintColor);
 		buffer.putBakedQuad(pose, quad, instance);
+	}
+
+	private class BufferCache {
+		private Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction;
+		private PoseStack.@Nullable Pose sheetedDecalPose;
+
+		@Nullable
+		private ChunkSectionLayer lastLayer;
+		@Nullable
+		private VertexConsumer lastBuffer;
+
+		public void prepare(Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction, PoseStack.@Nullable Pose sheetedDecalPose) {
+			this.renderTypeFunction = renderTypeFunction;
+			this.sheetedDecalPose = sheetedDecalPose;
+			lastLayer = null;
+		}
+
+		@Nullable
+		public VertexConsumer getBuffer(ChunkSectionLayer layer) {
+			if (layer != lastLayer) {
+				lastLayer = layer;
+				RenderType renderType = renderTypeFunction.apply(layer);
+
+				if (renderType == null) {
+					lastBuffer = null;
+				} else {
+					VertexConsumer buffer = getVertexBuilder(renderType);
+					lastBuffer = sheetedDecalPose != null ? new SheetedDecalTextureGenerator(buffer, sheetedDecalPose, 1.0F) : buffer;
+				}
+			}
+
+			return lastBuffer;
+		}
+	}
+
+	private class QuadConsumer implements Consumer<MutableQuadView> {
+		private final BufferCache bufferCache;
+
+		public PoseStack.Pose pose;
+		public int[] tintLayers;
+		public int lightCoords;
+		public int overlayCoords;
+		public int baseTintColor;
+
+		QuadConsumer(BufferCache bufferCache) {
+			this.bufferCache = bufferCache;
+		}
+
+		@Override
+		public void accept(MutableQuadView quad) {
+			VertexConsumer buffer = bufferCache.getBuffer(quad.chunkLayer());
+
+			if (buffer == null) {
+				return;
+			}
+
+			if (quad.emissive()) {
+				quad.lightmap(LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT, LightCoordsUtil.FULL_BRIGHT);
+			} else {
+				quad.minLightmap(lightCoords);
+			}
+
+			int tintIndex = quad.tintIndex();
+			boolean useTintLayer = tintIndex != -1 && tintIndex < tintLayers.length;
+			quad.multiplyColor(useTintLayer ? ARGB.multiply(baseTintColor, tintLayers[tintIndex]) : baseTintColor);
+			quad.buffer(overlayCoords, pose, buffer);
+		}
 	}
 }

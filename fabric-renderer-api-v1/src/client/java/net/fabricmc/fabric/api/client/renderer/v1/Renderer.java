@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
-import net.minecraft.client.renderer.feature.RenderTypeFeatureRenderer;
+import net.minecraft.client.renderer.feature.FeatureRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,8 +35,8 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
-import net.fabricmc.fabric.impl.client.renderer.ExtendedBlockModelFeatureRenderer;
+import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedItemSubmit;
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 
 /**
@@ -54,9 +54,9 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * {@link AltModelBlockRenderer#tesselateBlock(QuadEmitter, float, float, float, BlockAndTintGetter, BlockPos, BlockState, BlockStateModel, long)},
  * respectively, instead.
  *
- * <p>Renderers must implement a {@link RenderTypeFeatureRenderer} to support
- * {@link FabricSubmitNodeCollection.ExtendedItemSubmit}. {@link ExtendedBlockModelFeatureRenderer} is automatically added
- * to support {@link FabricSubmitNodeCollection.ExtendedBlockModelSubmit} and {@link BlockStateModel#emitQuads}.
+ * <p>Renderers must implement a {@link FeatureRenderer} to support {@link ExtendedItemSubmit}.
+ * Feature renderers are automatically added/patched to support {@link ExtendedBlockModelSubmit} and
+ * {@link BlockStateModel#emitQuads}.
  */
 public interface Renderer {
 	/**
