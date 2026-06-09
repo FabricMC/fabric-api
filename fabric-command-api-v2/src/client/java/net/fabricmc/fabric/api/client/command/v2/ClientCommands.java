@@ -50,6 +50,10 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * The aim is to make commands from the server take precedence over client-sided commands
  * in a future version of this API.
  *
+ * <p>Commands that may perform destructive or privileged operations should generally
+ * require {@link FabricClientCommandSource#attended()} so they only run when explicitly
+ * entered by the user, and not when triggered from a server-provided text component.
+ *
  * <h2>Example command</h2>
  * <pre>
  * {@code

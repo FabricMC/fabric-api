@@ -29,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -115,6 +116,16 @@ public final class ClientCommandTest implements ClientModInitializer {
 				}
 
 				return Command.SINGLE_SUCCESS;
+			}));
+
+			dispatcher.register(ClientCommands.literal("test_client_command_confirmation").requires(FabricClientCommandSource::attended).executes(context -> {
+				context.getSource().sendFeedback(Component.literal("This command required user ineraction"));
+				return 0;
+			}));
+
+			dispatcher.register(ClientCommands.literal("test_client_command_confirmation_trigger").executes(context -> {
+				context.getSource().sendFeedback(Component.literal("[Run Command]").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/test_client_command_confirmation"))));
+				return 0;
 			}));
 
 			// Tests
