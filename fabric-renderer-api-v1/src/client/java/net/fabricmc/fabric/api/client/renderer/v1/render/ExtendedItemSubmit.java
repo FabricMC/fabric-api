@@ -34,10 +34,12 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 /**
  * An alternative to {@link ItemFeatureRenderer.Submit} that accepts a {@link MeshView}.
  */
+//CHECKSTYLE.OFF: MatchXpath
 public record ExtendedItemSubmit(PoseStack.Pose pose, ItemDisplayContext displayContext,
 								int lightCoords, int overlayCoords, int outlineColor,
 								int[] tintLayers, List<BakedQuad> quads, MeshView mesh,
 								ItemStackRenderState.FoilType foilType) implements TranslucentSubmit {
+	//CHECKSTYLE.ON: MatchXpath
 	public static final FeatureRendererType<ExtendedItemSubmit> TYPE = FeatureRendererType.create("Extended Item");
 
 	public boolean hasTranslucency() {

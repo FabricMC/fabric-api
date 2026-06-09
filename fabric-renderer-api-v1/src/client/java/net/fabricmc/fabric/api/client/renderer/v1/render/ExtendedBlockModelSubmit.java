@@ -34,11 +34,13 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 /**
  * An alternative to {@link BlockModelFeatureRenderer.Submit} that optionally accepts a {@link Mesh}.
  */
+//CHECKSTYLE.OFF: MatchXpath
 public record ExtendedBlockModelSubmit(PoseStack.Pose pose,
 									Function<ChunkSectionLayer, @Nullable RenderType> renderTypeFunction,
 									List<BlockStateModelPart> modelParts, @Nullable Mesh mesh,
 									int[] tintLayers, int lightCoords, int overlayCoords,
 									int tintColor, PoseStack.@Nullable Pose sheetedDecalPose) implements TranslucentSubmit {
+	//CHECKSTYLE.ON: MatchXpath
 	public static final FeatureRendererType<ExtendedBlockModelSubmit> TYPE = FeatureRendererType.create("Extended Block Model");
 
 	@Override
