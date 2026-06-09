@@ -49,8 +49,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedBlockModelSubmit;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedItemSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
 
 @Mixin(SubmitNodeCollection.class)
 abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {

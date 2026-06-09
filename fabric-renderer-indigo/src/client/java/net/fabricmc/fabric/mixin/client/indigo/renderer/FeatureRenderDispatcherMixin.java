@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRendererMap;
 
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedBlockModelSubmit;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedItemSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedBlockModelFeatureRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedItemFeatureRenderer;
 

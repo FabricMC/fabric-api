@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.renderer.v1.render;
+package net.fabricmc.fabric.api.client.renderer.v1.render.submit;
 
 import java.util.List;
 import java.util.function.Consumer;

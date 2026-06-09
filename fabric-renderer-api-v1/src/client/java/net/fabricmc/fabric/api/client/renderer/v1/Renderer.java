@@ -36,8 +36,8 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedBlockModelSubmit;
-import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedItemSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 
 /**
