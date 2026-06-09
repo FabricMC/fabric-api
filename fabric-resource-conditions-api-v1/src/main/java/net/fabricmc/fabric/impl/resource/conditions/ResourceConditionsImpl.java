@@ -50,6 +50,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ResourceConditions.register(DefaultResourceConditionTypes.TRUE);
+		ResourceConditions.register(DefaultResourceConditionTypes.FALSE);
 		ResourceConditions.register(DefaultResourceConditionTypes.NOT);
 		ResourceConditions.register(DefaultResourceConditionTypes.AND);
 		ResourceConditions.register(DefaultResourceConditionTypes.OR);
