@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.submit;
+package net.fabricmc.fabric.mixin.client.renderer.block.render;
 
 import java.util.List;
 

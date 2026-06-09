@@ -18,6 +18,7 @@
     "block.render.BlockStateModelWrapperMixin",
     "block.render.LevelExtractorMixin",
     "block.render.LevelRendererMixin",
+    "block.render.MovingBlockFeatureRendererMixin",
     "block.render.SectionCompilerMixin",
     "item.CuboidItemModelWrapperMixin",
     "item.ItemStackRenderStateLayerRenderStateMixin",
@@ -27,8 +28,6 @@
     "sprite.ModelManagerCombinedBlockItemMaterialBakerMixin",
     "sprite.SpriteLoaderPreparationsMixin",
     "sprite.TextureAtlasMixin",
-    "submit.FeatureRenderDispatcherMixin",
-    "submit.MovingBlockFeatureRendererMixin",
     "submit.OrderedSubmitNodeCollectorMixin",
     "submit.SubmitNodeCollectionMixin",
     "submit.SubmitNodeStorageMixin"

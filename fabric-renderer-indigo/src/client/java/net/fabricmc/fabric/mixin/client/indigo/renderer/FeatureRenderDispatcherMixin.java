@@ -26,7 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRendererMap;
 
+import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.api.client.renderer.v1.render.ExtendedItemSubmit;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedBlockModelFeatureRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedItemFeatureRenderer;
 
 @Mixin(FeatureRenderDispatcher.class)
@@ -35,8 +37,12 @@ abstract class FeatureRenderDispatcherMixin {
 	@Final
 	private FeatureRendererMap featureRenderers;
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void registerItemFeatureRenderer(CallbackInfo ci) {
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void registerExtendedFeatureRenderers(CallbackInfo ci) {
+		featureRenderers.put(
+				ExtendedBlockModelSubmit.TYPE,
+				new ExtendedBlockModelFeatureRenderer()
+		);
 		featureRenderers.put(
 				ExtendedItemSubmit.TYPE,
 				new ExtendedItemFeatureRenderer()

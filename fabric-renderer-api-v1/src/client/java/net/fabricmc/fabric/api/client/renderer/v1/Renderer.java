@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -54,9 +55,9 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * {@link AltModelBlockRenderer#tesselateBlock(QuadEmitter, float, float, float, BlockAndTintGetter, BlockPos, BlockState, BlockStateModel, long)},
  * respectively, instead.
  *
- * <p>Renderers must implement a {@link FeatureRenderer} to support {@link ExtendedItemSubmit}.
- * Feature renderers are automatically added/patched to support {@link ExtendedBlockModelSubmit} and
- * {@link BlockStateModel#emitQuads}.
+ * <p>Renderers must implement {@link FeatureRenderer}s to support {@link ExtendedBlockModelSubmit}
+ * and {@link ExtendedItemSubmit}. This is typically done by adding them to
+ * {@link FeatureRenderDispatcher}'s map with a mixin.
  */
 public interface Renderer {
 	/**

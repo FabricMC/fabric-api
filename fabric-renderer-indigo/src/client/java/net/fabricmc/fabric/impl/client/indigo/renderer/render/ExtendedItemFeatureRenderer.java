@@ -67,6 +67,9 @@ public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<Exten
 		for (ExtendedItemSubmit submit : submits) {
 			prepareSubmit(submit, true);
 		}
+
+		submit = null;
+		foilDecalPose = null;
 	}
 
 	private void prepareSubmit(ExtendedItemSubmit submit, boolean foil) {
