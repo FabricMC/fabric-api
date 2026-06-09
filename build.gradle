@@ -23,6 +23,7 @@ def debugArgs = [
 	"-Dmixin.debug.verify=true",
 	//"-Dmixin.debug.strict=true",
 	"-Dmixin.debug.countInjections=true",
+	"-Dfabric.resource_loader.debug.reloaders_identity.strict=true",
 	"-XX:+UseZGC",
 	"-XX:+UseCompactObjectHeaders",
 	"-XX:+AlwaysPreTouch",
