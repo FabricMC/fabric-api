@@ -31,7 +31,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.object.builder.FabricDefaultAttributeRegistryImpl;
 import net.fabricmc.fabric.mixin.object.builder.DefaultAttributesAccessor;
 
 /**
