@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.object.builder.FabricDefaultAttributeRegistryImpl;
 import net.fabricmc.fabric.mixin.object.builder.DefaultAttributesAccessor;
 
 /**
@@ -45,6 +50,21 @@ public final class FabricDefaultAttributeRegistry {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDefaultAttributeRegistry.class);
 
+	/**
+	 * Bulk modifies the default attributes for entity types. Fires after registries are frozen to
+	 * ensure all entity types are present before modification.
+	 *
+	 * <p>This event only affects entity types which have already had must ensure that an
+	 * {@link AttributeSupplier} is already registered for any potential entity types via a method
+	 * such as {@link #register(EntityType, AttributeSupplier)} or
+	 * {@link FabricEntityType.Builder.Living#defaultAttributes(Supplier)}.
+	 */
+	public static final Event<ModifyDefaultAttribute> MODIFY = EventFactory.createArrayBacked(ModifyDefaultAttribute.class, listeners -> context -> {
+		for (ModifyDefaultAttribute listener : listeners) {
+			listener.modify(context);
+		}
+	});
+
 	private FabricDefaultAttributeRegistry() {
 	}
 
@@ -53,7 +73,7 @@ public final class FabricDefaultAttributeRegistry {
 	 *
 	 * @param type    the entity type
 	 * @param builder the builder that creates the default attribute
-	 * @see	FabricDefaultAttributeRegistry#register(EntityType, AttributeSupplier)
+	 * @see FabricDefaultAttributeRegistry#register(EntityType, AttributeSupplier)
 	 */
 	public static void register(EntityType<? extends LivingEntity> type, AttributeSupplier.Builder builder) {
 		register(type, builder.build());
@@ -74,11 +94,28 @@ public final class FabricDefaultAttributeRegistry {
 	 *
 	 * @param type      the entity type
 	 * @param container the container for the default attribute
-	 * @see	FabricEntityType.Builder.Living#defaultAttributes(Supplier)
+	 * @see FabricEntityType.Builder.Living#defaultAttributes(Supplier)
 	 */
 	public static void register(EntityType<? extends LivingEntity> type, AttributeSupplier container) {
 		if (DefaultAttributesAccessor.getRegistry().put(type, container) != null) {
 			LOGGER.debug("Overriding existing registration for entity type {}", BuiltInRegistries.ENTITY_TYPE.getKey(type));
 		}
+
+		FabricDefaultAttributeRegistryImpl.invokeSingleModify(type, container);
+	}
+
+	@ApiStatus.NonExtendable
+	public interface ModifyContext {
+		void modify(Predicate<EntityType<? extends LivingEntity>> entityTypePredicate, ModifyConsumer consumer);
+	}
+
+	@FunctionalInterface
+	public interface ModifyDefaultAttribute {
+		void modify(ModifyContext context);
+	}
+
+	@FunctionalInterface
+	public interface ModifyConsumer {
+		void accept(EntityType<? extends LivingEntity> type, AttributeSupplier.Builder builder);
 	}
 }
