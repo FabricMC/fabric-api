@@ -36,7 +36,7 @@ public final class FabricDefaultAttributeRegistryImpl {
 
 	private static AttributeSupplier.Builder createFromExistingSupplier(AttributeSupplier supplier) {
 		AttributeSupplier.Builder builder = AttributeSupplier.builder();
-		((AttributeSupplierBuilderAccessor)builder).getBuilder().putAll(((AttributeSupplierAccessor)supplier).getInstances());
+		((AttributeSupplierBuilderAccessor) builder).getBuilder().putAll(((AttributeSupplierAccessor) supplier).getInstances());
 		return builder;
 	}
 
