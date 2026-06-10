@@ -28,24 +28,10 @@ import net.fabricmc.fabric.mixin.object.builder.AttributeSupplierBuilderAccessor
 import net.fabricmc.fabric.mixin.object.builder.DefaultAttributesAccessor;
 
 public final class FabricDefaultAttributeRegistryImpl {
-	private static boolean appliedInitialModification = false;
-
-	// a single bulk modification is always applied when the registries are frozen since at
-	// that point everything should be registered
-	public static void invokeBulkModify() {
-		if (!appliedInitialModification) {
-			FabricDefaultAttributeRegistry.MODIFY.invoker().modify(new BulkModifyContextImpl());
-			appliedInitialModification = true;
-		}
-	}
-
-	// if a mod tries to register via the regular API after the bulk modify was done, this ensures
-	// that any relevant modifications are still applied
-	// no guarantees if a mod tries to register an attribute outside of fabric api
-	public static void invokeSingleModify(EntityType<? extends LivingEntity> entityType, AttributeSupplier supplier) {
-		if (appliedInitialModification) {
-			FabricDefaultAttributeRegistry.MODIFY.invoker().modify(new SingleModifyContextImpl(entityType, supplier));
-		}
+	// a single bulk modification is applied when the registries are frozen since at that point
+	// everything should be registered
+	public static void invokeModify() {
+		FabricDefaultAttributeRegistry.MODIFY.invoker().modify(new ModifyContextImpl());
 	}
 
 	private static AttributeSupplier.Builder createFromExistingSupplier(AttributeSupplier supplier) {
@@ -54,21 +40,7 @@ public final class FabricDefaultAttributeRegistryImpl {
 		return builder;
 	}
 
-	record SingleModifyContextImpl(
-			EntityType<? extends LivingEntity> entityType,
-			AttributeSupplier supplier
-	) implements FabricDefaultAttributeRegistry.ModifyContext {
-		@Override
-		public void modify(Predicate<EntityType<? extends LivingEntity>> entityTypePredicate, FabricDefaultAttributeRegistry.ModifyConsumer consumer) {
-			if (entityTypePredicate.test(this.entityType)) {
-				AttributeSupplier.Builder builder = createFromExistingSupplier(this.supplier);
-				consumer.accept(this.entityType, builder);
-				DefaultAttributesAccessor.getRegistry().put(this.entityType, builder.build());
-			}
-		}
-	}
-
-	static class BulkModifyContextImpl implements FabricDefaultAttributeRegistry.ModifyContext {
+	static class ModifyContextImpl implements FabricDefaultAttributeRegistry.ModifyContext {
 		@Override
 		public void modify(Predicate<EntityType<? extends LivingEntity>> entityTypePredicate, FabricDefaultAttributeRegistry.ModifyConsumer consumer) {
 			DefaultAttributesAccessor.getRegistry().forEach((type, supplier) -> {

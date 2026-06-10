@@ -51,15 +51,15 @@ public final class FabricDefaultAttributeRegistry {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDefaultAttributeRegistry.class);
 
-	/**
-	 * Bulk modifies the default attributes for entity types. Fires after registries are frozen to
-	 * ensure all entity types are present before modification.
-	 *
-	 * <p>This event only affects entity types which have already had must ensure that an
-	 * {@link AttributeSupplier} is already registered for any potential entity types via a method
-	 * such as {@link #register(EntityType, AttributeSupplier)} or
-	 * {@link FabricEntityType.Builder.Living#defaultAttributes(Supplier)}.
-	 */
+	/// Bulk modifies the default attributes for entity types. Fires after registries are frozen to
+	/// ensure all entity types are present before modification.
+	///
+	/// This event only affects entity types which have already had an [AttributeSupplier]
+	/// registered to them via a method such as [#register(EntityType, AttributeSupplier)] or
+	/// [FabricEntityType.Builder.Living#defaultAttributes(Supplier)].
+	///
+	/// The event is invoked after all builtin registration is complete to ensure that all entity
+	/// types have been registered.
 	public static final Event<ModifyDefaultAttribute> MODIFY = EventFactory.createArrayBacked(ModifyDefaultAttribute.class, listeners -> context -> {
 		for (ModifyDefaultAttribute listener : listeners) {
 			listener.modify(context);
@@ -101,22 +101,35 @@ public final class FabricDefaultAttributeRegistry {
 		if (DefaultAttributesAccessor.getRegistry().put(type, container) != null) {
 			LOGGER.debug("Overriding existing registration for entity type {}", BuiltInRegistries.ENTITY_TYPE.getKey(type));
 		}
-
-		FabricDefaultAttributeRegistryImpl.invokeSingleModify(type, container);
 	}
 
 	@ApiStatus.NonExtendable
 	public interface ModifyContext {
+		/// Modify the default attributes of a specified entity type.
+		///
+		/// @param entityTypePredicate A predicate to match entity types.
+		/// @param consumer            A consumer that provides a [AttributeSupplier.Builder] to apply the modification.
 		void modify(Predicate<EntityType<? extends LivingEntity>> entityTypePredicate, ModifyConsumer consumer);
 
+		/// Modify the default attributes of a specified entity type.
+		///
+		/// @param entityType The entity type to modify.
+		/// @param consumer   A consumer that provides a [AttributeSupplier.Builder] to apply the modification.
 		default void modify(EntityType<? extends LivingEntity> entityType, ModifyConsumer consumer) {
 			modify(Predicate.isEqual(entityType), consumer);
 		}
 
+		/// Modify the default attributes of a specified entity type.
+		///
+		/// @param entityTypes The entity types to modify.
+		/// @param consumer    A consumer that provides a [AttributeSupplier.Builder] to apply the modification.
 		default void modify(Collection<EntityType<? extends LivingEntity>> entityTypes, ModifyConsumer consumer) {
 			modify(entityTypes::contains, consumer);
 		}
 
+		/// Modify the default attributes of all entity types with attributes.
+		///
+		/// @param consumer A consumer that provides a [AttributeSupplier.Builder] to apply the modification.
 		default void modifyAll(ModifyConsumer consumer) {
 			modify(_ -> true, consumer);
 		}
@@ -124,11 +137,19 @@ public final class FabricDefaultAttributeRegistry {
 
 	@FunctionalInterface
 	public interface ModifyDefaultAttribute {
+		/// Use the provided [ModifyContext] to modify the default attributes of entity types.
+		///
+		/// @param context The context to modify default attributes.
 		void modify(ModifyContext context);
 	}
 
 	@FunctionalInterface
 	public interface ModifyConsumer {
+		/// A consumer used for modifying the base attribute values of an [EntityType].
+		///
+		/// @param type    The entity type for which default attributes are being modified.
+		/// @param builder The default attribute builder. The builder will contain all the existing
+		///                                                                                                                         attributes for the entity type.
 		void accept(EntityType<? extends LivingEntity> type, AttributeSupplier.Builder builder);
 	}
 }
