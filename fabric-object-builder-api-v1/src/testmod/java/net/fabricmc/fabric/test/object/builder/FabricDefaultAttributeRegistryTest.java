@@ -41,7 +41,7 @@ public class FabricDefaultAttributeRegistryTest implements ModInitializer {
 				builder.add(TEST_ATTRIBUTE, PIG_TEST_ATTRIBUTE_BASE_VALUE);
 			});
 			context.modify(EntityTypes.CHICKEN, (_, builder) -> {
-				builder.add(TEST_CHICKEN_ONLY_ATTRIBUTE, 10);
+				builder.add(TEST_CHICKEN_ONLY_ATTRIBUTE);
 			});
 		});
 	}

@@ -36,6 +36,8 @@ public class FabricDefaultAttributeRegistryGameTest {
 
 		double testAttributeValue = pig.getAttributeValue(FabricDefaultAttributeRegistryTest.TEST_ATTRIBUTE);
 		helper.assertValueEqual(testAttributeValue, FabricDefaultAttributeRegistryTest.PIG_TEST_ATTRIBUTE_BASE_VALUE, "Pig test attribute final value");
+
+		helper.succeed();
 	}
 
 	@GameTest
@@ -45,10 +47,12 @@ public class FabricDefaultAttributeRegistryGameTest {
 		helper.assertTrue(cow.getAttributes().hasAttribute(FabricDefaultAttributeRegistryTest.TEST_ATTRIBUTE), "Cow does not have test attribute");
 
 		double testAttributeBaseValue = cow.getAttributeBaseValue(FabricDefaultAttributeRegistryTest.TEST_ATTRIBUTE);
-		helper.assertValueEqual(testAttributeBaseValue, 0, "Cow test attribute base value");
+		helper.assertValueEqual(testAttributeBaseValue, 0.0, "Cow test attribute base value");
 
 		double testAttributeValue = cow.getAttributeValue(FabricDefaultAttributeRegistryTest.TEST_ATTRIBUTE);
-		helper.assertValueEqual(testAttributeValue, 0, "Cow test attribute final value");
+		helper.assertValueEqual(testAttributeValue, 0.0, "Cow test attribute final value");
+
+		helper.succeed();
 	}
 
 	@GameTest
@@ -56,18 +60,22 @@ public class FabricDefaultAttributeRegistryGameTest {
 		Pig pig = helper.spawn(EntityTypes.PIG, 0, 0, 0);
 
 		helper.assertFalse(pig.getAttributes().hasAttribute(FabricDefaultAttributeRegistryTest.TEST_CHICKEN_ONLY_ATTRIBUTE), "Pig has the chicken-only test attribute");
+
+		helper.succeed();
 	}
 
 	@GameTest
-	public void playerHasPlayerOnlyTestAttribute(GameTestHelper helper) {
+	public void chickenHasChickenOnlyTestAttribute(GameTestHelper helper) {
 		Chicken chicken = helper.spawn(EntityTypes.CHICKEN, 0, 0, 0);
 
 		helper.assertTrue(chicken.getAttributes().hasAttribute(FabricDefaultAttributeRegistryTest.TEST_CHICKEN_ONLY_ATTRIBUTE), "Chicken does not have the chicken-only test attribute");
 
 		double testAttributeBaseValue = chicken.getAttributeBaseValue(FabricDefaultAttributeRegistryTest.TEST_CHICKEN_ONLY_ATTRIBUTE);
-		helper.assertValueEqual(testAttributeBaseValue, 0, "Chicken-only test attribute base value");
+		helper.assertValueEqual(testAttributeBaseValue, 0.0, "Chicken-only test attribute base value");
 
 		double testAttributeValue = chicken.getAttributeValue(FabricDefaultAttributeRegistryTest.TEST_CHICKEN_ONLY_ATTRIBUTE);
-		helper.assertValueEqual(testAttributeValue, 0, "Chicken-only test attribute final value");
+		helper.assertValueEqual(testAttributeValue, 0.0, "Chicken-only test attribute final value");
+
+		helper.succeed();
 	}
 }
