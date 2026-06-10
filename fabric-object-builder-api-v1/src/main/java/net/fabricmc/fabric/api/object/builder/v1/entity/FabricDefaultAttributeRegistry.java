@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
+import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -107,6 +108,18 @@ public final class FabricDefaultAttributeRegistry {
 	@ApiStatus.NonExtendable
 	public interface ModifyContext {
 		void modify(Predicate<EntityType<? extends LivingEntity>> entityTypePredicate, ModifyConsumer consumer);
+
+		default void modify(EntityType<? extends LivingEntity> entityType, ModifyConsumer consumer) {
+			modify(Predicate.isEqual(entityType), consumer);
+		}
+
+		default void modify(Collection<EntityType<? extends LivingEntity>> entityTypes, ModifyConsumer consumer) {
+			modify(entityTypes::contains, consumer);
+		}
+
+		default void modifyAll(ModifyConsumer consumer) {
+			modify(_ -> true, consumer);
+		}
 	}
 
 	@FunctionalInterface
