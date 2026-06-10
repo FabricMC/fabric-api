@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.object.builder;
 
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.animal.pig.Pig;
@@ -75,6 +76,19 @@ public class FabricDefaultAttributeRegistryGameTest {
 
 		double testAttributeValue = chicken.getAttributeValue(FabricDefaultAttributeRegistryTest.TEST_CHICKEN_ONLY_ATTRIBUTE);
 		helper.assertValueEqual(testAttributeValue, 0.0, "Chicken-only test attribute final value");
+
+		helper.succeed();
+	}
+
+	@GameTest
+	public void pigStillHasItsVanillaAttributes(GameTestHelper helper) {
+		Pig pig = helper.spawn(EntityTypes.PIG, 0, 0, 0);
+
+		helper.assertTrue(pig.getAttributes().hasAttribute(Attributes.MAX_HEALTH), "Pig does not have max health attribute");
+		helper.assertTrue(pig.getAttributes().hasAttribute(Attributes.FOLLOW_RANGE), "Pig does not have follow range attribute");
+		helper.assertTrue(pig.getAttributes().hasAttribute(Attributes.TEMPT_RANGE), "Pig does not have tempt range attribute");
+		helper.assertTrue(pig.getAttributes().hasAttribute(Attributes.MOVEMENT_SPEED), "Pig does not have movement speed attribute");
+		helper.assertValueEqual(pig.getAttributeBaseValue(Attributes.MAX_HEALTH), 10.0, "Pig max health attribute base value");
 
 		helper.succeed();
 	}
