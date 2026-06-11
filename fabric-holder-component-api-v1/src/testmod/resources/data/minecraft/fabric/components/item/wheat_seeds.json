@@ -1,0 +1,6 @@
+{
+  "components": {
+    "minecraft:pig/variant": "minecraft:temperate",
+    "!minecraft:item_name": {}
+  }
+}
