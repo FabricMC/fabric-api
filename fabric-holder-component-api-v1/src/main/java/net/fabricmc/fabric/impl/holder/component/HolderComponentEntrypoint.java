@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.impl.holder.component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializers;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.impl.holder.component.data.DataHolderComponentInitializer;
 import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HolderComponentEntrypoint implements ModInitializer {
 	// TODO: This size is enormous, I copied it straight out of FabricRegistryInit. This should be smaller but I don't know how to choose a good value.

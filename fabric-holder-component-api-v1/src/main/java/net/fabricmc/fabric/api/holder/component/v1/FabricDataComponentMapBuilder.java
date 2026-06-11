@@ -16,13 +16,24 @@
 
 package net.fabricmc.fabric.api.holder.component.v1;
 
+import java.util.List;
+
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.TypedDataComponent;
 
 /// Extensions for [DataComponentMap.Builder]. Implemented via interface injection, do not implement yourself!
 /// @see DataComponentMap.Builder
 public interface FabricDataComponentMapBuilder {
 	default DataComponentMap.Builder apply(DataComponentPatch patch) {
+		throw new UnsupportedOperationException("Implemented via mixin.");
+	}
+
+	default <T> DataComponentMap.Builder set(TypedDataComponent<T> typedDataComponent) {
+		throw new UnsupportedOperationException("Implemented via mixin.");
+	}
+
+	default DataComponentMap.Builder setAll(List<TypedDataComponent<?>> typedDataComponents) {
 		throw new UnsupportedOperationException("Implemented via mixin.");
 	}
 

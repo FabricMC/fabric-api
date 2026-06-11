@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.holder.component.extension;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.TypedDataComponent;
 
 import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentMapBuilder;
 
@@ -50,6 +52,20 @@ public abstract class DataComponentMap$BuilderMixin implements FabricDataCompone
 					value -> this.setUnchecked(entry.getKey(), value),
 					() -> this.set(entry.getKey(), null)
 			);
+		}
+
+		return (DataComponentMap.Builder) (Object) this;
+	}
+
+	@Override
+	public <T> DataComponentMap.Builder set(TypedDataComponent<T> typedDataComponent) {
+		return this.set(typedDataComponent.type(), typedDataComponent.value());
+	}
+
+	@Override
+	public DataComponentMap.Builder setAll(List<TypedDataComponent<?>> typedDataComponents) {
+		for (TypedDataComponent<?> typedDataComponent : typedDataComponents) {
+			this.set(typedDataComponent);
 		}
 
 		return (DataComponentMap.Builder) (Object) this;

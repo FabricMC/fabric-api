@@ -17,78 +17,120 @@
 package net.fabricmc.fabric.impl.holder.component.sync;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-
-import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.IdMap;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.component.DataComponentInitializers;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.VarInt;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.RegistryLayer;
 
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
+
 public class HolderComponentSynchronization {
+	public static final StreamCodec<ByteBuf, Identifier> SHORT_IDENTIFIER_CODEC = ByteBufCodecs.STRING_UTF8
+			.map(Identifier::parse, Identifier::toShortString);
+	public static final StreamCodec<ByteBuf, ResourceKey<? extends Registry<?>>> SHORT_REGISTRY_KEY_CODEC = SHORT_IDENTIFIER_CODEC
+			.map(ResourceKey::createRegistryKey, ResourceKey::identifier);
+	public static final StreamCodec<RegistryFriendlyByteBuf, DataComponentMap> COMPONENT_MAP_CODEC = TypedDataComponent.STREAM_CODEC
+			.apply(ByteBufCodecs.list())
+			.map(
+					components -> DataComponentMap.builder().setAll(components).build(),
+					componentMap -> ImmutableList.copyOf(componentMap.iterator())
+			);
+	public static final StreamCodec<ByteBuf, ByteBuf> BYTE_BUF_SLICE_CODEC = StreamCodec.of(
+			(output, value) -> {
+				VarInt.write(output, value.readableBytes());
+				output.writeBytes(value);
+			},
+			buf -> buf.readRetainedSlice(VarInt.read(buf))
+	);
+
 	public static ClientboundUpdateComponentsPayload serialize(LayeredRegistryAccess<RegistryLayer> registries) {
 		return new ClientboundUpdateComponentsPayload(
 				RegistrySynchronization.networkSafeRegistries(registries)
-						.collect(Collectors.toMap(
-								RegistryAccess.RegistryEntry::key,
-								entry -> serialize(registries.compositeAccess(), entry.value())
-						))
+						.map(registryEntry -> serialize(registries.compositeAccess(), registryEntry))
+						.toList()
 		);
 	}
 
-	private static Map<Identifier, List<PackedComponentMap>> serialize(
+	private static <T> ByteBuf serialize(
 			RegistryAccess registries,
-			Registry<?> registry
+			RegistryAccess.RegistryEntry<T> registryEntry
 	) {
-		Map<Identifier, List<PackedComponentMap>> result = new HashMap<>();
+		Map<Holder.Reference<T>, DataComponentMap> entries = new Reference2ObjectOpenHashMap<>();
 
-		registry.listElements().forEach(holder -> {
-			if (holder.components().isEmpty()) return;
+		registryEntry.value().listElements()
+				.filter(holder -> !holder.components().isEmpty())
+				.forEach(holder -> entries.put(holder, holder.components()));
 
-			List<PackedComponentMap> serialized = result.computeIfAbsent(holder.key().identifier(), _ -> new ArrayList<>());
-			for (TypedDataComponent<?> component : holder.components()) {
-				Identifier id = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(component.type());
-				RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), registries);
-				encode(component, buf);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), registries);
+		BakedEntries.CODEC.encode(buf, new BakedEntries<>(registryEntry.key(), entries));
+		return buf;
+	}
 
-				serialized.add(
-						new PackedComponentMap(
-								id,
-								buf
-						)
-				);
+	private record BakedEntries<T>(ResourceKey<? extends Registry<? extends T>> key, Map<Holder.Reference<T>, DataComponentMap> entries) implements DataComponentInitializers.PendingComponents<T> {
+		private static final StreamCodec<RegistryFriendlyByteBuf, BakedEntries<?>> CODEC = new StreamCodec<>() {
+			@Override
+			public BakedEntries<?> decode(RegistryFriendlyByteBuf input) {
+				ResourceKey<? extends Registry<?>> registryKey = SHORT_REGISTRY_KEY_CODEC.decode(input);
+				return decode(registryKey, input);
 			}
-		});
 
-		return result;
-	}
+			@Override
+			public void encode(RegistryFriendlyByteBuf output, BakedEntries<?> value) {
+				encode(value, output);
+			}
 
-	private static <T> void encode(TypedDataComponent<T> component, RegistryFriendlyByteBuf buf) {
-		component.type().streamCodec().encode(buf, component.value());
-	}
+			private static <T> BakedEntries<T> decode(ResourceKey<? extends Registry<? extends T>> registryKey, RegistryFriendlyByteBuf input) {
+				int count = VarInt.read(input);
+				Registry<T> registry = input.registryAccess().lookupOrThrow(registryKey);
+				Map<Holder.Reference<T>, DataComponentMap> entries = new Reference2ObjectOpenHashMap<>();
 
-	private record BakedEntry<T>(Holder.Reference<T> element, DataComponentMap components) {
+				for (int i = 0; i < count; i++) {
+					entries.put(registry.get(VarInt.read(input)).orElseThrow(), COMPONENT_MAP_CODEC.decode(input));
+				}
+
+				return new BakedEntries<>(registryKey, entries);
+			}
+
+			private static <T> void encode(BakedEntries<T> bakedEntries, RegistryFriendlyByteBuf output) {
+				SHORT_REGISTRY_KEY_CODEC.encode(output, bakedEntries.key);
+				IdMap<Holder<T>> idMap = output.registryAccess().lookupOrThrow(bakedEntries.key).asHolderIdMap();
+				VarInt.write(output, bakedEntries.entries.size());
+
+				for (Map.Entry<Holder.Reference<T>, DataComponentMap> entry : bakedEntries.entries.entrySet()) {
+					VarInt.write(output, idMap.getId(entry.getKey()));
+					COMPONENT_MAP_CODEC.encode(output, entry.getValue());
+				}
+			}
+		};
+
+		@Override
+		public void forEach(BiConsumer<Holder.Reference<T>, DataComponentMap> output) {
+			entries.forEach(output);
+		}
+
+		@Override
 		public void apply() {
-			this.element.bindComponents(this.components);
+			forEach(Holder.Reference::bindComponents);
 		}
 	}
 
@@ -98,70 +140,14 @@ public class HolderComponentSynchronization {
 	) {
 		List<DataComponentInitializers.PendingComponents<?>> result = new ArrayList<>();
 
-		payload.registryToComponents().forEach((registryKey, holderComponents) -> {
-			result.add(deserialize(registries, registries.lookupOrThrow(registryKey), holderComponents));
-		});
+		for (ByteBuf buf : payload.registryToComponents()) {
+			result.add(deserialize(registries, buf));
+		}
 
 		return result;
 	}
 
-	private static <T> DataComponentInitializers.PendingComponents<T> deserialize(RegistryAccess registries, Registry<T> registry, Map<Identifier, List<PackedComponentMap>> holderComponents) {
-		List<BakedEntry<T>> entries = new ArrayList<>();
-
-		holderComponents.forEach((id, components) -> {
-			DataComponentMap.Builder builder = DataComponentMap.builder();
-
-			for (PackedComponentMap map : components) {
-				DataComponentType<?> type = BuiltInRegistries.DATA_COMPONENT_TYPE.getOptional(map.id).orElseThrow();
-				parse(registries, type, map.data, builder);
-
-				map.data.release();
-			}
-
-			entries.add(new BakedEntry<>(registry.get(id).orElseThrow(), builder.build()));
-		});
-
-		return new DataComponentInitializers.PendingComponents<>() {
-			@Override
-			public ResourceKey<? extends Registry<? extends T>> key() {
-				return registry.key();
-			}
-
-			@Override
-			public void forEach(BiConsumer<Holder.Reference<T>, DataComponentMap> output) {
-				for (BakedEntry<T> entry : entries) {
-					output.accept(entry.element, entry.components);
-				}
-			}
-
-			@Override
-			public void apply() {
-				for (BakedEntry<T> entry : entries) {
-					entry.apply();
-				}
-			}
-		};
-	}
-
-	private static <T> void parse(RegistryAccess registries, DataComponentType<T> type, ByteBuf buf, DataComponentMap.Builder builder) {
-		T result = type.streamCodec().decode(new RegistryFriendlyByteBuf(buf, registries));
-		builder.set(
-				type,
-				result
-		);
-	}
-
-	public record PackedComponentMap(Identifier id, ByteBuf data) {
-		public static final StreamCodec<ByteBuf, PackedComponentMap> STREAM_CODEC = StreamCodec.composite(
-				Identifier.STREAM_CODEC, PackedComponentMap::id,
-				StreamCodec.of(
-						(output, value) -> {
-							VarInt.write(output, value.readableBytes());
-							output.writeBytes(value);
-						},
-						buf -> buf.readRetainedSlice(VarInt.read(buf))
-				), PackedComponentMap::data,
-				PackedComponentMap::new
-		);
+	private static BakedEntries<?> deserialize(RegistryAccess registries, ByteBuf buf) {
+		return BakedEntries.CODEC.decode(new RegistryFriendlyByteBuf(buf, registries));
 	}
 }

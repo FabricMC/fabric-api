@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.client.holder.component;
 
 import java.util.List;
 
-import net.fabricmc.fabric.impl.holder.component.HolderComponentEntrypoint;
-
 import net.minecraft.client.multiplayer.RegistryDataCollector;
 import net.minecraft.core.component.DataComponentInitializers;
 
@@ -27,6 +25,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+import net.fabricmc.fabric.impl.holder.component.HolderComponentEntrypoint;
 import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
 import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
 import net.fabricmc.fabric.mixin.client.holder.component.ClientConfigurationPacketListenerImplAccessor;

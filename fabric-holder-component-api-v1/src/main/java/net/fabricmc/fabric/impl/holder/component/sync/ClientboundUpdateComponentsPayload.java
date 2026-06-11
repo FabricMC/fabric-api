@@ -17,47 +17,27 @@
 package net.fabricmc.fabric.impl.holder.component.sync;
 
 import java.util.List;
-import java.util.Map;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import io.netty.buffer.ByteBuf;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-
-import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
-
-import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
+
 public record ClientboundUpdateComponentsPayload(
-		// component values have to be sent as nbt tags as the StreamCodecs for them require RegistryFriendlyByteBuf which we don't have during configure
-		// this is hopefully fine since they aren't updated often
-		// TODO: optimize this format. im quite sure this could be smaller (ComponentTypeId could maybe be the int id?)
-		// Map<RegistryKey, Map<HolderId, Map<ComponentTypeId, ComponentValue>>>
-		Map<ResourceKey<? extends Registry<?>>, Map<Identifier, List<HolderComponentSynchronization.PackedComponentMap>>> registryToComponents
+		// We don't decode any component yet as registries aren't available during configuration.
+		// Each ByteBuf encodes a registry ResourceKey and a Map<Holder, DataComponentMap>
+		List<ByteBuf> registryToComponents
 ) implements CustomPacketPayload {
 	public static final Type<ClientboundUpdateComponentsPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath("fabric", "update_holder_components"));
-
-	// (crime against humanity in codec form)
-	public static final StreamCodec<FriendlyByteBuf, ClientboundUpdateComponentsPayload> STREAM_CODEC =
-			ByteBufCodecs.<FriendlyByteBuf, ResourceKey<? extends Registry<?>>, Map<Identifier, List<HolderComponentSynchronization.PackedComponentMap>>, Map<ResourceKey<? extends Registry<?>>, Map<Identifier, List<HolderComponentSynchronization.PackedComponentMap>>>>map(
-					Reference2ObjectOpenHashMap::new,
-					StreamCodec.ofMember(
-							(key, buf) -> buf.writeResourceKey(key),
-							FriendlyByteBuf::readRegistryKey
-					),
-					ByteBufCodecs.map(
-							Object2ObjectOpenHashMap::new,
-							Identifier.STREAM_CODEC,
-							HolderComponentSynchronization.PackedComponentMap.STREAM_CODEC.apply(ByteBufCodecs.list())
-					)
-			).map(ClientboundUpdateComponentsPayload::new, ClientboundUpdateComponentsPayload::registryToComponents);
+	public static final StreamCodec<ByteBuf, ClientboundUpdateComponentsPayload> STREAM_CODEC = HolderComponentSynchronization.BYTE_BUF_SLICE_CODEC
+			.apply(ByteBufCodecs.list())
+			.map(ClientboundUpdateComponentsPayload::new, ClientboundUpdateComponentsPayload::registryToComponents);
 
 	@Override
 	public Type<ClientboundUpdateComponentsPayload> type() {

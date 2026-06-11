@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.mixin.client.holder.component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +30,6 @@ import net.minecraft.client.multiplayer.RegistryDataCollector;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySynchronization;
 import net.minecraft.core.component.DataComponentInitializers;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceProvider;
 
 import net.fabricmc.fabric.impl.client.holder.component.FabricRegistryDataCollector;
@@ -42,19 +39,12 @@ import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchroniza
 @Mixin(RegistryDataCollector.class)
 public class RegistryDataCollectorMixin implements FabricRegistryDataCollector {
 	@Unique
-	private final ClientboundUpdateComponentsPayload components = new ClientboundUpdateComponentsPayload(new HashMap<>());
+	private final ClientboundUpdateComponentsPayload components = new ClientboundUpdateComponentsPayload(new ArrayList<>());
 
 	@Override
 	public void fabric$appendComponents(ClientboundUpdateComponentsPayload payload) {
-		payload.registryToComponents().forEach((key, value) -> {
-			Map<Identifier, List<HolderComponentSynchronization.PackedComponentMap>> holderMaps =
-					components.registryToComponents()
-							.computeIfAbsent(key, _ -> new HashMap<>(value.size()));
-
-			value.forEach((holder, components) -> {
-				holderMaps.computeIfAbsent(holder, _ -> new ArrayList<>()).addAll(components);
-			});
-		});
+		components.registryToComponents().clear();
+		components.registryToComponents().addAll(payload.registryToComponents());
 	}
 
 	@Inject(method = "collectGameRegistries", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/RegistryDataCollector;updateComponents(Lnet/minecraft/core/RegistryAccess$Frozen;Z)V", shift = At.Shift.AFTER))
