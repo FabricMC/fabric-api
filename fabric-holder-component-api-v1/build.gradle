@@ -6,7 +6,8 @@ loom {
 
 moduleDependencies(project, [
 	'fabric-api-base',
-	'fabric-networking-api-v1'
+	'fabric-networking-api-v1',
+	'fabric-resource-conditions-api-v1'
 ])
 
 testDependencies(project, [
