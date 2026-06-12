@@ -25,7 +25,6 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import org.slf4j.Logger;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentMap;
@@ -52,21 +51,19 @@ public class DataHolderComponentInitializer implements FabricDataComponentInitia
 	private <T> void parse(
 			Context context,
 			RegistryOps<JsonElement> ops,
-			ResourceKey<? extends Registry<? extends T>> key1
+			ResourceKey<? extends Registry<? extends T>> key
 	) {
-		// TODO: less cursed way of doing this?
-		@SuppressWarnings("unchecked") ResourceKey<? extends Registry<T>> key = (ResourceKey<? extends Registry<T>>) key1;
-
 		HolderLookup.RegistryLookup<T> lookup = context.lookupProvider().lookupOrThrow(key);
 		FileToIdConverter lister = FileToIdConverter.json("fabric/" + Registries.componentsDirPath(lookup.key()));
 
 		for (Map.Entry<Identifier, List<Resource>> entry : lister.listMatchingResourceStacks(context.resourceManager()).entrySet()) {
 			Identifier location = entry.getKey();
-			Identifier id = lister.fileToId(location);
+			@SuppressWarnings("unchecked")
+			ResourceKey<T> id = ResourceKey.create((ResourceKey<? extends Registry<T>>) key, lister.fileToId(location));
 
-			lookup.get(ResourceKey.create(key, id)).ifPresent(holder -> {
-				parse(context, ops, entry.getValue(), holder, location, id);
-			});
+			if (lookup.get(id).isPresent()) {
+				parse(context, ops, entry.getValue(), id, location);
+			}
 		}
 	}
 
@@ -74,22 +71,20 @@ public class DataHolderComponentInitializer implements FabricDataComponentInitia
 			Context context,
 			RegistryOps<JsonElement> ops,
 			List<Resource> resources,
-			Holder.Reference<T> holder,
-			Identifier location,
-			Identifier id
+			ResourceKey<T> key,
+			Identifier location
 	) {
+		DataComponentMap.Builder builder = context.builder(key);
+
 		for (Resource resource : resources) {
 			try (Reader reader = resource.openAsReader()) {
 				JsonElement element = StrictJsonParser.parse(reader);
 
 				DataHolderComponentFile file = DataHolderComponentFile.CODEC.parse(ops, element).getOrThrow();
 
-				DataComponentMap.Builder builder = context.builder(holder.key());
-
-				if (file.replace()) builder.clear();
-				builder.apply(file.components());
+				file.apply(builder);
 			} catch (Exception e) {
-				LOGGER.error("Couldn't read component list {} from {} in data pack {}", id, location, resource.sourcePackId(), e);
+				LOGGER.error("Couldn't read component list {} from {} in data pack {}", key.identifier(), location, resource.sourcePackId(), e);
 			}
 		}
 	}

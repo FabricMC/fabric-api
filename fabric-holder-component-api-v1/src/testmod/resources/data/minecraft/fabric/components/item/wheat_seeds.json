@@ -1,6 +1,17 @@
 {
-  "components": {
-    "minecraft:pig/variant": "minecraft:temperate",
-    "!minecraft:item_name": {}
-  }
+  "patches": [
+    {
+      "components": {
+        "minecraft:pig/variant": "minecraft:temperate",
+        "!minecraft:item_name": {}
+      }
+    },
+    {
+      "components": {
+        "unregistered:should_fail": true,
+        "minecraft:cat/collar": "red"
+      },
+      "required": false
+    }
+  ]
 }

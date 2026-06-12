@@ -1,5 +1,9 @@
 {
-  "components": {
-    "minecraft:custom_name": "Hello, world!"
-  }
+  "patches": [
+    {
+      "components": {
+        "minecraft:custom_name": "Hello, world!"
+      }
+    }
+  ]
 }

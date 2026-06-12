@@ -28,6 +28,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.resources.RegistryOps;
 
@@ -37,37 +38,45 @@ import net.fabricmc.fabric.mixin.resource.conditions.RegistryOpsAccessor;
 // TODO: Make public api and use for datagen
 public record DataHolderComponentFile(
 		boolean replace,
-		DataComponentPatch components,
-		List<ConditionalPatch> conditional
+		List<Patch> patches
 ) {
 	public static final Codec<DataHolderComponentFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.optionalFieldOf("replace", false).forGetter(DataHolderComponentFile::replace),
-			DataComponentPatch.CODEC.fieldOf("components").forGetter(DataHolderComponentFile::components),
-			ConditionalPatch.LIST_CODEC.optionalFieldOf("conditional", List.of()).forGetter(DataHolderComponentFile::conditional)
+			Patch.LIST_CODEC.optionalFieldOf("patches", List.of()).forGetter(DataHolderComponentFile::patches)
 	).apply(instance, DataHolderComponentFile::new));
+
+	public void apply(DataComponentMap.Builder builder) {
+		if (replace) {
+			builder.clear();
+		}
+
+		for (Patch patch : patches) {
+			builder.apply(patch.components);
+		}
+	}
 
 	// Represents an extra patch of components that will only be applied if the condition is met.
 	// This can be used for mod compatibility, i.e. conditioning modded components on the presence
 	// of the mod that adds them.
-	public record ConditionalPatch(DataComponentPatch components, Optional<ResourceCondition> condition, boolean required) {
-		private static final ConditionalPatch EMPTY = new ConditionalPatch(DataComponentPatch.EMPTY, Optional.empty(), false);
+	public record Patch(DataComponentPatch components, Optional<ResourceCondition> condition, boolean required) {
+		private static final Patch EMPTY = new Patch(DataComponentPatch.EMPTY, Optional.empty(), false);
 		private static final MapCodec<DataComponentPatch> COMPONENTS_MAP_CODEC = DataComponentPatch.CODEC.fieldOf("components");
 		private static final MapCodec<Optional<ResourceCondition>> CONDITION_MAP_CODEC = ResourceCondition.CONDITION_CODEC.optionalFieldOf("condition");
 		private static final MapCodec<Boolean> REQUIRED_MAP_CODEC = Codec.BOOL.optionalFieldOf("required", true);
-		public static final Codec<List<ConditionalPatch>> LIST_CODEC = Codec.of(
-				RecordCodecBuilder.create(instance -> instance.group(
-						COMPONENTS_MAP_CODEC.forGetter(ConditionalPatch::components),
-						CONDITION_MAP_CODEC.forGetter(ConditionalPatch::condition),
-						REQUIRED_MAP_CODEC.forGetter(ConditionalPatch::required)
-				).apply(instance, ConditionalPatch::new)),
-				ConditionalPatch::decode
-		)
+		public static final Codec<List<Patch>> LIST_CODEC = Codec.of(
+						RecordCodecBuilder.create(instance -> instance.group(
+								COMPONENTS_MAP_CODEC.forGetter(Patch::components),
+								CONDITION_MAP_CODEC.forGetter(Patch::condition),
+								REQUIRED_MAP_CODEC.forGetter(Patch::required)
+						).apply(instance, Patch::new)),
+						Patch::decode
+				)
 				.listOf()
-				.xmap(ConditionalPatch::removeEmpty, ConditionalPatch::removeEmpty);
+				.xmap(Patch::removeEmpty, Patch::removeEmpty);
 
 		// The condition field is parsed and tested first as it's meant to guard against errors when
 		// decoding the components.
-		private static <T> DataResult<Pair<ConditionalPatch, T>> decode(DynamicOps<T> ops, T input) {
+		private static <T> DataResult<Pair<Patch, T>> decode(DynamicOps<T> ops, T input) {
 			DataResult<MapLike<T>> mapResult = ops.getMap(input);
 
 			if (mapResult.isError()) {
@@ -106,18 +115,18 @@ public record DataHolderComponentFile(
 			}
 
 			return DataResult.success(
-					Pair.of(new ConditionalPatch(componentsResult.getOrThrow(), condition, required), input)
+					Pair.of(new Patch(componentsResult.getOrThrow(), condition, required), input)
 			);
 		}
 
 		// Empty patches can be filtered out as they will do nothing and are usually the result of a
 		// soft failure (condition fails, non-required components decoding error)
-		private static List<ConditionalPatch> removeEmpty(List<ConditionalPatch> conditionalPatches) {
-			ImmutableList.Builder<ConditionalPatch> builder = ImmutableList.builder();
+		private static List<Patch> removeEmpty(List<Patch> patches) {
+			ImmutableList.Builder<Patch> builder = ImmutableList.builder();
 
-			for (ConditionalPatch conditionalPatch : conditionalPatches) {
-				if (!conditionalPatch.components.isEmpty()) {
-					builder.add(conditionalPatch);
+			for (Patch patch : patches) {
+				if (!patch.components.isEmpty()) {
+					builder.add(patch);
 				}
 			}
 
