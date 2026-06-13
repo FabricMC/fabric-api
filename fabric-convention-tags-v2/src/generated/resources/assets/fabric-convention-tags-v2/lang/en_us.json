@@ -55,6 +55,7 @@
   "tag.block.c.glazed_terracottas": "Glazed Terracottas",
   "tag.block.c.gravels": "Gravels",
   "tag.block.c.hidden_from_recipe_viewers": "Hidden From Recipe Viewers",
+  "tag.block.c.incorrect_for_any_tool": "Incorrect for Any Tool",
   "tag.block.c.natural_logs": "Natural Logs",
   "tag.block.c.natural_logs.nether": "Nether Natural Logs",
   "tag.block.c.natural_logs.overworld": "Overworld Natural Logs",
