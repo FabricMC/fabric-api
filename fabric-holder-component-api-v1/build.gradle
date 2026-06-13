@@ -1,11 +1,39 @@
 version = getSubprojectVersion(project)
 
+sourceSets {
+	testmod {
+		resources {
+			srcDirs += [
+				'src/testmod/generated'
+			]
+		}
+	}
+}
+
 loom {
 	accessWidenerPath = file("src/main/resources/fabric-holder-component-api-v1.classtweaker")
+
+	runs {
+		datagen {
+			inherit testmodServer
+			name "Data Generation"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
+			vmArg "-Dfabric-api.datagen.strict-validation"
+
+			ideConfigGenerated = true
+			runDir "build/datagen"
+		}
+	}
+}
+
+runDatagen {
+	outputs.dir file("src/testmod/generated")
 }
 
 moduleDependencies(project, [
 	'fabric-api-base',
+	'fabric-data-generation-api-v1',
 	'fabric-networking-api-v1',
 	'fabric-resource-conditions-api-v1'
 ])

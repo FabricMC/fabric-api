@@ -61,8 +61,8 @@ public record DataHolderComponentFile(
 	public record Patch(DataComponentPatch components, Optional<ResourceCondition> condition, boolean required) {
 		private static final Patch EMPTY = new Patch(DataComponentPatch.EMPTY, Optional.empty(), false);
 		private static final MapCodec<DataComponentPatch> COMPONENTS_MAP_CODEC = DataComponentPatch.CODEC.fieldOf("components");
-		private static final MapCodec<Optional<ResourceCondition>> CONDITION_MAP_CODEC = ResourceCondition.CONDITION_CODEC.optionalFieldOf("condition");
-		private static final MapCodec<Boolean> REQUIRED_MAP_CODEC = Codec.BOOL.optionalFieldOf("required", true);
+		public static final MapCodec<Optional<ResourceCondition>> CONDITION_MAP_CODEC = ResourceCondition.CONDITION_CODEC.optionalFieldOf("condition");
+		public static final MapCodec<Boolean> REQUIRED_MAP_CODEC = Codec.BOOL.optionalFieldOf("required", true);
 		public static final Codec<List<Patch>> LIST_CODEC = Codec.of(
 						RecordCodecBuilder.create(instance -> instance.group(
 								COMPONENTS_MAP_CODEC.forGetter(Patch::components),

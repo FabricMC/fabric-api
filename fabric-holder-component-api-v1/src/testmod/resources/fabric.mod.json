@@ -11,6 +11,9 @@
     ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.holder.component.HolderComponentGameTest"
+    ],
+    "fabric-datagen": [
+      "net.fabricmc.fabric.test.holder.component.datagen.HolderComponentTestModDataGenerator"
     ]
   }
 }
