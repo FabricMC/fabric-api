@@ -1,0 +1,13 @@
+{
+  "patches": [
+    {
+      "components": {
+        "minecraft:custom_name": "Multi-patch encoding"
+      },
+      "condition": {
+        "condition": "fabric:true"
+      },
+      "required": false
+    }
+  ]
+}

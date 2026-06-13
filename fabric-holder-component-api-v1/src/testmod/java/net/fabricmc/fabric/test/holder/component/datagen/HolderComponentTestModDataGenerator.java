@@ -25,6 +25,7 @@ import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.references.ItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -83,6 +84,19 @@ public class HolderComponentTestModDataGenerator implements DataGeneratorEntrypo
 							.set(DataComponentMap.builder().set(DataComponents.UNBREAKABLE, Unit.INSTANCE).build())
 					.newPatch()
 							.forceSet(Identifier.withDefaultNamespace("unbreakable"), new CompoundTag());
+
+			// Test single-patch encoding when one patch without condition
+			this.builder(Biomes.SUNFLOWER_PLAINS)
+					.newPatch()
+							.required(false)
+							.set(DataComponents.CUSTOM_NAME, Component.literal("Single-patch encoding"));
+
+			// Test multi-patch encoding when one patch with condition
+			this.builder(Biomes.SNOWY_PLAINS)
+					.newPatch()
+							.required(false)
+							.set(DataComponents.CUSTOM_NAME, Component.literal("Multi-patch encoding"))
+							.condition(ResourceConditions.alwaysTrue());
 		}
 	}
 }

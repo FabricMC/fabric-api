@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -39,10 +40,20 @@ public record DataHolderComponentFile(
 		boolean replace,
 		List<Patch> patches
 ) {
-	public static final Codec<DataHolderComponentFile> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	private static final Codec<DataHolderComponentFile> SINGLE_PATCH_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.BOOL.optionalFieldOf("replace", false).forGetter(DataHolderComponentFile::replace),
+			Patch.REQUIRED_MAP_CODEC.forGetter(file -> file.patches.getFirst().required),
+			Patch.COMPONENTS_MAP_CODEC.forGetter(file -> file.patches.getFirst().components)
+	).apply(instance, DataHolderComponentFile::new));
+	private static final Codec<DataHolderComponentFile> MULTI_PATCH_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.optionalFieldOf("replace", false).forGetter(DataHolderComponentFile::replace),
 			Patch.LIST_CODEC.optionalFieldOf("patches", List.of()).forGetter(DataHolderComponentFile::patches)
 	).apply(instance, DataHolderComponentFile::new));
+	public static final Codec<DataHolderComponentFile> CODEC = Codec.either(SINGLE_PATCH_CODEC, MULTI_PATCH_CODEC)
+			.xmap(
+					Either::unwrap,
+					file -> file.patches.size() == 1 && file.patches.getFirst().condition.isEmpty() ? Either.left(file) : Either.right(file)
+			);
 
 	public void apply(DataComponentMap.Builder builder) {
 		if (replace) {
@@ -52,6 +63,10 @@ public record DataHolderComponentFile(
 		for (Patch patch : patches) {
 			builder.apply(patch.components);
 		}
+	}
+
+	private DataHolderComponentFile(boolean replace, boolean required, DataComponentPatch components) {
+		this(replace, List.of(new Patch(components, Optional.empty(), required)));
 	}
 
 	public record Patch(DataComponentPatch components, Optional<ResourceCondition> condition, boolean required) {

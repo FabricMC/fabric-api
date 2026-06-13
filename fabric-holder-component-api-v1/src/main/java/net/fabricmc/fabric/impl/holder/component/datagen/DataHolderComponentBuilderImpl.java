@@ -68,19 +68,29 @@ public final class DataHolderComponentBuilderImpl implements DataHolderComponent
 	}
 
 	private static <T> DataResult<T> encode(DataHolderComponentBuilderImpl input, DynamicOps<T> ops, T prefix) {
-		RecordBuilder<T> builder = ops.mapBuilder();
+		RecordBuilder<T> builder;
+
+		if (input.patches.size() == 1 && input.patches.getFirst().condition == null) {
+			PatchBuilderImpl patch = input.patches.getFirst();
+			builder = PatchBuilderImpl.encodeComponents(patch, ops);
+
+			if (!patch.required) {
+				builder.add("required", ops.createBoolean(false));
+			}
+		} else {
+			builder = ops.mapBuilder();
+			ListBuilder<T> patches = ops.listBuilder();
+
+			for (PatchBuilderImpl patch : input.patches) {
+				patches.add(patch, PatchBuilderImpl::encode);
+			}
+
+			builder.add("patches", patches.build(ops.empty()));
+		}
 
 		if (input.replace) {
 			builder.add("replace", ops.createBoolean(true));
 		}
-
-		ListBuilder<T> patches = ops.listBuilder();
-
-		for (PatchBuilderImpl patch : input.patches) {
-			patches.add(patch, PatchBuilderImpl::encode);
-		}
-
-		builder.add("patches", patches.build(ops.empty()));
 
 		return builder.build(prefix);
 	}
@@ -146,6 +156,14 @@ public final class DataHolderComponentBuilderImpl implements DataHolderComponent
 		}
 
 		private static <T> DataResult<T> encode(PatchBuilderImpl input, DynamicOps<T> ops, T prefix) {
+			RecordBuilder<T> builder = encodeComponents(input, ops);
+			DataHolderComponentFile.Patch.REQUIRED_MAP_CODEC.encode(input.required, ops, builder);
+			DataHolderComponentFile.Patch.CONDITION_MAP_CODEC.encode(Optional.ofNullable(input.condition), ops, builder);
+
+			return builder.build(prefix);
+		}
+
+		private static <T> RecordBuilder<T> encodeComponents(PatchBuilderImpl input, DynamicOps<T> ops) {
 			RecordBuilder<T> componentsBuilder = MapCodec.assumeMapUnsafe(DataComponentPatch.CODEC)
 					.encode(input.components.build(), ops, ops.mapBuilder());
 
@@ -159,10 +177,7 @@ public final class DataHolderComponentBuilderImpl implements DataHolderComponent
 
 			RecordBuilder<T> builder = ops.mapBuilder();
 			builder.add("components", componentsBuilder.build(ops.empty()));
-			DataHolderComponentFile.Patch.REQUIRED_MAP_CODEC.encode(input.required, ops, builder);
-			DataHolderComponentFile.Patch.CONDITION_MAP_CODEC.encode(Optional.ofNullable(input.condition), ops, builder);
-
-			return builder.build(prefix);
+			return builder;
 		}
 
 		private PatchBuilderImpl() {
