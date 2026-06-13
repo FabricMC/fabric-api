@@ -35,7 +35,6 @@ import net.minecraft.resources.RegistryOps;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.mixin.resource.conditions.RegistryOpsAccessor;
 
-// TODO: Make public api and use for datagen
 public record DataHolderComponentFile(
 		boolean replace,
 		List<Patch> patches
@@ -55,9 +54,6 @@ public record DataHolderComponentFile(
 		}
 	}
 
-	// Represents an extra patch of components that will only be applied if the condition is met.
-	// This can be used for mod compatibility, i.e. conditioning modded components on the presence
-	// of the mod that adds them.
 	public record Patch(DataComponentPatch components, Optional<ResourceCondition> condition, boolean required) {
 		private static final Patch EMPTY = new Patch(DataComponentPatch.EMPTY, Optional.empty(), false);
 		private static final MapCodec<DataComponentPatch> COMPONENTS_MAP_CODEC = DataComponentPatch.CODEC.fieldOf("components");
