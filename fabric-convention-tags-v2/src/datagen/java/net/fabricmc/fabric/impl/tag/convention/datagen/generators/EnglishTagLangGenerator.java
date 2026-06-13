@@ -72,6 +72,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.ORES_IN_GROUND_DEEPSLATE, "Deepslate Ores In Ground");
 		translationBuilder.add(ConventionalBlockTags.ORES_IN_GROUND_NETHERRACK, "Netherrack Ores In Ground");
 		translationBuilder.add(ConventionalBlockTags.ORES_IN_GROUND_STONE, "Stone Ores In Ground");
+		translationBuilder.add(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL, "Incorrect for Any Tool");
 		translationBuilder.add(ConventionalBlockTags.BARRELS, "Barrels");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_BARRELS, "Wooden Barrels");
 		translationBuilder.add(ConventionalBlockTags.BOOKSHELVES, "Bookshelves");
