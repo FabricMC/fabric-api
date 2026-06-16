@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.renderer.v1;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.client.renderer.feature.FeatureRenderer;
+import net.minecraft.client.renderer.feature.FeatureRendererType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,8 +58,8 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * respectively, instead.
  *
  * <p>Renderers must implement {@link FeatureRenderer}s to support {@link ExtendedBlockModelSubmit}
- * and {@link ExtendedItemSubmit}. This is typically done by registering with
- * {@link FeatureRendererRegistry}.
+ * and {@link ExtendedItemSubmit}. This is typically done with
+ * {@link FeatureRendererRegistry#register(FeatureRendererType, Supplier)}.
  */
 public interface Renderer {
 	/**
