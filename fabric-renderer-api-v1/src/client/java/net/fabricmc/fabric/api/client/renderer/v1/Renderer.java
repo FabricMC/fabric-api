@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -38,6 +37,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
+import net.fabricmc.fabric.api.client.rendering.v1.FeatureRendererRegistry;
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 
 /**
@@ -56,8 +56,8 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * respectively, instead.
  *
  * <p>Renderers must implement {@link FeatureRenderer}s to support {@link ExtendedBlockModelSubmit}
- * and {@link ExtendedItemSubmit}. This is typically done by adding them to
- * {@link FeatureRenderDispatcher}'s map with a mixin.
+ * and {@link ExtendedItemSubmit}. This is typically done by registering with
+ * {@link FeatureRendererRegistry}.
  */
 public interface Renderer {
 	/**
