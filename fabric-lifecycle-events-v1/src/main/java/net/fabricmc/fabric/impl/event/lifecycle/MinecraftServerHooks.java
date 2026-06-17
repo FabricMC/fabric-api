@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.sprite;
+package net.fabricmc.fabric.impl.event.lifecycle;
 
-import org.spongepowered.asm.mixin.Mixin;
-
-import net.minecraft.client.resources.model.sprite.MaterialBaker;
-
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricMaterialBaker;
-
-@Mixin(MaterialBaker.class)
-abstract class MaterialBakerMixin implements FabricMaterialBaker {
+public interface MinecraftServerHooks {
+	boolean fabric$isStartupReady();
 }

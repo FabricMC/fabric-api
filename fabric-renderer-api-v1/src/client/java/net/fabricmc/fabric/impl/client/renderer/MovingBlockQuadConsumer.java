@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.sprite;
+package net.fabricmc.fabric.impl.client.renderer;
 
-import org.spongepowered.asm.mixin.Mixin;
+import java.util.function.Consumer;
 
-import net.minecraft.client.resources.model.sprite.MaterialBaker;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricMaterialBaker;
+public abstract class MovingBlockQuadConsumer implements Consumer<MutableQuadView> {
+	protected int outlineColor;
 
-@Mixin(MaterialBaker.class)
-abstract class MaterialBakerMixin implements FabricMaterialBaker {
+	public void outlineColor(int outlineColor) {
+		this.outlineColor = outlineColor;
+	}
 }

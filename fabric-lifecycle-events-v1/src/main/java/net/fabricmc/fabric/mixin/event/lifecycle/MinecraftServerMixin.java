@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.event.lifecycle;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -26,6 +27,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,15 +35,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.notifications.NotificationManager;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.impl.event.lifecycle.MinecraftServerHooks;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin {
+public abstract class MinecraftServerMixin implements MinecraftServerHooks {
 	@Shadow
 	private MinecraftServer.ReloadableResources resources;
+
+	@Shadow
+	public abstract NotificationManager notificationManager();
+
+	@Unique
+	protected final AtomicBoolean startupReady = new AtomicBoolean(false);
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z"), method = "runServer")
 	private void beforeSetupServer(CallbackInfo info) {
@@ -51,6 +61,7 @@ public abstract class MinecraftServerMixin {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;buildServerStatus()Lnet/minecraft/network/protocol/status/ServerStatus;", ordinal = 0), method = "runServer")
 	private void afterSetupServer(CallbackInfo info) {
 		ServerLifecycleEvents.SERVER_STARTED.invoker().onServerStarted((MinecraftServer) (Object) this);
+		afterServerStartedEvent();
 	}
 
 	@Inject(at = @At("HEAD"), method = "stopServer")
@@ -108,5 +119,17 @@ public abstract class MinecraftServerMixin {
 	@Inject(method = "saveAllChunks", at = @At("TAIL"))
 	private void endSave(boolean suppressLogs, boolean flush, boolean force, CallbackInfoReturnable<Boolean> cir) {
 		ServerLifecycleEvents.AFTER_SAVE.invoker().onAfterSave((MinecraftServer) (Object) this, flush, force);
+	}
+
+	@Override
+	public boolean fabric$isStartupReady() {
+		return this.startupReady.get();
+	}
+
+	@Unique
+	protected void afterServerStartedEvent() {
+		if (this.startupReady.getAndSet(true)) {
+			throw new IllegalStateException("Fabric: Server is already marked as started");
+		}
 	}
 }

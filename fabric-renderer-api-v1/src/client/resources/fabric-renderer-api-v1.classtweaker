@@ -1,14 +1,14 @@
 classTweaker	v1	official
 accessible	class	net/minecraft/client/renderer/block/dispatch/multipart/MultiPartModel$SharedBakedState
 accessible	method	net/minecraft/client/resources/model/geometry/QuadCollection	<init>	(Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
-accessible	class	net/minecraft/client/resources/model/ModelManager$MaterialBakerImpl
+accessible	class	net/minecraft/client/resources/model/ModelManager$BlockOnlyMaterialBaker
+accessible	class	net/minecraft/client/resources/model/ModelManager$CombinedBlockItemMaterialBaker
 transitive-inject-interface	net/minecraft/client/renderer/block/dispatch/BlockStateModel	net/fabricmc/fabric/api/client/renderer/v1/model/FabricBlockStateModel
 transitive-inject-interface	net/minecraft/client/renderer/block/dispatch/BlockStateModelPart	net/fabricmc/fabric/api/client/renderer/v1/model/FabricBlockStateModelPart
 transitive-inject-interface	net/minecraft/client/renderer/block/BlockStateModelSet	net/fabricmc/fabric/api/client/renderer/v1/model/FabricBlockStateModelSet
 transitive-inject-interface	net/minecraft/client/renderer/block/BlockModelRenderState	net/fabricmc/fabric/api/client/renderer/v1/render/FabricBlockModelRenderState
 transitive-inject-interface	net/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState	net/fabricmc/fabric/api/client/renderer/v1/render/FabricLayerRenderState
 transitive-inject-interface	net/minecraft/client/renderer/OrderedSubmitNodeCollector	net/fabricmc/fabric/api/client/renderer/v1/render/FabricOrderedSubmitNodeCollector
-transitive-inject-interface	net/minecraft/client/renderer/SubmitNodeCollection	net/fabricmc/fabric/api/client/renderer/v1/render/FabricSubmitNodeCollection
 transitive-inject-interface	net/minecraft/client/resources/model/sprite/MaterialBaker	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricMaterialBaker
 transitive-inject-interface	net/minecraft/client/renderer/texture/SpriteLoader$Preparations	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricPreparations
 transitive-inject-interface	net/minecraft/client/renderer/texture/TextureAtlas	net/fabricmc/fabric/api/client/renderer/v1/sprite/FabricTextureAtlas

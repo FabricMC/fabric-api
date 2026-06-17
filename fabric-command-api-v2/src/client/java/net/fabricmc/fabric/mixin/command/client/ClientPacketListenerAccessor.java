@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.renderer.sprite;
+package net.fabricmc.fabric.mixin.command.client;
 
+import com.mojang.brigadier.ParseResults;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.resources.model.sprite.MaterialBaker;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 
-import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricMaterialBaker;
-
-@Mixin(MaterialBaker.class)
-abstract class MaterialBakerMixin implements FabricMaterialBaker {
+@Mixin(ClientPacketListener.class)
+public interface ClientPacketListenerAccessor {
+	@Invoker
+	static boolean invokeIsValidCommand(final ParseResults<?> parseResults) {
+		throw new AssertionError();
+	}
 }

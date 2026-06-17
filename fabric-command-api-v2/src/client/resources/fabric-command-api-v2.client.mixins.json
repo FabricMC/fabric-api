@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.command.client",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "ClientPacketListenerAccessor",
     "ClientSuggestionProviderMixin",
     "ClientPacketListenerMixin"
   ],

@@ -5,8 +5,8 @@
   "plugin": "net.fabricmc.fabric.impl.client.indigo.IndigoMixinConfigPlugin",
   "client": [
     "BlockModelLighterAccessor",
-    "ItemFeatureRendererAccessor",
-    "ItemFeatureRendererMixin"
+    "FeatureRenderDispatcherMixin",
+    "ItemFeatureRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
