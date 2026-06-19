@@ -23,6 +23,10 @@
     {
       "id": "#c:buckets/entity_water",
       "required": false
+    },
+    {
+      "id": "#c:buckets/entity_dry",
+      "required": false
     }
   ]
 }

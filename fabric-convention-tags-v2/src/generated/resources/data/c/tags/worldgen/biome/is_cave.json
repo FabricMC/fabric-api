@@ -1,7 +1,8 @@
 {
   "values": [
-    "minecraft:deep_dark",
+    "minecraft:lush_caves",
     "minecraft:dripstone_caves",
-    "minecraft:lush_caves"
+    "minecraft:sulfur_caves",
+    "minecraft:deep_dark"
   ]
 }
