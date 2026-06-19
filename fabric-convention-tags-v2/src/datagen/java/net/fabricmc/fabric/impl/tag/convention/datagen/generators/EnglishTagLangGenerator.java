@@ -283,6 +283,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.BUCKETS, "Buckets");
 		translationBuilder.add(ConventionalItemTags.WATER_BUCKETS, "Water Buckets");
 		translationBuilder.add(ConventionalItemTags.ENTITY_WATER_BUCKETS, "Entity Water Buckets");
+		translationBuilder.add(ConventionalItemTags.ENTITY_DRY_BUCKETS, "Entity Dry Buckets");
 		translationBuilder.add(ConventionalItemTags.LAVA_BUCKETS, "Lava Buckets");
 		translationBuilder.add(ConventionalItemTags.MILK_BUCKETS, "Milk Buckets");
 		translationBuilder.add(ConventionalItemTags.POWDER_SNOW_BUCKETS, "Powder Snow Buckets");
