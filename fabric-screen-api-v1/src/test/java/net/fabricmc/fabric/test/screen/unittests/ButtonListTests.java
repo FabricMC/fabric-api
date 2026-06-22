@@ -30,7 +30,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 public class ButtonListTests {
-
 	@Test
 	public void testSize() {
 		List<AbstractWidget> widgets = Screens.getWidgets(screen());
@@ -181,30 +180,32 @@ public class ButtonListTests {
 
 	private static Screen screen() {
 		// There must be more Button instances added via Screen::addRenderableOnly than via Screen::addWidget to properly test reliance on the backing Screen#renderables list.
-		return new Screen(null, null, CommonComponents.EMPTY) {{
-			// Present in renderables: true, present in children: true, present in ButtonList: true
-			this.addRenderableWidget(button());
-			// Present in renderables: true, present in children: false, present in ButtonList: true
-			this.addRenderableOnly(button());
-			// Present in renderables: true, present in children: false, present in ButtonList: false (not an AbstractWidget)
-			this.addRenderableOnly((graphics, mouseX, mouseY, a) -> {
-				// NO-OP
-			});
-			// Present in renderables: false, present in children: true, present in ButtonList: false
-			this.addWidget(button());
-			// Present in renderables: false, present in children: true, present in ButtonList: false
-			this.addWidget(button());
-			// Present in renderables: true, present in children: true, present in ButtonList: true
-			this.addRenderableWidget(button());
-			// Present in renderables: true, present in children: false, present in ButtonList: true
-			this.addRenderableOnly(button());
-			// Present in renderables: true, present in children: true, present in ButtonList: true
-			this.addRenderableWidget(button());
-			// Present in renderables: true, present in children: true, present in ButtonList: true
-			this.addRenderableWidget(button());
-			// Present in renderables: true, present in children: false, present in ButtonList: true
-			this.addRenderableOnly(button());
-		}};
+		return new Screen(null, null, CommonComponents.EMPTY) {
+			{
+				// Present in renderables: true, present in children: true, present in ButtonList: true
+				this.addRenderableWidget(button());
+				// Present in renderables: true, present in children: false, present in ButtonList: true
+				this.addRenderableOnly(button());
+				// Present in renderables: true, present in children: false, present in ButtonList: false (not an AbstractWidget)
+				this.addRenderableOnly((graphics, mouseX, mouseY, a) -> {
+					// NO-OP
+				});
+				// Present in renderables: false, present in children: true, present in ButtonList: false
+				this.addWidget(button());
+				// Present in renderables: false, present in children: true, present in ButtonList: false
+				this.addWidget(button());
+				// Present in renderables: true, present in children: true, present in ButtonList: true
+				this.addRenderableWidget(button());
+				// Present in renderables: true, present in children: false, present in ButtonList: true
+				this.addRenderableOnly(button());
+				// Present in renderables: true, present in children: true, present in ButtonList: true
+				this.addRenderableWidget(button());
+				// Present in renderables: true, present in children: true, present in ButtonList: true
+				this.addRenderableWidget(button());
+				// Present in renderables: true, present in children: false, present in ButtonList: true
+				this.addRenderableOnly(button());
+			}
+		};
 	}
 
 	private static Button button() {
