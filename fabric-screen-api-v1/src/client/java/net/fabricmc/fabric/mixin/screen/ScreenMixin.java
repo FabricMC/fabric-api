@@ -18,8 +18,6 @@ package net.fabricmc.fabric.mixin.screen;
 
 import java.util.List;
 
-import net.fabricmc.fabric.impl.client.screen.LegacyButtonList;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
