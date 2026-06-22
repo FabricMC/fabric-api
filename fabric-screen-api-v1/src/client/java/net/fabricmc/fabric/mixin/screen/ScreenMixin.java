@@ -54,7 +54,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	protected List<Drawable> drawables;
 
 	@Unique
-	private List<AbstractWidget> fabricButtons;
+	private List<ClickableWidget> fabricButtons;
 	@Unique
 	private Event<ScreenEvents.Remove> removeEvent;
 	@Unique

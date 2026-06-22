@@ -22,25 +22,25 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.screen.ScreenTexts;
 
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 public class ButtonListTests {
 	@Test
 	public void testSize() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		assertEquals(7, widgets.size());
 	}
 
 	@Test
 	public void testAdd() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(button);
 		assertEquals(size, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -48,9 +48,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testAddBeforeRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(0, button);
 		assertEquals(0, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -58,9 +58,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testAddAtRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(1, button);
 		assertEquals(1, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -68,9 +68,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testAddAfterRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(2, button);
 		assertEquals(2, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -78,9 +78,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemove() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(button);
 		assertEquals(size, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -90,9 +90,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemoveBeforeRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(0, button);
 		assertEquals(0, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -103,9 +103,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemoveAtRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(1, button);
 		assertEquals(1, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -116,9 +116,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemoveAfterRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(2, button);
 		assertEquals(2, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -129,9 +129,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemoveIndex() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(size, button);
 		assertEquals(size, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -141,9 +141,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemoveIndexBeforeRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(0, button);
 		assertEquals(0, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -154,9 +154,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemoveIndexAtRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(1, button);
 		assertEquals(1, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -167,9 +167,9 @@ public class ButtonListTests {
 
 	@Test
 	public void testRemoveIndexAfterRenderable() {
-		List<AbstractWidget> widgets = Screens.getWidgets(screen());
+		List<ClickableWidget> widgets = Screens.getButtons(screen());
 		int size = widgets.size();
-		Button button = button();
+		ButtonWidget button = button();
 		widgets.add(2, button);
 		assertEquals(2, widgets.indexOf(button));
 		assertEquals(size + 1, widgets.size());
@@ -179,37 +179,37 @@ public class ButtonListTests {
 	}
 
 	private static Screen screen() {
-		// There must be more Button instances added via Screen::addRenderableOnly than via Screen::addWidget to properly test reliance on the backing Screen#renderables list.
-		return new Screen(null, null, CommonComponents.EMPTY) {
+		// There must be more Button instances added via Screen::addDrawable than via Screen::addSelectableChild to properly test reliance on the backing Screen#renderables list.
+		return new Screen(ScreenTexts.EMPTY) {
 			{
 				// Present in renderables: true, present in children: true, present in ButtonList: true
-				this.addRenderableWidget(button());
+				this.addDrawableChild(button());
 				// Present in renderables: true, present in children: false, present in ButtonList: true
-				this.addRenderableOnly(button());
-				// Present in renderables: true, present in children: false, present in ButtonList: false (not an AbstractWidget)
-				this.addRenderableOnly((graphics, mouseX, mouseY, a) -> {
+				this.addDrawable(button());
+				// Present in renderables: true, present in children: false, present in ButtonList: false (not a ClickableWidget)
+				this.addDrawable((graphics, mouseX, mouseY, a) -> {
 					// NO-OP
 				});
 				// Present in renderables: false, present in children: true, present in ButtonList: false
-				this.addWidget(button());
+				this.addSelectableChild(button());
 				// Present in renderables: false, present in children: true, present in ButtonList: false
-				this.addWidget(button());
+				this.addSelectableChild(button());
 				// Present in renderables: true, present in children: true, present in ButtonList: true
-				this.addRenderableWidget(button());
+				this.addDrawableChild(button());
 				// Present in renderables: true, present in children: false, present in ButtonList: true
-				this.addRenderableOnly(button());
+				this.addDrawable(button());
 				// Present in renderables: true, present in children: true, present in ButtonList: true
-				this.addRenderableWidget(button());
+				this.addDrawableChild(button());
 				// Present in renderables: true, present in children: true, present in ButtonList: true
-				this.addRenderableWidget(button());
+				this.addDrawableChild(button());
 				// Present in renderables: true, present in children: false, present in ButtonList: true
-				this.addRenderableOnly(button());
+				this.addDrawable(button());
 			}
 		};
 	}
 
-	private static Button button() {
-		return Button.builder(CommonComponents.EMPTY, _ -> {
+	private static ButtonWidget button() {
+		return ButtonWidget.builder(ScreenTexts.EMPTY, button -> {
 		}).build();
 	}
 }

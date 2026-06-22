@@ -19,29 +19,29 @@ package net.fabricmc.fabric.impl.client.screen;
 import java.util.AbstractList;
 import java.util.List;
 
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.widget.ClickableWidget;
 
 // TODO: When events for listening to addition of child elements are added, fire events from this list.
-public final class ButtonList extends AbstractList<AbstractWidget> {
-	private final List<Renderable> renderables;
-	private final List<NarratableEntry> narratables;
-	private final List<GuiEventListener> children;
+public final class ButtonList extends AbstractList<ClickableWidget> {
+	private final List<Drawable> drawables;
+	private final List<Selectable> selectables;
+	private final List<Element> children;
 
-	public ButtonList(List<Renderable> renderables, List<NarratableEntry> narratables, List<GuiEventListener> children) {
-		this.renderables = renderables;
-		this.narratables = narratables;
+	public ButtonList(List<Drawable> drawables, List<Selectable> selectables, List<Element> children) {
+		this.drawables = drawables;
+		this.selectables = selectables;
 		this.children = children;
 	}
 
 	@Override
-	public AbstractWidget get(int index) {
+	public ClickableWidget get(int index) {
 		int remaining = index;
 
-		for (Renderable renderable : renderables) {
-			if (renderable instanceof AbstractWidget widget) {
+		for (Drawable renderable : drawables) {
+			if (renderable instanceof ClickableWidget widget) {
 				if (remaining == 0) {
 					return widget;
 				}
@@ -54,14 +54,14 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	}
 
 	@Override
-	public AbstractWidget set(int index, AbstractWidget element) {
-		AbstractWidget existing = get(index);
+	public ClickableWidget set(int index, ClickableWidget element) {
+		ClickableWidget existing = get(index);
 
-		int i = renderables.indexOf(existing);
-		if (i >= 0) renderables.set(i, element);
+		int i = drawables.indexOf(existing);
+		if (i >= 0) drawables.set(i, element);
 
-		i = narratables.indexOf(existing);
-		if (i >= 0) narratables.set(i, element);
+		i = selectables.indexOf(existing);
+		if (i >= 0) selectables.set(i, element);
 
 		i = children.indexOf(existing);
 		if (i >= 0) children.set(i, element);
@@ -70,13 +70,13 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	}
 
 	@Override
-	public void add(int index, AbstractWidget element) {
+	public void add(int index, ClickableWidget element) {
 		// Remove any existing occurrence and adjust the target index accordingly.
 		int duplicateIndex = listIndexOf(element);
 
 		if (duplicateIndex >= 0) {
-			renderables.remove(element);
-			narratables.remove(element);
+			drawables.remove(element);
+			selectables.remove(element);
 			children.remove(element);
 
 			if (duplicateIndex < index) {
@@ -87,29 +87,29 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 		if (index > size()) {
 			throw new IndexOutOfBoundsException(String.format("Index: %d, Size: %d", index, size()));
 		} else if (index == size()) {
-			renderables.add(element);
-			narratables.add(element);
+			drawables.add(element);
+			selectables.add(element);
 			children.add(element);
 		} else {
 			// Use an anchor widget and insert before it.
-			AbstractWidget anchor = get(index);
+			ClickableWidget anchor = get(index);
 
-			int i = renderables.indexOf(anchor);
-			renderables.add(i >= 0 ? i : renderables.size(), element);
+			int i = drawables.indexOf(anchor);
+			drawables.add(i >= 0 ? i : drawables.size(), element);
 
-			i = narratables.indexOf(anchor);
-			narratables.add(i >= 0 ? i : narratables.size(), element);
+			i = selectables.indexOf(anchor);
+			selectables.add(i >= 0 ? i : selectables.size(), element);
 
 			i = children.indexOf(anchor);
 			children.add(i >= 0 ? i : children.size(), element);
 		}
 	}
 
-	private int listIndexOf(AbstractWidget element) {
+	private int listIndexOf(ClickableWidget element) {
 		int index = 0;
 
-		for (Renderable renderable : renderables) {
-			if (renderable instanceof AbstractWidget widget) {
+		for (Drawable renderable : drawables) {
+			if (renderable instanceof ClickableWidget widget) {
 				if (widget == element) {
 					return index;
 				}
@@ -122,11 +122,11 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	}
 
 	@Override
-	public AbstractWidget remove(int index) {
-		AbstractWidget removedButton = get(index);
+	public ClickableWidget remove(int index) {
+		ClickableWidget removedButton = get(index);
 
-		renderables.remove(removedButton);
-		narratables.remove(removedButton);
+		drawables.remove(removedButton);
+		selectables.remove(removedButton);
 		children.remove(removedButton);
 
 		return removedButton;
@@ -136,8 +136,8 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	public int size() {
 		int size = 0;
 
-		for (Renderable renderable : renderables) {
-			if (renderable instanceof AbstractWidget) {
+		for (Drawable renderable : drawables) {
+			if (renderable instanceof ClickableWidget) {
 				size++;
 			}
 		}
