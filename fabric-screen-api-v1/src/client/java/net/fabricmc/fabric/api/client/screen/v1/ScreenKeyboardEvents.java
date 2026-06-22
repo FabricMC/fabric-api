@@ -220,7 +220,7 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if typing a character should be allowed.
 		 *
-		 * @param event the char type event, containing the codepoint and modifiers
+		 * @param event the char type event, containing the codepoint
 		 * @return whether the character should be typed
 		 * @see CharacterEvent#codepointAsString()
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
@@ -233,7 +233,7 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a character is typed.
 		 *
-		 * @param event the char type event, containing the codepoint and modifiers
+		 * @param event the char type event, containing the codepoint
 		 * @see CharacterEvent#codepointAsString()
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
@@ -245,7 +245,7 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a character is typed.
 		 *
-		 * @param event the char type event, containing the codepoint and modifiers
+		 * @param event the char type event, containing the codepoint
 		 * @see CharacterEvent#codepointAsString()
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
