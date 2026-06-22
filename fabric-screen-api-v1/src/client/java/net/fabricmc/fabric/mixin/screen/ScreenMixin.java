@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.screen;
 
 import java.util.List;
 
+import net.fabricmc.fabric.impl.client.screen.LegacyButtonList;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -55,7 +57,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private List<Renderable> renderables;
 
 	@Unique
-	private ButtonList fabricButtons;
+	private List<AbstractWidget> fabricButtons;
 	@Unique
 	private Event<ScreenEvents.Remove> removeEvent;
 	@Unique
