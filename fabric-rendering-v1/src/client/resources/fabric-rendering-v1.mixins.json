@@ -5,6 +5,7 @@
   "client": [
     "BlockColorsMixin",
     "BlockEntityRenderersMixin",
+    "BuiltInBlockModelsMixin",
     "CapeLayerMixin",
     "ClientLevelMixin",
     "ClientTooltipComponentMixin",
