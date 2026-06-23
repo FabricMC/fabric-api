@@ -1,5 +1,9 @@
 import net.fabricmc.loom.task.ValidateMixinNameTask
 import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
+import org.gradle.api.attributes.Attribute
+import org.gradle.api.attributes.Category
+import org.gradle.api.attributes.LibraryElements
+import org.gradle.api.attributes.Usage
 
 def debugArgs = [
 		"-enableassertions",
@@ -88,16 +92,36 @@ tasks.register('validateMixinNames', ValidateMixinNameTask) {
 
 check.dependsOn "validateMixinNames"
 
+// Testmods need selected modules' client outputs, resolved through their internal outgoing variant.
+def fabricApiSourceSetAttribute = Attribute.of("net.fabricmc.fabric-api.source-set", String)
+def clientOutputDependencies = configurations.dependencyScope("fabricApiClientOutputDependencies")
+def clientOutputs = configurations.resolvable("fabricApiClientOutputs") {
+	extendsFrom clientOutputDependencies.get()
+
+	attributes {
+		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+		attribute(fabricApiSourceSetAttribute, "client")
+	}
+}
+
+def addClientOutputDependency = { String projectPath ->
+	dependencies.add(clientOutputDependencies.name, dependencies.project(path: projectPath, configuration: "fabricApiClientOutputElements"))
+}
+
 dependencies {
+	testmodClientImplementation files(clientOutputs)
+
 	if (project.name != "fabric-gametest-api-v1" && rootProject.findProject(":fabric-gametest-api-v1") != null) {
 		testmodImplementation project(path: ':fabric-gametest-api-v1')
-		testmodClientImplementation rootProject.project(":fabric-gametest-api-v1").sourceSets.client.output
+		addClientOutputDependency(":fabric-gametest-api-v1")
 		testmodImplementation project(path: ':fabric-resource-loader-v1')
-		testmodClientImplementation rootProject.project(":fabric-resource-loader-v1").sourceSets.client.output
+		addClientOutputDependency(":fabric-resource-loader-v1")
 	}
 
 	if (project.name != "fabric-registry-sync-v0" && rootProject.findProject(":fabric-registry-sync-v0") != null) {
 		testmodRuntimeOnly project(path: ':fabric-registry-sync-v0')
-		testmodClientImplementation rootProject.project(":fabric-registry-sync-v0").sourceSets.client.output
+		addClientOutputDependency(":fabric-registry-sync-v0")
 	}
 }

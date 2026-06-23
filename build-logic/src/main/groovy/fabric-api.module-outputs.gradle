@@ -1,0 +1,130 @@
+import org.gradle.api.attributes.Attribute
+import org.gradle.api.attributes.Category
+import org.gradle.api.attributes.DocsType
+import org.gradle.api.attributes.LibraryElements
+import org.gradle.api.attributes.Usage
+
+// Publish internal source-set outputs so root aggregate tasks can consume variants instead of reaching into child sourceSets.
+def fabricApiJavadocSourcesDirectory = layout.buildDirectory.dir("fabricApiJavadocSources")
+def fabricApiJavadocClasspathOutputDirectory = layout.buildDirectory.dir("fabricApiSourceSetOutputs/javadocClasspath")
+def fabricApiClientOutputDirectory = layout.buildDirectory.dir("fabricApiSourceSetOutputs/client")
+def fabricApiTestmodOutputDirectory = layout.buildDirectory.dir("fabricApiSourceSetOutputs/testmod")
+def fabricApiTestmodClientOutputDirectory = layout.buildDirectory.dir("fabricApiSourceSetOutputs/testmodClient")
+def fabricApiSourceSetAttribute = Attribute.of("net.fabricmc.fabric-api.source-set", String)
+
+tasks.register("fabricApiJavadocSources", Sync) {
+	from(sourceSets.main.allJava) {
+		into "main"
+	}
+	from(sourceSets.client.allJava) {
+		into "client"
+	}
+	into fabricApiJavadocSourcesDirectory
+}
+
+tasks.register("fabricApiJavadocClasspathOutput", Sync) {
+	from sourceSets.main.output
+	from sourceSets.client.output
+	into fabricApiJavadocClasspathOutputDirectory
+}
+
+tasks.register("fabricApiClientOutput", Sync) {
+	from sourceSets.client.output
+	into fabricApiClientOutputDirectory
+}
+
+tasks.register("fabricApiTestmodOutput", Sync) {
+	from sourceSets.testmod.output
+	into fabricApiTestmodOutputDirectory
+}
+
+tasks.register("fabricApiTestmodClientOutput", Sync) {
+	from sourceSets.testmodClient.output
+	into fabricApiTestmodClientOutputDirectory
+}
+
+configurations {
+	consumable("fabricApiJavadocSourcesElements") {
+		outgoing.capability("${project.group}:${project.name}-fabric-api-javadoc-sources:${project.version}")
+
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
+			attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.SOURCES))
+			attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, "directory"))
+		}
+	}
+
+	consumable("fabricApiJavadocClasspathElements") {
+		extendsFrom configurations.getByName(sourceSets.main.compileClasspathConfigurationName)
+		extendsFrom configurations.getByName(sourceSets.client.compileClasspathConfigurationName)
+		outgoing.capability("${project.group}:${project.name}-fabric-api-javadoc-classpath:${project.version}")
+
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_API))
+			attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+		}
+	}
+
+	consumable("fabricApiClientOutputElements") {
+		outgoing.capability("${project.group}:${project.name}-fabric-api-client-output:${project.version}")
+
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+			attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+			attribute(fabricApiSourceSetAttribute, "client")
+		}
+	}
+
+	consumable("fabricApiTestmodOutputElements") {
+		outgoing.capability("${project.group}:${project.name}-fabric-api-testmod-output:${project.version}")
+
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+			attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+			attribute(fabricApiSourceSetAttribute, "testmod")
+		}
+	}
+
+	consumable("fabricApiTestmodClientOutputElements") {
+		outgoing.capability("${project.group}:${project.name}-fabric-api-testmod-client-output:${project.version}")
+
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+			attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+			attribute(fabricApiSourceSetAttribute, "testmodClient")
+		}
+	}
+
+	consumable("fabricApiTestmodJarElements") {
+		outgoing.capability("${project.group}:${project.name}-fabric-api-testmod-jar:${project.version}")
+
+		attributes {
+			attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+			attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+			attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+		}
+	}
+}
+
+artifacts {
+	add("fabricApiJavadocSourcesElements", fabricApiJavadocSourcesDirectory) {
+		builtBy tasks.named("fabricApiJavadocSources")
+	}
+	add("fabricApiJavadocClasspathElements", fabricApiJavadocClasspathOutputDirectory) {
+		builtBy tasks.named("fabricApiJavadocClasspathOutput")
+	}
+	add("fabricApiClientOutputElements", fabricApiClientOutputDirectory) {
+		builtBy tasks.named("fabricApiClientOutput")
+	}
+	add("fabricApiTestmodOutputElements", fabricApiTestmodOutputDirectory) {
+		builtBy tasks.named("fabricApiTestmodOutput")
+	}
+	add("fabricApiTestmodClientOutputElements", fabricApiTestmodClientOutputDirectory) {
+		builtBy tasks.named("fabricApiTestmodClientOutput")
+	}
+	add("fabricApiTestmodJarElements", tasks.named("testmodJar"))
+}

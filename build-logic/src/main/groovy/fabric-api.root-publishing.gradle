@@ -1,5 +1,9 @@
 import groovy.xml.XmlSlurper
 import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
+import org.gradle.api.attributes.Category
+import org.gradle.api.attributes.DocsType
+import org.gradle.api.attributes.LibraryElements
+import org.gradle.api.attributes.Usage
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.external.javadoc.JavadocMemberLevel
 
@@ -12,8 +16,33 @@ def includedModuleProjects = rootProject.allprojects.findAll {
 	FabricApiBuildUtils.isFabricModule(it) && it != project
 }
 
+// Resolve module-published source/classpath variants for the aggregate root Javadoc task.
+def moduleJavadocSourceDependencies = configurations.dependencyScope("fabricApiModuleJavadocSourceDependencies")
+def moduleJavadocSources = configurations.resolvable("fabricApiModuleJavadocSources") {
+	extendsFrom moduleJavadocSourceDependencies.get()
+
+	attributes {
+		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
+		attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.SOURCES))
+		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, "directory"))
+	}
+}
+
+def moduleJavadocClasspathDependencies = configurations.dependencyScope("fabricApiModuleJavadocClasspathDependencies")
+def moduleJavadocClasspath = configurations.resolvable("fabricApiModuleJavadocClasspath") {
+	extendsFrom moduleJavadocClasspathDependencies.get()
+
+	attributes {
+		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_API))
+		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+	}
+}
+
 javadoc {
 	enabled = true
+	source moduleJavadocSources
+	classpath = files(sourceSets.main.compileClasspath, sourceSets.client.compileClasspath, moduleJavadocClasspath)
 
 	options {
 		source = "25"
@@ -32,13 +61,6 @@ javadoc {
 
 	include("**/api/**")
 	failOnError = true
-}
-
-for (def moduleProject : includedModuleProjects) {
-	moduleProject.plugins.withId("fabric-api.module") {
-		javadoc.source(moduleProject.sourceSets.main.allJava)
-		javadoc.source(moduleProject.sourceSets.client.allJava)
-	}
 }
 
 tasks.register('javadocJar', Jar) {
@@ -78,6 +100,13 @@ publishing {
 				FabricApiBuildUtils.addPomMetadataInformation(rootProject, pom)
 			}
 		}
+	}
+}
+
+dependencies {
+	for (def moduleProject : includedModuleProjects) {
+		add(moduleJavadocSourceDependencies.name, dependencies.project(path: moduleProject.path, configuration: "fabricApiJavadocSourcesElements"))
+		add(moduleJavadocClasspathDependencies.name, dependencies.project(path: moduleProject.path, configuration: "fabricApiJavadocClasspathElements"))
 	}
 }
 

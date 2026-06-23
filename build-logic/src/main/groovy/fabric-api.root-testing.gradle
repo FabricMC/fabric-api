@@ -1,4 +1,8 @@
 import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
+import org.gradle.api.attributes.Attribute
+import org.gradle.api.attributes.Category
+import org.gradle.api.attributes.LibraryElements
+import org.gradle.api.attributes.Usage
 
 plugins {
 	id "fabric-api.testing"
@@ -8,28 +12,65 @@ def includedModuleProjects = rootProject.allprojects.findAll {
 	FabricApiBuildUtils.isFabricModule(it) && it != project
 }
 
-def nestedTestModJars = project.files()
+// Root gametest consumes module-published testmod outputs without reading child sourceSets directly.
+def fabricApiSourceSetAttribute = Attribute.of("net.fabricmc.fabric-api.source-set", String)
+def nestedTestmodJarDependencies = configurations.dependencyScope("fabricApiNestedTestmodJarDependencies")
+def nestedTestModJars = configurations.resolvable("fabricApiNestedTestmodJars") {
+	extendsFrom nestedTestmodJarDependencies.get()
+
+	attributes {
+		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+	}
+}
+
+def moduleTestmodOutputDependencies = configurations.dependencyScope("fabricApiModuleTestmodOutputDependencies")
+def moduleTestmodOutputs = configurations.resolvable("fabricApiModuleTestmodOutputs") {
+	extendsFrom moduleTestmodOutputDependencies.get()
+
+	attributes {
+		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+		attribute(fabricApiSourceSetAttribute, "testmod")
+	}
+}
+
+def moduleTestmodClientOutputDependencies = configurations.dependencyScope("fabricApiModuleTestmodClientOutputDependencies")
+def moduleTestmodClientOutputs = configurations.resolvable("fabricApiModuleTestmodClientOutputs") {
+	extendsFrom moduleTestmodClientOutputDependencies.get()
+
+	attributes {
+		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
+		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
+		attribute(fabricApiSourceSetAttribute, "testmodClient")
+	}
+}
 
 for (def moduleProject : includedModuleProjects) {
-	def currentModuleProject = moduleProject
-	currentModuleProject.afterEvaluate {
-		if (currentModuleProject.file("src/testmod").exists() || currentModuleProject.file("src/testmodClient").exists()) {
-			nestedTestModJars.from(currentModuleProject.tasks.named("testmodJar"))
-		}
+	loom.mods.register(moduleProject.name) {
+		sourceSet "main", moduleProject.path
+		sourceSet "client", moduleProject.path
+	}
 
-		loom.mods.register(currentModuleProject.name) {
-			sourceSet currentModuleProject.sourceSets.main
-			sourceSet currentModuleProject.sourceSets.client
-		}
+	loom.mods.register(moduleProject.name + "-testmod") {
+		sourceSet "testmod", moduleProject.path
+		sourceSet "testmodClient", moduleProject.path
+	}
+}
 
-		loom.mods.register(currentModuleProject.name + "-testmod") {
-			sourceSet currentModuleProject.sourceSets.testmod
-			sourceSet currentModuleProject.sourceSets.testmodClient
-		}
+dependencies {
+	testmodImplementation files(moduleTestmodOutputs)
+	testmodClientImplementation files(moduleTestmodClientOutputs)
 
-		dependencies {
-			testmodImplementation currentModuleProject.sourceSets.testmod.output
-			testmodClientImplementation currentModuleProject.sourceSets.testmodClient.output
+	for (def moduleProject : includedModuleProjects) {
+		add(moduleTestmodOutputDependencies.name, dependencies.project(path: moduleProject.path, configuration: "fabricApiTestmodOutputElements"))
+		add(moduleTestmodClientOutputDependencies.name, dependencies.project(path: moduleProject.path, configuration: "fabricApiTestmodClientOutputElements"))
+
+		if (moduleProject.file("src/testmod").exists() || moduleProject.file("src/testmodClient").exists()) {
+			add(nestedTestmodJarDependencies.name, dependencies.project(path: moduleProject.path, configuration: "fabricApiTestmodJarElements"))
 		}
 	}
 }
@@ -65,4 +106,4 @@ runGametest {
 	outputs.file project.layout.buildDirectory.file("junit.xml")
 }
 
-loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
+loom.nestJars(tasks.named("testmodJar"), nestedTestModJars.get())
