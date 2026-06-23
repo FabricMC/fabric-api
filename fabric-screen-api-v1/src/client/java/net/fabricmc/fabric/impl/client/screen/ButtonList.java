@@ -25,6 +25,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 
 // TODO: When events for listening to addition of child elements are added, fire events from this list.
+@Deprecated
 public final class ButtonList extends AbstractList<AbstractWidget> {
 	private final List<Renderable> renderables;
 	private final List<NarratableEntry> narratables;

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.screen;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,13 +38,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenWidgetRemover;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ButtonList;
 import net.fabricmc.fabric.impl.client.screen.ScreenEventFactory;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
 @Mixin(Screen.class)
-abstract class ScreenMixin implements ScreenExtensions {
+abstract class ScreenMixin implements ScreenExtensions, ScreenWidgetRemover {
 	@Shadow
 	@Final
 	private List<NarratableEntry> narratables;
@@ -173,6 +175,48 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private void afterInit(int width, int height) {
 		ScreenEvents.AFTER_INIT.invoker().afterInit(Minecraft.getInstance(), (Screen) (Object) this, width, height);
+	}
+
+	@Override
+	public <T extends GuiEventListener & Renderable & NarratableEntry> void removeRenderableWidget(T widget) {
+		this.renderables.remove(widget);
+		this.removeWidget(widget);
+	}
+
+	@Override
+	public <T extends Renderable> void removeRenderableOnly(T renderable) {
+		this.renderables.remove(renderable);
+	}
+
+	@Override
+	public <T extends GuiEventListener & NarratableEntry> void removeWidget(T widget) {
+		this.children.remove(widget);
+		this.narratables.remove(widget);
+	}
+
+	@Override
+	public <T extends GuiEventListener & Renderable & NarratableEntry> void removeRenderableWidget(Predicate<T> filter) {
+		this.renderables.removeIf(renderable -> {
+			return renderable instanceof GuiEventListener && renderable instanceof NarratableEntry && filter.test((T) renderable);
+		});
+		this.removeWidget(filter);
+	}
+
+	@Override
+	public <T extends Renderable> void removeRenderableOnly(Predicate<T> filter) {
+		this.renderables.removeIf(renderable -> {
+			return filter.test((T) renderable);
+		});
+	}
+
+	@Override
+	public <T extends GuiEventListener & NarratableEntry> void removeWidget(Predicate<T> filter) {
+		this.children.removeIf(widget -> {
+			return widget instanceof NarratableEntry && filter.test((T) widget);
+		});
+		this.narratables.removeIf(narratable -> {
+			return narratable instanceof GuiEventListener &&  filter.test((T) narratable);
+		});
 	}
 
 	@Override

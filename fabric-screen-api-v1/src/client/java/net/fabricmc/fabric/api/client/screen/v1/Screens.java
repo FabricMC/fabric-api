@@ -40,6 +40,7 @@ public final class Screens {
 	 *
 	 * @return a list of all of a screen's widgets
 	 */
+	@Deprecated
 	public static List<AbstractWidget> getWidgets(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 

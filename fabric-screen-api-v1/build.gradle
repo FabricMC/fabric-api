@@ -1,3 +1,10 @@
 version = getSubprojectVersion(project)
 
-moduleDependencies(project, ['fabric-api-base'])
+moduleDependencies(project, [
+	':fabric-api-base',
+	':fabric-transitive-access-wideners-v1'
+])
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-screen-api-v1.classtweaker")
+}
