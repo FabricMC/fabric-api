@@ -10,7 +10,7 @@ pluginManagement {
 
 rootProject.name = "fabric-api"
 
-includeBuild 'buildLogic'
+includeBuild 'build-logic'
 
 include 'fabric-api-bom'
 include 'fabric-api-catalog'
