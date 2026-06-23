@@ -11,7 +11,7 @@ def dependencies = rootProject.allprojects.findAll {
 	it.name != "deprecated" && it.path.startsWith(":deprecated")
 }.collect {
 	[
-		'groupId': it.group.toString(),
+		'groupId': project.group.toString(),
 		'artifactId': it.name,
 		'version': FabricApiBuildUtils.moduleVersion(it),
 		'scope': 'compile'

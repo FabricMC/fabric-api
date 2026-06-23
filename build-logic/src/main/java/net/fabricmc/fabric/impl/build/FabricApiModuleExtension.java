@@ -64,7 +64,7 @@ public class FabricApiModuleExtension {
 		for (String dependencyName : dependencyNames) {
 			Project dependencyProject = project.getRootProject().findProject(FabricApiBuildUtils.projectPath(dependencyName));
 			var dependencyNode = new LinkedHashMap<String, String>();
-			dependencyNode.put("groupId", dependencyProject.getGroup().toString());
+			dependencyNode.put("groupId", project.getGroup().toString());
 			dependencyNode.put("artifactId", dependencyProject.getName());
 			dependencyNode.put("version", FabricApiBuildUtils.moduleVersion(dependencyProject));
 			dependencyNode.put("scope", "compile");
