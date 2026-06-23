@@ -1,9 +1,5 @@
 import groovy.xml.XmlSlurper
 import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
-import org.gradle.api.attributes.Category
-import org.gradle.api.attributes.DocsType
-import org.gradle.api.attributes.LibraryElements
-import org.gradle.api.attributes.Usage
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.external.javadoc.JavadocMemberLevel
 
@@ -20,23 +16,13 @@ def includedModuleProjects = rootProject.allprojects.findAll {
 def moduleJavadocSourceDependencies = configurations.dependencyScope("fabricApiModuleJavadocSourceDependencies")
 def moduleJavadocSources = configurations.resolvable("fabricApiModuleJavadocSources") {
 	extendsFrom moduleJavadocSourceDependencies.get()
-
-	attributes {
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
-		attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.SOURCES))
-		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, "directory"))
-	}
+	FabricApiBuildUtils.configureDocumentationSourcesVariant(project, delegate)
 }
 
 def moduleJavadocClasspathDependencies = configurations.dependencyScope("fabricApiModuleJavadocClasspathDependencies")
 def moduleJavadocClasspath = configurations.resolvable("fabricApiModuleJavadocClasspath") {
 	extendsFrom moduleJavadocClasspathDependencies.get()
-
-	attributes {
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
-		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_API))
-		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
-	}
+	FabricApiBuildUtils.configureJavaApiClassesVariant(project, delegate)
 }
 
 javadoc {

@@ -33,10 +33,17 @@ import java.util.Set;
 import groovy.json.JsonSlurper;
 import groovy.util.Node;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.MinimalExternalModuleDependency;
 import org.gradle.api.artifacts.VersionCatalog;
 import org.gradle.api.artifacts.VersionCatalogsExtension;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
+import org.gradle.api.attributes.Attribute;
+import org.gradle.api.attributes.AttributeContainer;
+import org.gradle.api.attributes.Category;
+import org.gradle.api.attributes.DocsType;
+import org.gradle.api.attributes.LibraryElements;
+import org.gradle.api.attributes.Usage;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.publish.maven.MavenPom;
 
@@ -51,6 +58,8 @@ public final class FabricApiBuildUtils {
 			"fabric-client-gametest-api-v1",
 			"fabric-gametest-api-v1"
 	);
+
+	private static final Attribute<String> SOURCE_SET_ATTRIBUTE = Attribute.of("net.fabricmc.fabric-api.source-set", String.class);
 
 	private FabricApiBuildUtils() {
 	}
@@ -106,6 +115,71 @@ public final class FabricApiBuildUtils {
 	public static Provider<MinimalExternalModuleDependency> library(Project project, String alias) {
 		return libs(project).findLibrary(alias)
 				.orElseThrow(() -> new IllegalStateException("Missing version catalog entry: " + alias));
+	}
+
+	public static void configureInternalDocumentationSourcesVariant(Project project, Configuration configuration, String capabilityName) {
+		configureInternalCapability(project, configuration, capabilityName);
+		configureDocumentationSourcesVariant(project, configuration);
+	}
+
+	public static void configureInternalJavaApiClassesVariant(Project project, Configuration configuration, String capabilityName) {
+		configureInternalCapability(project, configuration, capabilityName);
+		configureJavaApiClassesVariant(project, configuration);
+	}
+
+	public static void configureInternalJavaRuntimeClassesVariant(Project project, Configuration configuration, String capabilityName, String sourceSetName) {
+		configureInternalCapability(project, configuration, capabilityName);
+		configureJavaRuntimeClassesVariant(project, configuration, sourceSetName);
+	}
+
+	public static void configureInternalJavaRuntimeJarVariant(Project project, Configuration configuration, String capabilityName) {
+		configureInternalCapability(project, configuration, capabilityName);
+		configureJavaRuntimeJarVariant(project, configuration);
+	}
+
+	public static void configureDocumentationSourcesVariant(Project project, Configuration configuration) {
+		configureDocumentationSourcesAttributes(project, configuration.getAttributes());
+	}
+
+	public static void configureJavaApiClassesVariant(Project project, Configuration configuration) {
+		configureJavaApiClassesAttributes(project, configuration.getAttributes());
+	}
+
+	public static void configureJavaRuntimeClassesVariant(Project project, Configuration configuration, String sourceSetName) {
+		configureJavaRuntimeClassesAttributes(project, configuration.getAttributes(), sourceSetName);
+	}
+
+	public static void configureJavaRuntimeJarVariant(Project project, Configuration configuration) {
+		configureJavaRuntimeJarAttributes(project, configuration.getAttributes());
+	}
+
+	private static void configureInternalCapability(Project project, Configuration configuration, String capabilityName) {
+		configuration.getOutgoing().capability("%s:%s-fabric-api-%s:%s".formatted(project.getGroup(), project.getName(), capabilityName, project.getVersion()));
+	}
+
+	private static void configureDocumentationSourcesAttributes(Project project, AttributeContainer attributes) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.DOCUMENTATION));
+		attributes.attribute(DocsType.DOCS_TYPE_ATTRIBUTE, project.getObjects().named(DocsType.class, DocsType.SOURCES));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, "directory"));
+	}
+
+	private static void configureJavaApiClassesAttributes(Project project, AttributeContainer attributes) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
+		attributes.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_API));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.CLASSES));
+	}
+
+	private static void configureJavaRuntimeClassesAttributes(Project project, AttributeContainer attributes, String sourceSetName) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
+		attributes.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.CLASSES));
+		attributes.attribute(SOURCE_SET_ATTRIBUTE, sourceSetName);
+	}
+
+	private static void configureJavaRuntimeJarAttributes(Project project, AttributeContainer attributes) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
+		attributes.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.JAR));
 	}
 
 	private static VersionCatalog libs(Project project) {

@@ -1,8 +1,4 @@
 import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
-import org.gradle.api.attributes.Attribute
-import org.gradle.api.attributes.Category
-import org.gradle.api.attributes.LibraryElements
-import org.gradle.api.attributes.Usage
 
 plugins {
 	id "fabric-api.testing"
@@ -13,40 +9,22 @@ def includedModuleProjects = rootProject.allprojects.findAll {
 }
 
 // Root gametest consumes module-published testmod outputs without reading child sourceSets directly.
-def fabricApiSourceSetAttribute = Attribute.of("net.fabricmc.fabric-api.source-set", String)
 def nestedTestmodJarDependencies = configurations.dependencyScope("fabricApiNestedTestmodJarDependencies")
 def nestedTestModJars = configurations.resolvable("fabricApiNestedTestmodJars") {
 	extendsFrom nestedTestmodJarDependencies.get()
-
-	attributes {
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
-		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
-	}
+	FabricApiBuildUtils.configureJavaRuntimeJarVariant(project, delegate)
 }
 
 def moduleTestmodOutputDependencies = configurations.dependencyScope("fabricApiModuleTestmodOutputDependencies")
 def moduleTestmodOutputs = configurations.resolvable("fabricApiModuleTestmodOutputs") {
 	extendsFrom moduleTestmodOutputDependencies.get()
-
-	attributes {
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
-		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
-		attribute(fabricApiSourceSetAttribute, "testmod")
-	}
+	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(project, delegate, "testmod")
 }
 
 def moduleTestmodClientOutputDependencies = configurations.dependencyScope("fabricApiModuleTestmodClientOutputDependencies")
 def moduleTestmodClientOutputs = configurations.resolvable("fabricApiModuleTestmodClientOutputs") {
 	extendsFrom moduleTestmodClientOutputDependencies.get()
-
-	attributes {
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
-		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
-		attribute(fabricApiSourceSetAttribute, "testmodClient")
-	}
+	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(project, delegate, "testmodClient")
 }
 
 for (def moduleProject : includedModuleProjects) {

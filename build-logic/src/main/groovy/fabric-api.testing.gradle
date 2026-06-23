@@ -1,9 +1,5 @@
 import net.fabricmc.loom.task.ValidateMixinNameTask
 import net.fabricmc.fabric.impl.build.FabricApiBuildUtils
-import org.gradle.api.attributes.Attribute
-import org.gradle.api.attributes.Category
-import org.gradle.api.attributes.LibraryElements
-import org.gradle.api.attributes.Usage
 
 def debugArgs = [
 		"-enableassertions",
@@ -93,17 +89,10 @@ tasks.register('validateMixinNames', ValidateMixinNameTask) {
 check.dependsOn "validateMixinNames"
 
 // Testmods need selected modules' client outputs, resolved through their internal outgoing variant.
-def fabricApiSourceSetAttribute = Attribute.of("net.fabricmc.fabric-api.source-set", String)
 def clientOutputDependencies = configurations.dependencyScope("fabricApiClientOutputDependencies")
 def clientOutputs = configurations.resolvable("fabricApiClientOutputs") {
 	extendsFrom clientOutputDependencies.get()
-
-	attributes {
-		attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.LIBRARY))
-		attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-		attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.CLASSES))
-		attribute(fabricApiSourceSetAttribute, "client")
-	}
+	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(project, delegate, "client")
 }
 
 def addClientOutputDependency = { String projectPath ->
