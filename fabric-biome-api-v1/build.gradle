@@ -40,9 +40,9 @@ sourceSets {
 loom {
 	runs {
 		datagen {
-			name "Data Generation"
-			source sourceSets.testmod
-			ideConfigGenerated = true
+			displayName = "Data Generation"
+			sourceSet = sourceSets.testmod.name
+			generateRunConfig = true
 		}
 	}
 }

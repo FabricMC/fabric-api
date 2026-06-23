@@ -44,24 +44,24 @@ loom {
 	runs {
 		datagen {
 			inherit testmodServer
-			name "Data Generation"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
-			vmArg "-Dfabric-api.datagen.strict-validation"
+			displayName = "Data Generation"
+			systemProperties.put("fabric-api.datagen", "")
+			systemProperties.put("fabric-api.datagen.output-dir", "${file("src/testmod/generated")}")
+			systemProperties.put("fabric-api.datagen.strict-validation", "")
 
-			ideConfigGenerated = true
-			runDir "build/datagen"
+			generateRunConfig = true
+			runDirectory = file("build/datagen")
 		}
 		datagenClient {
 			client()
-			name "Data Generation Client"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
-			vmArg "-Dfabric-api.datagen.strict-validation"
+			displayName = "Data Generation Client"
+			systemProperties.put("fabric-api.datagen", "")
+			systemProperties.put("fabric-api.datagen.output-dir", "${file("src/testmod/generated")}")
+			systemProperties.put("fabric-api.datagen.strict-validation", "")
 
-			ideConfigGenerated = true
-			runDir "build/datagen"
-			source sourceSets.testmodClient
+			generateRunConfig = true
+			runDirectory = file("build/datagen")
+			sourceSet = sourceSets.testmodClient.name
 		}
 	}
 }
