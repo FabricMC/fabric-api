@@ -55,6 +55,7 @@ public final class ScreenTests implements ClientModInitializer {
 		if (screen instanceof TitleScreen) {
 			// Shrink the realms button, should be the third button on the list
 			final GuiEventListener optionsButton = screen.children().get(2);
+
 			if (optionsButton instanceof AbstractWidget widget) {
 				widget.setWidth(98);
 			}
