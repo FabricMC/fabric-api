@@ -45,7 +45,8 @@ public final class Screens {
 	 *
 	 * @return a list of all of a screen's widgets
 	 *
-	 * @deprecated use {@link Screen#addRenderableWidget(GuiEventListener)},
+	 * @deprecated use {@link Screen#children()},
+	 *        {@link Screen#addRenderableWidget(GuiEventListener)},
 	 *        {@link Screen#addRenderableOnly(Renderable)}, {@link Screen#addWidget(GuiEventListener)},
 	 * 		and {@link Screen#removeWidget(GuiEventListener)}
 	 */

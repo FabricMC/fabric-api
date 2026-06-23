@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.test.screen;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -35,7 +34,6 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 public final class ScreenTests implements ClientModInitializer {
 	public static final Identifier ARMOR_FULL_TEXTURE = Identifier.withDefaultNamespace("hud/armor_full");
@@ -55,16 +53,16 @@ public final class ScreenTests implements ClientModInitializer {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
-			final List<AbstractWidget> buttons = Screens.getWidgets(screen);
-
 			// Shrink the realms button, should be the third button on the list
-			final AbstractWidget optionsButton = buttons.get(2);
-			optionsButton.setWidth(98);
+			final GuiEventListener optionsButton = screen.children().get(2);
+			if (optionsButton instanceof AbstractWidget widget) {
+				widget.setWidth(98);
+			}
 
 			// Add a new button
-			buttons.add(new SoundButton((screen.width / 2) + 2, ((screen.height / 4) + 96), 72, 20));
+			screen.addRenderableWidget(new SoundButton((screen.width / 2) + 2, ((screen.height / 4) + 96), 72, 20));
 			// And another button
-			buttons.add(new StopSoundButton((screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
+			screen.addRenderableWidget(new StopSoundButton((screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
 
 			// Testing:
 			// Some automatic validation that the screen list works, make sure the buttons we added are on the list of child elements
@@ -87,7 +85,7 @@ public final class ScreenTests implements ClientModInitializer {
 				LOGGER.warn("Pressed, Context: {}", context);
 			});
 		} else if (screen instanceof CreativeModeInventoryScreen) {
-			Screens.getWidgets(screen).add(new TestButton());
+			screen.addRenderableWidget(new TestButton());
 		} else if (screen instanceof GrindstoneScreen) {
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn BEHIND both the container screen interface and the darkened background, text, items, the carried item, tooltips, etc.
