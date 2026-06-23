@@ -12,7 +12,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: gradle/actions/wrapper-validation@v5
-      - run: ./gradlew check build outJar :buildSrc:check publishToMavenLocal --stacktrace
+      - run: ./gradlew check build outJar :build-logic:check publishToMavenLocal --stacktrace
       - uses: FabricMCBot/publish-checkstyle-report@v3
         if: ${{ failure() }}
         with:
