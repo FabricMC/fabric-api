@@ -25,6 +25,5 @@
   ],
   "custom": {
     "fabric-api:module-lifecycle": "stable"
-  },
-  "accessWidener": "fabric-screen-api-v1.classtweaker"
+  }
 }
