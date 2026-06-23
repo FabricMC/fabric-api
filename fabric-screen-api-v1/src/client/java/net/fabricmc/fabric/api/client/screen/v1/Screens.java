@@ -22,6 +22,8 @@ import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
@@ -32,13 +34,20 @@ import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
  *
  * @see ScreenEvents
  */
+@Deprecated
 public final class Screens {
 	/**
 	 * Gets all of a screen's widgets.
-	 * The provided list allows for addition and removal of widgets from the screen.
-	 * This method should be preferred over adding widgets directly to a screen's {@link Screen#children() child elements}.
+	 *
+	 * <p>The provided list allows for addition and removal of widgets
+	 * from the screen. This method should be preferred over adding widgets directly to a screen's
+	 * {@link Screen#children() child elements}.
 	 *
 	 * @return a list of all of a screen's widgets
+	 *
+	 * @deprecated use {@link Screen#addRenderableWidget(GuiEventListener)},
+	 *        {@link Screen#addRenderableOnly(Renderable)}, {@link Screen#addWidget(GuiEventListener)},
+	 * 		and {@link Screen#removeWidget(GuiEventListener)}
 	 */
 	@Deprecated
 	public static List<AbstractWidget> getWidgets(Screen screen) {
@@ -51,7 +60,8 @@ public final class Screens {
 	 * Gets a screen's font.
 	 *
 	 * @return the screen's font.
-	 * @deprecated Use {@link Screen#getFont()} directly
+	 *
+	 * @deprecated use {@link Screen#getFont()} directly
 	 */
 	@Deprecated
 	public static Font getFont(Screen screen) {
@@ -60,6 +70,10 @@ public final class Screens {
 		return screen.getFont();
 	}
 
+	/**
+	 * @deprecated use {@link Screen#minecraft} directly
+	 */
+	@Deprecated
 	public static Minecraft getMinecraft(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
