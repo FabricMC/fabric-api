@@ -26,6 +26,7 @@ publishing {
 }
 
 remoteSign {
+	sign publishing.publications.mavenJava
 	sign jar
 }
 

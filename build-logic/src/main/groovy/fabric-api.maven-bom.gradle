@@ -13,6 +13,10 @@ publishing.publications {
 	}
 }
 
+remoteSign {
+	sign publishing.publications.mavenJava
+}
+
 tasks.withType(GenerateModuleMetadata).configureEach {
 	enabled = true
 }

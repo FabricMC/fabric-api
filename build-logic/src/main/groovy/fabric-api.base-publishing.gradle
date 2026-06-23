@@ -16,10 +16,6 @@ remoteSign {
 	pgpAuthKey = providers.environmentVariable("SIGNING_PGP_KEY")
 	jarAuthKey = providers.environmentVariable("SIGNING_JAR_KEY")
 	useDummyForTesting = !providers.environmentVariable("SIGNING_SERVER").present
-
-	afterEvaluate {
-		sign publishing.publications.mavenJava
-	}
 }
 
 publishing {

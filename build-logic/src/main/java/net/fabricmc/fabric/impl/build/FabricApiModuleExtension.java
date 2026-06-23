@@ -49,10 +49,15 @@ public class FabricApiModuleExtension {
 	private void configureModuleDependencies(List<String> dependencyNames) {
 		List<Project> dependencyProjects = dependencyProjects(dependencyNames);
 		SourceSet clientSourceSet = sourceSets().getByName("client");
+		String dependencyNamesInput = String.join(",", dependencyNames.stream().map(FabricApiBuildUtils::moduleName).toList());
 
 		for (String dependencyName : dependencyNames) {
 			project.getDependencies().add("api", project.getDependencies().project(Map.of("path", FabricApiBuildUtils.projectPath(dependencyName))));
 		}
+
+		project.getRootProject().getTasks().withType(BumpVersionTask.class).configureEach(task -> {
+			task.getApiDependencies().put(project.getName(), dependencyNamesInput);
+		});
 
 		addDependencyClientOutputs("clientImplementation", clientSourceSet, dependencyProjects);
 		dependsOnDependencyClientClasses("compileClientJava", dependencyProjects);

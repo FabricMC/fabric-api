@@ -12,6 +12,24 @@ def includedModuleProjects = rootProject.allprojects.findAll {
 	FabricApiBuildUtils.isFabricModule(it) && it != project
 }
 
+def aggregatePomDependencies = includedModuleProjects.findAll {
+	!it.path.startsWith(":deprecated")
+}.collect {
+	[
+		'groupId': project.group.toString(),
+		'artifactId': it.name,
+		'version': FabricApiBuildUtils.moduleVersion(it),
+		'scope': 'compile'
+	]
+}
+
+aggregatePomDependencies.add([
+	'groupId': project.group.toString(),
+	'artifactId': "fabric-api-deprecated",
+	'version': project.version.toString(),
+	'scope': 'compile'
+])
+
 // Resolve module-published source/classpath variants for the aggregate root Javadoc task.
 def moduleJavadocSourceDependencies = configurations.dependencyScope("fabricApiModuleJavadocSourceDependencies")
 def moduleJavadocSources = configurations.resolvable("fabricApiModuleJavadocSources") {
@@ -85,8 +103,15 @@ publishing {
 			pom {
 				FabricApiBuildUtils.addPomMetadataInformation(rootProject, pom)
 			}
+			pom.withXml {
+				FabricApiBuildUtils.appendPomDependencies(asNode(), aggregatePomDependencies)
+			}
 		}
 	}
+}
+
+remoteSign {
+	sign publishing.publications.mavenJava
 }
 
 dependencies {
@@ -150,42 +175,3 @@ tasks.register('checkVersion') {
 
 tasks.publishMods.dependsOn checkVersion
 publish.mustRunAfter checkVersion
-
-gradle.projectsEvaluated {
-	publishing.publications.mavenJava {
-		def dependencies = []
-
-		for (def moduleProject : includedModuleProjects) {
-			if (moduleProject.path.startsWith(":deprecated")) {
-				continue
-			}
-
-			dependencies.add([
-				'groupId': moduleProject.group,
-				'artifactId': moduleProject.name,
-				'version': FabricApiBuildUtils.moduleVersion(moduleProject),
-				'scope': 'compile'
-			])
-		}
-
-		def thisGroup = group
-		def thisVersion = version
-
-		pom.withXml {
-			def depsNode = asNode().appendNode("dependencies")
-			for (dep in dependencies) {
-				def depNode = depsNode.appendNode("dependency")
-				depNode.appendNode("groupId", dep['groupId'])
-				depNode.appendNode("artifactId", dep['artifactId'])
-				depNode.appendNode("version", dep['version'])
-				depNode.appendNode("scope", dep['scope'])
-			}
-
-			def depNode = depsNode.appendNode("dependency")
-			depNode.appendNode("groupId", thisGroup)
-			depNode.appendNode("artifactId", "fabric-api-deprecated")
-			depNode.appendNode("version", thisVersion)
-			depNode.appendNode("scope", "compile")
-		}
-	}
-}

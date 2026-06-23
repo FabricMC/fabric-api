@@ -36,3 +36,7 @@ publishing {
 		}
 	}
 }
+
+remoteSign {
+	sign publishing.publications.mavenJava
+}
