@@ -71,7 +71,7 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(BuiltInRegistries.CARVER);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(BuiltInRegistries.FEATURE);
+		RegistryAttributeHolder.get(BuiltInRegistries.FEATURE_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(BuiltInRegistries.BLOCKSTATE_PROVIDER_TYPE);

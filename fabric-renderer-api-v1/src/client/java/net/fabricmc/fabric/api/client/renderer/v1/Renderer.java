@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.renderer.v1;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -25,8 +26,8 @@ import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
-import net.minecraft.client.renderer.feature.BlockModelFeatureRenderer;
-import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.feature.FeatureRenderer;
+import net.minecraft.client.renderer.feature.FeatureRendererType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,7 +37,9 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.AltModelBlockRenderer;
-import net.fabricmc.fabric.api.client.renderer.v1.render.FabricSubmitNodeCollection;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
+import net.fabricmc.fabric.api.client.rendering.v1.FeatureRendererRegistry;
 import net.fabricmc.fabric.impl.client.renderer.RendererManager;
 
 /**
@@ -54,9 +57,9 @@ import net.fabricmc.fabric.impl.client.renderer.RendererManager;
  * {@link AltModelBlockRenderer#tesselateBlock(QuadEmitter, float, float, float, BlockAndTintGetter, BlockPos, BlockState, BlockStateModel, long)},
  * respectively, instead.
  *
- * <p>Renderers must patch {@link ItemFeatureRenderer} to support
- * {@link FabricSubmitNodeCollection#getExtendedItemSubmits()}. {@link BlockModelFeatureRenderer} is automatically patched
- * to support {@link FabricSubmitNodeCollection#getExtendedBlockModelSubmits()} and {@link BlockStateModel#emitQuads}.
+ * <p>Renderers must implement {@link FeatureRenderer}s to support {@link ExtendedBlockModelSubmit}
+ * and {@link ExtendedItemSubmit}. This is typically done with
+ * {@link FeatureRendererRegistry#register(FeatureRendererType, Supplier)}.
  */
 public interface Renderer {
 	/**

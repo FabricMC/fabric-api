@@ -204,8 +204,8 @@ public final class FabricDataGenHelper {
 
 		Map<ResourceKey<?>, BuilderData> builderDataMap = new HashMap<>();
 
-		// Ensure all dynamic registries are present.
-		for (RegistryDataLoader.RegistryData<?> key : DynamicRegistries.getDynamicRegistries()) {
+		// Ensure all bootstrapping registries are present.
+		for (RegistryDataLoader.RegistryData<?> key : DynamicRegistries.getBootstrappingRegistries()) {
 			builderDataMap.computeIfAbsent(key.key(), BuilderData::new);
 		}
 

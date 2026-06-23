@@ -26,12 +26,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.client.multiplayer.CommonListenerCookie;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -39,6 +42,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
+import net.fabricmc.fabric.impl.command.client.ClientSuggestionProviderExtensions;
 
 @Mixin(ClientPacketListener.class)
 abstract class ClientPacketListenerMixin implements ClientCommandInternals.LastReceivedCommandsPacketAccessor {
@@ -48,6 +52,10 @@ abstract class ClientPacketListenerMixin implements ClientCommandInternals.LastR
 	@Shadow
 	@Final
 	private ClientSuggestionProvider suggestionsProvider;
+
+	@Shadow
+	@Final
+	private ClientSuggestionProvider restrictedSuggestionsProvider;
 
 	@Final
 	@Shadow
@@ -59,6 +67,11 @@ abstract class ClientPacketListenerMixin implements ClientCommandInternals.LastR
 
 	@Unique
 	private @Nullable ClientboundCommandsPacket lastReceivedCommandsPacket = null;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void init(Minecraft minecraft, Connection connection, CommonListenerCookie cookie, CallbackInfo ci) {
+		((ClientSuggestionProviderExtensions) this.suggestionsProvider).fabric_markAttended();
+	}
 
 	@Inject(method = "handleLogin", at = @At("RETURN"))
 	private void onGameJoin(ClientboundLoginPacket packet, CallbackInfo info) {
@@ -84,14 +97,14 @@ abstract class ClientPacketListenerMixin implements ClientCommandInternals.LastR
 
 	@Inject(method = "sendUnattendedCommand", at = @At("HEAD"), cancellable = true)
 	private void onSendCommand(String command, Screen screen, CallbackInfo info) {
-		if (ClientCommandInternals.executeCommand(command)) {
+		if (ClientCommandInternals.executeCommand(command, (FabricClientCommandSource) suggestionsProvider, (FabricClientCommandSource) restrictedSuggestionsProvider)) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
 	private void onSendCommand(String command, CallbackInfo info) {
-		if (ClientCommandInternals.executeCommand(command)) {
+		if (ClientCommandInternals.executeCommand(command, (FabricClientCommandSource) suggestionsProvider, null)) {
 			info.cancel();
 		}
 	}

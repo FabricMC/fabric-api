@@ -104,4 +104,18 @@ public interface FabricClientCommandSource extends SharedSuggestionProvider {
 	default @Nullable Object getMeta(String key) {
 		return null;
 	}
+
+	/**
+	 * Returns whether the command was explicitly entered by the user.
+	 *
+	 * <p>This should be used for commands that may perform destructive or
+	 * privileged operations, so they can require direct user intent via
+	 * {@code .requires(FabricClientCommandSource::attended)}.
+	 *
+	 * <p>This is {@code false} when the command is invoked via a text
+	 * component from the server.
+	 *
+	 * @return whether the command execution is attended
+	 */
+	boolean attended();
 }

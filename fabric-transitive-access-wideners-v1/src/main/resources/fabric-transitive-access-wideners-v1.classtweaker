@@ -159,6 +159,7 @@ transitive-accessible method net/minecraft/world/level/block/BigDripleafBlock <i
 transitive-accessible method net/minecraft/world/level/block/BigDripleafStemBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/BlastFurnaceBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/BushBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/BushBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;I)V
 transitive-accessible method net/minecraft/world/level/block/ButtonBlock <init> (Lnet/minecraft/world/level/block/state/properties/BlockSetType;ILnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CactusBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CakeBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -175,7 +176,6 @@ transitive-accessible method net/minecraft/world/level/block/CraftingTableBlock 
 transitive-accessible method net/minecraft/world/level/block/CreakingHeartBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/CropBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/DecoratedPotBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/DirtPathBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/DispenserBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/DoorBlock <init> (Lnet/minecraft/world/level/block/state/properties/BlockSetType;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/DryVegetationBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -184,8 +184,8 @@ transitive-accessible method net/minecraft/world/level/block/EndGatewayBlock <in
 transitive-accessible method net/minecraft/world/level/block/EndPortalBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/EndRodBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/EnderChestBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/FarmlandBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
-transitive-accessible method net/minecraft/world/level/block/FlowerBedBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/FarmlandBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/FlowerBedBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;I)V
 transitive-accessible method net/minecraft/world/level/block/FurnaceBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/GrindstoneBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/HalfTransparentBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
@@ -206,6 +206,7 @@ transitive-accessible method net/minecraft/world/level/block/NetherFungusBlock <
 transitive-accessible method net/minecraft/world/level/block/NetherRootsBlock <init> (Lnet/minecraft/tags/TagKey;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/NetherWartBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/NyliumBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
+transitive-accessible method net/minecraft/world/level/block/PathBlock <init> (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PlayerHeadBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PlayerWallHeadBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
 transitive-accessible method net/minecraft/world/level/block/PoweredRailBlock <init> (Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V

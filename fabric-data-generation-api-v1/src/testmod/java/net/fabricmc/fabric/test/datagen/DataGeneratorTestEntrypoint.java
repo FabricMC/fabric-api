@@ -105,7 +105,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ResourceCondition ALWAYS_LOADED = ResourceConditions.alwaysTrue();
-	private static final ResourceCondition NEVER_LOADED = ResourceConditions.not(ALWAYS_LOADED);
+	private static final ResourceCondition NEVER_LOADED = ResourceConditions.alwaysFalse();
 
 	@Override
 	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
@@ -248,6 +248,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 									Ingredient.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))
 							.unlockedBy("has_payment", has(ItemTags.BEACON_PAYMENT_ITEMS))
 							.save(this.output);
+
+					// Test stonecutting
+					stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, SIMPLE_BLOCK, Items.GLASS);
 				}
 			};
 		}

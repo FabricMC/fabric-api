@@ -59,7 +59,22 @@ public interface FabricOrderedSubmitNodeCollector {
 	}
 
 	/**
-	 * Alternative to {@link OrderedSubmitNodeCollector#submitItem(PoseStack, ItemDisplayContext, int, int, int, int[], List, ItemStackRenderState.FoilType)} that also accepts a {@link MeshView}.
+	 * Alternative to
+	 * {@link OrderedSubmitNodeCollector#submitBreakingBlockModel(PoseStack, List, int)} that also
+	 * accepts a {@link Mesh}.
+	 *
+	 * @param poseStack the pose stack
+	 * @param parts the vanilla {@linkplain BlockStateModelPart parts}
+	 * @param mesh the mesh
+	 * @param progress the breaking progress
+	 */
+	default void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress) {
+		((OrderedSubmitNodeCollector) this).submitBreakingBlockModel(poseStack, parts, progress);
+	}
+
+	/**
+	 * Alternative to {@link OrderedSubmitNodeCollector#submitItem(PoseStack, ItemDisplayContext, int, int, int, int[], List, ItemStackRenderState.FoilType)}
+	 * that also accepts a {@link MeshView}.
 	 *
 	 * @param poseStack the pose stack
 	 * @param displayContext the item display context

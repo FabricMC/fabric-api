@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.command.client;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -28,12 +29,16 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.impl.command.client.ClientSuggestionProviderExtensions;
 
 @Mixin(ClientSuggestionProvider.class)
-abstract class ClientSuggestionProviderMixin implements FabricClientCommandSource {
+abstract class ClientSuggestionProviderMixin implements FabricClientCommandSource, ClientSuggestionProviderExtensions {
 	@Shadow
 	@Final
 	private Minecraft minecraft;
+
+	@Unique
+	private boolean attended = false;
 
 	@Override
 	public void sendFeedback(Component message) {
@@ -59,5 +64,15 @@ abstract class ClientSuggestionProviderMixin implements FabricClientCommandSourc
 	@Override
 	public ClientLevel getLevel() {
 		return minecraft.level;
+	}
+
+	@Override
+	public boolean attended() {
+		return attended;
+	}
+
+	@Override
+	public void fabric_markAttended() {
+		this.attended = true;
 	}
 }

@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -88,13 +89,9 @@ public final class DefaultResourcePackStorage {
 				continue;
 			}
 
-			try (PackResources pack = profile.open()) {
-				if (pack instanceof ModNioPackResources builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
-					if (trackedPacks.add(builtinPack.packId())) {
-						resourcePacks.add(profile.getId());
-					} else {
-						removedPacks.remove(builtinPack.packId());
-					}
+			try (Stream<PackResources> packs = profile.open()) {
+				for (PackResources pack : packs.toList()) {
+					updateTrackedPack(profile, pack, trackedPacks, removedPacks, resourcePacks);
 				}
 			}
 		}
@@ -103,6 +100,18 @@ public final class DefaultResourcePackStorage {
 		write(trackedPacks);
 
 		return new ArrayList<>(resourcePacks);
+	}
+
+	private static void updateTrackedPack(Pack profile, PackResources pack, Set<String> trackedPacks, Set<String> removedPacks, Set<String> resourcePacks) {
+		try (pack) {
+			if (pack instanceof ModNioPackResources builtinPack && builtinPack.getActivationType().isEnabledByDefault()) {
+				if (trackedPacks.add(builtinPack.packId())) {
+					resourcePacks.add(profile.getId());
+				} else {
+					removedPacks.remove(builtinPack.packId());
+				}
+			}
+		}
 	}
 
 	private static @Unmodifiable Set<String> read() {

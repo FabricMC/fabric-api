@@ -28,13 +28,16 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
+import net.fabricmc.fabric.api.client.rendering.v1.FeatureRendererRegistry;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedBlockModelFeatureRenderer;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedItemFeatureRenderer;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class Indigo implements ClientModInitializer {
@@ -50,9 +53,6 @@ public class Indigo implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Indigo.class);
 	/** If set the default config file will be generated on startup, restoring pre 26.1 behavior. */
 	private static final boolean GENERATE_CONFIG_FILE = System.getProperty("fabric.indigo.generateConfigFile") != null;
-
-	// A hack for Mixins, check usages
-	public static final ScopedValue<MultiBufferSource> LEVEL_RENDERER_BUFFER_SOURCE = ScopedValue.newInstance();
 
 	private static boolean asBoolean(@Nullable String property, boolean defValue) {
 		return asTriState(property).orElse(defValue);
@@ -134,6 +134,15 @@ public class Indigo implements ClientModInitializer {
 		if (IndigoMixinConfigPlugin.shouldApplyIndigo()) {
 			LOGGER.info("[Indigo] Registering Indigo renderer!");
 			Renderer.register(IndigoRenderer.INSTANCE);
+
+			FeatureRendererRegistry.register(
+					ExtendedBlockModelSubmit.TYPE,
+					ExtendedBlockModelFeatureRenderer::new
+			);
+			FeatureRendererRegistry.register(
+					ExtendedItemSubmit.TYPE,
+					ExtendedItemFeatureRenderer::new
+			);
 		} else {
 			LOGGER.info("[Indigo] Different rendering plugin detected; not applying Indigo.");
 		}

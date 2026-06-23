@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.impl.resource.pack;
 
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
-import net.minecraft.server.packs.CompositePackResources;
+import net.minecraft.server.packs.OverlayedPackResources;
 import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackMetadataResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
@@ -27,14 +29,14 @@ import net.fabricmc.fabric.api.resource.v1.pack.ModPackResources;
 
 public record ModPackResourcesFactory(ModPackResources pack) implements Pack.ResourcesSupplier {
 	@Override
-	public PackResources openPrimary(PackLocationInfo location) {
+	public PackMetadataResources openMetadata(PackLocationInfo location) {
 		return this.pack;
 	}
 
 	@Override
-	public PackResources openFull(PackLocationInfo location, Pack.Metadata metadata) {
+	public Stream<PackResources> openResources(PackLocationInfo location, Pack.Metadata metadata) {
 		if (metadata.overlays().isEmpty()) {
-			return this.pack;
+			return Stream.of(this.pack);
 		} else {
 			var overlays = new ArrayList<PackResources>(metadata.overlays().size());
 
@@ -42,7 +44,7 @@ public record ModPackResourcesFactory(ModPackResources pack) implements Pack.Res
 				overlays.add(this.pack.createOverlay(overlay));
 			}
 
-			return new CompositePackResources(this.pack, overlays);
+			return Stream.of(new OverlayedPackResources(this.pack, overlays));
 		}
 	}
 }

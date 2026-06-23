@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AndResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AnyModsLoadedResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.FalseResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.FeaturesEnabledResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.NotResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.OrResourceCondition;
@@ -34,6 +35,7 @@ import net.fabricmc.fabric.impl.resource.conditions.conditions.TrueResourceCondi
 
 public class DefaultResourceConditionTypes {
 	public static final ResourceConditionType<TrueResourceCondition> TRUE = createResourceConditionType("true", TrueResourceCondition.CODEC);
+	public static final ResourceConditionType<FalseResourceCondition> FALSE = createResourceConditionType("false", FalseResourceCondition.CODEC);
 	public static final ResourceConditionType<NotResourceCondition> NOT = createResourceConditionType("not", NotResourceCondition.CODEC);
 	public static final ResourceConditionType<OrResourceCondition> OR = createResourceConditionType("or", OrResourceCondition.CODEC);
 	public static final ResourceConditionType<AndResourceCondition> AND = createResourceConditionType("and", AndResourceCondition.CODEC);

@@ -67,7 +67,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 
 		if (!BundleContents.canItemBeInBundle(stack)) return 0;
 
-		var builder = new BundleContents.Mutable(bundleContents());
+		BundleContents.Mutable builder = bundleContents().asMutable();
 
 		int inserted = builder.tryInsert(stack);
 

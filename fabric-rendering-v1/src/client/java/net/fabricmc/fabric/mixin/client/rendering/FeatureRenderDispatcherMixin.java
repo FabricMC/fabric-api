@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
+package net.fabricmc.fabric.mixin.client.rendering;
 
-import java.util.function.BiConsumer;
-
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.DecoratedPotPattern;
-import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.feature.FeatureRendererMap;
 
-import net.fabricmc.fabric.impl.content.registry.DecoratedPotPatternRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.FeatureRendererRegistryImpl;
 
-@Mixin(DecoratedPotPatterns.class)
-public class DecoratedPotPatternsMixin {
-	@Inject(method = "itemToPatternMappings", at = @At("RETURN"))
-	private static void makeItemToPatternMappingsMutable(BiConsumer<ResourceKey<Item>, ResourceKey<DecoratedPotPattern>> itemToPattern, CallbackInfo ci) {
-		DecoratedPotPatternRegistryImpl.apply(itemToPattern);
+@Mixin(FeatureRenderDispatcher.class)
+abstract class FeatureRenderDispatcherMixin {
+	@Shadow
+	@Final
+	private FeatureRendererMap featureRenderers;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void registerExtendedFeatureRenderers(CallbackInfo ci) {
+		FeatureRendererRegistryImpl.registerRenderers(featureRenderers);
 	}
 }

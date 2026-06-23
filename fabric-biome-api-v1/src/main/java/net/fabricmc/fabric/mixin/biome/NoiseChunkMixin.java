@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,7 +46,7 @@ public class NoiseChunkMixin {
 	}
 
 	@Inject(method = "cachedClimateSampler", at = @At("RETURN"))
-	private void createMultiNoiseSampler(NoiseRouter noiseRouter, List<Climate.ParameterPoint> list, CallbackInfoReturnable<Climate.Sampler> cir) {
+	private void createMultiNoiseSampler(NoiseRouter noiseRouter, CallbackInfoReturnable<Climate.Sampler> cir) {
 		((MultiNoiseSamplerHooks) (Object) cir.getReturnValue()).fabric_setSeed(seed);
 	}
 }

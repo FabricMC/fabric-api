@@ -40,7 +40,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
@@ -48,6 +52,7 @@ import net.minecraft.util.profiling.Profiler;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
+import net.fabricmc.fabric.mixin.command.client.ClientPacketListenerAccessor;
 
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
@@ -67,19 +72,27 @@ public final class ClientCommandInternals {
 	 * Executes a client-sided command. Callers should ensure that this is only called
 	 * on slash-prefixed messages and the slash needs to be removed before calling.
 	 *
+	 * <p>If the command is ran "unattended" (e.g. from a text component click event) and the command requires the attended permissions, a confirmation screen will be displayed before executing the command.
+	 *
 	 * @param command the command with slash removed
+	 * @param source the command source to execute the command with
+	 * @param restrictedSource a command source with more restricted permissions than {@code source} to check if the command requires confirmation. Null when command is ran directly with user input.
 	 * @return true if the command should not be sent to the server, false otherwise
 	 */
-	public static boolean executeCommand(String command) {
-		Minecraft instance = Minecraft.getInstance();
-
-		// The interface is implemented on ClientSuggestionProvider with a mixin.
-		// noinspection ConstantConditions
-		FabricClientCommandSource source = (FabricClientCommandSource) instance.getConnection().getSuggestionsProvider();
-
+	public static boolean executeCommand(String command, FabricClientCommandSource source, @Nullable FabricClientCommandSource restrictedSource) {
 		Profiler.get().push(command);
 
 		try {
+			if (restrictedSource != null) {
+				if (requiresConfirmation(command, source, restrictedSource)) {
+					openSendConfirmationWindow(command, "multiplayer.confirm_command.permissions_required", () -> {
+						executeCommand(command, source, null);
+					});
+
+					return true;
+				}
+			}
+
 			// TODO: Check for server commands before executing.
 			//   This requires parsing the command, checking if they match a server command
 			//   and then executing the command with the parse results.
@@ -103,6 +116,43 @@ public final class ClientCommandInternals {
 		} finally {
 			Profiler.get().pop();
 		}
+	}
+
+	private static boolean requiresConfirmation(String command, FabricClientCommandSource source, FabricClientCommandSource restrictedSource) {
+		ParseResults<FabricClientCommandSource> parseResults = activeDispatcher.parse(command, source);
+
+		if (!ClientPacketListenerAccessor.invokeIsValidCommand(parseResults)) {
+			// not a valid command, no need to confirm
+			return false;
+		}
+
+		parseResults = activeDispatcher.parse(command, restrictedSource);
+
+		if (!ClientPacketListenerAccessor.invokeIsValidCommand(parseResults)) {
+			// We failed to parse the command with the restricted permissions, thus it means that the command requires user confirmation before being executed.
+			return true;
+		}
+
+		return false;
+	}
+
+	private static void openSendConfirmationWindow(final String command, final String messageKey, final Runnable onAccept) {
+		Minecraft minecraft = Minecraft.getInstance();
+		Screen currentScreen = minecraft.gui.screen();
+		var confirmScreen = new ConfirmScreen(
+				result -> {
+					if (result) {
+						onAccept.run();
+					}
+
+					minecraft.gui.setScreen(currentScreen);
+				},
+				Component.translatable("multiplayer.confirm_command.title"),
+				Component.translatable("multiplayer.confirm_command.permissions_required", Component.literal(command).withStyle(ChatFormatting.YELLOW)),
+				Component.translatable("multiplayer.confirm_command.run_command"),
+				currentScreen != null ? CommonComponents.GUI_BACK : CommonComponents.GUI_CANCEL
+		);
+		minecraft.gui.setScreen(confirmScreen);
 	}
 
 	/**

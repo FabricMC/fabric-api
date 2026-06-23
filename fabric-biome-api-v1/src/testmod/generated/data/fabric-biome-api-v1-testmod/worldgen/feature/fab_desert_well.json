@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:ore",
+  "discard_chance_on_air_exposure": 0.0,
+  "size": 1,
+  "targets": [
+    {
+      "state": {
+        "Name": "minecraft:sandstone"
+      },
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:sand"
+      }
+    }
+  ]
+}

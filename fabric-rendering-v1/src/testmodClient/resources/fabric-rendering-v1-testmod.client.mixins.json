@@ -6,6 +6,7 @@
     "AvatarRendererMixin",
     "GameRendererAccessor",
     "GuiRendererAccessor",
+    "LecternRendererMixin",
     "PigRendererMixin"
   ],
   "injectors": {

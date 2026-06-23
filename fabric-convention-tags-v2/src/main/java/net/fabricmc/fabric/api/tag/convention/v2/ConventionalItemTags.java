@@ -341,6 +341,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> MILK_BUCKETS = register("buckets/milk");
 	public static final TagKey<Item> POWDER_SNOW_BUCKETS = register("buckets/powder_snow");
 	public static final TagKey<Item> ENTITY_WATER_BUCKETS = register("buckets/entity_water");
+	public static final TagKey<Item> ENTITY_DRY_BUCKETS = register("buckets/entity_dry");
 
 	public static final TagKey<Item> BARRELS = register("barrels");
 	public static final TagKey<Item> WOODEN_BARRELS = register("barrels/wooden");

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.event.lifecycle;
 
+import java.time.Duration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +30,21 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
  */
 public final class ServerLifecycleTests implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("LifecycleEventsTest");
+	private static final boolean SLOW_START_TEST = Boolean.getBoolean("fabric-lifecycle-events-v1.test.slow-start");
 
 	@Override
 	public void onInitialize() {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			if (SLOW_START_TEST) {
+				LOGGER.info("Simulating slow server start...");
+
+				try {
+					Thread.sleep(Duration.ofSeconds(10));
+				} catch (InterruptedException e) {
+					LOGGER.warn("Sleep was interrupted", e);
+				}
+			}
+
 			LOGGER.info("Started Server!");
 		});
 
