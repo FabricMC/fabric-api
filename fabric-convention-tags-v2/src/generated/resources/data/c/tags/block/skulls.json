@@ -13,6 +13,10 @@
     "minecraft:piglin_head",
     "minecraft:piglin_wall_head",
     "minecraft:dragon_head",
-    "minecraft:dragon_wall_head"
+    "minecraft:dragon_wall_head",
+    {
+      "id": "#minecraft:skulls",
+      "required": false
+    }
   ]
 }

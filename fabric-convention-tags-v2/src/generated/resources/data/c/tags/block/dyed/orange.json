@@ -11,7 +11,9 @@
     "minecraft:orange_stained_glass",
     "minecraft:orange_stained_glass_pane",
     "minecraft:orange_terracotta",
-    "minecraft:orange_wall_banner",
-    "minecraft:orange_wool"
+    "minecraft:orange_wool",
+    "minecraft:orange_wool_slab",
+    "minecraft:orange_wool_stairs",
+    "minecraft:orange_wall_banner"
   ]
 }
