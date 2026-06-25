@@ -51,9 +51,9 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		if (this.value == null) {
 			buf.writeBoolean(false);
 			return;
-		} else {
-			buf.writeBoolean(true);
 		}
+
+		buf.writeBoolean(true);
 
 		//noinspection unchecked
 		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) type.streamCodec();
