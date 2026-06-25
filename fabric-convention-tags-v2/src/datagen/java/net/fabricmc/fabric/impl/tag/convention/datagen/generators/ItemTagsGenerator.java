@@ -378,6 +378,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(ItemIds.BUCKET);
 		builder(ConventionalItemTags.LAVA_BUCKETS)
 				.add(ItemIds.LAVA_BUCKET);
+		builder(ConventionalItemTags.ENTITY_DRY_BUCKETS)
+				.add(ItemIds.SULFUR_CUBE_BUCKET);
 		builder(ConventionalItemTags.ENTITY_WATER_BUCKETS)
 				.add(ItemIds.AXOLOTL_BUCKET)
 				.add(ItemIds.COD_BUCKET)
@@ -397,7 +399,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ConventionalItemTags.LAVA_BUCKETS)
 				.addOptionalTag(ConventionalItemTags.MILK_BUCKETS)
 				.addOptionalTag(ConventionalItemTags.POWDER_SNOW_BUCKETS)
-				.addOptionalTag(ConventionalItemTags.ENTITY_WATER_BUCKETS);
+				.addOptionalTag(ConventionalItemTags.ENTITY_WATER_BUCKETS)
+				.addOptionalTag(ConventionalItemTags.ENTITY_DRY_BUCKETS);
 	}
 
 	private void generateOreAndRelatedTags() {

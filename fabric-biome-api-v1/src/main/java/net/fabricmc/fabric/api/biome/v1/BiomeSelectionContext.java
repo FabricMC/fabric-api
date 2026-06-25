@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -45,7 +45,7 @@ public interface BiomeSelectionContext {
 	/**
 	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
 	 */
-	default boolean hasFeature(ResourceKey<ConfiguredFeature<?, ?>> key) {
+	default boolean hasFeature(ResourceKey<Feature> key) {
 		List<HolderSet<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().features();
 
 		for (HolderSet<PlacedFeature> featureSuppliers : featureSteps) {
@@ -81,7 +81,7 @@ public interface BiomeSelectionContext {
 	 * current feature list. May be empty if the configured feature is not registered, or does not come
 	 * from this biomes feature list.
 	 */
-	Optional<ResourceKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature);
+	Optional<ResourceKey<Feature>> getFeatureKey(Feature feature);
 
 	/**
 	 * Tries to retrieve the resource key for the given placed feature, which should be from this biomes

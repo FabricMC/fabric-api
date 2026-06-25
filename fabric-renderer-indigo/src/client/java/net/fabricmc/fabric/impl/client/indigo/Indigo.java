@@ -30,9 +30,14 @@ import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
+import net.fabricmc.fabric.api.client.rendering.v1.FeatureRendererRegistry;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedBlockModelFeatureRenderer;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedItemFeatureRenderer;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class Indigo implements ClientModInitializer {
@@ -129,6 +134,15 @@ public class Indigo implements ClientModInitializer {
 		if (IndigoMixinConfigPlugin.shouldApplyIndigo()) {
 			LOGGER.info("[Indigo] Registering Indigo renderer!");
 			Renderer.register(IndigoRenderer.INSTANCE);
+
+			FeatureRendererRegistry.register(
+					ExtendedBlockModelSubmit.TYPE,
+					ExtendedBlockModelFeatureRenderer::new
+			);
+			FeatureRendererRegistry.register(
+					ExtendedItemSubmit.TYPE,
+					ExtendedItemFeatureRenderer::new
+			);
 		} else {
 			LOGGER.info("[Indigo] Different rendering plugin detected; not applying Indigo.");
 		}

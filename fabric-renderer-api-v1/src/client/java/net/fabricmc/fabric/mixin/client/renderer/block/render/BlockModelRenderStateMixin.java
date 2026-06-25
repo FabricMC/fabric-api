@@ -40,7 +40,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
@@ -63,8 +63,7 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 	@Nullable
 	private IntList tintLayers;
 	@Shadow
-	@Nullable
-	private RandomSource randomSource;
+	public int blockLightCoords;
 
 	@Unique
 	@Nullable
@@ -113,11 +112,13 @@ public abstract class BlockModelRenderStateMixin implements FabricBlockModelRend
 
 	// TODO: improve this injection or use a second submit for just the mesh
 	@Inject(method = "submitModel", at = @At("HEAD"), cancellable = true)
-	private void submitMesh(RenderType renderType, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, int outlineColor, CallbackInfo ci) {
+	private void submitMesh(RenderType renderType, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int externalLightCoords, int overlayCoords, int outlineColor, CallbackInfo ci) {
 		if (mesh != null && mesh.size() > 0) {
 			List<BlockStateModelPart> modelPartsCopy = modelParts != null && !modelParts.isEmpty() ? new ObjectArrayList<>(modelParts) : Collections.emptyList();
 			Mesh meshCopy = mesh.immutableCopy();
 			int[] tints = tintLayers != null ? tintLayers.toArray(EMPTY_TINTS) : EMPTY_TINTS;
+			// Match vanilla BlockModelRenderState#submitModel: lightCoords
+			int lightCoords = LightCoordsUtil.max(externalLightCoords, blockLightCoords);
 
 			if (transformation != null) {
 				poseStack.pushPose();

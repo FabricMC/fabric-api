@@ -10,7 +10,6 @@
     "AxeItemMixin",
     "BlockBehaviourAccessor",
     "BlockBehaviourBlockStateBaseMixin",
-    "DecoratedPotPatternsMixin",
     "FireBlockMixin",
     "FuelValuesMixin",
     "GiveGiftToHeroAccessor",

@@ -140,6 +140,14 @@ public abstract class LivingEntityMixin extends Entity {
 		return original || fluid.get() != null;
 	}
 
+	@ModifyArg(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInShallowFluid(Lnet/minecraft/tags/TagKey;)Z"),
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getFluidJumpThreshold()D"))
+	)
+	private TagKey<Fluid> swapFluidForShallowCheck(TagKey<Fluid> fluidTagKey, @Share("fluid") LocalRef<TagKey<Fluid>> fluid) {
+		TagKey<Fluid> custom = fluid.get();
+		return custom != null ? custom : fluidTagKey;
+	}
+
 	@Definition(id = "LAVA", field = "Lnet/minecraft/tags/FluidTags;LAVA:Lnet/minecraft/tags/TagKey;")
 	@Definition(id = "jumpInLiquid", method = "Lnet/minecraft/world/entity/LivingEntity;jumpInLiquid(Lnet/minecraft/tags/TagKey;)V")
 	@Expression("this.jumpInLiquid(LAVA)")

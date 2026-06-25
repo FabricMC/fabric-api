@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
@@ -83,7 +82,7 @@ public class ItemContainerContentsStorage extends CombinedSlottedStorage<ItemVar
 		}
 
 		protected boolean setStack(ItemStack stack, TransactionContext transaction) {
-			List<ItemStack> stacks = ItemContainerContentsStorage.this.container().allItemsCopyStream().collect(Collectors.toList());
+			List<ItemStack> stacks = new ArrayList<>(ItemContainerContentsStorage.this.container().itemCopies().toList());
 
 			while (stacks.size() <= slot) stacks.add(ItemStack.EMPTY);
 

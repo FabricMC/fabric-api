@@ -21,7 +21,6 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -33,9 +32,8 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.OreFeature;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
@@ -48,16 +46,16 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint {
-	public static final ResourceKey<ConfiguredFeature<?, ?>> COMMON_DESERT_WELL = ResourceKey.create(
-			Registries.CONFIGURED_FEATURE,
+	public static final ResourceKey<Feature> COMMON_DESERT_WELL = ResourceKey.create(
+			Registries.FEATURE,
 			Identifier.fromNamespaceAndPath(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
 	public static final ResourceKey<PlacedFeature> PLACED_COMMON_DESERT_WELL = ResourceKey.create(
 			Registries.PLACED_FEATURE,
 			Identifier.fromNamespaceAndPath(FabricBiomeTest.MOD_ID, "fab_desert_well")
 	);
-	public static final ResourceKey<ConfiguredFeature<?, ?>> COMMON_ORE = ResourceKey.create(
-			Registries.CONFIGURED_FEATURE,
+	public static final ResourceKey<Feature> COMMON_ORE = ResourceKey.create(
+			Registries.FEATURE,
 			Identifier.fromNamespaceAndPath(FabricBiomeTest.MOD_ID, "common_ore")
 	);
 	public static final ResourceKey<PlacedFeature> PLACED_COMMON_ORE = ResourceKey.create(
@@ -78,22 +76,21 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 
 	@Override
 	public void buildRegistry(RegistrySetBuilder registryBuilder) {
-		registryBuilder.add(Registries.CONFIGURED_FEATURE, this::bootstrapConfiguredFeatures);
+		registryBuilder.add(Registries.FEATURE, this::bootstrapFeatures);
 		registryBuilder.add(Registries.PLACED_FEATURE, this::bootstrapPlacedFeatures);
 		registryBuilder.add(Registries.BIOME, TestBiomes::bootstrap);
 		registryBuilder.add(Registries.LEVEL_STEM, this::bootstrapLevelStems);
 	}
 
-	private void bootstrapConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> context) {
-		FeatureUtils.register(context, COMMON_DESERT_WELL, Feature.DESERT_WELL);
+	private void bootstrapFeatures(BootstrapContext<Feature> context) {
+		context.register(COMMON_DESERT_WELL, new OreFeature(new TagMatchTest(BlockTags.SAND), Blocks.SANDSTONE.defaultBlockState(), 1));
 
-		OreConfiguration featureConfig = new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIAMOND_BLOCK.defaultBlockState(), 5);
-		FeatureUtils.register(context, COMMON_ORE, Feature.ORE, featureConfig);
+		context.register(COMMON_ORE, new OreFeature(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIAMOND_BLOCK.defaultBlockState(), 5));
 	}
 
 	private void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> context) {
-		HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
-		Holder<ConfiguredFeature<?, ?>> commonDesertWell = configuredFeatures.getOrThrow(COMMON_DESERT_WELL);
+		HolderGetter<Feature> features = context.lookup(Registries.FEATURE);
+		Holder<Feature> commonDesertWell = features.getOrThrow(COMMON_DESERT_WELL);
 
 		// The placement config is taken from the vanilla desert well, but no randomness
 		PlacementUtils.register(context, PLACED_COMMON_DESERT_WELL, commonDesertWell,
@@ -102,7 +99,7 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 				BiomeFilter.biome()
 		);
 
-		PlacementUtils.register(context, PLACED_COMMON_ORE, configuredFeatures.getOrThrow(COMMON_ORE),
+		PlacementUtils.register(context, PLACED_COMMON_ORE, features.getOrThrow(COMMON_ORE),
 				CountPlacement.of(25),
 				HeightRangePlacement.uniform(
 					VerticalAnchor.BOTTOM,

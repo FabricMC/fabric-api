@@ -16,26 +16,31 @@
 
 package net.fabricmc.fabric.test.attachment;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ImposterProtoChunk;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class SetAttachmentFeature extends Feature<NoneFeatureConfiguration> {
+public record SetAttachmentFeature() implements Feature {
+	public static final SetAttachmentFeature INSTANCE = new SetAttachmentFeature();
+	public static final MapCodec<SetAttachmentFeature> CODEC = MapCodec.unit(INSTANCE);
 	public static boolean featurePlaced;
 
-	public SetAttachmentFeature(Codec<NoneFeatureConfiguration> codec) {
-		super(codec);
+	@Override
+	public MapCodec<SetAttachmentFeature> codec() {
+		return CODEC;
 	}
 
 	@Override
-	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		ChunkAccess chunk = context.level().getChunk(context.origin());
+	public boolean place(WorldGenLevel level, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
+		ChunkAccess chunk = level.getChunk(origin);
 
 		if (chunk.getPos().equals(new ChunkPos(0, 0))) {
 			featurePlaced = true;

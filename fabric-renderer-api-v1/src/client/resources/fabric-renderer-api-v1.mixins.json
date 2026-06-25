@@ -24,8 +24,6 @@
     "item.ItemStackRenderStateLayerRenderStateMixin",
     "item.ItemStackRenderStateMixin",
     "sprite.MaterialBakerMixin",
-    "sprite.ModelManagerBlockOnlyMaterialBakerMixin",
-    "sprite.ModelManagerCombinedBlockItemMaterialBakerMixin",
     "sprite.SpriteLoaderPreparationsMixin",
     "sprite.TextureAtlasMixin",
     "submit.OrderedSubmitNodeCollectorMixin",

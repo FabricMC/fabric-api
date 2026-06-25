@@ -136,8 +136,8 @@ abstract class LivingEntityMixin {
 
 	// The injector is shared because lambda$stopSleeping$23 and sleep share much of the structure here.
 	@Dynamic("lambda$stopSleeping$0: Synthetic lambda body for Optional.ifPresent in stopSleeping")
-	@Redirect(method = {"lambda$stopSleeping$0", "startSleeping"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-	private boolean setOccupiedState(Level level, BlockPos pos, BlockState state, int flags) {
+	@Redirect(method = {"lambda$stopSleeping$0", "startSleeping"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
+	private boolean setOccupiedState(Level level, BlockPos pos, BlockState state) {
 		// This might have been replaced by a red bed above, so we get it again.
 		// Note that we *need* to replace it so the state.with(OCCUPIED, ...) call doesn't crash
 		// when the bed doesn't have the property.
@@ -149,7 +149,7 @@ abstract class LivingEntityMixin {
 		} else if (originalState.hasProperty(BedBlock.OCCUPIED)) {
 			// This check is widened from (instanceof BedBlock) to a property check to allow modded blocks
 			// that don't use the event.
-			return level.setBlock(pos, originalState.setValue(BedBlock.OCCUPIED, occupied), flags);
+			return level.setBlockAndUpdate(pos, originalState.setValue(BedBlock.OCCUPIED, occupied));
 		} else {
 			return false;
 		}

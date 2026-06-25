@@ -3,6 +3,7 @@ transitive-inject-interface	com/mojang/blaze3d/pipeline/RenderPipeline	net/fabri
 transitive-inject-interface	com/mojang/blaze3d/pipeline/RenderPipeline$Snippet	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline$Snippet
 transitive-inject-interface	com/mojang/blaze3d/pipeline/RenderPipeline$Builder	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline$Builder
 transitive-inject-interface	net/minecraft/client/model/Model	net/fabricmc/fabric/api/client/rendering/v1/FabricModel<TS;>
+transitive-inject-interface	net/minecraft/client/renderer/OrderedSubmitNodeCollector	net/fabricmc/fabric/api/client/rendering/v1/FabricOrderedSubmitNodeCollector
 transitive-inject-interface	net/minecraft/client/renderer/block/BlockModelRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/block/MovingBlockRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/blockentity/state/BlockEntityRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState

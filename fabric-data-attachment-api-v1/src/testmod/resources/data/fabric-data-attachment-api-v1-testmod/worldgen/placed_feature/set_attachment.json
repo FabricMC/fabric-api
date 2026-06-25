@@ -1,7 +1,6 @@
 {
   "feature": {
-    "type": "fabric-data-attachment-api-v1-testmod:set_attachment",
-    "config": {}
+    "type": "fabric-data-attachment-api-v1-testmod:set_attachment"
   },
   "placement": []
 }
