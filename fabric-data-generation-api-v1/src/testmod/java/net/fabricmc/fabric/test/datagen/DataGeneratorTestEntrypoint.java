@@ -248,6 +248,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 									Ingredient.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))
 							.unlockedBy("has_payment", has(ItemTags.BEACON_PAYMENT_ITEMS))
 							.save(this.output);
+
+					// Test stonecutting
+					stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, SIMPLE_BLOCK, Items.GLASS);
 				}
 			};
 		}

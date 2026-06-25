@@ -14,10 +14,12 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.rendering.client.AdvancementRenderingTests",
+      "net.fabricmc.fabric.test.rendering.client.AtlasTests",
       "net.fabricmc.fabric.test.rendering.client.ArmorRenderingTests",
       "net.fabricmc.fabric.test.rendering.client.CustomSpriteSourcesTest",
       "net.fabricmc.fabric.test.rendering.client.CustomColorResolverTest",
       "net.fabricmc.fabric.test.rendering.client.DebugOptionsTests",
+      "net.fabricmc.fabric.test.rendering.client.FeatureRendererTest",
       "net.fabricmc.fabric.test.rendering.client.RenderLayerTest",
       "net.fabricmc.fabric.test.rendering.client.HudStatusBarHeightsTest",
       "net.fabricmc.fabric.test.rendering.client.HudTests",

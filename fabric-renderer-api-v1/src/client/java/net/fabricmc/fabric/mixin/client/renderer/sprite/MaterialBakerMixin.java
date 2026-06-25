@@ -16,12 +16,54 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.sprite;
 
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
+import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.resources.model.sprite.MaterialBaker;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.renderer.v1.sprite.FabricMaterialBaker;
+import net.fabricmc.fabric.api.client.renderer.v1.sprite.SpriteFinder;
+import net.fabricmc.fabric.impl.client.renderer.MissingSpriteFinderImpl;
 
 @Mixin(MaterialBaker.class)
 abstract class MaterialBakerMixin implements FabricMaterialBaker {
+	@Shadow
+	@Final
+	private SpriteLoader.Preparations blockAtlas;
+	@Shadow
+	@Final
+	private SpriteLoader.Preparations itemAtlas;
+
+	@Unique
+	@Nullable
+	private volatile MissingSpriteFinderImpl missingSpriteFinder;
+
+	@Override
+	public SpriteFinder spriteFinder(Identifier atlasId) {
+		if (atlasId.equals(AtlasIds.BLOCKS)) {
+			return blockAtlas.spriteFinder();
+		} else if (atlasId.equals(AtlasIds.ITEMS)) {
+			return itemAtlas.spriteFinder();
+		}
+
+		MissingSpriteFinderImpl result = missingSpriteFinder;
+
+		if (result == null) {
+			synchronized (this) {
+				result = missingSpriteFinder;
+
+				if (result == null) {
+					missingSpriteFinder = result = new MissingSpriteFinderImpl(blockAtlas.missing());
+				}
+			}
+		}
+
+		return result;
+	}
 }

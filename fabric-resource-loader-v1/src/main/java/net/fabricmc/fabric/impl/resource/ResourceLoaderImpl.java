@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -40,8 +41,9 @@ import org.slf4j.Logger;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.CompositePackResources;
+import net.minecraft.server.packs.OverlayedPackResources;
 import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackMetadataResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
@@ -353,14 +355,14 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 
 				Pack profile = Pack.readMetaAndCreate(info, new Pack.ResourcesSupplier() {
 					@Override
-					public PackResources openPrimary(PackLocationInfo location) {
+					public PackMetadataResources openMetadata(PackLocationInfo location) {
 						return pack;
 					}
 
 					@Override
-					public PackResources openFull(PackLocationInfo location, Pack.Metadata metadata) {
+					public Stream<PackResources> openResources(PackLocationInfo location, Pack.Metadata metadata) {
 						if (metadata.overlays().isEmpty()) {
-							return pack;
+							return Stream.of(pack);
 						}
 
 						List<PackResources> overlays = new ArrayList<>(metadata.overlays().size());
@@ -369,7 +371,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 							overlays.add(pack.createOverlay(overlay));
 						}
 
-						return new CompositePackResources(pack, overlays);
+						return Stream.of(new OverlayedPackResources(pack, overlays));
 					}
 				}, type, selectionInfo);
 				consumer.accept(profile);

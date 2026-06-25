@@ -128,9 +128,10 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 		builder(ConventionalBiomeTags.IS_BADLANDS)
 				.addOptionalTag(BiomeTags.IS_BADLANDS);
 		builder(ConventionalBiomeTags.IS_CAVE)
-				.add(Biomes.DEEP_DARK)
+				.add(Biomes.LUSH_CAVES)
 				.add(Biomes.DRIPSTONE_CAVES)
-				.add(Biomes.LUSH_CAVES);
+				.add(Biomes.SULFUR_CAVES)
+				.add(Biomes.DEEP_DARK);
 		builder(ConventionalBiomeTags.IS_VOID)
 				.add(Biomes.THE_VOID);
 		builder(ConventionalBiomeTags.IS_DEEP_OCEAN)
@@ -238,7 +239,8 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.add(Biomes.SPARSE_JUNGLE)
 				.add(Biomes.BEACH)
 				.add(Biomes.LUSH_CAVES)
-				.add(Biomes.DRIPSTONE_CAVES);
+				.add(Biomes.DRIPSTONE_CAVES)
+				.add(Biomes.SULFUR_CAVES);
 		builder(ConventionalBiomeTags.IS_WET_NETHER);
 		builder(ConventionalBiomeTags.IS_WET_END);
 		builder(ConventionalBiomeTags.IS_WET)

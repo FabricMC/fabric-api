@@ -26,7 +26,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -61,9 +61,9 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	}
 
 	@Override
-	public Optional<ResourceKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature) {
-		Registry<ConfiguredFeature<?, ?>> registry = dynamicRegistries.lookupOrThrow(Registries.CONFIGURED_FEATURE);
-		return registry.getResourceKey(configuredFeature);
+	public Optional<ResourceKey<Feature>> getFeatureKey(Feature feature) {
+		Registry<Feature> registry = dynamicRegistries.lookupOrThrow(Registries.FEATURE);
+		return registry.getResourceKey(feature);
 	}
 
 	@Override

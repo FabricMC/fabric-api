@@ -59,7 +59,7 @@ abstract class SimpleModelWrapperMixin implements BlockStateModelPart {
 	private static final ScopedValue<ModelBaker> MODEL_BAKERY = ScopedValue.newInstance();
 
 	@WrapOperation(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/SimpleModelWrapper;findNonBlockSprites(Lnet/minecraft/client/resources/model/geometry/QuadCollection;)Lcom/google/common/collect/Multimap;"))
-	private static @Nullable Multimap<Identifier, Identifier> storeModelBakery(QuadCollection geometry, Operation<Multimap<Identifier, Identifier>> original, @Local(name = "modelBakery") ModelBaker modelBakery) {
+	private static @Nullable Multimap<Identifier, Identifier> storeModelBakery(QuadCollection geometry, Operation<Multimap<Identifier, Identifier>> original, @Local(argsOnly = true) ModelBaker modelBakery) {
 		return ScopedValue.where(MODEL_BAKERY, modelBakery).call(() -> original.call(geometry));
 	}
 

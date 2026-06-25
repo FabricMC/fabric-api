@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.indigo.renderer;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,10 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRendererMap;
 
-import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
-import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedBlockModelFeatureRenderer;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.ExtendedItemFeatureRenderer;
+import net.fabricmc.fabric.impl.client.rendering.FeatureRendererRegistryImpl;
 
 @Mixin(FeatureRenderDispatcher.class)
 abstract class FeatureRenderDispatcherMixin {
@@ -39,13 +36,6 @@ abstract class FeatureRenderDispatcherMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void registerExtendedFeatureRenderers(CallbackInfo ci) {
-		featureRenderers.put(
-				ExtendedBlockModelSubmit.TYPE,
-				new ExtendedBlockModelFeatureRenderer()
-		);
-		featureRenderers.put(
-				ExtendedItemSubmit.TYPE,
-				new ExtendedItemFeatureRenderer()
-		);
+		FeatureRendererRegistryImpl.registerRenderers(featureRenderers);
 	}
 }

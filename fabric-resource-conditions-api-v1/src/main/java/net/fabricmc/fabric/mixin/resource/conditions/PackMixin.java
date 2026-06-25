@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackMetadataResources;
 import net.minecraft.server.packs.repository.Pack;
 
 import net.fabricmc.fabric.impl.resource.conditions.OverlayConditionsMetadata;
@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.resource.conditions.OverlayConditionsMetadata;
 @Mixin(Pack.class)
 public class PackMixin {
 	@ModifyVariable(method = "readPackMetadata", at = @At("STORE"), name = "overlaySet")
-	private static List<String> applyOverlayConditions(List<String> overlays, @Local(name = "pack") PackResources pack) throws IOException {
+	private static List<String> applyOverlayConditions(List<String> overlays, @Local(name = "pack") PackMetadataResources pack) throws IOException {
 		List<String> appliedOverlays = new ArrayList<>(overlays);
 		OverlayConditionsMetadata overlayMetadata = pack.getMetadataSection(OverlayConditionsMetadata.SERIALIZER);
 

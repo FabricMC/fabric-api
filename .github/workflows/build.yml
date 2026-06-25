@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
       - uses: gradle/actions/wrapper-validation@v5
       - run: ./gradlew check build outJar :buildSrc:check publishToMavenLocal --stacktrace
-      - uses: FabricMCBot/publish-checkstyle-report@4627c82002aa370b6cb2a3140f34c7a8c55a5297
+      - uses: FabricMCBot/publish-checkstyle-report@v3
         if: ${{ failure() }}
         with:
           reports: |
@@ -50,6 +50,7 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '25'
+      - run: sudo apt-get update
       - run: sudo apt-get install -y mesa-vulkan-drivers
       - run: |
           curl -L -o tracy-capture https://github.com/modmuss50/tracy-utils/releases/download/0.0.2/linux-x86_64-tracy-capture
