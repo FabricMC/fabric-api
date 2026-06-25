@@ -5,7 +5,7 @@ plugins {
 	id "net.fabricmc.fabric-loom" version "1.16.2" apply false
 	id "com.diffplug.spotless" version "8.5.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
-	id "me.modmuss50.mod-publish-plugin" version "2.0.0-beta.1"
+	id "me.modmuss50.mod-publish-plugin" version "2.0.1"
 }
 
 def branchProvider = providers.of(GitBranchValueSource.class) {}
@@ -680,6 +680,8 @@ publishMods {
 		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
 		projectId = "306612"
 		project.curseforge_minecraft_versions.split(",").each { minecraftVersions.add(it.trim()) }
+		client = true
+		server = true
 	}
 
 	modrinth {
