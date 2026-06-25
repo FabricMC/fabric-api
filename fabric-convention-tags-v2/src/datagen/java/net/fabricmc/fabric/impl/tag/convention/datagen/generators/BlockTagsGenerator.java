@@ -450,14 +450,14 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 	}
 
 	private void generateDyeableTags() {
-		builder(ConventionalBlockTags.UNDYED)
+		builder(ConventionalBlockTags.UNDYED_DYEABLE)
 				.add(BlockItemIds.CANDLE)
 				.add(BlockItemIds.GLASS)
 				.add(BlockItemIds.GLASS_PANE)
 				.add(BlockItemIds.SHULKER_BOX)
 				.add(BlockItemIds.TERRACOTTA);
 
-		builder(ConventionalBlockTags.REDYEABLE)
+		builder(ConventionalBlockTags.REDYEABLE_DYEABLE)
 				.addOptionalTag(BlockItemTags.WOOL.block())
 				.addOptionalTag(BlockItemTags.WOOL_CARPETS.block())
 				.addOptionalTag(BlockItemTags.WOOL_SLABS.block())
@@ -465,8 +465,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.addOptionalTag(BlockItemTags.SHULKER_BOXES.block());
 
 		builder(ConventionalBlockTags.DYEABLE)
-				.addTag(ConventionalBlockTags.UNDYED)
-				.addTag(ConventionalBlockTags.REDYEABLE);
+				.addTag(ConventionalBlockTags.UNDYED_DYEABLE)
+				.addTag(ConventionalBlockTags.REDYEABLE_DYEABLE);
 	}
 
 	private void generateStorageTags() {

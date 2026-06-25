@@ -821,7 +821,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 	}
 
 	private void generateDyeableTags() {
-		builder(ConventionalItemTags.UNDYED)
+		builder(ConventionalItemTags.UNDYED_DYEABLE)
 				.add(ItemIds.BUNDLE)
 				.add(BlockItemIds.CANDLE)
 				.add(BlockItemIds.GLASS)
@@ -829,7 +829,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(BlockItemIds.SHULKER_BOX)
 				.add(BlockItemIds.TERRACOTTA);
 
-		builder(ConventionalItemTags.REDYEABLE)
+		builder(ConventionalItemTags.REDYEABLE_DYEABLE)
 				.addAll(ItemIds.DYED_BUNDLE)
 				.addOptionalTag(ItemTags.HARNESSES)
 				.addOptionalTag(BlockItemTags.WOOL.item())
@@ -839,8 +839,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(BlockItemTags.SHULKER_BOXES.item());
 
 		builder(ConventionalItemTags.DYEABLE)
-				.addTag(ConventionalItemTags.UNDYED)
-				.addTag(ConventionalItemTags.REDYEABLE);
+				.addTag(ConventionalItemTags.UNDYED_DYEABLE)
+				.addTag(ConventionalItemTags.REDYEABLE_DYEABLE);
 	}
 
 	private void generateTagAlias() {

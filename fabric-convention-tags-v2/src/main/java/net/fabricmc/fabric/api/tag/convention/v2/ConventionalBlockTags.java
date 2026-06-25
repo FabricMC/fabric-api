@@ -253,13 +253,13 @@ public final class ConventionalBlockTags {
 	 * Tag that holds blocks that can be dyed but do not have their own color already, like terracotta.
 	 * (Does not include color blending blocks that would behave similar to leather armor item)
 	 */
-	public static final TagKey<Block> UNDYED = register("dyeable/undyed");
+	public static final TagKey<Block> UNDYED_DYEABLE = register("dyeable/undyed");
 
 	/**
 	 * Tag that holds blocks that can be dyed despite already having a color, like wool.
 	 * (Does not include color blending blocks that would behave similar to leather armor item)
 	 */
-	public static final TagKey<Block> REDYEABLE = register("dyeable/redyable");
+	public static final TagKey<Block> REDYEABLE_DYEABLE = register("dyeable/redyable");
 
 	/**
 	 * Tag that holds blocks that can have dye applied to them, whether they have a color already or not.
