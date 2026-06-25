@@ -16,10 +16,7 @@
 
 package net.fabricmc.fabric.mixin.holder.component;
 
-import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
-
-import net.minecraft.network.protocol.common.ClientCommonPacketListener;
-import net.minecraft.server.level.ServerPlayer;
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,15 +26,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.LayeredRegistryAccess;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ClientCommonPacketListener;
 import net.minecraft.server.RegistryLayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
 import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
-
-import java.util.List;
 
 @Mixin(PlayerList.class)
 public abstract class PlayerListMixin {

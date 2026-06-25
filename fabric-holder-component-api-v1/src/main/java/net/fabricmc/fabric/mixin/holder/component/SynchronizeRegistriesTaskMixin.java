@@ -19,8 +19,6 @@ package net.fabricmc.fabric.mixin.holder.component;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.serialization.DynamicOps;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.LayeredRegistryAccess;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.network.config.SynchronizeRegistriesTask;

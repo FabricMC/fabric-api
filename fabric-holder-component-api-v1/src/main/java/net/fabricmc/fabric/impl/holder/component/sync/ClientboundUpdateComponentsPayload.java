@@ -45,7 +45,7 @@ public record ClientboundUpdateComponentsPayload(
 	}
 
 	public static boolean shouldSend(ServerPlayer player) {
-		return ServerPlayNetworking.canSend(player, ClientboundUpdateComponentsPayload.TYPE) &&
-				!player.getPacketContext().orElseThrow(PacketContext.CONNECTION).isMemoryConnection();
+		return ServerPlayNetworking.canSend(player, ClientboundUpdateComponentsPayload.TYPE)
+				&& !player.getPacketContext().orElseThrow(PacketContext.CONNECTION).isMemoryConnection();
 	}
 }

@@ -34,7 +34,7 @@ import net.minecraft.core.component.TypedDataComponent;
 import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentMapBuilder;
 
 @Mixin(DataComponentMap.Builder.class)
-public abstract class DataComponentMap$BuilderMixin implements FabricDataComponentMapBuilder {
+public abstract class DataComponentMapBuilderMixin implements FabricDataComponentMapBuilder {
 	@Shadow
 	public abstract <T> DataComponentMap.Builder set(DataComponentType<T> type, @Nullable T value);
 
