@@ -1,2 +1,4 @@
 CLASS net/minecraft/world/level/block/WeatheringCopper
 	COMMENT @see net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry registry for modded oxidizable blocks
+CLASS net/minecraft/world/level/block/entity/DecoratedPotPatterns
+    COMMENT @see net.fabricmc.fabric.api.registry.DecoratedPotPatternRegistry registry for modded sherd items

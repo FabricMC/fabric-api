@@ -16,15 +16,12 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import org.jspecify.annotations.Nullable;
-
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -46,10 +43,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *     <li>PASS falls back to further processing.</li>
  *     <li>Any other value cancels further processing.</li>
  * </ul>
- *
- * <p>Note that on the server, the {@link EntityHitResult} may be {@code null} if the client successfully interacted using
- * the {@linkplain Player#interactOn(Entity, InteractionHand, Vec3)}  position-less overload}.
- * On the client, the {@link EntityHitResult} will never be null.
  */
 public interface UseEntityCallback {
 	Event<UseEntityCallback> EVENT = EventFactory.createArrayBacked(UseEntityCallback.class,
@@ -66,5 +59,5 @@ public interface UseEntityCallback {
 			}
 	);
 
-	InteractionResult interact(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult);
+	InteractionResult interact(Player player, Level level, InteractionHand hand, Entity entity, EntityHitResult hitResult);
 }

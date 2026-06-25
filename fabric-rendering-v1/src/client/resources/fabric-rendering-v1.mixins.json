@@ -3,6 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.client.rendering",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "AtlasManagerAccessor",
+    "AtlasManagerMixin",
     "BlockColorsMixin",
     "BlockEntityRenderersMixin",
     "CapeLayerMixin",

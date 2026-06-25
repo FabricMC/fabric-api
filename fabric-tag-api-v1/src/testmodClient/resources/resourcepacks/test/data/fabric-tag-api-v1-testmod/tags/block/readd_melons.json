@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:sword_efficient"
+  ],
+  "fabric:remove": [
+    "minecraft:melon"
+  ]
+}

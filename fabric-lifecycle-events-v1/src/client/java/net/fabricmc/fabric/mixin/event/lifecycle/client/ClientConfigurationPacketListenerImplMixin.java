@@ -16,21 +16,22 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.packs.resources.ResourceProvider;
+import net.minecraft.network.protocol.configuration.ClientboundFinishConfigurationPacket;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
 @Mixin(ClientConfigurationPacketListenerImpl.class)
 public class ClientConfigurationPacketListenerImplMixin {
-	@Inject(method = "lambda$handleConfigurationFinished$0", at = @At(value = "RETURN"))
-	private void invokeTagsLoaded(ResourceProvider provider, CallbackInfoReturnable<RegistryAccess.Frozen> cir) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(cir.getReturnValue(), true);
+	@Inject(method = "handleConfigurationFinished", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
+	private void invokeTagsLoaded(ClientboundFinishConfigurationPacket packet, CallbackInfo ci, @Local(name = "registries") RegistryAccess.Frozen registries) {
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registries, true);
 	}
 }

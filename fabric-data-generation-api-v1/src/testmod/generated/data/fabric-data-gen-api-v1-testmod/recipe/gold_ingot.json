@@ -1,10 +1,7 @@
 {
   "fabric:load_conditions": [
     {
-      "condition": "fabric:not",
-      "value": {
-        "condition": "fabric:true"
-      }
+      "condition": "fabric:false"
     }
   ],
   "type": "minecraft:crafting_shapeless",
