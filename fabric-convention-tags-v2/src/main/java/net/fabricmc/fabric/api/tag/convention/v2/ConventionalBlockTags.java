@@ -20,6 +20,7 @@ import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ColorCollection;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
@@ -225,6 +226,46 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> RED_DYED = register("dyed/red");
 	public static final TagKey<Block> WHITE_DYED = register("dyed/white");
 	public static final TagKey<Block> YELLOW_DYED = register("dyed/yellow");
+
+	/**
+	 * Dyed color tags as a color collection, for convenience.
+	 */
+	public static final ColorCollection<TagKey<Block>> COLOR_DYED = new ColorCollection<>(
+			WHITE_DYED,
+			ORANGE_DYED,
+			MAGENTA_DYED,
+			LIGHT_BLUE_DYED,
+			YELLOW_DYED,
+			LIME_DYED,
+			PINK_DYED,
+			GRAY_DYED,
+			LIGHT_GRAY_DYED,
+			CYAN_DYED,
+			PURPLE_DYED,
+			BLUE_DYED,
+			BROWN_DYED,
+			GREEN_DYED,
+			RED_DYED,
+			BLACK_DYED
+	);
+
+	/**
+	 * Tag that holds blocks that can be dyed but do not have their own color already, like terracotta.
+	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 */
+	public static final TagKey<Block> UNDYED = register("dyeable/undyed");
+
+	/**
+	 * Tag that holds blocks that can be dyed despite already having a color, like wool.
+	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 */
+	public static final TagKey<Block> REDYEABLE = register("dyeable/redyable");
+
+	/**
+	 * Tag that holds blocks that can have dye applied to them, whether they have a color already or not.
+	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 */
+	public static final TagKey<Block> DYEABLE = register("dyeable");
 
 	// Blocks that are for storing resources
 	/**

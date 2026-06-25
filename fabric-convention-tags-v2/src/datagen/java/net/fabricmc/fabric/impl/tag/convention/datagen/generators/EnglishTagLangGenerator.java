@@ -135,6 +135,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.RED_DYED, "Red Dyed Blocks");
 		translationBuilder.add(ConventionalBlockTags.WHITE_DYED, "White Dyed Blocks");
 		translationBuilder.add(ConventionalBlockTags.YELLOW_DYED, "Yellow Dyed Blocks");
+		translationBuilder.add(ConventionalBlockTags.DYEABLE, "Dyeable Blocks");
+		translationBuilder.add(ConventionalBlockTags.REDYEABLE, "Redyeable Blocks");
+		translationBuilder.add(ConventionalBlockTags.UNDYED, "Undyed Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS, "Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_BONE_MEAL, "Bone Meal Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_COAL, "Coal Storage Blocks");
@@ -370,6 +373,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.RED_DYED, "Red Dyed Items");
 		translationBuilder.add(ConventionalItemTags.WHITE_DYED, "White Dyed Items");
 		translationBuilder.add(ConventionalItemTags.YELLOW_DYED, "Yellow Dyed Items");
+		translationBuilder.add(ConventionalItemTags.DYEABLE, "Dyeable Items");
+		translationBuilder.add(ConventionalItemTags.REDYEABLE, "Redyeable Items");
+		translationBuilder.add(ConventionalItemTags.UNDYED, "Undyed Items");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS, "Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_BONE_MEAL, "Bone Meal Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_COAL, "Coal Storage Blocks");

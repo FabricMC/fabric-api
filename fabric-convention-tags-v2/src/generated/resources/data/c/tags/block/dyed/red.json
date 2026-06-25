@@ -12,6 +12,8 @@
     "minecraft:red_stained_glass_pane",
     "minecraft:red_terracotta",
     "minecraft:red_wall_banner",
-    "minecraft:red_wool"
+    "minecraft:red_wool",
+    "minecraft:red_wool_slab",
+    "minecraft:red_wool_stairs"
   ]
 }

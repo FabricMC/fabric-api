@@ -12,6 +12,8 @@
     "minecraft:blue_stained_glass_pane",
     "minecraft:blue_terracotta",
     "minecraft:blue_wall_banner",
-    "minecraft:blue_wool"
+    "minecraft:blue_wool",
+    "minecraft:blue_wool_slab",
+    "minecraft:blue_wool_stairs"
   ]
 }

@@ -12,6 +12,8 @@
     "minecraft:magenta_stained_glass_pane",
     "minecraft:magenta_terracotta",
     "minecraft:magenta_wall_banner",
-    "minecraft:magenta_wool"
+    "minecraft:magenta_wool",
+    "minecraft:magenta_wool_slab",
+    "minecraft:magenta_wool_stairs"
   ]
 }
