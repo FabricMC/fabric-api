@@ -50,7 +50,7 @@ public final class FabricDefaultAttributeRegistry {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDefaultAttributeRegistry.class);
 
-	/// Bulk modifies the default attributes for entity types. Fires after registries are frozen to
+	/// Bulk modifies the default attributes for entity types. Fires just before registries are frozen to
 	/// ensure all entity types are present before modification.
 	///
 	/// This event only affects entity types which have already had an [AttributeSupplier]
