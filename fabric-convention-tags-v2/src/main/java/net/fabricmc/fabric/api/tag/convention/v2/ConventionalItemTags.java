@@ -531,7 +531,7 @@ public final class ConventionalItemTags {
 	 * Tag that holds items that can be dyed despite already having a color, like wool.
 	 * (Does not include color blending items like leather armor)
 	 */
-	public static final TagKey<Item> REDYEABLE_DYEABLE = register("dyeable/redyable");
+	public static final TagKey<Item> REDYEABLE_DYEABLE = register("dyeable/redyeable");
 
 	/**
 	 * Tag that holds items that can have dye applied to them, whether they have a color already or not.
