@@ -44,11 +44,11 @@ abstract class ReloadableServerResourcesMixin {
 	private LayeredRegistryAccess<RegistryLayer> dynamicRegistriesByType;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void storeDynamicRegistries(LayeredRegistryAccess<RegistryLayer> fullLayers, HolderLookup.Provider loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, List newComponents, CallbackInfo ci) {
+	private void storeDynamicRegistries(LayeredRegistryAccess<RegistryLayer> fullLayers, HolderLookup.Provider registries, FeatureFlagSet enabledFeatures, Commands.CommandSelection environment, List<?> pendingTagLoads, PermissionSet permissionPredicate, CallbackInfo ci) {
 		dynamicRegistriesByType = fullLayers;
 	}
 
-	@Inject(method = "updateComponentsAndStaticRegistryTags", at = @At("RETURN"))
+	@Inject(method = "updateStaticRegistryTags", at = @At("RETURN"))
 	private void applyDynamicTagAliases(CallbackInfo info) {
 		// Note: when using /reload, dynamic registry tag reloading goes through the same system that is also used
 		// for static registries. Luckily, it doesn't break anything to run the code below even in that case,

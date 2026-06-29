@@ -40,7 +40,7 @@ public class ClientTagTestUtils {
 	@SafeVarargs
 	static <T> void assertInWithLocalFallback(Logger logger, String successFmtStr, TagKey<T> tag, Function<T, ResourceKey<T>> keyExtractor, T... expected) {
 		assertInWithLocalFallback(logger, successFmtStr, tag, Arrays.stream(expected)
-				.map(value -> ClientTagsImpl.getHolder(tag, value).orElseThrow())
+				.map(value -> ClientTagsImpl.getRegistryEntry(tag, value).orElseThrow())
 				.collect(Collectors.toSet()));
 	}
 

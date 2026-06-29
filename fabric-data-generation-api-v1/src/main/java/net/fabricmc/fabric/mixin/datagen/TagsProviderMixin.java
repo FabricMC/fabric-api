@@ -40,7 +40,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.impl.datagen.TagAliasGenerator;
 import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
@@ -58,29 +58,33 @@ public class TagsProviderMixin<T> {
 		tagAliasPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, TagAliasGenerator.getDirectory(registryRef));
 	}
 
-	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
-	private T addRemove(T value, @Local(name = "builder") TagBuilder builder) {
+	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
+	private T addRemove(T value, @Local TagBuilder builder) {
 		((TagFileHooks) value).fabric_setRemove(((TagBuilderHooks) builder).fabric_getRemove());
 		return value;
 	}
 
-	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
-	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder builder) {
+	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
+	private boolean addReplaced(boolean replaced, @Local TagBuilder builder) {
 		return ((TagBuilderHooks) builder).fabric_isReplaced();
 	}
 
 	@SuppressWarnings("unchecked")
-	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] cfs, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput cache) {
-		// Note: no pattern matching instanceof so that we can cast directly to FabricTagsProvider<T> instead of a wildcard
-		Map<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> builders = ((FabricTagsProvider<T>) (Object) this).getAliasGroupBuilders();
-		CompletableFuture<?>[] newFutures = Arrays.copyOf(cfs, cfs.length + builders.size());
-		int index = cfs.length;
+	@WrapOperation(method = "method_49659", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
+	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput writer) {
+		if ((Object) this instanceof FabricTagProvider<?>) {
+			// Note: no pattern matching instanceof so that we can cast directly to FabricTagProvider<T> instead of a wildcard
+			Map<Identifier, FabricTagProvider<T>.AliasGroupBuilder> builders = ((FabricTagProvider<T>) (Object) this).getAliasGroupBuilders();
+			CompletableFuture<?>[] newFutures = Arrays.copyOf(futures, futures.length + builders.size());
+			int index = futures.length;
 
-		for (Map.Entry<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> entry : builders.entrySet()) {
-			newFutures[index++] = TagAliasGenerator.writeTagAlias(cache, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
+			for (Map.Entry<Identifier, FabricTagProvider<T>.AliasGroupBuilder> entry : builders.entrySet()) {
+				newFutures[index++] = TagAliasGenerator.writeTagAlias(writer, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
+			}
+
+			return original.call((Object) newFutures);
 		}
 
-		return original.call((Object) newFutures);
+		return original.call((Object) futures);
 	}
 }

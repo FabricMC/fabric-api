@@ -1,5 +1,5 @@
 accessWidener	v2	named
 accessible	class	net/minecraft/core/MappedRegistry$TagSet
-accessible  class   net/minecraft/tags/TagLoader$SortingEntry
+transitive-accessible  class   net/minecraft/tags/TagLoader$SortingEntry
+accessible  method  net/minecraft/tags/TagLoader$SortingEntry <init> (Ljava/util/List;)V
 accessible	field	net/minecraft/core/HolderSet$Named	contents	Ljava/util/List;
-transitive-inject-interface	net/minecraft/tags/TagFile	net/fabricmc/fabric/api/tag/v1/FabricTagFile

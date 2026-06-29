@@ -56,8 +56,8 @@ public final class TagAliasLoader extends SimpleResourceReloader<Map<ResourceKey
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Map<ResourceKey<? extends Registry<?>>, List<TagAliasLoader.Data>> prepare(SharedState store) {
-		Map<ResourceKey<? extends Registry<?>>, List<TagAliasLoader.Data>> dataByRegistry = new HashMap<>();
+	protected Map<ResourceKey<? extends Registry<?>>, List<Data>> prepare(SharedState store) {
+		Map<ResourceKey<? extends Registry<?>>, List<Data>> dataByRegistry = new HashMap<>();
 		HolderLookup.Provider registries = store.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
 		Iterator<ResourceKey<? extends Registry<?>>> registryIterator = registries.listRegistryKeys().iterator();
 
@@ -103,7 +103,7 @@ public final class TagAliasLoader extends SimpleResourceReloader<Map<ResourceKey
 	}
 
 	@Override
-	protected void apply(Map<ResourceKey<? extends Registry<?>>, List<TagAliasLoader.Data>> prepared, SharedState store) {
+	protected void apply(Map<ResourceKey<? extends Registry<?>>, List<Data>> prepared, SharedState store) {
 		for (Map.Entry<ResourceKey<? extends Registry<?>>, List<Data>> entry : prepared.entrySet()) {
 			Map<TagKey<?>, Set<TagKey<?>>> groupsByTag = new HashMap<>();
 

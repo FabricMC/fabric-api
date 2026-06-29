@@ -1,10 +1,10 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.tag",
-  "compatibilityLevel": "JAVA_25",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MappedRegistry2Mixin",
-    "MappedRegistry3Mixin",
+    "SimpleRegistry2Mixin",
+    "SimpleRegistry3Mixin",
     "MappedRegistryMixin",
     "MappedRegistryTagSet2Accessor",
     "ReloadableServerResourcesMixin",

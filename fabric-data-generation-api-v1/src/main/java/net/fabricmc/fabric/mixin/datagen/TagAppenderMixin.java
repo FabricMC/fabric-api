@@ -29,66 +29,81 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagAppender;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricProvidedTagBuilder;
 import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 
 /**
- * Extends TagAppender to support setting the {@code replace} and {@code fabric:remove} fields.
+ * Extends ProvidedTagBuilder to support setting the {@code replace} and {@code fabric:remove} fields.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(TagAppender.class)
-interface TagAppenderMixin<T> extends FabricTagAppender<T> {
+interface TagAppenderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$1")
-	abstract class TagAppender1Mixin<T> implements TagAppenderMixin<T> {
+	abstract class ProvidedTagBuilder1Mixin<E, T> implements TagAppenderMixin<E, T> {
 		// the builder param
 		@Shadow
 		@Final
 		TagBuilder val$builder;
 
 		@Override
-		public TagAppender<T> setReplace(boolean replace) {
+		public TagAppender setReplace(boolean replace) {
 			((TagBuilderHooks) this.val$builder).fabric_setReplace(replace);
-			return (TagAppender<T>) this;
+			return (TagAppender<E, T>) this;
 		}
 
 		@Override
-		public TagAppender<T> forceAddTag(TagKey<T> tag) {
+		public TagAppender<E, T> forceAddTag(TagKey<T> tag) {
 			((TagBuilderHooks) this.val$builder).fabric_forceAddTag(tag.location());
-			return (TagAppender<T>) this;
+			return (TagAppender<E, T>) this;
 		}
 
 		@Override
-		public TagAppender<T> remove(ResourceKey<T> element) {
+		public TagAppender remove(ResourceKey<T> element) {
 			((TagBuilderHooks) this.val$builder).fabric_removeElement(element.identifier());
-			return (TagAppender<T>) this;
+			return (TagAppender<E, T>) this;
 		}
 
 		@Override
-		public TagAppender<T> remove(final ResourceKey<T>... elements) {
+		public TagAppender remove(final ResourceKey<T>... elements) {
 			return removeAll(Arrays.stream(elements));
 		}
 
 		@Override
-		public TagAppender<T> removeAll(final Collection<ResourceKey<T>> elements) {
+		public TagAppender removeAll(final Collection<ResourceKey<T>> elements) {
 			elements.forEach(element -> ((TagBuilderHooks) this.val$builder).fabric_removeElement(element.identifier()));
-			return (TagAppender<T>) this;
+			return (TagAppender<E, T>) this;
 		}
 
 		@Override
-		public TagAppender<T> removeAll(final Stream<ResourceKey<T>> elements) {
+		public TagAppender removeAll(final Stream<ResourceKey<T>> elements) {
 			elements.forEach(element -> ((TagBuilderHooks) this.val$builder).fabric_removeElement(element.identifier()));
-			return (TagAppender<T>) this;
+			return (TagAppender<E, T>) this;
 		}
 
 		@Override
-		public TagAppender<T> removeTag(TagKey<T> tag) {
+		public TagAppender removeTag(TagKey<T> tag) {
 			((TagBuilderHooks) this.val$builder).fabric_removeTag(tag.location());
-			return (TagAppender<T>) this;
+			return (TagAppender<E, T>) this;
+		}
+	}
+
+	@Mixin(targets = "net.minecraft.data.tags.TagAppender$2")
+	abstract class ProvidedTagBuilder2Mixin<E, T> implements TagAppenderMixin<E, T> {
+		// ProvidedTagBuilder.this
+		@Shadow
+		@Final
+		TagAppender val$original;
+
+		@Override
+		public TagAppender setReplace(boolean replace) {
+			((FabricProvidedTagBuilder) this.val$original).setReplace(replace);
+			return (TagAppender<E, T>) this;
 		}
 
 		@Override
-		public TagBuilder getBuilder() {
-			return val$builder;
+		public TagAppender<E, T> forceAddTag(TagKey<T> tag) {
+			((FabricProvidedTagBuilder) this.val$original).forceAddTag(tag);
+			return (TagAppender<E, T>) this;
 		}
 	}
 }

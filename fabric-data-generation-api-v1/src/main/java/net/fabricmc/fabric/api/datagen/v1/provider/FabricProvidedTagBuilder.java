@@ -21,21 +21,20 @@ import java.util.stream.Stream;
 
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 
 /**
- * Interface-injected to {@link net.minecraft.data.tags.TagAppender}.
+ * Interface-injected to {@link TagAppender}.
  */
 @SuppressWarnings("unchecked")
-public interface FabricTagAppender<T> {
+public interface FabricProvidedTagBuilder<E, T> {
 	/**
 	 * Sets the value of the {@code replace} flag. When set to {@code true}
 	 * this tag will replace contents of any other tag.
 	 * @param replace whether to replace the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<T> setReplace(boolean replace) {
+	default TagAppender<E, T> setReplace(boolean replace) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -45,7 +44,7 @@ public interface FabricTagAppender<T> {
 	 * @param tag The tag to force into the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<T> forceAddTag(TagKey<T> tag) {
+	default TagAppender<E, T> forceAddTag(TagKey<T> tag) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -54,7 +53,7 @@ public interface FabricTagAppender<T> {
 	 * @param element The entry to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<T> remove(ResourceKey<T> element) {
+	default TagAppender<E, T> remove(ResourceKey<T> element) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -63,7 +62,7 @@ public interface FabricTagAppender<T> {
 	 * @param elements The entries to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<T> remove(final ResourceKey<T>... elements) {
+	default TagAppender<E, T> remove(final ResourceKey<T>... elements) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -72,7 +71,7 @@ public interface FabricTagAppender<T> {
 	 * @param elements The entries to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<T> removeAll(final Collection<ResourceKey<T>> elements) {
+	default TagAppender<E, T> removeAll(final Collection<ResourceKey<T>> elements) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -81,7 +80,7 @@ public interface FabricTagAppender<T> {
 	 * @param elements The entries to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<T> removeAll(final Stream<ResourceKey<T>> elements) {
+	default TagAppender<E, T> removeAll(final Stream<ResourceKey<T>> elements) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -90,11 +89,7 @@ public interface FabricTagAppender<T> {
 	 * @param tag The tag to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default TagAppender<T> removeTag(TagKey<T> tag) {
+	default TagAppender<E, T> removeTag(TagKey<T> tag) {
 		throw new AssertionError("Implemented via mixin");
-	}
-
-	default TagBuilder getBuilder() {
-		return null;
 	}
 }

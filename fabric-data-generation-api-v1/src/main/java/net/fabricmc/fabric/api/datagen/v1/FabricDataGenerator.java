@@ -117,7 +117,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	 */
 	@Override
 	@Deprecated
-	public DataGenerator.PackGenerator getVanillaPack(boolean shouldRun) {
+	public PackGenerator getVanillaPack(boolean shouldRun) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -126,14 +126,14 @@ public final class FabricDataGenerator extends DataGenerator {
 	 */
 	@Override
 	@Deprecated
-	public DataGenerator.PackGenerator getBuiltinDatapack(boolean shouldRun, String packName) {
+	public PackGenerator getBuiltinDatapack(boolean shouldRun, String packName) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Represents a pack of generated data (i.e. data pack or resource pack). Providers are added to a pack.
 	 */
-	public final class Pack extends DataGenerator.PackGenerator {
+	public final class Pack extends PackGenerator {
 		private Pack(boolean shouldRun, String name, FabricDataOutput output) {
 			super(shouldRun, name, output);
 		}

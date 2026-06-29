@@ -1,6 +1,6 @@
 {
   "fabric:remove": [
-    "minecraft:soul_soil",
+    "minecraft:red_sand",
     "#minecraft:dirt"
   ],
   "values": []

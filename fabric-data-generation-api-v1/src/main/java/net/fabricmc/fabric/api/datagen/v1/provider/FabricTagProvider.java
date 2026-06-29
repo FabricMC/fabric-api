@@ -169,7 +169,7 @@ public abstract class FabricTagProvider<T> extends TagsProvider<T> {
 		 *
 		 * @param output The {@link FabricDataOutput} instance
 		 */
-		public ItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, FabricTagProvider.@Nullable BlockTagProvider blockTagProvider) {
+		public ItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, @Nullable BlockTagProvider blockTagProvider) {
 			super(output, Registries.ITEM, registriesFuture, item -> item.builtInRegistryHolder().key());
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getOrCreateRawBuilder;
