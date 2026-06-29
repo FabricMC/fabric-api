@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.tags.BlockItemTagAppender;
 import net.minecraft.references.BlockIds;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
@@ -410,46 +411,18 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 	}
 
 	private void generateDyedTags() {
+		ColorCollection<BlockItemTagAppender<Block>> builders = ConventionalBlockTags.COLOR_DYED.map(this::builder);
+
 		for (ColorCollection<BlockItemId> colorCollection : List.of(
 				BlockItemIds.BANNER, BlockItemIds.BED, BlockItemIds.DYED_CANDLE, BlockItemIds.CARPET,
 				BlockItemIds.CONCRETE, BlockItemIds.CONCRETE_POWDER, BlockItemIds.GLAZED_TERRACOTTA,
 				BlockItemIds.DYED_SHULKER_BOX, BlockItemIds.STAINED_GLASS, BlockItemIds.STAINED_GLASS_PANE,
 				BlockItemIds.DYED_TERRACOTTA, BlockItemIds.WOOL, BlockItemIds.WOOL_SLAB, BlockItemIds.WOOL_STAIRS)) {
-			builder(ConventionalBlockTags.BLACK_DYED).add(colorCollection.black());
-			builder(ConventionalBlockTags.BLUE_DYED).add(colorCollection.blue());
-			builder(ConventionalBlockTags.BROWN_DYED).add(colorCollection.brown());
-			builder(ConventionalBlockTags.CYAN_DYED).add(colorCollection.cyan());
-			builder(ConventionalBlockTags.GRAY_DYED).add(colorCollection.gray());
-			builder(ConventionalBlockTags.GREEN_DYED).add(colorCollection.green());
-			builder(ConventionalBlockTags.LIGHT_BLUE_DYED).add(colorCollection.lightBlue());
-			builder(ConventionalBlockTags.LIGHT_GRAY_DYED).add(colorCollection.lightGray());
-			builder(ConventionalBlockTags.LIME_DYED).add(colorCollection.lime());
-			builder(ConventionalBlockTags.MAGENTA_DYED).add(colorCollection.magenta());
-			builder(ConventionalBlockTags.ORANGE_DYED).add(colorCollection.orange());
-			builder(ConventionalBlockTags.PINK_DYED).add(colorCollection.pink());
-			builder(ConventionalBlockTags.PURPLE_DYED).add(colorCollection.purple());
-			builder(ConventionalBlockTags.RED_DYED).add(colorCollection.red());
-			builder(ConventionalBlockTags.WHITE_DYED).add(colorCollection.white());
-			builder(ConventionalBlockTags.YELLOW_DYED).add(colorCollection.yellow());
+			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
 		}
 
 		for (ColorCollection<ResourceKey<Block>> colorCollection : List.of(BlockIds.WALL_BANNER)) {
-			builder(ConventionalBlockTags.BLACK_DYED).add(colorCollection.black());
-			builder(ConventionalBlockTags.BLUE_DYED).add(colorCollection.blue());
-			builder(ConventionalBlockTags.BROWN_DYED).add(colorCollection.brown());
-			builder(ConventionalBlockTags.CYAN_DYED).add(colorCollection.cyan());
-			builder(ConventionalBlockTags.GRAY_DYED).add(colorCollection.gray());
-			builder(ConventionalBlockTags.GREEN_DYED).add(colorCollection.green());
-			builder(ConventionalBlockTags.LIGHT_BLUE_DYED).add(colorCollection.lightBlue());
-			builder(ConventionalBlockTags.LIGHT_GRAY_DYED).add(colorCollection.lightGray());
-			builder(ConventionalBlockTags.LIME_DYED).add(colorCollection.lime());
-			builder(ConventionalBlockTags.MAGENTA_DYED).add(colorCollection.magenta());
-			builder(ConventionalBlockTags.ORANGE_DYED).add(colorCollection.orange());
-			builder(ConventionalBlockTags.PINK_DYED).add(colorCollection.pink());
-			builder(ConventionalBlockTags.PURPLE_DYED).add(colorCollection.purple());
-			builder(ConventionalBlockTags.RED_DYED).add(colorCollection.red());
-			builder(ConventionalBlockTags.WHITE_DYED).add(colorCollection.white());
-			builder(ConventionalBlockTags.YELLOW_DYED).add(colorCollection.yellow());
+			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
 		}
 
 		builder(ConventionalBlockTags.DYED)
