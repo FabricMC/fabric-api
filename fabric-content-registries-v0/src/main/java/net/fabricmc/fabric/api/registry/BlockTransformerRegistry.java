@@ -19,7 +19,9 @@ package net.fabricmc.fabric.api.registry;
 import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
 import net.fabricmc.fabric.impl.content.registry.BlockTransformerRegistryImpl;
 
@@ -28,7 +30,10 @@ import net.fabricmc.fabric.impl.content.registry.BlockTransformerRegistryImpl;
  *
  * <p>Also contains various shortcut methods for standard behaviors.
  */
-public class BlockTransformerRegistry {
+public final class BlockTransformerRegistry {
+	private BlockTransformerRegistry() {
+	}
+
 	/**
 	 * Registers block transform data that will be added to axes.
 	 * <br>Use {@link BlockTransformerRegistry#registerStripping} instead to register a basic transformer for stripping, like logs into stripped logs.
@@ -59,156 +64,360 @@ public class BlockTransformerRegistry {
 	/**
 	 * Registers a basic transformer for stripping, like logs into stripped logs.
 	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
-	 * @see #registerStripping(Block, Block)
-	 * @see #registerStripping(Block[], Block)
-	 * @see #registerStripping(TagKey, Block)
+	 * @param fromBlockPredicate A predicate for which blocks can be stripped.
+	 * @param toBlockState A provider of the block state which results from the stripping.
+	 */
+	public static void registerStripping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		BlockTransformerRegistryImpl.registerStripping(fromBlockPredicate, toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlockPredicate A predicate for which blocks can be tilled.
+	 * @param toBlockState A provider of the block state which results from the tilling.
+	 */
+	public static void registerTilling(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		BlockTransformerRegistryImpl.registerTilling(fromBlockPredicate, toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlockPredicate A predicate for which blocks can be flattened.
+	 * @param toBlockState A provider of the block state which results from the flattening.
+	 */
+	public static void registerFlattening(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		BlockTransformerRegistryImpl.registerFlattening(fromBlockPredicate, toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * @param fromBlock The block which can can be stripped.
+	 * @param toBlockState A provider of the block state which results from the stripping.
+	 */
+	public static void registerStripping(Block fromBlock, BlockStateProvider toBlockState) {
+		registerStripping(BlockPredicate.matchesBlocks(fromBlock), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlock The block which can be tilled.
+	 * @param toBlockState A provider of the block state which results from the tilling.
+	 */
+	public static void registerTilling(Block fromBlock, BlockStateProvider toBlockState) {
+		registerTilling(BlockPredicate.matchesBlocks(fromBlock), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlock The block which can be flattened.
+	 * @param toBlockState A provider of the block state which results from the flattening.
+	 */
+	public static void registerFlattening(Block fromBlock, BlockStateProvider toBlockState) {
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * @param fromBlocks The blocks which can can be stripped.
+	 * @param toBlockState A provider of the block state which results from the stripping.
+	 */
+	public static void registerStripping(Block[] fromBlocks, BlockStateProvider toBlockState) {
+		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlocks The blocks which can be tilled.
+	 * @param toBlockState A provider of the block state which results from the tilling.
+	 */
+	public static void registerTilling(Block[] fromBlocks, BlockStateProvider toBlockState) {
+		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlocks The blocks which can be flattened.
+	 * @param toBlockState A provider of the block state which results from the flattening.
+	 */
+	public static void registerFlattening(Block[] fromBlocks, BlockStateProvider toBlockState) {
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * @param fromBlocks The blocks which can can be stripped.
+	 * @param toBlockState A provider of the block state which results from the stripping.
+	 */
+	public static void registerStripping(TagKey<Block> fromBlocks, BlockStateProvider toBlockState) {
+		registerStripping(BlockPredicate.matchesTag(fromBlocks), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlocks The blocks which can be tilled.
+	 * @param toBlockState A provider of the block state which results from the tilling.
+	 */
+	public static void registerTilling(TagKey<Block> fromBlocks, BlockStateProvider toBlockState) {
+		registerTilling(BlockPredicate.matchesTag(fromBlocks), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlocks The blocks which can be flattened.
+	 * @param toBlockState A provider of the block state which results from the flattening.
+	 */
+	public static void registerFlattening(TagKey<Block> fromBlocks, BlockStateProvider toBlockState) {
+		registerFlattening(BlockPredicate.matchesTag(fromBlocks), toBlockState);
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * @param fromBlockPredicate A predicate for which blocks can be stripped.
+	 * @param toBlockState The block state which results from the stripping.
+	 */
+	public static void registerStripping(BlockPredicate fromBlockPredicate, BlockState toBlockState) {
+		registerStripping(fromBlockPredicate, BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlockPredicate A predicate for which blocks can be tilled.
+	 * @param toBlockState The block state which results from the tilling.
+	 */
+	public static void registerTilling(BlockPredicate fromBlockPredicate, BlockState toBlockState) {
+		registerTilling(fromBlockPredicate, BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlockPredicate A predicate for which blocks can be flattened.
+	 * @param toBlockState The block state which results from the flattening.
+	 */
+	public static void registerFlattening(BlockPredicate fromBlockPredicate, BlockState toBlockState) {
+		registerFlattening(fromBlockPredicate, BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * @param fromBlock The block state which can can be stripped.
+	 * @param toBlockState The block state which results from the stripping.
+	 */
+	public static void registerStripping(Block fromBlock, BlockState toBlockState) {
+		registerStripping(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlock The block state which can be tilled.
+	 * @param toBlockState The block state which results from the tilling.
+	 */
+	public static void registerTilling(Block fromBlock, BlockState toBlockState) {
+		registerTilling(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlock The block state which can be flattened.
+	 * @param toBlockState The block state which results from the flattening.
+	 */
+	public static void registerFlattening(Block fromBlock, BlockState toBlockState) {
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * @param fromBlocks The blocks which can can be stripped.
+	 * @param toBlockState The block state which results from the stripping.
+	 */
+	public static void registerStripping(Block[] fromBlocks, BlockState toBlockState) {
+		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlocks The blocks which can be tilled.
+	 * @param toBlockState The block state which results from the tilling.
+	 */
+	public static void registerTilling(Block[] fromBlocks, BlockState toBlockState) {
+		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlocks The blocks which can be flattened.
+	 * @param toBlockState The block state which results from the flattening.
+	 */
+	public static void registerFlattening(Block[] fromBlocks, BlockState toBlockState) {
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * @param fromBlocks The blocks which can can be stripped.
+	 * @param toBlockState The block state which results from the stripping.
+	 */
+	public static void registerStripping(TagKey<Block> fromBlocks, BlockState toBlockState) {
+		registerStripping(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * @param fromBlocks The blocks which can be tilled.
+	 * @param toBlockState The block state which results from the tilling.
+	 */
+	public static void registerTilling(TagKey<Block> fromBlocks, BlockState toBlockState) {
+		registerTilling(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * @param fromBlocks The blocks which can be flattened.
+	 * @param toBlockState The block state which results from the flattening.
+	 */
+	public static void registerFlattening(TagKey<Block> fromBlocks, BlockState toBlockState) {
+		registerFlattening(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlockState));
+	}
+
+	/**
+	 * Registers a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
 	 * @param fromBlockPredicate A predicate for which blocks can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(BlockPredicate fromBlockPredicate, Block toBlock) {
-		BlockTransformerRegistryImpl.registerStripping(fromBlockPredicate, toBlock);
+		registerStripping(fromBlockPredicate, BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for tilling, like dirt into farmland.
 	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
-	 * @see #registerTilling(Block, Block)
-	 * @see #registerTilling(Block[], Block)
-	 * @see #registerTilling(TagKey, Block)
 	 * @param fromBlockPredicate A predicate for which blocks can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(BlockPredicate fromBlockPredicate, Block toBlock) {
-		BlockTransformerRegistryImpl.registerTilling(fromBlockPredicate, toBlock);
+		registerTilling(fromBlockPredicate, BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for flattening, like dirt into paths.
 	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
-	 * @see #registerFlattening(Block, Block)
-	 * @see #registerFlattening(Block[], Block)
-	 * @see #registerFlattening(TagKey, Block)
 	 * @param fromBlockPredicate A predicate for which blocks can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(BlockPredicate fromBlockPredicate, Block toBlock) {
-		BlockTransformerRegistryImpl.registerFlattening(fromBlockPredicate, toBlock);
+		registerFlattening(fromBlockPredicate, BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for stripping, like logs into stripped logs.
 	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
-	 * @see #registerStripping(BlockPredicate, Block)
-	 * @see #registerStripping(Block[], Block)
-	 * @see #registerStripping(TagKey, Block)
 	 * @param fromBlock The block which can can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(Block fromBlock, Block toBlock) {
-		registerStripping(BlockPredicate.matchesBlocks(fromBlock), toBlock);
+		registerStripping(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for tilling, like dirt into farmland.
 	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
-	 * @see #registerTilling(BlockPredicate, Block)
-	 * @see #registerTilling(Block[], Block)
-	 * @see #registerTilling(TagKey, Block)
 	 * @param fromBlock The block which can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(Block fromBlock, Block toBlock) {
-		registerTilling(BlockPredicate.matchesBlocks(fromBlock), toBlock);
+		registerTilling(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for flattening, like dirt into paths.
 	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
-	 * @see #registerFlattening(BlockPredicate, Block)
-	 * @see #registerFlattening(Block[], Block)
-	 * @see #registerFlattening(TagKey, Block)
 	 * @param fromBlock The block which can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(Block fromBlock, Block toBlock) {
-		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), toBlock);
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlock), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for stripping, like logs into stripped logs.
 	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
-	 * @see #registerStripping(BlockPredicate, Block)
-	 * @see #registerStripping(Block, Block)
-	 * @see #registerStripping(TagKey, Block)
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(Block[] fromBlocks, Block toBlock) {
-		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), toBlock);
+		registerStripping(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for tilling, like dirt into farmland.
 	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
-	 * @see #registerTilling(BlockPredicate, Block)
-	 * @see #registerTilling(Block, Block)
-	 * @see #registerTilling(TagKey, Block)
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(Block[] fromBlocks, Block toBlock) {
-		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), toBlock);
+		registerTilling(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for flattening, like dirt into paths.
 	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
-	 * @see #registerFlattening(BlockPredicate, Block)
-	 * @see #registerFlattening(Block, Block)
-	 * @see #registerFlattening(TagKey, Block)
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(Block[] fromBlocks, Block toBlock) {
-		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), toBlock);
+		registerFlattening(BlockPredicate.matchesBlocks(fromBlocks), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for stripping, like logs into stripped logs.
 	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
-	 * @see #registerStripping(BlockPredicate, Block)
-	 * @see #registerStripping(Block, Block)
-	 * @see #registerStripping(Block[], Block)
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
 	public static void registerStripping(TagKey<Block> fromBlocks, Block toBlock) {
-		registerStripping(BlockPredicate.matchesTag(fromBlocks), toBlock);
+		registerStripping(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for tilling, like dirt into farmland.
 	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
-	 * @see #registerTilling(BlockPredicate, Block)
-	 * @see #registerTilling(Block, Block)
-	 * @see #registerTilling(Block[], Block)
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
 	public static void registerTilling(TagKey<Block> fromBlocks, Block toBlock) {
-		registerTilling(BlockPredicate.matchesTag(fromBlocks), toBlock);
+		registerTilling(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlock));
 	}
 
 	/**
 	 * Registers a basic transformer for flattening, like dirt into paths.
 	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
-	 * @see #registerFlattening(BlockPredicate, Block)
-	 * @see #registerFlattening(Block, Block)
-	 * @see #registerFlattening(Block[], Block)
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
 	public static void registerFlattening(TagKey<Block> fromBlocks, Block toBlock) {
-		registerFlattening(BlockPredicate.matchesTag(fromBlocks), toBlock);
+		registerFlattening(BlockPredicate.matchesTag(fromBlocks), BlockStateProvider.simple(toBlock));
 	}
 }

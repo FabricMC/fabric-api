@@ -50,6 +50,8 @@ import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.WeatheringCopperFullBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -125,6 +127,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - dried kelp blocks can be transformed into dead brain coral blocks by a shovel, without any sound or particle
 		//  - bamboo mosaics can be transformed into bamboo blocks by a hoe, in precisely the same manner as tilling dirt into farmland
 		//  - any wool stairs can be transformed into a white wool slab by an axe, in precisely the same manner as stripping a log
+		//  - acacia stairs and birch stairs can be transformed into a top-half pale oak slab by a shovel, in precisely the same manner as flattening dirt into a path
 
 		CompostableRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
@@ -218,6 +221,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		BlockTransformerRegistry.registerShovel(BlockTransformer.BlockTransformData.builder(BlockPredicate.matchesBlocks(Blocks.DRIED_KELP_BLOCK), Blocks.DEAD_BRAIN_CORAL_BLOCK).build());
 		BlockTransformerRegistry.registerTilling(Blocks.BAMBOO_MOSAIC, Blocks.BAMBOO_BLOCK);
 		BlockTransformerRegistry.registerStripping(BlockTags.WOOL_STAIRS, Blocks.WOOL_SLAB.white());
+		BlockTransformerRegistry.registerFlattening(new Block[]{Blocks.ACACIA_STAIRS, Blocks.BIRCH_STAIRS}, Blocks.PALE_OAK_SLAB.defaultBlockState().setValue(BlockStateProperties.SLAB_TYPE, SlabType.TOP));
 	}
 
 	public static class TestEventBlock extends Block {

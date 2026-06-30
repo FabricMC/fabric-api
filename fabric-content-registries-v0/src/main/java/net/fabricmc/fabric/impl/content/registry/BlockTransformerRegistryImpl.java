@@ -23,11 +23,14 @@ import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.component.BlockTransformerMappings;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.CopyPropertiesProvider;
 
-public class BlockTransformerRegistryImpl {
+public final class BlockTransformerRegistryImpl {
+	private BlockTransformerRegistryImpl() {
+	}
+
 	public static void registerAxe(BlockTransformer.BlockTransformData transformData) {
 		BlockTransformerMappings.AXE.transforms().add(transformData);
 	}
@@ -40,59 +43,59 @@ public class BlockTransformerRegistryImpl {
 		BlockTransformerMappings.SHOVEL.transforms().add(transformData);
 	}
 
-	public static void registerStripping(BlockPredicate fromBlockPredicate, Block toBlock) {
-		registerAxe(createStripping(fromBlockPredicate, toBlock));
+	public static void registerStripping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		registerAxe(createStripping(fromBlockPredicate, toBlockState));
 	}
 
-	public static void registerTilling(BlockPredicate fromBlockPredicate, Block toBlock) {
-		registerHoe(createTilling(fromBlockPredicate, toBlock));
+	public static void registerTilling(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		registerHoe(createTilling(fromBlockPredicate, toBlockState));
 	}
 
-	public static void registerFlattening(BlockPredicate fromBlockPredicate, Block toBlock) {
-		registerShovel(createFlattening(fromBlockPredicate, toBlock));
+	public static void registerFlattening(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		registerShovel(createFlattening(fromBlockPredicate, toBlockState));
 	}
 
-	static void registerOxidationScraping(Block fromBlock, Block toBlock) {
-		registerAxe(createOxidationScraping(BlockPredicate.matchesBlocks(fromBlock), toBlock));
+	static void registerOxidationScraping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		registerAxe(createOxidationScraping(fromBlockPredicate, toBlockState));
 	}
 
-	static void registerWaxScraping(Block fromBlock, Block toBlock) {
-		registerAxe(createWaxScraping(BlockPredicate.matchesBlocks(fromBlock), toBlock));
+	static void registerWaxScraping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		registerAxe(createWaxScraping(fromBlockPredicate, toBlockState));
 	}
 
-	private static BlockTransformer.BlockTransformData createStripping(BlockPredicate fromBlockPredicate, Block toBlock) {
-		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlock))
+	private static BlockTransformer.BlockTransformData createStripping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlockState))
 				.sound(SoundEvents.AXE_STRIP)
 				.build();
 	}
 
-	private static BlockTransformer.BlockTransformData createTilling(BlockPredicate fromBlockPredicate, Block toBlock) {
+	private static BlockTransformer.BlockTransformData createTilling(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
 		return BlockTransformer.BlockTransformData.builder(
-						BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlock
+						BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlockState
 				)
 				.sound(SoundEvents.HOE_TILL)
 				.disallowedFaces(List.of(Direction.DOWN))
 				.build();
 	}
 
-	private static BlockTransformer.BlockTransformData createFlattening(BlockPredicate fromBlockPredicate, Block toBlock) {
+	private static BlockTransformer.BlockTransformData createFlattening(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
 		return BlockTransformer.BlockTransformData.builder(
-						BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlock
+						BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlockState
 				)
 				.sound(SoundEvents.SHOVEL_FLATTEN)
 				.disallowedFaces(List.of(Direction.DOWN))
 				.build();
 	}
 
-	private static BlockTransformer.BlockTransformData createOxidationScraping(BlockPredicate fromBlockPredicate, Block toBlock) {
-		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlock))
+	private static BlockTransformer.BlockTransformData createOxidationScraping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlockState))
 				.sound(SoundEvents.AXE_SCRAPE)
 				.particle(BlockTransformer.TransformParticle.SCRAPE)
 				.build();
 	}
 
-	private static BlockTransformer.BlockTransformData createWaxScraping(BlockPredicate fromBlockPredicate, Block toBlock) {
-		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlock))
+	private static BlockTransformer.BlockTransformData createWaxScraping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
+		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlockState))
 				.sound(SoundEvents.AXE_WAX_OFF)
 				.particle(BlockTransformer.TransformParticle.WAX_OFF)
 				.build();

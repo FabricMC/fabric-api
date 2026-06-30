@@ -22,6 +22,8 @@ import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.WeatheringCopperCollection;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
 public final class OxidizableBlocksRegistryImpl {
 	private OxidizableBlocksRegistryImpl() {
@@ -35,7 +37,7 @@ public final class OxidizableBlocksRegistryImpl {
 		refreshRandomTickCache(from);
 		refreshRandomTickCache(to);
 
-		BlockTransformerRegistryImpl.registerOxidationScraping(to, from);
+		BlockTransformerRegistryImpl.registerOxidationScraping(BlockPredicate.matchesBlocks(to), BlockStateProvider.simple(from));
 	}
 
 	public static void registerWaxable(Block unwaxed, Block waxed) {
@@ -43,7 +45,7 @@ public final class OxidizableBlocksRegistryImpl {
 		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
 		HoneycombItem.WAXABLES.get().put(unwaxed, waxed);
 
-		BlockTransformerRegistryImpl.registerWaxScraping(waxed, unwaxed);
+		BlockTransformerRegistryImpl.registerWaxScraping(BlockPredicate.matchesBlocks(waxed), BlockStateProvider.simple(unwaxed));
 	}
 
 	public static void registerWeatheringCopperBlocks(WeatheringCopperCollection<Block> copperBlocks) {
