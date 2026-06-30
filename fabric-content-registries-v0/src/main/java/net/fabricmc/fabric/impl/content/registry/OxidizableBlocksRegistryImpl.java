@@ -34,12 +34,16 @@ public final class OxidizableBlocksRegistryImpl {
 		// Fix #4371
 		refreshRandomTickCache(from);
 		refreshRandomTickCache(to);
+
+		BlockTransformerRegistryImpl.registerOxidationScraping(to, from);
 	}
 
 	public static void registerWaxable(Block unwaxed, Block waxed) {
 		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
 		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
 		HoneycombItem.WAXABLES.get().put(unwaxed, waxed);
+
+		BlockTransformerRegistryImpl.registerWaxScraping(waxed, unwaxed);
 	}
 
 	public static void registerWeatheringCopperBlocks(WeatheringCopperCollection<Block> copperBlocks) {
