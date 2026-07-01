@@ -1,5 +1,9 @@
 {
   "values": [
+    {
+      "id": "#minecraft:beds",
+      "required": false
+    },
     "minecraft:white_bundle",
     "minecraft:orange_bundle",
     "minecraft:magenta_bundle",
