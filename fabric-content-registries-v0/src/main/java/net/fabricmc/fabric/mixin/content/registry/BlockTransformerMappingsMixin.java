@@ -27,7 +27,7 @@ import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.world.item.component.BlockTransformerMappings;
 
 @Mixin(BlockTransformerMappings.class)
-public abstract class BlockTransformerMappingsMixin {
+abstract class BlockTransformerMappingsMixin {
 	@ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/component/BlockTransformer;<init>(Ljava/util/List;)V"))
 	private static List<BlockTransformer.BlockTransformData> makeListsMutable(List<BlockTransformer.BlockTransformData> transforms) {
 		return new ArrayList<>(transforms);
