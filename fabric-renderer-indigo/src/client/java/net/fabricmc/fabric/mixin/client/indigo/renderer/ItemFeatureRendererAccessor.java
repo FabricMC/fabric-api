@@ -21,18 +21,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
 @Mixin(ItemFeatureRenderer.class)
 public interface ItemFeatureRendererAccessor {
 	@Invoker("computeFoilDecalPose")
 	static PoseStack.Pose fabric_computeFoilDecalPose(ItemDisplayContext type, PoseStack.Pose pose) {
-		throw new AssertionError();
-	}
-
-	@Invoker("useTransparentGlint")
-	static boolean fabric_useTransparentGlint(RenderType renderType) {
 		throw new AssertionError();
 	}
 }

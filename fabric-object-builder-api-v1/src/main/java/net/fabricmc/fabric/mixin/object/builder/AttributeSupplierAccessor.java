@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
+package net.fabricmc.fabric.mixin.object.builder;
 
 import java.util.Map;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
-@Mixin(ShovelItem.class)
-public interface ShovelItemAccessor {
-	@Accessor("FLATTENABLES")
-	static Map<Block, BlockState> getFlattenables() {
-		throw new AssertionError("Untransformed @Accessor");
-	}
+@Mixin(AttributeSupplier.class)
+public interface AttributeSupplierAccessor {
+	@Accessor("instances")
+	Map<Holder<Attribute>, AttributeInstance> getInstances();
 }

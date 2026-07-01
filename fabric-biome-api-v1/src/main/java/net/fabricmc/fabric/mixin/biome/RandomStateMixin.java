@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,8 +27,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.SpawnTargetPoint;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
@@ -38,7 +42,7 @@ public class RandomStateMixin {
 	private Climate.Sampler sampler;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(NoiseGeneratorSettings chunkGeneratorSettings, HolderGetter<NormalNoise.NoiseParameters> arg, long seed, CallbackInfo ci) {
+	private void init(HolderGetter<NormalNoise.NoiseParameters> noises, long seed, boolean useLegacyRandom, BlockState defaultBlock, int seaLevel, NoiseRouter noiseRouter, List<SpawnTargetPoint> spawnTarget, CallbackInfo ci) {
 		((MultiNoiseSamplerHooks) (Object) sampler).fabric_setSeed(seed);
 	}
 }

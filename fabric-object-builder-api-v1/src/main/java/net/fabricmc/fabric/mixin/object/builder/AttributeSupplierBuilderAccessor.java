@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
+package net.fabricmc.fabric.mixin.object.builder;
 
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import com.mojang.datafixers.util.Pair;
+import com.google.common.collect.ImmutableMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
-@Mixin(HoeItem.class)
-public interface HoeItemAccessor {
-	@Accessor("TILLABLES")
-	static Map<Block, Pair<Predicate<UseOnContext>, Consumer<UseOnContext>>> getTillables() {
-		throw new AssertionError("Untransformed @Accessor");
-	}
+@Mixin(AttributeSupplier.Builder.class)
+public interface AttributeSupplierBuilderAccessor {
+	@Accessor("builder")
+	ImmutableMap.Builder<Holder<Attribute>, AttributeInstance> getBuilder();
 }

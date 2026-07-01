@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
-
-import java.util.Map;
+package net.fabricmc.fabric.mixin.object.builder;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.core.registries.BuiltInRegistries;
 
-@Mixin(AxeItem.class)
-public interface AxeItemAccessor {
-	@Accessor("STRIPPABLES")
-	static Map<Block, Block> getStrippables() {
-		throw new AssertionError("Untransformed @Accessor");
-	}
+import net.fabricmc.fabric.impl.object.builder.FabricDefaultAttributeRegistryImpl;
 
-	@Accessor("STRIPPABLES")
-	@Mutable
-	static void setStrippables(Map<Block, Block> strippedBlocks) {
-		throw new AssertionError("Untransformed @Accessor");
+@Mixin(BuiltInRegistries.class)
+public class BuiltInRegistriesMixin {
+	@Inject(method = "freeze", at = @At("HEAD"))
+	private static void modifyAttributes(CallbackInfo ci) {
+		FabricDefaultAttributeRegistryImpl.invokeModify();
 	}
 }

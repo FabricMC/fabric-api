@@ -131,7 +131,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.addOptionalTag(ConventionalBlockTags.LAPIS_ORES)
 				.addOptionalTag(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
 				.addOptionalTag(ConventionalBlockTags.REDSTONE_ORES)
-				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES);
+				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES)
+				.addOptionalTag(BlockTags.ORES);
 
 		builder(ConventionalBlockTags.ORE_BEARING_GROUND_DEEPSLATE)
 				.add(BlockItemIds.DEEPSLATE);
@@ -414,21 +415,17 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 	private void generateDyedTags() {
 		ColorCollection<BlockItemTagAppender<Block>> builders = ConventionalBlockTags.COLOR_DYED.map(this::builder);
 
-		ColorCollection.zipApply(builders, BlockItemIds.BANNER, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.BED, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.DYED_CANDLE, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.CARPET, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.CONCRETE, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.CONCRETE_POWDER, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.GLAZED_TERRACOTTA, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.DYED_SHULKER_BOX, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.STAINED_GLASS, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.STAINED_GLASS_PANE, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.DYED_TERRACOTTA, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockIds.WALL_BANNER, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.WOOL, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.WOOL_SLAB, BlockItemTagAppender::add);
-		ColorCollection.zipApply(builders, BlockItemIds.WOOL_STAIRS, BlockItemTagAppender::add);
+		for (ColorCollection<BlockItemId> colorCollection : List.of(
+				BlockItemIds.BANNER, BlockItemIds.BED, BlockItemIds.DYED_CANDLE, BlockItemIds.CARPET,
+				BlockItemIds.CONCRETE, BlockItemIds.CONCRETE_POWDER, BlockItemIds.GLAZED_TERRACOTTA,
+				BlockItemIds.DYED_SHULKER_BOX, BlockItemIds.STAINED_GLASS, BlockItemIds.STAINED_GLASS_PANE,
+				BlockItemIds.DYED_TERRACOTTA, BlockItemIds.WOOL, BlockItemIds.WOOL_SLAB, BlockItemIds.WOOL_STAIRS)) {
+			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
+		}
+
+		for (ColorCollection<ResourceKey<Block>> colorCollection : List.of(BlockIds.WALL_BANNER)) {
+			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
+		}
 
 		builder(ConventionalBlockTags.DYED)
 				.addTag(ConventionalBlockTags.WHITE_DYED)
@@ -552,7 +549,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.MANGROVE_LOG)
 				.add(BlockItemIds.OAK_LOG)
 				.add(BlockItemIds.PALE_OAK_LOG)
-				.add(BlockItemIds.SPRUCE_LOG);
+				.add(BlockItemIds.SPRUCE_LOG)
+				.add(BlockItemIds.POPLAR_LOG);
 
 		builder(ConventionalBlockTags.NETHER_NATURAL_LOGS)
 				.add(BlockItemIds.CRIMSON_STEM)
@@ -572,6 +570,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.OAK_WOOD)
 				.add(BlockItemIds.PALE_OAK_WOOD)
 				.add(BlockItemIds.SPRUCE_WOOD)
+				.add(BlockItemIds.POPLAR_WOOD)
 				.add(BlockItemIds.CRIMSON_HYPHAE)
 				.add(BlockItemIds.WARPED_HYPHAE);
 
@@ -586,6 +585,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.STRIPPED_OAK_LOG)
 				.add(BlockItemIds.STRIPPED_PALE_OAK_LOG)
 				.add(BlockItemIds.STRIPPED_SPRUCE_LOG)
+				.add(BlockItemIds.STRIPPED_POPLAR_LOG)
 				.add(BlockItemIds.STRIPPED_CRIMSON_STEM)
 				.add(BlockItemIds.STRIPPED_WARPED_STEM);
 
@@ -599,6 +599,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.STRIPPED_OAK_WOOD)
 				.add(BlockItemIds.STRIPPED_PALE_OAK_WOOD)
 				.add(BlockItemIds.STRIPPED_SPRUCE_WOOD)
+				.add(BlockItemIds.STRIPPED_POPLAR_WOOD)
 				.add(BlockItemIds.STRIPPED_CRIMSON_HYPHAE)
 				.add(BlockItemIds.STRIPPED_WARPED_HYPHAE);
 	}
@@ -618,7 +619,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.PIGLIN_HEAD)
 				.add(BlockIds.PIGLIN_WALL_HEAD)
 				.add(BlockItemIds.DRAGON_HEAD)
-				.add(BlockIds.DRAGON_WALL_HEAD);
+				.add(BlockIds.DRAGON_WALL_HEAD)
+				.addOptionalTag(BlockTags.SKULLS);
 	}
 
 	private void generateTagAlias() {

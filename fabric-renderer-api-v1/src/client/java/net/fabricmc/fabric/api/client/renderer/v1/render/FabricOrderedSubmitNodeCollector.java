@@ -60,16 +60,17 @@ public interface FabricOrderedSubmitNodeCollector {
 
 	/**
 	 * Alternative to
-	 * {@link OrderedSubmitNodeCollector#submitBreakingBlockModel(PoseStack, List, int)} that also
+	 * {@link OrderedSubmitNodeCollector#submitBreakingBlockModel(PoseStack, List, int, boolean)} that also
 	 * accepts a {@link Mesh}.
 	 *
 	 * @param poseStack the pose stack
 	 * @param parts the vanilla {@linkplain BlockStateModelPart parts}
 	 * @param mesh the mesh
 	 * @param progress the breaking progress
+	 * @param isBlockTranslucent whether the broken block should be considered translucent
 	 */
-	default void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress) {
-		((OrderedSubmitNodeCollector) this).submitBreakingBlockModel(poseStack, parts, progress);
+	default void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress, boolean isBlockTranslucent) {
+		((OrderedSubmitNodeCollector) this).submitBreakingBlockModel(poseStack, parts, progress, isBlockTranslucent);
 	}
 
 	/**

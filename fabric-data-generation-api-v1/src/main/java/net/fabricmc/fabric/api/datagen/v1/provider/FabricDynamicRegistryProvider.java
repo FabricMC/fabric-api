@@ -48,7 +48,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
@@ -115,10 +115,10 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * Returns a lookup for configured carvers. Useful when creating biomes.
+		 * Returns a lookup for carvers. Useful when creating biomes.
 		 */
-		public HolderGetter<ConfiguredWorldCarver<?>> configuredCarvers() {
-			return getLookup(Registries.CONFIGURED_CARVER);
+		public HolderGetter<WorldCarver> configuredCarvers() {
+			return getLookup(Registries.CARVER);
 		}
 
 		/**

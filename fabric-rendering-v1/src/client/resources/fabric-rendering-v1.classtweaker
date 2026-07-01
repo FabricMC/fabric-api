@@ -29,3 +29,5 @@ transitive-inject-interface	net/minecraft/client/renderer/state/level/ParticlesR
 transitive-inject-interface	net/minecraft/client/renderer/state/level/SkyRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/level/WeatherRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
 transitive-inject-interface	net/minecraft/client/renderer/state/level/WorldBorderRenderState	net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState
+transitive-accessible class net/minecraft/client/renderer/block/BuiltInBlockModels$Builder
+transitive-accessible method net/minecraft/client/renderer/block/BuiltInBlockModels createAir (Lnet/minecraft/client/renderer/block/BuiltInBlockModels$Builder;Lnet/minecraft/world/level/block/Block;)V

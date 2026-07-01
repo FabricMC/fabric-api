@@ -65,13 +65,13 @@ public class ArmorRenderingTests implements ClientModInitializer {
 			ArmorRenderer.submitTransformCopyingModel(contextModel,
 					humanoidRenderState, model,
 					humanoidRenderState, false, orderedCollector,
-					poseStack, RenderTypes.armorCutoutNoCull(TEXTURE), light, OverlayTexture.NO_OVERLAY, 0, null);
+					poseStack, RenderTypes.armorCutoutNoCull(TEXTURE), light, OverlayTexture.NO_OVERLAY, 0);
 
 			if (stack.hasFoil()) {
 				ArmorRenderer.submitTransformCopyingModel(contextModel,
 						humanoidRenderState, model,
 						humanoidRenderState, false, orderedCollector,
-						poseStack, RenderTypes.armorEntityGlint(), light, OverlayTexture.NO_OVERLAY, 0, null);
+						poseStack, RenderTypes.armorCutoutNoCullGlint(TEXTURE), light, OverlayTexture.NO_OVERLAY, 0);
 			}
 		}
 

@@ -26,12 +26,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.mojang.authlib.GameProfile;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.Main;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.server.players.UserWhiteListEntry;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -79,7 +83,13 @@ public final class DedicatedServerImplUtil {
 		}
 
 		context.waitFor(client -> ThreadingImpl.isServerRunning && ThreadingImpl.serverCanAcceptTasks);
+		whitelistClient(context, server);
 		return server;
+	}
+
+	private static void whitelistClient(ClientGameTestContext context, DedicatedServer server) {
+		GameProfile clientProfile = context.computeOnClient(Minecraft::getGameProfile);
+		ThreadingImpl.runOnServer(() -> server.getPlayerList().getWhiteList().add(new UserWhiteListEntry(new NameAndId(clientProfile))));
 	}
 
 	private static void setupServer(Properties customServerProperties) {

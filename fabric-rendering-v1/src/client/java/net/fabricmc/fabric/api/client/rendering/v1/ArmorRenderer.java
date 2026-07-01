@@ -27,7 +27,6 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -85,14 +84,13 @@ public interface ArmorRenderer {
 	 * @param tintedColor           the color to tint the model with
 	 * @param sprite                the sprite to render the model with, or {@code null} to use the render layer instead
 	 * @param outlineColor          the outline color of the model
-	 * @param crumblingOverlay      the crumbling overlay, or {@code null} for no crumbling overlay
 	 * @param <S>                   state type of the source model
 	 * @param <D>                   state type of the delegate model
 	 */
-	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, int light, int overlay, int tintedColor, @Nullable TextureAtlasSprite sprite, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, int light, int overlay, int tintedColor, @Nullable TextureAtlasSprite sprite, int outlineColor) {
 		nodeCollector.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState),
 				poseStack,
-				renderType, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
+				renderType, light, overlay, tintedColor, sprite, outlineColor);
 	}
 
 	/**
@@ -110,14 +108,13 @@ public interface ArmorRenderer {
 	 * @param light                 packed lightmap coordinates
 	 * @param overlay               packed overlay texture coordinates
 	 * @param outlineColor          the outline color of the model
-	 * @param crumblingOverlay      the crumbling overlay, or {@code null} for no crumbling overlay
 	 * @param <S>                   state type of the source model
 	 * @param <D>                   state type of the delegate model
 	 */
-	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, int light, int overlay, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, int light, int overlay, int outlineColor) {
 		nodeCollector.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState),
 				poseStack,
-				renderType, light, overlay, outlineColor, crumblingOverlay);
+				renderType, light, overlay, outlineColor);
 	}
 
 	/**

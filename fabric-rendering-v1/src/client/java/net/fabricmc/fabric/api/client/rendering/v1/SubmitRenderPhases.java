@@ -32,11 +32,11 @@ public final class SubmitRenderPhases {
 	public static final SubmitRenderPhase<TranslucentSubmit> TRANSLUCENT_BLOCKS_AND_ITEMS = new SubmitRenderPhase<>(x -> x.translucentBlocksAndItems);
 	public static final SubmitRenderPhase<TranslucentSubmit> TRANSLUCENT_MODELS = new SubmitRenderPhase<>(x -> x.translucentModels);
 	public static final SubmitRenderPhase<SubmitNode> TRANSLUCENT_CUSTOM_GEOMETRY = new SubmitRenderPhase<>(x -> x.translucentCustomGeometry);
-	public static final SubmitRenderPhase<SubmitNode> GIZMOS = new SubmitRenderPhase<>(x -> x.gizmos);
+	public static final SubmitRenderPhase<SubmitNode> GIZMOS = new SubmitRenderPhase<>(x -> x.translucentGizmos);
 	public static final SubmitRenderPhase<SubmitNode> BREAKING_OVERLAY = new SubmitRenderPhase<>(x -> x.breakingOverlay);
 	public static final SubmitRenderPhase<SubmitNode> WATER_MASK = new SubmitRenderPhase<>(x -> x.waterMask);
 	public static final SubmitRenderPhase<SubmitNode> AFTER_TERRAIN = new SubmitRenderPhase<>(x -> x.afterTerrain);
-	public static final SubmitRenderPhase<SubmitNode> ALWAYS_ON_TOP = new SubmitRenderPhase<>(x -> x.alwaysOnTop);
+	public static final SubmitRenderPhase<SubmitNode> ALWAYS_ON_TOP = new SubmitRenderPhase<>(x -> x.alwaysOnTopGizmos);
 	public static final SubmitRenderPhase<SubmitNode> OUTLINE = new SubmitRenderPhase<>(x -> x.outline);
 
 	private SubmitRenderPhases() {

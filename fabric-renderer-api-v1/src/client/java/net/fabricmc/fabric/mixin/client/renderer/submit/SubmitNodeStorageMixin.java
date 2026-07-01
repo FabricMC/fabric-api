@@ -43,8 +43,8 @@ abstract class SubmitNodeStorageMixin implements SubmitNodeCollector {
 	}
 
 	@Override
-	public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress) {
-		order(0).submitBreakingBlockModel(poseStack, parts, mesh, progress);
+	public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress, boolean isBlockTranslucent) {
+		order(0).submitBreakingBlockModel(poseStack, parts, mesh, progress, isBlockTranslucent);
 	}
 
 	@Override

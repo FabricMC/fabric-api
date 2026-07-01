@@ -55,8 +55,7 @@ public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGui
 				Unit.INSTANCE,
 				true,
 				state.color(),
-				BannerPatternLayers.EMPTY,
-				null);
+				BannerPatternLayers.EMPTY);
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
@@ -35,8 +36,9 @@ import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.feature.phase.FeatureRenderPhase;
 import net.minecraft.client.renderer.feature.phase.SimpleFeatureRenderPhase;
-import net.minecraft.client.renderer.feature.phase.TranslucentFeatureRenderPhase;
+import net.minecraft.client.renderer.feature.submit.TranslucentSubmit;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -59,7 +61,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 	public SimpleFeatureRenderPhase solid;
 	@Shadow
 	@Final
-	public TranslucentFeatureRenderPhase translucentBlocksAndItems;
+	public FeatureRenderPhase<? super TranslucentSubmit> translucentBlocksAndItems;
 	@Shadow
 	@Final
 	public SimpleFeatureRenderPhase breakingOverlay;
@@ -95,10 +97,12 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 	}
 
 	@Override
-	public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress) {
+	public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress, boolean isBlockTranslucent) {
 		PoseStack.Pose pose = poseStack.last().copy();
-		RenderType renderType = ModelBakery.DESTROY_TYPES.get(progress);
-		breakingOverlay.submit(new ExtendedBlockModelSubmit(pose, _ -> renderType, List.copyOf(parts), mesh, BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, pose));
+		List<RenderType> destroyTypes = Minecraft.getInstance().gameRenderer.useImprovedTransparency() && isBlockTranslucent ? ModelBakery.DESTROY_TYPES_OIT : ModelBakery.DESTROY_TYPES;
+		RenderType renderType = destroyTypes.get(progress);
+		SimpleFeatureRenderPhase targetPhase = isBlockTranslucent ? breakingOverlay : solid;
+		targetPhase.submit(new ExtendedBlockModelSubmit(pose, _ -> renderType, List.copyOf(parts), mesh, BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, pose));
 	}
 
 	@Override

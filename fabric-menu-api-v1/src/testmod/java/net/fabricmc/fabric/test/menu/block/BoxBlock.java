@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.menu.block;
 
-import com.mojang.serialization.MapCodec;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -37,11 +35,6 @@ import net.minecraft.world.phys.BlockHitResult;
 public class BoxBlock extends BaseEntityBlock {
 	public BoxBlock(Properties properties) {
 		super(properties);
-	}
-
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Override

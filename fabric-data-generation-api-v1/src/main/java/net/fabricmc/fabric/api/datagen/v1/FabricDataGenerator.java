@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.api.datagen.v1;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
@@ -33,13 +32,12 @@ import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
-import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.loader.api.ModContainer;
 
 /**
  * An extension to vanilla's {@link DataGenerator} providing mod specific data, and helper functions.
  */
-public final class FabricDataGenerator extends DataGenerator.Uncached {
+public final class FabricDataGenerator extends DataGenerator.Cached {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 	private final FabricPackOutput fabricOutput;
@@ -47,7 +45,7 @@ public final class FabricDataGenerator extends DataGenerator.Uncached {
 
 	@ApiStatus.Internal
 	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(output);
+		super(output, SharedConstants.getCurrentVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
 		this.fabricOutput = new FabricPackOutput(mod, output, strictValidation);
@@ -131,17 +129,6 @@ public final class FabricDataGenerator extends DataGenerator.Uncached {
 	@Deprecated
 	public DataGenerator.PackGenerator getBuiltinDatapack(boolean shouldRun, String packName) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void run() throws IOException {
-		Path output = vanillaPackOutput.getOutputFolder();
-
-		if (Files.exists(output)) {
-			FabricDataGenHelper.deleteDirectory(output);
-		}
-
-		super.run();
 	}
 
 	/**

@@ -35,7 +35,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -60,12 +59,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostableRegistry;
 import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
-import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
-import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
 import net.fabricmc.fabric.api.registry.fluid.EntityFluidInteractionRegistry;
@@ -110,13 +106,8 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - obsidian is now compostable
 		//  - diamond block is now flammable
 		//  - sand is now flammable
-		//  - red wool is flattenable to yellow wool
 		//  - custom items prefixed with 'smelting fuels included by' are valid smelting fuels
 		//  - dead bush is now considered as a dangerous block like sweet berry bushes (all entities except foxes should avoid it)
-		//  - quartz pillars are strippable to hay blocks
-		//  - hay blocks are strippable to tnt
-		//  - oak stairs are strippable to spruce stairs, while preserving all block state properties
-		//  - green wool is tillable to lime wool
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 		//  - the 'test_oxidizing' block will randomly tick to oxidize into an 'exposed_test_oxidizing' block
@@ -132,7 +123,6 @@ public final class ContentRegistryTest implements ModInitializer {
 		CompostableRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
-		FlattenableBlockRegistry.register(Blocks.WOOL.red(), Blocks.WOOL.yellow().defaultBlockState());
 
 		FuelValueEvents.BUILD.register((builder, context) -> {
 			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, context.baseSmeltTime() / 4);
@@ -144,11 +134,6 @@ public final class ContentRegistryTest implements ModInitializer {
 		});
 
 		LandPathTypeRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGING, PathType.DAMAGING_IN_NEIGHBOR);
-		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
-		StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.TNT);
-		StrippableBlockRegistry.registerCopyState(Blocks.OAK_STAIRS, Blocks.SPRUCE_STAIRS);
-
-		TillableBlockRegistry.register(Blocks.WOOL.green(), context -> true, HoeItem.changeIntoState(Blocks.WOOL.lime().defaultBlockState()));
 
 		OxidizableBlocksRegistry.registerNextStage(Blocks.COPPER_ORE, Blocks.IRON_ORE);
 		OxidizableBlocksRegistry.registerNextStage(Blocks.IRON_ORE, Blocks.GOLD_ORE);
