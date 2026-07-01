@@ -495,8 +495,8 @@ public final class ConventionalItemTags {
 
 	// Items created with dyes
 	/**
-	 * Tag that holds all blocks and items that can be dyed a specific color.
-	 * (Does not include color blending items like leather armor.)
+	 * Tag that holds all blocks and items which are dyed a specific color.
+	 * (Does not include color blending items like leather armor)
 	 *
 	 * <p>Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
 	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
@@ -544,20 +544,31 @@ public final class ConventionalItemTags {
 	);
 
 	/**
-	 * Tag that holds items that can be dyed but do not have their own color already, like terracotta.
+	 * Tag that holds items which can be dyed but do not have their own color already, like glass.
 	 * (Does not include color blending items like leather armor)
 	 */
-	public static final TagKey<Item> UNDYED_DYEABLE = register("dyeable/undyed");
+	public static final TagKey<Item> UNDYED_SIMPLE_DYEABLE = register("dyeable/simple/undyed");
 
 	/**
-	 * Tag that holds items that can be dyed despite already having a color, like wool.
+	 * Tag that holds items which can be dyed despite already having a color, like wool.
 	 * (Does not include color blending items like leather armor)
 	 */
-	public static final TagKey<Item> REDYEABLE_DYEABLE = register("dyeable/redyeable");
+	public static final TagKey<Item> REDYEABLE_SIMPLE_DYEABLE = register("dyeable/simple/redyeable");
 
 	/**
-	 * Tag that holds items that can have dye applied to them, whether they have a color already or not.
-	 * (Does not include color blending items like leather armor)
+	 * Tag that holds items which can be dyed in a simple fashion without color blending, typically
+	 * in the standard 16 colors, whether they have a color already or not.
+	 */
+	public static final TagKey<Item> SIMPLE_DYEABLE = register("dyeable/simple");
+
+	/**
+	 * Tag that holds items which can be dyed in a dynamic color blending fashion, like leather armor.
+	 * <br>Note this also includes Firework Stars, which store colors in a different fashion to most.
+	 */
+	public static final TagKey<Item> DYNAMIC_DYEABLE = register("dyeable/dynamic");
+
+	/**
+	 * Tag that holds items which can have dye applied to them, whether they have a color already or not.
 	 */
 	public static final TagKey<Item> DYEABLE = register("dyeable");
 

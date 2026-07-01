@@ -789,7 +789,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 	}
 
 	private void generateDyeableTags() {
-		builder(ConventionalItemTags.UNDYED_DYEABLE)
+		builder(ConventionalItemTags.UNDYED_SIMPLE_DYEABLE)
 				.add(ItemIds.BUNDLE)
 				.add(BlockItemIds.CANDLE)
 				.add(BlockItemIds.GLASS)
@@ -797,7 +797,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(BlockItemIds.SHULKER_BOX)
 				.add(BlockItemIds.TERRACOTTA);
 
-		builder(ConventionalItemTags.REDYEABLE_DYEABLE)
+		builder(ConventionalItemTags.REDYEABLE_SIMPLE_DYEABLE)
 				.addOptionalTag(BlockItemTags.BEDS.item())
 				.addAll(ItemIds.DYED_BUNDLE)
 				.addOptionalTag(ItemTags.HARNESSES)
@@ -807,9 +807,22 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(BlockItemTags.WOOL_STAIRS.item())
 				.addAll(BlockItemIds.DYED_SHULKER_BOX.map(BlockItemId::item));
 
+		builder(ConventionalItemTags.SIMPLE_DYEABLE)
+				.addTag(ConventionalItemTags.UNDYED_SIMPLE_DYEABLE)
+				.addTag(ConventionalItemTags.REDYEABLE_SIMPLE_DYEABLE);
+
+		builder(ConventionalItemTags.DYNAMIC_DYEABLE)
+				.add(ItemIds.LEATHER_HELMET)
+				.add(ItemIds.LEATHER_CHESTPLATE)
+				.add(ItemIds.LEATHER_LEGGINGS)
+				.add(ItemIds.LEATHER_BOOTS)
+				.add(ItemIds.LEATHER_HORSE_ARMOR)
+				.add(ItemIds.WOLF_ARMOR)
+				.add(ItemIds.FIREWORK_STAR);
+
 		builder(ConventionalItemTags.DYEABLE)
-				.addTag(ConventionalItemTags.UNDYED_DYEABLE)
-				.addTag(ConventionalItemTags.REDYEABLE_DYEABLE);
+				.addTag(ConventionalItemTags.SIMPLE_DYEABLE)
+				.addTag(ConventionalItemTags.DYNAMIC_DYEABLE);
 	}
 
 	private void generateTagAlias() {
