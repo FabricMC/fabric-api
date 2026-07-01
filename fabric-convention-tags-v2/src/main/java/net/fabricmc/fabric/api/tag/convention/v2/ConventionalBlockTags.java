@@ -249,6 +249,24 @@ public final class ConventionalBlockTags {
 			BLACK_DYED
 	);
 
+	/**
+	 * Tag that holds blocks that can be dyed but do not have their own color already, like terracotta.
+	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 */
+	public static final TagKey<Block> UNDYED_DYEABLE = register("dyeable/undyed");
+
+	/**
+	 * Tag that holds blocks that can be dyed despite already having a color, like wool.
+	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 */
+	public static final TagKey<Block> REDYEABLE_DYEABLE = register("dyeable/redyable");
+
+	/**
+	 * Tag that holds blocks that can have dye applied to them, whether they have a color already or not.
+	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 */
+	public static final TagKey<Block> DYEABLE = register("dyeable");
+
 	// Blocks that are for storing resources
 	/**
 	 * A storage block is generally a block that has a recipe to craft a bulk of 1 kind of resource to a block
