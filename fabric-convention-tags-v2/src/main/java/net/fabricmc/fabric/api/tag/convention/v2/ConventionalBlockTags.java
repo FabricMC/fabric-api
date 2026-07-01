@@ -206,8 +206,8 @@ public final class ConventionalBlockTags {
 
 	// Blocks created with dyes
 	/**
-	 * Tag that holds all blocks that can be dyed a specific color.
-	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 * Tag that holds all blocks which can be dyed a specific color.
+	 * (Does not include color blending blocks which would behave similarly to leather armor items)
 	 */
 	public static final TagKey<Block> DYED = register("dyed");
 	public static final TagKey<Block> BLACK_DYED = register("dyed/black");
@@ -250,20 +250,30 @@ public final class ConventionalBlockTags {
 	);
 
 	/**
-	 * Tag that holds blocks that can be dyed but do not have their own color already, like terracotta.
-	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 * Tag that holds blocks which can be dyed but do not have their own color already, like glass.
+	 * (Does not include color blending blocks which would behave similarly to leather armor items)
 	 */
-	public static final TagKey<Block> UNDYED_DYEABLE = register("dyeable/undyed");
+	public static final TagKey<Block> UNDYED_SIMPLE_DYEABLE = register("dyeable/simple/undyed");
 
 	/**
-	 * Tag that holds blocks that can be dyed despite already having a color, like wool.
-	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 * Tag that holds blocks which can be dyed despite already having a color, like wool.
+	 * (Does not include color blending blocks which would behave similarly to leather armor items)
 	 */
-	public static final TagKey<Block> REDYEABLE_DYEABLE = register("dyeable/redyeable");
+	public static final TagKey<Block> REDYEABLE_SIMPLE_DYEABLE = register("dyeable/simple/redyeable");
 
 	/**
-	 * Tag that holds blocks that can have dye applied to them, whether they have a color already or not.
-	 * (Does not include color blending blocks that would behave similar to leather armor item)
+	 * Tag that holds blocks which can be dyed in a simple fashion without color blending, typically
+	 * in the standard 16 colors, whether they have a color already or not.
+	 */
+	public static final TagKey<Block> SIMPLE_DYEABLE = register("dyeable/simple");
+
+	/**
+	 * Tag that holds blocks which can be dyed in a dynamic color blending fashion, similarly to leather armor items.
+	 */
+	public static final TagKey<Block> DYNAMIC_DYEABLE = register("dyeable/dynamic");
+
+	/**
+	 * Tag that holds blocks which can have dye applied to them, whether they have a color already or not.
 	 */
 	public static final TagKey<Block> DYEABLE = register("dyeable");
 

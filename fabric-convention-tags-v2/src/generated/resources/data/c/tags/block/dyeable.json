@@ -1,6 +1,6 @@
 {
   "values": [
-    "#c:dyeable/undyed",
-    "#c:dyeable/redyeable"
+    "#c:dyeable/simple",
+    "#c:dyeable/dynamic"
   ]
 }
