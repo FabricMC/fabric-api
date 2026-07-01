@@ -36,7 +36,7 @@ public final class BlockTransformerRegistry {
 
 	/**
 	 * Registers block transform data that will be added to axes.
-	 * <br>Use {@link BlockTransformerRegistry#registerStripping} instead to register a basic transformer for stripping, like logs into stripped logs.
+	 * <br>Use {@link BlockTransformerRegistry#registerStripping} instead to register standard block transform data for stripping with an axe, like logs into stripped logs.
 	 * @param transformData The transform data to register.
 	 */
 	public static void registerAxe(BlockTransformer.BlockTransformData transformData) {
@@ -45,7 +45,7 @@ public final class BlockTransformerRegistry {
 
 	/**
 	 * Registers block transform data that will be added to hoes.
-	 * <br>Use {@link BlockTransformerRegistry#registerTilling} instead to register a basic transformer for tilling, like dirt into farmland.
+	 * <br>Use {@link BlockTransformerRegistry#registerTilling} instead to register standard block transform data for tilling with a hoe, like dirt into farmland.
 	 * @param transformData The transform data to register.
 	 */
 	public static void registerHoe(BlockTransformer.BlockTransformData transformData) {
@@ -54,7 +54,7 @@ public final class BlockTransformerRegistry {
 
 	/**
 	 * Registers block transform data that will be added to shovels.
-	 * <br>Use {@link BlockTransformerRegistry#registerFlattening} instead to register a basic transformer for flattening, like dirt into paths.
+	 * <br>Use {@link BlockTransformerRegistry#registerFlattening} instead to register standard block transform data for flattening with a shovel, like dirt into paths.
 	 * @param transformData The transform data to register.
 	 */
 	public static void registerShovel(BlockTransformer.BlockTransformData transformData) {
@@ -62,8 +62,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlockPredicate A predicate for which blocks can be stripped.
 	 * @param toBlockState A provider of the block state which results from the stripping.
 	 */
@@ -72,8 +73,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlockPredicate A predicate for which blocks can be tilled.
 	 * @param toBlockState A provider of the block state which results from the tilling.
 	 */
@@ -82,8 +84,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlockPredicate A predicate for which blocks can be flattened.
 	 * @param toBlockState A provider of the block state which results from the flattening.
 	 */
@@ -92,8 +95,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlock The block which can can be stripped.
 	 * @param toBlockState A provider of the block state which results from the stripping.
 	 */
@@ -102,8 +106,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlock The block which can be tilled.
 	 * @param toBlockState A provider of the block state which results from the tilling.
 	 */
@@ -112,8 +117,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlock The block which can be flattened.
 	 * @param toBlockState A provider of the block state which results from the flattening.
 	 */
@@ -122,8 +128,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlockState A provider of the block state which results from the stripping.
 	 */
@@ -132,8 +139,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlockState A provider of the block state which results from the tilling.
 	 */
@@ -142,8 +150,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlockState A provider of the block state which results from the flattening.
 	 */
@@ -152,8 +161,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlockState A provider of the block state which results from the stripping.
 	 */
@@ -162,8 +172,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlockState A provider of the block state which results from the tilling.
 	 */
@@ -172,8 +183,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlockState A provider of the block state which results from the flattening.
 	 */
@@ -182,8 +194,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlockPredicate A predicate for which blocks can be stripped.
 	 * @param toBlockState The block state which results from the stripping.
 	 */
@@ -192,8 +205,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlockPredicate A predicate for which blocks can be tilled.
 	 * @param toBlockState The block state which results from the tilling.
 	 */
@@ -202,8 +216,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlockPredicate A predicate for which blocks can be flattened.
 	 * @param toBlockState The block state which results from the flattening.
 	 */
@@ -212,8 +227,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlock The block state which can can be stripped.
 	 * @param toBlockState The block state which results from the stripping.
 	 */
@@ -222,8 +238,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlock The block state which can be tilled.
 	 * @param toBlockState The block state which results from the tilling.
 	 */
@@ -232,8 +249,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlock The block state which can be flattened.
 	 * @param toBlockState The block state which results from the flattening.
 	 */
@@ -242,8 +260,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlockState The block state which results from the stripping.
 	 */
@@ -252,8 +271,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlockState The block state which results from the tilling.
 	 */
@@ -262,8 +282,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlockState The block state which results from the flattening.
 	 */
@@ -272,8 +293,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlockState The block state which results from the stripping.
 	 */
@@ -282,8 +304,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlockState The block state which results from the tilling.
 	 */
@@ -292,8 +315,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlockState The block state which results from the flattening.
 	 */
@@ -302,8 +326,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlockPredicate A predicate for which blocks can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
@@ -312,8 +337,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlockPredicate A predicate for which blocks can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
@@ -322,8 +348,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlockPredicate A predicate for which blocks can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
@@ -332,8 +359,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlock The block which can can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
@@ -342,8 +370,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlock The block which can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
@@ -352,8 +381,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlock The block which can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
@@ -362,8 +392,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
@@ -372,8 +403,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
@@ -382,8 +414,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
@@ -392,8 +425,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for stripping, like logs into stripped logs.
-	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex transformers for axes.
+	 * Registers standard block transform data for stripping with an axe, like logs into stripped logs.
+	 * <br>Specifically, copies any applicable block state properties to the result, and plays the stripping sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerAxe} instead to register any more complex or custom block transform data for axes.
 	 * @param fromBlocks The blocks which can can be stripped.
 	 * @param toBlock The block which results from the stripping.
 	 */
@@ -402,8 +436,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for tilling, like dirt into farmland.
-	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex transformers for hoes.
+	 * Registers standard block transform data for tilling with a hoe, like dirt into farmland.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the tilling sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerHoe} instead to register any more complex or custom block transform data for hoes.
 	 * @param fromBlocks The blocks which can be tilled.
 	 * @param toBlock The block which results from the tilling.
 	 */
@@ -412,8 +447,9 @@ public final class BlockTransformerRegistry {
 	}
 
 	/**
-	 * Registers a basic transformer for flattening, like dirt into paths.
-	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex transformers for shovels.
+	 * Registers standard block transform data for flattening with a shovel, like dirt into paths.
+	 * <br>Specifically, requires the block above the target to be air, disallows the interaction on the bottom face of the block, and plays the flattening sound.
+	 * <br>Use {@link BlockTransformerRegistry#registerShovel} instead to register any more complex or custom block transform data for shovels.
 	 * @param fromBlocks The blocks which can be flattened.
 	 * @param toBlock The block which results from the flattening.
 	 */
