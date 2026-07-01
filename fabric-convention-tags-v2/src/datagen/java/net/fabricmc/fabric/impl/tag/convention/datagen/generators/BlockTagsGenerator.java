@@ -455,6 +455,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.TERRACOTTA);
 
 		builder(ConventionalBlockTags.REDYEABLE_DYEABLE)
+				.addOptionalTag(BlockItemTags.BEDS.block())
 				.addOptionalTag(BlockItemTags.WOOL.block())
 				.addOptionalTag(BlockItemTags.WOOL_CARPETS.block())
 				.addOptionalTag(BlockItemTags.WOOL_SLABS.block())

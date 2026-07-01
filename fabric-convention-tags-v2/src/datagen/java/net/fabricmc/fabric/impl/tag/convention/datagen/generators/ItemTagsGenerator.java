@@ -798,6 +798,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(BlockItemIds.TERRACOTTA);
 
 		builder(ConventionalItemTags.REDYEABLE_DYEABLE)
+				.addOptionalTag(BlockItemTags.BEDS.item())
 				.addAll(ItemIds.DYED_BUNDLE)
 				.addOptionalTag(ItemTags.HARNESSES)
 				.addOptionalTag(BlockItemTags.WOOL.item())
