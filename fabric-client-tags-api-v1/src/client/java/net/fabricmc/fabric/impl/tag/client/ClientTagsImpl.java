@@ -93,14 +93,14 @@ public class ClientTagsImpl {
 		if (MinecraftClient.getInstance() != null) {
 			if (MinecraftClient.getInstance().world != null) {
 				if (MinecraftClient.getInstance().world.getRegistryManager() != null) {
-					Optional<? extends net.minecraft.registry.Registry<T>> maybeRegistry = MinecraftClient.getInstance().world
+					Optional<? extends Registry<T>> maybeRegistry = MinecraftClient.getInstance().world
 							.getRegistryManager().getOptional(tagKey.registry());
 					if (maybeRegistry.isPresent()) return maybeRegistry;
 				}
 			}
 		}
 
-		return (Optional<? extends net.minecraft.registry.Registry<T>>) Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
+		return (Optional<? extends Registry<T>>) Registries.REGISTRIES.getOrEmpty(tagKey.registry().getValue());
 	}
 
 	@SuppressWarnings("unchecked")
