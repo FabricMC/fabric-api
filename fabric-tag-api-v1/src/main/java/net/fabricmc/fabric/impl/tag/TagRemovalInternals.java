@@ -21,11 +21,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.registry.tag.TagEntry;
@@ -49,15 +47,21 @@ public class TagRemovalInternals {
 		TAG_ID_THREAD_LOCAL.remove();
 	}
 
-	public static Codec<TagFile> modifyTagFileCodec(Codec<TagFile> originalCodec) {
-		return RecordCodecBuilder.create(i -> i.group(
-				MapCodec.assumeMapUnsafe(originalCodec)
-						.forGetter(Function.identity()),
+	public static Codec<TagFile> modifyTagFileCodec() {
+		return RecordCodecBuilder.create(instance -> instance.group(
 				TagEntry.CODEC
 						.listOf()
-						.lenientOptionalFieldOf("fabric:remove", Collections.emptyList())
+						.fieldOf("values")
+						.forGetter(TagFile::entries),
+				Codec.BOOL
+						.optionalFieldOf("replace", false)
+						.forGetter(TagFile::replace),
+				TagEntry.CODEC
+						.listOf()
+						.optionalFieldOf("fabric:remove", Collections.emptyList())
 						.forGetter(FabricTagFile::remove)
-		).apply(i, (tagFile, remove) -> {
+		).apply(instance, (entries, replace, remove) -> {
+			TagFile tagFile = new TagFile(entries, replace);
 			((TagFileHooks) (Object) tagFile).fabric_setRemove(remove);
 			return tagFile;
 		}));

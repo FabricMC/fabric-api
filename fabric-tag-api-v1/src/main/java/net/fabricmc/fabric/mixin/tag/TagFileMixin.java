@@ -39,7 +39,7 @@ class TagFileMixin implements FabricTagFile, TagFileHooks {
 
 	@ModifyExpressionValue(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder;create(Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;"))
 	private static Codec<TagFile> modifyCodec(Codec<TagFile> original) {
-		return TagRemovalInternals.modifyTagFileCodec(original);
+		return TagRemovalInternals.modifyTagFileCodec();
 	}
 
 	@Override

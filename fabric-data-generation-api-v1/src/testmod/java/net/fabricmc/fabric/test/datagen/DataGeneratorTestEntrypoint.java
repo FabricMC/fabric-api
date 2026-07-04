@@ -25,7 +25,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_B
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_ITEM_KEY;
-import static net.minecraft.data.server.advancement.AdvancementTabGenerator.reference;
+import static net.minecraft.data.server.advancement.AdvancementTabGenerator.createEmptyAdvancement;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -372,16 +372,16 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
 					.build(withConditions(consumer, NEVER_LOADED), MOD_ID + ":test/root_not_loaded");
-			AdvancementEntry adventureChild = Advancement.Builder.create()
+			Advancement adventureChild = Advancement.Builder.create()
 					.display(SIMPLE_BLOCK,
 							Text.translatable("advancements.test.adventure_child.title"),
 							Text.translatable("advancements.test.adventure_child.description"),
-							Identifier.ofVanilla("textures/gui/advancements/backgrounds/end.png"),
+							new Identifier("textures/gui/advancements/backgrounds/end.png"),
 							AdvancementFrame.GOAL,
 							false, false, false
 					)
 					.criterion("killed_something", OnKilledCriterion.Conditions.createPlayerKilledEntity())
-					.parent(reference("minecraft:adventure/root"))
+					.parent(createEmptyAdvancement("minecraft:adventure/root"))
 					.build(consumer, MOD_ID + ":test/adventure_child");
 		}
 	}

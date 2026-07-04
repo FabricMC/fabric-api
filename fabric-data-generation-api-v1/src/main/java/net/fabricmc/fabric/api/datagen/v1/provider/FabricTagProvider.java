@@ -240,7 +240,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	/**
 	 * An extension to {@link ProvidedTagBuilder} that provides additional functionality.
 	 */
-	public final class FabricTagBuilder extends ProvidedTagBuilder<T> implements FabricProvidedTagBuilder<T> {
+	public final class FabricTagBuilder extends ProvidedTagBuilder<T> implements FabricProvidedTagBuilder {
 		private final TagProvider.ProvidedTagBuilder<T> parent;
 
 		private FabricTagBuilder(ProvidedTagBuilder<T> parent) {
@@ -372,7 +372,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
-		public FabricTagBuilder forceAddTag(TagKey<T> tag) {
+		public FabricTagBuilder forceAddTag(TagKey tag) {
 			builder.add(new ForcedTagEntry(TagEntry.create(tag.id())));
 			return this;
 		}
@@ -432,7 +432,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder remove(RegistryKey<T> registryKey) {
+		public FabricTagBuilder remove(RegistryKey registryKey) {
 			((TagBuilderHooks) this.builder).fabric_removeElement(registryKey.getValue());
 			return this;
 		}
@@ -444,8 +444,8 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 */
 		@SafeVarargs
 		@Override
-		public final FabricTagBuilder remove(RegistryKey<T>... registryKeys) {
-			for (RegistryKey<T> registryKey : registryKeys) {
+		public final FabricTagBuilder remove(RegistryKey... registryKeys) {
+			for (RegistryKey registryKey : registryKeys) {
 				remove(registryKey);
 			}
 
@@ -458,8 +458,8 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder removeAll(final Collection<RegistryKey<T>> registryKeys) {
-			registryKeys.forEach(this::remove);
+		public FabricTagBuilder removeAll(final Collection registryKeys) {
+			registryKeys.forEach(key -> this.remove((RegistryKey) key));
 			return this;
 		}
 
@@ -469,8 +469,8 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder removeAll(final Stream<RegistryKey<T>> registryKeys) {
-			registryKeys.forEach(this::remove);
+		public FabricTagBuilder removeAll(final Stream registryKeys) {
+			registryKeys.forEach(key -> this.remove((RegistryKey) key));
 			return this;
 		}
 
@@ -480,7 +480,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@Override
-		public FabricTagBuilder removeTag(TagKey<T> tag) {
+		public FabricTagBuilder removeTag(TagKey tag) {
 			((TagBuilderHooks) this.builder).fabric_removeTag(tag.id());
 			return this;
 		}

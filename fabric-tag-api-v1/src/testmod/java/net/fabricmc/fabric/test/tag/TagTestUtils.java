@@ -79,7 +79,7 @@ public class TagTestUtils {
 	}
 
 	static <T> void assertInTag(TestContext context, Logger logger, String successFmtStr, RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Set<RegistryKey<T>> expected) throws GameTestException {
-		RegistryWrapper<T> lookup = registries.getWrapperOrThrow(tags.getFirst().registry());
+		RegistryWrapper<T> lookup = registries.getWrapperOrThrow(tags.get(0).registry());
 
 		for (TagKey<T> tag : tags) {
 			RegistryEntryList.Named<T> registryEntryList = lookup.getOrThrow(tag);
@@ -97,7 +97,7 @@ public class TagTestUtils {
 		}
 
 		if (!successFmtStr.isBlank()) {
-			logger.info(successFmtStr, tags.getFirst().registry().getValue(), expected.stream()
+			logger.info(successFmtStr, tags.get(0).registry().getValue(), expected.stream()
 					.map(RegistryKey::getValue)
 					.map(Identifier::toString)
 					.collect(Collectors.joining(", ")));
@@ -118,7 +118,7 @@ public class TagTestUtils {
 	}
 
 	static <T> void assertTagContent(TestContext context, Logger logger, String successFmtStr, RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Set<RegistryKey<T>> expected) throws GameTestException {
-		RegistryWrapper<T> lookup = registries.getWrapperOrThrow(tags.getFirst().registry());
+		RegistryWrapper<T> lookup = registries.getWrapperOrThrow(tags.get(0).registry());
 
 		for (TagKey<T> tag : tags) {
 			RegistryEntryList.Named<T> registryEntryList = lookup.getOrThrow(tag);
@@ -134,7 +134,7 @@ public class TagTestUtils {
 		}
 
 		if (!successFmtStr.isBlank()) {
-			logger.info(successFmtStr, tags.getFirst().registry().getRegistry(), tags.stream()
+			logger.info(successFmtStr, tags.get(0).registry().getRegistry(), tags.stream()
 					.map(TagKey::id)
 					.map(Identifier::toString)
 					.collect(Collectors.joining(", ")));
@@ -142,7 +142,7 @@ public class TagTestUtils {
 	}
 
 	static void reloadResources(TestContext context, MinecraftServer server, Function<TestContext, GameTestException> onException) {
-		server.reloadResources(server.getDataPackManager().getEnabledIds()).exceptionally((throwable) -> {
+		server.reloadResources(server.getDataPackManager().getEnabledNames()).exceptionally((throwable) -> {
 			throw onException.apply(context);
 		});
 	}

@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -88,24 +87,6 @@ public final class TagEntryRemovalTests {
 						Items.NETHER_BRICK
 				),
 				"Expected %s not to contain nether bricks".formatted(TEST_ITEM_TAG)
-		);
-		context.complete();
-	}
-
-	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
-	public void allEnchantmentTagsWithoutDurabilityEnchantmentsDoesNotContainUnbreakingOrMending(TestContext context) {
-		DynamicRegistryManager registries = context.getWorld().getRegistryManager();
-		TagTestUtils.assertThrows(
-				() -> TagTestUtils.assertInTag(
-						context,
-						LOGGER,
-						"",
-						registries,
-						List.of(TEST_ENCHANTMENT_TAG),
-						Enchantments.UNBREAKING,
-						Enchantments.MENDING
-				),
-				"Expected %s not to contain Unbreaking or Mending".formatted(TEST_ENCHANTMENT_TAG)
 		);
 		context.complete();
 	}

@@ -27,14 +27,14 @@ import net.minecraft.registry.tag.TagKey;
  * Interface-injected to {@link TagProvider.ProvidedTagBuilder}.
  */
 @SuppressWarnings("unchecked")
-public interface FabricProvidedTagBuilder<T> {
+public interface FabricProvidedTagBuilder {
 	/**
 	 * Sets the value of the {@code replace} flag. When set to {@code true}
 	 * this tag will replace contents of any other tag.
 	 * @param replace whether to replace the contents of the tag
 	 * @return this, for chaining
 	 */
-	default FabricProvidedTagBuilder<T> setReplace(boolean replace) {
+	default FabricProvidedTagBuilder setReplace(boolean replace) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -44,7 +44,7 @@ public interface FabricProvidedTagBuilder<T> {
 	 * @param tag The tag to force into the contents of the tag
 	 * @return this, for chaining
 	 */
-	default FabricProvidedTagBuilder<T> forceAddTag(TagKey<T> tag) {
+	default <T> FabricProvidedTagBuilder forceAddTag(TagKey<T> tag) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -53,7 +53,7 @@ public interface FabricProvidedTagBuilder<T> {
 	 * @param element The entry to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default FabricProvidedTagBuilder<T> remove(RegistryKey<T> element) {
+	default <T> FabricProvidedTagBuilder remove(RegistryKey<T> element) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -62,7 +62,7 @@ public interface FabricProvidedTagBuilder<T> {
 	 * @param elements The entries to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default FabricProvidedTagBuilder<T> remove(final RegistryKey<T>... elements) {
+	default <T> FabricProvidedTagBuilder remove(final RegistryKey<T>... elements) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -71,7 +71,7 @@ public interface FabricProvidedTagBuilder<T> {
 	 * @param elements The entries to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default FabricProvidedTagBuilder<T> removeAll(final Collection<RegistryKey<T>> elements) {
+	default <T> FabricProvidedTagBuilder removeAll(final Collection<T> elements) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -80,7 +80,7 @@ public interface FabricProvidedTagBuilder<T> {
 	 * @param elements The entries to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default FabricProvidedTagBuilder<T> removeAll(final Stream<RegistryKey<T>> elements) {
+	default <T> FabricProvidedTagBuilder removeAll(final Stream<T> elements) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -89,7 +89,7 @@ public interface FabricProvidedTagBuilder<T> {
 	 * @param tag The tag to remove from the contents of the tag
 	 * @return this, for chaining
 	 */
-	default FabricProvidedTagBuilder<T> removeTag(TagKey<T> tag) {
+	default <T> FabricProvidedTagBuilder removeTag(TagKey<T> tag) {
 		throw new AssertionError("Implemented via mixin");
 	}
 }
