@@ -109,7 +109,9 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 			}
 
 			return DataResult.success((T) deserialized);
-		} catch (IllegalArgumentException _) {}
+		} catch (IllegalArgumentException _) {
+			// Ignored
+		}
 
 		for (T supportedValue : enumSupportedValues) {
 			if (value.equals(serialize(supportedValue))) {
