@@ -4,10 +4,12 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "GameRuleCommandAccessor",
+    "GameRuleCommandMixin",
     "GameRuleCommandVisitorMixin",
     "GameRuleMixin",
     "GameRulesServiceGameRuleUpdateMixin",
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "ServerGamePacketListenerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -90,6 +90,15 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 		Collections.addAll((List<E>) this.enumSupportedValues, supportedValues);
 	}
 
+	@WrapMethod(method = "serialize")
+	private String serializeEnum(T value, Operation<String> original) {
+		if (this.fabric_getType() != FabricGameRuleType.ENUM) {
+			return original.call(value);
+		}
+
+		return ((Enum<?>) value).name();
+	}
+
 	@WrapMethod(method = "deserialize")
 	private <E extends Enum<E>> DataResult<T> deserializeEnum(String value, Operation<DataResult<T>> original) {
 		if (this.fabric_getType() != FabricGameRuleType.ENUM) {
