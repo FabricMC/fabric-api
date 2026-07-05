@@ -28,7 +28,14 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
 
 public class GameRuleTest {
 	@Test
-	public void testEnumSerializationRoundTripWithCustomToString() {
+	public void testDeserializeEnumRuleValueFromName() {
+		GameRule<EnumWithCustomToString> rule = GameRuleBuilder.forEnum(EnumWithCustomToString.A).build();
+		EnumWithCustomToString deserialized = rule.deserialize("B").getOrThrow();
+		assertEquals(EnumWithCustomToString.B, deserialized);
+	}
+
+	@Test
+	public void testDeserializeEnumRuleValueFromSerializedValue() {
 		GameRule<EnumWithCustomToString> rule = GameRuleBuilder.forEnum(EnumWithCustomToString.A).build();
 		String serialized = rule.serialize(EnumWithCustomToString.B);
 		EnumWithCustomToString deserialized = rule.deserialize(serialized).getOrThrow();

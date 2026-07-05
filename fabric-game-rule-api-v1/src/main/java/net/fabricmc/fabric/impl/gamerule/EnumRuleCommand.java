@@ -42,7 +42,7 @@ public final class EnumRuleCommand {
 		LiteralCommandNode<CommandSourceStack> ruleNode = literal(name).build();
 
 		for (Enum<?> supportedValue : ((RuleTypeExtensions) (Object) enumRule).fabric_getSupportedEnumValues()) {
-			ruleNode.addChild(literal(getLiteralForRuleValue(supportedValue)).executes(context -> EnumRuleCommand.executeAndSetEnum(context, (E) supportedValue, enumRule)).build());
+			ruleNode.addChild(literal(supportedValue.toString()).executes(context -> EnumRuleCommand.executeAndSetEnum(context, (E) supportedValue, enumRule)).build());
 		}
 
 		literalArgumentBuilder.then(ruleNode);
@@ -58,14 +58,7 @@ public final class EnumRuleCommand {
 			throw new SimpleCommandExceptionType(Component.literal(e.getMessage())).create();
 		}
 
-		commandSourceStack.sendSuccess(() -> Component.translatable("commands.gamerule.set", enumRule.id(), getLiteralForRuleValue(value)), true);
+		commandSourceStack.sendSuccess(() -> Component.translatable("commands.gamerule.set", enumRule.id(), enumRule.serialize(value)), true);
 		return enumRule.getCommandResult(value);
-	}
-
-	/**
-	 * Returns the literal to use in commands in order to specify the given enum game rule value.
-	 */
-	public static String getLiteralForRuleValue(Enum<?> value) {
-		return value.toString();
 	}
 }

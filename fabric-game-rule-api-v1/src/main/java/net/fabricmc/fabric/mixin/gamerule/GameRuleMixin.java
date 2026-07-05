@@ -38,6 +38,9 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 	@Shadow
 	public abstract Class<T> valueClass();
 
+	@Shadow
+	public abstract String serialize(T value);
+
 	@Unique
 	@Nullable
 	private FabricGameRuleType fabricGameRuleType;
@@ -90,15 +93,6 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 		Collections.addAll((List<E>) this.enumSupportedValues, supportedValues);
 	}
 
-	@WrapMethod(method = "serialize")
-	private String serializeEnum(T value, Operation<String> original) {
-		if (this.fabric_getType() != FabricGameRuleType.ENUM) {
-			return original.call(value);
-		}
-
-		return ((Enum<?>) value).name();
-	}
-
 	@WrapMethod(method = "deserialize")
 	private <E extends Enum<E>> DataResult<T> deserializeEnum(String value, Operation<DataResult<T>> original) {
 		if (this.fabric_getType() != FabricGameRuleType.ENUM) {
@@ -106,6 +100,7 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 		}
 
 		try {
+			// Trying to deserialize by enum name for backward compatibility
 			Class<E> classType = (Class<E>) this.valueClass();
 			final E deserialized = Enum.valueOf(classType, value);
 
@@ -114,8 +109,14 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 			}
 
 			return DataResult.success((T) deserialized);
-		} catch (IllegalArgumentException e) {
-			return DataResult.error(() -> "Failed to parse rule of value " + value + " for rule of type " + this.valueClass());
+		} catch (IllegalArgumentException _) {}
+
+		for (T supportedValue : enumSupportedValues) {
+			if (value.equals(serialize(supportedValue))) {
+				return DataResult.success(supportedValue);
+			}
 		}
+
+		return DataResult.error(() -> "Failed to parse rule of value " + value + " for rule of type " + this.valueClass());
 	}
 }
