@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.attachment.sync.clientbound;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -24,7 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
 public record ClientboundAttachmentSyncPayload(AttachmentChange attachment) implements CustomPacketPayload {
-	public static final StreamCodec<FriendlyByteBuf, ClientboundAttachmentSyncPayload> CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundAttachmentSyncPayload> CODEC = StreamCodec.composite(
 			AttachmentChange.PACKET_CODEC,
 			ClientboundAttachmentSyncPayload::attachment,
 			ClientboundAttachmentSyncPayload::new

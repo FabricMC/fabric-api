@@ -143,14 +143,17 @@ final class TestAnnotationLocator {
 
 					method.invoke(instance, context);
 				} catch (InvocationTargetException e) {
+					LOGGER.error("Failed to invoke test method", e);
+
 					// Ensure that any GameTestException are propagated without wrapping
 					if (e.getTargetException() instanceof RuntimeException runtimeException) {
 						throw runtimeException;
 					}
 
-					throw new RuntimeException("Failed to invoke test method", e);
+					throw new RuntimeException("Failed to invoke test method: " + e.getMessage(), e);
 				} catch (ReflectiveOperationException e) {
-					throw new RuntimeException("Failed to invoke test method", e);
+					LOGGER.error("Failed to invoke test method", e);
+					throw new RuntimeException("Failed to invoke test method: " + e.getMessage(), e);
 				}
 			};
 		}

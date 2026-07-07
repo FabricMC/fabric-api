@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -33,11 +36,27 @@ public final class ServerEntityEvents {
 	 * Called when an Entity is loaded into a ServerLevel.
 	 *
 	 * <p>When this event is called, the entity is already in the level.
+	 *
+	 * @see Entity#spawnReason()
+	 * @see Entity#isLoadedFromDisk()
 	 */
 	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(entity, level);
 		}
+	});
+
+	/**
+	 * Called right before an {@link Entity} is loaded into a {@link ServerLevel}. Mods can cancel this to prevent the entity from loading in.
+	 */
+	public static final Event<AllowLoad> ALLOW_LOAD = EventFactory.createArrayBacked(AllowLoad.class, callbacks -> (entity, level, spawnReason, isLoadedFromDisk) -> {
+		for (AllowLoad callback : callbacks) {
+			if (!callback.onAllowLoad(entity, level, spawnReason, isLoadedFromDisk)) {
+				return false;
+			}
+		}
+
+		return true;
 	});
 
 	/**
@@ -66,6 +85,16 @@ public final class ServerEntityEvents {
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerLevel level);
+	}
+
+	@FunctionalInterface
+	public interface AllowLoad {
+		/**
+		 * Called right before an {@link Entity} is loaded into a {@link ServerLevel}.
+		 *
+		 * @return true to allow the load, false to cancel the load.
+		 */
+		boolean onAllowLoad(Entity entity, ServerLevel level, @Nullable EntitySpawnReason spawnReason, boolean isLoadedFromDisk);
 	}
 
 	@FunctionalInterface

@@ -25,12 +25,17 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
+import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
 
 public final class BlockColorRegistryImpl {
 	@Nullable
 	private static BlockColors blockColors;
 	@Nullable
 	private static Map<Block, List<BlockTintSource>> map = new IdentityHashMap<>();
+
+	private static Map<Block, BlockTintsFactory> factories = new IdentityHashMap<>();
 
 	public static void initialize(BlockColors blockColors) {
 		if (BlockColorRegistryImpl.blockColors != null) {
@@ -44,6 +49,14 @@ public final class BlockColorRegistryImpl {
 	}
 
 	public static void register(List<BlockTintSource> layers, Block... blocks) {
+		for (final Block block : blocks) {
+			if (factories.containsKey(block)) {
+				throw new IllegalStateException("A dynamic block color factory for the block %s has already been registered and as such no static usage is allowed!".formatted(
+						block
+				));
+			}
+		}
+
 		if (blockColors != null) {
 			blockColors.register(layers, blocks);
 		} else {
@@ -51,5 +64,26 @@ public final class BlockColorRegistryImpl {
 				map.put(block, layers);
 			}
 		}
+	}
+
+	public static void register(final BlockTintsFactory factory, final Block[] blocks) {
+		for (final Block block : blocks) {
+			if (map != null && map.containsKey(block)) {
+				throw new IllegalStateException("A static block color provider for the block: %s has already been registered and as such no dynamic usage is allowed!".formatted(
+						block));
+			}
+
+			if (blockColors != null && !blockColors.getTintSources(block.defaultBlockState()).isEmpty()) {
+				throw new IllegalStateException(
+						"A static block color provider for the block: %s has already been registered and as such no dynamic usage is allowed!".formatted(
+								block));
+			}
+
+			factories.put(block, factory);
+		}
+	}
+
+	public static @Nullable BlockTintsFactory getFactory(final BlockState blockState) {
+		return factories.get(blockState.getBlock());
 	}
 }

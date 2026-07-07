@@ -1,0 +1,4 @@
+classTweaker	v1	official
+
+transitive-inject-interface	net/minecraft/commands/CommandSourceStack	net/fabricmc/fabric/api/permission/v1/PermissionContextOwner
+transitive-inject-interface	net/minecraft/world/entity/Entity	net/fabricmc/fabric/api/permission/v1/PermissionContextOwner

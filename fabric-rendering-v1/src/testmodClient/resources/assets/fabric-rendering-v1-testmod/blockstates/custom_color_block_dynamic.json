@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "fabric-rendering-v1-testmod:block/custom_color_block_dynamic"}
+  }
+}

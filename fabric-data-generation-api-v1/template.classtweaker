@@ -48,6 +48,7 @@ accessible	class	net/minecraft/client/data/models/ModelProvider$ItemInfoCollecto
 accessible	class	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector
 accessible	field	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector	generators	Ljava/util/Map;
 
+transitive-inject-interface net/minecraft/advancements/Advancement$Builder net/fabricmc/fabric/api/datagen/v1/advancement/FabricAdvancementBuilder
 transitive-inject-interface	net/minecraft/data/loot/BlockLootSubProvider	net/fabricmc/fabric/api/datagen/v1/loot/FabricBlockLootSubProvider
 transitive-inject-interface	net/minecraft/data/loot/EntityLootSubProvider	net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootSubProvider
 transitive-inject-interface	net/minecraft/data/recipes/RecipeOutput	net/fabricmc/fabric/api/datagen/v1/recipe/FabricRecipeOutput

@@ -50,6 +50,8 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> NORMAL_OBSIDIANS = register("obsidians/normal");
 	public static final TagKey<Block> CRYING_OBSIDIANS = register("obsidians/crying");
+	/// Light-emitting blocks created when a Frog eats a Magma Cube.
+	public static final TagKey<Block> FROGLIGHTS = register("froglights");
 
 	// Ores - broad categories
 	public static final TagKey<Block> ORES = register("ores");

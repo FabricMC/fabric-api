@@ -78,13 +78,18 @@ public final class ScreenTests implements ClientModInitializer {
 					.findAny()
 					.orElseThrow(() -> new AssertionError("Failed to find the \"Stop Sound\" button in the screen's elements"));
 
-			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, context) -> {
-				LOGGER.info("After Pressed, Context: {}", context);
+			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, event) -> {
+				LOGGER.info("Allow Key Press, Event: {}", event);
 				return true; // Let actions continue
 			});
 
-			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, context) -> {
-				LOGGER.warn("Pressed, Context: {}", context);
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, event) -> {
+				LOGGER.warn("After Key Press, Event: {}", event);
+			});
+
+			ScreenKeyboardEvents.allowCharType(screen).register((_screen, event) -> {
+				LOGGER.warn("Allow Char Type, Event: {}, Character: {}", event, event.codepointAsString());
+				return true;
 			});
 		} else if (screen instanceof CreativeModeInventoryScreen) {
 			Screens.getWidgets(screen).add(new TestButton());

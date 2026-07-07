@@ -1,0 +1,7 @@
+{
+  "fabric:remove": [
+    "minecraft:soul_soil",
+    "#minecraft:dirt"
+  ],
+  "values": []
+}

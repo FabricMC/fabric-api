@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -76,12 +77,38 @@ public final class EnchantmentEvents {
 	 *
 	 * <p>Note: If you wish to modify the exclusive set of the enchantment, consider extending the
 	 * {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
+	 *
+	 * @deprecated Use {@link #MODIFY_WITH_LOOKUP} instead, which provides registry access via {@link RegistryOps.RegistryInfoLookup}
 	 */
+	@Deprecated
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
 			Modify.class,
 			callbacks -> (key, builder, source) -> {
 				for (Modify callback : callbacks) {
 					callback.modify(key, builder, source);
+				}
+			}
+	);
+
+	/**
+	 * An event that allows an {@link Enchantment} to be modified without needing to fully override an enchantment.
+	 *
+	 * <p>This should only be used to modify the behavior of <em>external</em> enchantments, where 'external' means
+	 * either vanilla or from another mod. For instance, a mod might add a bleed effect to Sharpness (and only Sharpness).
+	 * For your own enchantments, you should simply define them in your mod's data pack. See the
+	 * <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
+	 * for more information.
+	 *
+	 * <p>Note: If you wish to modify the exclusive set of the enchantment, consider extending the
+	 * {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
+	 *
+	 * <p>This is the preferred replacement for {@link #MODIFY}, providing access to registry information via {@link RegistryOps.RegistryInfoLookup}.
+	 */
+	public static final Event<ModifyWithLookup> MODIFY_WITH_LOOKUP = EventFactory.createArrayBacked(
+			ModifyWithLookup.class,
+			callbacks -> (key, builder, source, registries) -> {
+				for (ModifyWithLookup callback : callbacks) {
+					callback.modify(key, builder, source, registries);
 				}
 			}
 	);
@@ -106,6 +133,7 @@ public final class EnchantmentEvents {
 	}
 
 	@FunctionalInterface
+	@Deprecated
 	public interface Modify {
 		/**
 		 * Modifies the effects of an {@link Enchantment}.
@@ -118,6 +146,24 @@ public final class EnchantmentEvents {
 				ResourceKey<Enchantment> key,
 				Enchantment.Builder builder,
 				EnchantmentSource source
+		);
+	}
+
+	@FunctionalInterface
+	public interface ModifyWithLookup {
+		/**
+		 * Modifies the effects of an {@link Enchantment}.
+		 *
+		 * @param key The ID of the enchantment
+		 * @param builder The enchantment builder
+		 * @param source The source of the enchantment
+		 * @param registryInfoLookup Lookup interface used to access registry information
+		 */
+		void modify(
+				ResourceKey<Enchantment> key,
+				Enchantment.Builder builder,
+				EnchantmentSource source,
+				RegistryOps.RegistryInfoLookup registryInfoLookup
 		);
 	}
 }

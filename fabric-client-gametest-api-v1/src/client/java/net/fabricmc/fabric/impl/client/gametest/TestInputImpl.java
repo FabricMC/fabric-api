@@ -31,7 +31,10 @@ import net.minecraft.client.Options;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Util;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -277,6 +280,30 @@ public final class TestInputImpl implements TestInput {
 		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
 		holdKeyFor(InputConstants.Type.MOUSE.getOrCreate(button), ticks);
+	}
+
+	@Override
+	public void lookAt(float yaw, float pitch) {
+		ThreadingImpl.checkOnGametestThread("lookAt");
+		Preconditions.checkArgument(Float.isFinite(yaw), "yaw must be finite");
+		Preconditions.checkArgument(Float.isFinite(pitch), "pitch must be finite");
+
+		context.runOnClient(client -> {
+			Preconditions.checkState(client.player != null, "player must be present to look");
+			client.player.setYRot(yaw);
+			client.player.setXRot(pitch);
+		});
+	}
+
+	@Override
+	public void lookAt(BlockPos pos) {
+		ThreadingImpl.checkOnGametestThread("lookAt");
+		Preconditions.checkNotNull(pos, "pos");
+
+		context.runOnClient(client -> {
+			Preconditions.checkState(client.player != null, "player must be present to look");
+			client.player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(pos));
+		});
 	}
 
 	@Override

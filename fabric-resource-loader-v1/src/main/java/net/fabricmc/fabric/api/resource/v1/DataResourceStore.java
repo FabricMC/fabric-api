@@ -35,10 +35,12 @@ public interface DataResourceStore {
 	 * Gets data stored at the given key, or throws if not found.
 	 *
 	 * @param key the key
-	 * @return the data stored at the given key
 	 * @param <T> the type of data
+	 * @return the data stored at the given key
 	 */
-	<T> T getOrThrow(Key<T> key);
+	default <T> T getOrThrow(Key<T> key) {
+		throw new AssertionError("Implemented in Mixin");
+	}
 
 	interface Mutable extends DataResourceStore {
 		/**

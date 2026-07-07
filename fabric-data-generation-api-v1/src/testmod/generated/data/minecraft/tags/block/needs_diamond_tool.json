@@ -1,0 +1,8 @@
+{
+  "fabric:remove": [
+    "minecraft:ancient_debris",
+    "minecraft:netherite_block",
+    "minecraft:obsidian"
+  ],
+  "values": []
+}

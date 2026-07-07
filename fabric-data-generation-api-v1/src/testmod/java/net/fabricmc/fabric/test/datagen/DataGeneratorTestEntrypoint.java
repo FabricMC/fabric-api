@@ -102,7 +102,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ResourceCondition ALWAYS_LOADED = ResourceConditions.alwaysTrue();
-	private static final ResourceCondition NEVER_LOADED = ResourceConditions.not(ALWAYS_LOADED);
+	private static final ResourceCondition NEVER_LOADED = ResourceConditions.alwaysFalse();
 
 	@Override
 	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
@@ -245,6 +245,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 									Ingredient.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))
 							.unlockedBy("has_payment", has(ItemTags.BEACON_PAYMENT_ITEMS))
 							.save(this.output);
+
+					// Test stonecutting
+					stonecutterResultFromBase(RecipeCategory.BUILDING_BLOCKS, SIMPLE_BLOCK, Items.GLASS);
 				}
 			};
 		}
@@ -316,6 +319,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
 			aliasGroup(Identifier.fromNamespaceAndPath("other_namespace", "flowers"))
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
+
+			valueLookupBuilder(BlockTags.SUPPORTS_WARPED_FUNGUS)
+					.remove(Blocks.SOUL_SOIL)
+					.removeTag(BlockTags.DIRT);
+
+			valueLookupBuilder(BlockTags.NEEDS_DIAMOND_TOOL)
+					.remove(
+							Blocks.ANCIENT_DEBRIS,
+							Blocks.NETHERITE_BLOCK,
+							Blocks.OBSIDIAN
+					);
+			valueLookupBuilder(BlockTags.CLIMBABLE)
+					.add(Blocks.BLUE_GLAZED_TERRACOTTA)
+					.add(Blocks.BROWN_GLAZED_TERRACOTTA)
+					.remove(Blocks.BLUE_GLAZED_TERRACOTTA);
 		}
 	}
 
@@ -383,6 +401,18 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							false, false, false)
 					.addCriterion("killed_something", KilledTrigger.TriggerInstance.playerKilledEntity())
 					.save(withConditions(consumer, NEVER_LOADED), MOD_ID + ":test/root_not_loaded");
+
+			AdvancementHolder adventureChild = Advancement.Builder.advancement()
+					.display(SIMPLE_BLOCK,
+							Component.translatable("advancements.test.adventure_child.title"),
+							Component.translatable("advancements.test.adventure_child.description"),
+							Identifier.withDefaultNamespace("textures/gui/advancements/backgrounds/end.png"),
+							AdvancementType.GOAL,
+							false, false, false
+					)
+					.addCriterion("killed_something", KilledTrigger.TriggerInstance.playerKilledEntity())
+					.parent(createPlaceholder(Identifier.withDefaultNamespace("adventure/root")))
+					.save(consumer, Identifier.fromNamespaceAndPath(MOD_ID, "test/adventure_child"));
 		}
 	}
 

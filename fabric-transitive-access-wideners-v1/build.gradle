@@ -41,12 +41,16 @@ tasks.register('generateClassTweaker') {
 			lines.add("")
 			generateEnchantmentMethods(lines, fs)
 			lines.add("")
+			generateNoiseRouterDataFieldsAndMethods(lines, fs)
+			lines.add("")
 		}
 
 		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar.path
 
 		FileSystems.newFileSystem(URI.create("jar:${clientJar.toUri()}"), [create: false]).withCloseable { fs ->
 			generateRenderPipelinesFields(lines, fs)
+			lines.add("")
+			generateBuiltInBlockModelsMethods(lines, fs)
 		}
 
 		file('src/main/resources/fabric-transitive-access-wideners-v1.classtweaker').text = String.join('\n', lines) + '\n'
@@ -95,6 +99,28 @@ def generateRenderPipelinesFields(List<String> lines, FileSystem fs) {
 
 	for (def method : node.methods) {
 		if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0) {
+			lines.add("transitive-accessible method $node.name $method.name $method.desc")
+		}
+	}
+}
+
+def generateNoiseRouterDataFieldsAndMethods(List<String> lines, FileSystem fs) {
+	lines.add("# private fields of NoiseRouterData")
+
+	def node = loadClass(fs.getPath("net/minecraft/world/level/levelgen/NoiseRouterData.class"))
+
+	for (def field : node.fields) {
+		// Every field can be useful
+		if ((field.access & Opcodes.ACC_PRIVATE) != 0) {
+			lines.add("transitive-accessible field $node.name $field.name $field.desc")
+		}
+	}
+
+	lines.add("# private and protected methods of NoiseRouterData")
+
+	for (def method : node.methods) {
+		// Every method can be useful, but using the vanilla namespace is not recommended
+		if ((method.access & (Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED)) && !method.name.startsWith("lambda") && method.name != "createKey") {
 			lines.add("transitive-accessible method $node.name $method.name $method.desc")
 		}
 	}
@@ -167,10 +193,28 @@ def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
 			}
 		}
 	}
+
 	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor')
 	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor')
 	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$GenericAction')
 	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/Enchantment$FloatAction')
+}
+
+def generateBuiltInBlockModelsMethods(List<String> lines, FileSystem fs) {
+	lines.add("# Private methods of BuiltInBlockModels and BuiltInBlockModels\$Builder")
+
+	for (def node : [ loadClass(fs.getPath("net/minecraft/client/renderer/block/BuiltInBlockModels.class")), loadClass(fs.getPath("net/minecraft/client/renderer/block/BuiltInBlockModels\$Builder.class")) ]) {
+		for (def method : node.methods) {
+			// Every method can be useful
+			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("lambda\$")) {
+				lines.add("transitive-accessible method $node.name $method.name $method.desc")
+			}
+		}
+	}
+
+	lines.add('transitive-accessible class net/minecraft/client/renderer/block/BuiltInBlockModels$Builder')
+	lines.add('transitive-accessible class net/minecraft/client/renderer/block/BuiltInBlockModels$ModelFactory')
+	lines.add('transitive-accessible class net/minecraft/client/renderer/block/BuiltInBlockModels$SpecialModelFactory')
 }
 
 ClassNode loadClass(Path path) {
