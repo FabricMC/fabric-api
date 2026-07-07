@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.fabricmc.fabric.test.recipe.book.BookCraftingMenu;
 import net.fabricmc.fabric.test.recipe.book.RecipeBookTestContent;
 
-public class BookCraftingScreen extends AbstractRecipeBookScreen<BookCraftingMenu> implements RecipeUpdateListener {
+public class BookCraftingScreen extends AbstractRecipeBookScreen<BookCraftingMenu> {
 	private static final Identifier BOOK_CRAFTER_LOCATION = RecipeBookTestContent.id("textures/gui/container/book_crafter.png");
 
 	public BookCraftingScreen(final BookCraftingMenu menu, final Inventory inventory, final Component title) {
