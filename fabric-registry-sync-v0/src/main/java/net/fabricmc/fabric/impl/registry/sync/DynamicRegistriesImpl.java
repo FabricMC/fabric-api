@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
 	private static final List<RegistryDataLoader.RegistryData<?>> WORLD_REGISTRIES;
-	private static final List<RegistryDataLoader.RegistryData<?>> BOOTSTRAPPING_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
+	private static final List<RegistryDataLoader.RegistryData<?>> BOOTSTRAPPING_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLD_REGISTRIES);
 
 	private static final Set<ResourceKey<? extends Registry<?>>> VANILLA_DYNAMIC_REGISTRY_KEYS;
 	public static final Set<ResourceKey<? extends Registry<?>>> FABRIC_DYNAMIC_REGISTRY_KEYS = new HashSet<>();
@@ -44,11 +44,11 @@ public final class DynamicRegistriesImpl {
 	public static final Set<ResourceKey<? extends Registry<?>>> SKIP_EMPTY_SYNC_REGISTRIES = new HashSet<>();
 
 	static {
-		WORLD_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
+		WORLD_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLD_REGISTRIES);
 		WORLD_REGISTRIES.addAll(RegistryDataLoader.DIMENSION_REGISTRIES);
 		Set<ResourceKey<? extends Registry<?>>> vanillaDynamicRegistryKeys = new HashSet<>();
 
-		for (RegistryDataLoader.RegistryData<?> worldgenEntry : RegistryDataLoader.WORLDGEN_REGISTRIES) {
+		for (RegistryDataLoader.RegistryData<?> worldgenEntry : RegistryDataLoader.WORLD_REGISTRIES) {
 			vanillaDynamicRegistryKeys.add(worldgenEntry.key());
 		}
 

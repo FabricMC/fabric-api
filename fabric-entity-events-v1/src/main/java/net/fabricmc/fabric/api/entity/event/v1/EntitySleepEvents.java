@@ -20,8 +20,10 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.AbstractBedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -50,13 +52,13 @@ import net.fabricmc.fabric.api.util.EventResult;
 public final class EntitySleepEvents {
 	/**
 	 * An event that checks whether a player can start to sleep in a bed-like block.
-	 * This event only applies to sleeping using {@link Player#startSleepInBed(BlockPos)}.
+	 * This event only applies to sleeping using {@link Player#startSleepInBed(AbstractBedBlock, BlockState, BedRule, BlockPos)}.
 	 *
 	 * <p><b>Note:</b> Please use the more detailed event {@link #ALLOW_NEARBY_MONSTERS}
 	 * if it matches your use case! This helps with mod compatibility.
 	 *
 	 * <p>If this event returns a {@link net.minecraft.world.entity.player.Player.BedSleepingProblem}, it is used
-	 * as the return value of {@link Player#startSleepInBed(BlockPos)} and sleeping fails. A {@code null} return value
+	 * as the return value of {@link Player#startSleepInBed(AbstractBedBlock, BlockState, BedRule, BlockPos)} and sleeping fails. A {@code null} return value
 	 * means that the player will start sleeping.
 	 *
 	 * <p>When this event is called, all vanilla sleeping checks have already succeeded, i.e. this event
@@ -219,7 +221,7 @@ public final class EntitySleepEvents {
 		 * @param player      the sleeping player
 		 * @param sleepingPos the future {@linkplain LivingEntity#getSleepingPos() sleeping position} of the entity
 		 * @return {@code null} if the player can sleep, or a failure reason if they cannot
-		 * @see Player#startSleepInBed(BlockPos)
+		 * @see Player#startSleepInBed(AbstractBedBlock, BlockState, BedRule, BlockPos)
 		 */
 		Player.@Nullable BedSleepingProblem allowSleep(Player player, BlockPos sleepingPos);
 	}

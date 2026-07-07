@@ -41,14 +41,16 @@ public final class FabricDataGenerator extends DataGenerator.Cached {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 	private final FabricPackOutput fabricOutput;
+	private final CompletableFuture<HolderLookup.Provider> worldRegistriesFuture;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
 	@ApiStatus.Internal
-	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> worldRegistriesFuture, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		super(output, SharedConstants.getCurrentVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
 		this.fabricOutput = new FabricPackOutput(mod, output, strictValidation);
+		this.worldRegistriesFuture = worldRegistriesFuture;
 		this.registriesFuture = registriesFuture;
 	}
 
@@ -111,6 +113,18 @@ public final class FabricDataGenerator extends DataGenerator.Cached {
 	 */
 	public CompletableFuture<HolderLookup.Provider> getRegistries() {
 		return registriesFuture;
+	}
+
+	/**
+	 * Get a future returning the world layer registries produced by {@link VanillaRegistries} and
+	 * {@link DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder)}.
+	 *
+	 * <p>This is useful when extending the vanilla world registries, such as with {@link RegistryPatchGenerator#createWorldLookup}.
+	 *
+	 * @return A future containing the world layer registries.
+	 */
+	public CompletableFuture<HolderLookup.Provider> getWorldRegistries() {
+		return worldRegistriesFuture;
 	}
 
 	/**

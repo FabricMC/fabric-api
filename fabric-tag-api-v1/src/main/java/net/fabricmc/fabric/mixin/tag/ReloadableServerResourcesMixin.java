@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.commands.Commands;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.server.RegistryLayer;
+import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -44,8 +44,8 @@ abstract class ReloadableServerResourcesMixin {
 	private LayeredRegistryAccess<RegistryLayer> dynamicRegistriesByType;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void storeDynamicRegistries(LayeredRegistryAccess<RegistryLayer> fullLayers, HolderLookup.Provider loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, List newComponents, CallbackInfo ci) {
-		dynamicRegistriesByType = fullLayers;
+	private void storeDynamicRegistries(ReloadableServerRegistries.LoadResult loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, List newComponents, CallbackInfo ci) {
+		dynamicRegistriesByType = loadingContext.layers();
 	}
 
 	@Inject(method = "updateComponentsAndStaticRegistryTags", at = @At("RETURN"))
@@ -55,7 +55,7 @@ abstract class ReloadableServerResourcesMixin {
 		// since the map of pending tag alias groups is cleared after they're applied in the first round.
 		// This code also needs to run after the vanilla code so the pending tag reloads don't override
 		// the alias groups for dynamic registries.
-		TagAliasLoader.applyToDynamicRegistries(dynamicRegistriesByType, RegistryLayer.WORLDGEN);
+		TagAliasLoader.applyToDynamicRegistries(dynamicRegistriesByType, RegistryLayer.WORLD);
 		TagAliasLoader.applyToDynamicRegistries(dynamicRegistriesByType, RegistryLayer.RELOADABLE);
 	}
 }

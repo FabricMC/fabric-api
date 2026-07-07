@@ -282,8 +282,8 @@ public class VanillaStorageTests {
 
 		try (Transaction tx = Transaction.openOuter()) {
 			for (int bottleSlot = 0; bottleSlot < 3; ++bottleSlot) {
-				if (brewingStandWrapper.getSlot(bottleSlot).insert(ItemVariant.of(Items.GLASS_BOTTLE), 2, tx) != 1) {
-					throw helper.assertionException("Exactly 1 glass bottle should have been inserted");
+				if (brewingStandWrapper.getSlot(bottleSlot).insert(ItemVariant.of(Items.POTION), 2, tx) != 1) {
+					throw helper.assertionException("Exactly 1 potion should have been inserted");
 				}
 			}
 

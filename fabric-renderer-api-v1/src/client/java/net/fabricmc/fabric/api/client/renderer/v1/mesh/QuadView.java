@@ -180,7 +180,7 @@ public interface QuadView {
 	boolean emissive();
 
 	/**
-	 * This method is equivalent to {@link BakedQuad.MaterialInfo#shade()}.
+	 * This method is equivalent to checking {@link BakedQuad.MaterialInfo#shadeDirectionOverride()}.
 	 *
 	 * @see MutableQuadView#diffuseShade(boolean)
 	 */
@@ -264,7 +264,8 @@ public interface QuadView {
 			itemGlintSpecialRenderType = chunkLayer().translucent() ? Sheets.translucentItemGlintSpecialSheet() : Sheets.cutoutItemGlintSpecialSheet();
 		}
 
-		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), itemGlintRenderType, itemGlintSpecialRenderType, tintIndex(), diffuseShade(), lightEmission);
+		Direction shadeDirectionOverride = diffuseShade() ? null : Direction.UP;
+		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), itemGlintRenderType, itemGlintSpecialRenderType, tintIndex(), shadeDirectionOverride, lightEmission);
 
 		return new BakedQuad(
 				position0,

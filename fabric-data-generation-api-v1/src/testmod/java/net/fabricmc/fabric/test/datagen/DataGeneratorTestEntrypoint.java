@@ -54,7 +54,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -71,6 +70,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
@@ -144,7 +144,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		FabricDataGenerator.Pack extraPack = dataGenerator.createBuiltinResourcePack(Identifier.fromNamespaceAndPath(MOD_ID, "extra"));
-		CompletableFuture<HolderLookup.Provider> extraRegistriesFuture = RegistryPatchGenerator.createLookup(dataGenerator.getRegistries(), new RegistrySetBuilder()
+		CompletableFuture<HolderLookup.Provider> extraRegistriesFuture = RegistryPatchGenerator.createWorldLookup(dataGenerator.getWorldRegistries(), new RegistrySetBuilder()
 				.add(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, c ->
 						c.register(TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY, new DataGeneratorTestContent.TestDatagenObject(":tiny_potato:"))
 				)
@@ -171,8 +171,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-			return new RecipeProvider(registries, output) {
+		protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+			return new RecipeProvider(recipes, advancements) {
 				@Override
 				public void buildRecipes() {
 					planksFromLog(SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
@@ -393,7 +393,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							AdvancementType.TASK,
 							false, false, false)
 					.addCriterion("killed_something", KilledTrigger.TriggerInstance.playerKilledEntity())
-					.save(consumer, MOD_ID + ":test/root");
+					.save(consumer, Identifier.fromNamespaceAndPath(MOD_ID, "test/root"));
 			AdvancementHolder rootNotLoaded = Advancement.Builder.advancement()
 					.display(
 							SIMPLE_BLOCK,
@@ -403,7 +403,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							AdvancementType.TASK,
 							false, false, false)
 					.addCriterion("killed_something", KilledTrigger.TriggerInstance.playerKilledEntity())
-					.save(withConditions(consumer, NEVER_LOADED), MOD_ID + ":test/root_not_loaded");
+					.save(withConditions(consumer, NEVER_LOADED), Identifier.fromNamespaceAndPath(MOD_ID, "test/root_not_loaded"));
 
 			AdvancementHolder adventureChild = Advancement.Builder.advancement()
 					.display(SIMPLE_BLOCK,
@@ -455,6 +455,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static class TestBarterLootTableSubProvider extends SimpleFabricLootTableSubProvider {
 		private TestBarterLootTableSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 			super(output, registryLookup, LootContextParamSets.PIGLIN_BARTER);
+		}
+
+		@Override
+		public void run() {
+			generate((key, builder) -> {
+			});
 		}
 
 		@Override

@@ -313,7 +313,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		chunkLayer(materialInfo.layer());
 		itemRenderType(materialInfo.itemRenderType());
 		tintIndex(materialInfo.tintIndex());
-		diffuseShade(materialInfo.shade());
+		diffuseShade(materialInfo.shadeDirectionOverride() != Direction.UP);
 		emissive(lightEmission == 15);
 		return this;
 	}

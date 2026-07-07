@@ -18,9 +18,7 @@ package net.fabricmc.fabric.impl.datagen;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.Nullable;
@@ -39,12 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.registries.VanillaRegistries;
-import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
@@ -114,7 +111,8 @@ public final class FabricDataGenHelper {
 
 		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
 		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
-		CompletableFuture<HolderLookup.Provider> registriesFuture = CompletableFuture.supplyAsync(() -> createHolderLookupProvider(entrypoints), Util.backgroundExecutor());
+		CompletableFuture<HolderLookup.Provider> worldRegistriesFuture = CompletableFuture.supplyAsync(() -> createWorldLookupProvider(entrypoints), Util.backgroundExecutor());
+		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenApplyAsync(FabricDataGenHelper::createReloadableLookupProvider, Util.backgroundExecutor());
 
 		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.FIXED_ORDER_FIELDS;
 		Object2IntOpenHashMap<String> defaultJsonKeySortOrders = new Object2IntOpenHashMap<>(jsonKeySortOrders);
@@ -146,7 +144,7 @@ public final class FabricDataGenHelper {
 					modContainer = FabricLoader.getInstance().getModContainer(effectiveModId).orElseThrow(() -> new RuntimeException("Failed to find effective mod container for mod id (%s)".formatted(effectiveModId)));
 				}
 
-				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION, registriesFuture);
+				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION, worldRegistriesFuture, registriesFuture);
 				entrypoint.onInitializeDataGenerator(dataGenerator);
 				dataGenerator.run();
 
@@ -158,69 +156,47 @@ public final class FabricDataGenHelper {
 		}
 	}
 
-	private static HolderLookup.Provider createHolderLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {
-		// Build a list of all the RegistryBuilder's including vanilla's
-		List<RegistrySetBuilder> builders = new ArrayList<>();
-		builders.add(VanillaRegistries.BUILDER);
+	private static HolderLookup.Provider createWorldLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {
+		RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
+		HashSet<ResourceKey<? extends Registry<?>>> vanillaWorldRegistries = new HashSet<>();
+		VanillaRegistries.WORLD_BUILDER.entries.stream()
+				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
+				.forEach(vanillaWorldRegistries::add);
+
+		for (RegistryDataLoader.RegistryData<?> registry : DynamicRegistries.getBootstrappingRegistries()) {
+			if (!vanillaWorldRegistries.contains(registry.key())) {
+				addEmptyRegistry(registryBuilder, registry.key());
+			}
+		}
+
+		registryBuilder.entries.addAll(VanillaRegistries.WORLD_BUILDER.entries);
 
 		for (DataGeneratorEntrypoint entrypoint : dataGeneratorInitializers) {
-			final var registryBuilder = new RegistrySetBuilder();
 			entrypoint.buildRegistry(registryBuilder);
-			builders.add(registryBuilder);
 		}
 
-		// Collect all the bootstrap functions, and merge the lifecycles.
-		class BuilderData {
-			final ResourceKey key;
-			List<RegistrySetBuilder.RegistryBootstrap<?>> bootstrapFunctions;
-			Lifecycle lifecycle;
-
-			BuilderData(ResourceKey key) {
-				this.key = key;
-				this.bootstrapFunctions = new ArrayList<>();
-				this.lifecycle = Lifecycle.stable();
-			}
-
-			void with(RegistrySetBuilder.RegistryStub<?> registryInfo) {
-				bootstrapFunctions.add(registryInfo.bootstrap());
-				lifecycle = registryInfo.lifecycle().add(lifecycle);
-			}
-
-			void apply(RegistrySetBuilder builder) {
-				builder.add(key, lifecycle, this::bootstrap);
-			}
-
-			void bootstrap(BootstrapContext context) {
-				for (RegistrySetBuilder.RegistryBootstrap<?> function : bootstrapFunctions) {
-					function.run(context);
-				}
-			}
-		}
-
-		Map<ResourceKey<?>, BuilderData> builderDataMap = new HashMap<>();
-
-		// Ensure all bootstrapping registries are present.
-		for (RegistryDataLoader.RegistryData<?> key : DynamicRegistries.getBootstrappingRegistries()) {
-			builderDataMap.computeIfAbsent(key.key(), BuilderData::new);
-		}
-
-		for (RegistrySetBuilder builder : builders) {
-			for (RegistrySetBuilder.RegistryStub<?> info : builder.entries) {
-				builderDataMap.computeIfAbsent(info.key(), BuilderData::new)
-						.with(info);
-			}
-		}
-
-		// Apply all the builders into one.
-		RegistrySetBuilder merged = new RegistrySetBuilder();
-
-		for (BuilderData value : builderDataMap.values()) {
-			value.apply(merged);
-		}
-
-		HolderLookup.Provider registryLookup = merged.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+		RegistryAccess.Frozen staticRegistries = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+		HolderLookup.Provider registryLookup = registryBuilder.build(staticRegistries);
 		VanillaRegistries.validateThatAllBiomeFeaturesHaveBiomeFilter(registryLookup);
 		return registryLookup;
+	}
+
+	private static HolderLookup.Provider createReloadableLookupProvider(HolderLookup.Provider registryLookup) {
+		RegistrySetBuilder reloadableRegistryBuilder = new RegistrySetBuilder();
+		addEmptyRegistries(reloadableRegistryBuilder, VanillaRegistries.RELOADABLE_BUILDER);
+		return reloadableRegistryBuilder.build(registryLookup);
+	}
+
+	private static void addEmptyRegistries(RegistrySetBuilder target, RegistrySetBuilder source) {
+		source.entries.stream()
+				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
+				.distinct()
+				.forEach(key -> addEmptyRegistry(target, key));
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static void addEmptyRegistry(RegistrySetBuilder registryBuilder, ResourceKey<? extends Registry<?>> key) {
+		registryBuilder.add((ResourceKey) key, context -> { });
 	}
 
 	/**

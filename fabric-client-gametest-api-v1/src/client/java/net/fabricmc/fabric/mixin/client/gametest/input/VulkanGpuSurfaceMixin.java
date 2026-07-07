@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.client.gametest.input;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import org.lwjgl.vulkan.VkImageBlit;
 import org.lwjgl.vulkan.VkOffset3D;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +29,7 @@ import net.minecraft.client.Minecraft;
 
 import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
 
-@Mixin(targets = "com.mojang.blaze3d.vulkan.VulkanGpuSurface")
+@Mixin(targets = "com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface")
 public class VulkanGpuSurfaceMixin {
 	@WrapOperation(method = "blitFromTexture", at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkImageBlit$Buffer;dstOffsets(Lorg/lwjgl/vulkan/VkOffset3D$Buffer;)Lorg/lwjgl/vulkan/VkImageBlit$Buffer;"))
 	private VkImageBlit.Buffer blitFrameBuffer(VkImageBlit.Buffer blitRegion, VkOffset3D.Buffer dstOffsets, Operation<VkImageBlit.Buffer> original, @Local(argsOnly = true) GpuTextureView gpuTextureView) {

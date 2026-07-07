@@ -26,7 +26,7 @@ import com.mojang.blaze3d.platform.MonitorManager;
 import com.mojang.blaze3d.platform.VideoMode;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.WindowEventHandler;
-import com.mojang.blaze3d.systems.GpuBackend;
+import com.mojang.renderpearl.api.device.GpuBackend;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

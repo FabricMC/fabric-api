@@ -34,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ToolMaterial;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -43,7 +42,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
-import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
 import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -67,7 +65,6 @@ public class CustomDamageTest implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(BuiltInRegistries.ITEM, WEIRD_PICK_KEY, WEIRD_PICK);
 		FuelValueEvents.BUILD.register((builder, context) -> builder.add(WEIRD_PICK, context.baseSmeltTime()));
-		FabricPotionBrewingBuilder.BUILD.register(builder -> builder.addMix(Potions.WATER, WEIRD_PICK, Potions.AWKWARD));
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
 			if (target.is(Items.DIAMOND_PICKAXE) && enchantment.is(Enchantments.SHARPNESS) && EnchantmentHelper.hasTag(target, EnchantmentTags.MINING_EXCLUSIVE)) {
 				return TriState.TRUE;

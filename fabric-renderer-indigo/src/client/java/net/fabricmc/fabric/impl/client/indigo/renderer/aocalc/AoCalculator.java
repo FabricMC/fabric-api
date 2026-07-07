@@ -137,7 +137,7 @@ public class AoCalculator {
 	private final Vector3f vanillaPos1 = new Vector3f();
 	private final Vector3f vanillaPos2 = new Vector3f();
 	private final Vector3f vanillaPos3 = new Vector3f();
-	private final BakedQuad.MaterialInfo vanillaMaterialInfo = new BakedQuad.MaterialInfo(null, ChunkSectionLayer.SOLID, Sheets.cutoutBlockItemSheet(), Sheets.cutoutBlockItemGlintSheet(), Sheets.cutoutBlockItemGlintSpecialSheet(), -1, true, 0);
+	private final BakedQuad.MaterialInfo vanillaMaterialInfo = new BakedQuad.MaterialInfo(null, ChunkSectionLayer.SOLID, Sheets.cutoutBlockItemSheet(), Sheets.cutoutBlockItemGlintSheet(), Sheets.cutoutBlockItemGlintSpecialSheet(), -1, null, 0);
 
 	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
 		// calculateShape only uses the vertex positions and light face of the quad, so making a new BakedQuad every

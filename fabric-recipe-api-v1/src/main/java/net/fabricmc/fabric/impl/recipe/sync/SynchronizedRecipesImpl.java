@@ -16,10 +16,16 @@
 
 package net.fabricmc.fabric.impl.recipe.sync;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.resources.ResourceKey;
@@ -32,35 +38,61 @@ import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 
-public record SynchronizedRecipesImpl(RecipeMap preparedRecipes) implements SynchronizedRecipes {
-	public static final SynchronizedRecipesImpl EMPTY = new SynchronizedRecipesImpl(RecipeMap.EMPTY);
+public record SynchronizedRecipesImpl(Multimap<RecipeType<?>, RecipeHolder<?>> byType, Map<ResourceKey<Recipe<?>>, RecipeHolder<?>> byKey) implements SynchronizedRecipes {
+	public static final SynchronizedRecipesImpl EMPTY = of(List.of());
+
+	public SynchronizedRecipesImpl(RecipeMap preparedRecipes) {
+		this(indexByType(preparedRecipes.values()), indexByKey(preparedRecipes.values()));
+	}
 
 	public static SynchronizedRecipesImpl of(Iterable<RecipeHolder<?>> recipes) {
-		return new SynchronizedRecipesImpl(RecipeMap.create(recipes));
+		List<RecipeHolder<?>> list = new ArrayList<>();
+		recipes.forEach(list::add);
+		return new SynchronizedRecipesImpl(indexByType(list), indexByKey(list));
 	}
 
 	@Override
 	public <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level level) {
-		return this.preparedRecipes.getRecipesFor(type, input, level);
+		return input.isEmpty() ? Stream.empty() : this.getAllOfType(type).stream().filter(recipe -> recipe.value().matches(input, level));
 	}
 
 	@Override
 	public <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type) {
-		return this.preparedRecipes.byType(type);
+		return (Collection<RecipeHolder<T>>) (Object) this.byType.get(type);
 	}
 
 	@Override
 	public <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level) {
-		return this.preparedRecipes.getRecipesFor(type, input, level).findFirst();
+		return this.getAllMatches(type, input, level).findFirst();
 	}
 
 	@Override
 	public @Nullable RecipeHolder<?> get(ResourceKey<Recipe<?>> key) {
-		return this.preparedRecipes.byKey(key);
+		return this.byKey.get(key);
 	}
 
 	@Override
 	public Collection<RecipeHolder<?>> recipes() {
-		return this.preparedRecipes.values();
+		return this.byKey.values();
+	}
+
+	private static Multimap<RecipeType<?>, RecipeHolder<?>> indexByType(Iterable<RecipeHolder<?>> recipes) {
+		ImmutableMultimap.Builder<RecipeType<?>, RecipeHolder<?>> builder = ImmutableMultimap.builder();
+
+		for (RecipeHolder<?> recipe : recipes) {
+			builder.put(recipe.value().getType(), recipe);
+		}
+
+		return builder.build();
+	}
+
+	private static Map<ResourceKey<Recipe<?>>, RecipeHolder<?>> indexByKey(Iterable<RecipeHolder<?>> recipes) {
+		ImmutableMap.Builder<ResourceKey<Recipe<?>>, RecipeHolder<?>> builder = ImmutableMap.builder();
+
+		for (RecipeHolder<?> recipe : recipes) {
+			builder.put(recipe.id(), recipe);
+		}
+
+		return builder.build();
 	}
 }

@@ -92,7 +92,7 @@ def generateRenderPipelinesFields(List<String> lines, FileSystem fs) {
 
 	for (def field : node.fields) {
 		// All private fields of RenderPipelines of type RenderPipeline.Snippet
-		if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/blaze3d/pipeline/RenderPipeline\$Snippet;") {
+		if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/renderpearl/api/pipeline/RenderPipeline\$Snippet;") {
 			lines.add("transitive-accessible field $node.name ${field.name} ${field.desc}")
 		}
 	}

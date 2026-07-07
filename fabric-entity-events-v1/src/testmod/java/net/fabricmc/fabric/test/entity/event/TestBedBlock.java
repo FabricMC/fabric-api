@@ -20,20 +20,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.attribute.BedRule;
+import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.AbstractBedBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TestBedBlock extends Block {
+public class TestBedBlock extends AbstractBedBlock {
 	private static final VoxelShape SHAPE = box(0, 0, 0, 16, 8, 16);
 	public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
 
@@ -58,7 +58,7 @@ public class TestBedBlock extends Block {
 
 		if (bedRule.canSleep().test(level)) {
 			if (!level.isClientSide()) {
-				player.startSleepInBed(pos).ifLeft(sleepFailureReason -> {
+				player.startSleepInBed(this, state, bedRule, pos).ifLeft(sleepFailureReason -> {
 					Component message = sleepFailureReason.message();
 
 					if (message != null) {
@@ -74,7 +74,16 @@ public class TestBedBlock extends Block {
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(OCCUPIED);
+	protected EnvironmentAttribute<BedRule> getBedEnvironmentAttribute() {
+		return EnvironmentAttributes.BED_RULE;
+	}
+
+	@Override
+	protected InteractionResult destroyOnUse(BlockState state, Level level, BlockPos pos, Player player) {
+		return InteractionResult.CONSUME;
+	}
+
+	@Override
+	protected void destroyOnLeave(Level level, BlockPos pos) {
 	}
 }

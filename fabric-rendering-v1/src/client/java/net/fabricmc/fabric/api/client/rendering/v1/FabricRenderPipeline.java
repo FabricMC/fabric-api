@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Optional;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 /**
  * General purpose Fabric extensions to the {@link RenderPipeline} class.
@@ -83,7 +83,7 @@ public interface FabricRenderPipeline {
 		 * @return a new RenderPipeline.Snippet instance with the specified pipeline draw mode.
 		 */
 		static RenderPipeline.Snippet withPipelineDrawModeForGui(RenderPipeline.Snippet base, boolean usePipelineDrawMode) {
-			return RenderPipeline.builder(base).withUsePipelineDrawModeForGui(usePipelineDrawMode).buildSnippet();
+			return ((FabricRenderPipeline.Builder) RenderPipeline.builder(base)).withUsePipelineDrawModeForGui(usePipelineDrawMode).buildSnippet();
 		}
 
 		/**
@@ -92,7 +92,7 @@ public interface FabricRenderPipeline {
 		 * @return a new RenderPipeline.Snippet instance without any effect on whether the pipeline draw mode will be used for GUI rendering.
 		 */
 		static RenderPipeline.Snippet withoutPipelineDrawModeForGui(RenderPipeline.Snippet base) {
-			return RenderPipeline.builder(base).withoutUsePipelineDrawModeForGui().buildSnippet();
+			return ((FabricRenderPipeline.Builder) RenderPipeline.builder(base)).withoutUsePipelineDrawModeForGui().buildSnippet();
 		}
 	}
 }

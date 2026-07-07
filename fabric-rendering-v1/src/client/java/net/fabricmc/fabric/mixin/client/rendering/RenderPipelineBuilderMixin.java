@@ -22,13 +22,13 @@ import java.util.Optional;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.PolygonMode;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.PolygonMode;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -65,14 +65,14 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			at = @At("TAIL")
 	)
 	private void copyUsePipelineDrawModeForGuiFromSnippet(RenderPipeline.Snippet snippet, CallbackInfo ci) {
-		snippet.usePipelineDrawModeForGui().ifPresent(value -> this.usePipelineDrawModeForGui = Optional.of(value));
+		((FabricRenderPipeline.Snippet) (Object) snippet).usePipelineDrawModeForGui().ifPresent(value -> this.usePipelineDrawModeForGui = Optional.of(value));
 	}
 
 	@WrapOperation(
 			method = "buildSnippet",
 			at = @At(
 					value = "NEW",
-					target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;"
+					target = "Lcom/mojang/renderpearl/api/pipeline/RenderPipeline$Snippet;"
 			)
 	)
 	private RenderPipeline.Snippet copyUsePipelineDrawModeForGuiToSnippet(

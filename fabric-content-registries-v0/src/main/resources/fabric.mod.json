@@ -29,7 +29,6 @@
       "environment": "client"
     }
   ],
-  "accessWidener" : "fabric-content-registries-v0.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:provided_javadoc": "fabric-content-registries-v0.mapping"

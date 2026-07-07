@@ -73,7 +73,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 						);
 
 						// make it exclusive with treasure enchantments
-						builder.exclusiveWith(registries.lookup(Registries.ENCHANTMENT).orElseThrow().getter().getOrThrow(EnchantmentTags.TREASURE));
+						builder.exclusiveWith(registries.lookup(Registries.ENCHANTMENT).orElseThrow().getOrThrow(EnchantmentTags.TREASURE));
 					}
 				}
 		);
