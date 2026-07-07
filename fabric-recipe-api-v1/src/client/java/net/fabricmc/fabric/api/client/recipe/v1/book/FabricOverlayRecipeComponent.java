@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.recipe.v1.book;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
@@ -25,7 +27,7 @@ import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
  */
 public interface FabricOverlayRecipeComponent {
 	/**
-	 * Returns the overlay button for an individual recipe entry.
+	 * Returns the overlay button for an individual recipe entry, or null to use vanilla's implementation.
 	 *
 	 * <p>This is returned upon init, when the recipe collection is populated.
 	 *
@@ -37,7 +39,7 @@ public interface FabricOverlayRecipeComponent {
 	 *
 	 * @return The recipe button for the recipe entry.
 	 */
-	default OverlayRecipeComponent.OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
+	default OverlayRecipeComponent.@Nullable OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
 		throw new AssertionError("Implemented via mixin");
 	}
 }
