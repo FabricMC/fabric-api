@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.recipe.client.book;
 import java.util.Collections;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -39,6 +41,7 @@ public class BookCraftingOverlayRecipeComponent extends OverlayRecipeComponent {
 	}
 
 	@Override
+	@Nullable
 	public OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
 		return new BookCraftingOverlayRecipeButton(x, y, recipe.id(), recipe.display(), canCraft, context);
 	}
