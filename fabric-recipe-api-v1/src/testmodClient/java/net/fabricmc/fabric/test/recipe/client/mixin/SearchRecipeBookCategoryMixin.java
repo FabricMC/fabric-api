@@ -26,9 +26,9 @@ import net.fabricmc.fabric.test.recipe.book.RecipeBookTestContent;
 
 @Mixin(SearchRecipeBookCategory.class)
 public enum SearchRecipeBookCategoryMixin {
-	FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING(new RecipeBookCategory[]{RecipeBookTestContent.BOOK_CATEGORY, RecipeBookTestContent.ENCHANTED_BOOK_CATEGORY, RecipeBookTestContent.KNOWLEDGE_BOOK_CATEGORY});
+	FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING(RecipeBookTestContent.BOOK_CATEGORY, RecipeBookTestContent.ENCHANTED_BOOK_CATEGORY, RecipeBookTestContent.KNOWLEDGE_BOOK_CATEGORY);
 
 	@Shadow
-	SearchRecipeBookCategoryMixin(RecipeBookCategory[] includedCategories) {
+	SearchRecipeBookCategoryMixin(RecipeBookCategory... includedCategories) {
 	}
 }

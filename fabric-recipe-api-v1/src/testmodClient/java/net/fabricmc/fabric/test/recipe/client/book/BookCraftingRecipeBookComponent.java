@@ -42,9 +42,9 @@ public class BookCraftingRecipeBookComponent extends RecipeBookComponent<BookCra
 	private static final Component ONLY_CRAFTABLES_TOOLTIP = Component.translatable("gui.recipebook.toggleRecipes.craftable");
 	private static final List<RecipeBookComponent.TabInfo> TAB_INFOS = List.of(
 			new RecipeBookComponent.TabInfo(SearchRecipeBookCategory.FABRIC_RECIPE_API_V1_TESTMOD_BOOK_CRAFTING),
-			new RecipeBookComponent.TabInfo(new ItemStack(Items.BOOK), Optional.empty(), RecipeBookTestContent.BOOK_CATEGORY),
-			new RecipeBookComponent.TabInfo(new ItemStack(Items.ENCHANTED_BOOK), Optional.empty(), RecipeBookTestContent.ENCHANTED_BOOK_CATEGORY),
-			new RecipeBookComponent.TabInfo(new ItemStack(Items.KNOWLEDGE_BOOK), Optional.empty(), RecipeBookTestContent.KNOWLEDGE_BOOK_CATEGORY)
+			new RecipeBookComponent.TabInfo(Items.BOOK, RecipeBookTestContent.BOOK_CATEGORY),
+			new RecipeBookComponent.TabInfo(Items.ENCHANTED_BOOK, RecipeBookTestContent.ENCHANTED_BOOK_CATEGORY),
+			new RecipeBookComponent.TabInfo(Items.KNOWLEDGE_BOOK, RecipeBookTestContent.KNOWLEDGE_BOOK_CATEGORY)
 	);
 
 	public BookCraftingRecipeBookComponent(BookCraftingMenu menu) {
