@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 public class ModifyComponentsInPropertiesTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		var item = Registry.register(
+		Item item = Registry.register(
 				BuiltInRegistries.ITEM,
 				Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "op_sword"),
 				new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "op_sword"))).sword(ToolMaterial.NETHERITE, 3.0F, -2.4F).fireResistant().modifyComponent(DataComponents.TOOL, (original, _, _) -> {
