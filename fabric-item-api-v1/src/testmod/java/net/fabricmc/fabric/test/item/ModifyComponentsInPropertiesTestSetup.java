@@ -17,11 +17,9 @@
 package net.fabricmc.fabric.test.item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -30,17 +28,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class ModifyComponentsInPropertiesTest implements ModInitializer {
+public class ModifyComponentsInPropertiesTestSetup implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Item item = Registry.register(
@@ -54,12 +50,13 @@ public class ModifyComponentsInPropertiesTest implements ModInitializer {
 				}))
 		);
 
-		HashMap<UUID, Unit> giftedMap = new HashMap<>();
-		ServerTickEvents.START_SERVER_TICK.register(server -> PlayerLookup.all(server).forEach(player -> {
-			if (!giftedMap.containsKey(player.getUUID())) {
-				player.drop(item.getDefaultInstance(), true);
-				giftedMap.put(player.getUUID(), Unit.INSTANCE);
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			if (item.getDefaultInstance().getDestroySpeed(Blocks.ACACIA_BUTTON.defaultBlockState()) == 44f) {
+				throw new AssertionError("ModifyComponentsInPropertiesTestSetup failed");
 			}
-		}));
+			if (item.getDefaultInstance().getDestroySpeed(Blocks.DIRT.defaultBlockState()) != 44f) {
+				throw new AssertionError("ModifyComponentsInPropertiesTestSetup failed");
+			}
+		});
 	}
 }
