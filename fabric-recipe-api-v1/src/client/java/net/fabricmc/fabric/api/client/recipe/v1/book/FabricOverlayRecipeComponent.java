@@ -34,12 +34,12 @@ public interface FabricOverlayRecipeComponent {
 	 * @param x The x pos for the button.
 	 * @param y The y pos for the button.
 	 * @param recipe The associated recipe entry.
+	 * @param isCraftable Whether the player can craft the associated recipe.
 	 * @param context The slot display context map.
-	 * @param canCraft Whether the player can craft the associated recipe.
 	 *
 	 * @return The recipe button for the recipe entry.
 	 */
-	default OverlayRecipeComponent.@Nullable OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
+	default OverlayRecipeComponent.@Nullable OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, boolean isCraftable, ContextMap context) {
 		throw new AssertionError("Implemented via mixin");
 	}
 }

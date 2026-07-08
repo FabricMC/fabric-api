@@ -42,8 +42,8 @@ public class BookCraftingOverlayRecipeComponent extends OverlayRecipeComponent {
 
 	@Override
 	@Nullable
-	public OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
-		return new BookCraftingOverlayRecipeButton(x, y, recipe.id(), recipe.display(), canCraft, context);
+	public OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, boolean isCraftable, ContextMap context) {
+		return new BookCraftingOverlayRecipeButton(x, y, recipe.id(), recipe.display(), isCraftable, context);
 	}
 
 	public class BookCraftingOverlayRecipeButton extends OverlayRecipeButton {

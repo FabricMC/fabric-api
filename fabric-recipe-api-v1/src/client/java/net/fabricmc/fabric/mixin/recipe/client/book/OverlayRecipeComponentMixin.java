@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.client.recipe.v1.book.FabricOverlayRecipeComponen
 public class OverlayRecipeComponentMixin implements FabricOverlayRecipeComponent {
 	@ModifyArg(method = "init", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
 	private <E> E modifyRecipeComponentButton(E value, @Local(argsOnly = true) ContextMap context, @Local(name = "canCraft") boolean canCraft, @Local(name = "recipe") RecipeDisplayEntry recipe, @Local(name = "x") int x, @Local(name = "y") int y) {
-		OverlayRecipeComponent.OverlayRecipeButton button = getOverlayButton(x, y, recipe, context, canCraft);
+		OverlayRecipeComponent.OverlayRecipeButton button = getOverlayButton(x, y, recipe, canCraft, context);
 
 		if (button != null) {
 			// E will always be OverlayRecipeButton.
@@ -43,7 +43,7 @@ public class OverlayRecipeComponentMixin implements FabricOverlayRecipeComponent
 	}
 
 	@Override
-	public OverlayRecipeComponent.@Nullable OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, ContextMap context, boolean canCraft) {
+	public OverlayRecipeComponent.@Nullable OverlayRecipeButton getOverlayButton(int x, int y, RecipeDisplayEntry recipe, boolean isCraftable, ContextMap context) {
 		return null;
 	}
 }
