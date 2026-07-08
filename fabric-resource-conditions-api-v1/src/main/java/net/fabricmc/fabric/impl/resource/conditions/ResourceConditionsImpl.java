@@ -58,6 +58,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		ResourceConditions.register(DefaultResourceConditionTypes.TAGS_POPULATED);
 		ResourceConditions.register(DefaultResourceConditionTypes.FEATURES_ENABLED);
 		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
+		ResourceConditions.register(DefaultResourceConditionTypes.PACK_FORMAT_IN_RANGE);
 	}
 
 	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, RegistryOps.@Nullable RegistryInfoLookup registryInfo) {

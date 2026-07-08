@@ -1,1 +1,4 @@
-{"condition": "minecraft:survives_explosion"}
+{
+  "condition": "minecraft:random_chance",
+  "chance": 0.35
+}
