@@ -192,7 +192,7 @@ public interface FabricItem {
 		 */
 		default Item.Properties modifyComponents(DataComponentInitializers.Initializer<Item> modifier) {
 			Item.Properties self = (Item.Properties) this;
-			self.componentInitializer.andThen(modifier);
+			self.componentInitializer = self.componentInitializer.andThen(modifier);
 			return self;
 		}
 
