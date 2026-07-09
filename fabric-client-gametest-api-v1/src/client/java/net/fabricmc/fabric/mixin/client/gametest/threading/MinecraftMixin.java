@@ -35,18 +35,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 
-import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
-import net.fabricmc.fabric.impl.client.gametest.threading.NetworkSynchronizer;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
-	@Unique
-	private boolean inMergedRunTasksLoop = false;
 	@Unique
 	private Runnable deferredTask = null;
 
@@ -88,25 +83,11 @@ public class MinecraftMixin {
 		return capturedTicksPerFrame;
 	}
 
-	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runAllTasks()V"))
-	private void preRunTasksHook(CallbackInfo ci) {
-		// "merge" multiple possible iterations of runAllTasks into one block from the point of view of locking
-		if (!inMergedRunTasksLoop) {
-			inMergedRunTasksLoop = true;
-			preRunTasks();
-		}
-
-		// we still allow runAllTasks() to go ahead even when ticksPerFrame is 0, as the results of these tasks won't be
-		// observable until the next tick or gametest thread unlock anyway
-	}
-
 	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runAllTasks()V", shift = At.Shift.AFTER))
 	private void postRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
-		// end our "merged" runAllTasks block if there is going to be a tick this frame
+		// allow the test code to run if there is going to be a tick this frame
 		if (ticksPerFrame.get() > 0) {
-			NetworkSynchronizer.CLIENTBOUND.waitForPacketHandlers((BlockableEventLoop<?>) (Object) this);
 			postRunTasks();
-			inMergedRunTasksLoop = false;
 		}
 	}
 
@@ -122,7 +103,6 @@ public class MinecraftMixin {
 	@Inject(method = "doWorldLoad", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;managedBlock(Ljava/util/function/BooleanSupplier;)V"))
 	private void onStartIntegratedServerBusyWait(CallbackInfo ci) {
 		// give the server a chance to tick too
-		preRunTasks();
 		postRunTasks();
 	}
 
@@ -135,29 +115,10 @@ public class MinecraftMixin {
 		}
 	}
 
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dropAllTasks()V"))
-	private void onDisconnectCancelTasks(CallbackInfo ci) {
-		NetworkSynchronizer.CLIENTBOUND.reset();
-	}
-
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(Z)V", shift = At.Shift.AFTER))
 	private void onDisconnectBusyWait(CallbackInfo ci) {
 		// give the server a chance to tick too
-		preRunTasks();
 		postRunTasks();
-	}
-
-	@Unique
-	private void preRunTasks() {
-		if (ThreadingImpl.getCurrentPhase() == ThreadingImpl.PHASE_CLIENT_TASKS) {
-			postRunTasks();
-		}
-
-		if (!TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
-			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
-			// server tasks happen here
-			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
-		}
 	}
 
 	@Unique
