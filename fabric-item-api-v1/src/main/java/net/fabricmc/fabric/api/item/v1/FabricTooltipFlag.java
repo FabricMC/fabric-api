@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.world.item.TooltipFlag;
-
-/// General-purpose Fabric-provided extensions for [TooltipFlag].
+/// General-purpose Fabric-provided extensions for [net.minecraft.world.item.TooltipFlag].
 ///
 /// Note: This interface is automatically implemented on all tooltip flags via interface injection.
 public interface FabricTooltipFlag {
-
 	/// {@return if the tooltip should provide recipe viewer specific information}
 	///
 	/// Modded tooltips often have requirements to hold keys like Shift or CTRL in order
