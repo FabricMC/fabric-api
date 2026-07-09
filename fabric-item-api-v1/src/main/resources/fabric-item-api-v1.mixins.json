@@ -20,7 +20,8 @@
     "ItemPropertiesMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "ResourceManagerRegistryLoadTaskMixin"
+    "ResourceManagerRegistryLoadTaskMixin",
+    "TooltipFlagMixin"
   ],
   "injectors": {
     "defaultRequire": 1
