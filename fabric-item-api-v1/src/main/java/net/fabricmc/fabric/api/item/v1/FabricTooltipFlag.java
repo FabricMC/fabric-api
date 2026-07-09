@@ -20,11 +20,11 @@ package net.fabricmc.fabric.api.item.v1;
 ///
 /// Note: This interface is automatically implemented on all tooltip flags via interface injection.
 public interface FabricTooltipFlag {
-	/// {@return if the tooltip should provide recipe viewer specific information}
+	/// {@return all information that it may show under varying circumstances}
 	///
-	/// Modded tooltips often have requirements to hold keys like Shift or CTRL in order
-	/// to see more information. Recipe viewers, which commonly have to search tooltips,
-	/// should always be able to index this information regardless of whether a key is held.
+	/// Modded tooltips often have requirements to hold keys like Shift or Ctrl in order
+	/// to see more information. With this flag enabled, all information provided
+	/// by this tooltip should be shown regardless of whether a key is held.
 	default boolean shouldDisplayAllInformation() {
 		return false;
 	}
