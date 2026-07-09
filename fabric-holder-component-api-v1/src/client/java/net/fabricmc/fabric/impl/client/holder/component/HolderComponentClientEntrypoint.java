@@ -20,12 +20,12 @@ import java.util.List;
 
 import net.minecraft.client.multiplayer.RegistryDataCollector;
 import net.minecraft.core.component.DataComponentInitializers;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
-import net.fabricmc.fabric.impl.holder.component.HolderComponentEntrypoint;
 import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponentsPayload;
 import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchronization;
 import net.fabricmc.fabric.mixin.client.holder.component.ClientConfigurationPacketListenerImplAccessor;
@@ -53,11 +53,11 @@ public class HolderComponentClientEntrypoint implements ClientModInitializer {
 
 					// we already check for integrated server when sending, but anything could send a packet and applying it will cause serious issues.
 					if (context.packetContext().orElseThrow(PacketContext.CONNECTION).isMemoryConnection()) {
-						// RFC: Should this be a crash?
-						HolderComponentEntrypoint.LOGGER.warn("A ClientboundUpdateComponentsPayload was sent to the integrated server host. This is a bug, whichever mod sent this packet should check if the receiver is the server host before sending it.");
-					} else {
-						pending.forEach(DataComponentInitializers.PendingComponents::apply);
+						context.responseSender().disconnect(Component.literal("A ClientboundUpdateComponentsPayload was sent to the integrated server host. This is a bug, whichever mod sent this packet should check if the receiver is the server host before sending it."));
+						return;
 					}
+
+					pending.forEach(DataComponentInitializers.PendingComponents::apply);
 				}
 		);
 	}

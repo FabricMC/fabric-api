@@ -31,11 +31,11 @@ import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 
 public record ClientboundUpdateComponentsPayload(
 		// We don't decode any component yet as registries aren't available during configuration.
-		// Each ByteBuf encodes a registry ResourceKey and a Map<Holder, DataComponentMap>
-		List<ByteBuf> registryToComponents
+		// Each byte array encodes a registry ResourceKey and a Map<Holder, DataComponentMap>
+		List<byte[]> registryToComponents
 ) implements CustomPacketPayload {
 	public static final Type<ClientboundUpdateComponentsPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath("fabric", "update_holder_components"));
-	public static final StreamCodec<ByteBuf, ClientboundUpdateComponentsPayload> STREAM_CODEC = HolderComponentSynchronization.BYTE_BUF_SLICE_CODEC
+	public static final StreamCodec<ByteBuf, ClientboundUpdateComponentsPayload> STREAM_CODEC = ByteBufCodecs.BYTE_ARRAY
 			.apply(ByteBufCodecs.list())
 			.map(ClientboundUpdateComponentsPayload::new, ClientboundUpdateComponentsPayload::registryToComponents);
 

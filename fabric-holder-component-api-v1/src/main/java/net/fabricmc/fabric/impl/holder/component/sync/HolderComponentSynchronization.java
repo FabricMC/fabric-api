@@ -23,6 +23,7 @@ import java.util.function.BiConsumer;
 
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import net.minecraft.core.Holder;
@@ -55,13 +56,6 @@ public class HolderComponentSynchronization {
 					components -> DataComponentMap.builder().setAll(components).build(),
 					componentMap -> ImmutableList.copyOf(componentMap.iterator())
 			);
-	public static final StreamCodec<ByteBuf, ByteBuf> BYTE_BUF_SLICE_CODEC = StreamCodec.of(
-			(output, value) -> {
-				VarInt.write(output, value.readableBytes());
-				output.writeBytes(value);
-			},
-			buf -> buf.readRetainedSlice(VarInt.read(buf))
-	);
 
 	public static ClientboundUpdateComponentsPayload serialize(LayeredRegistryAccess<RegistryLayer> registries) {
 		return new ClientboundUpdateComponentsPayload(
@@ -71,19 +65,18 @@ public class HolderComponentSynchronization {
 		);
 	}
 
-	private static <T> ByteBuf serialize(
+	private static <T> byte[] serialize(
 			RegistryAccess registries,
 			RegistryAccess.RegistryEntry<T> registryEntry
 	) {
 		Map<Holder.Reference<T>, DataComponentMap> entries = new Reference2ObjectOpenHashMap<>();
 
 		registryEntry.value().listElements()
-				.filter(holder -> !holder.components().isEmpty())
 				.forEach(holder -> entries.put(holder, holder.components()));
 
 		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), registries);
 		BakedEntries.CODEC.encode(buf, new BakedEntries<>(registryEntry.key(), entries));
-		return buf;
+		return buf.array();
 	}
 
 	private record BakedEntries<T>(ResourceKey<? extends Registry<? extends T>> key, Map<Holder.Reference<T>, DataComponentMap> entries) implements DataComponentInitializers.PendingComponents<T> {
@@ -140,14 +133,14 @@ public class HolderComponentSynchronization {
 	) {
 		List<DataComponentInitializers.PendingComponents<?>> result = new ArrayList<>();
 
-		for (ByteBuf buf : payload.registryToComponents()) {
-			result.add(deserialize(registries, buf));
+		for (byte[] bytes : payload.registryToComponents()) {
+			result.add(deserialize(registries, bytes));
 		}
 
 		return result;
 	}
 
-	private static BakedEntries<?> deserialize(RegistryAccess registries, ByteBuf buf) {
-		return BakedEntries.CODEC.decode(new RegistryFriendlyByteBuf(buf, registries));
+	private static BakedEntries<?> deserialize(RegistryAccess registries, byte[] bytes) {
+		return BakedEntries.CODEC.decode(new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(bytes), registries));
 	}
 }

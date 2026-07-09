@@ -39,12 +39,11 @@ import net.fabricmc.fabric.impl.holder.component.sync.HolderComponentSynchroniza
 @Mixin(RegistryDataCollector.class)
 public class RegistryDataCollectorMixin implements FabricRegistryDataCollector {
 	@Unique
-	private final ClientboundUpdateComponentsPayload components = new ClientboundUpdateComponentsPayload(new ArrayList<>());
+	private ClientboundUpdateComponentsPayload components = new ClientboundUpdateComponentsPayload(new ArrayList<>());
 
 	@Override
 	public void fabric$appendComponents(ClientboundUpdateComponentsPayload payload) {
-		components.registryToComponents().clear();
-		components.registryToComponents().addAll(payload.registryToComponents());
+		components = payload;
 	}
 
 	@Inject(method = "collectGameRegistries", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/RegistryDataCollector;updateComponents(Lnet/minecraft/core/RegistryAccess$Frozen;Z)V", shift = At.Shift.AFTER))

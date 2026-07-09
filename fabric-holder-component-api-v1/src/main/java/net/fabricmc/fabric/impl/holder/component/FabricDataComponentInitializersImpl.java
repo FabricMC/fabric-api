@@ -78,15 +78,16 @@ public class FabricDataComponentInitializersImpl {
 	}
 
 	public static List<FabricDataComponentInitializer> sort() {
-		if (!dirty) return sorted;
+		if (dirty) {
+			dirty = false;
+			ArrayList<PhaseData> phases = new ArrayList<>(initializers.values());
+			NodeSorting.sort(phases, "data component initializer phases", Comparator.comparing(data -> data.id));
 
-		ArrayList<PhaseData> phases = new ArrayList<>(initializers.values());
-		NodeSorting.sort(phases, "data component initializer phases", Comparator.comparing(data -> data.id));
+			sorted.clear();
 
-		sorted.clear();
-
-		for (PhaseData phase : phases) {
-			sorted.add(phase.initializer);
+			for (PhaseData phase : phases) {
+				sorted.add(phase.initializer);
+			}
 		}
 
 		return sorted;

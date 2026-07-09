@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.holder.component;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializers;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -28,9 +25,7 @@ import net.fabricmc.fabric.impl.holder.component.sync.ClientboundUpdateComponent
 public class HolderComponentEntrypoint implements ModInitializer {
 	// TODO: This size is enormous, I copied it straight out of FabricRegistryInit. This should be smaller but I don't know how to choose a good value.
 	private static final int MAX_PACKET_SIZE = Integer.getInteger("fabric.holder.component.sync.max_packet_size", 128 * 1024 * 1024);
-
 	public static final String MOD_ID = "fabric-holder-component-api-v1";
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	@Override
 	public void onInitialize() {
