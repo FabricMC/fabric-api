@@ -25,7 +25,7 @@ public interface FabricTooltipFlag {
 	/// Modded tooltips often have requirements to hold keys like Shift or CTRL in order
 	/// to see more information. Recipe viewers, which commonly have to search tooltips,
 	/// should always be able to index this information regardless of whether a key is held.
-	default boolean isRecipeViewer() {
+	default boolean shouldDisplayAllInformation() {
 		return false;
 	}
 }
