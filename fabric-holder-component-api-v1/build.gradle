@@ -1,5 +1,28 @@
 version = getSubprojectVersion(project)
 
+moduleDependencies(project, [
+	'fabric-api-base',
+	'fabric-data-generation-api-v1',
+	'fabric-networking-api-v1',
+	'fabric-resource-conditions-api-v1'
+])
+
+testDependencies(project, [
+	'fabric-command-api-v2'
+])
+
+fabricApi {
+	configureDataGeneration {
+		outputDirectory = file("src/testmod/generated")
+		addToResources = false
+		strictValidation = true
+	}
+}
+
+runDatagen {
+	outputs.dir("src/testmod/generated")
+}
+
 sourceSets {
 	testmod {
 		resources {
@@ -15,29 +38,11 @@ loom {
 
 	runs {
 		datagen {
-			inherit testmodServer
 			name "Data Generation"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
-			vmArg "-Dfabric-api.datagen.strict-validation"
-
+			source sourceSets.testmod
 			ideConfigGenerated = true
-			runDir "build/datagen"
 		}
 	}
 }
 
-runDatagen {
-	outputs.dir file("src/testmod/generated")
-}
-
-moduleDependencies(project, [
-	'fabric-api-base',
-	'fabric-data-generation-api-v1',
-	'fabric-networking-api-v1',
-	'fabric-resource-conditions-api-v1'
-])
-
-testDependencies(project, [
-	'fabric-command-api-v2'
-])
+generateResources.dependsOn runDatagen
