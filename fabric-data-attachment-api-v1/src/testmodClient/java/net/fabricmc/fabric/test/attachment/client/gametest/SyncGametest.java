@@ -45,8 +45,8 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class SyncGametest implements FabricClientGameTest {
@@ -130,8 +130,8 @@ public class SyncGametest implements FabricClientGameTest {
 
 			LOGGER.info("Joining dedicated server");
 
-			try (TestServerConnection connection = serverContext.connect()) {
-				connection.getClientLevel().waitForChunksDownload();
+			try (TestDedicatedServerConnection connection = serverContext.connect()) {
+				connection.waitForChunksDownload();
 
 				LOGGER.info("Setting up rest of synced attachments");
 				serverContext.runOnServer(server -> {

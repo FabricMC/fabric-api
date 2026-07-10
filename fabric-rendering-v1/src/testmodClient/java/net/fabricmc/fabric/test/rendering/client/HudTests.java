@@ -131,7 +131,7 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 			singleplayer.getServer().runOnServer(server -> server.overworld().setBlockAndUpdate(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.defaultBlockState()));
 
 			// Wait for stuff to load
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 			singleplayer.getServer().runOnServer(server -> server.getPlayerList().broadcastSystemMessage(Component.nullToEmpty("hud_layer_" + BEFORE_CHAT), false)); // Chat messages disappear in 200 ticks so we send one 150 ticks in advance to test the before chat layer
 			context.waitTicks(150); // The powder snow frosty vignette takes 140 ticks to fully appear, so we additionally wait for a total of 150 ticks
 

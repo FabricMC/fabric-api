@@ -18,38 +18,17 @@ package net.fabricmc.fabric.api.client.gametest.v1.context;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
-
 /**
- * Context for a client gametest containing various helpful functions while a singleplayer game is open.
+ * Context for a client gametest containing various helpful functions while a connection to a dedicated server is open.
+ * This class implements {@link AutoCloseable} and is intended to be used in a try-with-resources statement. When
+ * closed, the client will be disconnected from the server.
  *
- * <p>Functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, functions in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
-public interface TestSingleplayerContext extends AutoCloseable {
+public interface TestDedicatedServerConnection extends TestServerConnection, AutoCloseable {
 	/**
-	 * Gets the handle for the world save.
-	 *
-	 * @return The handle for the world save
-	 */
-	TestWorldSave getWorldSave();
-
-	/**
-	 * Gets the handle for the client level.
-	 *
-	 * @return The handle for the client level
-	 */
-	TestServerConnection getConnection();
-
-	/**
-	 * Gets the handle for the integrated server.
-	 *
-	 * @return The handle for the integrated server
-	 */
-	TestServerContext getServer();
-
-	/**
-	 * Closes the singleplayer world.
+	 * Disconnects the client from the dedicated server.
 	 */
 	@Override
 	void close();

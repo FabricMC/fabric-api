@@ -41,8 +41,8 @@ import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
@@ -89,7 +89,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 		) {
 			serverContext.runOnServer(server -> ClientTagGameTests.removePackAndReload(server, ClientTagTest.BUILT_IN_PACK_ID));
 
-			try (TestServerConnection connection = serverContext.connect()) {
+			try (TestDedicatedServerConnection connection = serverContext.connect()) {
 				context.runOnClient(ClientTagGameTests::clientTagDedicatedServerTests);
 				serverContext.runOnServer(ClientTagGameTests::reloadAndAddServerTagTests);
 			}
@@ -99,7 +99,7 @@ public class ClientTagGameTests implements FabricClientGameTest {
 				TestDedicatedServerContext serverContext = context.worldBuilder()
 						.createServer()
 		) {
-			try (TestServerConnection connection = serverContext.connect()) {
+			try (TestDedicatedServerConnection connection = serverContext.connect()) {
 				serverContext.runOnServer(ClientTagGameTests::reAddRemovedValueTests);
 			}
 		}

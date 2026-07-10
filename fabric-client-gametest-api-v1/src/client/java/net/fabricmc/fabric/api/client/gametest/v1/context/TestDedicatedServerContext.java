@@ -37,7 +37,7 @@ public interface TestDedicatedServerContext extends TestServerContext, AutoClose
 	 *
 	 * @return The connection handle to the dedicated server
 	 */
-	TestServerConnection connect();
+	TestDedicatedServerConnection connect();
 
 	/**
 	 * Stops the dedicated server.

@@ -37,8 +37,8 @@ import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
@@ -71,7 +71,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 			{
 				setDebugOverlay(context, true);
-				singleplayer.getClientLevel().waitForChunksRender();
+				singleplayer.getConnection().waitForChunksRender();
 				context.takeScreenshot("in_game_overworld");
 			}
 
@@ -112,13 +112,13 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		}
 
 		try (TestSingleplayerContext singleplayer = spWorldSave.open()) {
-			singleplayer.getClientLevel().waitForChunksRender();
+			singleplayer.getConnection().waitForChunksRender();
 			context.takeScreenshot("in_game_overworld_2");
 		}
 
 		try (TestDedicatedServerContext server = context.worldBuilder().createServer()) {
-			try (TestServerConnection connection = server.connect()) {
-				connection.getClientLevel().waitForChunksRender();
+			try (TestDedicatedServerConnection connection = server.connect()) {
+				connection.waitForChunksRender();
 				context.takeScreenshot("server_in_game");
 
 				{ // Test that we can enter and exit configuration
