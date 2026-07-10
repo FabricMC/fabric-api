@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.tags.BlockItemTagAppender;
 import net.minecraft.references.BlockIds;
 import net.minecraft.references.BlockItemId;
 import net.minecraft.references.BlockItemIds;
@@ -27,6 +28,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ColorCollection;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
@@ -129,7 +131,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.addOptionalTag(ConventionalBlockTags.LAPIS_ORES)
 				.addOptionalTag(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
 				.addOptionalTag(ConventionalBlockTags.REDSTONE_ORES)
-				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES);
+				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES)
+				.addOptionalTag(BlockTags.ORES);
 
 		builder(ConventionalBlockTags.ORE_BEARING_GROUND_DEEPSLATE)
 				.add(BlockItemIds.DEEPSLATE);
@@ -408,101 +411,19 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 	}
 
 	private void generateDyedTags() {
-		builder(ConventionalBlockTags.BLACK_DYED)
-				.add(BlockItemIds.BANNER.black()).add(BlockItemIds.BED.black()).add(BlockItemIds.DYED_CANDLE.black()).add(BlockItemIds.CARPET.black())
-				.add(BlockItemIds.CONCRETE.black()).add(BlockItemIds.CONCRETE_POWDER.black()).add(BlockItemIds.GLAZED_TERRACOTTA.black())
-				.add(BlockItemIds.DYED_SHULKER_BOX.black()).add(BlockItemIds.STAINED_GLASS.black()).add(BlockItemIds.STAINED_GLASS_PANE.black())
-				.add(BlockItemIds.DYED_TERRACOTTA.black()).add(BlockIds.WALL_BANNER.black()).add(BlockItemIds.WOOL.black());
+		ColorCollection<BlockItemTagAppender<Block>> builders = ConventionalBlockTags.COLOR_DYED.map(this::builder);
 
-		builder(ConventionalBlockTags.BLUE_DYED)
-				.add(BlockItemIds.BANNER.blue()).add(BlockItemIds.BED.blue()).add(BlockItemIds.DYED_CANDLE.blue()).add(BlockItemIds.CARPET.blue())
-				.add(BlockItemIds.CONCRETE.blue()).add(BlockItemIds.CONCRETE_POWDER.blue()).add(BlockItemIds.GLAZED_TERRACOTTA.blue())
-				.add(BlockItemIds.DYED_SHULKER_BOX.blue()).add(BlockItemIds.STAINED_GLASS.blue()).add(BlockItemIds.STAINED_GLASS_PANE.blue())
-				.add(BlockItemIds.DYED_TERRACOTTA.blue()).add(BlockIds.WALL_BANNER.blue()).add(BlockItemIds.WOOL.blue());
+		for (ColorCollection<BlockItemId> colorCollection : List.of(
+				BlockItemIds.BANNER, BlockItemIds.BED, BlockItemIds.DYED_CANDLE, BlockItemIds.CARPET,
+				BlockItemIds.CONCRETE, BlockItemIds.CONCRETE_POWDER, BlockItemIds.GLAZED_TERRACOTTA,
+				BlockItemIds.DYED_SHULKER_BOX, BlockItemIds.STAINED_GLASS, BlockItemIds.STAINED_GLASS_PANE,
+				BlockItemIds.DYED_TERRACOTTA, BlockItemIds.WOOL, BlockItemIds.WOOL_SLAB, BlockItemIds.WOOL_STAIRS)) {
+			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
+		}
 
-		builder(ConventionalBlockTags.BROWN_DYED)
-				.add(BlockItemIds.BANNER.brown()).add(BlockItemIds.BED.brown()).add(BlockItemIds.DYED_CANDLE.brown()).add(BlockItemIds.CARPET.brown())
-				.add(BlockItemIds.CONCRETE.brown()).add(BlockItemIds.CONCRETE_POWDER.brown()).add(BlockItemIds.GLAZED_TERRACOTTA.brown())
-				.add(BlockItemIds.DYED_SHULKER_BOX.brown()).add(BlockItemIds.STAINED_GLASS.brown()).add(BlockItemIds.STAINED_GLASS_PANE.brown())
-				.add(BlockItemIds.DYED_TERRACOTTA.brown()).add(BlockIds.WALL_BANNER.brown()).add(BlockItemIds.WOOL.brown());
-
-		builder(ConventionalBlockTags.CYAN_DYED)
-				.add(BlockItemIds.BANNER.cyan()).add(BlockItemIds.BED.cyan()).add(BlockItemIds.DYED_CANDLE.cyan()).add(BlockItemIds.CARPET.cyan())
-				.add(BlockItemIds.CONCRETE.cyan()).add(BlockItemIds.CONCRETE_POWDER.cyan()).add(BlockItemIds.GLAZED_TERRACOTTA.cyan())
-				.add(BlockItemIds.DYED_SHULKER_BOX.cyan()).add(BlockItemIds.STAINED_GLASS.cyan()).add(BlockItemIds.STAINED_GLASS_PANE.cyan())
-				.add(BlockItemIds.DYED_TERRACOTTA.cyan()).add(BlockIds.WALL_BANNER.cyan()).add(BlockItemIds.WOOL.cyan());
-
-		builder(ConventionalBlockTags.GRAY_DYED)
-				.add(BlockItemIds.BANNER.gray()).add(BlockItemIds.BED.gray()).add(BlockItemIds.DYED_CANDLE.gray()).add(BlockItemIds.CARPET.gray())
-				.add(BlockItemIds.CONCRETE.gray()).add(BlockItemIds.CONCRETE_POWDER.gray()).add(BlockItemIds.GLAZED_TERRACOTTA.gray())
-				.add(BlockItemIds.DYED_SHULKER_BOX.gray()).add(BlockItemIds.STAINED_GLASS.gray()).add(BlockItemIds.STAINED_GLASS_PANE.gray())
-				.add(BlockItemIds.DYED_TERRACOTTA.gray()).add(BlockIds.WALL_BANNER.gray()).add(BlockItemIds.WOOL.gray());
-
-		builder(ConventionalBlockTags.GREEN_DYED)
-				.add(BlockItemIds.BANNER.green()).add(BlockItemIds.BED.green()).add(BlockItemIds.DYED_CANDLE.green()).add(BlockItemIds.CARPET.green())
-				.add(BlockItemIds.CONCRETE.green()).add(BlockItemIds.CONCRETE_POWDER.green()).add(BlockItemIds.GLAZED_TERRACOTTA.green())
-				.add(BlockItemIds.DYED_SHULKER_BOX.green()).add(BlockItemIds.STAINED_GLASS.green()).add(BlockItemIds.STAINED_GLASS_PANE.green())
-				.add(BlockItemIds.DYED_TERRACOTTA.green()).add(BlockIds.WALL_BANNER.green()).add(BlockItemIds.WOOL.green());
-
-		builder(ConventionalBlockTags.LIGHT_BLUE_DYED)
-				.add(BlockItemIds.BANNER.lightBlue()).add(BlockItemIds.BED.lightBlue()).add(BlockItemIds.DYED_CANDLE.lightBlue()).add(BlockItemIds.CARPET.lightBlue())
-				.add(BlockItemIds.CONCRETE.lightBlue()).add(BlockItemIds.CONCRETE_POWDER.lightBlue()).add(BlockItemIds.GLAZED_TERRACOTTA.lightBlue())
-				.add(BlockItemIds.DYED_SHULKER_BOX.lightBlue()).add(BlockItemIds.STAINED_GLASS.lightBlue()).add(BlockItemIds.STAINED_GLASS_PANE.lightBlue())
-				.add(BlockItemIds.DYED_TERRACOTTA.lightBlue()).add(BlockIds.WALL_BANNER.lightBlue()).add(BlockItemIds.WOOL.lightBlue());
-
-		builder(ConventionalBlockTags.LIGHT_GRAY_DYED)
-				.add(BlockItemIds.BANNER.lightGray()).add(BlockItemIds.BED.lightGray()).add(BlockItemIds.DYED_CANDLE.lightGray()).add(BlockItemIds.CARPET.lightGray())
-				.add(BlockItemIds.CONCRETE.lightGray()).add(BlockItemIds.CONCRETE_POWDER.lightGray()).add(BlockItemIds.GLAZED_TERRACOTTA.lightGray())
-				.add(BlockItemIds.DYED_SHULKER_BOX.lightGray()).add(BlockItemIds.STAINED_GLASS.lightGray()).add(BlockItemIds.STAINED_GLASS_PANE.lightGray())
-				.add(BlockItemIds.DYED_TERRACOTTA.lightGray()).add(BlockIds.WALL_BANNER.lightGray()).add(BlockItemIds.WOOL.lightGray());
-
-		builder(ConventionalBlockTags.LIME_DYED)
-				.add(BlockItemIds.BANNER.lime()).add(BlockItemIds.BED.lime()).add(BlockItemIds.DYED_CANDLE.lime()).add(BlockItemIds.CARPET.lime())
-				.add(BlockItemIds.CONCRETE.lime()).add(BlockItemIds.CONCRETE_POWDER.lime()).add(BlockItemIds.GLAZED_TERRACOTTA.lime())
-				.add(BlockItemIds.DYED_SHULKER_BOX.lime()).add(BlockItemIds.STAINED_GLASS.lime()).add(BlockItemIds.STAINED_GLASS_PANE.lime())
-				.add(BlockItemIds.DYED_TERRACOTTA.lime()).add(BlockIds.WALL_BANNER.lime()).add(BlockItemIds.WOOL.lime());
-
-		builder(ConventionalBlockTags.MAGENTA_DYED)
-				.add(BlockItemIds.BANNER.magenta()).add(BlockItemIds.BED.magenta()).add(BlockItemIds.DYED_CANDLE.magenta()).add(BlockItemIds.CARPET.magenta())
-				.add(BlockItemIds.CONCRETE.magenta()).add(BlockItemIds.CONCRETE_POWDER.magenta()).add(BlockItemIds.GLAZED_TERRACOTTA.magenta())
-				.add(BlockItemIds.DYED_SHULKER_BOX.magenta()).add(BlockItemIds.STAINED_GLASS.magenta()).add(BlockItemIds.STAINED_GLASS_PANE.magenta())
-				.add(BlockItemIds.DYED_TERRACOTTA.magenta()).add(BlockIds.WALL_BANNER.magenta()).add(BlockItemIds.WOOL.magenta());
-
-		builder(ConventionalBlockTags.ORANGE_DYED)
-				.add(BlockItemIds.BANNER.orange()).add(BlockItemIds.BED.orange()).add(BlockItemIds.DYED_CANDLE.orange()).add(BlockItemIds.CARPET.orange())
-				.add(BlockItemIds.CONCRETE.orange()).add(BlockItemIds.CONCRETE_POWDER.orange()).add(BlockItemIds.GLAZED_TERRACOTTA.orange())
-				.add(BlockItemIds.DYED_SHULKER_BOX.orange()).add(BlockItemIds.STAINED_GLASS.orange()).add(BlockItemIds.STAINED_GLASS_PANE.orange())
-				.add(BlockItemIds.DYED_TERRACOTTA.orange()).add(BlockIds.WALL_BANNER.orange()).add(BlockItemIds.WOOL.orange());
-
-		builder(ConventionalBlockTags.PINK_DYED)
-				.add(BlockItemIds.BANNER.pink()).add(BlockItemIds.BED.pink()).add(BlockItemIds.DYED_CANDLE.pink()).add(BlockItemIds.CARPET.pink())
-				.add(BlockItemIds.CONCRETE.pink()).add(BlockItemIds.CONCRETE_POWDER.pink()).add(BlockItemIds.GLAZED_TERRACOTTA.pink())
-				.add(BlockItemIds.DYED_SHULKER_BOX.pink()).add(BlockItemIds.STAINED_GLASS.pink()).add(BlockItemIds.STAINED_GLASS_PANE.pink())
-				.add(BlockItemIds.DYED_TERRACOTTA.pink()).add(BlockIds.WALL_BANNER.pink()).add(BlockItemIds.WOOL.pink());
-
-		builder(ConventionalBlockTags.PURPLE_DYED)
-				.add(BlockItemIds.BANNER.purple()).add(BlockItemIds.BED.purple()).add(BlockItemIds.DYED_CANDLE.purple()).add(BlockItemIds.CARPET.purple())
-				.add(BlockItemIds.CONCRETE.purple()).add(BlockItemIds.CONCRETE_POWDER.purple()).add(BlockItemIds.GLAZED_TERRACOTTA.purple())
-				.add(BlockItemIds.DYED_SHULKER_BOX.purple()).add(BlockItemIds.STAINED_GLASS.purple()).add(BlockItemIds.STAINED_GLASS_PANE.purple())
-				.add(BlockItemIds.DYED_TERRACOTTA.purple()).add(BlockIds.WALL_BANNER.purple()).add(BlockItemIds.WOOL.purple());
-
-		builder(ConventionalBlockTags.RED_DYED)
-				.add(BlockItemIds.BANNER.red()).add(BlockItemIds.BED.red()).add(BlockItemIds.DYED_CANDLE.red()).add(BlockItemIds.CARPET.red())
-				.add(BlockItemIds.CONCRETE.red()).add(BlockItemIds.CONCRETE_POWDER.red()).add(BlockItemIds.GLAZED_TERRACOTTA.red())
-				.add(BlockItemIds.DYED_SHULKER_BOX.red()).add(BlockItemIds.STAINED_GLASS.red()).add(BlockItemIds.STAINED_GLASS_PANE.red())
-				.add(BlockItemIds.DYED_TERRACOTTA.red()).add(BlockIds.WALL_BANNER.red()).add(BlockItemIds.WOOL.red());
-
-		builder(ConventionalBlockTags.WHITE_DYED)
-				.add(BlockItemIds.BANNER.white()).add(BlockItemIds.BED.white()).add(BlockItemIds.DYED_CANDLE.white()).add(BlockItemIds.CARPET.white())
-				.add(BlockItemIds.CONCRETE.white()).add(BlockItemIds.CONCRETE_POWDER.white()).add(BlockItemIds.GLAZED_TERRACOTTA.white())
-				.add(BlockItemIds.DYED_SHULKER_BOX.white()).add(BlockItemIds.STAINED_GLASS.white()).add(BlockItemIds.STAINED_GLASS_PANE.white())
-				.add(BlockItemIds.DYED_TERRACOTTA.white()).add(BlockIds.WALL_BANNER.white()).add(BlockItemIds.WOOL.white());
-
-		builder(ConventionalBlockTags.YELLOW_DYED)
-				.add(BlockItemIds.BANNER.yellow()).add(BlockItemIds.BED.yellow()).add(BlockItemIds.DYED_CANDLE.yellow()).add(BlockItemIds.CARPET.yellow())
-				.add(BlockItemIds.CONCRETE.yellow()).add(BlockItemIds.CONCRETE_POWDER.yellow()).add(BlockItemIds.GLAZED_TERRACOTTA.yellow())
-				.add(BlockItemIds.DYED_SHULKER_BOX.yellow()).add(BlockItemIds.STAINED_GLASS.yellow()).add(BlockItemIds.STAINED_GLASS_PANE.yellow())
-				.add(BlockItemIds.DYED_TERRACOTTA.yellow()).add(BlockIds.WALL_BANNER.yellow()).add(BlockItemIds.WOOL.yellow());
+		for (ColorCollection<ResourceKey<Block>> colorCollection : List.of(BlockIds.WALL_BANNER)) {
+			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
+		}
 
 		builder(ConventionalBlockTags.DYED)
 				.addTag(ConventionalBlockTags.WHITE_DYED)
@@ -606,7 +527,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.MANGROVE_LOG)
 				.add(BlockItemIds.OAK_LOG)
 				.add(BlockItemIds.PALE_OAK_LOG)
-				.add(BlockItemIds.SPRUCE_LOG);
+				.add(BlockItemIds.SPRUCE_LOG)
+				.add(BlockItemIds.POPLAR_LOG);
 
 		builder(ConventionalBlockTags.NETHER_NATURAL_LOGS)
 				.add(BlockItemIds.CRIMSON_STEM)
@@ -626,6 +548,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.OAK_WOOD)
 				.add(BlockItemIds.PALE_OAK_WOOD)
 				.add(BlockItemIds.SPRUCE_WOOD)
+				.add(BlockItemIds.POPLAR_WOOD)
 				.add(BlockItemIds.CRIMSON_HYPHAE)
 				.add(BlockItemIds.WARPED_HYPHAE);
 
@@ -640,6 +563,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.STRIPPED_OAK_LOG)
 				.add(BlockItemIds.STRIPPED_PALE_OAK_LOG)
 				.add(BlockItemIds.STRIPPED_SPRUCE_LOG)
+				.add(BlockItemIds.STRIPPED_POPLAR_LOG)
 				.add(BlockItemIds.STRIPPED_CRIMSON_STEM)
 				.add(BlockItemIds.STRIPPED_WARPED_STEM);
 
@@ -653,6 +577,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.STRIPPED_OAK_WOOD)
 				.add(BlockItemIds.STRIPPED_PALE_OAK_WOOD)
 				.add(BlockItemIds.STRIPPED_SPRUCE_WOOD)
+				.add(BlockItemIds.STRIPPED_POPLAR_WOOD)
 				.add(BlockItemIds.STRIPPED_CRIMSON_HYPHAE)
 				.add(BlockItemIds.STRIPPED_WARPED_HYPHAE);
 	}
@@ -672,7 +597,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.PIGLIN_HEAD)
 				.add(BlockIds.PIGLIN_WALL_HEAD)
 				.add(BlockItemIds.DRAGON_HEAD)
-				.add(BlockIds.DRAGON_WALL_HEAD);
+				.add(BlockIds.DRAGON_WALL_HEAD)
+				.addOptionalTag(BlockTags.SKULLS);
 	}
 
 	private void generateTagAlias() {

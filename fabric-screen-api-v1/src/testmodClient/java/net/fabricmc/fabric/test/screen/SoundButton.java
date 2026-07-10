@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.test.screen;
 
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -29,9 +32,9 @@ class SoundButton extends Button.Plain {
 	private static final RandomSource RANDOM = RandomSource.create();
 
 	SoundButton(int x, int y, int width, int height) {
-		super(x, y, width, height, net.minecraft.network.chat.Component.nullToEmpty("Sound Button"), ctx -> {
+		super(x, y, width, height, Component.nullToEmpty("Sound Button"), _ -> {
 			final SoundEvent event = BuiltInRegistries.SOUND_EVENT.getRandom(RANDOM).map(Holder::value).orElse(SoundEvents.GENERIC_EXPLODE.value());
 			Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 1.0F));
-		}, null);
+		}, Supplier::get);
 	}
 }

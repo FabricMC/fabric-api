@@ -35,11 +35,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
+import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.AbstractBedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
@@ -90,7 +92,7 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	}
 
 	@WrapOperation(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
-	private Comparable<?> redirectSleepDirection(BlockState instance, Property<Direction> property, Operation<Comparable<Direction>> original, BlockPos pos, @Cancellable CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> cir) {
+	private Comparable<?> redirectSleepDirection(BlockState instance, Property<Direction> property, Operation<Comparable<Direction>> original, AbstractBedBlock bedBlock, BlockState bedBlockState, BedRule rule, BlockPos pos, @Cancellable CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> cir) {
 		Direction initial = (Direction) (instance.hasProperty(property) ? original.call(instance, property) : null);
 		Direction dir = EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
 
@@ -109,7 +111,7 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	}
 
 	@Redirect(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
-	private boolean hasNoMonstersNearby(List<Monster> monsters, BlockPos pos) {
+	private boolean hasNoMonstersNearby(List<Monster> monsters, AbstractBedBlock bedBlock, BlockState bedBlockState, BedRule rule, BlockPos pos) {
 		boolean vanillaResult = monsters.isEmpty();
 		EventResult result = EntitySleepEvents.ALLOW_NEARBY_MONSTERS.invoker().allowNearbyMonsters((Player) (Object) this, pos, vanillaResult);
 		return result.allowAction(vanillaResult);

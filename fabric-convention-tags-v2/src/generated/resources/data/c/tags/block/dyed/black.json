@@ -11,7 +11,9 @@
     "minecraft:black_stained_glass",
     "minecraft:black_stained_glass_pane",
     "minecraft:black_terracotta",
-    "minecraft:black_wall_banner",
-    "minecraft:black_wool"
+    "minecraft:black_wool",
+    "minecraft:black_wool_slab",
+    "minecraft:black_wool_stairs",
+    "minecraft:black_wall_banner"
   ]
 }

@@ -398,6 +398,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		try {
 			CompletableFuture<T> future = computeOnClient(client -> {
 				DeltaTracker.DefaultValue deltaTracker = DeltaTrackerDefaultValueAccessor.create(options.deltaTicks);
+				client.gameRenderer.update(deltaTracker);
 				client.gameRenderer.extract(deltaTracker, true);
 				client.gameRenderer.render(deltaTracker, true);
 				RenderSystem.getDevice().createCommandEncoder().submit();

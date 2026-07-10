@@ -76,9 +76,6 @@ transitive-accessible	field	net/minecraft/world/SimpleContainer	items	Lnet/minec
 transitive-accessible	method	net/minecraft/sounds/SoundEvent	createFixedRangeEvent	(Lnet/minecraft/resources/Identifier;F)Lnet/minecraft/sounds/SoundEvent;
 transitive-accessible	method	net/minecraft/sounds/SoundEvent	createVariableRangeEvent	(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/sounds/SoundEvent;
 
-# Creating BlockStateProviderTypes
-transitive-accessible	method	net/minecraft/world/level/levelgen/feature/stateproviders/BlockStateProviderType	<init>	(Lcom/mojang/serialization/MapCodec;)V
-
 # Creating custom biomes
 transitive-accessible	method	net/minecraft/data/worldgen/biome/OverworldBiomes	calculateSkyColor	(F)I
 

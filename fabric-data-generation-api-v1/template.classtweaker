@@ -1,9 +1,6 @@
 accessible	field	net/minecraft/data/DataGenerator	vanillaPackOutput	Lnet/minecraft/data/PackOutput;
 mutable	field	net/minecraft/data/DataGenerator	vanillaPackOutput	Lnet/minecraft/data/PackOutput;
 
-accessible	class	net/minecraft/data/recipes/RecipeProvider$Runner
-transitive-extendable	method	net/minecraft/data/recipes/RecipeProvider$Runner	run	(Lnet/minecraft/data/CachedOutput;)Ljava/util/concurrent/CompletableFuture;
-
 accessible	field	net/minecraft/data/tags/TagsProvider	builders	Ljava/util/Map;
 
 accessible	field	net/minecraft/data/loot/BlockLootSubProvider	map	Ljava/util/Map;
@@ -22,10 +19,12 @@ accessible	field	net/minecraft/data/PackOutput$PathProvider	kind	Ljava/lang/Stri
 
 extendable	method	net/minecraft/data/DataGenerator$PackGenerator	<init>	(Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/PackOutput;)V
 
-accessible	field	net/minecraft/data/registries/VanillaRegistries	BUILDER	Lnet/minecraft/core/RegistrySetBuilder;
 accessible	method	net/minecraft/data/registries/VanillaRegistries	validateThatAllBiomeFeaturesHaveBiomeFilter	(Lnet/minecraft/core/HolderLookup$Provider;)V
+accessible	field	net/minecraft/data/registries/VanillaRegistries	WORLD_BUILDER	Lnet/minecraft/core/RegistrySetBuilder;
+accessible	field	net/minecraft/data/registries/VanillaRegistries	RELOADABLE_BUILDER	Lnet/minecraft/core/RegistrySetBuilder;
 accessible	field	net/minecraft/core/RegistrySetBuilder	entries	Ljava/util/List;
 accessible	class	net/minecraft/core/RegistrySetBuilder$RegistryStub
+accessible	method	net/minecraft/core/RegistrySetBuilder$RegistryStub	requiredRegistries	()Ljava/util/stream/Stream;
 
 accessible	field	net/minecraft/world/level/storage/loot/parameters/LootContextParamSets	REGISTRY	Lcom/google/common/collect/BiMap;
 

@@ -54,6 +54,7 @@ public final class ResourceReloaderKeys {
 		public static final Identifier DRY_FOLIAGE_COLOR = Identifier.withDefaultNamespace("dry_foliage_color");
 		public static final Identifier FOLIAGE_COLOR = Identifier.withDefaultNamespace("foliage_color");
 		public static final Identifier FONTS = Identifier.withDefaultNamespace("fonts");
+		public static final Identifier GAME_RENDERER = Identifier.withDefaultNamespace("game_renderer");
 		public static final Identifier GRASS_COLOR = Identifier.withDefaultNamespace("grass_color");
 		public static final Identifier ATLAS = Identifier.withDefaultNamespace("atlas");
 		public static final Identifier LANGUAGES = Identifier.withDefaultNamespace("languages");

@@ -175,7 +175,15 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		EntitySleepEvents.ALLOW_BED.register((entity, sleepingPos, state, vanillaResult) -> {
-			return state.is(TEST_BED) ? EventResult.ALLOW : EventResult.PASS;
+			if (state.is(TEST_BED)) {
+				if (!vanillaResult) {
+					throw new AssertionError("Test bed should be valid in vanilla");
+				}
+
+				return EventResult.ALLOW;
+			}
+
+			return EventResult.PASS;
 		});
 
 		EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, sleepingDirection) -> {

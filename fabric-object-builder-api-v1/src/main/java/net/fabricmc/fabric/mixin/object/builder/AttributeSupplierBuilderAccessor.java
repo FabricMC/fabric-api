@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.mixin.object.builder;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.CompostableRegistryImpl;
+import com.google.common.collect.ImmutableMap;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-/**
- * Registry of items to 0.0-1.0 values, defining the chance of a given item
- * increasing the Composter block's level.
- */
-public interface CompostableRegistry extends Item2ObjectMap<Float> {
-	CompostableRegistry INSTANCE = new CompostableRegistryImpl();
+import net.minecraft.core.Holder;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+
+@Mixin(AttributeSupplier.Builder.class)
+public interface AttributeSupplierBuilderAccessor {
+	@Accessor("builder")
+	ImmutableMap.Builder<Holder<Attribute>, AttributeInstance> getBuilder();
 }

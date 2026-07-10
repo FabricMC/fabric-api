@@ -34,7 +34,6 @@ public class EntityPermissionContext implements PermissionContext {
 	private final Type type;
 	private final Set<Key<?>> keys;
 	private final @Nullable MinecraftServer server;
-	private @Nullable PermissionLevel permissionLevel;
 
 	public EntityPermissionContext(Entity entity) {
 		this.entity = entity;
@@ -79,11 +78,7 @@ public class EntityPermissionContext implements PermissionContext {
 
 	@Override
 	public PermissionLevel permissionLevel() {
-		if (this.permissionLevel == null) {
-			this.permissionLevel = this.entity instanceof Player player ? CommandPermissionContext.extractPermissionLevel(player.permissions()) : PermissionLevel.ALL;
-		}
-
-		return this.permissionLevel;
+		return this.entity instanceof Player player ? CommandPermissionContext.extractPermissionLevel(player.permissions()) : PermissionLevel.ALL;
 	}
 
 	@Override

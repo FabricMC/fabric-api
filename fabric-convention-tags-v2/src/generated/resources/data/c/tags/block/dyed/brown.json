@@ -11,7 +11,9 @@
     "minecraft:brown_stained_glass",
     "minecraft:brown_stained_glass_pane",
     "minecraft:brown_terracotta",
-    "minecraft:brown_wall_banner",
-    "minecraft:brown_wool"
+    "minecraft:brown_wool",
+    "minecraft:brown_wool_slab",
+    "minecraft:brown_wool_stairs",
+    "minecraft:brown_wall_banner"
   ]
 }

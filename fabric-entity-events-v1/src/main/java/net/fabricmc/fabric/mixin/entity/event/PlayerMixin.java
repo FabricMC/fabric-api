@@ -24,14 +24,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Unit;
+import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.AbstractBedBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 
 @Mixin(Player.class)
 abstract class PlayerMixin {
 	@Inject(method = "startSleepInBed", at = @At("HEAD"), cancellable = true)
-	private void onStartSleepInBed(BlockPos pos, CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> info) {
+	private void onStartSleepInBed(AbstractBedBlock bedBlock, BlockState bedBlockState, BedRule rule, BlockPos pos, CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> info) {
 		Player.BedSleepingProblem failureReason = EntitySleepEvents.ALLOW_SLEEPING.invoker().allowSleep((Player) (Object) this, pos);
 
 		if (failureReason != null) {

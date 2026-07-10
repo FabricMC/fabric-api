@@ -32,7 +32,7 @@ public class ConditionBlockLootSubProvider extends BlockLootSubProvider {
 	private final ResourceCondition[] conditions;
 
 	public ConditionBlockLootSubProvider(BlockLootSubProvider parent, ResourceCondition[] conditions) {
-		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), ((BlockLootSubProviderAccessor) parent).getRegistries());
+		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), ((BlockLootSubProviderAccessor) parent).getOutput());
 
 		this.parent = parent;
 		this.conditions = conditions;

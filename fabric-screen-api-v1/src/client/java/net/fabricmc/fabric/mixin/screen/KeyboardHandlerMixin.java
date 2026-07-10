@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -30,46 +31,69 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 @Mixin(KeyboardHandler.class)
 abstract class KeyboardHandlerMixin {
 	@WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z"))
-	private boolean invokeKeyPressedEvents(Screen screen, KeyEvent ctx, Operation<Boolean> operation) {
+	private boolean invokeKeyPressedEvents(Screen screen, KeyEvent event, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenKeyboardEvents.allowKeyPress(screen).invoker().allowKeyPress(screen, ctx)) {
+			if (!ScreenKeyboardEvents.allowKeyPress(screen).invoker().allowKeyPress(screen, event)) {
 				// Set this press action as handled
 				return true;
 			}
 
-			ScreenKeyboardEvents.beforeKeyPress(screen).invoker().beforeKeyPress(screen, ctx);
+			ScreenKeyboardEvents.beforeKeyPress(screen).invoker().beforeKeyPress(screen, event);
 		}
 
-		boolean result = operation.call(screen, ctx);
+		boolean result = operation.call(screen, event);
 
 		if (screen != null) {
-			ScreenKeyboardEvents.afterKeyPress(screen).invoker().afterKeyPress(screen, ctx);
+			ScreenKeyboardEvents.afterKeyPress(screen).invoker().afterKeyPress(screen, event);
 		}
 
 		return result;
 	}
 
 	@WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyReleased(Lnet/minecraft/client/input/KeyEvent;)Z"))
-	private boolean invokeKeyReleasedEvents(Screen screen, KeyEvent ctx, Operation<Boolean> operation) {
+	private boolean invokeKeyReleasedEvents(Screen screen, KeyEvent event, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenKeyboardEvents.allowKeyRelease(screen).invoker().allowKeyRelease(screen, ctx)) {
+			if (!ScreenKeyboardEvents.allowKeyRelease(screen).invoker().allowKeyRelease(screen, event)) {
 				// Set this release action as handled
 				return true;
 			}
 
-			ScreenKeyboardEvents.beforeKeyRelease(screen).invoker().beforeKeyRelease(screen, ctx);
+			ScreenKeyboardEvents.beforeKeyRelease(screen).invoker().beforeKeyRelease(screen, event);
 		}
 
-		boolean result = operation.call(screen, ctx);
+		boolean result = operation.call(screen, event);
 
 		if (screen != null) {
-			ScreenKeyboardEvents.afterKeyRelease(screen).invoker().afterKeyRelease(screen, ctx);
+			ScreenKeyboardEvents.afterKeyRelease(screen).invoker().afterKeyRelease(screen, event);
+		}
+
+		return result;
+	}
+
+	@WrapOperation(method = "charTyped", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;charTyped(Lnet/minecraft/client/input/CharacterEvent;)Z"))
+	private boolean invokeCharTypedEvents(Screen screen, CharacterEvent event, Operation<Boolean> operation) {
+		// The screen passed to events is the same as the screen the handler method is called on,
+		// regardless of whether the screen changes within the handler or event invocations.
+
+		if (screen != null) {
+			if (!ScreenKeyboardEvents.allowCharType(screen).invoker().allowCharType(screen, event)) {
+				// Set this type action as handled
+				return true;
+			}
+
+			ScreenKeyboardEvents.beforeCharType(screen).invoker().beforeCharType(screen, event);
+		}
+
+		boolean result = operation.call(screen, event);
+
+		if (screen != null) {
+			ScreenKeyboardEvents.afterCharType(screen).invoker().afterCharType(screen, event);
 		}
 
 		return result;

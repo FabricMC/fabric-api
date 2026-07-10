@@ -31,7 +31,7 @@ public class ConditionEntityLootSubProvider extends EntityLootSubProvider {
 	private final ResourceCondition[] conditions;
 
 	public ConditionEntityLootSubProvider(EntityLootSubProvider parent, ResourceCondition[] conditions) {
-		super(FeatureFlags.REGISTRY.allFlags(), ((EntityLootSubProviderAccessor) parent).getRegistries());
+		super(FeatureFlags.REGISTRY.allFlags(), ((EntityLootSubProviderAccessor) parent).getOutput());
 
 		this.parent = parent;
 		this.conditions = conditions;

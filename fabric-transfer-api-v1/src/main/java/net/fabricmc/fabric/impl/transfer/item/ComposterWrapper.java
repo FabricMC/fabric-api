@@ -19,19 +19,33 @@ package net.fabricmc.fabric.impl.transfer.item;
 import static net.minecraft.core.Direction.UP;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.common.collect.MapMaker;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.Compostable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -46,7 +60,16 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
 /**
  * Implementation of {@code Storage<ItemVariant>} for composters.
  */
-public class ComposterWrapper extends SnapshotParticipant<Float> {
+public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.PendingAction> {
+	record PendingAction(@Nullable ResourceKey<NumberProvider> compostProvider, boolean extractBonemeal) {
+		private static final PendingAction NONE = new PendingAction(null, false);
+		private static final PendingAction EXTRACT_BONEMEAL = new PendingAction(null, true);
+
+		private static PendingAction insert(ResourceKey<NumberProvider> compostProvider) {
+			return new PendingAction(compostProvider, false);
+		}
+	}
+
 	// Record is used for convenient constructor, hashcode and equals implementations.
 	private record LevelLocation(Level level, BlockPos pos) {
 		private BlockState getBlockState() {
@@ -78,12 +101,8 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		}
 	}
 
-	private static final float DO_NOTHING = 0f;
-	private static final float EXTRACT_BONEMEAL = -1f;
-
 	private final LevelLocation location;
-	// -1 if bonemeal was extracted, otherwise the composter increase probability of the (pending) inserted item.
-	private Float increaseProbability = DO_NOTHING;
+	private PendingAction pendingAction = PendingAction.NONE;
 	private final TopStorage upStorage = new TopStorage();
 	private final BottomStorage downStorage = new BottomStorage();
 
@@ -92,34 +111,37 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 	}
 
 	@Override
-	protected Float createSnapshot() {
-		return increaseProbability;
+	protected PendingAction createSnapshot() {
+		return pendingAction;
 	}
 
 	@Override
-	protected void readSnapshot(Float snapshot) {
+	protected void readSnapshot(PendingAction snapshot) {
 		// Reset after unsuccessful commit.
-		increaseProbability = snapshot;
+		pendingAction = snapshot;
 	}
 
 	@Override
 	protected void onFinalCommit() {
 		// Apply pending action
-		if (increaseProbability == EXTRACT_BONEMEAL) {
+		if (pendingAction.extractBonemeal) {
 			// Mimic ComposterBlock#emptyComposter logic.
-			location.setBlockState(location.getBlockState().setValue(ComposterBlock.LEVEL, 0));
+			BlockState newState = location.getBlockState().setValue(ComposterBlock.LEVEL, 0);
+			location.setBlockState(newState);
+			location.level.gameEvent(GameEvent.BLOCK_CHANGE, location.pos, GameEvent.Context.of(newState));
 			// Play the sound
 			location.level.playSound(null, location.pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-		} else if (increaseProbability > 0) {
+		} else if (pendingAction.compostProvider != null && location.level instanceof ServerLevel serverLevel) {
 			BlockState state = location.getBlockState();
-			// Always increment on first insert (like vanilla).
-			boolean increaseSuccessful = state.getValue(ComposterBlock.LEVEL) == 0 || location.level.getRandom().nextDouble() < increaseProbability;
+			int layersToAdd = getLayersToAdd(serverLevel, state, pendingAction.compostProvider);
+			boolean increaseSuccessful = layersToAdd > 0;
 
 			if (increaseSuccessful) {
 				// Mimic ComposterBlock#addToComposter logic.
-				int newLevel = state.getValue(ComposterBlock.LEVEL) + 1;
+				int newLevel = Mth.clamp(state.getValue(ComposterBlock.LEVEL) + layersToAdd, 0, 7);
 				BlockState newState = state.setValue(ComposterBlock.LEVEL, newLevel);
 				location.setBlockState(newState);
+				location.level.gameEvent(GameEvent.BLOCK_CHANGE, location.pos, GameEvent.Context.of(newState));
 
 				if (newLevel == 7) {
 					location.level.scheduleTick(location.pos, state.getBlock(), 20);
@@ -130,7 +152,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		}
 
 		// Reset after successful commit.
-		increaseProbability = DO_NOTHING;
+		pendingAction = PendingAction.NONE;
 	}
 
 	private class TopStorage implements InsertionOnlyStorage<ItemVariant> {
@@ -141,16 +163,16 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			// Check amount.
 			if (maxAmount < 1) return 0;
 			// Check that no action is scheduled.
-			if (increaseProbability != DO_NOTHING) return 0;
+			if (pendingAction != PendingAction.NONE) return 0;
 			// Check that the composter can accept items.
 			if (location.getBlockState().getValue(ComposterBlock.LEVEL) >= 7) return 0;
 			// Check that the item is compostable.
-			float insertedIncreaseProbability = ComposterBlock.COMPOSTABLES.getFloat(resource.getItem());
-			if (insertedIncreaseProbability <= 0) return 0;
+			Compostable compostable = resource.getComponents().get(DataComponents.COMPOSTABLE);
+			if (compostable == null || !(location.level instanceof ServerLevel serverLevel) || getNumberProvider(serverLevel, compostable.layers()) == null) return 0;
 
 			// Schedule insertion.
 			updateSnapshots(transaction);
-			increaseProbability = insertedIncreaseProbability;
+			pendingAction = PendingAction.insert(compostable.layers());
 			return 1;
 		}
 
@@ -165,7 +187,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 
 		private boolean hasBoneMeal() {
 			// We only have bone meal if the level is 8 and no action was scheduled.
-			return increaseProbability == DO_NOTHING && location.getBlockState().getValue(ComposterBlock.LEVEL) == 8;
+			return pendingAction == PendingAction.NONE && location.getBlockState().getValue(ComposterBlock.LEVEL) == 8;
 		}
 
 		@Override
@@ -180,7 +202,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			if (!hasBoneMeal()) return 0;
 
 			updateSnapshots(transaction);
-			increaseProbability = EXTRACT_BONEMEAL;
+			pendingAction = PendingAction.EXTRACT_BONEMEAL;
 			return 1;
 		}
 
@@ -208,5 +230,31 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		public String toString() {
 			return "ComposterWrapper[" + location + "/bottom]";
 		}
+	}
+
+	private static int getLayersToAdd(ServerLevel level, BlockState state, ResourceKey<NumberProvider> provider) {
+		NumberProvider numberProvider = getNumberProvider(level, provider);
+
+		if (numberProvider == null) {
+			return 0;
+		}
+
+		LootContext lootContext = new LootContext.Builder(
+				new LootParams.Builder(level)
+						.withParameter(LootContextParams.BLOCK_STATE, state)
+						.create(LootContextParamSets.BLOCK_INTERACT)
+		).create(Optional.empty());
+		return numberProvider.getInt(lootContext);
+	}
+
+	@Nullable
+	private static NumberProvider getNumberProvider(ServerLevel level, ResourceKey<NumberProvider> provider) {
+		return level.getServer()
+				.reloadableRegistries()
+				.lookup()
+				.lookup(Registries.NUMBER_PROVIDER)
+				.flatMap(registry -> registry.get(provider))
+				.map(Holder.Reference::value)
+				.orElse(null);
 	}
 }

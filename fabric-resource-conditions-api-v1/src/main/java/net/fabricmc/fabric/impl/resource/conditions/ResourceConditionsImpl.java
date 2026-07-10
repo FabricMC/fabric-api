@@ -113,10 +113,10 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		}
 
 		ResourceKey<? extends Registry<Object>> registryKey = ResourceKey.createRegistryKey(registryId);
-		Optional<RegistryOps.RegistryInfo<Object>> optionalInfo = infoGetter.lookup(registryKey);
+		Optional<HolderGetter<Object>> optionalInfo = infoGetter.lookup(registryKey);
 
 		if (optionalInfo.isPresent()) {
-			HolderGetter<Object> lookup = optionalInfo.get().getter();
+			HolderGetter<Object> lookup = optionalInfo.get();
 
 			for (Identifier id : tags) {
 				if (lookup.get(TagKey.create(registryKey, id)).isEmpty()) {
@@ -156,10 +156,10 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		}
 
 		ResourceKey<? extends Registry<Object>> registryKey = ResourceKey.createRegistryKey(registryId);
-		Optional<RegistryOps.RegistryInfo<Object>> optionalInfo = infoGetter.lookup(registryKey);
+		Optional<HolderGetter<Object>> optionalInfo = infoGetter.lookup(registryKey);
 
 		if (optionalInfo.isPresent()) {
-			HolderGetter<Object> lookup = optionalInfo.get().getter();
+			HolderGetter<Object> lookup = optionalInfo.get();
 
 			for (Identifier id : entries) {
 				if (lookup.get(ResourceKey.create(registryKey, id)).isEmpty()) {

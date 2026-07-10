@@ -27,7 +27,7 @@ import net.minecraft.world.level.biome.Biome;
  * Utility class for accessing the worldgen data that vanilla uses to generate its vanilla datapack.
  */
 public final class BuiltInResourceKeys {
-	private static final HolderLookup.Provider vanillaRegistries = VanillaRegistries.createLookup();
+	private static final HolderLookup.Provider vanillaRegistries = VanillaRegistries.createWorldLookup();
 
 	private BuiltInResourceKeys() {
 	}

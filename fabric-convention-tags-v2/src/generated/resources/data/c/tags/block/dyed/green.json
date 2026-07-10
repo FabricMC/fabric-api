@@ -11,7 +11,9 @@
     "minecraft:green_stained_glass",
     "minecraft:green_stained_glass_pane",
     "minecraft:green_terracotta",
-    "minecraft:green_wall_banner",
-    "minecraft:green_wool"
+    "minecraft:green_wool",
+    "minecraft:green_wool_slab",
+    "minecraft:green_wool_stairs",
+    "minecraft:green_wall_banner"
   ]
 }

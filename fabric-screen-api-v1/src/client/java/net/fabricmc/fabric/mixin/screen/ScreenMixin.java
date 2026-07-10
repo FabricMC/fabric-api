@@ -82,6 +82,12 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenKeyboardEvents.BeforeKeyRelease> beforeKeyReleaseEvent;
 	@Unique
 	private Event<ScreenKeyboardEvents.AfterKeyRelease> afterKeyReleaseEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.AllowCharType> allowCharTypeEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.BeforeCharType> beforeCharTypeEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.AfterCharType> afterCharTypeEvent;
 
 	// Mouse
 	@Unique
@@ -152,6 +158,9 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.allowKeyReleaseEvent = ScreenEventFactory.createAllowKeyReleaseEvent();
 		this.beforeKeyReleaseEvent = ScreenEventFactory.createBeforeKeyReleaseEvent();
 		this.afterKeyReleaseEvent = ScreenEventFactory.createAfterKeyReleaseEvent();
+		this.allowCharTypeEvent = ScreenEventFactory.createAllowCharTypeEvent();
+		this.beforeCharTypeEvent = ScreenEventFactory.createBeforeCharTypeEvent();
+		this.afterCharTypeEvent = ScreenEventFactory.createAfterCharTypeEvent();
 
 		// Mouse
 		this.allowMouseClickEvent = ScreenEventFactory.createAllowMouseClickEvent();
@@ -254,6 +263,21 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Override
 	public Event<ScreenKeyboardEvents.AfterKeyRelease> fabric_getAfterKeyReleaseEvent() {
 		return ensureEventsAreInitialized(this.afterKeyReleaseEvent);
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.AllowCharType> fabric_getAllowCharTypeEvent() {
+		return ensureEventsAreInitialized(this.allowCharTypeEvent);
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.BeforeCharType> fabric_getBeforeCharTypeEvent() {
+		return ensureEventsAreInitialized(this.beforeCharTypeEvent);
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.AfterCharType> fabric_getAfterCharTypeEvent() {
+		return ensureEventsAreInitialized(this.afterCharTypeEvent);
 	}
 
 	// Mouse

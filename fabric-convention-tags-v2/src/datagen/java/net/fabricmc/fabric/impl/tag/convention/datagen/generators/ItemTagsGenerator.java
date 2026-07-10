@@ -733,8 +733,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(ItemIds.GUNPOWDER);
 
 		builder(ConventionalItemTags.MUSHROOMS)
-				.add(BlockItemIds.RED_MUSHROOM)
-				.add(BlockItemIds.BROWN_MUSHROOM);
+				.addOptionalTag(ItemTags.MUSHROOMS);
 
 		builder(ConventionalItemTags.NETHER_STARS)
 				.add(ItemIds.NETHER_STAR);
