@@ -4,7 +4,8 @@ moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-data-generation-api-v1',
 	'fabric-networking-api-v1',
-	'fabric-resource-conditions-api-v1'
+	'fabric-resource-conditions-api-v1',
+	'fabric-registry-sync-v0'
 ])
 
 testDependencies(project, [
