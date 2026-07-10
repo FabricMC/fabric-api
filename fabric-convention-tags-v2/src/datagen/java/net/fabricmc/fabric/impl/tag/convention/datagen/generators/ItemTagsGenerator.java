@@ -765,7 +765,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
 		}
 
-		for (ColorCollection<ResourceKey<Item>> colorCollection : List.of(ItemIds.DYED_BUNDLE, ItemIds.HARNESS)) {
+		for (ColorCollection<ResourceKey<Item>> colorCollection : List.of(
+				ItemIds.DYED_BUNDLE, ItemIds.CUSHION, ItemIds.HARNESS)) {
 			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
 		}
 
