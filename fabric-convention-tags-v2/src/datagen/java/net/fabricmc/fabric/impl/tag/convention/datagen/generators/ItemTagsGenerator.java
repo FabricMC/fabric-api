@@ -800,6 +800,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		builder(ConventionalItemTags.REDYEABLE_SIMPLE_DYEABLE)
 				.addOptionalTag(BlockItemTags.BEDS.item())
 				.addAll(ItemIds.DYED_BUNDLE)
+				.addOptionalTag(ItemTags.CUSHIONS)
 				.addOptionalTag(ItemTags.HARNESSES)
 				.addOptionalTag(BlockItemTags.WOOL.item())
 				.addOptionalTag(BlockItemTags.WOOL_CARPETS.item())

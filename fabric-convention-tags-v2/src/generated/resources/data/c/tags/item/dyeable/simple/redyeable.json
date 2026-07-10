@@ -21,6 +21,10 @@
     "minecraft:red_bundle",
     "minecraft:black_bundle",
     {
+      "id": "#minecraft:cushions",
+      "required": false
+    },
+    {
       "id": "#minecraft:harnesses",
       "required": false
     },
