@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.InterpolationHandler;
 
 /**
  * Context for a client gametest containing various helpful functions while a connection to a server is open.
@@ -134,6 +135,10 @@ public interface TestServerConnection {
 	 * Waits for updates to entities of the specified types on the server to be sent, and received and processed by
 	 * the client. This waits the maximum of all the update intervals of the specified entity types, then waits for
 	 * the packets to be received.
+	 *
+	 * <p>Some entities interpolate on the client when they are moved, rather than snapping immediately to the right
+	 * position. If you encounter issues with this, you may need to wait for the interpolation to finish after calling
+	 * this method. Living entities interpolate for {@link InterpolationHandler#DEFAULT_INTERPOLATION_STEPS} ticks.
 	 *
 	 * @param entityType The entity type to wait for
 	 * @param moreEntityTypes Additional entity types to wait for

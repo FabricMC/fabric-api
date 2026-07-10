@@ -33,6 +33,11 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.multiplayer.ServerReconfigScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.InterpolationHandler;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -90,7 +95,9 @@ public class ClientGameTestTest implements FabricClientGameTest {
 				context.getInput().pressKey(options -> options.keyChat);
 				context.getInput().typeChars("Hello, World!");
 				context.getInput().holdKeyFor(InputConstants.KEY_RETURN, 0); // press without delay, enter not a keybind
-				context.waitTick(); // wait for the server to receive the chat message
+				// wait for round trip of chat message to server and back to client
+				singleplayer.getConnection().waitForServerboundPackets();
+				singleplayer.getConnection().waitForClientboundPackets();
 				context.takeScreenshot("chat_message_sent");
 			}
 
@@ -105,9 +112,48 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 			{
 				context.getInput().pressKey(options -> options.keyInventory);
-				context.waitTick(); // wait for the server to receive the request
+				context.waitTick(); // wait for the client to process the keybind
 				context.takeScreenshot("in_game_inventory");
 				context.setScreen(() -> null);
+			}
+
+			{
+				Cow serverCow = singleplayer.getServer().computeOnServer(_ -> {
+					ServerLevel level = singleplayer.getConnection().getServerLevel();
+					Cow cow = new Cow(EntityTypes.COW, level);
+					cow.snapTo(singleplayer.getConnection().getServerPlayer().position().add(2, 0, 0));
+					cow.setNoAi(true);
+					level.addFreshEntity(cow);
+					return cow;
+				});
+				singleplayer.getConnection().waitForClientboundEntityUpdates(EntityTypes.COW);
+
+				Cow clientCow = context.computeOnClient(_ -> {
+					Entity entity = singleplayer.getConnection().getClientLevel().getEntity(serverCow.getUUID());
+
+					if (!(entity instanceof Cow cow)) {
+						throw new AssertionError("Expected cow to exist on client");
+					}
+
+					return cow;
+				});
+
+				singleplayer.getServer().runOnServer(_ -> serverCow.snapTo(clientCow.position().add(2, 0, 0)));
+				singleplayer.getConnection().waitForClientboundEntityUpdates(EntityTypes.COW);
+				context.waitTicks(InterpolationHandler.DEFAULT_INTERPOLATION_STEPS); // allow the cow to interpolate to the right position
+				context.runOnClient(_ -> {
+					if (clientCow.position().distanceToSqr(serverCow.position()) >= 1e-7) {
+						throw new AssertionError("Expected cow to move to server position");
+					}
+				});
+
+				singleplayer.getServer().runOnServer(_ -> serverCow.remove(Entity.RemovalReason.DISCARDED));
+				singleplayer.getConnection().waitForClientboundEntityUpdates(EntityTypes.COW);
+				context.runOnClient(_ -> {
+					if (!clientCow.isRemoved()) {
+						throw new AssertionError("Expected cow to be removed from client");
+					}
+				});
 			}
 		}
 
