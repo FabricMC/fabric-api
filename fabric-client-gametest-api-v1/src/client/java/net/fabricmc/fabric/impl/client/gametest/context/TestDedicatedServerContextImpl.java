@@ -47,7 +47,7 @@ public class TestDedicatedServerContextImpl extends TestServerContextImpl implem
 
 		ClientGameTestImpl.waitForWorldLoad(context);
 
-		TestClientLevelContext clientLevel = new TestClientLevelContextImpl(context);
+		TestClientLevelContext clientLevel = new TestClientLevelContextImpl(context, this);
 		return new TestServerConnectionImpl(context, clientLevel);
 	}
 

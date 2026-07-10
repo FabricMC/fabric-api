@@ -527,19 +527,27 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	@Override
 	public <E extends Throwable> void runOnClient(FailableConsumer<Minecraft, E> action) throws E {
-		ThreadingImpl.checkOnGametestThread("runOnClient");
+		ThreadingImpl.checkOnGametestOrClientThread("runOnClient");
 		Preconditions.checkNotNull(action, "action");
 
-		ThreadingImpl.runOnClient(() -> action.accept(Minecraft.getInstance()));
+		if (ThreadingImpl.unsafeClientInstance.isSameThread()) {
+			action.accept(Minecraft.getInstance());
+		} else {
+			ThreadingImpl.runOnClient(() -> action.accept(Minecraft.getInstance()));
+		}
 	}
 
 	@Override
 	public <T, E extends Throwable> T computeOnClient(FailableFunction<Minecraft, T, E> function) throws E {
-		ThreadingImpl.checkOnGametestThread("computeOnClient");
+		ThreadingImpl.checkOnGametestOrClientThread("computeOnClient");
 		Preconditions.checkNotNull(function, "function");
 
-		MutableObject<T> result = new MutableObject<>();
-		ThreadingImpl.runOnClient(() -> result.setValue(function.apply(Minecraft.getInstance())));
-		return result.getValue();
+		if (ThreadingImpl.unsafeClientInstance.isSameThread()) {
+			return function.apply(Minecraft.getInstance());
+		} else {
+			MutableObject<T> result = new MutableObject<>();
+			ThreadingImpl.runOnClient(() -> result.setValue(function.apply(Minecraft.getInstance())));
+			return result.getValue();
+		}
 	}
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.gametest.context;
 
+import java.util.function.Predicate;
+
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
@@ -23,6 +25,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import net.minecraft.server.MinecraftServer;
 
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 
@@ -43,19 +46,67 @@ public class TestServerContextImpl implements TestServerContext {
 
 	@Override
 	public <E extends Throwable> void runOnServer(FailableConsumer<MinecraftServer, E> action) throws E {
-		ThreadingImpl.checkOnGametestThread("runOnServer");
+		ThreadingImpl.checkOnGametestOrServerThread("runOnServer", server);
 		Preconditions.checkNotNull(action, "action");
 
-		ThreadingImpl.runOnServer(() -> action.accept(server));
+		if (server.isSameThread()) {
+			action.accept(server);
+		} else {
+			ThreadingImpl.runOnServer(() -> action.accept(server));
+		}
 	}
 
 	@Override
 	public <T, E extends Throwable> T computeOnServer(FailableFunction<MinecraftServer, T, E> function) throws E {
-		ThreadingImpl.checkOnGametestThread("computeOnServer");
+		ThreadingImpl.checkOnGametestOrServerThread("computeOnServer", server);
 		Preconditions.checkNotNull(function, "function");
 
-		MutableObject<T> result = new MutableObject<>();
-		ThreadingImpl.runOnServer(() -> result.setValue(function.apply(server)));
-		return result.getValue();
+		if (server.isSameThread()) {
+			return function.apply(server);
+		} else {
+			MutableObject<T> result = new MutableObject<>();
+			ThreadingImpl.runOnServer(() -> result.setValue(function.apply(server)));
+			return result.getValue();
+		}
+	}
+
+	@Override
+	public int waitFor(Predicate<MinecraftServer> predicate) {
+		ThreadingImpl.checkOnGametestThread("waitFor");
+		Preconditions.checkNotNull(predicate, "predicate");
+		return waitFor(predicate, ClientGameTestContext.DEFAULT_TIMEOUT);
+	}
+
+	@Override
+	public int waitFor(Predicate<MinecraftServer> predicate, int timeout) {
+		ThreadingImpl.checkOnGametestThread("waitFor");
+		Preconditions.checkNotNull(predicate, "predicate");
+
+		if (timeout == ClientGameTestContext.NO_TIMEOUT) {
+			int ticksWaited = 0;
+
+			while (!computeOnServer(predicate::test)) {
+				ticksWaited++;
+				ThreadingImpl.runTick();
+			}
+
+			return ticksWaited;
+		} else {
+			Preconditions.checkArgument(timeout > 0, "timeout must be positive");
+
+			for (int i = 0; i < timeout; i++) {
+				if (computeOnServer(predicate::test)) {
+					return i;
+				}
+
+				ThreadingImpl.runTick();
+			}
+
+			if (!computeOnServer(predicate::test)) {
+				throw new AssertionError("Timed out waiting for predicate");
+			}
+
+			return timeout;
+		}
 	}
 }

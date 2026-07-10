@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder;
 /**
  * Context for a client gametest containing various helpful functions and functions to access the game.
  *
- * <p>Functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, functions in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface ClientGameTestContext {
@@ -198,7 +198,10 @@ public interface ClientGameTestContext {
 	void restoreDefaultGameOptions();
 
 	/**
-	 * Runs the given action on the render thread (client thread), and waits for it to complete.
+	 * Runs the given action on the render thread (client thread), and waits for it to complete. If already on the
+	 * render thread, the action is run directly.
+	 *
+	 * <p>This method works on the client gametest thread and the render thread.
 	 *
 	 * @param action The action to run on the render thread
 	 * @param <E> The type of checked exception that the action throws
@@ -207,7 +210,10 @@ public interface ClientGameTestContext {
 	<E extends Throwable> void runOnClient(FailableConsumer<Minecraft, E> action) throws E;
 
 	/**
-	 * Runs the given function on the render thread (client thread), and returns the result.
+	 * Runs the given function on the render thread (client thread), and returns the result. If already on the
+	 * render thread, the function is run directly.
+	 *
+	 * <p>This method works on the client gametest thread and the render thread.
 	 *
 	 * @param function The function to run on the render thread
 	 * @return The result of the function

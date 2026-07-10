@@ -20,12 +20,16 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
 
 /**
  * Context for a client gametest containing various helpful functions while a client level is open.
  *
- * <p>Functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, functions in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestClientLevelContext {
@@ -100,4 +104,75 @@ public interface TestClientLevelContext {
 	 * @return The number of ticks waited
 	 */
 	int waitForChunksRender(boolean waitForDownload, int timeout);
+
+	/**
+	 * Waits for all packets that have already been sent on the server to be received and processed by the client.
+	 *
+	 * <p>Note that the server batches some updates, sending them later in the tick, so in some cases a wait may need
+	 * to be added before calling this method to ensure the packets are sent. Notable examples include:
+	 *
+	 * <ul>
+	 *     <li>Block changes, which require a call to {@link ClientGameTestContext#waitTick()} before calling this method.</li>
+	 *     <li>Entity updates, which are batched less frequently. You can call {@link #waitForClientboundEntityUpdates} instead
+	 *         of this method to handle this case.</li>
+	 * </ul>
+	 *
+	 * <p>It may be tempting to call {@link ClientGameTestContext#waitTick()} instead of this method. This often appears to work,
+	 * especially in singleplayer, since packets can often take less than a tick to arrive. However it is not 100% reliable and
+	 * will produce flaky tests. For a similar reason, forgetting to call {@link ClientGameTestContext#waitTick()} before this
+	 * method for a block change often works anyway, since the packets sent by the server batching block updates can still arrive
+	 * before control is returned to the client gametest thread, however this is not guaranteed.
+	 */
+	void waitForClientboundPackets();
+
+	/**
+	 * Waits for all packets that have already been sent on the client to be received and processed by the server.
+	 */
+	void waitForServerboundPackets();
+
+	/**
+	 * Waits for updates to entities of the specified types on the server to be sent, and received and processed by
+	 * the client. This waits the maximum of all the update intervals of the specified entity types, then waits for
+	 * the packets to be received.
+	 *
+	 * @param entityType The entity type to wait for
+	 * @param moreEntityTypes Additional entity types to wait for
+	 */
+	void waitForClientboundEntityUpdates(EntityType<?> entityType, EntityType<?>... moreEntityTypes);
+
+	/**
+	 * Gets the client player.
+	 *
+	 * <p>This method works on the client gametest thread and the render (client) thread.
+	 *
+	 * @return The client player
+	 */
+	LocalPlayer getClientPlayer();
+
+	/**
+	 * Gets the server player corresponding to the connected client.
+	 *
+	 * <p>This method works on the client gametest thread and the server thread.
+	 *
+	 * @return The server player
+	 */
+	ServerPlayer getServerPlayer();
+
+	/**
+	 * Gets the client level.
+	 *
+	 * <p>This method works on the client gametest thread and the render (client) thread.
+	 *
+	 * @return The client level
+	 */
+	ClientLevel getClientLevel();
+
+	/**
+	 * Gets the server level of the same dimension as the client level.
+	 *
+	 * <p>This method works on the client gametest thread and the server thread.
+	 *
+	 * @return The server level
+	 */
+	ServerLevel getServerLevel();
 }

@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 
@@ -94,6 +95,11 @@ public final class ThreadingImpl {
 	public static Runnable taskToRun = null;
 
 	private static volatile boolean gameCrashed = false;
+
+	public static volatile boolean networkSyncReceived = false;
+
+	// Reference to Minecraft instance to avoid calling Minecraft.getInstance() on gametest thread (which has a check against doing that)
+	public static Minecraft unsafeClientInstance;
 
 	public static void enterPhase(int phase) {
 		while (enablePhases && getNextPhase() != phase) {
@@ -167,6 +173,14 @@ public final class ThreadingImpl {
 
 	public static void checkOnGametestThread(String methodName) {
 		Preconditions.checkState(Thread.currentThread() == testThread, "%s can only be called from the client gametest thread", methodName);
+	}
+
+	public static void checkOnGametestOrClientThread(String methodName) {
+		Preconditions.checkState(Thread.currentThread() == testThread || unsafeClientInstance.isSameThread(), "%s can only be called from the client gametest thread or the client thread", methodName);
+	}
+
+	public static void checkOnGametestOrServerThread(String methodName, MinecraftServer server) {
+		Preconditions.checkState(Thread.currentThread() == testThread || server.isSameThread(), "%s can only be called from the client gametest thread or the server thread", methodName);
 	}
 
 	public static <E extends Throwable> void runOnClient(FailableRunnable<E> action) throws E {
