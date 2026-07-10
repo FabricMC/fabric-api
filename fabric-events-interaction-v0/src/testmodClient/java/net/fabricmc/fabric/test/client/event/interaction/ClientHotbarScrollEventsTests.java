@@ -33,7 +33,7 @@ public class ClientHotbarScrollEventsTests implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		try (
-				TestSingleplayerContext _ = context.worldBuilder()
+				TestSingleplayerContext spContext = context.worldBuilder()
 						.adjustSettings(creator ->
 								creator.setGameMode(WorldCreationUiState.SelectedGameMode.CREATIVE))
 						.create()) {
@@ -46,7 +46,7 @@ public class ClientHotbarScrollEventsTests implements FabricClientGameTest {
 			};
 			context.runOnClient((minecraft) -> {
 				// player blaze powder testing
-				LocalPlayer player = Objects.requireNonNull(minecraft.player);
+				LocalPlayer player = spContext.getConnection().getClientPlayer();
 				Inventory playerInventory = player.getInventory();
 				int selectedSlot1 = playerInventory.getSelectedSlot();
 				ctx.selectedSlot = selectedSlot1;
