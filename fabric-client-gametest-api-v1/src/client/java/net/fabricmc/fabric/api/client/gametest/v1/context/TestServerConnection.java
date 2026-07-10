@@ -29,7 +29,7 @@ import net.minecraft.world.entity.EntityType;
 /**
  * Context for a client gametest containing various helpful functions while a connection to a server is open.
  *
- * <p>Unless otherwise specified, functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestServerConnection {
@@ -143,7 +143,7 @@ public interface TestServerConnection {
 	/**
 	 * Gets the client player.
 	 *
-	 * <p>This method works on the client gametest thread and the render (client) thread.
+	 * <p>This method can only be called from the render (client) thread.
 	 *
 	 * @return The client player
 	 */
@@ -152,7 +152,7 @@ public interface TestServerConnection {
 	/**
 	 * Gets the server player corresponding to the connected client.
 	 *
-	 * <p>This method works on the client gametest thread and the server thread.
+	 * <p>This method can onlu be called from the server thread.
 	 *
 	 * @return The server player
 	 */
@@ -161,7 +161,7 @@ public interface TestServerConnection {
 	/**
 	 * Gets the client level.
 	 *
-	 * <p>This method works on the client gametest thread and the render (client) thread.
+	 * <p>This method can only be called from the render (client) thread.
 	 *
 	 * @return The client level
 	 */
@@ -170,7 +170,7 @@ public interface TestServerConnection {
 	/**
 	 * Gets the server level of the same dimension as the client level.
 	 *
-	 * <p>This method works on the client gametest thread and the server thread.
+	 * <p>This method can onlu be called from the server thread.
 	 *
 	 * @return The server level
 	 */

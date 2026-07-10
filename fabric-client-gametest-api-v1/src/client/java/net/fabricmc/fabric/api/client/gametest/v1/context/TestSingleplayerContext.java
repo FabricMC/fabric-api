@@ -23,12 +23,14 @@ import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 /**
  * Context for a client gametest containing various helpful functions while a singleplayer game is open.
  *
- * <p>Functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestSingleplayerContext extends AutoCloseable {
 	/**
 	 * Gets the handle for the world save.
+	 *
+	 * <p>This method can be called from any thread.
 	 *
 	 * @return The handle for the world save
 	 */
@@ -37,12 +39,16 @@ public interface TestSingleplayerContext extends AutoCloseable {
 	/**
 	 * Gets the handle for the client level.
 	 *
+	 * <p>This method can be called from any thread.
+	 *
 	 * @return The handle for the client level
 	 */
 	TestServerConnection getConnection();
 
 	/**
 	 * Gets the handle for the integrated server.
+	 *
+	 * <p>This method can be called from any thread.
 	 *
 	 * @return The handle for the integrated server
 	 */

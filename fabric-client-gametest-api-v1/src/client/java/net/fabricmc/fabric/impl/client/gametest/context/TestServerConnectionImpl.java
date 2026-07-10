@@ -135,35 +135,31 @@ public class TestServerConnectionImpl implements TestServerConnection {
 
 	@Override
 	public LocalPlayer getClientPlayer() {
-		ThreadingImpl.checkOnGametestOrClientThread("getClientPlayer");
+		ThreadingImpl.checkOnClientThread("getClientPlayer");
 
-		return context.computeOnClient(client -> Objects.requireNonNull(client.player, "Not in world!"));
+		return Objects.requireNonNull(Minecraft.getInstance().player, "Not in world!");
 	}
 
 	@Override
 	public ClientLevel getClientLevel() {
-		ThreadingImpl.checkOnGametestOrClientThread("getClientLevel");
+		ThreadingImpl.checkOnClientThread("getClientLevel");
 
-		return context.computeOnClient(client -> Objects.requireNonNull(client.level, "Not in world!"));
+		return Objects.requireNonNull(Minecraft.getInstance().level, "Not in world!");
 	}
 
 	@Override
 	public ServerPlayer getServerPlayer() {
-		ThreadingImpl.checkOnGametestOrServerThread("getServerPlayer", serverContext.server);
+		ThreadingImpl.checkOnServerThread("getServerPlayer", serverContext.server);
 
-		return serverContext.computeOnServer(server -> {
-			UUID uuid = Minecraft.getInstance().getGameProfile().id();
-			return Objects.requireNonNull(server.getPlayerList().getPlayer(uuid), "No corresponding player on server!");
-		});
+		UUID uuid = Minecraft.getInstance().getGameProfile().id();
+		return Objects.requireNonNull(serverContext.server.getPlayerList().getPlayer(uuid), "No corresponding player on server!");
 	}
 
 	@Override
 	public ServerLevel getServerLevel() {
-		ThreadingImpl.checkOnGametestOrServerThread("getServerLevel", serverContext.server);
+		ThreadingImpl.checkOnServerThread("getServerLevel", serverContext.server);
 
-		return serverContext.computeOnServer(server -> {
-			ClientLevel clientLevel = Objects.requireNonNull(Minecraft.getInstance().level, "Not in world!");
-			return Objects.requireNonNull(server.getLevel(clientLevel.dimension()), "No corresponding level on server!");
-		});
+		ClientLevel clientLevel = Objects.requireNonNull(Minecraft.getInstance().level, "Not in world!");
+		return Objects.requireNonNull(serverContext.server.getLevel(clientLevel.dimension()), "No corresponding level on server!");
 	}
 }

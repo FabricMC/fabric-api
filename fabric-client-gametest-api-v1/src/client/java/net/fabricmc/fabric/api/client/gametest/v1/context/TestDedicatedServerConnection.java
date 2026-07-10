@@ -23,7 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
  * This class implements {@link AutoCloseable} and is intended to be used in a try-with-resources statement. When
  * closed, the client will be disconnected from the server.
  *
- * <p>Unless otherwise specified, functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestDedicatedServerConnection extends TestServerConnection, AutoCloseable {

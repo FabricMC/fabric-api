@@ -29,7 +29,7 @@ import net.minecraft.server.MinecraftServer;
  * Context for a client gametest containing various helpful functions while a server (integrated or dedicated) is
  * running.
  *
- * <p>Unless otherwise specified, functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestServerContext {
@@ -44,7 +44,7 @@ public interface TestServerContext {
 	 * Runs the given action on the server thread, and waits for it to complete. If already on the server thread,
 	 * this action is run directly.
 	 *
-	 * <p>This method works on the client gametest thread and the server thread.
+	 * <p>This method can be called from the client gametest thread and the server thread.
 	 *
 	 * @param action The action to run on the server thread
 	 * @param <E> The type of the checked exception that the action throws
@@ -56,7 +56,7 @@ public interface TestServerContext {
 	 * Runs the given function on the server thread, and returns the result. If already on the server thread,
 	 * the function is run directly.
 	 *
-	 * <p>This method works on the client gametest thread and the server thread.
+	 * <p>This method can be called from the client gametest thread and the server thread.
 	 *
 	 * @param function The function to run on the server thread
 	 * @return The result of the function

@@ -175,8 +175,16 @@ public final class ThreadingImpl {
 		Preconditions.checkState(Thread.currentThread() == testThread, "%s can only be called from the client gametest thread", methodName);
 	}
 
+	public static void checkOnClientThread(String methodName) {
+		Preconditions.checkState(unsafeClientInstance.isSameThread(), "%s can only be called from the client thread", methodName);
+	}
+
 	public static void checkOnGametestOrClientThread(String methodName) {
 		Preconditions.checkState(Thread.currentThread() == testThread || unsafeClientInstance.isSameThread(), "%s can only be called from the client gametest thread or the client thread", methodName);
+	}
+
+	public static void checkOnServerThread(String methodName, MinecraftServer server) {
+		Preconditions.checkState(server.isSameThread(), "%s can only be called from the server thread", methodName);
 	}
 
 	public static void checkOnGametestOrServerThread(String methodName, MinecraftServer server) {
