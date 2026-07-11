@@ -5,6 +5,7 @@
   "mixins": [
     "DataComponentInitializersMixin",
     "PlayerListMixin",
+    "RegistryOpsAccessor",
     "ReloadableServerResourcesMixin",
     "SynchronizeRegistriesTaskMixin",
     "extension.BlockEntityTypeMixin",
