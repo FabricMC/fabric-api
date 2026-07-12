@@ -1,0 +1,2 @@
+classTweaker	v1	official
+accessible	field	net/minecraft/server/MinecraftServer	storageSource	Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;
