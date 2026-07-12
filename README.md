@@ -30,13 +30,13 @@ To include the full Fabric API with all modules in the development environment, 
 ### Groovy DSL
 
 ```groovy
-modImplementation "net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION"
+implementation "net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION"
 ```
 
 ### Kotlin DSL
 
 ```kotlin
-modImplementation("net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION")
+implementation("net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION")
 ```
 
 Alternatively, modules from Fabric API can be specified individually as shown below (including module jar to your mod jar):
@@ -54,7 +54,7 @@ Set<String> apiModules = [
 
 // Add each module as a dependency
 apiModules.forEach {
-    include(modImplementation(fabricApi.module(it, FABRIC_API_VERSION)))
+    include(implementation(fabricApi.module(it, FABRIC_API_VERSION)))
 }
 ```
 
@@ -69,7 +69,7 @@ setOf(
     "fabric-networking-api-v1"
 ).forEach {
     // Add each module as a dependency
-    modImplementation(fabricApi.module(it, FABRIC_API_VERSION))
+    implementation(fabricApi.module(it, FABRIC_API_VERSION))
 }
 ```
 
