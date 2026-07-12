@@ -54,6 +54,7 @@ public class ModifyComponentsInPropertiesTestSetup implements ModInitializer {
 			if (item.getDefaultInstance().getDestroySpeed(Blocks.ACACIA_BUTTON.defaultBlockState()) == 44f) {
 				throw new AssertionError("ModifyComponentsInPropertiesTestSetup failed");
 			}
+
 			if (item.getDefaultInstance().getDestroySpeed(Blocks.DIRT.defaultBlockState()) != 44f) {
 				throw new AssertionError("ModifyComponentsInPropertiesTestSetup failed");
 			}
