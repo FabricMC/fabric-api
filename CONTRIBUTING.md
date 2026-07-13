@@ -102,7 +102,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Avoid exposing java `record`s as public API.
     - Records expose more than is necessary for most APIs, which makes them difficult to evolve.
     - Prefer to expose an interface that is implemented by an impl record.
-- Always privatize constructors in utility classes
+- Always privatize constructors in utility classes.
     - Utility classes are never instantiated, so ensure that they are final and their constructors are privatized.
 - Avoid creating constant interfaces or creating an interface that is never implemented and intended only to hold `static final` fields.
     - Constant interfaces confuse users by suggesting they are intended to be implemented.
@@ -113,10 +113,6 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
         public static final Event<Allow> ALLOW = ...;
         public static final Event<Before> BEFORE = ...;
         public static final Event<After> AFTER = ...;
-    
-        // Holder class is not meant for instantiation.
-        private FooEvents() {
-        }
     
         @FunctionalInterface
         public interface Allow {
@@ -131,6 +127,10 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
         @FunctionalInterface
         public interface Two {
             void afterFoo(/* relevant parameters */);
+        }
+    
+        // Holder class is not meant for instantiation.
+        private FooEvents() {
         }
     }
     ```
@@ -213,10 +213,6 @@ public final class FooEvents {
     public static final Event<Before> BEFORE = ...;
     public static final Event<After> AFTER = ...;
 
-    // Holder class is not meant for instantiation.
-    private FooEvents() {
-    }
-
     @FunctionalInterface
     public interface Allow {
         boolean allowFoo(/* relevant parameters */);
@@ -230,6 +226,10 @@ public final class FooEvents {
     @FunctionalInterface
     public interface Two {
         void afterFoo(/* relevant parameters */);
+    }
+
+    // Holder class is not meant for instantiation.
+    private FooEvents() {
     }
 }
 ```
