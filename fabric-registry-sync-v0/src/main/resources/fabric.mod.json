@@ -18,7 +18,8 @@
   "depends": {
     "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
-    "fabric-networking-api-v1": "*"
+    "fabric-networking-api-v1": "*",
+    "fabric-lifecycle-events-v1": "*"
   },
   "description": "Syncs registry mappings.",
   "mixins": [

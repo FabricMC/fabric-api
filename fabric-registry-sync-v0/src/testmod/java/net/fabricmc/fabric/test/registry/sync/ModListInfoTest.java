@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.modlist;
+package net.fabricmc.fabric.test.registry.sync;
 
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -49,7 +49,7 @@ public class ModListInfoTest implements ModInitializer {
 				return;
 			}
 
-			Path filePath = server.storageSource.getLevelPath(LevelResource.ROOT).resolve(FILE_NAME);
+			Path filePath = server.getWorldPath(LevelResource.ROOT).resolve("fabric").resolve(FILE_NAME);
 
 			if (!Files.exists(filePath)) {
 				throw new AssertionError("[ModListInfoTest] " + FILE_NAME + " was not created at: " + filePath);
