@@ -114,6 +114,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
         public static final Event<Before> BEFORE = ...;
         public static final Event<After> AFTER = ...;
     
+        // Holder class is not meant for instantiation.
         private FooEvents() {
         }
     
@@ -130,10 +131,6 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
         @FunctionalInterface
         public interface Two {
             void afterFoo(/* relevant parameters */);
-        }
-    
-        // Holder class is not meant for instantiation.
-        private ExampleEvents() {
         }
     }
     ```
@@ -216,6 +213,7 @@ public final class FooEvents {
     public static final Event<Before> BEFORE = ...;
     public static final Event<After> AFTER = ...;
 
+    // Holder class is not meant for instantiation.
     private FooEvents() {
     }
 
@@ -232,10 +230,6 @@ public final class FooEvents {
     @FunctionalInterface
     public interface Two {
         void afterFoo(/* relevant parameters */);
-    }
-
-    // Holder class is not meant for instantiation.
-    private ExampleEvents() {
     }
 }
 ```
