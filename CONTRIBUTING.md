@@ -144,7 +144,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
         - This makes it too easy to forget the mod ID namespace, so the identifier would often end up in the vanilla `minecraft` namespace.
     - In general, keep the API guidelines in mind when deciding whether something should be a TAW.
 - Interface injection (i.e. making a minecraft class or interface extend a Fabric interface) should be considered over separate static helpers.
-    - Interface injection requires both a `fabric.mod.json` custom value to make it visible in Minecraft source code, and a mixin to actually implement the interface at runtime.
+    - Interface injection requires both a `transitive-inject-interface` class tweaker entry to make it visible in Minecraft source code and a Mixin to actually implement the interface at runtime.
     - Injected interfaces should have **no abstract methods**.
         - Methods that are guaranteed to be implemented via a mixin to a vanilla class should contain a default body that throws an error.
           Otherwise, the compiler will complain when it can't find the implementation of an interface method on a class.
