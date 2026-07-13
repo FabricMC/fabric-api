@@ -33,12 +33,12 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 /**
- * Verifies that {@code fabricModList.json} is written to the world directory
+ * Verifies that {@code fabric-mod-list.json} is written to the world directory
  * after a save and that it contains valid, non-empty data.
  */
 public class ModListInfoTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger("ModListInfoTest");
-	private static final String FILE_NAME = "fabricModList.json";
+	private static final String FILE_NAME = "fabric-mod-list.json";
 	private boolean hasRun = false;
 
 	@Override
@@ -59,22 +59,22 @@ public class ModListInfoTest implements ModInitializer {
 				JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
 
 				if (!root.has("modCount")) {
-					throw new AssertionError("[ModListInfoTest] fabricModList.json is missing 'modCount' field");
+					throw new AssertionError("[ModListInfoTest] fabric-mod-list.json is missing 'modCount' field");
 				}
 
 				if (!root.has("mods")) {
-					throw new AssertionError("[ModListInfoTest] fabricModList.json is missing 'mods' field");
+					throw new AssertionError("[ModListInfoTest] fabric-mod-list.json is missing 'mods' field");
 				}
 
 				JsonArray mods = root.getAsJsonArray("mods");
 				int modCount = root.get("modCount").getAsInt();
 
 				if (mods.size() == 0) {
-					throw new AssertionError("[ModListInfoTest] fabricModList.json 'mods' array is empty");
+					throw new AssertionError("[ModListInfoTest] fabric-mod-list.json 'mods' array is empty");
 				}
 
 				if (mods.size() != modCount) {
-					throw new AssertionError("[ModListInfoTest] fabricModList.json 'modCount' (" + modCount + ") does not match actual mod array size (" + mods.size() + ")");
+					throw new AssertionError("[ModListInfoTest] fabric-mod-list.json 'modCount' (" + modCount + ") does not match actual mod array size (" + mods.size() + ")");
 				}
 
 				// Verify each entry has the required fields.

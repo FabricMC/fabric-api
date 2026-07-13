@@ -43,15 +43,15 @@ import net.fabricmc.loader.api.ModContainer;
 
 /**
  * Saves the list of currently active mods and their versions into the world's
- * save directory as {@code fabric/fabricModList.json} after the world is saved.
+ * save directory as {@code fabric/fabric-mod-list.json} after the world is saved.
  *
- * <p>The file is written to {@code <world_dir>/fabric/fabricModList.json}. It is
+ * <p>The file is written to {@code <world_dir>/fabric/fabric-mod-list.json}. It is
  * ignored by vanilla Minecraft and can be used to reconstruct the modpack
  * that was used when a world was last played.
  */
 public final class ModListSaver {
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricModListInfo");
-	private static final String FILE_NAME = "fabricModList.json";
+	private static final String FILE_NAME = "fabric-mod-list.json";
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	@Nullable
 	private static volatile String cachedJson = null;
