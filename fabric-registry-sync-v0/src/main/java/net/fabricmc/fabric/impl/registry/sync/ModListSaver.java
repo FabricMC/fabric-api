@@ -43,15 +43,15 @@ import net.fabricmc.loader.api.ModContainer;
 
 /**
  * Saves the list of currently active mods and their versions into the world's
- * save directory as {@code fabric/fabric-mod-list.json} after the world is saved.
+ * save directory as {@code fabric/mod-list.json} after the world is saved.
  *
- * <p>The file is written to {@code <world_dir>/fabric/fabric-mod-list.json}. It is
+ * <p>The file is written to {@code <world_dir>/fabric/mod-list.json}. It is
  * ignored by vanilla Minecraft and can be used to reconstruct the modpack
  * that was used when a world was last played.
  */
 public final class ModListSaver {
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricModListInfo");
-	private static final String FILE_NAME = "fabric-mod-list.json";
+	private static final String FILE_NAME = "mod-list.json";
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	@Nullable
 	private static volatile String cachedJson = null;
@@ -60,7 +60,7 @@ public final class ModListSaver {
 	}
 
 	/**
-	 * Collects the active mod list and writes it to the world directory.
+	 * Collects the active mod list and writes it atomically to the world directory.
 	 *
 	 * @param server the server whose world directory to write into
 	 */
@@ -76,58 +76,95 @@ public final class ModListSaver {
 			return;
 		}
 
-		if (cachedJson == null) {
-			JsonObject root = new JsonObject();
+		String json = getOrBuildJson();
+		writeToDisk(json, outputPath);
+	}
 
-			// Collect all top-level mods (not embedded ones), sorted by mod id.
-			List<ModContainer> mods = new ArrayList<>();
+	/**
+	 * Returns the cached JSON representation of the mod list, building it on first call.
+	 *
+	 * <p>The result is cached because mod metadata never changes during a server session.
+	 */
+	private static String getOrBuildJson() {
+		String json = cachedJson;
 
-			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-				if (container.getContainingMod().isEmpty()) {
-					mods.add(container);
-				}
-			}
-
-			mods.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
-
-			JsonArray modArray = new JsonArray();
-
-			for (ModContainer mod : mods) {
-				JsonObject entry = new JsonObject();
-				entry.addProperty("id", mod.getMetadata().getId());
-				entry.addProperty("name", mod.getMetadata().getName());
-				entry.addProperty("version", mod.getMetadata().getVersion().getFriendlyString());
-
-				// Also list any embedded/child mods (e.g. Fabric API sub-modules).
-				if (!mod.getContainedMods().isEmpty()) {
-					JsonArray children = new JsonArray();
-
-					List<ModContainer> childMods = new ArrayList<>(mod.getContainedMods());
-					childMods.sort(Comparator.comparing(child -> child.getMetadata().getId()));
-
-					for (ModContainer child : childMods) {
-						JsonObject childEntry = new JsonObject();
-						childEntry.addProperty("id", child.getMetadata().getId());
-						childEntry.addProperty("version", child.getMetadata().getVersion().getFriendlyString());
-						children.add(childEntry);
-					}
-
-					entry.add("children", children);
-				}
-
-				modArray.add(entry);
-			}
-
-			root.addProperty("modCount", mods.size());
-			root.add("mods", modArray);
-
-			cachedJson = GSON.toJson(root);
+		if (json == null) {
+			cachedJson = json = buildJson();
 		}
 
+		return json;
+	}
+
+	/**
+	 * Serializes all loaded mods into a JSON object.
+	 *
+	 * <p>Only top-level mods appear in the root {@code mods} array; embedded mods are
+	 * nested recursively under their parent's {@code children} array. The total count
+	 * of all mods (including embedded ones) is stored in {@code mod_count}.
+	 */
+	private static String buildJson() {
+		// Collect only top-level mods (those not embedded inside another mod).
+		List<ModContainer> topLevelMods = new ArrayList<>();
+
+		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
+			if (container.getContainingMod().isEmpty()) {
+				topLevelMods.add(container);
+			}
+		}
+
+		topLevelMods.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
+
+		JsonArray modArray = new JsonArray();
+
+		for (ModContainer mod : topLevelMods) {
+			// toJson recurses into each mod's contained mods to build the full tree.
+			modArray.add(toJson(mod));
+		}
+
+		JsonObject root = new JsonObject();
+		root.addProperty("mod_count", FabricLoader.getInstance().getAllMods().size());
+		root.add("mods", modArray);
+
+		return GSON.toJson(root);
+	}
+
+	/**
+	 * Recursively serializes a mod and all its embedded children into a JSON object.
+	 *
+	 * <p>Children (mods embedded via Jar-in-Jar) are sorted by mod id and nested
+	 * under a {@code children} array, allowing the full mod tree to be represented.
+	 */
+	private static JsonObject toJson(ModContainer mod) {
+		JsonObject entry = new JsonObject();
+		entry.addProperty("id", mod.getMetadata().getId());
+		entry.addProperty("name", mod.getMetadata().getName());
+		entry.addProperty("version", mod.getMetadata().getVersion().getFriendlyString());
+
+		if (!mod.getContainedMods().isEmpty()) {
+			JsonArray children = new JsonArray();
+
+			List<ModContainer> childMods = new ArrayList<>(mod.getContainedMods());
+			childMods.sort(Comparator.comparing(child -> child.getMetadata().getId()));
+
+			for (ModContainer child : childMods) {
+				children.add(toJson(child));
+			}
+
+			entry.add("children", children);
+		}
+
+		return entry;
+	}
+
+	/**
+	 * Writes {@code json} to {@code outputPath} atomically via a temporary file,
+	 * so that a crash mid-write never leaves a partially written file.
+	 */
+	private static void writeToDisk(String json, Path outputPath) {
 		Path tempPath = outputPath.resolveSibling(FILE_NAME + ".tmp");
 
 		try (Writer writer = Files.newBufferedWriter(tempPath, StandardCharsets.UTF_8)) {
-			writer.write(cachedJson);
+			writer.write(json);
 		} catch (IOException e) {
 			LOGGER.error("Failed to write {} to {}", FILE_NAME, tempPath, e);
 			return;
@@ -136,7 +173,7 @@ public final class ModListSaver {
 		try {
 			Files.move(tempPath, outputPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
-			LOGGER.error("Failed to move {} to {}", outputPath, tempPath, e);
+			LOGGER.error("Failed to move {} to {}", tempPath, outputPath, e);
 		}
 	}
 }
