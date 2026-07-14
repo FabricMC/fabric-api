@@ -113,6 +113,10 @@ public class ModListInfoTest implements ModInitializer {
 				throw new AssertionError("Mod entry is missing a valid 'version'");
 			}
 
+			if (!mod.has("environment") || mod.get("environment").getAsString().isBlank()) {
+				throw new AssertionError("Mod entry is missing a valid 'environment'");
+			}
+
 			ids.add(mod.get("id").getAsString());
 
 			if (mod.has("children")) {

@@ -25,6 +25,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import com.google.gson.Gson;
@@ -50,7 +51,7 @@ import net.fabricmc.loader.api.ModContainer;
  * that was used when a world was last played.
  */
 public final class ModListSaver {
-	private static final Logger LOGGER = LoggerFactory.getLogger("FabricModListInfo");
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModListSaver.class);
 	private static final String FILE_NAME = "mod-list.json";
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	@Nullable
@@ -139,6 +140,7 @@ public final class ModListSaver {
 		entry.addProperty("id", mod.getMetadata().getId());
 		entry.addProperty("name", mod.getMetadata().getName());
 		entry.addProperty("version", mod.getMetadata().getVersion().getFriendlyString());
+		entry.addProperty("environment", mod.getMetadata().getEnvironment().name().toLowerCase(Locale.ROOT));
 
 		if (!mod.getContainedMods().isEmpty()) {
 			JsonArray children = new JsonArray();
