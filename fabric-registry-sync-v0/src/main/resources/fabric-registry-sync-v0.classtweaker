@@ -8,4 +8,3 @@ accessible	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRI
 mutable	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
 accessible field net/minecraft/resources/RegistryLoadTask registry Lnet/minecraft/core/WritableRegistry;
 transitive-inject-interface	net/minecraft/core/Registry	net/fabricmc/fabric/api/event/registry/FabricRegistry
-
