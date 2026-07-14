@@ -157,7 +157,7 @@ public interface TestServerConnection {
 	/**
 	 * Gets the server player corresponding to the connected client.
 	 *
-	 * <p>This method can onlu be called from the server thread.
+	 * <p>This method can only be called from the server thread.
 	 *
 	 * @return The server player
 	 */
@@ -175,7 +175,7 @@ public interface TestServerConnection {
 	/**
 	 * Gets the server level of the same dimension as the client level.
 	 *
-	 * <p>This method can onlu be called from the server thread.
+	 * <p>This method can only be called from the server thread.
 	 *
 	 * @return The server level
 	 */
