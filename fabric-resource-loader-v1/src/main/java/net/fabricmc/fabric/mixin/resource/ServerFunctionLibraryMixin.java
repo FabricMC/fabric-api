@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.resource.FabricResourceReloader;
 		ServerFunctionLibrary.class
 		/* private */
 })
-public abstract class KeyedResourceReloaderMixin implements FabricResourceReloader {
+public abstract class ServerFunctionLibraryMixin implements FabricResourceReloader {
 	@Unique
 	private Identifier id;
 

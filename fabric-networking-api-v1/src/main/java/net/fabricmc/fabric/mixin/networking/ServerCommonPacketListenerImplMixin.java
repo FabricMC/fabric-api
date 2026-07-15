@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
-import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,6 +33,7 @@ import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
+import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
