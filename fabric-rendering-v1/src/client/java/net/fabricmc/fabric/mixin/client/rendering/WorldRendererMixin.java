@@ -175,11 +175,13 @@ public abstract class WorldRendererMixin {
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
 	private void renderWeather(LightmapTextureManager manager, float tickDelta, double x, double y, double z, CallbackInfo info) {
-		if (this.client.world != null) {
-			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
+		DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
-			if (renderer != null) {
-				renderer.render(context);
+		if (renderer != null) {
+			renderer.render(context);
+			info.cancel();
+		} else if (this.client.world != null) {
+			if(this.client.world.getDimensionEffects().renderWeather(context)) {
 				info.cancel();
 			}
 		}
@@ -187,23 +189,25 @@ public abstract class WorldRendererMixin {
 
 	@Inject(at = @At("HEAD"), method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;FDDD)V", cancellable = true)
 	private void renderCloud(MatrixStack matrices, Matrix4f matrix4f, Matrix4f matrix4f2, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info) {
-		if (this.client.world != null) {
-			DimensionRenderingRegistry.CloudRenderer renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
+		DimensionRenderingRegistry.CloudRenderer renderer = DimensionRenderingRegistry.getCloudRenderer(world.getRegistryKey());
 
-			if (renderer != null) {
-				renderer.render(context);
-				info.cancel();
-			}
+		if (renderer != null) {
+			renderer.render(context);
+			info.cancel();
+		} else if (this.client.world != null) {
+			if (this.client.world.getDimensionEffects().renderCloud(context)) info.cancel();
 		}
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER, ordinal = 0), method = "renderSky(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", cancellable = true)
 	private void renderSky(Matrix4f matrix4f, Matrix4f matrix4f2, float tickDelta, Camera camera, boolean bl, Runnable runnable, CallbackInfo info) {
-		if (this.client.world != null) {
-			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
+		DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 
-			if (renderer != null) {
-				renderer.render(context);
+		if (renderer != null) {
+			renderer.render(context);
+			info.cancel();
+		} else if (this.client.world != null) {
+			if(this.client.world.getDimensionEffects().renderSky(context)) {
 				info.cancel();
 			}
 		}

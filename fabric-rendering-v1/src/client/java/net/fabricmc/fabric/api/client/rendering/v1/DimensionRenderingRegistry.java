@@ -34,11 +34,16 @@ public interface DimensionRenderingRegistry {
 	/**
 	 * Registers the custom sky renderer for a {@link World}.
 	 *
-	 * <p>This overrides Vanilla's sky rendering.
+	 * <p>This overrides vanilla sky rendering. A renderer registered here takes precedence over
+	 * {@link FabricDimensionEffects#renderSky(WorldRenderContext)} for compatibility.
+	 *
 	 * @param key A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link SkyRenderer} implementation
 	 * @throws IllegalArgumentException if key is already registered.
+	 * @deprecated Use a custom {@link DimensionEffects} implementation that overrides
+	 * {@link FabricDimensionEffects#renderSky(WorldRenderContext)} instead.
 	 */
+	@Deprecated
 	static void registerSkyRenderer(RegistryKey<World> key, SkyRenderer renderer) {
 		DimensionRenderingRegistryImpl.registerSkyRenderer(key, renderer);
 	}
@@ -46,11 +51,16 @@ public interface DimensionRenderingRegistry {
 	/**
 	 * Registers a custom weather renderer for a {@link World}.
 	 *
-	 * <p>This overrides Vanilla's weather rendering.
+	 * <p>This overrides vanilla weather rendering. A renderer registered here takes precedence over
+	 * {@link FabricDimensionEffects#renderWeather(WorldRenderContext)} for compatibility.
+	 *
 	 * @param key A RegistryKey for your {@link World}
 	 * @param renderer A {@link WeatherRenderer} implementation
 	 * @throws IllegalArgumentException if key is already registered.
+	 * @deprecated Use a custom {@link DimensionEffects} implementation that overrides
+	 * {@link FabricDimensionEffects#renderWeather(WorldRenderContext)} instead.
 	 */
+	@Deprecated
 	static void registerWeatherRenderer(RegistryKey<World> key, WeatherRenderer renderer) {
 		DimensionRenderingRegistryImpl.registerWeatherRenderer(key, renderer);
 	}
@@ -71,15 +81,20 @@ public interface DimensionRenderingRegistry {
 	/**
 	 * Registers a custom cloud renderer for a {@link World}.
 	 *
-	 * <p>This overrides Vanilla's cloud rendering.
+	 * <p>This overrides vanilla cloud rendering. A renderer registered here takes precedence over
+	 * {@link FabricDimensionEffects#renderCloud(WorldRenderContext)} for compatibility.
 	 *
 	 * @param key      A {@link RegistryKey} for your {@link World}
 	 * @param renderer A {@link CloudRenderer} implementation
 	 * @throws IllegalArgumentException if key is already registered.
+	 * @deprecated Use a custom {@link DimensionEffects} implementation that overrides
+	 * {@link FabricDimensionEffects#renderCloud(WorldRenderContext)} instead.
 	 */
+	@Deprecated
 	static void registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
 		DimensionRenderingRegistryImpl.registerCloudRenderer(key, renderer);
 	}
+
 
 	/**
 	 * Gets the custom sky renderer for the given {@link World}.
