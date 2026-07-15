@@ -74,9 +74,7 @@ public final class ResourceReloaderKeys {
 	 * Keys for various server reload listeners.
 	 */
 	public static final class Server {
-		public static final Identifier ADVANCEMENTS = Identifier.withDefaultNamespace("advancements");
 		public static final Identifier FUNCTIONS = Identifier.withDefaultNamespace("functions");
-		public static final Identifier RECIPES = Identifier.withDefaultNamespace("recipes");
 
 		private Server() {
 		}

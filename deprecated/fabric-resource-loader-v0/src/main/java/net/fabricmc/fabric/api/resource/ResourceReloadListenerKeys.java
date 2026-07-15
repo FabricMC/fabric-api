@@ -36,8 +36,6 @@ public final class ResourceReloadListenerKeys {
 	public static final Identifier TEXTURES = ResourceReloaderKeys.Client.TEXTURES;
 
 	// server
-	public static final Identifier RECIPES = ResourceReloaderKeys.Server.RECIPES;
-	public static final Identifier ADVANCEMENTS = ResourceReloaderKeys.Server.ADVANCEMENTS;
 	public static final Identifier FUNCTIONS = ResourceReloaderKeys.Server.FUNCTIONS;
 
 	private ResourceReloadListenerKeys() { }

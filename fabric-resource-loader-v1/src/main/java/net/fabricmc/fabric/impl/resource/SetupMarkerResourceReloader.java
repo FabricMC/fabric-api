@@ -34,8 +34,6 @@ public record SetupMarkerResourceReloader(
 	public void prepareSharedState(SharedState store) {
 		store.set(DataResourceLoader.REGISTRY_LOOKUP_KEY, this.registries);
 		store.set(DataResourceLoader.FEATURE_FLAG_SET_KEY, this.featureSet);
-		store.set(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.reloadableServerResources.getAdvancements());
-		store.set(DataResourceLoader.RECIPE_MANAGER_KEY, this.reloadableServerResources.getRecipeManager());
 		store.set(
 				DataResourceLoader.DATA_RESOURCE_STORE_KEY,
 				((FabricDataResourceStoreHolder) this.reloadableServerResources).fabric$getDataResourceStore()
