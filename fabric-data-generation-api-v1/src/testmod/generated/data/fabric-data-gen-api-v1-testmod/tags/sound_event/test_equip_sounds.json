@@ -1,0 +1,14 @@
+{
+  "values": [
+    "minecraft:item.armor.equip_turtle",
+    "minecraft:item.armor.equip_elytra",
+    "minecraft:item.armor.equip_leather",
+    "minecraft:item.armor.equip_chain",
+    "minecraft:item.armor.equip_copper",
+    "minecraft:item.armor.equip_iron",
+    "minecraft:item.armor.equip_gold",
+    "minecraft:item.armor.equip_diamond",
+    "minecraft:item.armor.equip_netherite",
+    "minecraft:item.armor.equip_generic"
+  ]
+}
