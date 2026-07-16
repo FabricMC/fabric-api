@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
  * injection.
  */
 public interface FabricLayerRenderState {
+	// TODO - Update javadoc
 	/**
 	 * Retrieves the {@link QuadEmitter} used to append quads to this layer. Calling this method a second time
 	 * invalidates any prior result. Geometry added to this emitter will not be visible in

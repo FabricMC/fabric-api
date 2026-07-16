@@ -87,7 +87,7 @@ public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<Exten
 		QuadEmitter emitter = this.emitter;
 		emitter.clear();
 
-		List<BakedQuad> vanillaQuads = submit.quads();
+		List<BakedQuad> vanillaQuads = submit.quads().all();
 
 		//noinspection ForLoopReplaceableByForEach
 		for (int i = 0; i < vanillaQuads.size(); i++) {
