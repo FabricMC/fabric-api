@@ -69,9 +69,14 @@ public class TagsProviderMixin<T> {
 		return ((TagBuilderHooks) builder).fabric_isReplaced();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "ConstantValue"})
 	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
 	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] cfs, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput cache) {
+		// exclude providers that don't use fabric API
+		if (!((Object) this instanceof FabricTagsProvider)) {
+			return original.call((Object) cfs);
+		}
+
 		// Note: no pattern matching instanceof so that we can cast directly to FabricTagsProvider<T> instead of a wildcard
 		Map<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> builders = ((FabricTagsProvider<T>) (Object) this).getAliasGroupBuilders();
 		CompletableFuture<?>[] newFutures = Arrays.copyOf(cfs, cfs.length + builders.size());
