@@ -95,7 +95,6 @@ public interface DimensionRenderingRegistry {
 		DimensionRenderingRegistryImpl.registerCloudRenderer(key, renderer);
 	}
 
-
 	/**
 	 * Gets the custom sky renderer for the given {@link World}.
 	 *

@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricDimensionEffects;
+import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.render.DimensionEffects;
 
-import org.spongepowered.asm.mixin.Mixin;
+import net.fabricmc.fabric.api.client.rendering.v1.FabricDimensionEffects;
 
 @Mixin(DimensionEffects.class)
 public abstract class DimensionEffectsMixin implements FabricDimensionEffects {

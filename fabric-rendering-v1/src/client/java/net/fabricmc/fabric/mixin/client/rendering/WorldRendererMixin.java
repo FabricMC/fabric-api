@@ -181,7 +181,7 @@ public abstract class WorldRendererMixin {
 			renderer.render(context);
 			info.cancel();
 		} else if (this.client.world != null) {
-			if(this.client.world.getDimensionEffects().renderWeather(context)) {
+			if (this.client.world.getDimensionEffects().renderWeather(context)) {
 				info.cancel();
 			}
 		}
@@ -195,7 +195,9 @@ public abstract class WorldRendererMixin {
 			renderer.render(context);
 			info.cancel();
 		} else if (this.client.world != null) {
-			if (this.client.world.getDimensionEffects().renderCloud(context)) info.cancel();
+			if (this.client.world.getDimensionEffects().renderCloud(context)) {
+				info.cancel();
+			}
 		}
 	}
 
@@ -207,7 +209,7 @@ public abstract class WorldRendererMixin {
 			renderer.render(context);
 			info.cancel();
 		} else if (this.client.world != null) {
-			if(this.client.world.getDimensionEffects().renderSky(context)) {
+			if (this.client.world.getDimensionEffects().renderSky(context)) {
 				info.cancel();
 			}
 		}
