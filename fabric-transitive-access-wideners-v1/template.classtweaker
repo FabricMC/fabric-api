@@ -8,10 +8,10 @@ transitive-accessible	method	net/minecraft/client/gui/screens/MenuScreens	regist
 
 # Data contained in loot tables and pools
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	entries	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	conditions	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	functions	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	rolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	condition	Ljava/util/Optional;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	modifier	Ljava/util/Optional;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	rolls	Lnet/minecraft/core/Holder;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/core/Holder;
 
 # Registering custom entity spawn restrictions
 transitive-accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V

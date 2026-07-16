@@ -36,6 +36,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.scores.PlayerTeam;
 
 import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
@@ -142,7 +143,7 @@ public class FakePlayer extends ServerPlayer {
 	}
 
 	@Override
-	public void openTextEdit(SignBlockEntity sign, boolean front) { }
+	public void openTextEdit(SignBlockEntity sign, SignTextSlot slot) { }
 
 	@Override
 	public OptionalInt openMenu(@Nullable MenuProvider factory) {

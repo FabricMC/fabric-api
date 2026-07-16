@@ -23,17 +23,21 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.BlockTransformer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.VillagerFood;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -49,12 +53,13 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.api.registry.BlockTransformerRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
@@ -118,13 +123,17 @@ public final class ContentRegistryTest implements ModInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 
-		FuelValueEvents.BUILD.register((builder, context) -> {
-			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, context.baseSmeltTime() / 4);
-			builder.add(SMELTING_FUELS_INCLUDED_BY_TAG, context.baseSmeltTime() / 2);
-		});
-
-		FuelValueEvents.EXCLUSIONS.register((builder, context) -> {
-			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
+		DefaultItemComponentEvents.MODIFY.register(context -> {
+			context.modify(SMELTING_FUEL_INCLUDED_BY_ITEM, builder -> builder.set(
+					DataComponents.COOKING_FUEL,
+					new CookingFuel(NumberProviders.COOKING_TIME_BAMBOO, NumberProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+			));
+			context.modify(item -> item.builtInRegistryHolder().is(SMELTING_FUELS_INCLUDED_BY_TAG), (builder, item) -> builder.set(
+					DataComponents.COOKING_FUEL,
+					new CookingFuel(NumberProviders.COOKING_TIME_DRY_PLANTS, NumberProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+			));
+			context.modify(item -> item.builtInRegistryHolder().is(SMELTING_FUELS_EXCLUDED_BY_TAG) || item.builtInRegistryHolder().is(ItemTags.NON_FLAMMABLE_WOOD),
+					(builder, item) -> builder.set(DataComponents.COOKING_FUEL, null));
 		});
 
 		LandPathTypeRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGING, PathType.DAMAGING_IN_NEIGHBOR);
@@ -163,7 +172,8 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		LOGGER.info("OxidizableBlocksRegistry random ticks test passed!");
 
-		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
+		DefaultItemComponentEvents.MODIFY.register(context ->
+				context.modify(Items.APPLE, builder -> builder.set(DataComponents.VILLAGER_FOOD, new VillagerFood(4))));
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, ResourceKey.create(Registries.LOOT_TABLE, Identifier.withDefaultNamespace("fake_loot_table")));

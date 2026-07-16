@@ -9,15 +9,15 @@
           "name": "minecraft:diamond"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:reference",
-          "name": "minecraft:match_tool_shears"
-        },
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "condition": {
+        "type": "minecraft:all_of",
+        "terms": [
+          "minecraft:match_tool_shears",
+          {
+            "type": "minecraft:survives_explosion"
+          }
+        ]
+      }
     }
   ]
 }

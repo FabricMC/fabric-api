@@ -23,6 +23,9 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -65,7 +68,7 @@ public final class BiomeModifications {
 	 * Convenience method to add an entity spawn to one or more biomes.
 	 *
 	 * @see BiomeSelectors
-	 * @see net.minecraft.world.level.biome.MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
+	 * @see net.minecraft.world.level.biome.MobSpawnSettings.Builder#addSpawn(EntityType, MobCategory, int, IntProvider)
 	 */
 	public static void addSpawn(Predicate<BiomeSelectionContext> biomeSelector,
 								MobCategory category, EntityType<?> entityType,
@@ -79,7 +82,8 @@ public final class BiomeModifications {
 		Preconditions.checkState(BuiltInRegistries.ENTITY_TYPE.getResourceKey(entityType).isPresent(), "Unregistered entity type: %s", entityType);
 
 		create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getMobSpawnSettings().addSpawn(category, new MobSpawnSettings.SpawnerData(entityType, minGroupSize, maxGroupSize), weight);
+			IntProvider count = minGroupSize == maxGroupSize ? ConstantInt.of(minGroupSize) : UniformInt.of(minGroupSize, maxGroupSize);
+			context.getMobSpawnSettings().addSpawn(category, new MobSpawnSettings.SpawnerData(entityType, count), weight);
 		});
 	}
 

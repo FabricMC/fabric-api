@@ -27,6 +27,8 @@ import com.mojang.blaze3d.platform.VideoMode;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.WindowEventHandler;
 import com.mojang.renderpearl.api.device.GpuBackend;
+import org.lwjgl.sdl.SDLEvents;
+import org.lwjgl.sdl.SDL_Event;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -101,20 +103,28 @@ public abstract class WindowMixin implements WindowHooks {
 		this.height = this.windowedHeight = this.framebufferHeight = defaultHeight;
 	}
 
-	@Inject(method = {"onFocus", "onEnter", "onIconify"}, at = @At("HEAD"), cancellable = true)
+	@Inject(method = {"onFocus", "onIconified"}, at = @At("HEAD"), cancellable = true)
 	private void cancelEvents(CallbackInfo ci) {
 		ci.cancel();
 	}
 
+	@Inject(method = "handleEvent", at = @At("HEAD"), cancellable = true)
+	private void cancelDirectEvents(SDL_Event event, CallbackInfo ci) {
+		if (event.type() == SDLEvents.SDL_EVENT_WINDOW_MOUSE_ENTER
+				|| event.type() == SDLEvents.SDL_EVENT_WINDOW_MOUSE_LEAVE) {
+			ci.cancel();
+		}
+	}
+
 	@Inject(method = "onResize", at = @At("HEAD"), cancellable = true)
-	private void cancelResize(long window, int width, int height, CallbackInfo ci) {
+	private void cancelResize(int width, int height, CallbackInfo ci) {
 		realWidth = width;
 		realHeight = height;
 		ci.cancel();
 	}
 
 	@Inject(method = "onFramebufferResize", at = @At("HEAD"), cancellable = true)
-	private void cancelFramebufferResize(long window, int width, int height, CallbackInfo ci) {
+	private void cancelFramebufferResize(int width, int height, CallbackInfo ci) {
 		realFramebufferWidth = width;
 		realFramebufferHeight = height;
 		ci.cancel();
@@ -181,7 +191,7 @@ public abstract class WindowMixin implements WindowHooks {
 		Monitor monitor = this.monitorManager.findBestMonitor((Window) (Object) this);
 
 		if (monitor != null) {
-			VideoMode videoMode = monitor.getPreferredVidMode(this.preferredFullscreenVideoMode);
+			VideoMode videoMode = monitor.getPreferredVideoMode(this.preferredFullscreenVideoMode);
 
 			this.x += (this.windowedWidth - width) / 2;
 			this.y += (this.windowedHeight - height) / 2;

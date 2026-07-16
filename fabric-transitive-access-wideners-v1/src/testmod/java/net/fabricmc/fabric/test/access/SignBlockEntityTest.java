@@ -17,13 +17,14 @@
 package net.fabricmc.fabric.test.access;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StandingSignBlock;
@@ -54,7 +55,7 @@ public final class SignBlockEntityTest implements ModInitializer {
 			return new TestSign(pos, state);
 		}
 	};
-	public static final SignItem TEST_SIGN_ITEM = new SignItem(TEST_SIGN, TEST_WALL_SIGN, new Item.Properties().setId(itemKey(TEST_SIGN_KEY)));
+	public static final StandingAndWallBlockItem TEST_SIGN_ITEM = new StandingAndWallBlockItem(TEST_SIGN, TEST_WALL_SIGN, Direction.DOWN, new Item.Properties().setId(itemKey(TEST_SIGN_KEY)).signText());
 	public static final BlockEntityType<TestSign> TEST_SIGN_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(TestSign::new, TEST_SIGN, TEST_WALL_SIGN).build();
 
 	private static ResourceKey<Block> keyOf(String id) {

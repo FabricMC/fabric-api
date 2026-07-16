@@ -20,14 +20,62 @@
         "sound": "minecraft:music.nether.crimson_forest"
       }
     },
-    "minecraft:visual/ambient_particles": [
-      {
-        "particle": {
-          "type": "minecraft:crimson_spore"
-        },
-        "probability": 0.025
+    "minecraft:gameplay/natural_mob_spawns": {
+      "spawn_costs": {},
+      "spawns_by_category": {
+        "creature": [
+          {
+            "type": "minecraft:strider",
+            "count": {
+              "type": "minecraft:uniform",
+              "max_inclusive": 2,
+              "min_inclusive": 1
+            },
+            "weight": 60
+          }
+        ],
+        "monster": [
+          {
+            "type": "minecraft:zombified_piglin",
+            "count": {
+              "type": "minecraft:uniform",
+              "max_inclusive": 4,
+              "min_inclusive": 2
+            },
+            "weight": 1
+          },
+          {
+            "type": "minecraft:hoglin",
+            "count": {
+              "type": "minecraft:uniform",
+              "max_inclusive": 4,
+              "min_inclusive": 3
+            },
+            "weight": 9
+          },
+          {
+            "type": "minecraft:piglin",
+            "count": {
+              "type": "minecraft:uniform",
+              "max_inclusive": 4,
+              "min_inclusive": 3
+            },
+            "weight": 5
+          }
+        ]
       }
-    ],
+    },
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:crimson_spore"
+          },
+          "probability": 0.025
+        }
+      ],
+      "modifier": "append"
+    },
     "minecraft:visual/fog_color": "#330303"
   },
   "carvers": "minecraft:nether_cave",
@@ -68,42 +116,5 @@
     ]
   ],
   "has_precipitation": false,
-  "spawn_costs": {},
-  "spawners": {
-    "ambient": [],
-    "axolotls": [],
-    "creature": [
-      {
-        "type": "minecraft:strider",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 60
-      }
-    ],
-    "misc": [],
-    "monster": [
-      {
-        "type": "minecraft:zombified_piglin",
-        "maxCount": 4,
-        "minCount": 2,
-        "weight": 1
-      },
-      {
-        "type": "minecraft:hoglin",
-        "maxCount": 4,
-        "minCount": 3,
-        "weight": 9
-      },
-      {
-        "type": "minecraft:piglin",
-        "maxCount": 4,
-        "minCount": 3,
-        "weight": 5
-      }
-    ],
-    "underground_water_creature": [],
-    "water_ambient": [],
-    "water_creature": []
-  },
   "temperature": 2.0
 }

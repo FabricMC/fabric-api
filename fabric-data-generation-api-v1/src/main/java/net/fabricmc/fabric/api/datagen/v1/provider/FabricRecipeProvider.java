@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -28,6 +29,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.Lifecycle;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.advancements.Advancement;
@@ -36,6 +38,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BootstrapRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -120,22 +123,34 @@ public abstract class FabricRecipeProvider implements DataProvider {
 	public CompletableFuture<?> run(CachedOutput output) {
 		return registriesFuture.thenCompose((registries -> {
 			List<CompletableFuture<?>> list = new ArrayList<>();
-			BootstrapContext<Recipe<?>> recipes = new RecipeBootstrapContext(registries, this::getRecipeIdentifier);
-			BootstrapContext<Advancement> advancements = new FabricBootstrapContext<>(registries, Registries.ADVANCEMENT);
+			FabricBootstrapContext<Recipe<?>> recipes = new RecipeBootstrapContext(registries, this::getRecipeIdentifier);
+			FabricBootstrapContext<Advancement> advancements = new FabricBootstrapContext<>(registries, Registries.ADVANCEMENT);
 			RecipeProvider recipeProvider = createRecipeProvider(registries, recipes, advancements);
 			recipeProvider.buildRecipes();
 
-			RegistryOps<JsonElement> registryOps = registries.createSerializationContext(JsonOps.INSTANCE);
+			RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, new RegistryOps.RegistryInfoLookup() {
+				@Override
+				@SuppressWarnings("unchecked")
+				public <T> Optional<HolderGetter<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
+					if (key.equals(Registries.RECIPE)) {
+						return Optional.of((HolderGetter<T>) recipes.entryLookup);
+					} else if (key.equals(Registries.ADVANCEMENT)) {
+						return Optional.of((HolderGetter<T>) advancements.entryLookup);
+					}
+
+					return registries.lookup(key).map(lookup -> lookup);
+				}
+			});
 			PackOutput.PathProvider recipesPathResolver = FabricRecipeProvider.this.output.createRegistryElementsPathProvider(Registries.RECIPE);
 			PackOutput.PathProvider advancementsPathResolver = FabricRecipeProvider.this.output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
 
-			((FabricBootstrapContext<Recipe<?>>) recipes).entries().forEach((recipeKey, recipe) -> {
-				JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
+			recipes.entries().forEach((recipeKey, recipe) -> {
+				JsonObject recipeJson = Recipe.DIRECT_CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				FabricDataGenHelper.addConditions(recipeJson, conditions);
 				list.add(DataProvider.saveStable(output, recipeJson, recipesPathResolver.json(recipeKey.identifier())));
 			});
-			((FabricBootstrapContext<Advancement>) advancements).entries().forEach((advancementKey, advancement) -> {
+			advancements.entries().forEach((advancementKey, advancement) -> {
 				JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement).getOrThrow(IllegalStateException::new).getAsJsonObject();
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(advancement);
 				FabricDataGenHelper.addConditions(advancementJson, conditions);
@@ -150,10 +165,12 @@ public abstract class FabricRecipeProvider implements DataProvider {
 		private final HolderLookup.Provider registries;
 		private final ResourceKey<? extends Registry<T>> registryKey;
 		private final Map<ResourceKey<T>, T> entries = new LinkedHashMap<>();
+		private final BootstrapRegistry<T> entryLookup;
 
 		private FabricBootstrapContext(HolderLookup.Provider registries, ResourceKey<? extends Registry<T>> registryKey) {
 			this.registries = registries;
 			this.registryKey = registryKey;
+			this.entryLookup = new BootstrapRegistry<>(registryKey, Lifecycle.stable());
 		}
 
 		@Override
@@ -162,11 +179,16 @@ public abstract class FabricRecipeProvider implements DataProvider {
 				throw new IllegalStateException("Duplicate registration for " + key);
 			}
 
-			return Holder.Reference.createStandAlone(registries.lookupOrThrow(registryKey), key);
+			return entryLookup.getOrThrow(key);
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
+			if (key.equals(registryKey)) {
+				return (HolderGetter<S>) entryLookup;
+			}
+
 			return registries.lookupOrThrow(key);
 		}
 

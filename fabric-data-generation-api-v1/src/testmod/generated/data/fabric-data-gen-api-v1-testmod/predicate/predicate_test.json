@@ -1,4 +1,4 @@
 {
-  "block": "minecraft:melon",
-  "condition": "minecraft:block_state_property"
+  "type": "minecraft:match_block",
+  "blocks": "minecraft:melon"
 }

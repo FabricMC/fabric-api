@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.biome.modification;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
@@ -46,6 +46,7 @@ import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.attribute.modifier.AttributeModifier;
+import net.minecraft.world.attribute.modifier.MobSpawnSettingsModifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
@@ -62,7 +63,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final RegistryAccess registries;
 	private final Biome biome;
 	private final WeatherContext weather;
-	private final AttributesContext attributes;
+	private final AttributesContextImpl attributes;
 	private final EffectsContext effects;
 	private final GenerationSettingsContextImpl generationSettings;
 	private final SpawnSettingsContextImpl spawnSettings;
@@ -139,6 +140,15 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private class AttributesContextImpl implements AttributesContext {
 		@Override
 		public void addAll(EnvironmentAttributeMap map) {
+			if (map.contains(EnvironmentAttributes.NATURAL_MOB_SPAWNS)) {
+				updateSpawnSettings(() -> addAllRaw(map));
+				return;
+			}
+
+			addAllRaw(map);
+		}
+
+		private void addAllRaw(EnvironmentAttributeMap map) {
 			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(biome.getAttributes());
 			attributes.putAll(map);
 			biome.attributes = attributes.build();
@@ -146,6 +156,15 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public <T> void set(EnvironmentAttribute<T> key, T value) {
+			if (key.equals(EnvironmentAttributes.NATURAL_MOB_SPAWNS)) {
+				updateSpawnSettings(() -> setRaw(key, value));
+				return;
+			}
+
+			setRaw(key, value);
+		}
+
+		private <T> void setRaw(EnvironmentAttribute<T> key, T value) {
 			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(biome.getAttributes());
 			attributes.set(key, value);
 			biome.attributes = attributes.build();
@@ -153,9 +172,24 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public <T, M> void setModifier(EnvironmentAttribute<T> key, AttributeModifier<T, M> modifier, M value) {
+			if (key.equals(EnvironmentAttributes.NATURAL_MOB_SPAWNS)) {
+				updateSpawnSettings(() -> setModifierRaw(key, modifier, value));
+				return;
+			}
+
+			setModifierRaw(key, modifier, value);
+		}
+
+		private <T, M> void setModifierRaw(EnvironmentAttribute<T> key, AttributeModifier<T, M> modifier, M value) {
 			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(biome.getAttributes());
 			attributes.modify(key, modifier, value);
 			biome.attributes = attributes.build();
+		}
+
+		private void updateSpawnSettings(Runnable update) {
+			spawnSettings.applyPendingChanges();
+			update.run();
+			spawnSettings.reload();
 		}
 	}
 
@@ -350,58 +384,69 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class SpawnSettingsContextImpl implements MobSpawnSettingsContext {
-		private final MobSpawnSettings spawnSettings = biome.getMobSettings();
 		private final EnumMap<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> fabricSpawners = new EnumMap<>(MobCategory.class);
+		private final EnumSet<MobCategory> definedCategories = EnumSet.noneOf(MobCategory.class);
+		private final Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> mobSpawnCosts = new HashMap<>();
+		private boolean overlaySpawnSettings;
+		private boolean rebuildSpawnSettings;
 
 		SpawnSettingsContextImpl() {
-			unfreezeSpawners();
-			unfreezeSpawnCost();
+			reload();
 		}
 
-		private void unfreezeSpawners() {
-			fabricSpawners.clear();
+		private void reload() {
+			EnvironmentAttributeMap.Entry<MobSpawnSettings, ?> entry = biome.getAttributes().get(EnvironmentAttributes.NATURAL_MOB_SPAWNS);
+			overlaySpawnSettings = entry != null && entry.modifier() == MobSpawnSettingsModifier.overlay();
+			MobSpawnSettings spawnSettings = entry == null
+					? EnvironmentAttributes.NATURAL_MOB_SPAWNS.defaultValue()
+					: entry.applyModifier(EnvironmentAttributes.NATURAL_MOB_SPAWNS.defaultValue());
+			definedCategories.clear();
 
 			for (MobCategory mobCategory : MobCategory.values()) {
-				WeightedList<MobSpawnSettings.SpawnerData> entries = spawnSettings.spawners.get(mobCategory);
+				WeightedList<MobSpawnSettings.SpawnerData> entries = spawnSettings.getMobsInCategory(mobCategory);
+				List<Weighted<MobSpawnSettings.SpawnerData>> fabricEntries = fabricSpawners.computeIfAbsent(mobCategory, category -> new ArrayList<>());
+				fabricEntries.clear();
 
 				if (entries != null) {
-					fabricSpawners.put(mobCategory, new ArrayList<>(entries.unwrap()));
-				} else {
-					fabricSpawners.put(mobCategory, new ArrayList<>());
+					definedCategories.add(mobCategory);
+					fabricEntries.addAll(entries.unwrap());
 				}
 			}
-		}
 
-		private void unfreezeSpawnCost() {
-			spawnSettings.mobSpawnCosts = new HashMap<>(spawnSettings.mobSpawnCosts);
+			mobSpawnCosts.clear();
+			mobSpawnCosts.putAll(spawnSettings.allSpawnCosts());
+			rebuildSpawnSettings = false;
 		}
 
 		public void freeze() {
-			freezeSpawners();
-			freezeSpawnCosts();
+			applyPendingChanges();
 		}
 
-		private void freezeSpawners() {
-			Map<MobCategory, WeightedList<MobSpawnSettings.SpawnerData>> spawners = new HashMap<>(spawnSettings.spawners);
-
-			for (Map.Entry<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> entry : fabricSpawners.entrySet()) {
-				if (entry.getValue().isEmpty()) {
-					spawners.put(entry.getKey(), WeightedList.of());
-				} else {
-					spawners.put(entry.getKey(), WeightedList.of(entry.getValue()));
-				}
+		private void applyPendingChanges() {
+			if (!rebuildSpawnSettings) {
+				return;
 			}
 
-			spawnSettings.spawners = ImmutableMap.copyOf(spawners);
-		}
+			MobSpawnSettings.Builder builder = new MobSpawnSettings.Builder();
 
-		private void freezeSpawnCosts() {
-			spawnSettings.mobSpawnCosts = ImmutableMap.copyOf(spawnSettings.mobSpawnCosts);
+			for (MobCategory category : definedCategories) {
+				builder.addAllSpawns(category, WeightedList.of(fabricSpawners.get(category)));
+			}
+
+			MobSpawnSettings rebuiltSpawnSettings = builder.addAllCosts(mobSpawnCosts).build();
+
+			if (overlaySpawnSettings) {
+				attributes.setModifierRaw(EnvironmentAttributes.NATURAL_MOB_SPAWNS, MobSpawnSettingsModifier.overlay(), rebuiltSpawnSettings);
+			} else {
+				attributes.setRaw(EnvironmentAttributes.NATURAL_MOB_SPAWNS, rebuiltSpawnSettings);
+			}
+
+			rebuildSpawnSettings = false;
 		}
 
 		@Override
 		public void setCreatureGenerationProbability(float probability) {
-			spawnSettings.creatureGenerationProbability = probability;
+			attributes.set(EnvironmentAttributes.CREATURE_WORLD_GEN_SPAWN_PROBABILITY, probability);
 		}
 
 		@Override
@@ -416,7 +461,9 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			Objects.requireNonNull(category);
 			Objects.requireNonNull(data);
 
+			definedCategories.add(category);
 			fabricSpawners.get(category).add(new Weighted<>(data, weight));
+			rebuildSpawnSettings = true;
 		}
 
 		@Override
@@ -429,18 +476,20 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 				}
 			}
 
+			rebuildSpawnSettings |= anyRemoved;
 			return anyRemoved;
 		}
 
 		@Override
 		public void addMobCharge(EntityType<?> entityType, double charge, double energyBudget) {
 			Objects.requireNonNull(entityType);
-			spawnSettings.mobSpawnCosts.put(entityType, new MobSpawnSettings.MobSpawnCost(energyBudget, charge));
+			mobSpawnCosts.put(entityType, new MobSpawnSettings.MobSpawnCost(energyBudget, charge));
+			rebuildSpawnSettings = true;
 		}
 
 		@Override
 		public void clearMobCharge(EntityType<?> entityType) {
-			spawnSettings.mobSpawnCosts.remove(entityType);
+			rebuildSpawnSettings |= mobSpawnCosts.remove(entityType) != null;
 		}
 	}
 }

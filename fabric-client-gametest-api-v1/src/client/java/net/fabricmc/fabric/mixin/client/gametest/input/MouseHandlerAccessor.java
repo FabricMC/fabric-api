@@ -31,5 +31,5 @@ public interface MouseHandlerAccessor {
 	void invokeOnScroll(long window, double horizontal, double vertical);
 
 	@Invoker
-	void invokeOnMove(long window, double x, double y);
+	void invokeOnMove(long window, double x, double y, double deltaX, double deltaY);
 }

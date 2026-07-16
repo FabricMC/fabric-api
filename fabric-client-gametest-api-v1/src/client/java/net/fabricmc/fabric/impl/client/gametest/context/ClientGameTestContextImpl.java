@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.apache.commons.lang3.function.FailableConsumer;
@@ -39,7 +40,6 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -276,7 +276,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	private static boolean pressMatchingButton(AbstractWidget widget, String text) {
-		var clickEvent = new MouseButtonInfo(GLFW.GLFW_KEY_UNKNOWN, 0);
+		var clickEvent = new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0);
 
 		if (widget instanceof Button button) {
 			if (text.equals(button.getMessage().getString())) {
@@ -389,7 +389,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			if (options.size != null) {
 				client.getWindow().setWidth(options.size.x);
 				client.getWindow().setHeight(options.size.y);
-				client.gameRenderer.mainRenderTarget().resize(options.size.x, options.size.y);
+				client.gameRenderer.resize(options.size.x, options.size.y);
 			}
 
 			return new Vector2i(prevWidth, prevHeight);
@@ -400,7 +400,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 				DeltaTracker.DefaultValue deltaTracker = DeltaTrackerDefaultValueAccessor.create(options.deltaTicks);
 				client.gameRenderer.update(deltaTracker);
 				client.gameRenderer.extract(deltaTracker, true);
-				client.gameRenderer.render(deltaTracker, true);
+				client.gameRenderer.render();
 				RenderSystem.getDevice().createCommandEncoder().submit();
 				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
@@ -428,7 +428,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 				computeOnClient(client -> {
 					client.getWindow().setWidth(prevSize.x);
 					client.getWindow().setHeight(prevSize.y);
-					client.gameRenderer.mainRenderTarget().resize(prevSize.x, prevSize.y);
+					client.gameRenderer.resize(prevSize.x, prevSize.y);
 					return null;
 				});
 			}

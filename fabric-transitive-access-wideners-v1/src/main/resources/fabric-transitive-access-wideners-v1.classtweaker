@@ -13,10 +13,10 @@ transitive-accessible	method	net/minecraft/client/gui/screens/MenuScreens	regist
 
 # Data contained in loot tables and pools
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	entries	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	conditions	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	functions	Ljava/util/List;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	rolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
-transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	condition	Ljava/util/Optional;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	modifier	Ljava/util/Optional;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	rolls	Lnet/minecraft/core/Holder;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/core/Holder;
 
 # Registering custom entity spawn restrictions
 transitive-accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V
@@ -339,17 +339,6 @@ transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData S
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData BASE_3D_NOISE_OVERWORLD Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData BASE_3D_NOISE_NETHER Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData BASE_3D_NOISE_END Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SLOPED_CHEESE Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData OFFSET_LARGE Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData FACTOR_LARGE Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData JAGGEDNESS_LARGE Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData DEPTH_LARGE Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SLOPED_CHEESE_LARGE Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData OFFSET_AMPLIFIED Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData FACTOR_AMPLIFIED Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData JAGGEDNESS_AMPLIFIED Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData DEPTH_AMPLIFIED Lnet/minecraft/resources/ResourceKey;
-transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SLOPED_CHEESE_AMPLIFIED Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SLOPED_CHEESE_END Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SPAGHETTI_ROUGHNESS_FUNCTION Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData ENTRANCES Lnet/minecraft/resources/ResourceKey;
@@ -357,8 +346,14 @@ transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData N
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData PILLARS Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SPAGHETTI_2D_THICKNESS_MODULATOR Lnet/minecraft/resources/ResourceKey;
 transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData SPAGHETTI_2D Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData ORE_VEIN_MASK Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData ORE_VEIN_TOGGLE Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData ORE_VEIN_RICHNESS Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData ORE_VEIN_COPPER_DENSITY Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData ORE_VEIN_IRON_DENSITY Lnet/minecraft/resources/ResourceKey;
+transitive-accessible field net/minecraft/world/level/levelgen/NoiseRouterData ORE_VEIN_GAP Lnet/minecraft/resources/ResourceKey;
 # private and protected methods of NoiseRouterData
-transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerTerrainNoises (Lnet/minecraft/data/worldgen/BootstrapContext;Lnet/minecraft/core/HolderGetter;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Z)V
+transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerTerrainNoises (Lnet/minecraft/data/worldgen/BootstrapContext;Lnet/minecraft/core/HolderGetter;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/OverworldFunctionSet;Z)V
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData offsetToDepth (Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerAndWrap (Lnet/minecraft/data/worldgen/BootstrapContext;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData getFunction (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/world/level/levelgen/DensityFunction;
@@ -370,8 +365,12 @@ transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData 
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData spaghetti2D (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData underground (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData postProcess (Lnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
-transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData remap (Lnet/minecraft/world/level/levelgen/DensityFunction;DDDD)Lnet/minecraft/world/level/levelgen/DensityFunction;
-transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData overworld (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;ZZ)Lnet/minecraft/world/level/levelgen/NoiseRouter;
+transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData overworld (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;Lnet/minecraft/world/level/levelgen/OverworldFunctionSet;Z)Lnet/minecraft/world/level/levelgen/NoiseRouter;
+transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData overworldAquifers (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;Lnet/minecraft/world/level/levelgen/OverworldFunctionSet;)Lnet/minecraft/world/level/levelgen/Aquifer$Config;
+transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData registerOreVeins (Lnet/minecraft/data/worldgen/BootstrapContext;)V
+transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData overworldOreVeins (Lnet/minecraft/core/HolderGetter;)Ljava/util/List;
+transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData createBaseOreVeinMask (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;II)Lnet/minecraft/world/level/levelgen/DensityFunction;
+transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData createOreVeinDensity (Lnet/minecraft/world/level/levelgen/OreVeinifier$VeinType;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;Lnet/minecraft/world/level/levelgen/DensityFunction;Z)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData slideOverworld (ZLnet/minecraft/world/level/levelgen/DensityFunction;)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData slideNetherLike (Lnet/minecraft/core/HolderGetter;II)Lnet/minecraft/world/level/levelgen/DensityFunction;
 transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData slideEndLike (Lnet/minecraft/world/level/levelgen/DensityFunction;II)Lnet/minecraft/world/level/levelgen/DensityFunction;

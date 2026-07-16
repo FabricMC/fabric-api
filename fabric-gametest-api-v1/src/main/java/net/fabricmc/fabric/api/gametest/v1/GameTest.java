@@ -41,6 +41,11 @@ public @interface GameTest {
 	String environment() default "minecraft:default";
 
 	/**
+	 * A namespaced ID of the dimension in which the test runs.
+	 */
+	String dimension() default "minecraft:overworld";
+
+	/**
 	 * A namespaced ID pointing to a structure resource in the {@code modid/gametest/structure/} directory.
 	 *
 	 * <p>Defaults to an 8x8 structure with no blocks.

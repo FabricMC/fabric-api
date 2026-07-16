@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -146,10 +148,10 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a key should be allowed to be pressed.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the scancode, keycode and modifiers
 		 * @return whether the key press should be processed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		boolean allowKeyPress(Screen screen, KeyEvent event);
 	}
@@ -159,9 +161,9 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a key press is handled.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void beforeKeyPress(Screen screen, KeyEvent event);
 	}
@@ -171,9 +173,9 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a key press is handled.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void afterKeyPress(Screen screen, KeyEvent event);
 	}
@@ -183,10 +185,10 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a pressed key should be allowed to be released.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the scancode, keycode and modifiers
 		 * @return whether the key press should be released
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		boolean allowKeyRelease(Screen screen, KeyEvent event);
 	}
@@ -196,9 +198,9 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a pressed key has been released.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void beforeKeyRelease(Screen screen, KeyEvent event);
 	}
@@ -208,9 +210,9 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a pressed key has been released.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void afterKeyRelease(Screen screen, KeyEvent event);
 	}
@@ -223,7 +225,6 @@ public final class ScreenKeyboardEvents {
 		 * @param event the char type event, containing the codepoint
 		 * @return whether the character should be typed
 		 * @see CharacterEvent#codepointAsString()
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
 		boolean allowCharType(Screen screen, CharacterEvent event);
 	}
@@ -235,7 +236,6 @@ public final class ScreenKeyboardEvents {
 		 *
 		 * @param event the char type event, containing the codepoint
 		 * @see CharacterEvent#codepointAsString()
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
 		void beforeCharType(Screen screen, CharacterEvent event);
 	}
@@ -247,7 +247,6 @@ public final class ScreenKeyboardEvents {
 		 *
 		 * @param event the char type event, containing the codepoint
 		 * @see CharacterEvent#codepointAsString()
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
 		void afterCharType(Screen screen, CharacterEvent event);
 	}

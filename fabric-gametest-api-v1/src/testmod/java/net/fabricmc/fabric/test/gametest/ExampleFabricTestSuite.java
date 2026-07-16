@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.gametest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
@@ -32,8 +33,9 @@ public class ExampleFabricTestSuite {
 		);
 	}
 
-	@GameTest
+	@GameTest(dimension = "minecraft:the_nether")
 	public void noStructure(GameTestHelper helper) {
+		helper.assertTrue(helper.getLevel().dimension() == Level.NETHER, "Game test did not run in the nether");
 		helper.setBlock(0, 1, 0, Blocks.DIAMOND_BLOCK);
 		helper.succeedWhen(() ->
 				helper.assertBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Component.literal("Expect block to be diamond"))

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 
@@ -192,7 +194,7 @@ public final class ScreenMouseEvents {
 		 *
 		 * @param screen the screen
 		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		boolean allowMouseClick(Screen screen, MouseButtonEvent event);
 	}
@@ -204,7 +206,7 @@ public final class ScreenMouseEvents {
 		 *
 		 * @param screen the screen
 		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		void beforeMouseClick(Screen screen, MouseButtonEvent event);
 	}
@@ -217,7 +219,7 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param event the mouse button event, containing the mouse position and button
 		 * @param consumed whether the mouse click was already consumed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		boolean afterMouseClick(Screen screen, MouseButtonEvent event, boolean consumed);
 	}
@@ -229,7 +231,7 @@ public final class ScreenMouseEvents {
 		 *
 		 * @param screen the screen
 		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		boolean allowMouseRelease(Screen screen, MouseButtonEvent event);
 	}
@@ -241,7 +243,7 @@ public final class ScreenMouseEvents {
 		 *
 		 * @param screen the screen
 		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		void beforeMouseRelease(Screen screen, MouseButtonEvent event);
 	}
@@ -254,7 +256,7 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param event the mouse release event, containing the mouse position and button
 		 * @param consumed whether the mouse release was already consumed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		boolean afterMouseRelease(Screen screen, MouseButtonEvent event, boolean consumed);
 	}
@@ -270,7 +272,7 @@ public final class ScreenMouseEvents {
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
 		 * @return whether the mouse should be allowed to drag
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		boolean allowMouseDrag(Screen screen, MouseButtonEvent event, double horizontalAmount, double verticalAmount);
 	}
@@ -284,7 +286,7 @@ public final class ScreenMouseEvents {
 		 * @param event the mouse button event, containing the mouse position and button
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		void beforeMouseDrag(Screen screen, MouseButtonEvent event, double horizontalAmount, double verticalAmount);
 	}
@@ -299,7 +301,7 @@ public final class ScreenMouseEvents {
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
 		 * @param consumed whether the mouse drag was already consumed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
+		 * @see InputConstants#MOUSE_BUTTON_LEFT
 		 */
 		boolean afterMouseDrag(Screen screen, MouseButtonEvent event, double horizontalAmount, double verticalAmount, boolean consumed);
 	}
