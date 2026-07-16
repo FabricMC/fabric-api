@@ -178,7 +178,7 @@ public class SyncGametest implements FabricClientGameTest {
 
 				// Test modifying attachments using the data command, and that the changes are synced to the client.
 				serverContext.runCommand("data modify entity @n[name=\"TestVillager\"] \"fabric:attachments\".\"fabric-data-attachment-api-v1-testmod:synced_item\".id set value \"minecraft:diamond\"");
-				context.waitTick();
+				connection.waitForClientboundPackets();
 				context.runOnClient(client -> {
 					ClientLevel level = connection.getClientLevel();
 					Entity villager = level.getEntity(state.villagerId);
@@ -195,8 +195,7 @@ public class SyncGametest implements FabricClientGameTest {
 				serverContext.runCommand("gamemode survival @p");
 				serverContext.runOnServer(server -> connection.getServerPlayer().removeAttached(AttachmentTestMod.SYNCED_CREATIVE_ONLY));
 
-				// safety
-				context.waitTick();
+				connection.waitForClientboundPackets();
 
 				LOGGER.info("Testing synced attachments (2/2)");
 				context.runOnClient(client -> {
