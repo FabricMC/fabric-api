@@ -44,7 +44,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -54,7 +53,6 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
-import net.fabricmc.fabric.impl.client.renderer.MeshViewRenderTypeGroups;
 
 @Mixin(SubmitNodeCollection.class)
 abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
@@ -110,15 +108,12 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 	@Override
 	public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 		PoseStack.Pose pose = poseStack.last().copy();
-		ItemQuads itemQuads = ItemQuads.split(quads);
-		MeshViewRenderTypeGroups meshGroups = MeshViewRenderTypeGroups.split(mesh);
+		ExtendedItemSubmit submit = new ExtendedItemSubmit(pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads, mesh, foilType);
 
-		if (!itemQuads.translucent().isEmpty() || meshGroups.translucent().size() > 0) {
-			translucentBlocksAndItems.submit(new ExtendedItemSubmit(pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, itemQuads.translucent(), meshGroups.translucent(), foilType));
-		}
-
-		if (!itemQuads.solid().isEmpty() || meshGroups.solid().size() > 0) {
-			solid.submit(new ExtendedItemSubmit(pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, itemQuads.solid(), meshGroups.solid(), foilType));
+		if (submit.hasTranslucency()) {
+			translucentBlocksAndItems.submit(submit);
+		} else {
+			solid.submit(submit);
 		}
 
 		if (outlineColor != 0) {

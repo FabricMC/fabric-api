@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
@@ -75,7 +74,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	}
 
 	/**
-	 * Alternative to {@link OrderedSubmitNodeCollector#submitItem(PoseStack, ItemDisplayContext, int, int, int, int[], ItemQuads, ItemStackRenderState.FoilType)}
+	 * Alternative to {@link OrderedSubmitNodeCollector#submitItem(PoseStack, ItemDisplayContext, int, int, int, int[], List, ItemStackRenderState.FoilType)}
 	 * that also accepts a {@link MeshView}.
 	 *
 	 * @param poseStack the pose stack
@@ -89,6 +88,6 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param foilType the foil type
 	 */
 	default void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
-		((OrderedSubmitNodeCollector) this).submitItem(poseStack, displayContext, lightCoords, overlayCoords, outlineColor, tintLayers, ItemQuads.split(quads), foilType);
+		((OrderedSubmitNodeCollector) this).submitItem(poseStack, displayContext, lightCoords, overlayCoords, outlineColor, tintLayers, quads, foilType);
 	}
 }
