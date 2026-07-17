@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.18.4"
   },
-  "description": "API to edit advancements.",
+  "description": "Hooks for manipulating advancements.",
   "mixins": [
     "fabric-advancement-api-v1.mixins.json"
   ],
