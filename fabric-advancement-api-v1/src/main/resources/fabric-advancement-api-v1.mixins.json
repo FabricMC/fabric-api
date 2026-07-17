@@ -5,6 +5,7 @@
   "mixins": [
     "ServerAdvancementManagerMixin",
     "SimpleJsonResourceReloadListenerMixin",
+    "AdvancementBuilderAccessor",
     "AdvancementBuilderMixin"
   ],
   "injectors": {
