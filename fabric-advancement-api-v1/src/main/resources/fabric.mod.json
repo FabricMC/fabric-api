@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fabric-advancement-api-v1",
-  "name": "Fabric Entity Events (v1)",
+  "name": "Fabric Advancement API (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.18.4"
   },
-  "description": "Events to hook into entities.",
+  "description": "API to edit advancements.",
   "mixins": [
     "fabric-advancement-api-v1.mixins.json"
   ],
