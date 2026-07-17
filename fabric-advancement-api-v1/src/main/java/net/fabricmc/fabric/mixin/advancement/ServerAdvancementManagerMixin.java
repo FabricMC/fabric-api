@@ -35,9 +35,6 @@ public class ServerAdvancementManagerMixin {
 
 		preparations.forEach((id, advancement) -> {
 			Optional<Resource> resource = manager.getResource(Identifier.fromNamespaceAndPath(id.getNamespace(), "advancement/" + id.getPath() + ".json"));
-			if (resource.isEmpty()) {
-				resource = manager.getResource(Identifier.fromNamespaceAndPath(id.getNamespace(), "advancements/" + id.getPath() + ".json"));
-			}
 
 			// Map the resource to its AdvancementSource enum, defaulting to DATA_PACK
 			AdvancementSource source = resource.map(AdvancementUtil::determineSource).orElse(AdvancementSource.DATA_PACK);
