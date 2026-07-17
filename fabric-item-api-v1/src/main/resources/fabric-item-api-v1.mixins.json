@@ -20,7 +20,8 @@
     "ItemPropertiesMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "ResourceManagerRegistryLoadTaskMixin"
+    "ResourceManagerRegistryLoadTaskMixin",
+    "ServerPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
