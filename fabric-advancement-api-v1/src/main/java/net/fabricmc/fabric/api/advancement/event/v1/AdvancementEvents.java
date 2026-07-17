@@ -1,8 +1,13 @@
 package net.fabricmc.fabric.api.advancement.event.v1;
 
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * Events for manipulating advancements.
@@ -12,20 +17,94 @@ public final class AdvancementEvents {
 	}
 
 	/**
-	 * This event can be used to modify advancements.
-	 * The main use case is to add items to vanilla or mod advancements (e.g. modded lava bucket to "Hot Stuff").
+	 * This event can be used to replace advancements.
+	 * If an advancement is replaced, its source will be marked as {@link AdvancementSource#REPLACED}.
 	 */
-	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (map) -> {
+	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (id, original, source) -> {
+		for (Replace listener : listeners) {
+			@Nullable Advancement replaced = listener.replaceAdvancement(id, original, source);
+
+			if (replaced != null) {
+				return replaced;
+			}
+		}
+		return null;
+	});
+
+	/**
+	 * This event can be used to modify advancements.
+	 * The main use case is to add new criteria to vanilla or mod advancements (e.g. modded lava bucket to "Hot Stuff").
+	 *
+	 * <p>You can also modify advancements that are created by {@link #REPLACE}.
+	 * They have the advancement source {@link AdvancementSource#REPLACED}.
+	 *
+	 * <h4>Example: adding a stone pickaxe criterion to tactical fishing</h4>
+	 *
+	 * <p>WARNING: When adding a new criterion, you must explicitly update the advancement requirements
+	 * if you want the new criterion to trigger the advancement on its own. By default, the builder retains the original requirements.
+	 *
+	 * {@snippet :
+	 * AdvancementEvents.MODIFY.register((id, builder, source) -> {
+	 *	   // Name of the advancement to modify
+	 *     if (id.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
+	 *         // Add your criterion
+	 *         builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
+	 *
+	 *         // Set the requirement (OR = any of the criteria can complete the advancement, AND = all criteria must complete)
+	 *         builder.requirements(AdvancementRequirements.Strategy.OR);
+	 *     }
+	 * });
+	 * }
+	 */
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (id, builder, source) -> {
 		for (Modify listener : listeners) {
-			listener.modifyAdvancement(map);
+			listener.modifyAdvancement(id, builder, source);
 		}
 	});
+
+	/**
+	 * This event can be used for post-processing after all advancements have been loaded, replaced, and modified.
+	 */
+	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, advancements) -> {
+		for (Loaded listener : listeners) {
+			listener.onAdvancementsLoaded(resourceManager, advancements);
+		}
+	});
+
+	@FunctionalInterface
+	public interface Replace {
+		/**
+		 * Replaces advancements.
+		 *
+		 * @param id        the advancement identifier
+		 * @param original  the original advancement
+		 * @param source    the source of the original advancement
+		 * @return the new advancement, or null if it wasn't replaced
+		 */
+		@Nullable
+		Advancement replaceAdvancement(Identifier id, Advancement original, AdvancementSource source);
+	}
 
 	@FunctionalInterface
 	public interface Modify {
 		/**
 		 * Called when an advancement is loading to modify advancements.
+		 *
+		 * @param id        the advancement identifier
+		 * @param builder   a builder of the advancement being loaded
+		 * @param source    the source of the advancement
 		 */
-		void modifyAdvancement(AdvancementMapWrapper mapWrapper);
+		void modifyAdvancement(Identifier id, Advancement.Builder builder, AdvancementSource source);
+	}
+
+	@FunctionalInterface
+	public interface Loaded {
+		/**
+		 * Called when all advancements have been loaded and {@link AdvancementEvents#REPLACE} and {@link AdvancementEvents#MODIFY} have been invoked.
+		 *
+		 * @param resourceManager the server resource manager
+		 * @param advancements    an immutable map of all loaded advancements
+		 */
+		void onAdvancementsLoaded(ResourceManager resourceManager, Map<Identifier, Advancement> advancements);
 	}
 }
