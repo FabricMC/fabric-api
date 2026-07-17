@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.mixin.advancement.event;
+package net.fabricmc.fabric.mixin.advancement;
 
 import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
 import net.fabricmc.fabric.api.advancement.event.v1.AdvancementSource;
@@ -8,6 +8,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
@@ -20,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Mixin(ServerAdvancementManager.class)
 public class ServerAdvancementManagerMixin {
@@ -32,8 +34,13 @@ public class ServerAdvancementManagerMixin {
 		Map<Identifier, Advancement> modifiedAdvancements = new HashMap<>();
 
 		preparations.forEach((id, advancement) -> {
-			// Fetch the source populated during the prepare/parsing phase
-			AdvancementSource source = AdvancementUtil.SOURCES.get().getOrDefault(id, AdvancementSource.DATA_PACK);
+			Optional<Resource> resource = manager.getResource(Identifier.fromNamespaceAndPath(id.getNamespace(), "advancement/" + id.getPath() + ".json"));
+			if (resource.isEmpty()) {
+				resource = manager.getResource(Identifier.fromNamespaceAndPath(id.getNamespace(), "advancements/" + id.getPath() + ".json"));
+			}
+
+			// Map the resource to its AdvancementSource enum, defaulting to DATA_PACK
+			AdvancementSource source = resource.map(AdvancementUtil::determineSource).orElse(AdvancementSource.DATA_PACK);
 
 			// replace event
 			Advancement replacement = AdvancementEvents.REPLACE.invoker().replaceAdvancement(id, advancement, source, registries);
@@ -59,8 +66,5 @@ public class ServerAdvancementManagerMixin {
 	private void onLoaded(Map<Identifier, Advancement> preparations, ResourceManager manager, ProfilerFiller profiler, CallbackInfo ci) {
 		// After everything, so all advancements are loaded
 		AdvancementEvents.ALL_LOADED.invoker().onAdvancementsLoaded(manager, preparations, registries);
-
-		// Clean up source map
-		AdvancementUtil.SOURCES.remove();
 	}
 }
