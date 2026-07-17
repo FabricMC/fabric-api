@@ -9,7 +9,7 @@ This class provides three events for interacting with advancements.
 `AdvancementEvents.REPLACE` runs first and lets you replace advancements completely.
 
 `AdvancementEvents.MODIFY` runs after and lets you modify advancements, including the ones created in `REPLACE`,
-with features like adding new criteria or altering their requirements.
+with features like adding/removing new criteria or altering their requirements.
 
 `AdvancementEvents.ALL_LOADED` runs once all advancements have been successfully loaded, replaced, and modified.
 It is useful for post-processing and reading the finalized immutable map of advancements.
