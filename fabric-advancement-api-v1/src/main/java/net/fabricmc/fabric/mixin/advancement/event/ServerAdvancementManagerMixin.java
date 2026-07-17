@@ -2,6 +2,8 @@ package net.fabricmc.fabric.mixin.advancement.event;
 
 import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
 
+import net.fabricmc.fabric.api.advancement.event.v1.AdvancementMapWrapper;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
@@ -20,6 +22,6 @@ import java.util.Map;
 public class ServerAdvancementManagerMixin {
 	@Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
 	private void onApply(Map<Identifier, Advancement> preparations, ResourceManager manager, ProfilerFiller profiler, CallbackInfo ci) {
-		AdvancementEvents.MODIFY.invoker().modifyAdvancement(preparations);
+		AdvancementEvents.MODIFY.invoker().modifyAdvancement(new AdvancementMapWrapper(preparations));
 	}
 }
