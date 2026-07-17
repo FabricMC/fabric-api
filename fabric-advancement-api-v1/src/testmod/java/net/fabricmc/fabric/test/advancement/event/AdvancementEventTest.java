@@ -14,14 +14,14 @@ import net.minecraft.world.item.Items;
 public class AdvancementEventTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		AdvancementEvents.MODIFY.register((identifier, builder, source) -> {
+		AdvancementEvents.MODIFY.register((identifier, builder, source, registries) -> {
 			if(identifier.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
 				builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
 				builder.requirements(AdvancementRequirements.Strategy.OR);
 			}
 		});
 
-		AdvancementEvents.REPLACE.register((identifier, original, source) -> {
+		AdvancementEvents.REPLACE.register((identifier, original, source, registries) -> {
 			if(identifier.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
 				return Advancement.Builder.advancement()
 						.display(
@@ -43,7 +43,7 @@ public class AdvancementEventTest implements ModInitializer {
 			return original;
 		});
 
-		AdvancementEvents.ALL_LOADED.register((resourceManager, advancements) -> {
+		AdvancementEvents.ALL_LOADED.register((resourceManager, advancements, registries) -> {
 			// Do something when all advancements are loaded
 		});
 	}
