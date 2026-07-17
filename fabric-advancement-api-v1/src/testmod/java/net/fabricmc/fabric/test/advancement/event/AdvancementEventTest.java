@@ -13,9 +13,9 @@ public class AdvancementEventTest implements ModInitializer {
 		AdvancementEvents.MODIFY.register((mapWrapper) -> {
 			Identifier targetId = Identifier.withDefaultNamespace("husbandry/tactical_fishing");
 
-			mapWrapper.modify(targetId, builder -> {
-				builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
-			});
+			mapWrapper.modify(targetId, builder ->
+					builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE))
+			);
 		});
 	}
 }

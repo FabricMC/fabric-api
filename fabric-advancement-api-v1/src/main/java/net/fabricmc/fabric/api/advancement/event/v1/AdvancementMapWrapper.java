@@ -6,7 +6,9 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.resources.Identifier;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class AdvancementMapWrapper {
 	private final Map<Identifier, Advancement> advancements;
@@ -16,14 +18,18 @@ public class AdvancementMapWrapper {
 	}
 
 	public void modify(Identifier targetId, Consumer<Advancement.Builder> builderConsumer) {
+		modify(targetId, builderConsumer, AdvancementRequirements::anyOf);
+	}
+
+	public void modify(Identifier targetId, Consumer<Advancement.Builder> builderConsumer, Function<Set<String>, AdvancementRequirements> requirementsProvider) {
 		Advancement original = advancements.get(targetId);
-		delete(targetId);
+		// delete here? or not needed because Map#put is removing old value?
 
 		Advancement.Builder advancementBuilder = FabricAdvancementBuilder.copyOf(original);
 
 		builderConsumer.accept(advancementBuilder);
 
-		AdvancementRequirements newRequirements = AdvancementRequirements.anyOf(advancementBuilder.criteria.buildOrThrow().keySet());
+		AdvancementRequirements newRequirements = requirementsProvider.apply(advancementBuilder.criteria.buildOrThrow().keySet());
 		advancementBuilder.requirements(newRequirements);
 
 		AdvancementHolder modifiedAdvancement = advancementBuilder.build(targetId);
