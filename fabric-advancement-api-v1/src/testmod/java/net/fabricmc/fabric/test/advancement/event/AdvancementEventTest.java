@@ -16,12 +16,12 @@ public class AdvancementEventTest implements ModInitializer {
 	public void onInitialize() {
 		AdvancementEvents.MODIFY.register((identifier, builder, source, registries) -> {
 			if(identifier.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
-				// You can use builder.getCriteria() to get the current criteria
-
 				// Remove the criteria added in the REPLACE event for testing, can be any criteria of husbandry/tactical_fishing
 				builder.removeCriterion("diamond_axe");
+
 				// Adding own criteria, which triggers when having a stone pickaxe
 				builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
+				// Setting the requirements to at least one criteria needed
 				builder.requirements(AdvancementRequirements.Strategy.OR);
 			}
 		});
@@ -30,19 +30,19 @@ public class AdvancementEventTest implements ModInitializer {
 			if(identifier.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
 				return Advancement.Builder.advancement()
 						.display(
-								Items.SALMON,                                     // Icon
-								Component.literal("Testing"),                     // Title
-								Component.literal("This is a custom advancement"),// Description
-								null,                                             // Background (optional)
-								AdvancementType.GOAL,                             // Frame
-								true,                                             // Show toast
-								true,                                             // Announce chat
-								false                                             // Hidden
+								Items.SALMON,
+								Component.literal("Testing"),
+								Component.literal("This is a custom advancement"),
+								null,
+								AdvancementType.GOAL,
+								true,
+								true,
+								false
 						)
-						// Add a dummy criterion so it's valid
+						// Add a diamond_axe criterion
 						.addCriterion("diamond_axe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.DIAMOND_AXE))
 						.requirements(AdvancementRequirements.Strategy.AND)
-						// Build returns the Holder, .value() gives you the Advancement record needed
+						// Build returns the AdvancementHolder, .value() gives the Advancement
 						.build(identifier).value();
 			}
 			return original;
