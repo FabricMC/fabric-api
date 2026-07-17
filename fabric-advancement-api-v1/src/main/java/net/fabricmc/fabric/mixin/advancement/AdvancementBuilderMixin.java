@@ -4,43 +4,21 @@ import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRequirements;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.triggers.Criterion;
 
-import net.minecraft.resources.Identifier;
-
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 @Mixin(Advancement.Builder.class)
-public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
-	@Shadow private Optional<Identifier> parent;
-	@Shadow private Optional<DisplayInfo> display;
-	@Shadow private AdvancementRewards rewards;
-	@Shadow @Final private ImmutableMap.Builder<String, Criterion<?>> criteria;
-	@Shadow private Optional<AdvancementRequirements> requirements;
-	@Shadow private boolean sendsTelemetryEvent;
-
+public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder, AdvancementBuilderAccessor {
 	@Unique
 	private final Set<String> fabric_removedCriteria = new HashSet<>();
-
-	// Getters
-	@Override public Optional<Identifier> fabric_getParent() { return this.parent; }
-	@Override public Optional<DisplayInfo> fabric_getDisplay() { return this.display; }
-	@Override public AdvancementRewards fabric_getRewards() { return this.rewards; }
-	@Override public Optional<AdvancementRequirements> fabric_getRequirements() { return this.requirements; }
-	@Override public boolean fabric_getSendsTelemetryEvent() { return this.sendsTelemetryEvent; }
 
 	@Override
 	public void fabric_removeCriterion(String name) {
@@ -50,7 +28,7 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	@Override
 	public Map<String, Criterion<?>> fabric_getCriteria() {
 		// Create a snapshot of the current criteria
-		Map<String, Criterion<?>> map = new HashMap<>(this.criteria.build());
+		Map<String, Criterion<?>> map = new HashMap<>(this.fabric_getCriteriaBuilder().build());
 		// Remove from the map the criteria that were removed
 		this.fabric_removedCriteria.forEach(map::remove);
 		return map;
