@@ -41,18 +41,18 @@ public class AdvancementEventTest implements ModInitializer {
 				LOGGER.info("Modifying Tactical Fishing with source: " + source);
 
 				// A. Test Getters (Verify data is accessible)
-				Optional<DisplayInfo> display = builder.getDisplay();
+				Optional<DisplayInfo> display = builder.fabric_getDisplay();
 				LOGGER.info("Original title: " + display.map(DisplayInfo::getTitle).orElse(Component.literal("None")));
-				LOGGER.info("Original telemetry: " + builder.getSendsTelemetryEvent());
+				LOGGER.info("Original telemetry: " + builder.fabric_getSendsTelemetryEvent());
 
 				// Remove Criterion
-				builder.removeCriterion("fishing_rod");
+				builder.fabric_removeCriterion("fishing_rod");
 
 				// Add Criteria
 				builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
 
 				// Update Requirements (Using the getter to get keys)
-				builder.requirements(AdvancementRequirements.anyOf(builder.getCriteria().keySet()));
+				builder.requirements(AdvancementRequirements.anyOf(builder.fabric_getCriteria().keySet()));
 
 				// Modify Display (Change icon to a Diamond Sword)
 				// Note: Please try keeping datas that you don't modify from the original DisplayInfo

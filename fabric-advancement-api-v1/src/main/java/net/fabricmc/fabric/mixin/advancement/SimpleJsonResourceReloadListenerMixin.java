@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.advancement;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
@@ -29,8 +30,6 @@ import net.minecraft.core.registries.Registries;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
@@ -40,13 +39,15 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 
 @Mixin(SimpleJsonResourceReloadListener.class)
 public class SimpleJsonResourceReloadListenerMixin {
-	@Inject(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/resources/FileToIdConverter;fileToId(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;"))
-	private static <T> void fillSourceMap(ResourceManager manager, FileToIdConverter lister, DynamicOps<JsonElement> ops, Codec<T> codec, Map<Identifier, T> result, CallbackInfo ci, @Local(name = "entry") Map.Entry<Identifier, Resource> entry, @Local(name = "id") Identifier id) {
+	@ModifyExpressionValue(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/FileToIdConverter;fileToId(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;"))
+	private static Identifier fillSourceMap(Identifier id, ResourceManager manager, FileToIdConverter lister, DynamicOps<JsonElement> ops, Codec<?> codec, Map<Identifier, ?> result, @Local(name = "entry") Map.Entry<Identifier, Resource> entry) {
 		final String dirName = lister.prefix();
 
 		// Make sure we only process files from the advancement registry path
-		if (!Registries.ADVANCEMENT.identifier().getPath().equals(dirName)) return;
+		if (Registries.ADVANCEMENT.identifier().getPath().equals(dirName)) {
+			AdvancementUtil.SOURCES.put(id, AdvancementUtil.determineSource(entry.getValue()));
+		}
 
-		AdvancementUtil.SOURCES.put(id, AdvancementUtil.determineSource(entry.getValue()));
+		return id;
 	}
 }

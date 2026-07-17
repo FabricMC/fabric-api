@@ -14,7 +14,6 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.Map;
 import java.util.Optional;
 
-// TODO: Same as FabricAdvancementHolder in datagen.v1.advancement
 @ApiStatus.NonExtendable
 public interface FabricAdvancementBuilder {
 	static Advancement.Builder copyOf(Advancement advancement) {
@@ -35,20 +34,31 @@ public interface FabricAdvancementBuilder {
 	}
 
 	// Accessors for internal fields
-	Optional<Identifier> getParent();
-	Optional<DisplayInfo> getDisplay();
-	AdvancementRewards getRewards();
-	Optional<AdvancementRequirements> getRequirements();
-	boolean getSendsTelemetryEvent();
-
-	default void removeCriterion(String name) {
-		this.fabric_removeCriterion(name);
+	default Optional<Identifier> fabric_getParent() {
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Map<String, Criterion<?>> getCriteria() {
-		return this.fabric_getCriteria();
+	default Optional<DisplayInfo> fabric_getDisplay() {
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	void fabric_removeCriterion(String name);
-	Map<String, Criterion<?>> fabric_getCriteria();
+	default AdvancementRewards fabric_getRewards() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default Optional<AdvancementRequirements> fabric_getRequirements() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default boolean fabric_getSendsTelemetryEvent() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default void fabric_removeCriterion(String name) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	default Map<String, Criterion<?>> fabric_getCriteria() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
 }
