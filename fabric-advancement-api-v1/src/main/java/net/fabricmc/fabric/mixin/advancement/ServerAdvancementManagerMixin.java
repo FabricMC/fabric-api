@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.advancement.event.v1.AdvancementUtil;
 import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.Resource;
@@ -28,7 +27,7 @@ import java.util.Optional;
 @Mixin(ServerAdvancementManager.class)
 public class ServerAdvancementManagerMixin {
 	@Unique
-	private static final String ADVANCEMENT_PATH = Registries.ADVANCEMENT.identifier().getPath();
+	private static final String ADVANCEMENT_PATH = "advancement";
 
 	@Final
 	@Shadow
