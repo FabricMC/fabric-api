@@ -4,11 +4,6 @@ package net.fabricmc.fabric.api.advancement.event.v1;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.resources.Identifier;
-
-import java.util.Map;
-
 /**
  * Events for manipulating advancements.
  */
@@ -31,6 +26,6 @@ public final class AdvancementEvents {
 		/**
 		 * Called when an advancement is loading to modify advancements.
 		 */
-		void modifyAdvancement(Map<Identifier, Advancement> advancements);
+		void modifyAdvancement(AdvancementMapWrapper mapWrapper);
 	}
 }
