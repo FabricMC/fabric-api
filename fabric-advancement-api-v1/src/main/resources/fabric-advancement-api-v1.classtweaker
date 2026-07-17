@@ -1,0 +1,2 @@
+classTweaker	v1	official
+inject-interface net/minecraft/advancements/Advancement$Builder net/fabricmc/fabric/api/advancement/event/v1/FabricAdvancementBuilder
