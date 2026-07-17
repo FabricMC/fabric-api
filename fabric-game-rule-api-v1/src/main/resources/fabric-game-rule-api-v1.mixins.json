@@ -7,7 +7,8 @@
     "GameRuleCommandVisitorMixin",
     "GameRuleMixin",
     "GameRulesServiceGameRuleUpdateMixin",
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "sync.MinecraftServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

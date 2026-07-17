@@ -43,6 +43,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
+import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
 
 /**
  * A utility class containing classes and methods for building {@link GameRule}s.
@@ -73,6 +74,7 @@ public class GameRuleBuilder<T> {
 	protected Codec<T> codec;
 	protected ToIntFunction<T> commandResultSupplier;
 	protected FeatureFlagSet requiredFeatures = FeatureFlagSet.of();
+	protected boolean synced = false;
 
 	protected GameRuleBuilder(T defaultValue) {
 		this.defaultValue = defaultValue;
@@ -101,6 +103,11 @@ public class GameRuleBuilder<T> {
 
 	public GameRuleBuilder<T> codec(Codec<T> codec) {
 		this.codec = codec;
+		return this;
+	}
+
+	public GameRuleBuilder<T> synced() {
+		this.synced = true;
 		return this;
 	}
 
@@ -144,6 +151,10 @@ public class GameRuleBuilder<T> {
 
 		if (this.fabricType != null) {
 			((RuleTypeExtensions) (Object) rule).fabric_setType(this.fabricType);
+		}
+
+		if (this.synced) {
+			((SyncedGameRule) (Object) rule).fabric_setSynced();
 		}
 
 		return rule;

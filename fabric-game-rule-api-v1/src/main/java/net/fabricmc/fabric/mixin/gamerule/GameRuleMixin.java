@@ -32,9 +32,10 @@ import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
+import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
 
 @Mixin(GameRule.class)
-public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
+public abstract class GameRuleMixin<T> implements RuleTypeExtensions, SyncedGameRule {
 	@Shadow
 	public abstract Class<T> valueClass();
 
@@ -44,6 +45,9 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 
 	@Unique
 	private final List<T> enumSupportedValues = new ArrayList<>();
+
+	@Unique
+	private boolean synced;
 
 	@Override
 	public @Nullable FabricGameRuleType fabric_getType() {
@@ -88,6 +92,16 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 
 		this.enumSupportedValues.clear();
 		Collections.addAll((List<E>) this.enumSupportedValues, supportedValues);
+	}
+
+	@Override
+	public boolean fabric_isSynced() {
+		return this.synced;
+	}
+
+	@Override
+	public void fabric_setSynced() {
+		this.synced = true;
 	}
 
 	@WrapMethod(method = "deserialize")
