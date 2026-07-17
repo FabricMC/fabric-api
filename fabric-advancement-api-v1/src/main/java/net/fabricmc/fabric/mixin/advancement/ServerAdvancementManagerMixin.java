@@ -8,27 +8,21 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Mixin(ServerAdvancementManager.class)
 public class ServerAdvancementManagerMixin {
-	@Unique
-	private static final String ADVANCEMENT_PATH = "advancement";
-
 	@Final
 	@Shadow
 	private HolderLookup.Provider registries;
@@ -38,10 +32,8 @@ public class ServerAdvancementManagerMixin {
 		Map<Identifier, Advancement> modifiedAdvancements = new HashMap<>();
 
 		preparations.forEach((id, advancement) -> {
-			Optional<Resource> resource = manager.getResource(Identifier.fromNamespaceAndPath(id.getNamespace(), ADVANCEMENT_PATH + "/" + id.getPath() + ".json"));
-
-			// Map the resource to its AdvancementSource enum, defaulting to DATA_PACK
-			AdvancementSource source = resource.map(AdvancementUtil::determineSource).orElse(AdvancementSource.DATA_PACK);
+			// get the source, defaulting to DATA_PACK
+			AdvancementSource source = AdvancementUtil.SOURCES.getOrDefault(id, AdvancementSource.DATA_PACK);
 
 			// replace event
 			Advancement replacement = AdvancementEvents.REPLACE.invoker().replaceAdvancement(id, advancement, source, registries);
@@ -67,5 +59,7 @@ public class ServerAdvancementManagerMixin {
 	private void onLoaded(Map<Identifier, Advancement> preparations, ResourceManager manager, ProfilerFiller profiler, CallbackInfo ci) {
 		// After everything, so all advancements are loaded
 		AdvancementEvents.ALL_LOADED.invoker().onAdvancementsLoaded(manager, preparations, registries);
+		// And clear the sources for next /reload
+		AdvancementUtil.SOURCES.clear();
 	}
 }
