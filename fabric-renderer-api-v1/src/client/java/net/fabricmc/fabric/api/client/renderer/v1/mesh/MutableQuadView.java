@@ -409,22 +409,22 @@ public interface MutableQuadView extends QuadView {
 	 * <p>This is the preferred method for emissive lighting effects as some renderers
 	 * with advanced lighting pipelines may not use lightmaps.
 	 *
-	 * <p>Note that vertex colors will still be modified by diffuse shading and ambient occlusion, unless disabled via
-	 * {@link #diffuseShade(boolean)} and {@link #ambientOcclusion(TriState)}.
+	 * <p>Note that vertex colors will still be modified by shading and ambient occlusion, unless disabled via
+	 * {@link #shadeDirectionOverride(Direction)} and {@link #ambientOcclusion(TriState)}.
 	 *
 	 * <p>The default value is {@code false}.
 	 */
 	MutableQuadView emissive(boolean emissive);
 
 	/**
-	 * Controls whether vertex colors should be modified for diffuse shading.
+	 * Controls the direction that should be used for shade, if set to null it'll use the quad direction when calculating shade.
 	 *
-	 * <p>The default value is {@code true}.
+	 * <p>The default value is {@code null}.
 	 *
 	 * <p>This property is guaranteed to be respected in block contexts. Some renderers may also respect it in item
 	 * contexts, but this is not guaranteed.
 	 */
-	MutableQuadView diffuseShade(boolean shade);
+	MutableQuadView shadeDirectionOverride(@Nullable Direction shadeDirection);
 
 	/**
 	 * Controls whether vertex colors should be modified for ambient occlusion.

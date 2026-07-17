@@ -270,8 +270,8 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public boolean diffuseShade() {
-		return EncodingFormat.diffuseShade(data[baseIndex + HEADER_BITS]);
+	public @Nullable Direction shadeDirectionOverride() {
+		return EncodingFormat.shadeDirectionOverride(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override

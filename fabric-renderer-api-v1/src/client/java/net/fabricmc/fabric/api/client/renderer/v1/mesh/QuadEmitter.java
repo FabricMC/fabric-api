@@ -158,7 +158,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter emissive(boolean emissive);
 
 	@Override
-	QuadEmitter diffuseShade(boolean shade);
+	QuadEmitter shadeDirectionOverride(@Nullable Direction shadeDirection);
 
 	@Override
 	QuadEmitter ambientOcclusion(TriState ao);
