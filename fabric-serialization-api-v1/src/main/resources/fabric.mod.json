@@ -19,7 +19,7 @@
     "fabric-serialization-api-v1.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.18.4"
+    "fabricloader": ">=0.19.1"
   },
   "description": "Extensions for improved serialization.",
   "accessWidener": "fabric-serialization-api-v1.classtweaker",

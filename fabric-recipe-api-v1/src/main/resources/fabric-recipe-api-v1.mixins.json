@@ -5,12 +5,15 @@
   "mixins": [
     "RecipeAccessMixin",
     "RecipeManagerMixin",
+    "book.RecipeBookSettingsMixin",
+    "book.RecipeBookSettingsTypeSettingsAccessor",
+    "book.ServerRecipeBookMixin",
     "ingredient.IngredientMixin",
     "ingredient.ShapelessRecipeMixin",
     "sync.ConnectionMixin",
+    "sync.RecipeManagerAccessor",
     "sync.RecipeMapMixin",
-    "sync.ServerCommonPacketListenerImplAccessor",
-    "sync.RecipeManagerAccessor"
+    "sync.ServerCommonPacketListenerImplAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,15 +1,17 @@
 version = getSubprojectVersion(project)
 
 loom {
-	accessWidenerPath = file('src/main/resources/fabric-recipe-api-v1.classtweaker')
+	accessWidenerPath = file('src/testmod/resources/fabric-recipe-api-v1-testmod.classtweaker')
 }
 
 moduleDependencies(project, [
 	':fabric-lifecycle-events-v1',
-	'fabric-networking-api-v1',
+	':fabric-networking-api-v1',
 ])
 
 testDependencies(project, [
 	':fabric-lifecycle-events-v1',
+	":fabric-menu-api-v1",
+	":fabric-object-builder-api-v1",
 	':fabric-registry-sync-v0',
 ])
