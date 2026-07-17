@@ -1,6 +1,7 @@
 package net.fabricmc.fabric.mixin.advancement;
 
 import com.google.common.collect.ImmutableMap;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -15,7 +16,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,11 +36,11 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	private final Set<String> fabric_removedCriteria = new HashSet<>();
 
 	// Getters
-	@Override public Optional<Identifier> getParent() { return this.parent; }
-	@Override public Optional<DisplayInfo> getDisplay() { return this.display; }
-	@Override public AdvancementRewards getRewards() { return this.rewards; }
-	@Override public Optional<AdvancementRequirements> getRequirements() { return this.requirements; }
-	@Override public boolean getSendsTelemetryEvent() { return this.sendsTelemetryEvent; }
+	@Override public Optional<Identifier> fabric_getParent() { return this.parent; }
+	@Override public Optional<DisplayInfo> fabric_getDisplay() { return this.display; }
+	@Override public AdvancementRewards fabric_getRewards() { return this.rewards; }
+	@Override public Optional<AdvancementRequirements> fabric_getRequirements() { return this.requirements; }
+	@Override public boolean fabric_getSendsTelemetryEvent() { return this.sendsTelemetryEvent; }
 
 	@Override
 	public void fabric_removeCriterion(String name) {
@@ -57,13 +57,11 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	}
 
 	// Intercept the build process to filter the criteria map before it becomes immutable
-	@Redirect(
+	@ModifyExpressionValue(
 			method = "build(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/advancements/AdvancementHolder;",
 			at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;buildOrThrow()Lcom/google/common/collect/ImmutableMap;")
 	)
-	private ImmutableMap<String, Criterion<?>> applyFabricRemovals(ImmutableMap.Builder<String, Criterion<?>> instance) {
-		ImmutableMap<String, Criterion<?>> original = instance.buildOrThrow();
-
+	private ImmutableMap<String, Criterion<?>> applyFabricRemovals(ImmutableMap<String, Criterion<?>> original) {
 		if (this.fabric_removedCriteria.isEmpty()) {
 			return original;
 		}

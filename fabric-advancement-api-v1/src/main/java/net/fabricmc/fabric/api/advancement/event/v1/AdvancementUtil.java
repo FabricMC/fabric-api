@@ -13,6 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class AdvancementUtil {
 	public static final Map<Identifier, AdvancementSource> SOURCES = new ConcurrentHashMap<>();
 
+	private AdvancementUtil() {
+	}
+
 	public static AdvancementSource determineSource(Resource resource) {
 		PackSource packSource = resource.getFabricPackSource();
 
