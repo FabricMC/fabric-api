@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
 abstract class CuboidItemModelWrapperMixin implements ItemModel {
 	@Unique
 	private Mesh mesh;
-	
+
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onReturnInit(List<ItemTintSource> tints, QuadCollection quads, ModelRenderProperties properties, Matrix4fc transformation, CallbackInfo ci) {
 		if (quads instanceof MeshQuadCollection meshQuadCollection) {

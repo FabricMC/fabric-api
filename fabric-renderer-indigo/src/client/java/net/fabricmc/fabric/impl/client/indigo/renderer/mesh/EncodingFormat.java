@@ -230,12 +230,12 @@ public final class EncodingFormat {
 	static int emissive(int bits, boolean emissive) {
 		return emissive ? (bits | EMISSIVE_MASK) : (bits & ~EMISSIVE_MASK);
 	}
-	
+
 	@Nullable
 	static Direction shadeDirectionOverride(int bits) {
 		return ModelHelper.faceFromIndex((bits & SHADE_DIRECTION_MASK) >>> SHADE_DIRECTION_BIT_OFFSET);
 	}
-	
+
 	static int shadeDirectionOverride(int bits, @Nullable Direction shadeDirection) {
 		return (bits & ~SHADE_DIRECTION_MASK) | (ModelHelper.toFaceIndex(shadeDirection) << SHADE_DIRECTION_BIT_OFFSET);
 	}
