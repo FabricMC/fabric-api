@@ -16,6 +16,11 @@ public class AdvancementEventTest implements ModInitializer {
 	public void onInitialize() {
 		AdvancementEvents.MODIFY.register((identifier, builder, source, registries) -> {
 			if(identifier.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
+				// You can use builder.getCriteria() to get the current criteria
+
+				// Remove the criteria added in the REPLACE event for testing, can be any criteria of husbandry/tactical_fishing
+				builder.removeCriterion("diamond_axe");
+				// Adding own criteria, which triggers when having a stone pickaxe
 				builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
 				builder.requirements(AdvancementRequirements.Strategy.OR);
 			}

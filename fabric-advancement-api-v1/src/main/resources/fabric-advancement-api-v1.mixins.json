@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "ServerAdvancementManagerMixin",
-    "SimpleJsonResourceReloadListenerMixin"
+    "SimpleJsonResourceReloadListenerMixin",
+    "AdvancementBuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

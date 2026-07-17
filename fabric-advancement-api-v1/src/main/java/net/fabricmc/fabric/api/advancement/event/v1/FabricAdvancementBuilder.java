@@ -2,7 +2,11 @@ package net.fabricmc.fabric.api.advancement.event.v1;
 
 import net.minecraft.advancements.Advancement;
 
+import net.minecraft.advancements.triggers.Criterion;
+
 import org.jetbrains.annotations.ApiStatus;
+
+import java.util.Map;
 
 // TODO: Same as FabricAdvancementHolder in datagen.v1.advancement
 @ApiStatus.NonExtendable
@@ -23,4 +27,15 @@ public interface FabricAdvancementBuilder {
 
 		return advancementBuilder;
 	}
+
+	default void removeCriterion(String name) {
+		this.fabric_removeCriterion(name);
+	}
+
+	default Map<String, Criterion<?>> getCriteria() {
+		return this.fabric_getCriteria();
+	}
+
+	void fabric_removeCriterion(String name);
+	Map<String, Criterion<?>> fabric_getCriteria();
 }
