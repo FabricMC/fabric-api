@@ -25,6 +25,7 @@ if (focus.exists()) {
 
 include 'fabric-api-base'
 
+include 'fabric-advancement-api-v1'
 include 'fabric-api-lookup-api-v1'
 include 'fabric-biome-api-v1'
 include 'fabric-block-api-v1'
