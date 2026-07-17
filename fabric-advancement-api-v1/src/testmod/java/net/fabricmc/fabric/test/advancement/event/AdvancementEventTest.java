@@ -21,7 +21,7 @@ public class AdvancementEventTest implements ModInitializer {
 			Advancement original = advancementsMap.get(targetId);
 
 			if (original != null) {
-				// Create a new criterion map based on the original one
+				// Create a new criterion map based on the original one (or remove original.criteria() to replace existing criterions)
 				Map<String, Criterion<?>> newCriteria = new HashMap<>(original.criteria());
 
 				// Add new criterion
