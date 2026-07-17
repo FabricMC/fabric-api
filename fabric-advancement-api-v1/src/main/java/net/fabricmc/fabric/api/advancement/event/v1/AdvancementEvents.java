@@ -3,6 +3,7 @@ package net.fabricmc.fabric.api.advancement.event.v1;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +21,9 @@ public final class AdvancementEvents {
 	 * This event can be used to replace advancements.
 	 * If an advancement is replaced, its source will be marked as {@link AdvancementSource#REPLACED}.
 	 */
-	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (id, original, source) -> {
+	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (id, original, source, registries) -> {
 		for (Replace listener : listeners) {
-			@Nullable Advancement replaced = listener.replaceAdvancement(id, original, source);
+			@Nullable Advancement replaced = listener.replaceAdvancement(id, original, source, registries);
 
 			if (replaced != null) {
 				return replaced;
@@ -44,7 +45,7 @@ public final class AdvancementEvents {
 	 * if you want the new criterion to trigger the advancement on its own. By default, the builder retains the original requirements.
 	 *
 	 * {@snippet :
-	 * AdvancementEvents.MODIFY.register((id, builder, source) -> {
+	 * AdvancementEvents.MODIFY.register((id, builder, source, registries) -> {
 	 *	   // Name of the advancement to modify
 	 *     if (id.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
 	 *         // Add your criterion
@@ -56,18 +57,18 @@ public final class AdvancementEvents {
 	 * });
 	 * }
 	 */
-	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (id, builder, source) -> {
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (id, builder, source, registries) -> {
 		for (Modify listener : listeners) {
-			listener.modifyAdvancement(id, builder, source);
+			listener.modifyAdvancement(id, builder, source, registries);
 		}
 	});
 
 	/**
 	 * This event can be used for post-processing after all advancements have been loaded, replaced, and modified.
 	 */
-	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, advancements) -> {
+	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, advancements, registries) -> {
 		for (Loaded listener : listeners) {
-			listener.onAdvancementsLoaded(resourceManager, advancements);
+			listener.onAdvancementsLoaded(resourceManager, advancements, registries);
 		}
 	});
 
@@ -82,7 +83,7 @@ public final class AdvancementEvents {
 		 * @return the new advancement, or null if it wasn't replaced
 		 */
 		@Nullable
-		Advancement replaceAdvancement(Identifier id, Advancement original, AdvancementSource source);
+		Advancement replaceAdvancement(Identifier id, Advancement original, AdvancementSource source, HolderLookup.Provider registries);
 	}
 
 	@FunctionalInterface
@@ -94,7 +95,7 @@ public final class AdvancementEvents {
 		 * @param builder   a builder of the advancement being loaded
 		 * @param source    the source of the advancement
 		 */
-		void modifyAdvancement(Identifier id, Advancement.Builder builder, AdvancementSource source);
+		void modifyAdvancement(Identifier id, Advancement.Builder builder, AdvancementSource source, HolderLookup.Provider registries);
 	}
 
 	@FunctionalInterface
@@ -105,6 +106,6 @@ public final class AdvancementEvents {
 		 * @param resourceManager the server resource manager
 		 * @param advancements    an immutable map of all loaded advancements
 		 */
-		void onAdvancementsLoaded(ResourceManager resourceManager, Map<Identifier, Advancement> advancements);
+		void onAdvancementsLoaded(ResourceManager resourceManager, Map<Identifier, Advancement> advancements, HolderLookup.Provider registries);
 	}
 }
