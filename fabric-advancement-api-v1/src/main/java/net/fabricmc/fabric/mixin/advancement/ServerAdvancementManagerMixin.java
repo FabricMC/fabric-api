@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.advancement.event.v1.AdvancementUtil;
 import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.Resource;
@@ -15,6 +16,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,6 +27,9 @@ import java.util.Optional;
 
 @Mixin(ServerAdvancementManager.class)
 public class ServerAdvancementManagerMixin {
+	@Unique
+	private static final String ADVANCEMENT_PATH = Registries.ADVANCEMENT.identifier().getPath();
+
 	@Final
 	@Shadow
 	private HolderLookup.Provider registries;
@@ -34,7 +39,7 @@ public class ServerAdvancementManagerMixin {
 		Map<Identifier, Advancement> modifiedAdvancements = new HashMap<>();
 
 		preparations.forEach((id, advancement) -> {
-			Optional<Resource> resource = manager.getResource(Identifier.fromNamespaceAndPath(id.getNamespace(), "advancement/" + id.getPath() + ".json"));
+			Optional<Resource> resource = manager.getResource(Identifier.fromNamespaceAndPath(id.getNamespace(), ADVANCEMENT_PATH + "/" + id.getPath() + ".json"));
 
 			// Map the resource to its AdvancementSource enum, defaulting to DATA_PACK
 			AdvancementSource source = resource.map(AdvancementUtil::determineSource).orElse(AdvancementSource.DATA_PACK);
