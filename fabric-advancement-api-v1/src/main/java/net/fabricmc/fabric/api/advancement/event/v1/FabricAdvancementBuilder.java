@@ -2,8 +2,6 @@ package net.fabricmc.fabric.api.advancement.event.v1;
 
 import net.minecraft.advancements.Advancement;
 
-import net.minecraft.advancements.AdvancementRequirements;
-
 import org.jetbrains.annotations.ApiStatus;
 
 // TODO: Same as FabricAdvancementHolder in datagen.v1.advancement
