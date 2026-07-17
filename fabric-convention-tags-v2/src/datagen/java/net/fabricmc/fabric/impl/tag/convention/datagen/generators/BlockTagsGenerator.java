@@ -174,6 +174,21 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(Blocks.LAPIS_ORE)
 				.add(Blocks.REDSTONE_ORE);
 
+		valueLookupBuilder(BlockTags.INCORRECT_FOR_COPPER_TOOL)
+				.addOptionalTag(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL);
+		valueLookupBuilder(BlockTags.INCORRECT_FOR_DIAMOND_TOOL)
+				.addOptionalTag(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL);
+		valueLookupBuilder(BlockTags.INCORRECT_FOR_GOLD_TOOL)
+				.addOptionalTag(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL);
+		valueLookupBuilder(BlockTags.INCORRECT_FOR_IRON_TOOL)
+				.addOptionalTag(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL);
+		valueLookupBuilder(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)
+				.addOptionalTag(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL);
+		valueLookupBuilder(BlockTags.INCORRECT_FOR_STONE_TOOL)
+				.addOptionalTag(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL);
+		valueLookupBuilder(BlockTags.INCORRECT_FOR_WOODEN_TOOL)
+				.addOptionalTag(ConventionalBlockTags.INCORRECT_FOR_ANY_TOOL);
+
 		valueLookupBuilder(ConventionalBlockTags.WOODEN_CHESTS)
 				.add(Blocks.CHEST)
 				.add(Blocks.TRAPPED_CHEST);

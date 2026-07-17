@@ -92,6 +92,22 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> REDSTONE_ORES = register("ores/redstone");
 
+	/**
+	 * Blocks that can harvested only with a few specific tool materials.
+	 *
+	 * <p>This is included in all `minecraft:incorrect_for_*_tool` tags and
+	 * should be included in similar modded tags, directly or transitively
+	 * through a vanilla tag.
+	 *
+	 * <p>Use tag entry removals to remove the desired blocks from the
+	 * 'incorrect' tags for the tool materials that <em>should</em> be
+	 * able to mine them.
+	 *
+	 * <p>This tag is not meant for blocks that are not meant to be
+	 * harvested at all; use an empty loot table for such blocks.
+	 */
+	public static final TagKey<Block> INCORRECT_FOR_ANY_TOOL = register("incorrect_for_any_tool");
+
 	public static final TagKey<Block> BARRELS = register("barrels");
 	public static final TagKey<Block> WOODEN_BARRELS = register("barrels/wooden");
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
