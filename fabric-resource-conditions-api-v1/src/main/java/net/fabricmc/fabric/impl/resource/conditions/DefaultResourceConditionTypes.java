@@ -29,6 +29,7 @@ import net.fabricmc.fabric.impl.resource.conditions.conditions.FalseResourceCond
 import net.fabricmc.fabric.impl.resource.conditions.conditions.FeaturesEnabledResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.NotResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.OrResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.PackFormatInRangeResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.RegistryContainsResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.TagsPopulatedResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.TrueResourceCondition;
@@ -44,6 +45,7 @@ public class DefaultResourceConditionTypes {
 	public static final ResourceConditionType<TagsPopulatedResourceCondition> TAGS_POPULATED = createResourceConditionType("tags_populated", TagsPopulatedResourceCondition.CODEC);
 	public static final ResourceConditionType<FeaturesEnabledResourceCondition> FEATURES_ENABLED = createResourceConditionType("features_enabled", FeaturesEnabledResourceCondition.CODEC);
 	public static final ResourceConditionType<RegistryContainsResourceCondition> REGISTRY_CONTAINS = createResourceConditionType("registry_contains", RegistryContainsResourceCondition.CODEC);
+	public static final ResourceConditionType<PackFormatInRangeResourceCondition> PACK_FORMAT_IN_RANGE = createResourceConditionType("pack_format_in_range", PackFormatInRangeResourceCondition.CODEC);
 
 	private static <T extends ResourceCondition> ResourceConditionType<T> createResourceConditionType(String name, MapCodec<T> codec) {
 		return ResourceConditionType.create(Identifier.fromNamespaceAndPath("fabric", name), codec);

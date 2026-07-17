@@ -134,6 +134,24 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("dont_overlay predicate should not have been overlayed.");
 		}
 
+		// Format range condition overlays, pack_format is 48.
+
+		if (registries.get(ResourceKey.create(Registries.PREDICATE, id("format_in_range_overlay"))).isEmpty()) {
+			throw new AssertionError("format_in_range_overlay predicate should have been overlayed (format 48 is within 1-100).");
+		}
+
+		if (registries.get(ResourceKey.create(Registries.PREDICATE, id("format_out_of_range_overlay"))).isPresent()) {
+			throw new AssertionError("format_out_of_range_overlay predicate should not have been overlayed (format 48 is not within 100-200).");
+		}
+
+		if (registries.get(ResourceKey.create(Registries.PREDICATE, id("format_min_only_overlay"))).isEmpty()) {
+			throw new AssertionError("format_min_only_overlay predicate should have been overlayed (format 48 >= 1).");
+		}
+
+		if (registries.get(ResourceKey.create(Registries.PREDICATE, id("format_max_too_low_overlay"))).isPresent()) {
+			throw new AssertionError("format_max_too_low_overlay predicate should not have been overlayed (format 48 > 10).");
+		}
+
 		helper.succeed();
 	}
 }

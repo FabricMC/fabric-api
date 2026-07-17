@@ -19,11 +19,14 @@ package net.fabricmc.fabric.api.resource.conditions.v1;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.flag.FeatureFlag;
 
@@ -34,6 +37,7 @@ import net.fabricmc.fabric.impl.resource.conditions.conditions.FalseResourceCond
 import net.fabricmc.fabric.impl.resource.conditions.conditions.FeaturesEnabledResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.NotResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.OrResourceCondition;
+import net.fabricmc.fabric.impl.resource.conditions.conditions.PackFormatInRangeResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.RegistryContainsResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.TagsPopulatedResourceCondition;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.TrueResourceCondition;
@@ -196,5 +200,32 @@ public final class ResourceConditions {
 	 */
 	public static <T> ResourceCondition registryContains(ResourceKey<? extends Registry<T>> registry, Identifier... entries) {
 		return new RegistryContainsResourceCondition(registry.identifier(), entries);
+	}
+
+	/**
+	 * A condition that passes if the current pack format for the given {@code packType}
+	 * is within the specified range. Has ID {@code fabric:pack_format_in_range} and takes
+	 * three fields: {@code pack_type}, ({@code "data"} or {@code "assets"}), and optional
+	 * {@code min_format} and {@code max_format} defining the inclusive range.
+	 * If {@code min_format} is absent, there is no lower bound. If {@code max_format}
+	 * is absent, there is no upper bound.
+	 *
+	 * @param packType the pack type whose format to check
+	 * @param minFormat the minimum format (inclusive), or empty for no lower bound
+	 * @param maxFormat the maximum format (inclusive), or empty for no upper bound
+	 */
+	public static ResourceCondition packFormatInRange(PackType packType, Optional<PackFormat> minFormat, Optional<PackFormat> maxFormat) {
+		if (minFormat.isEmpty() && maxFormat.isEmpty()) {
+			throw new IllegalArgumentException("pack_format_in_range must specify at least one of minFormat or maxFormat");
+		}
+
+		return new PackFormatInRangeResourceCondition(packType, minFormat, maxFormat);
+	}
+
+	/**
+	 * @see #packFormatInRange(PackType, Optional, Optional)
+	 */
+	public static ResourceCondition packFormatInRange(PackType packType, PackFormat minFormat, PackFormat maxFormat) {
+		return new PackFormatInRangeResourceCondition(packType, Optional.of(minFormat), Optional.of(maxFormat));
 	}
 }

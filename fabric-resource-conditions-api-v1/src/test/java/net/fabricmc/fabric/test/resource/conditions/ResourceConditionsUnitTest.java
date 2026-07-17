@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.resource.conditions;
 
+import java.util.Optional;
+
 import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.Bootstrap;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -126,5 +130,34 @@ public class ResourceConditionsUnitTest {
 		expectCondition("block registry, empty check", emptyBlock, true);
 		expectCondition("unknown registry, non-empty", unknownRegistry, false);
 		expectCondition("unknown registry, empty", emptyUnknown, true);
+	}
+
+	@Test
+	public void packFormatInRange() {
+		ResourceCondition inRange = ResourceConditions.packFormatInRange(PackType.SERVER_DATA, new PackFormat(1, 0), new PackFormat(99999, 0));
+		ResourceCondition belowMin = ResourceConditions.packFormatInRange(PackType.SERVER_DATA, new PackFormat(99999, 0), new PackFormat(999999, 0));
+		ResourceCondition minOnly = ResourceConditions.packFormatInRange(PackType.SERVER_DATA, Optional.of(new PackFormat(1, 0)), Optional.empty());
+		ResourceCondition maxTooLow = ResourceConditions.packFormatInRange(PackType.SERVER_DATA, Optional.empty(), Optional.of(new PackFormat(0, 0)));
+
+		expectCondition("format in range", inRange, true);
+		expectCondition("format below min", belowMin, false);
+		expectCondition("format min only", minOnly, true);
+		expectCondition("format max too low", maxTooLow, false);
+	}
+
+	@Test
+	public void packFormatInRangeCodecRoundTrip() {
+		ResourceCondition condition = ResourceConditions.packFormatInRange(PackType.SERVER_DATA, new PackFormat(42, 0), new PackFormat(48, 0));
+
+		ResourceCondition.CODEC
+				.encodeStart(JsonOps.INSTANCE, condition)
+				.getOrThrow(message -> new AssertionError("Could not serialize pack_format_in_range condition: " + message));
+
+		try {
+			ResourceConditions.packFormatInRange(PackType.CLIENT_RESOURCES, Optional.empty(), Optional.empty());
+			throw new AssertionError("pack_format_in_range without min_format or max_format must throw, but it was accepted.");
+		} catch (IllegalArgumentException e) {
+			// Expected
+		}
 	}
 }

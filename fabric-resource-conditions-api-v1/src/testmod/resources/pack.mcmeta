@@ -19,6 +19,40 @@
             "condition": "fabric:true"
           }
         }
+      },
+      {
+        "directory": "format_in_range_overlay",
+        "condition": {
+          "condition": "fabric:pack_format_in_range",
+          "pack_type": "data",
+          "min_format": 1,
+          "max_format": 99999
+        }
+      },
+      {
+        "directory": "format_out_of_range_overlay",
+        "condition": {
+          "condition": "fabric:pack_format_in_range",
+          "pack_type": "data",
+          "min_format": 99999,
+          "max_format": 999999
+        }
+      },
+      {
+        "directory": "format_min_only_overlay",
+        "condition": {
+          "condition": "fabric:pack_format_in_range",
+          "pack_type": "data",
+          "min_format": 1
+        }
+      },
+      {
+        "directory": "format_max_too_low_overlay",
+        "condition": {
+          "condition": "fabric:pack_format_in_range",
+          "pack_type": "data",
+          "max_format": 0
+        }
       }
     ]
   }
