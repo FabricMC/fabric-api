@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Mixin(Advancement.Builder.class)
-public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder, AdvancementBuilderAccessor {
+public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
 	@Unique
 	private final Set<String> fabric_removedCriteria = new HashSet<>();
 
