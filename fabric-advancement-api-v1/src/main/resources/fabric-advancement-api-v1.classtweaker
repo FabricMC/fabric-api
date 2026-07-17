@@ -1,2 +1,0 @@
-classTweaker	v1	official
-accessible field net/minecraft/advancements/Advancement$Builder criteria Lcom/google/common/collect/ImmutableMap$Builder;
