@@ -40,7 +40,7 @@ public class AdvancementEventTest implements ModInitializer {
 			if (id.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
 				LOGGER.info("Modifying Tactical Fishing with source: " + source);
 
-				// A. Test Getters (Verify data is accessible)
+				// Test Getters (Verify data is accessible)
 				AdvancementBuilderAccessor accessor = (AdvancementBuilderAccessor) builder;
 				Optional<DisplayInfo> display = accessor.fabric_getDisplay();
 				LOGGER.info("Original title: " + display.map(DisplayInfo::getTitle).orElse(Component.literal("None")));
