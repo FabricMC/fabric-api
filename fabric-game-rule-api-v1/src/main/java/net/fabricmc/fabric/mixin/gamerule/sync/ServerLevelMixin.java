@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.mixin.gamerule.sync;
 
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.gamerules.GameRule;
@@ -27,15 +27,12 @@ import net.minecraft.world.level.gamerules.GameRules;
 
 import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
 
-import org.spongepowered.asm.mixin.Unique;
-
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin extends LevelMixin {
 	@Shadow
 	public abstract GameRules getGameRules();
 
 	@Override
-	@Nullable
 	public <T> T getSyncedValue(GameRule<T> gameRule) {
 		if (!((SyncedGameRule) (Object) gameRule).fabric_isSynced()) {
 			throw new IllegalArgumentException("Un-synced game rule %s should not be called from getSyncedValue".formatted(gameRule));
@@ -45,16 +42,16 @@ public abstract class ServerLevelMixin extends LevelMixin {
 	}
 
 	@Override
-	@Nullable
 	public GameRuleMap getSyncedGameRules() {
 		GameRuleMap syncedGameRules = GameRuleMap.of();
 
 		this.getGameRules().availableRules().forEach(gameRule -> {
-			if (((SyncedGameRule) (Object) gameRule).fabric_isSynced())
+			if (((SyncedGameRule) (Object) gameRule).fabric_isSynced()) {
 				this.fabric_set(syncedGameRules, gameRule);
+			}
 		});
 
-		return syncedGameRules.keySet().isEmpty() ? null : syncedGameRules;
+		return syncedGameRules;
 	}
 
 	@Unique

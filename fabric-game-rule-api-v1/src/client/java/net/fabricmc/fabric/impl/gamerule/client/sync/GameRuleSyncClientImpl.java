@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.impl.gamerule.client.sync;
 
-import java.util.Objects;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.gamerules.v1.client.ClientGameRuleEvents;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.gamerules.GameRuleMap;
@@ -33,7 +34,7 @@ public class GameRuleSyncClientImpl implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncGameRulePayload.ID, (payload, context) -> {
 			ClientLevel level = context.client().level;
-			if (level instanceof FabricSyncedGameRuleOwner syncedGameRules && syncedGameRules.getSyncedGameRules() != null) {
+			if (level instanceof FabricSyncedGameRuleOwner syncedGameRules) {
 				updateClientGameRules(level, syncedGameRules.getSyncedGameRules(), payload);
 			}
 		});
@@ -46,8 +47,10 @@ public class GameRuleSyncClientImpl implements ClientModInitializer {
 
 	private static <T> void updateClientGameRules(ClientLevel level, GameRuleMap gameRules, ClientboundSyncGameRulePayload<T> payload) {
 		gameRules.set(payload.gameRule(), payload.value());
-		Objects.requireNonNull(ClientGameRuleEventsImpl.getValueSync(payload.gameRule()))
-				.invoker()
-				.onGameRuleSynced(payload.value(), level);
+		Event<ClientGameRuleEvents.ValueSync<T>> valueSync = ClientGameRuleEventsImpl.getValueSync(payload.gameRule());
+
+		if (valueSync != null) {
+			valueSync.invoker().onGameRuleSynced(payload.value(), level);
+		}
 	}
 }

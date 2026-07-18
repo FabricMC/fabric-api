@@ -16,21 +16,17 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-import org.jspecify.annotations.Nullable;
-
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleMap;
 
 public interface FabricSyncedGameRuleOwner {
 	/**
-	 * @return A list of game rules that are accessible from the client.
+	 * @return A list of game rules that are accessible from the client, or an empty {@link GameRuleMap} if there are none.
 	 */
-	@Nullable
 	default GameRuleMap getSyncedGameRules() {
 		throw new AssertionError("Implemented via Mixin");
 	}
 
-	@Nullable
 	default <T> T getSyncedValue(GameRule<T> gameRule) {
 		throw new AssertionError("Implemented via Mixin");
 	}

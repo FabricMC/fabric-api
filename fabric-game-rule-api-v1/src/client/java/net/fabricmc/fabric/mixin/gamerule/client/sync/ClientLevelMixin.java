@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.gamerule.client.sync;
 
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -27,14 +26,14 @@ import net.minecraft.world.level.gamerules.GameRuleMap;
 import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
 import net.fabricmc.fabric.mixin.gamerule.sync.LevelMixin;
 
+import java.util.Objects;
+
 @Mixin(ClientLevel.class)
 public class ClientLevelMixin extends LevelMixin {
 	@Unique
-	@Nullable
-	private GameRuleMap syncedGameRules;
+	private GameRuleMap syncedGameRules = GameRuleMap.of();
 
 	@Override
-	@Nullable
 	public GameRuleMap getSyncedGameRules() {
 		return this.syncedGameRules;
 	}
@@ -45,12 +44,11 @@ public class ClientLevelMixin extends LevelMixin {
 	}
 
 	@Override
-	@Nullable
 	public <T> T getSyncedValue(GameRule<T> gameRule) {
 		if (!((SyncedGameRule) (Object) gameRule).fabric_isSynced()) {
 			throw new IllegalArgumentException("Un-synced game rule %s should not be passed into getSyncedValue".formatted(gameRule));
 		}
 
-		return this.syncedGameRules == null ? null : this.syncedGameRules.get(gameRule);
+		return Objects.requireNonNull(this.syncedGameRules.get(gameRule));
 	}
 }
