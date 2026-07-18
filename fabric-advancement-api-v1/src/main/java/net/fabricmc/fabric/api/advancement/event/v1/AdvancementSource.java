@@ -16,7 +16,7 @@ public enum AdvancementSource {
 	}
 
 	/**
-	 * Returns whether this loot table source is builtin
+	 * Returns whether this advancement source is builtin
 	 * and bundled in the vanilla or mod resources.
 	 *
 	 * <p>{@link #VANILLA} and {@link #MOD} are builtin.
