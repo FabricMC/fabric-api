@@ -23,7 +23,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.gamerule.client.ClientGameRuleEventsImpl;
 
 /**
- * Provides events for updating {@link GameRule}s.
+ * Provides events for updating {@link GameRule}s on the client.
+ * @see net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRule
  */
 public final class ClientGameRuleEvents {
 	private ClientGameRuleEvents() {
@@ -34,7 +35,7 @@ public final class ClientGameRuleEvents {
 	}
 
 	/**
-	 * A functional interface used as a change callback for {@link GameRule} updates.
+	 * A functional interface used as a sync callback for {@link GameRule} updates.
 	 * @param <T> the type of the value
 	 */
 	@FunctionalInterface

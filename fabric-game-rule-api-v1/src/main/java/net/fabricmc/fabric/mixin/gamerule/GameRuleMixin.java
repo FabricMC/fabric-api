@@ -30,12 +30,13 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.world.level.gamerules.GameRule;
 
+import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRule;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
-import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
+import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRuleSetter;
 
 @Mixin(GameRule.class)
-public abstract class GameRuleMixin<T> implements RuleTypeExtensions, SyncedGameRule {
+public abstract class GameRuleMixin<T> implements RuleTypeExtensions, SyncedGameRuleSetter, FabricSyncedGameRule {
 	@Shadow
 	public abstract Class<T> valueClass();
 
@@ -95,7 +96,7 @@ public abstract class GameRuleMixin<T> implements RuleTypeExtensions, SyncedGame
 	}
 
 	@Override
-	public boolean fabric_isSynced() {
+	public boolean isSynced() {
 		return this.synced;
 	}
 

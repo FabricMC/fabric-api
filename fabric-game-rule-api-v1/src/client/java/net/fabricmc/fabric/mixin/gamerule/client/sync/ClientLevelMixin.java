@@ -23,7 +23,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleMap;
 
-import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
+import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRule;
 import net.fabricmc.fabric.mixin.gamerule.sync.LevelMixin;
 
 import java.util.Objects;
@@ -39,16 +39,16 @@ public class ClientLevelMixin extends LevelMixin {
 	}
 
 	@Override
-	public void setSyncedGameRules(GameRuleMap gameRules) {
-		this.syncedGameRules = gameRules;
-	}
-
-	@Override
 	public <T> T getSyncedValue(GameRule<T> gameRule) {
-		if (!((SyncedGameRule) (Object) gameRule).fabric_isSynced()) {
+		if (!((FabricSyncedGameRule) (Object) gameRule).isSynced()) {
 			throw new IllegalArgumentException("Un-synced game rule %s should not be passed into getSyncedValue".formatted(gameRule));
 		}
 
 		return Objects.requireNonNull(this.syncedGameRules.get(gameRule));
+	}
+
+	@Override
+	public void fabric_setSyncedGameRules(GameRuleMap gameRules) {
+		this.syncedGameRules = gameRules;
 	}
 }
