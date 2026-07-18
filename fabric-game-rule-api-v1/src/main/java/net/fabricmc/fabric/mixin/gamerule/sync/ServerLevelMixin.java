@@ -25,7 +25,7 @@ import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleMap;
 import net.minecraft.world.level.gamerules.GameRules;
 
-import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
+import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRule;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin extends LevelMixin {
@@ -34,7 +34,7 @@ public abstract class ServerLevelMixin extends LevelMixin {
 
 	@Override
 	public <T> T getSyncedValue(GameRule<T> gameRule) {
-		if (!((SyncedGameRule) (Object) gameRule).fabric_isSynced()) {
+		if (!((FabricSyncedGameRule) (Object) gameRule).isSynced()) {
 			throw new IllegalArgumentException("Un-synced game rule %s should not be called from getSyncedValue".formatted(gameRule));
 		}
 
@@ -46,7 +46,7 @@ public abstract class ServerLevelMixin extends LevelMixin {
 		GameRuleMap syncedGameRules = GameRuleMap.of();
 
 		this.getGameRules().availableRules().forEach(gameRule -> {
-			if (((SyncedGameRule) (Object) gameRule).fabric_isSynced()) {
+			if (((FabricSyncedGameRule) (Object) gameRule).isSynced()) {
 				this.fabric_set(syncedGameRules, gameRule);
 			}
 		});

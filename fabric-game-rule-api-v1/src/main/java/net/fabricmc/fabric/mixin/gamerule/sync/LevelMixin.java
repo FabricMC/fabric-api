@@ -20,8 +20,9 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRuleOwner;
+import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRulesList;
+import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRulesListSetter;
 
 @Mixin(Level.class)
-public class LevelMixin implements FabricSyncedGameRuleOwner {
+public class LevelMixin implements SyncedGameRulesListSetter, FabricSyncedGameRulesList {
 }

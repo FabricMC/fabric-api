@@ -16,12 +16,6 @@
 
 package net.fabricmc.fabric.impl.gamerule.sync;
 
-public interface SyncedGameRule {
-	default boolean fabric_isSynced() {
-		throw new AssertionError("Implemented via Mixin");
-	}
-
-	default void fabric_setSynced() {
-		throw new AssertionError("Implemented via Mixin");
-	}
+public interface SyncedGameRuleSetter {
+	void fabric_setSynced();
 }

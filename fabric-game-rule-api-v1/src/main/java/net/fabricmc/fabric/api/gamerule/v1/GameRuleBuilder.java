@@ -26,6 +26,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JavaOps;
+
+import net.minecraft.world.item.context.BlockPlaceContext;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -43,7 +46,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
-import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRule;
+import net.fabricmc.fabric.impl.gamerule.sync.SyncedGameRuleSetter;
 
 /**
  * A utility class containing classes and methods for building {@link GameRule}s.
@@ -106,6 +109,18 @@ public class GameRuleBuilder<T> {
 		return this;
 	}
 
+	/**
+	 * Specifies that the game rule should be synced to the client when it joins a {@link net.minecraft.server.level.ServerLevel} or when the value of the game rule is changed.
+	 *
+	 * <p>Use this for behavior that should be configurable on both sides, e.g. {@link net.minecraft.world.level.block.Block#getStateForPlacement(BlockPlaceContext)}. One can query the value of a synced game rule using the following code:</p>
+	 * <blockquote><pre>
+	 * boolean value = level.getSyncedValue(ExampleMod.SYNCED_BOOL_RULE);
+	 * </pre></blockquote>
+	 *
+	 * @return the builder, for chaining
+	 * @see FabricSyncedGameRule
+	 * @see FabricSyncedGameRulesList#getSyncedValue(GameRule)
+	 */
 	public GameRuleBuilder<T> synced() {
 		this.synced = true;
 		return this;
@@ -154,7 +169,7 @@ public class GameRuleBuilder<T> {
 		}
 
 		if (this.synced) {
-			((SyncedGameRule) (Object) rule).fabric_setSynced();
+			((SyncedGameRuleSetter) (Object) rule).fabric_setSynced();
 		}
 
 		return rule;
