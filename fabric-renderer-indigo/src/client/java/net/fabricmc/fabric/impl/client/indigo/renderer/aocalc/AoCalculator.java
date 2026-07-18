@@ -50,7 +50,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
-	/** The number of possible combinations returned by {@link #computeFace(Direction, boolean, Direction)} */
+	/** The number of possible combinations returned by {@link #computeFace(Direction, boolean, Direction)}. */
 	private static final int FACE_DATA_COUNT = 72;
 
 	private final BlockModelLighter.Cache lightCache;
