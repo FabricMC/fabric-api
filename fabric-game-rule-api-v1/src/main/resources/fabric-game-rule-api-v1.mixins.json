@@ -8,7 +8,9 @@
     "GameRuleMixin",
     "GameRulesServiceGameRuleUpdateMixin",
     "MinecraftServerMixin",
-    "sync.MinecraftServerMixin"
+    "sync.LevelMixin",
+    "sync.MinecraftServerMixin",
+    "sync.ServerLevelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

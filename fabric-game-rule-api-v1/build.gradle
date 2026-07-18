@@ -4,7 +4,11 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-game-rule-api-v1.classtweaker")
 }
 
-moduleDependencies(project, ['fabric-api-base'])
+moduleDependencies(project, [
+	'fabric-api-base',
+	':fabric-entity-events-v1',
+	':fabric-networking-api-v1'
+])
 
 testDependencies(project, [
 	':fabric-api-base',

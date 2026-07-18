@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.gamerule.sync;
+package net.fabricmc.fabric.api.gamerule.v1;
 
-public interface SyncedGameRule {
-	default boolean fabric_isSynced() {
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleMap;
+
+public interface FabricSyncedGameRuleOwner {
+	/**
+	 * @return A list of game rules that are accessible from the client.
+	 */
+	@Nullable
+	default GameRuleMap getSyncedGameRules() {
 		throw new AssertionError("Implemented via Mixin");
 	}
 
-	default void fabric_setSynced() {
+	@Nullable
+	default <T> T getSyncedValue(GameRule<T> gameRule) {
+		throw new AssertionError("Implemented via Mixin");
+	}
+
+	default void setSyncedGameRules(GameRuleMap gameRules) {
 		throw new AssertionError("Implemented via Mixin");
 	}
 }

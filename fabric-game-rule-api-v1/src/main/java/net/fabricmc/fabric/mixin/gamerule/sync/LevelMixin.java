@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.gamerule.sync;
+package net.fabricmc.fabric.mixin.gamerule.sync;
 
-public interface SyncedGameRule {
-	default boolean fabric_isSynced() {
-		throw new AssertionError("Implemented via Mixin");
-	}
+import org.spongepowered.asm.mixin.Mixin;
 
-	default void fabric_setSynced() {
-		throw new AssertionError("Implemented via Mixin");
-	}
+import net.minecraft.world.level.Level;
+
+import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRuleOwner;
+
+@Mixin(Level.class)
+public class LevelMixin implements FabricSyncedGameRuleOwner {
 }
