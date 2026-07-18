@@ -144,5 +144,8 @@ public class GameRulesTestMod implements ModInitializer {
 		GameRuleEvents.changeCallback(GameRules.FIRE_DAMAGE).register(
 				(value, server) -> FIRE_DAMAGE_CHANGED.set(true)
 		);
+		GameRuleEvents.changeCallback(SYNCED_BOOLEAN).register(
+				(value, server) -> LOGGER.info("Boolean game rule set to {}!", value)
+		);
 	}
 }
