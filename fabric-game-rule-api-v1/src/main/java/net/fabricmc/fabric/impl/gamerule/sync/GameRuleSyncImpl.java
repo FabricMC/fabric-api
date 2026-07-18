@@ -16,14 +16,11 @@
 
 package net.fabricmc.fabric.impl.gamerule.sync;
 
-import java.util.Objects;
-
-import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRuleOwner;
-
 import net.minecraft.world.level.gamerules.GameRuleMap;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRuleOwner;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
@@ -36,8 +33,11 @@ public class GameRuleSyncImpl implements ModInitializer {
 		PayloadTypeRegistry.clientboundPlay().registerLarge(ClientboundJoinSyncGameRulesPayload.ID, ClientboundJoinSyncGameRulesPayload.CODEC, SYNC_PAYLOAD_MAX_SIZE);
 
 		ServerPlayerEvents.JOIN.register(player -> {
-			GameRuleMap syncedGameRules = Objects.requireNonNull(((FabricSyncedGameRuleOwner) player.level()).getSyncedGameRules());
-			ServerPlayNetworking.send(player, new ClientboundJoinSyncGameRulesPayload(syncedGameRules));
+			GameRuleMap syncedGameRules = ((FabricSyncedGameRuleOwner) player.level()).getSyncedGameRules();
+
+			if (!syncedGameRules.keySet().isEmpty()) {
+				ServerPlayNetworking.send(player, new ClientboundJoinSyncGameRulesPayload(syncedGameRules));
+			}
 		});
 	}
 }
