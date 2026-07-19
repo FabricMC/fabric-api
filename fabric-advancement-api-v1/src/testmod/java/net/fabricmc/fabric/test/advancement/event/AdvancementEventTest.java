@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
-import net.fabricmc.fabric.mixin.advancement.AdvancementBuilderAccessor;
 
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
@@ -41,10 +40,9 @@ public class AdvancementEventTest implements ModInitializer {
 				LOGGER.info("Modifying Tactical Fishing with source: " + source);
 
 				// Test Getters (Verify data is accessible)
-				AdvancementBuilderAccessor accessor = (AdvancementBuilderAccessor) builder;
-				Optional<DisplayInfo> display = accessor.fabric_getDisplay();
+				Optional<DisplayInfo> display = builder.display;
 				LOGGER.info("Original title: " + display.map(DisplayInfo::getTitle).orElse(Component.literal("None")));
-				LOGGER.info("Original telemetry: " + accessor.fabric_getSendsTelemetryEvent());
+				LOGGER.info("Original telemetry: " + builder.sendsTelemetryEvent);
 
 				// Remove Criterion
 				builder.fabric_removeCriterion("fishing_rod");

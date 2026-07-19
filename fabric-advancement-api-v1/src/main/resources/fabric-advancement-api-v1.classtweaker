@@ -1,2 +1,10 @@
 classTweaker	v1	official
 inject-interface net/minecraft/advancements/Advancement$Builder net/fabricmc/fabric/api/advancement/event/v1/FabricAdvancementBuilder
+
+accessible field net/minecraft/advancements/Advancement$Builder parent Ljava/util/Optional;
+accessible field net/minecraft/advancements/Advancement$Builder display Ljava/util/Optional;
+accessible field net/minecraft/advancements/Advancement$Builder rewards Lnet/minecraft/advancements/AdvancementRewards;
+accessible field net/minecraft/advancements/Advancement$Builder criteria Lcom/google/common/collect/ImmutableMap$Builder;
+accessible field net/minecraft/advancements/Advancement$Builder requirements Ljava/util/Optional;
+accessible field net/minecraft/advancements/Advancement$Builder requirementsStrategy Lnet/minecraft/advancements/AdvancementRequirements$Strategy;
+accessible field net/minecraft/advancements/Advancement$Builder sendsTelemetryEvent Z

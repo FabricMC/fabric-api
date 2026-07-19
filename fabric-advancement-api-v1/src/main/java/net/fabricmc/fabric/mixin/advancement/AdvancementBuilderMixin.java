@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.triggers.Criterion;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -17,6 +19,9 @@ import java.util.Set;
 
 @Mixin(Advancement.Builder.class)
 public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
+	@Shadow
+	@Final
+	public ImmutableMap.Builder<String, Criterion<?>> criteria;
 	@Unique
 	private final Set<String> fabric_removedCriteria = new HashSet<>();
 
@@ -28,7 +33,7 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	@Override
 	public Map<String, Criterion<?>> fabric_getCriteria() {
 		// Create a snapshot of the current criteria
-		Map<String, Criterion<?>> map = new HashMap<>(this.fabric_getCriteriaBuilder().build());
+		Map<String, Criterion<?>> map = new HashMap<>(this.criteria.build());
 		// Remove from the map the criteria that were removed
 		this.fabric_removedCriteria.forEach(map::remove);
 		return map;
