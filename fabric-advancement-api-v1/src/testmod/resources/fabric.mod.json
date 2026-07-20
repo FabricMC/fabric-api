@@ -10,7 +10,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.advancement.event.AdvancementEventTest"
+      "net.fabricmc.fabric.test.advancement.AdvancementTest"
     ]
   }
 }
