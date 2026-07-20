@@ -59,7 +59,7 @@ import net.fabricmc.loader.api.FabricLoader;
 /// Represents an in-memory resource pack.
 ///
 /// The resources of this pack are stored in memory instead of it being on-disk.
-public abstract class InMemoryResourcePack implements MutablePackResources {
+public abstract class InMemoryPackResources implements MutablePackResources {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final ExecutorService EXECUTOR_SERVICE;
 	private static final boolean DUMP = TriState.fromSystemProperty("fabric.resource_loader.debug.pack.dump_from_in_memory")
@@ -269,7 +269,7 @@ public abstract class InMemoryResourcePack implements MutablePackResources {
 	}
 
 	/// Represents an in-memory resource pack with a static location.
-	public static class Located extends InMemoryResourcePack {
+	public static class Located extends InMemoryPackResources {
 		private final PackLocationInfo location;
 
 		public Located(PackLocationInfo location) {

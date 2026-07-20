@@ -40,7 +40,7 @@ import net.minecraft.util.InclusiveRange;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.client.pack.ClientMutablePackResources;
-import net.fabricmc.fabric.api.resource.v1.pack.InMemoryResourcePack;
+import net.fabricmc.fabric.api.resource.v1.pack.InMemoryPackResources;
 import net.fabricmc.fabric.api.resource.v1.pack.SimplePackResourcesSupplier;
 
 public class RepositorySourceTestMod implements ClientModInitializer {
@@ -61,18 +61,18 @@ public class RepositorySourceTestMod implements ClientModInitializer {
 
 			profileAdder.accept(Objects.requireNonNull(Pack.readMetaAndCreate(
 					location,
-					new SimplePackResourcesSupplier(new TestPack(location)),
+					new SimplePackResourcesSupplier(new TestPackResources(location)),
 					PackType.CLIENT_RESOURCES,
 					new PackSelectionConfig(false, Pack.Position.TOP, false)
 			)));
 		});
 	}
 
-	static class TestPack extends InMemoryResourcePack.Located implements ClientMutablePackResources {
+	static class TestPackResources extends InMemoryPackResources.Located implements ClientMutablePackResources {
 		private static final Identifier DIRT_IDENTIFIER = Identifier.withDefaultNamespace("textures/block/dirt.png");
 		private final Random random = new Random();
 
-		TestPack(PackLocationInfo location) {
+		TestPackResources(PackLocationInfo location) {
 			super(location);
 
 			this.putText("pack.mcmeta", this::createPackMeta);
