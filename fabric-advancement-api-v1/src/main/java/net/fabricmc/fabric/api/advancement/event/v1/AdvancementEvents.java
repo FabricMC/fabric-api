@@ -45,9 +45,10 @@ public final class AdvancementEvents {
 	 * if you want the new criterion to trigger the advancement on its own. By default, the builder retains the original requirements.
 	 *
 	 * {@snippet :
+	 // Name of the advancement to modify
+	 * Identifier advancementId = Identifier.withDefaultNamespace("husbandry/tactical_fishing");
 	 * AdvancementEvents.MODIFY.register((id, builder, source, registries) -> {
-	 *	   // Name of the advancement to modify
-	 *     if (id.equals(Identifier.withDefaultNamespace("husbandry/tactical_fishing"))) {
+	 *     if (id.equals(advancementId)) {
 	 *         // Add your criterion
 	 *         builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
 	 *
