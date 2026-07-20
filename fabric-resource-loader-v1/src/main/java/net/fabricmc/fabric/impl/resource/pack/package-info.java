@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+@ApiStatus.Internal
 @NullMarked
 package net.fabricmc.fabric.impl.resource.pack;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
