@@ -1,5 +1,5 @@
 classTweaker	v1	official
-inject-interface net/minecraft/advancements/Advancement$Builder net/fabricmc/fabric/api/advancement/event/v1/FabricAdvancementBuilder
+transitive-inject-interface net/minecraft/advancements/Advancement$Builder net/fabricmc/fabric/api/advancement/event/v1/FabricAdvancementBuilder
 
 accessible field net/minecraft/advancements/Advancement$Builder parent Ljava/util/Optional;
 accessible field net/minecraft/advancements/Advancement$Builder display Ljava/util/Optional;
