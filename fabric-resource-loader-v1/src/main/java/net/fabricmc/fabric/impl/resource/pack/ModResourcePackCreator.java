@@ -38,7 +38,7 @@ import net.fabricmc.loader.api.FabricLoader;
 /**
  * Represents a repository source for mods and built-in mods resource packs.
  */
-public class ModResourcePackCreator implements RepositorySource {
+public final class ModResourcePackCreator implements RepositorySource {
 	public static final String VANILLA = "vanilla";
 	private static final String PROGRAMMER_ART = "programmer_art";
 	private static final String HIGH_CONTRAST = "high_contrast";
@@ -77,7 +77,7 @@ public class ModResourcePackCreator implements RepositorySource {
 		this(type, false);
 	}
 
-	protected ModResourcePackCreator(PackType type, boolean forKnownPacksManager) {
+	ModResourcePackCreator(PackType type, boolean forKnownPacksManager) {
 		this.type = type;
 		this.activationInfo = new PackSelectionConfig(!forKnownPacksManager, Pack.Position.TOP, false);
 		this.forKnownPacksManager = forKnownPacksManager;
@@ -113,6 +113,9 @@ public class ModResourcePackCreator implements RepositorySource {
 
 		// Register all built-in resource packs provided by mods.
 		ResourceLoaderImpl.registerBuiltinResourcePacks(this.type, consumer);
+
+		// Run the mod-provided repository sources.
+		ResourceLoaderImpl.registerModProvidedPacks(this.type, consumer);
 	}
 
 	private void registerModPack(Consumer<Pack> consumer, @Nullable String subPath, Predicate<Set<String>> parents) {

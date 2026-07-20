@@ -25,7 +25,7 @@ import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 
 class ResourceReloaderPhaseData extends SortableNode<ResourceReloaderPhaseData> {
 	final Identifier id;
-	PreparableReloadListener resourceReloader;
+	@Nullable PreparableReloadListener resourceReloader;
 	/**
 	 * This is used to keep track of the source and ordering expectation of this resource reloader.
 	 * <ul>

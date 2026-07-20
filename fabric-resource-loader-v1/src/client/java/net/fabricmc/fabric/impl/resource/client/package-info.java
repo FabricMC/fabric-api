@@ -14,24 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.resource.v1.pack;
+@NullMarked
+package net.fabricmc.fabric.impl.resource.client;
 
-import net.minecraft.server.packs.PackResources;
-
-import net.fabricmc.loader.api.metadata.ModMetadata;
-
-/**
- * Interface implemented by mod-provided resource packs.
- */
-public interface ModPackResources extends PackResources {
-	/**
-	 * {@return the metadata associated with the mod providing this resource pack}
-	 */
-	ModMetadata getFabricModMetadata();
-
-	/// Creates a new overlay of this mod-provided resource pack given a path.
-	///
-	/// @param overlay the path to the overlay
-	/// @return the overlay
-	ModPackResources createOverlay(String overlay);
-}
+import org.jspecify.annotations.NullMarked;

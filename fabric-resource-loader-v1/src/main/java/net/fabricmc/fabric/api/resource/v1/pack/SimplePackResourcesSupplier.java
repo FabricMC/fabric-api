@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.api.resource.v1.pack;
 
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.repository.Pack;
 
-import net.fabricmc.loader.api.metadata.ModMetadata;
+/// Represents a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `pack`.
+///
+/// @param pack the pack resources
+//CHECKSTYLE.OFF: MatchXpath
+public record SimplePackResourcesSupplier(PackResources pack) implements Pack.ResourcesSupplier {
+	@Override
+	public PackResources openPrimary(PackLocationInfo location) {
+		return this.pack;
+	}
 
-/**
- * Interface implemented by mod-provided resource packs.
- */
-public interface ModPackResources extends PackResources {
-	/**
-	 * {@return the metadata associated with the mod providing this resource pack}
-	 */
-	ModMetadata getFabricModMetadata();
-
-	/// Creates a new overlay of this mod-provided resource pack given a path.
-	///
-	/// @param overlay the path to the overlay
-	/// @return the overlay
-	ModPackResources createOverlay(String overlay);
+	@Override
+	public PackResources openFull(PackLocationInfo location, Pack.Metadata metadata) {
+		return this.pack;
+	}
 }
