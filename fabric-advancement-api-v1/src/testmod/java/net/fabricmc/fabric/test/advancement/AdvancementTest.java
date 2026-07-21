@@ -64,8 +64,6 @@ public class AdvancementTest implements ModInitializer {
 					throw new AssertionError("tactical_fishing advancement should have display info");
 				}
 
-				System.out.println(builder.getCriteria().keySet());
-
 				if (!builder.getCriteria().containsKey("pufferfish_bucket")) {
 					throw new AssertionError("tactical_fishing advancement should originally have a pufferfish_bucket criterion");
 				}
