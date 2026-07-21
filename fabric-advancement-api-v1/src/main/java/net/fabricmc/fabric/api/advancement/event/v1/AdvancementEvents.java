@@ -45,7 +45,7 @@ public final class AdvancementEvents {
 	 * if you want the new criterion to trigger the advancement on its own. By default, the builder retains the original requirements.
 	 *
 	 * {@snippet :
-	 // Name of the advancement to modify
+	 * // Name of the advancement to modify
 	 * Identifier advancementId = Identifier.withDefaultNamespace("husbandry/tactical_fishing");
 	 * AdvancementEvents.MODIFY.register((id, builder, source, registries) -> {
 	 *     if (id.equals(advancementId)) {
