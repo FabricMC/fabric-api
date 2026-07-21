@@ -2,6 +2,10 @@ package net.fabricmc.fabric.test.advancement;
 
 import java.util.Optional;
 
+import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
+import net.fabricmc.fabric.api.advancement.event.v1.AdvancementSource;
+import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
+
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
@@ -12,8 +16,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementSource;
 
 public class AdvancementTest implements ModInitializer {
 	private static final Identifier TACTICAL_FISHING = Identifier.withDefaultNamespace("husbandry/tactical_fishing");
@@ -32,7 +34,7 @@ public class AdvancementTest implements ModInitializer {
 
 				// Replace the recipe book root advancement's rewards with some experience,
 				// leaving everything else untouched.
-				return net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder.copyOf(original)
+				return FabricAdvancementBuilder.copyOf(original)
 						.rewards(AdvancementRewards.Builder.experience(1).build())
 						.build(id)
 						.value();
