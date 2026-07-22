@@ -77,9 +77,11 @@ abstract class GeneratePackageInfos extends DefaultTask {
 			// Check existing explicit package-info.java to ensure it has @NullMarked / @ApiStatus.Internal
 			def existingPackageInfo = it.resolve('package-info.java')
 			if (Files.exists(existingPackageInfo)) {
-				if (!existingPackageInfo.text.contains("@NullMarked")) {
+				def text = existingPackageInfo.text
+
+				if (!text.contains("@NullMarked")) {
 					throw new RuntimeException("package-info.java ${existingPackageInfo} is missing @NullMarked annotation.")
-				} else if (isImpl && !existingPackageInfo.text.contains("@ApiStatus.Internal")) {
+				} else if (isImpl && !text.contains("@ApiStatus.Internal")) {
 					throw new RuntimeException("Impl package-info.java ${existingPackageInfo} is missing @ApiStatus.Internal annotation.")
 				}
 
