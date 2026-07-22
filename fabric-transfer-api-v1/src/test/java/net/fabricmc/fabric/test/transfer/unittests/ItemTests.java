@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -164,7 +165,7 @@ class ItemTests extends AbstractTransferApiTest {
 		stack.set(DataComponents.CUSTOM_NAME, Component.literal("Custom name"));
 
 		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-		RegistryFriendlyByteBuf rbuf = new RegistryFriendlyByteBuf(buf, staticDrm());
+		RegistryFriendlyByteBuf rbuf = new RegistryFriendlyByteBuf(buf, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
 		ItemVariant.PACKET_CODEC.encode(rbuf, ItemVariant.of(stack));
 
 		ItemVariant decoded = ItemVariant.PACKET_CODEC.decode(rbuf);

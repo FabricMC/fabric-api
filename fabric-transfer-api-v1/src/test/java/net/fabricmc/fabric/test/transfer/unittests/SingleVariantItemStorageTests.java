@@ -31,6 +31,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -173,7 +174,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		tag.putLong("amount", 1);
 		tag.put("variant", variantTag);
 
-		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), tag));
+		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, VanillaRegistries.createWorldLookup(), tag));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(1L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
@@ -197,7 +198,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		tag.putLong("amount", 1);
 		tag.put("variant", variantTag);
 
-		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), tag));
+		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, VanillaRegistries.createWorldLookup(), tag));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
