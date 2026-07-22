@@ -320,7 +320,7 @@ allprojects {
 
 	tasks.register('applyFixups') {
 		group = "verification"
-		dependsOn spotlessApply, generateClientPackageInfos, generateMainPackageInfos
+		dependsOn spotlessApply, generateClientPackageInfos, generatePackageInfos
 	}
 
 	// Apply to each valid subproject.

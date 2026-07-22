@@ -7,7 +7,7 @@ for (def sourceSet in [
 	// We have to capture the source set name for the lazy string literals,
 	// otherwise it'll just be whatever the last source set is in the list.
 	def sourceSetName = sourceSet.name
-	tasks.register("generate%sPackageInfos".formatted(sourceSetName.capitalize()), GeneratePackageInfos) {
+	tasks.register(sourceSet.getTaskName('generate', 'PackageInfos'), GeneratePackageInfos) {
 		group = 'fabric'
 		description = "Generates package-info files for $sourceSetName packages."
 
@@ -17,7 +17,7 @@ for (def sourceSet in [
 		header = rootProject.file('HEADER')
 	}
 
-	def checkTask = tasks.register("check%sPackageInfos".formatted(sourceSetName.capitalize()), CheckPackageInfos) {
+	def checkTask = tasks.register(sourceSet.getTaskName('check', 'PackageInfos'), CheckPackageInfos) {
 		description = "Checks that all $sourceSetName packages have @NullMarked package-info files."
 		sourceRoot = file("src/$sourceSetName/java")
 	}
@@ -45,8 +45,10 @@ abstract class GeneratePackageInfos extends DefaultTask {
 		def root = sourceRoot.get().asFile.toPath()
 
 		root.eachDirRecurse {
-			def containsJava = Files.list(it).any {
-				Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+			def containsJava = Files.list(it).withCloseable {
+				it.any {
+					Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+				}
 			}
 
 			if (!containsJava) {
@@ -111,7 +113,7 @@ abstract class CheckPackageInfos extends DefaultTask {
 
 	@SkipWhenEmpty
 	@InputDirectory
-	final DirectoryProperty sourceRoot = project.objects.directoryProperty()
+	abstract final DirectoryProperty sourceRoot = project.objects.directoryProperty()
 
 	CheckPackageInfos() {
 		projectName.set(project.name)
@@ -123,8 +125,10 @@ abstract class CheckPackageInfos extends DefaultTask {
 		def errors = []
 
 		root.eachDirRecurse {
-			def containsJava = Files.list(it).any {
-				Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+			def containsJava = Files.list(it).withCloseable {
+				it.any {
+					Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+				}
 			}
 
 			if (!containsJava) {

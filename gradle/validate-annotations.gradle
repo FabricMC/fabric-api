@@ -41,7 +41,7 @@ abstract class ValidateAnnotations extends SourceTask {
 				// @ApiStatus.Internal is only allowed in api packages (it's auto-generated for impl and mixin package-infos)
 				if (dir != "api" && name != "package-info.java") {
 					if (API_STATUS_INTERNAL.matcher(contents).find()) {
-						throw new RuntimeException("Found @ApiStatus.Internal in non package-info implementation file: " + it)
+						throw new RuntimeException("Found @ApiStatus.Internal in non-package-info implementation file: " + it)
 					}
 				}
 			}
