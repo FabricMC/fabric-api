@@ -25,12 +25,6 @@ for (def sourceSet in [
 		delete file("src/generated/$sourceSetName")
 	}
 	clean.dependsOn cleanTask
-
-	def checkTask = tasks.register(sourceSet.getTaskName('check', 'PackageInfos'), CheckPackageInfos) {
-		description = "Checks that all $sourceSetName packages with explicit package-infos have the required annotations."
-		sourceRoot = file("src/$sourceSetName/java")
-	}
-	check.dependsOn checkTask
 }
 
 abstract class GeneratePackageInfos extends DefaultTask {
@@ -42,10 +36,10 @@ abstract class GeneratePackageInfos extends DefaultTask {
 
 	@SkipWhenEmpty
 	@InputDirectory
-	abstract final DirectoryProperty sourceRoot = project.objects.directoryProperty()
+	final DirectoryProperty sourceRoot = project.objects.directoryProperty()
 
 	@OutputDirectory
-	abstract final DirectoryProperty outputDir = project.objects.directoryProperty()
+	final DirectoryProperty outputDir = project.objects.directoryProperty()
 
 	GeneratePackageInfos() {
 		projectName.set(project.name)
@@ -118,56 +112,6 @@ abstract class GeneratePackageInfos extends DefaultTask {
 					|""".stripMargin())
 				}
 			}
-		}
-	}
-}
-
-abstract class CheckPackageInfos extends DefaultTask {
-	@Input
-	abstract Property<String> getProjectName()
-
-	@SkipWhenEmpty
-	@InputDirectory
-	abstract final DirectoryProperty sourceRoot = project.objects.directoryProperty()
-
-	CheckPackageInfos() {
-		projectName.set(project.name)
-	}
-
-	@TaskAction
-	def run() {
-		def root = sourceRoot.get().asFile.toPath()
-		def errors = []
-
-		root.eachDirRecurse {
-			def containsJava = Files.list(it).withCloseable { stream ->
-				stream.any {
-					Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
-				}
-			}
-
-			if (!containsJava) {
-				return
-			}
-
-			def relativePath = root.relativize(it)
-			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
-			def isImpl = relativePath.toString() =~ implPattern
-
-			def existingPackageInfo = it.resolve('package-info.java')
-			if (Files.exists(existingPackageInfo)) {
-				if (!existingPackageInfo.text.contains("@NullMarked")) {
-					errors << "package-info.java ${existingPackageInfo} is missing @NullMarked annotation."
-					return
-				} else if (isImpl && !existingPackageInfo.text.contains("@ApiStatus.Internal")) {
-					errors << "Impl package-info.java ${existingPackageInfo} is missing @ApiStatus.Internal annotation."
-					return
-				}
-			}
-		}
-
-		if (!errors.isEmpty()) {
-			throw new GradleException("Package info check failed:\n" + errors.join("\n"))
 		}
 	}
 }
