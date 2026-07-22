@@ -36,6 +36,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceMetadata;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -129,7 +130,7 @@ public class CustomSpriteSourcesTest implements ClientModInitializer {
 				int offsetX = frameWidth / 16;
 				int offsetY = frameHeight / 16;
 
-				NativeImage doubleImage = new NativeImage(image.format(), image.getWidth(), image.getHeight(), false);
+				NativeImage doubleImage = new NativeImage(image.format(), image.getWidth(), image.getHeight(), true);
 
 				for (int frameY = 0; frameY < frameCountY; frameY++) {
 					for (int frameX = 0; frameX < frameCountX; frameX++) {
@@ -138,14 +139,15 @@ public class CustomSpriteSourcesTest implements ClientModInitializer {
 					}
 				}
 
-				return new SpriteContents(spriteId, dimensions, doubleImage, Optional.of(animationMetadata), List.of(), Optional.empty());
+				return new SpriteContents(spriteId, dimensions, doubleImage, Optional.of(animationMetadata), List.of(AtlasTests.COLOR.withValue(0xFFFFAAAA)), Optional.empty());
 			}
 
 			private static void blendRect(NativeImage src, NativeImage dst, int srcX, int srcY, int destX, int destY, int width, int height) {
 				for (int y = 0; y < height; ++y) {
 					for (int x = 0; x < width; ++x) {
-						int c = src.getPixel(srcX + x, srcY + y);
-						dst.setPixel(destX + x, destY + y, c);
+						int sc = src.getPixel(srcX + x, srcY + y);
+						int dc = dst.getPixel(destX + x, destY + y);
+						dst.setPixel(destX + x, destY + y, ARGB.alphaBlend(dc, sc));
 					}
 				}
 			}

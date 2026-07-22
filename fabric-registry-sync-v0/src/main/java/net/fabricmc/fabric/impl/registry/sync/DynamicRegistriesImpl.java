@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -34,35 +35,57 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
-	private static final List<RegistryDataLoader.RegistryData<?>> DYNAMIC_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
-	public static final Set<ResourceKey<?>> FABRIC_DYNAMIC_REGISTRY_KEYS = new HashSet<>();
-	public static final Set<ResourceKey<? extends Registry<?>>> DYNAMIC_REGISTRY_KEYS = new HashSet<>();
+	private static final List<RegistryDataLoader.RegistryData<?>> WORLD_REGISTRIES;
+	private static final List<RegistryDataLoader.RegistryData<?>> BOOTSTRAPPING_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
+
+	private static final Set<ResourceKey<? extends Registry<?>>> VANILLA_DYNAMIC_REGISTRY_KEYS;
+	public static final Set<ResourceKey<? extends Registry<?>>> FABRIC_DYNAMIC_REGISTRY_KEYS = new HashSet<>();
+
 	public static final Set<ResourceKey<? extends Registry<?>>> SKIP_EMPTY_SYNC_REGISTRIES = new HashSet<>();
 
 	static {
-		for (RegistryDataLoader.RegistryData<?> vanillaEntry : RegistryDataLoader.WORLDGEN_REGISTRIES) {
-			DYNAMIC_REGISTRY_KEYS.add(vanillaEntry.key());
+		WORLD_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLDGEN_REGISTRIES);
+		WORLD_REGISTRIES.addAll(RegistryDataLoader.DIMENSION_REGISTRIES);
+		Set<ResourceKey<? extends Registry<?>>> vanillaDynamicRegistryKeys = new HashSet<>();
+
+		for (RegistryDataLoader.RegistryData<?> worldgenEntry : RegistryDataLoader.WORLDGEN_REGISTRIES) {
+			vanillaDynamicRegistryKeys.add(worldgenEntry.key());
 		}
+
+		for (RegistryDataLoader.RegistryData<?> dimensionEntry : RegistryDataLoader.DIMENSION_REGISTRIES) {
+			vanillaDynamicRegistryKeys.add(dimensionEntry.key());
+		}
+
+		VANILLA_DYNAMIC_REGISTRY_KEYS = Collections.unmodifiableSet(vanillaDynamicRegistryKeys);
 	}
 
 	private DynamicRegistriesImpl() {
 	}
 
-	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		return List.copyOf(DYNAMIC_REGISTRIES);
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getWorldRegistries() {
+		return List.copyOf(WORLD_REGISTRIES);
+	}
+
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
+		return List.copyOf(BOOTSTRAPPING_REGISTRIES);
+	}
+
+	private static void addDynamicRegistryData(ResourceKey<? extends Registry<?>> key, RegistryDataLoader.RegistryData<?> data) {
+		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
+		BOOTSTRAPPING_REGISTRIES.add(data);
+		WORLD_REGISTRIES.add(data);
 	}
 
 	public static <T> RegistryDataLoader.RegistryData<T> register(ResourceKey<? extends Registry<T>> key, Codec<T> serverCodec) {
 		Objects.requireNonNull(key, "Registry key cannot be null");
 		Objects.requireNonNull(serverCodec, "Server codec cannot be null");
 
-		if (!DYNAMIC_REGISTRY_KEYS.add(key)) {
+		if (VANILLA_DYNAMIC_REGISTRY_KEYS.contains(key) || FABRIC_DYNAMIC_REGISTRY_KEYS.contains(key)) {
 			throw new IllegalArgumentException("Dynamic registry " + key + " has already been registered!");
 		}
 
 		var entry = new RegistryDataLoader.RegistryData<>(key, serverCodec, RegistryValidator.none());
-		DYNAMIC_REGISTRIES.add(entry);
-		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
+		addDynamicRegistryData(key, entry);
 		return entry;
 	}
 

@@ -20,7 +20,8 @@
     "recipe.RecipeOutputMixin",
     "recipe.SpecialRecipeBuilderMixin",
     "recipe.SmithingTransformRecipeBuilderMixin",
-    "recipe.SmithingTrimRecipeBuilderMixin"
+    "recipe.SmithingTrimRecipeBuilderMixin",
+    "recipe.RecipeProviderMixin"
   ],
   "server": [
     "server.MainMixin"

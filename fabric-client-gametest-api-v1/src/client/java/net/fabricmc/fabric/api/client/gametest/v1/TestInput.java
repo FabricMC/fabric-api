@@ -24,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.core.BlockPos;
 
 /**
  * The client gametest input handler used to simulate inputs to the client.
@@ -318,6 +319,23 @@ public interface TestInput {
 	 * @see #holdMouse(int)
 	 */
 	void holdMouseFor(int button, int ticks);
+
+	/**
+	 * Sets the player view rotation to the given yaw and pitch.
+	 *
+	 * @param yaw The yaw to look at
+	 * @param pitch The pitch to look at
+	 * @see #lookAt(BlockPos)
+	 */
+	void lookAt(float yaw, float pitch);
+
+	/**
+	 * Sets the player view rotation to look at the center of the given block position.
+	 *
+	 * @param pos The block position to look at
+	 * @see #lookAt(float, float)
+	 */
+	void lookAt(BlockPos pos);
 
 	/**
 	 * Types a code point (character). Useful for typing in text boxes.

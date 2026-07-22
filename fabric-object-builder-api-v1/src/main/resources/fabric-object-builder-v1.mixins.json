@@ -3,7 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.object.builder",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "AttributeSupplierAccessor",
+    "AttributeSupplierBuilderAccessor",
     "BlockEntityTypeMixin",
+    "BuiltInRegistriesMixin",
     "DefaultAttributesAccessor",
     "DefaultAttributesMixin",
     "DetectorRailBlockMixin",

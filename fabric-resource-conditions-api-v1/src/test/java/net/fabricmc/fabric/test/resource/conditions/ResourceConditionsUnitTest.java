@@ -64,7 +64,7 @@ public class ResourceConditionsUnitTest {
 	@Test
 	public void logics() {
 		ResourceCondition alwaysTrue = ResourceConditions.alwaysTrue();
-		ResourceCondition alwaysFalse = ResourceConditions.not(alwaysTrue);
+		ResourceCondition alwaysFalse = ResourceConditions.alwaysFalse();
 		ResourceCondition trueAndTrue = ResourceConditions.and(alwaysTrue, alwaysTrue);
 		ResourceCondition trueAndFalse = ResourceConditions.and(alwaysTrue, alwaysFalse);
 		ResourceCondition emptyAnd = ResourceConditions.and();

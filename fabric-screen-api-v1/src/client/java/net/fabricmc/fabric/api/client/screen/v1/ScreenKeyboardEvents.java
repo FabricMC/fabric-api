@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.screen.v1;
 import java.util.Objects;
 
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -104,6 +105,39 @@ public final class ScreenKeyboardEvents {
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterKeyReleaseEvent();
 	}
 
+	/**
+	 * An event that checks if typing a character should be allowed.
+	 *
+	 * @return the event
+	 */
+	public static Event<AllowCharType> allowCharType(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAllowCharTypeEvent();
+	}
+
+	/**
+	 * An event that is called before typing a character is processed for a screen.
+	 *
+	 * @return the event
+	 */
+	public static Event<BeforeCharType> beforeCharType(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getBeforeCharTypeEvent();
+	}
+
+	/**
+	 * An event that is called after typing a character is processed for a screen.
+	 *
+	 * @return the event
+	 */
+	public static Event<AfterCharType> afterCharType(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAfterCharTypeEvent();
+	}
+
 	private ScreenKeyboardEvents() {
 	}
 
@@ -179,5 +213,42 @@ public final class ScreenKeyboardEvents {
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
 		void afterKeyRelease(Screen screen, KeyEvent event);
+	}
+
+	@FunctionalInterface
+	public interface AllowCharType {
+		/**
+		 * Checks if typing a character should be allowed.
+		 *
+		 * @param event the char type event, containing the codepoint
+		 * @return whether the character should be typed
+		 * @see CharacterEvent#codepointAsString()
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
+		boolean allowCharType(Screen screen, CharacterEvent event);
+	}
+
+	@FunctionalInterface
+	public interface BeforeCharType {
+		/**
+		 * Called before a character is typed.
+		 *
+		 * @param event the char type event, containing the codepoint
+		 * @see CharacterEvent#codepointAsString()
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
+		void beforeCharType(Screen screen, CharacterEvent event);
+	}
+
+	@FunctionalInterface
+	public interface AfterCharType {
+		/**
+		 * Called after a character is typed.
+		 *
+		 * @param event the char type event, containing the codepoint
+		 * @see CharacterEvent#codepointAsString()
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
+		void afterCharType(Screen screen, CharacterEvent event);
 	}
 }

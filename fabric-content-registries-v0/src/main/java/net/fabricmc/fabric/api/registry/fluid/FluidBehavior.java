@@ -26,6 +26,7 @@ import net.minecraft.util.ToFloatFunction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityFluidInteraction;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 
@@ -65,6 +66,25 @@ public interface FluidBehavior {
 	 * @param oldY old y position value
 	 */
 	void travelInFluid(TagKey<Fluid> fluid, LivingEntity entity, Vec3 input, double baseGravity, boolean isFalling, double oldY);
+
+	/**
+	 * Used to apply fluid movement logic for the entity when flying.
+	 * For implementing this method, you should look into how vanilla handles,
+	 * movement in fluids at {@link LivingEntity#travelFlying(Vec3, float, float, float)}
+	 * By default, this implementation mimics water behavior.
+	 *
+	 * @param fluid  a tag key representing the fluid type
+	 * @param entity entity that is moving through a fluid
+	 * @param input entity's movement input
+	 * @param waterSpeed flying speed in water
+	 * @param lavaSpeed flying speed in lava
+	 * @param airSpeed flying speed in air
+	 */
+	default void travelFlyingInFluid(TagKey<Fluid> fluid, LivingEntity entity, Vec3 input, float waterSpeed, float lavaSpeed, float airSpeed) {
+		entity.moveRelative(waterSpeed, input);
+		entity.move(MoverType.SELF, entity.getDeltaMovement());
+		entity.setDeltaMovement(entity.getDeltaMovement().scale(0.8f));
+	}
 
 	/**
 	 * Used to determine whatever player or entity can sprint-swim in a fluid (like in water).
@@ -125,6 +145,23 @@ public interface FluidBehavior {
 	default boolean canSprintInFluid(TagKey<Fluid> fluid, LivingEntity entity) {
 		return true;
 	}
+
+	/**
+	 * Called when entity enters a fluid.
+	 *
+	 * @param fluid  a tag key representing the fluid type
+	 * @param entity entity that is entered the fluid
+	 * @param firstTick indicates this is first time entity ticked
+	 */
+	default void onFluidEntered(TagKey<Fluid> fluid, Entity entity, boolean firstTick) { }
+
+	/**
+	 * Called when entity exits a fluid.
+	 *
+	 * @param fluid  a tag key representing the fluid type
+	 * @param entity entity that is entered the fluid
+	 */
+	default void onFluidExited(TagKey<Fluid> fluid, Entity entity) { }
 
 	static Builder simple() {
 		return new SimpleConfiguredFluidBehavior.Builder();
@@ -296,6 +333,22 @@ public interface FluidBehavior {
 		Builder enableDrowning(boolean value);
 
 		/**
+		 * Callback to execute when entity enters a fluid.
+		 *
+		 * @param callback a callback to execute
+		 * @return this builder
+		 */
+		Builder onEnteredFluid(OnEnter callback);
+
+		/**
+		 * Callback to execute when entity exits a fluid.
+		 *
+		 * @param callback a callback to execute
+		 * @return this builder
+		 */
+		Builder onExitedFluid(OnExit callback);
+
+		/**
 		 * Builds the fluid behavior.
 		 *
 		 * @return a new fluid behavior
@@ -304,6 +357,14 @@ public interface FluidBehavior {
 
 		interface MovementSlowdownFunction {
 			Vec3 apply(LivingEntity entity, Vec3 movementDelta, boolean isBelowJumpThreshold, double baseGravity, boolean isFalling);
+		}
+
+		interface OnEnter {
+			void onFluidEntered(Entity entity, boolean firstTick);
+		}
+
+		interface OnExit {
+			void onFluidExited(Entity entity);
 		}
 	}
 }

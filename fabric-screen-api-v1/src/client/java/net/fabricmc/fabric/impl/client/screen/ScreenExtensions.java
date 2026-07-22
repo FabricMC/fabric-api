@@ -59,6 +59,12 @@ public interface ScreenExtensions {
 
 	Event<ScreenKeyboardEvents.AfterKeyRelease> fabric_getAfterKeyReleaseEvent();
 
+	Event<ScreenKeyboardEvents.AllowCharType> fabric_getAllowCharTypeEvent();
+
+	Event<ScreenKeyboardEvents.BeforeCharType> fabric_getBeforeCharTypeEvent();
+
+	Event<ScreenKeyboardEvents.AfterCharType> fabric_getAfterCharTypeEvent();
+
 	// Mouse
 
 	Event<ScreenMouseEvents.AllowMouseClick> fabric_getAllowMouseClickEvent();

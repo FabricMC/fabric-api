@@ -32,6 +32,6 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 abstract class WorldLoaderMixin {
 	@ModifyArg(method = "lambda$load$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/RegistryDataLoader;load(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 2, allow = 1)
 	private static List<RegistryDataLoader.RegistryData<?>> modifyLoadedEntries(List<RegistryDataLoader.RegistryData<?>> entries) {
-		return DynamicRegistries.getDynamicRegistries();
+		return DynamicRegistries.getBootstrappingRegistries();
 	}
 }

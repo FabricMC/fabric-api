@@ -26,16 +26,23 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -57,6 +64,10 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 			Registries.PLACED_FEATURE,
 			Identifier.fromNamespaceAndPath(FabricBiomeTest.MOD_ID, "common_ore")
 	);
+	public static final ResourceKey<LevelStem> TEST_LEVEL_STEM = ResourceKey.create(
+			Registries.LEVEL_STEM,
+			Identifier.fromNamespaceAndPath(FabricBiomeTest.MOD_ID, "test")
+	);
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
@@ -70,6 +81,7 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 		registryBuilder.add(Registries.CONFIGURED_FEATURE, this::bootstrapConfiguredFeatures);
 		registryBuilder.add(Registries.PLACED_FEATURE, this::bootstrapPlacedFeatures);
 		registryBuilder.add(Registries.BIOME, TestBiomes::bootstrap);
+		registryBuilder.add(Registries.LEVEL_STEM, this::bootstrapLevelStems);
 	}
 
 	private void bootstrapConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> context) {
@@ -95,6 +107,26 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 				HeightRangePlacement.uniform(
 					VerticalAnchor.BOTTOM,
 					VerticalAnchor.TOP
+				)
+		);
+	}
+
+	private void bootstrapLevelStems(BootstrapContext<LevelStem> context) {
+		HolderGetter<DimensionType> dimensionTypes = context.lookup(Registries.DIMENSION_TYPE);
+		HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
+		HolderGetter<StructureSet> structureSets = context.lookup(Registries.STRUCTURE_SET);
+		HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
+		context.register(
+				TEST_LEVEL_STEM,
+				new LevelStem(
+						dimensionTypes.getOrThrow(BuiltinDimensionTypes.OVERWORLD),
+						new FlatLevelSource(
+								FlatLevelGeneratorSettings.getDefault(
+										biomes,
+										structureSets,
+										placedFeatures
+								)
+						)
 				)
 		);
 	}

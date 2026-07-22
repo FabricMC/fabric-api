@@ -29,8 +29,11 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.multiplayer.ServerReconfigScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -70,6 +73,17 @@ public class ClientGameTestTest implements FabricClientGameTest {
 				setDebugOverlay(context, true);
 				singleplayer.getClientLevel().waitForChunksRender();
 				context.takeScreenshot("in_game_overworld");
+			}
+
+			{
+				BlockPos chestPos = context.computeOnClient(client -> BlockPos.containing(client.player.position()).east().east().above().above());
+				singleplayer.getServer().runCommand("setblock %d %d %d minecraft:chest".formatted(chestPos.getX(), chestPos.getY(), chestPos.getZ()));
+				context.waitFor(client -> client.level.getBlockState(chestPos).is(Blocks.CHEST));
+				context.getInput().lookAt(chestPos);
+				context.waitTick();
+				context.getInput().pressKey(options -> options.keyUse);
+				context.waitForScreen(ContainerScreen.class);
+				context.setScreen(() -> null);
 			}
 
 			{

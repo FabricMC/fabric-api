@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.Resource;
@@ -37,9 +38,9 @@ import net.fabricmc.fabric.mixin.item.EnchantmentBuilderAccessor;
 public class EnchantmentUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnchantmentUtil.class);
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "deprecation"})
 	@Nullable
-	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source) {
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
 		Enchantment.Builder builder = Enchantment.enchantment(originalEnchantment.definition());
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 		BuilderExtensions builderExtensions = (BuilderExtensions) builder;
@@ -60,6 +61,7 @@ public class EnchantmentUtil {
 		builderExtensions.fabric$resetModified();
 
 		EnchantmentEvents.MODIFY.invoker().modify(key, builder, source);
+		EnchantmentEvents.MODIFY_WITH_LOOKUP.invoker().modify(key, builder, source, registryInfoLookup);
 
 		if (builderExtensions.fabric$didModify()) {
 			LOGGER.debug("Enchantment {} was modified", key.identifier());

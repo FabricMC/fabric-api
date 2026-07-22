@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.mixin.content.registry.fluid;
 
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.world.entity.EntityFluidInteraction;
+import net.minecraft.world.entity.Entity;
 
-@org.spongepowered.asm.mixin.Mixin(net.minecraft.world.entity.Entity.class)
+@Mixin(Entity.class)
 public interface EntityAccessor {
-	@Accessor
-	EntityFluidInteraction getFluidInteraction();
+	@Invoker
+	void callDoWaterSplashEffect();
 }
