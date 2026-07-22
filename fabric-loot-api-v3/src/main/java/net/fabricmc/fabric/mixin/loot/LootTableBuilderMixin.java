@@ -47,10 +47,6 @@ abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 	@Mutable
 	private ImmutableList.Builder<LootPool> pools;
 
-	@Shadow
-	@Final
-	private ImmutableList.Builder<Holder<LootItemFunction>> functions;
-
 	@Unique
 	private LootTable.Builder self() {
 		// noinspection ConstantConditions
@@ -65,8 +61,7 @@ abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 
 	@Override
 	public LootTable.Builder apply(LootItemFunction function) {
-		this.functions.add(Holder.direct(function));
-		return self();
+		return self().apply(Holder.direct(function));
 	}
 
 	@Override

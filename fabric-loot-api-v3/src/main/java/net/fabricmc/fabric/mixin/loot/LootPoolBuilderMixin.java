@@ -42,14 +42,6 @@ abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 	@Final
 	private ImmutableList.Builder<LootPoolEntryContainer> entries;
 
-	@Shadow
-	@Final
-	private ImmutableList.Builder<Holder<LootItemCondition>> conditions;
-
-	@Shadow
-	@Final
-	private ImmutableList.Builder<Holder<LootItemFunction>> functions;
-
 	@Unique
 	private LootPool.Builder self() {
 		// noinspection ConstantConditions
@@ -70,8 +62,7 @@ abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 
 	@Override
 	public LootPool.Builder when(LootItemCondition condition) {
-		this.conditions.add(Holder.direct(condition));
-		return self();
+		return self().when(Holder.direct(condition));
 	}
 
 	@Override
@@ -82,8 +73,7 @@ abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 
 	@Override
 	public LootPool.Builder apply(LootItemFunction function) {
-		this.functions.add(Holder.direct(function));
-		return self();
+		return self().apply(Holder.direct(function));
 	}
 
 	@Override
