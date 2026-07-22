@@ -103,11 +103,12 @@ public interface FabricLootPoolBuilder {
 	 */
 	static LootPool.Builder copyOf(LootPool pool) {
 		LootPoolAccessor accessor = (LootPoolAccessor) pool;
-		return LootPool.lootPool()
+		LootPool.Builder builder = LootPool.lootPool()
 				.setRolls(accessor.fabric_getRolls())
 				.setBonusRolls(accessor.fabric_getBonusRolls())
-				.add(accessor.fabric_getEntries())
-				.when(accessor.fabric_getConditions())
-				.apply(accessor.fabric_getFunctions());
+				.add(accessor.fabric_getEntries());
+		accessor.fabric_getCondition().ifPresent(builder::when);
+		accessor.fabric_getModifier().ifPresent(builder::apply);
+		return builder;
 	}
 }

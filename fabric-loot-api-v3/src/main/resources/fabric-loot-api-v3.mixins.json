@@ -3,14 +3,13 @@
   "package": "net.fabricmc.fabric.mixin.loot",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "SimpleJsonResourceReloadListenerMixin",
     "LootPoolAccessor",
     "LootPoolBuilderMixin",
     "LootTableAccessor",
     "LootTableBuilderMixin",
     "LootTableMixin",
     "ReloadableServerRegistriesMixin",
-    "FileToIdConverterAccessor"
+    "ResourceManagerRegistryLoadTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1

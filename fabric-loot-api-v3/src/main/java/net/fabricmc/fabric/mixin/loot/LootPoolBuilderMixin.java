@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -43,11 +44,11 @@ abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 
 	@Shadow
 	@Final
-	private ImmutableList.Builder<LootItemCondition> conditions;
+	private ImmutableList.Builder<Holder<LootItemCondition>> conditions;
 
 	@Shadow
 	@Final
-	private ImmutableList.Builder<LootItemFunction> functions;
+	private ImmutableList.Builder<Holder<LootItemFunction>> functions;
 
 	@Unique
 	private LootPool.Builder self() {
@@ -69,25 +70,25 @@ abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 
 	@Override
 	public LootPool.Builder when(LootItemCondition condition) {
-		this.conditions.add(condition);
+		this.conditions.add(Holder.direct(condition));
 		return self();
 	}
 
 	@Override
 	public LootPool.Builder when(Collection<? extends LootItemCondition> conditions) {
-		this.conditions.addAll(conditions);
+		conditions.forEach(this::when);
 		return self();
 	}
 
 	@Override
 	public LootPool.Builder apply(LootItemFunction function) {
-		this.functions.add(function);
+		this.functions.add(Holder.direct(function));
 		return self();
 	}
 
 	@Override
 	public LootPool.Builder apply(Collection<? extends LootItemFunction> functions) {
-		this.functions.addAll(functions);
+		functions.forEach(this::apply);
 		return self();
 	}
 }

@@ -16,25 +16,60 @@
 
 package net.fabricmc.fabric.impl.loot;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.Function;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.storage.loot.LootTable;
 
+import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 public final class LootUtil {
-	public static final ThreadLocal<Map<Identifier, LootTableSource>> SOURCES = ThreadLocal.withInitial(HashMap::new);
+	private static final Map<ResourceManager, HolderLookup.Provider> RELOAD_PROVIDERS = Collections.synchronizedMap(new WeakHashMap<>());
+
+	public static void startReload(ResourceManager resourceManager, HolderLookup.Provider provider) {
+		RELOAD_PROVIDERS.put(resourceManager, provider);
+	}
+
+	public static void endReload(ResourceManager resourceManager) {
+		RELOAD_PROVIDERS.remove(resourceManager);
+	}
+
+	public static HolderLookup.Provider getReloadProvider(ResourceManager resourceManager) {
+		HolderLookup.Provider provider = RELOAD_PROVIDERS.get(resourceManager);
+
+		if (provider == null) {
+			throw new IllegalStateException("Missing registry lookup provider for loot table reload");
+		}
+
+		return provider;
+	}
+
+	public static LootTable modifyLootTable(ResourceKey<LootTable> key, LootTable table, LootTableSource source, HolderLookup.Provider provider) {
+		LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source, provider);
+
+		if (replacement != null) {
+			table = replacement;
+			source = LootTableSource.REPLACED;
+		}
+
+		LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
+		LootTableEvents.MODIFY.invoker().modifyLootTable(key, builder, source, provider);
+		return builder.build();
+	}
 
 	public static LootTableSource determineSource(Resource resource) {
 		if (resource != null) {
