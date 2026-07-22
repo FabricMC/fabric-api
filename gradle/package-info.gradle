@@ -33,7 +33,7 @@ abstract class GeneratePackageInfos extends DefaultTask {
 
 	@SkipWhenEmpty
 	@InputDirectory
-	final DirectoryProperty sourceRoot = project.objects.directoryProperty()
+	abstract final DirectoryProperty sourceRoot = project.objects.directoryProperty()
 
 	GeneratePackageInfos() {
 		projectName.set(project.name)
