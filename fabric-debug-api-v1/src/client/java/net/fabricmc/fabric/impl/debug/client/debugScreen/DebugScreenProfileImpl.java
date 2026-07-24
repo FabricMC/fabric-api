@@ -13,7 +13,7 @@ public class DebugScreenProfileImpl {
 
 	public static void register(DebugScreenProfile profile, Identifier identifier, DebugScreenEntryStatus status) {
 		checkNotFrozen();
-		pending.computeIfAbsent(profile, p -> new HashMap<>()).put(identifier, status);
+		pending.computeIfAbsent(profile, _ -> new HashMap<>()).put(identifier, status);
 	}
 
 	private static void checkNotFrozen() {
@@ -32,7 +32,7 @@ public class DebugScreenProfileImpl {
 		base.forEach((profile, entries) -> result.put(profile, new HashMap<>(entries)));
 
 		pending.forEach((profile, extra) ->
-				result.computeIfAbsent(profile, p -> new HashMap<>()).putAll(extra));
+				result.computeIfAbsent(profile, _ -> new HashMap<>()).putAll(extra));
 
 		Map<DebugScreenProfile, Map<Identifier, DebugScreenEntryStatus>> ImmutableCopy = new HashMap<>();
 		result.forEach((profile, entries) -> ImmutableCopy.put(profile, Map.copyOf(entries)));

@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
 
 import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenEntryRegistry;
 import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenProfile;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 import net.minecraft.client.KeyMapping;
