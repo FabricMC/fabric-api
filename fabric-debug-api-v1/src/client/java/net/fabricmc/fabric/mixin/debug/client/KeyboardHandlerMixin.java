@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 
 @Mixin(KeyboardHandler.class)
-public abstract class KeyboardHandlerMixin {
+abstract class KeyboardHandlerMixin {
 
 	@Inject(
 			method = "handleDebugKeys",

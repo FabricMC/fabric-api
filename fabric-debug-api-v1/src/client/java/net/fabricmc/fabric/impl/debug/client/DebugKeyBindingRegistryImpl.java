@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DebugKeyBindingRegistryImpl {
+public final class DebugKeyBindingRegistryImpl {
 	private static final Map<KeyMapping, DebugKeyBindingRegistry.DebugKeyHandler> BINDINGS = new ConcurrentHashMap<>();
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-debug-api-v1");
 
