@@ -16,6 +16,13 @@
 
 package net.fabricmc.fabric.test.debug.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
+
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.debug.DebugRenderer;
@@ -32,7 +39,11 @@ import net.fabricmc.fabric.api.client.debug.v1.renderer.DebugRendererRegistry;
 import net.fabricmc.fabric.test.debug.DebugApiTest;
 import net.fabricmc.loader.api.FabricLoader;
 
+import org.lwjgl.glfw.GLFW;
+
 public class DebugApiTestClient implements ClientModInitializer {
+	KeyMapping susKeyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-debug-api-v1-testmod.sus_overlay", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, KeyMapping.Category.DEBUG));
+
 	@Override
 	public void onInitializeClient() {
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
@@ -46,6 +57,12 @@ public class DebugApiTestClient implements ClientModInitializer {
 					DebugApiTest.DEBUG_SUS_AVATAR
 			);
 		}
+
+		// F3 + X will toggle the `DebugApiTest.DEBUG_SUS_AVATAR` along with the visibility of the lovely sus graphics.
+		DebugKeyBindingRegistry.register(susKeyBinding, () -> {
+			DebugApiTest.DEBUG_SUS_AVATAR = !DebugApiTest.DEBUG_SUS_AVATAR;
+			return true;
+		});
 	}
 
 	public static class SuspiciousDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
@@ -61,6 +78,10 @@ public class DebugApiTestClient implements ClientModInitializer {
 				Frustum frustum,
 				float g
 		) {
+			if (!DebugApiTest.DEBUG_SUS_AVATAR) {
+				return;
+			}
+
 			debugValueAccess.forEachEntity(
 					DebugApiTest.SUS_AVATAR,
 					(entity, susDebugInfo) -> {
