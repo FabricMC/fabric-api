@@ -21,7 +21,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
 
 import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenEntryRegistry;
-import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenProfile;
+import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenProfiles;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 import net.minecraft.client.KeyMapping;
@@ -71,10 +71,10 @@ public class DebugApiTestClient implements ClientModInitializer {
 		}
 		// Create an entry for setting the visibility of the text in the debug menu AKA the f3 overlay
 		DebugScreenEntryRegistry.register(susTextIdentifier, new SussyTextEntry());
-		DebugScreenProfile.set(susTextIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
+		DebugScreenProfiles.set(susTextIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
 		// Create an entry for setting the visibility of the sus graphics
 		DebugScreenEntryRegistry.register(susGraphicsIdentifier, new SussyGraphicsEntry());
-		DebugScreenProfile.set(susGraphicsIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
+		DebugScreenProfiles.set(susGraphicsIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
 
 		// F3 + X will toggle the visibility of the lovely sus graphics.
 		DebugKeyBindingRegistry.register(susKeyBinding, () -> {
