@@ -20,6 +20,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
 
+import net.fabricmc.fabric.api.client.debug.v1.DebugScreenEntryRegistry;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 import net.minecraft.client.KeyMapping;
@@ -29,6 +30,7 @@ import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
 import net.minecraft.gizmos.TextGizmo;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.debug.DebugValueAccess;
 import net.minecraft.world.phys.Vec3;
@@ -63,6 +65,9 @@ public class DebugApiTestClient implements ClientModInitializer {
 			DebugApiTest.DEBUG_SUS_AVATAR = !DebugApiTest.DEBUG_SUS_AVATAR;
 			return true;
 		});
+
+		DebugScreenEntryRegistry.register(Identifier.fromNamespaceAndPath("fabric-debug-api-v1-testmod", "is_sussy"), new CustomDebugEntry());
+
 	}
 
 	public static class SuspiciousDebugRenderer implements DebugRenderer.SimpleDebugRenderer {

@@ -5,6 +5,7 @@
   "client": [
     "ClientDebugSubscriberMixin",
     "DebugRendererMixin",
+    "DebugScreenEntriesMixin",
     "KeyboardHandlerMixin"
   ],
   "injectors": {
