@@ -20,16 +20,21 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
 
-import net.fabricmc.fabric.api.client.debug.v1.DebugScreenEntryRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenEntryRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenProfile;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.DebugEntryCategory;
+import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
 import net.minecraft.gizmos.TextGizmo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.debug.DebugValueAccess;
@@ -45,6 +50,12 @@ import org.lwjgl.glfw.GLFW;
 
 public class DebugApiTestClient implements ClientModInitializer {
 	KeyMapping susKeyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-debug-api-v1-testmod.sus_overlay", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, KeyMapping.Category.DEBUG));
+	static Identifier susGraphicsIdentifier = Identifier.fromNamespaceAndPath("fabric-debug-api-v1-testmod", "sus_graphics");
+	static Identifier susTextIdentifier = Identifier.fromNamespaceAndPath("fabric-debug-api-v1-testmod", "sus_text");
+	public static DebugEntryCategory SUSSY_CATEGORY = new DebugEntryCategory(
+			Component.literal("Sussy category"),
+			0.1F
+	);
 
 	@Override
 	public void onInitializeClient() {
@@ -59,15 +70,18 @@ public class DebugApiTestClient implements ClientModInitializer {
 					DebugApiTest.DEBUG_SUS_AVATAR
 			);
 		}
+		// Create an entry for setting the visibility of the text in the debug menu AKA the f3 overlay
+		DebugScreenEntryRegistry.register(susTextIdentifier, new SussyTextEntry());
+		DebugScreenProfile.set(susTextIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
+		// Create an entry for setting the visibility of the sus graphics
+		DebugScreenEntryRegistry.register(susGraphicsIdentifier, new SussyGraphicsEntry());
+		DebugScreenProfile.set(susGraphicsIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
 
-		// F3 + X will toggle the `DebugApiTest.DEBUG_SUS_AVATAR` along with the visibility of the lovely sus graphics.
+		// F3 + X will toggle the visibility of the lovely sus graphics.
 		DebugKeyBindingRegistry.register(susKeyBinding, () -> {
-			DebugApiTest.DEBUG_SUS_AVATAR = !DebugApiTest.DEBUG_SUS_AVATAR;
+			Minecraft.getInstance().debugEntries.toggleStatus(susGraphicsIdentifier);
 			return true;
 		});
-
-		DebugScreenEntryRegistry.register(Identifier.fromNamespaceAndPath("fabric-debug-api-v1-testmod", "is_sussy"), new CustomDebugEntry());
-
 	}
 
 	public static class SuspiciousDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
@@ -83,7 +97,7 @@ public class DebugApiTestClient implements ClientModInitializer {
 				Frustum frustum,
 				float g
 		) {
-			if (!DebugApiTest.DEBUG_SUS_AVATAR) {
+			if (!Minecraft.getInstance().debugEntries.isCurrentlyEnabled(susGraphicsIdentifier)) {
 				return;
 			}
 

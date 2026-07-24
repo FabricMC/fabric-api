@@ -1,6 +1,6 @@
-package net.fabricmc.fabric.api.client.debug.v1;
+package net.fabricmc.fabric.api.client.debug.v1.debugScreen;
 
-import net.fabricmc.fabric.impl.debug.client.DebugScreenEntryRegistryImpl;
+import net.fabricmc.fabric.impl.debug.client.debugScreen.DebugScreenEntryRegistryImpl;
 
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import net.minecraft.resources.Identifier;

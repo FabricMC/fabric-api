@@ -1,8 +1,5 @@
-package net.fabricmc.fabric.impl.debug.client;
+package net.fabricmc.fabric.impl.debug.client.debugScreen;
 
-import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
-
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import net.minecraft.resources.Identifier;
 
