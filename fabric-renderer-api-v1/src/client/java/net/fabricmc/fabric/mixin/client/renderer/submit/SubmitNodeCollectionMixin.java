@@ -111,13 +111,13 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 	public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, ItemQuads quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 		PoseStack.Pose pose = poseStack.last().copy();
 		MeshViewRenderTypeGroups splitMesh = MeshViewRenderTypeGroups.split(mesh);
-		
+
 		if (!quads.translucent().isEmpty() || splitMesh.translucent().size() > 0) {
 			translucentBlocksAndItems.submit(new ExtendedItemSubmit(
 				pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.translucent(), splitMesh.translucent(), foilType
 			));
 		}
-		
+
 		if (!quads.solid().isEmpty() || splitMesh.solid().size() > 0) {
 			solid.submit(new ExtendedItemSubmit(
 					pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.solid(), splitMesh.solid(), foilType

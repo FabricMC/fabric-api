@@ -231,7 +231,6 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
-	// TODO - Update javadoc
 	/**
 	 * Sets this quad's {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #animated(boolean)},
 	 * {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer},
