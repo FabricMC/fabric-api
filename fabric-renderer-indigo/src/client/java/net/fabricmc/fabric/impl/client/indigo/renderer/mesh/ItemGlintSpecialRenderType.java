@@ -34,16 +34,12 @@ enum ItemGlintSpecialRenderType {
 	TRANSLUCENT_BLOCK(Sheets.translucentBlockItemGlintSpecialSheet());
 
 	static final RenderType[] RENDER_TYPES = Arrays.stream(ItemGlintSpecialRenderType.values()).map(t -> t.renderType).toArray(RenderType[]::new);
-	static final Map<RenderType, ItemGlintSpecialRenderType> RENDER_TYPE_2_ENUM;
-
-	static {
-		RENDER_TYPE_2_ENUM = Map.of(
-				CUTOUT.renderType, CUTOUT,
-				TRANSLUCENT.renderType, TRANSLUCENT,
-				CUTOUT_BLOCK.renderType, CUTOUT_BLOCK,
-				TRANSLUCENT_BLOCK.renderType, TRANSLUCENT_BLOCK
-		);
-	}
+	static final Map<RenderType, ItemGlintSpecialRenderType> RENDER_TYPE_TO_ENUM = Map.of(
+			CUTOUT.renderType, CUTOUT,
+			TRANSLUCENT.renderType, TRANSLUCENT,
+			CUTOUT_BLOCK.renderType, CUTOUT_BLOCK,
+			TRANSLUCENT_BLOCK.renderType, TRANSLUCENT_BLOCK
+	);
 
 	// The atlas of the default render type should match the default QuadAtlas, which is currently BLOCK.
 	static final ItemGlintSpecialRenderType DEFAULT = ItemGlintSpecialRenderType.CUTOUT_BLOCK;

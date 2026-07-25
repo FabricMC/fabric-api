@@ -195,7 +195,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl itemRenderType(RenderType renderType) {
-		ItemRenderType enumValue = ItemRenderType.RENDER_TYPE_2_ENUM.get(renderType);
+		ItemRenderType enumValue = ItemRenderType.RENDER_TYPE_TO_ENUM.get(renderType);
 
 		if (enumValue != null) {
 			data[baseIndex + HEADER_BITS] = EncodingFormat.itemRenderType(data[baseIndex + HEADER_BITS], enumValue);
@@ -206,7 +206,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl itemGlintRenderType(RenderType renderType) {
-		ItemGlintRenderType enumValue = ItemGlintRenderType.RENDER_TYPE_2_ENUM.get(renderType);
+		ItemGlintRenderType enumValue = ItemGlintRenderType.RENDER_TYPE_TO_ENUM.get(renderType);
 
 		if (enumValue != null) {
 			data[baseIndex + HEADER_BITS] = EncodingFormat.itemGlintRenderType(data[baseIndex + HEADER_BITS], enumValue);
@@ -217,7 +217,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl itemGlintSpecialRenderType(RenderType renderType) {
-		ItemGlintSpecialRenderType enumValue = ItemGlintSpecialRenderType.RENDER_TYPE_2_ENUM.get(renderType);
+		ItemGlintSpecialRenderType enumValue = ItemGlintSpecialRenderType.RENDER_TYPE_TO_ENUM.get(renderType);
 
 		if (enumValue != null) {
 			data[baseIndex + HEADER_BITS] = EncodingFormat.itemGlintSpecialRenderType(data[baseIndex + HEADER_BITS], enumValue);

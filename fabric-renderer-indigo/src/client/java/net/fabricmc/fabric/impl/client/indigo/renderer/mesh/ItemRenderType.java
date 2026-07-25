@@ -34,16 +34,12 @@ enum ItemRenderType {
 	TRANSLUCENT_BLOCK(Sheets.translucentBlockItemSheet());
 
 	static final RenderType[] RENDER_TYPES = Arrays.stream(ItemRenderType.values()).map(t -> t.renderType).toArray(RenderType[]::new);
-	static final Map<RenderType, ItemRenderType> RENDER_TYPE_2_ENUM;
-
-	static {
-		RENDER_TYPE_2_ENUM = Map.of(
-				CUTOUT.renderType, CUTOUT,
-				TRANSLUCENT.renderType, TRANSLUCENT,
-				CUTOUT_BLOCK.renderType, CUTOUT_BLOCK,
-				TRANSLUCENT_BLOCK.renderType, TRANSLUCENT_BLOCK
-		);
-	}
+	static final Map<RenderType, ItemRenderType> RENDER_TYPE_TO_ENUM = Map.of(
+			CUTOUT.renderType, CUTOUT,
+			TRANSLUCENT.renderType, TRANSLUCENT,
+			CUTOUT_BLOCK.renderType, CUTOUT_BLOCK,
+			TRANSLUCENT_BLOCK.renderType, TRANSLUCENT_BLOCK
+	);
 
 	// The atlas of the default render type should match the default QuadAtlas, which is currently BLOCK.
 	static final ItemRenderType DEFAULT = ItemRenderType.CUTOUT_BLOCK;
