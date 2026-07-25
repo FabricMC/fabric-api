@@ -54,6 +54,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
+import net.fabricmc.fabric.impl.client.renderer.MeshViewRenderTypeGroups;
 
 @Mixin(SubmitNodeCollection.class)
 abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
@@ -109,16 +110,24 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 	@Override
 	public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, ItemQuads quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 		PoseStack.Pose pose = poseStack.last().copy();
-		ExtendedItemSubmit submit = new ExtendedItemSubmit(pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads, mesh, foilType);
-
-		if (submit.hasTranslucency()) {
-			translucentBlocksAndItems.submit(submit);
-		} else {
-			solid.submit(submit);
+		MeshViewRenderTypeGroups splitMesh = MeshViewRenderTypeGroups.split(mesh);
+		
+		if (!quads.translucent().isEmpty() || splitMesh.translucent().size() > 0) {
+			translucentBlocksAndItems.submit(new ExtendedItemSubmit(
+				pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.translucent(), splitMesh.translucent(), foilType
+			));
+		}
+		
+		if (!quads.solid().isEmpty() || splitMesh.solid().size() > 0) {
+			solid.submit(new ExtendedItemSubmit(
+					pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.solid(), splitMesh.solid(), foilType
+			));
 		}
 
 		if (outlineColor != 0) {
-			outline.submit(new ExtendedItemSubmit(pose, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, ItemStackRenderState.LayerRenderState.EMPTY_TINTS, quads, mesh, ItemStackRenderState.FoilType.NONE));
+			outline.submit(new ExtendedItemSubmit(
+					pose, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, ItemStackRenderState.LayerRenderState.EMPTY_TINTS, quads.all(), mesh, ItemStackRenderState.FoilType.NONE
+			));
 		}
 	}
 
