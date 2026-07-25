@@ -234,11 +234,13 @@ public interface MutableQuadView extends QuadView {
 	// TODO - Update javadoc
 	/**
 	 * Sets this quad's {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #animated(boolean)},
-	 * {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer}, and
-	 * {@linkplain #itemRenderType(RenderType) item render type} to appropriate values based on the
-	 * given material and this quad's texture coordinates. Exposed separately from
-	 * {@link #materialBake(Material.Baked, int)} as mods frequently transform texture coordinates
-	 * in ways that are based on a material, but do not want to use
+	 * {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer},
+	 * {@linkplain #itemRenderType(RenderType) item render type},
+	 * {@linkplain #itemGlintRenderType(RenderType) item glint render type}, and
+	 * {@linkplain #itemGlintSpecialRenderType(RenderType) item glint special render type}
+	 * to appropriate values based on the given material and this quad's texture coordinates.
+	 * Exposed separately from {@link #materialBake(Material.Baked, int)} as mods frequently
+	 * transform texture coordinates in ways that are based on a material, but do not want to use
 	 * {@link #materialBake(Material.Baked, int)}; for example, interpolating sprites for connected
 	 * textures.
 	 */
