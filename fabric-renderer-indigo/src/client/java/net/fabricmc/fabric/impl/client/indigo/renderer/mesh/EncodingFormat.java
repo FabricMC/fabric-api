@@ -96,6 +96,10 @@ public final class EncodingFormat {
 	private static final int CHUNK_SECTION_LAYER_COUNT = CHUNK_SECTION_LAYERS.length;
 	private static final RenderType[] ITEM_RENDER_TYPES = ItemRenderType.RENDER_TYPES;
 	private static final int ITEM_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
+	private static final RenderType[] ITEM_GLINT_RENDER_TYPES = ItemGlintRenderType.RENDER_TYPES;
+	private static final int ITEM_GLINT_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
+	private static final RenderType[] ITEM_GLINT_SPECIAL_RENDER_TYPES = ItemGlintSpecialRenderType.RENDER_TYPES;
+	private static final int ITEM_GLINT_SPECIAL_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
 	private static final TriState[] TRI_STATES = TriState.values();
 	private static final int TRI_STATE_COUNT = TRI_STATES.length;
 	private static final ItemStackRenderState.@Nullable FoilType[] NULLABLE_FOIL_TYPES = ArrayUtils.add(ItemStackRenderState.FoilType.values(), null);
@@ -114,6 +118,8 @@ public final class EncodingFormat {
 	private static final int QUAD_ATLAS_BIT_LENGTH = Mth.ceillog2(QUAD_ATLAS_COUNT);
 	private static final int CHUNK_LAYER_BIT_LENGTH = Mth.ceillog2(CHUNK_SECTION_LAYER_COUNT);
 	private static final int ITEM_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(ITEM_RENDER_TYPE_COUNT);
+	private static final int ITEM_GLINT_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(ITEM_GLINT_RENDER_TYPE_COUNT);
+	private static final int ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_LENGTH = Mth.ceillog2(ITEM_GLINT_SPECIAL_RENDER_TYPE_COUNT);
 	private static final int EMISSIVE_BIT_LENGTH = 1;
 	private static final int SHADE_DIRECTION_BIT_LENGTH = Mth.ceillog2(NULLABLE_DIRECTION_COUNT);
 	private static final int AO_BIT_LENGTH = Mth.ceillog2(TRI_STATE_COUNT);
@@ -129,7 +135,9 @@ public final class EncodingFormat {
 	private static final int QUAD_ATLAS_BIT_OFFSET = GEOMETRY_BIT_OFFSET + GEOMETRY_BIT_LENGTH;
 	private static final int CHUNK_LAYER_BIT_OFFSET = QUAD_ATLAS_BIT_OFFSET + QUAD_ATLAS_BIT_LENGTH;
 	private static final int ITEM_RENDER_TYPE_BIT_OFFSET = CHUNK_LAYER_BIT_OFFSET + CHUNK_LAYER_BIT_LENGTH;
-	private static final int EMISSIVE_BIT_OFFSET = ITEM_RENDER_TYPE_BIT_OFFSET + ITEM_RENDER_TYPE_BIT_LENGTH;
+	private static final int ITEM_GLINT_RENDER_TYPE_BIT_OFFSET = ITEM_RENDER_TYPE_BIT_OFFSET + ITEM_RENDER_TYPE_BIT_LENGTH;
+	private static final int ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_OFFSET = ITEM_GLINT_RENDER_TYPE_BIT_OFFSET + ITEM_GLINT_RENDER_TYPE_BIT_LENGTH;
+	private static final int EMISSIVE_BIT_OFFSET = ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_OFFSET + ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_LENGTH;
 	private static final int SHADE_DIRECTION_BIT_OFFSET = EMISSIVE_BIT_OFFSET + EMISSIVE_BIT_LENGTH;
 	private static final int AO_BIT_OFFSET = SHADE_DIRECTION_BIT_OFFSET + SHADE_DIRECTION_BIT_LENGTH;
 	private static final int FOIL_TYPE_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
@@ -147,6 +155,8 @@ public final class EncodingFormat {
 			CHUNK_LAYER_BIT_OFFSET
 	);
 	private static final int ITEM_RENDER_TYPE_MASK = bitMask(ITEM_RENDER_TYPE_BIT_LENGTH, ITEM_RENDER_TYPE_BIT_OFFSET);
+	private static final int ITEM_GLINT_RENDER_TYPE_MASK = bitMask(ITEM_GLINT_RENDER_TYPE_BIT_LENGTH, ITEM_GLINT_RENDER_TYPE_BIT_OFFSET);
+	private static final int ITEM_GLINT_SPECIAL_RENDER_TYPE_MASK = bitMask(ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_LENGTH, ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_OFFSET);
 	private static final int EMISSIVE_MASK = bitMask(EMISSIVE_BIT_LENGTH, EMISSIVE_BIT_OFFSET);
 	private static final int SHADE_DIRECTION_MASK = bitMask(SHADE_DIRECTION_BIT_LENGTH, SHADE_DIRECTION_BIT_OFFSET);
 	private static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
@@ -221,6 +231,22 @@ public final class EncodingFormat {
 
 	static int itemRenderType(int bits, ItemRenderType renderType) {
 		return (bits & ~ITEM_RENDER_TYPE_MASK) | (renderType.ordinal() << ITEM_RENDER_TYPE_BIT_OFFSET);
+	}
+
+	static RenderType itemGlintRenderType(int bits) {
+		return ITEM_GLINT_RENDER_TYPES[(bits & ITEM_GLINT_RENDER_TYPE_MASK) >>> ITEM_GLINT_RENDER_TYPE_BIT_OFFSET];
+	}
+
+	static int itemGlintRenderType(int bits, ItemGlintRenderType renderType) {
+		return (bits & ~ITEM_GLINT_RENDER_TYPE_MASK) | (renderType.ordinal() << ITEM_GLINT_RENDER_TYPE_BIT_OFFSET);
+	}
+
+	static RenderType itemGlintSpecialRenderType(int bits) {
+		return ITEM_GLINT_SPECIAL_RENDER_TYPES[(bits & ITEM_GLINT_SPECIAL_RENDER_TYPE_MASK) >>> ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_OFFSET];
+	}
+
+	static int itemGlintSpecialRenderType(int bits, ItemGlintSpecialRenderType renderType) {
+		return (bits & ~ITEM_GLINT_SPECIAL_RENDER_TYPE_MASK) | (renderType.ordinal() << ITEM_GLINT_SPECIAL_RENDER_TYPE_BIT_OFFSET);
 	}
 
 	static boolean emissive(int bits) {

@@ -231,6 +231,7 @@ public interface MutableQuadView extends QuadView {
 		return this;
 	}
 
+	// TODO - Update javadoc
 	/**
 	 * Sets this quad's {@linkplain #atlas(QuadAtlas) atlas}, {@linkplain #animated(boolean)},
 	 * {@linkplain #chunkLayer(ChunkSectionLayer) chunk layer}, and
@@ -253,16 +254,25 @@ public interface MutableQuadView extends QuadView {
 
 		Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : ModelHelper.computeTransparency(material.sprite(), this);
 		ChunkSectionLayer layer = ChunkSectionLayer.byTransparency(transparency);
+
 		RenderType itemRenderType;
+		RenderType itemGlintRenderType;
+		RenderType itemGlintSpecialRenderType;
 
 		if (material.sprite().atlasLocation().equals(TextureAtlas.LOCATION_BLOCKS)) {
 			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
+			itemGlintRenderType = transparency.hasTranslucent() ? Sheets.translucentBlockItemGlintSheet() : Sheets.cutoutBlockItemGlintSheet();
+			itemGlintSpecialRenderType = transparency.hasTranslucent() ? Sheets.translucentBlockItemGlintSpecialSheet() : Sheets.cutoutBlockItemGlintSpecialSheet();
 		} else {
 			itemRenderType = transparency.hasTranslucent() ? Sheets.translucentItemSheet() : Sheets.cutoutItemSheet();
+			itemGlintRenderType = transparency.hasTranslucent() ? Sheets.translucentItemGlintSheet() : Sheets.cutoutItemGlintSheet();
+			itemGlintSpecialRenderType = transparency.hasTranslucent() ? Sheets.translucentItemGlintSpecialSheet() : Sheets.cutoutItemGlintSpecialSheet();
 		}
 
 		chunkLayer(layer);
 		itemRenderType(itemRenderType);
+		itemGlintRenderType(itemGlintRenderType);
+		itemGlintSpecialRenderType(itemGlintSpecialRenderType);
 		return this;
 	}
 
@@ -401,6 +411,46 @@ public interface MutableQuadView extends QuadView {
 	 * <p>This property is respected only in item contexts. It will not have an effect in other contexts.
 	 */
 	MutableQuadView itemRenderType(RenderType renderType);
+
+	/**
+	 * Controls how this quad should be rendered after buffering in item glint contexts. The atlas texture used by the set
+	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
+	 *
+	 * <p>Only the following values are allowed:
+	 * <ul>
+	 *     <li>{@link Sheets#cutoutItemGlintSheet()}
+	 *     <li>{@link Sheets#translucentItemGlintSheet()}
+	 *     <li>{@link Sheets#cutoutBlockItemGlintSheet()}
+	 *     <li>{@link Sheets#translucentBlockItemGlintSheet()}
+	 * </ul>
+	 *
+	 * <p>The behavior is undefined if this method is invoked with any value not in the above list.
+	 *
+	 * <p>The default value is {@link Sheets#cutoutBlockItemGlintSheet()}.
+	 *
+	 * <p>This property is respected only in item glint contexts. It will not have an effect in other contexts.
+	 */
+	MutableQuadView itemGlintRenderType(RenderType renderType);
+
+	/**
+	 * Controls how this quad should be rendered after buffering in item glint special contexts. The atlas texture used by the set
+	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
+	 *
+	 * <p>Only the following values are allowed:
+	 * <ul>
+	 *     <li>{@link Sheets#cutoutItemGlintSpecialSheet()}
+	 *     <li>{@link Sheets#translucentItemGlintSpecialSheet()}
+	 *     <li>{@link Sheets#cutoutBlockItemGlintSpecialSheet()}
+	 *     <li>{@link Sheets#translucentBlockItemGlintSpecialSheet()}
+	 * </ul>
+	 *
+	 * <p>The behavior is undefined if this method is invoked with any value not in the above list.
+	 *
+	 * <p>The default value is {@link Sheets#cutoutBlockItemGlintSpecialSheet()}.
+	 *
+	 * <p>This property is respected only in item glint special contexts. It will not have an effect in other contexts.
+	 */
+	MutableQuadView itemGlintSpecialRenderType(RenderType renderType);
 
 	/**
 	 * When true, this quad will be rendered at full brightness.

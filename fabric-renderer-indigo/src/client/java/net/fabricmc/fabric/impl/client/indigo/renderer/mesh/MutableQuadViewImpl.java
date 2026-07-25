@@ -77,6 +77,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		quad.cullFace(null);
 		quad.chunkLayer(ChunkSectionLayer.CUTOUT);
 		quad.itemRenderType(ItemRenderType.DEFAULT.renderType);
+		quad.itemGlintRenderType(ItemGlintRenderType.DEFAULT.renderType);
+		quad.itemGlintSpecialRenderType(ItemGlintSpecialRenderType.DEFAULT.renderType);
 		quad.shadeDirectionOverride(null);
 		quad.ambientOcclusion(TriState.DEFAULT);
 		quad.foilType(null);
@@ -197,6 +199,28 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 		if (enumValue != null) {
 			data[baseIndex + HEADER_BITS] = EncodingFormat.itemRenderType(data[baseIndex + HEADER_BITS], enumValue);
+		}
+
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl itemGlintRenderType(RenderType renderType) {
+		ItemGlintRenderType enumValue = ItemGlintRenderType.RENDER_TYPE_2_ENUM.get(renderType);
+
+		if (enumValue != null) {
+			data[baseIndex + HEADER_BITS] = EncodingFormat.itemGlintRenderType(data[baseIndex + HEADER_BITS], enumValue);
+		}
+
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl itemGlintSpecialRenderType(RenderType renderType) {
+		ItemGlintSpecialRenderType enumValue = ItemGlintSpecialRenderType.RENDER_TYPE_2_ENUM.get(renderType);
+
+		if (enumValue != null) {
+			data[baseIndex + HEADER_BITS] = EncodingFormat.itemGlintSpecialRenderType(data[baseIndex + HEADER_BITS], enumValue);
 		}
 
 		return this;

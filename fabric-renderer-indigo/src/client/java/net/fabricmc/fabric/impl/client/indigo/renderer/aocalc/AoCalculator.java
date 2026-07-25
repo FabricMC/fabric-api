@@ -51,7 +51,7 @@ public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
 	/** The number of possible combinations returned by {@link #computeFace(Direction, boolean, Direction)}. */
-	private static final int FACE_DATA_COUNT = 72;
+	private static final int FACE_DATA_COUNT = 6 * 2 * 6;
 
 	private final BlockModelLighter.Cache lightCache;
 

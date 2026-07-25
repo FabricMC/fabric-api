@@ -25,7 +25,6 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -175,6 +174,16 @@ public interface QuadView {
 	RenderType itemRenderType();
 
 	/**
+	 * @see MutableQuadView#itemGlintRenderType(RenderType)
+	 */
+	RenderType itemGlintRenderType();
+
+	/**
+	 * @see MutableQuadView#itemGlintSpecialRenderType(RenderType)
+	 */
+	RenderType itemGlintSpecialRenderType();
+
+	/**
 	 * @see MutableQuadView#emissive(boolean)
 	 */
 	boolean emissive();
@@ -252,18 +261,7 @@ public interface QuadView {
 			}
 		}
 
-		RenderType itemGlintRenderType;
-		RenderType itemGlintSpecialRenderType;
-
-		if (atlas() == QuadAtlas.BLOCK) {
-			itemGlintRenderType = chunkLayer().translucent() ? Sheets.translucentBlockItemGlintSheet() : Sheets.cutoutBlockItemGlintSheet();
-			itemGlintSpecialRenderType = chunkLayer().translucent() ? Sheets.translucentBlockItemGlintSpecialSheet() : Sheets.cutoutBlockItemGlintSpecialSheet();
-		} else {
-			itemGlintRenderType = chunkLayer().translucent() ? Sheets.translucentItemGlintSheet() : Sheets.cutoutItemGlintSheet();
-			itemGlintSpecialRenderType = chunkLayer().translucent() ? Sheets.translucentItemGlintSpecialSheet() : Sheets.cutoutItemGlintSpecialSheet();
-		}
-
-		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), itemGlintRenderType, itemGlintSpecialRenderType, tintIndex(), shadeDirectionOverride(), lightEmission);
+		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), itemGlintRenderType(), itemGlintSpecialRenderType(), tintIndex(), shadeDirectionOverride(), lightEmission);
 
 		return new BakedQuad(
 				position0,
