@@ -114,7 +114,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 
 		if (!quads.translucent().isEmpty() || splitMesh.translucent().size() > 0) {
 			translucentBlocksAndItems.submit(new ExtendedItemSubmit(
-				pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.translucent(), splitMesh.translucent(), foilType
+					pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.translucent(), splitMesh.translucent(), foilType
 			));
 		}
 
