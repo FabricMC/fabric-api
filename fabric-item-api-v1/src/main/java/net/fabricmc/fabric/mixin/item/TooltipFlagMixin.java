@@ -23,5 +23,5 @@ import net.minecraft.world.item.TooltipFlag;
 import net.fabricmc.fabric.api.item.v1.FabricTooltipFlag;
 
 @Mixin(TooltipFlag.class)
-public class TooltipFlagMixin implements FabricTooltipFlag {
+public interface TooltipFlagMixin extends FabricTooltipFlag {
 }
