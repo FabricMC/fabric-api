@@ -88,7 +88,7 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	}
 
 	@Override
-	public boolean sendsTelemetryEvent() {
+	public boolean isSendsTelemetryEvent() {
 		return this.sendsTelemetryEvent;
 	}
 
