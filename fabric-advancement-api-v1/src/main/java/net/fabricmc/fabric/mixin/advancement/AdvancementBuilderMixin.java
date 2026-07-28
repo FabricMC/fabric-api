@@ -15,8 +15,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -90,6 +92,30 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	@Override
 	public boolean isSendsTelemetryEvent() {
 		return this.sendsTelemetryEvent;
+	}
+
+	@Override
+	public void requireCriterion(String name) {
+		requireCriteria(List.of(name));
+	}
+
+	@Override
+	public void requireCriteria(List<String> names) {
+		if (names.isEmpty()) {
+			throw new IllegalArgumentException("Cannot require an empty list of criteria");
+		}
+
+		List<List<String>> newRequirements = new ArrayList<>();
+
+		// Keep whatever requirement groups were already configured (e.g. via a Strategy
+		// or a previous call to this method) completely untouched.
+		this.requirements.ifPresent(existing -> newRequirements.addAll(existing.requirements()));
+
+		// Add the new group last; it's AND'd with everything already present, and
+		// satisfying any single criterion within it is enough to fulfill this group.
+		newRequirements.add(List.copyOf(names));
+
+		this.requirements = Optional.of(new AdvancementRequirements(newRequirements));
 	}
 
 	// Intercept the build process to filter the criteria map before it becomes immutable
