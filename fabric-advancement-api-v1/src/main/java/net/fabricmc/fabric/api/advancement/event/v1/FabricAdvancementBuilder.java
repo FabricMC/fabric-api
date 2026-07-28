@@ -41,10 +41,6 @@ public interface FabricAdvancementBuilder {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default AdvancementRequirements.Strategy getRequirementsStrategy() {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
 	default boolean isSendsTelemetryEvent() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
