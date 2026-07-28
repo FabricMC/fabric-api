@@ -48,6 +48,24 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called before the client begins loading resources.
+	 */
+	public static final Event<StartResourceReload> START_RESOURCE_RELOAD = EventFactory.createArrayBacked(StartResourceReload.class, callbacks -> (client, isFirst) -> {
+		for (StartResourceReload callback : callbacks) {
+			callback.startResourceReload(client, isFirst);
+		}
+	});
+
+	/**
+	 * Called after the client has finished reloading resources.
+	 */
+	public static final Event<EndResourceReload> END_RESOURCE_RELOAD = EventFactory.createArrayBacked(EndResourceReload.class, callbacks -> (client, isFirst) -> {
+		for (EndResourceReload callback : callbacks) {
+			callback.endResourceReload(client, isFirst);
+		}
+	});
+
 	@FunctionalInterface
 	public interface ClientStarted {
 		void onClientStarted(Minecraft client);
@@ -56,5 +74,15 @@ public final class ClientLifecycleEvents {
 	@FunctionalInterface
 	public interface ClientStopping {
 		void onClientStopping(Minecraft client);
+	}
+
+	@FunctionalInterface
+	public interface StartResourceReload {
+		void startResourceReload(Minecraft client, boolean isFirst);
+	}
+
+	@FunctionalInterface
+	public interface EndResourceReload {
+		void endResourceReload(Minecraft client, boolean isFirst);
 	}
 }
