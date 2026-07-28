@@ -90,7 +90,7 @@ public class MultiPlayerGameModeMixin {
 		ItemStack itemStack = player.getItemInHand(hand);
 
 		UseOnContext context = new UseOnContext(player, hand, blockHit);
-		InteractionResult ret = itemStack.getItem().useOnItemFirst(context);
+		InteractionResult ret = itemStack.getItem().useOnBeforeBlock(context);
 
 		if (ret != InteractionResult.PASS) {
 			cir.setReturnValue(ret);

@@ -66,7 +66,7 @@ public interface FabricItem {
 	 * @param useOnContext the context for the item interaction
 	 * @return anything other than {@link net.minecraft.world.InteractionResult#PASS} to consume the item interaction and prevent further handling
 	 */
-	default InteractionResult useOnItemFirst(UseOnContext useOnContext) {
+	default InteractionResult useOnBeforeBlock(UseOnContext useOnContext) {
 		return InteractionResult.PASS;
 	}
 

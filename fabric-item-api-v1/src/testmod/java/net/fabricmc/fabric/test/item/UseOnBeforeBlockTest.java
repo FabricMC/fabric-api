@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ModInitializer;
 
-public class UseOnItemFirstTest implements ModInitializer {
+public class UseOnBeforeBlockTest implements ModInitializer {
 	public static final ResourceKey<Item> BLOCK_NAME_PRINTER_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "block_name_printer"));
 	public static final TestItem BLOCK_NAME_PRINTER = new TestItem(new Item.Properties().setId(BLOCK_NAME_PRINTER_KEY));
 
@@ -50,7 +50,7 @@ public class UseOnItemFirstTest implements ModInitializer {
 		}
 
 		@Override
-		public InteractionResult useOnItemFirst(UseOnContext useOnContext) {
+		public InteractionResult useOnBeforeBlock(UseOnContext useOnContext) {
 			Level level = useOnContext.getLevel();
 			BlockPos blockPos = useOnContext.getClickedPos();
 			BlockState state = level.getBlockState(blockPos);
@@ -63,7 +63,7 @@ public class UseOnItemFirstTest implements ModInitializer {
 						Component.literal("Block: ").append(Component.translatable(block.getDescriptionId()))
 				));
 			} else {
-				System.out.println("Client-side useOnItemFirst item interaction on block: " + block.getDescriptionId());
+				System.out.println("Client-side useOnBeforeBlock item interaction on block: " + block.getDescriptionId());
 			}
 
 			return InteractionResult.SUCCESS;
