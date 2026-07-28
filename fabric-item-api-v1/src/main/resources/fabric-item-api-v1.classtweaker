@@ -1,4 +1,5 @@
 classTweaker	v1	official
+accessible field net/minecraft/world/item/Item$Properties componentInitializer Lnet/minecraft/core/component/DataComponentInitializers$Initializer;
 accessible class net/minecraft/resources/RegistryLoadTask$PendingRegistration
 accessible class net/minecraft/core/component/DataComponentInitializers$BakedEntry
 accessible class net/minecraft/core/component/DataComponentInitializers$PendingComponentBuilders

@@ -30,9 +30,6 @@ public final class TestSystemProperties {
 	@Nullable
 	public static final String TEST_MOD_RESOURCES_PATH = System.getProperty("fabric.client.gametest.testModResourcesPath");
 
-	// Disable the network (packet) synchronizer. (Disabled by default)
-	public static final boolean DISABLE_NETWORK_SYNCHRONIZER = !"false".equals(System.getProperty("fabric.client.gametest.disableNetworkSynchronizer", "true"));
-
 	// Disable the joining of async stack traces in ThreadingImpl.
 	public static final boolean DISABLE_JOIN_ASYNC_STACK_TRACES = System.getProperty("fabric.client.gametest.disableJoinAsyncStackTraces") != null;
 

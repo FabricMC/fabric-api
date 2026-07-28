@@ -18,6 +18,7 @@
       "net.fabricmc.fabric.test.item.ComponentTooltipProviderTest",
       "net.fabricmc.fabric.test.item.CreatorNamespaceTest",
       "net.fabricmc.fabric.test.item.UseOnItemFirstTest"
+      "net.fabricmc.fabric.test.item.ModifyComponentsInPropertiesTestSetup"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"

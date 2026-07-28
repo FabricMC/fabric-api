@@ -24,9 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ImposterProtoChunk;
@@ -55,10 +53,6 @@ public class PersistenceGametest implements FabricClientGameTest {
 		}
 	}
 
-	private static ServerPlayer getSinglePlayer(MinecraftServer server) {
-		return server.getPlayerList().getPlayers().getFirst();
-	}
-
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		TestWorldSave save;
@@ -69,11 +63,11 @@ public class PersistenceGametest implements FabricClientGameTest {
 				.adjustSettings(worldCreator -> worldCreator.setGameMode(WorldCreationUiState.SelectedGameMode.CREATIVE))
 				.create()) {
 			save = spContext.getWorldSave();
-			spContext.getClientLevel().waitForChunksDownload();
+			spContext.getConnection().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
-				ServerLevel overworld = server.overworld();
-				LevelChunk originChunk = overworld.getChunk(0, 0);
+				ServerLevel level = spContext.getConnection().getServerLevel();
+				LevelChunk originChunk = level.getChunk(0, 0);
 
 				assertAttached(
 						originChunk,
@@ -84,11 +78,11 @@ public class PersistenceGametest implements FabricClientGameTest {
 
 				// setting up persistent attachments for second run
 				server.globalAttachments().setAttached(PERSISTENT, "global_data");
-				getSinglePlayer(server).setAttached(PERSISTENT, "player_data");
-				overworld.setAttached(PERSISTENT, "level_data");
+				spContext.getConnection().getServerPlayer().setAttached(PERSISTENT, "player_data");
+				level.setAttached(PERSISTENT, "level_data");
 				originChunk.setAttached(PERSISTENT, "chunk_data");
 
-				ProtoChunk farChunk = (ProtoChunk) overworld.getChunkSource()
+				ProtoChunk farChunk = (ProtoChunk) level.getChunkSource()
 						.getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z(), ChunkStatus.STRUCTURE_STARTS, true);
 				farChunk.setAttached(PERSISTENT, "protochunk_data");
 				LOGGER.info("Set persistent attachments");
@@ -99,26 +93,26 @@ public class PersistenceGametest implements FabricClientGameTest {
 
 		// second launch
 		try (TestSingleplayerContext spContext = save.open()) {
-			spContext.getClientLevel().waitForChunksDownload();
+			spContext.getConnection().waitForChunksDownload();
 
 			LOGGER.info("Testing persistent attachments");
 			spContext.getServer().runOnServer(server -> {
-				ServerLevel overworld = server.overworld();
-				LevelChunk originChunk = overworld.getChunk(0, 0);
+				ServerLevel level = spContext.getConnection().getServerLevel();
+				LevelChunk originChunk = level.getChunk(0, 0);
 
 				assertAttached(server.globalAttachments(), PERSISTENT, "global_data", "Global attachment did not persist");
-				assertAttached(getSinglePlayer(server), PERSISTENT, "player_data", "Player attachment did not persist");
-				assertAttached(overworld, PERSISTENT, "level_data", "Level attachment did not persist");
+				assertAttached(spContext.getConnection().getServerPlayer(), PERSISTENT, "player_data", "Player attachment did not persist");
+				assertAttached(level, PERSISTENT, "level_data", "Level attachment did not persist");
 				assertAttached(originChunk, PERSISTENT, "chunk_data", "LevelChunk attachment did not persist");
 
-				ImposterProtoChunk imposterProtoChunk = (ImposterProtoChunk) overworld.getChunkSource()
+				ImposterProtoChunk imposterProtoChunk = (ImposterProtoChunk) level.getChunkSource()
 						.getChunk(0, 0, ChunkStatus.EMPTY, true);
 				assertAttached(
 						imposterProtoChunk, PERSISTENT, "chunk_data",
 						"Attachment is not accessible through ImposterProtoChunk"
 				);
 
-				ChunkAccess farChunk = overworld.getChunkSource()
+				ChunkAccess farChunk = level.getChunkSource()
 						.getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z(), ChunkStatus.EMPTY, true);
 
 				if (farChunk instanceof ImposterProtoChunk) {
@@ -131,7 +125,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 			LOGGER.info("Testing ProtoChunk transfer");
 			// load far chunk
 			spContext.getServer().runCommand("tp @p 4800 ~ 0");
-			spContext.getClientLevel().waitForChunksDownload();
+			spContext.getConnection().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
 				LevelChunk farChunk = server.overworld().getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z());
