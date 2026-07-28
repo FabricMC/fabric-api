@@ -78,8 +78,8 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	}
 
 	@Override
-	public Optional<AdvancementRequirements> getRequirements() {
-		return this.requirements;
+	public AdvancementRequirements getRequirements() {
+		return this.requirements.orElse(AdvancementRequirements.EMPTY);
 	}
 
 	@Override

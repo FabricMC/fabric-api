@@ -36,7 +36,7 @@ public interface FabricAdvancementBuilder {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Optional<AdvancementRequirements> getRequirements() {
+	default AdvancementRequirements getRequirements() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
