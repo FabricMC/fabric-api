@@ -42,9 +42,6 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	private Optional<AdvancementRequirements> requirements;
 
 	@Shadow
-	private AdvancementRequirements.Strategy requirementsStrategy;
-
-	@Shadow
 	private boolean sendsTelemetryEvent;
 
 	@Unique
@@ -82,11 +79,6 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	@Override
 	public AdvancementRequirements getRequirements() {
 		return this.requirements.orElse(AdvancementRequirements.EMPTY);
-	}
-
-	@Override
-	public AdvancementRequirements.Strategy getRequirementsStrategy() {
-		return this.requirementsStrategy;
 	}
 
 	@Override
