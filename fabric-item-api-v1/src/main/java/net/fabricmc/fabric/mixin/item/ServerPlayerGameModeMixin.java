@@ -48,7 +48,7 @@ public abstract class ServerPlayerGameModeMixin {
 			CallbackInfoReturnable<InteractionResult> cir
 	) {
 		UseOnContext context = new UseOnContext(player, hand, hitResult);
-		InteractionResult ret = itemStack.getItem().useOnBeforeBlock(context);
+		InteractionResult ret = itemStack.useOnBeforeBlock(context);
 
 		if (ret != InteractionResult.PASS) {
 			cir.setReturnValue(ret);
