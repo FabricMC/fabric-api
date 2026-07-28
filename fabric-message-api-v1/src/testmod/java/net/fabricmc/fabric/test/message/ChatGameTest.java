@@ -50,6 +50,7 @@ public class ChatGameTest {
 	 */
 	@GameTest
 	public void playerCommandMessageTriggersChatEvents(GameTestHelper helper) {
+		FIRED_EVENTS.clear();
 		ServerPlayer player = FakePlayer.get(helper.getLevel());
 		helper.getLevel().getServer().getCommands().performPrefixedCommand(player.createCommandSourceStack(), "/me " + MARKER);
 
