@@ -44,7 +44,7 @@ public interface FabricAdvancementBuilder {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default boolean sendsTelemetryEvent() {
+	default boolean isSendsTelemetryEvent() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -52,6 +52,7 @@ public interface FabricAdvancementBuilder {
 		Advancement.Builder advancementBuilder = new Advancement.Builder();
 		advancement.parent().ifPresent(advancementBuilder::parent);
 		advancement.criteria().forEach(advancementBuilder::addCriterion);
+		advancementBuilder.requirements(advancement.requirements());
 		advancementBuilder.rewards(advancement.rewards());
 		advancement.display().ifPresent(advancementBuilder::display);
 		if (advancement.sendsTelemetryEvent()) {
