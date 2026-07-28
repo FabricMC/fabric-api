@@ -52,8 +52,9 @@ public final class AdvancementEvents {
 	 *         // Add your criterion
 	 *         builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
 	 *
-	 *         // Set the requirement (OR = any of the criteria can complete the advancement, AND = all criteria must complete)
-	 *         builder.requirements(AdvancementRequirements.Strategy.OR);
+	 *         // Require the new criterion in addition to whatever was already required,
+	 *         // without loosening the existing requirements
+	 *         builder.requireCriterion("stone_pickaxe");
 	 *     }
 	 * });
 	 * }
