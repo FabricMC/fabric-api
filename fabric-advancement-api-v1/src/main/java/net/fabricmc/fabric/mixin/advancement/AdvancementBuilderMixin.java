@@ -9,6 +9,7 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,10 +46,15 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	private boolean sendsTelemetryEvent;
 
 	@Unique
-	private final Set<String> removedCriteria = new HashSet<>();
+	@Nullable
+	private Set<String> removedCriteria;
 
 	@Override
 	public void removeCriterion(String name) {
+		if (this.removedCriteria == null) {
+			this.removedCriteria = new HashSet<>();
+		}
+
 		this.removedCriteria.add(name);
 	}
 
@@ -56,8 +62,12 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	public Map<String, Criterion<?>> getCriteria() {
 		// Create a snapshot of the current criteria
 		Map<String, Criterion<?>> map = new HashMap<>(this.criteria.build());
+
 		// Remove from the map the criteria that were removed
-		this.removedCriteria.forEach(map::remove);
+		if (this.removedCriteria != null) {
+			this.removedCriteria.forEach(map::remove);
+		}
+
 		return map;
 	}
 
@@ -116,7 +126,7 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 			at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;buildOrThrow()Lcom/google/common/collect/ImmutableMap;")
 	)
 	private ImmutableMap.Builder<String, Criterion<?>> applyFabricRemovals(ImmutableMap.Builder<String, Criterion<?>> original) {
-		if (this.removedCriteria.isEmpty()) {
+		if (this.removedCriteria == null || this.removedCriteria.isEmpty()) {
 			return original;
 		}
 
