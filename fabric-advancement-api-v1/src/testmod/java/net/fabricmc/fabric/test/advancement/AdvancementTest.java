@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
 import net.fabricmc.fabric.api.advancement.event.v1.AdvancementSource;
 import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
 
-import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.DisplayInfo;
@@ -82,8 +81,8 @@ public class AdvancementTest implements ModInitializer {
 					throw new AssertionError("stone_pickaxe criterion should have been added");
 				}
 
-				// Recompute requirements now that the criteria changed
-				builder.requirements(AdvancementRequirements.anyOf(builder.getCriteria().keySet()));
+				// Require the new criterion without touching other configured requirements
+				builder.requireCriterion("stone_pickaxe");
 
 				// Swap the display but keep the rest of the original display's properties
 				DisplayInfo originalDisplay = display.get();
