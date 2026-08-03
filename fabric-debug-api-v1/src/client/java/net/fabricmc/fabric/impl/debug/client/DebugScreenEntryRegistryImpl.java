@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.debug.client.debugScreen;
-
-import net.minecraft.client.gui.components.debug.DebugScreenEntry;
-import net.minecraft.resources.Identifier;
+package net.fabricmc.fabric.impl.debug.client;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.minecraft.client.gui.components.debug.DebugScreenEntry;
+import net.minecraft.resources.Identifier;
 
 public class DebugScreenEntryRegistryImpl {
 	private static final Map<Identifier, DebugScreenEntry> ADDITIONAL_DEBUG_SCREEN_ENTRIES = new ConcurrentHashMap<>();
@@ -31,6 +31,7 @@ public class DebugScreenEntryRegistryImpl {
 					"Identifier `" + identifier.toString() + "` is already registered"
 			);
 		}
+
 		ADDITIONAL_DEBUG_SCREEN_ENTRIES.put(identifier, debugScreenEntry);
 	}
 

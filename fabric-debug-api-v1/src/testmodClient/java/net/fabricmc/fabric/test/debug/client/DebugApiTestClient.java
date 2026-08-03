@@ -17,12 +17,7 @@
 package net.fabricmc.fabric.test.debug.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-
-import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
-
-import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenEntryRegistry;
-import net.fabricmc.fabric.api.client.debug.v1.debugScreen.DebugScreenProfiles;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -41,11 +36,13 @@ import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.debug.v1.ClientDebugSubscriptionRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.DebugScreenEntryRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.DebugScreenProfiles;
 import net.fabricmc.fabric.api.client.debug.v1.renderer.DebugRendererRegistry;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.test.debug.DebugApiTest;
 import net.fabricmc.loader.api.FabricLoader;
-
-import org.lwjgl.glfw.GLFW;
 
 public class DebugApiTestClient implements ClientModInitializer {
 	KeyMapping susKeyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-debug-api-v1-testmod.sus_overlay", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, KeyMapping.Category.DEBUG));
@@ -69,6 +66,7 @@ public class DebugApiTestClient implements ClientModInitializer {
 					DebugApiTest.DEBUG_SUS_AVATAR
 			);
 		}
+
 		// Create an entry for setting the visibility of the text in the debug menu AKA the f3 overlay
 		DebugScreenEntryRegistry.register(susTextIdentifier, new SussyTextEntry());
 		DebugScreenProfiles.set(susTextIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);

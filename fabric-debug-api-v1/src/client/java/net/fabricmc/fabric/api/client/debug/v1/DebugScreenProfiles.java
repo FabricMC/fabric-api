@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.debug.v1.debugScreen;
+package net.fabricmc.fabric.api.client.debug.v1;
 
-import net.fabricmc.fabric.impl.debug.client.debugScreen.DebugScreenProfilesImpl;
-
-import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
 import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.impl.debug.client.DebugScreenProfilesImpl;
+
 /// Allows mods to edit the default profiles inside the Debug Screen.
-/// This would allow mods to add a [DebugScreenEntry] to the f3 menu.
+/// This would allow mods to add a [net.minecraft.client.gui.components.debug.DebugScreenEntry] to the f3 menu.
 public class DebugScreenProfiles {
 	/// @apiNote Must be called during mod initialization, before debug screen entries are finalized.
-	/// @param identifier the [Identifier] of the [DebugScreenEntry] to set.
-	/// @param profile the profile to set the [DebugScreenEntry] under.
-	/// @param status the default status, or setting, of the [DebugScreenEntry].
+	/// @param identifier the [Identifier] of the [net.minecraft.client.gui.components.debug.DebugScreenEntry] to set.
+	/// @param profile the profile to set the [net.minecraft.client.gui.components.debug.DebugScreenEntry] under.
+	/// @param status the default status, or setting, of the [net.minecraft.client.gui.components.debug.DebugScreenEntry].
 	public static void set(Identifier identifier, DebugScreenProfile profile, DebugScreenEntryStatus status) {
 		DebugScreenProfilesImpl.register(profile, identifier, status);
 	}

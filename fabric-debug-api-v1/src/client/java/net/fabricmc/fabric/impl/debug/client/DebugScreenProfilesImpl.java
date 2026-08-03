@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.debug.client.debugScreen;
+package net.fabricmc.fabric.impl.debug.client;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
 import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import net.minecraft.resources.Identifier;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DebugScreenProfilesImpl {
 	private static final Map<DebugScreenProfile, Map<Identifier, DebugScreenEntryStatus>> pending = new HashMap<>();

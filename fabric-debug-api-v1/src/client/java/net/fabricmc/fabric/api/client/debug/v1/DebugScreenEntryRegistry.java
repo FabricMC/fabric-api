@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.debug.v1.debugScreen;
-
-import net.fabricmc.fabric.impl.debug.client.debugScreen.DebugScreenEntryRegistryImpl;
+package net.fabricmc.fabric.api.client.debug.v1;
 
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import net.minecraft.resources.Identifier;
+
+import net.fabricmc.fabric.impl.debug.client.DebugScreenEntryRegistryImpl;
 
 /// A registry for registering [DebugScreenEntry], allowing for additional
 /// entries to the Debug Screen Menu, which opens with f3 + f6.

@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.test.debug.client;
 
+import static net.fabricmc.fabric.test.debug.client.DebugApiTestClient.SUSSY_CATEGORY;
+import static net.fabricmc.fabric.test.debug.client.DebugApiTestClient.susGraphicsIdentifier;
+
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugEntryCategory;
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-
-import org.jspecify.annotations.Nullable;
-
-import static net.fabricmc.fabric.test.debug.client.DebugApiTestClient.SUSSY_CATEGORY;
-import static net.fabricmc.fabric.test.debug.client.DebugApiTestClient.susGraphicsIdentifier;
 
 public class SussyTextEntry implements DebugScreenEntry {
 	@Override

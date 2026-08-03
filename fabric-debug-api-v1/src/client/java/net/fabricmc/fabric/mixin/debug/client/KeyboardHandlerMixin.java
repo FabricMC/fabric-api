@@ -16,20 +16,18 @@
 
 package net.fabricmc.fabric.mixin.debug.client;
 
-import net.fabricmc.fabric.impl.debug.client.DebugKeyBindingRegistryImpl;
-
-import net.minecraft.client.KeyboardHandler;
-import net.minecraft.client.input.KeyEvent;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.input.KeyEvent;
+
+import net.fabricmc.fabric.impl.debug.client.DebugKeyBindingRegistryImpl;
 
 @Mixin(KeyboardHandler.class)
 abstract class KeyboardHandlerMixin {
-
 	@Inject(
 			method = "handleDebugKeys",
 			at = @At("RETURN"),

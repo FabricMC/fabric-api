@@ -16,15 +16,14 @@
 
 package net.fabricmc.fabric.api.client.debug.v1;
 
-import net.fabricmc.fabric.impl.debug.client.DebugKeyBindingRegistryImpl;
-
 import net.minecraft.client.KeyMapping;
+
+import net.fabricmc.fabric.impl.debug.client.DebugKeyBindingRegistryImpl;
 
 /// A registry for debug keybindings on the client, allowing the
 /// creation keybindings only accessed when the debug modifier key is
 /// pressed (f3 is the default debug modifier key).
 public final class DebugKeyBindingRegistry {
-
 	/// @param keyMapping the [KeyMapping] that when pressed along with the debug modifier key runs the handler's function.
 	/// @param handler the logic to run when the [KeyMapping] is pressed along with the debug modifier key.
 	public static void register(KeyMapping keyMapping, DebugKeyHandler handler) {
