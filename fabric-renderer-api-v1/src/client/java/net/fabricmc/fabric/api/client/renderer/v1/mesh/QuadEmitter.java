@@ -155,6 +155,12 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter itemRenderType(RenderType renderType);
 
 	@Override
+	QuadEmitter itemGlintRenderType(RenderType renderType);
+
+	@Override
+	QuadEmitter itemGlintSpecialRenderType(RenderType renderType);
+
+	@Override
 	QuadEmitter emissive(boolean emissive);
 
 	@Override

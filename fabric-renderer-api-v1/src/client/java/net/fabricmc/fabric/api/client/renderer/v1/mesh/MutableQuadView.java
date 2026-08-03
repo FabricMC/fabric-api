@@ -394,8 +394,9 @@ public interface MutableQuadView extends QuadView {
 	// TODO: allow using any RenderType
 
 	/**
-	 * Controls how this quad should be rendered after buffering in item contexts. The atlas texture used by the set
-	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
+	 * Controls how this quad should be rendered after buffering in item contexts, when the chosen foil type is
+	 * {@link ItemStackRenderState.FoilType#NONE}. The atlas texture used by the set render type must match this quad's
+	 * {@linkplain #atlas(QuadAtlas) atlas}.
 	 *
 	 * <p>Only the following values are allowed:
 	 * <ul>
@@ -414,8 +415,9 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView itemRenderType(RenderType renderType);
 
 	/**
-	 * Controls how this quad should be rendered after buffering in item glint contexts. The atlas texture used by the set
-	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
+	 * Controls how this quad should be rendered after buffering in item contexts, when the chosen foil type is
+	 * {@link ItemStackRenderState.FoilType#STANDARD}. The atlas texture used by the set render type must match this
+	 * quad's {@linkplain #atlas(QuadAtlas) atlas}.
 	 *
 	 * <p>Only the following values are allowed:
 	 * <ul>
@@ -429,13 +431,14 @@ public interface MutableQuadView extends QuadView {
 	 *
 	 * <p>The default value is {@link Sheets#cutoutBlockItemGlintSheet()}.
 	 *
-	 * <p>This property is respected only in item glint contexts. It will not have an effect in other contexts.
+	 * <p>This property is respected only in item contexts. It will not have an effect in other contexts.
 	 */
 	MutableQuadView itemGlintRenderType(RenderType renderType);
 
 	/**
-	 * Controls how this quad should be rendered after buffering in item glint special contexts. The atlas texture used by the set
-	 * render type must match this quad's {@linkplain #atlas(QuadAtlas) atlas}.
+	 * Controls how this quad should be rendered after buffering in item contexts, when the chosen foil type is
+	 * {@link ItemStackRenderState.FoilType#SPECIAL}. The atlas texture used by the set render type must match this
+	 * quad's {@linkplain #atlas(QuadAtlas) atlas}.
 	 *
 	 * <p>Only the following values are allowed:
 	 * <ul>
@@ -449,7 +452,7 @@ public interface MutableQuadView extends QuadView {
 	 *
 	 * <p>The default value is {@link Sheets#cutoutBlockItemGlintSpecialSheet()}.
 	 *
-	 * <p>This property is respected only in item glint special contexts. It will not have an effect in other contexts.
+	 * <p>This property is respected only in item contexts. It will not have an effect in other contexts.
 	 */
 	MutableQuadView itemGlintSpecialRenderType(RenderType renderType);
 

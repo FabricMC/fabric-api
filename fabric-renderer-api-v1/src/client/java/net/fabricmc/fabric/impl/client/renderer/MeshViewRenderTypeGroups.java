@@ -34,6 +34,7 @@ public record MeshViewRenderTypeGroups(MeshView solid, MeshView translucent) {
 		);
 	}
 
+	// FIXME: This class violates the contract of MeshView. It should not exist.
 	private record FilteredMeshView(MeshView mesh, boolean translucent, int size) implements MeshView {
 		@Override
 		@Range(from = 0, to = Integer.MAX_VALUE)

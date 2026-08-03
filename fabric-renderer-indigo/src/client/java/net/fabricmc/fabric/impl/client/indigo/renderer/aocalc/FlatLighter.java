@@ -48,8 +48,8 @@ public class FlatLighter {
 	public void applyDirectionalBrightness(CardinalLighting cardinalLighting, MutableQuadViewImpl quad, boolean vanillaShade) {
 		final Direction shadeDirectionOverride = quad.shadeDirectionOverride();
 
-		if (shadeDirectionOverride == null) {
-			final float directionalBrightness = cardinalLighting.byFace(quad.lightFace());
+		if (shadeDirectionOverride != null) {
+			final float directionalBrightness = cardinalLighting.byFace(shadeDirectionOverride);
 
 			if (directionalBrightness != 1.0f) {
 				for (int i = 0; i < 4; i++) {
@@ -67,7 +67,7 @@ public class FlatLighter {
 				final float directionalBrightness;
 
 				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
-					directionalBrightness = cardinalLighting.byFace(shadeDirectionOverride);
+					directionalBrightness = cardinalLighting.byFace(quad.lightFace());
 				} else {
 					Vector3fc faceNormal = quad.faceNormal();
 					directionalBrightness = normalShade(cardinalLighting, faceNormal.x(), faceNormal.y(), faceNormal.z());
@@ -94,7 +94,7 @@ public class FlatLighter {
 				}
 			}
 		} else {
-			final float directionalBrightness = cardinalLighting.byFace(shadeDirectionOverride);
+			final float directionalBrightness = cardinalLighting.byFace(quad.lightFace());
 
 			if (directionalBrightness != 1.0f) {
 				for (int i = 0; i < 4; i++) {

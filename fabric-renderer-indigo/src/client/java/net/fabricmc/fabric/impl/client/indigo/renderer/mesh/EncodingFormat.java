@@ -97,9 +97,9 @@ public final class EncodingFormat {
 	private static final RenderType[] ITEM_RENDER_TYPES = ItemRenderType.RENDER_TYPES;
 	private static final int ITEM_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
 	private static final RenderType[] ITEM_GLINT_RENDER_TYPES = ItemGlintRenderType.RENDER_TYPES;
-	private static final int ITEM_GLINT_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
+	private static final int ITEM_GLINT_RENDER_TYPE_COUNT = ITEM_GLINT_RENDER_TYPES.length;
 	private static final RenderType[] ITEM_GLINT_SPECIAL_RENDER_TYPES = ItemGlintSpecialRenderType.RENDER_TYPES;
-	private static final int ITEM_GLINT_SPECIAL_RENDER_TYPE_COUNT = ITEM_RENDER_TYPES.length;
+	private static final int ITEM_GLINT_SPECIAL_RENDER_TYPE_COUNT = ITEM_GLINT_SPECIAL_RENDER_TYPES.length;
 	private static final TriState[] TRI_STATES = TriState.values();
 	private static final int TRI_STATE_COUNT = TRI_STATES.length;
 	private static final ItemStackRenderState.@Nullable FoilType[] NULLABLE_FOIL_TYPES = ArrayUtils.add(ItemStackRenderState.FoilType.values(), null);
