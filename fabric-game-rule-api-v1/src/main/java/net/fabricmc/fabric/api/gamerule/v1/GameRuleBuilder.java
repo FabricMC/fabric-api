@@ -27,8 +27,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JavaOps;
 
-import net.minecraft.world.item.context.BlockPlaceContext;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -112,7 +110,7 @@ public class GameRuleBuilder<T> {
 	/**
 	 * Specifies that the game rule should be synced to the client when it joins a {@link net.minecraft.server.level.ServerLevel} or when the value of the game rule is changed.
 	 *
-	 * <p>Use this for behavior that should be configurable on both sides, e.g. {@link net.minecraft.world.level.block.Block#getStateForPlacement(BlockPlaceContext)}. One can query the value of a synced game rule using the following code:</p>
+	 * <p>Use this for behavior that should be configurable on both sides, e.g. {@link net.minecraft.world.level.block.Block#getStateForPlacement(net.minecraft.world.item.context.BlockPlaceContext)}. One can query the value of a synced game rule using the following code:</p>
 	 * <blockquote><pre>
 	 * boolean value = level.getSyncedValue(ExampleMod.SYNCED_BOOL_RULE);
 	 * </pre></blockquote>

@@ -17,5 +17,7 @@
 package net.fabricmc.fabric.impl.gamerule.sync;
 
 public interface SyncedGameRuleSetter {
-	void fabric_setSynced();
+	default void fabric_setSynced() {
+		throw new AssertionError("Implemented via Mixin");
+	}
 }
