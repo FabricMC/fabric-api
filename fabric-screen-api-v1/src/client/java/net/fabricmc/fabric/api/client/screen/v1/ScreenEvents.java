@@ -123,7 +123,7 @@ public final class ScreenEvents {
 	public static Event<BeforeExtract> beforeExtract(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
-		return ScreenExtensions.getExtensions(screen).fabric_getBeforeRenderEvent();
+		return ScreenExtensions.getExtensions(screen).fabric_getBeforeExtractEvent();
 	}
 
 	/**
@@ -156,7 +156,7 @@ public final class ScreenEvents {
 	public static Event<AfterExtract> afterExtract(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
-		return ScreenExtensions.getExtensions(screen).fabric_getAfterRenderEvent();
+		return ScreenExtensions.getExtensions(screen).fabric_getAfterExtractEvent();
 	}
 
 	/**
