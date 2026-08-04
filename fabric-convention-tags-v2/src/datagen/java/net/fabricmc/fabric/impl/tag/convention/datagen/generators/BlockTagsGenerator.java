@@ -417,7 +417,7 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 
 		for (ColorCollection<BlockItemId> colorCollection : List.of(
 				BlockItemIds.BANNER, BlockItemIds.BED, BlockItemIds.DYED_CANDLE, BlockItemIds.CARPET,
-				BlockItemIds.CONCRETE, BlockItemIds.CONCRETE_POWDER, BlockItemIds.GLAZED_TERRACOTTA,
+				BlockItemIds.CONCRETE, BlockItemIds.CONCRETE_SLAB, BlockItemIds.CONCRETE_STAIRS, BlockItemIds.CONCRETE_POWDER, BlockItemIds.GLAZED_TERRACOTTA,
 				BlockItemIds.DYED_SHULKER_BOX, BlockItemIds.STAINED_GLASS, BlockItemIds.STAINED_GLASS_PANE,
 				BlockItemIds.DYED_TERRACOTTA, BlockItemIds.WOOL, BlockItemIds.WOOL_SLAB, BlockItemIds.WOOL_STAIRS)) {
 			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);
