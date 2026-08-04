@@ -138,6 +138,17 @@ public final class ScreenEvents {
 	}
 
 	/**
+	 * An event that is called after a screen's foreground is extracted.
+	 *
+	 * @return the event
+	 */
+	public static Event<AfterForeground> afterForeground(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAfterForegroundEvent();
+	}
+
+	/**
 	 * An event that is called after a screen is extracted.
 	 *
 	 * @return the event
@@ -193,6 +204,11 @@ public final class ScreenEvents {
 	@FunctionalInterface
 	public interface AfterBackground {
 		void afterBackground(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
+	}
+
+	@FunctionalInterface
+	public interface AfterForeground {
+		void afterForeground(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
 	}
 
 	@FunctionalInterface

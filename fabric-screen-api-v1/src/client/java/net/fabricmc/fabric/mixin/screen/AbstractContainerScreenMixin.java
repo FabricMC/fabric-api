@@ -19,17 +19,27 @@ package net.fabricmc.fabric.mixin.screen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin extends Screen {
 	private AbstractContainerScreenMixin(Component title) {
 		super(title);
+	}
+
+	@Inject(method = "extractRenderState", at = @At(value = "INVOKE",
+													target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractContents(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+		ScreenEvents.afterForeground(this).invoker().afterForeground(this, graphics, mouseX, mouseY, a);
 	}
 
 	@Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)

@@ -50,6 +50,14 @@ public final class ScreenEventFactory {
 		});
 	}
 
+	public static Event<ScreenEvents.AfterForeground> createAfterForegroundEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterForeground.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
+			for (ScreenEvents.AfterForeground callback : callbacks) {
+				callback.afterForeground(screen, matrices, mouseX, mouseY, tickDelta);
+			}
+		});
+	}
+
 	public static Event<ScreenEvents.AfterExtract> createAfterRenderEvent() {
 		return EventFactory.createArrayBacked(ScreenEvents.AfterExtract.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
 			for (ScreenEvents.AfterExtract callback : callbacks) {

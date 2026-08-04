@@ -33,6 +33,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -66,6 +67,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenEvents.BeforeExtract> beforeRenderEvent;
 	@Unique
 	private Event<ScreenEvents.AfterBackground> afterBackgroundEvent;
+	@Unique
+	private Event<ScreenEvents.AfterForeground> afterForegroundEvent;
 	@Unique
 	private Event<ScreenEvents.AfterExtract> afterRenderEvent;
 
@@ -116,8 +119,15 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
 	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
-	public final void extractWithTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+	public final void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
 		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
+	}
+
+	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
+	public final void extractForeground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+		if (!(((Object) this) instanceof AbstractContainerScreen<?>)) {
+			ScreenEvents.afterForeground(((Screen) (Object) this)).invoker().afterForeground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
+		}
 	}
 
 	@Inject(method = "init(II)V", at = @At("HEAD"))
@@ -147,6 +157,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.removeEvent = ScreenEventFactory.createRemoveEvent();
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
 		this.afterBackgroundEvent = ScreenEventFactory.createAfterBackgroundEvent();
+		this.afterForegroundEvent = ScreenEventFactory.createAfterForegroundEvent();
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
@@ -226,6 +237,11 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Override
 	public Event<ScreenEvents.AfterBackground> fabric_getAfterBackgroundEvent() {
 		return ensureEventsAreInitialized(this.afterBackgroundEvent);
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterForeground> fabric_getAfterForegroundEvent() {
+		return ensureEventsAreInitialized(this.afterForegroundEvent);
 	}
 
 	@Override
