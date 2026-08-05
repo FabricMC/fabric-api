@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @ApiStatus.NonExtendable
 public interface FabricAdvancementBuilder {
-	default void removeCriterion(String name) {
+	default Advancement.Builder removeCriterion(String name) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -51,7 +51,7 @@ public interface FabricAdvancementBuilder {
 	 *
 	 * @param name the name of the criterion to require
 	 */
-	default void requireCriterion(String name) {
+	default Advancement.Builder requireCriterion(String name) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -62,7 +62,7 @@ public interface FabricAdvancementBuilder {
 	 *
 	 * @param names the names of the criteria, any one of which fulfills this requirement group
 	 */
-	default void requireCriteria(List<String> names) {
+	default Advancement.Builder requireCriteria(List<String> names) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
