@@ -123,10 +123,6 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 
 	@Override
 	public Advancement.Builder requireCriteria(List<String> names) {
-		if (names.isEmpty()) {
-			throw new IllegalArgumentException("Cannot require an empty list of criteria");
-		}
-
 		List<List<String>> newRequirements = new ArrayList<>();
 
 		// Keep whatever requirement groups were already configured (e.g. via a Strategy
