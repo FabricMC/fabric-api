@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.advancement.event.v1;
+package net.fabricmc.fabric.api.advancement.v1;
 
 import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
