@@ -2,9 +2,9 @@ package net.fabricmc.fabric.test.advancement;
 
 import java.util.Optional;
 
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementSource;
-import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementEvents;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementSource;
+import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
 
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
