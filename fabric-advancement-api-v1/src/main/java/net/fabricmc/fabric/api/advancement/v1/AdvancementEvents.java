@@ -1,15 +1,16 @@
 package net.fabricmc.fabric.api.advancement.v1;
 
+import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
-
-import org.jspecify.annotations.Nullable;
-
-import java.util.Map;
 
 /**
  * Events for manipulating advancements.
@@ -30,6 +31,7 @@ public final class AdvancementEvents {
 				return replaced;
 			}
 		}
+
 		return null;
 	});
 

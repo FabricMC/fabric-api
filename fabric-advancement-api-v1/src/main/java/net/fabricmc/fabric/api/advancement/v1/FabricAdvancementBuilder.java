@@ -1,19 +1,17 @@
 package net.fabricmc.fabric.api.advancement.v1;
 
-import net.minecraft.advancements.Advancement;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.triggers.Criterion;
-
 import net.minecraft.resources.Identifier;
-
-import org.jetbrains.annotations.ApiStatus;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @ApiStatus.NonExtendable
 public interface FabricAdvancementBuilder {
@@ -73,9 +71,11 @@ public interface FabricAdvancementBuilder {
 		advancementBuilder.requirements(advancement.requirements());
 		advancementBuilder.rewards(advancement.rewards());
 		advancement.display().ifPresent(advancementBuilder::display);
+
 		if (advancement.sendsTelemetryEvent()) {
 			advancementBuilder.sendsTelemetryEvent();
 		}
+
 		return advancementBuilder;
 	}
 }

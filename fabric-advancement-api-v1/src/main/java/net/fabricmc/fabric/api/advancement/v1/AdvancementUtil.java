@@ -1,14 +1,14 @@
 package net.fabricmc.fabric.api.advancement.v1;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.Resource;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class AdvancementUtil {
 	public static final Map<Identifier, AdvancementSource> SOURCES = new ConcurrentHashMap<>();
