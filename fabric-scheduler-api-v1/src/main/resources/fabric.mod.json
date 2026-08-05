@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-scheduler-api-v1",
+  "name": "Fabric Scheduler API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-scheduler-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.scheduler.SchedulerInit"
+    ]
+  },
+  "description": "Runs tasks on the server thread after a delay measured in ticks.",
+  "mixins": [
+    "fabric-scheduler-api-v1.mixins.json"
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "experimental"
+  }
+}
