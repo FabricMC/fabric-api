@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.advancement.event.v1;
+package net.fabricmc.fabric.api.advancement.v1;
 
 import net.minecraft.advancements.Advancement;
 
