@@ -1,9 +1,9 @@
 package net.fabricmc.fabric.mixin.advancement;
 
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementEvents;
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementSource;
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementUtil;
-import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementEvents;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementSource;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementUtil;
+import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;

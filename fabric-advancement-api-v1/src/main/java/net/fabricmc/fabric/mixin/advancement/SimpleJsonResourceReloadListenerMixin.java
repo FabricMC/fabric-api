@@ -24,7 +24,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 
-import net.fabricmc.fabric.api.advancement.event.v1.AdvancementUtil;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementUtil;
 
 import net.minecraft.core.registries.Registries;
 
