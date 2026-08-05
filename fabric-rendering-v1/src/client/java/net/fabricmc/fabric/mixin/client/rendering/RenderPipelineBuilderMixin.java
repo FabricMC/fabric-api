@@ -29,6 +29,7 @@ import com.mojang.blaze3d.platform.LogicOp;
 import com.mojang.blaze3d.platform.PolygonMode;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,12 +38,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.renderer.ShaderDefines;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineImpl;
 import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
 
 @Mixin(RenderPipeline.Builder.class)
-class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
+class RenderPipelineBuilderMixin implements FabricRenderPipelineImpl.BuilderImpl {
+	@Shadow
+	private Optional<ShaderDefines.Builder> definesBuilder;
 	@Unique
 	private Optional<Boolean> usePipelineDrawModeForGui = Optional.empty();
 
@@ -101,5 +103,14 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 	private RenderPipeline copyUsePipelineDrawModeForGuiToPipeline(RenderPipeline original) {
 		((FabricRenderPipelineImpl) original).fabric$setUsePipelineDrawModeForGuiSetter(this.usePipelineDrawModeForGui.orElse(false));
 		return original;
+	}
+
+	@Override
+	public ShaderDefines.Builder fabric$getShaderDefines() {
+		if (this.definesBuilder.isEmpty()) {
+			this.definesBuilder = Optional.of(ShaderDefines.builder());
+		}
+
+		return definesBuilder.orElseThrow();
 	}
 }

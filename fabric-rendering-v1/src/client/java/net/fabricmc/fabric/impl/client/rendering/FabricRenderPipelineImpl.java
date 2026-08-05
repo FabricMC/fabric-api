@@ -16,8 +16,14 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
+import net.minecraft.client.renderer.ShaderDefines;
+
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 
 public interface FabricRenderPipelineImpl extends FabricRenderPipeline {
 	void fabric$setUsePipelineDrawModeForGuiSetter(boolean usePipelineDrawModeForGui);
+
+	interface BuilderImpl extends FabricRenderPipeline.Builder {
+		ShaderDefines.Builder fabric$getShaderDefines();
+	}
 }
