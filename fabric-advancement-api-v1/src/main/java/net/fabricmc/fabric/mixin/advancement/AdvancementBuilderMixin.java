@@ -51,12 +51,14 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	private Set<String> removedCriteria;
 
 	@Override
-	public void removeCriterion(String name) {
+	public Advancement.Builder removeCriterion(String name) {
 		if (this.removedCriteria == null) {
 			this.removedCriteria = new HashSet<>();
 		}
 
 		this.removedCriteria.add(name);
+
+		return (Advancement.Builder) (Object) this;
 	}
 
 	@Override
@@ -98,12 +100,12 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	}
 
 	@Override
-	public void requireCriterion(String name) {
-		requireCriteria(List.of(name));
+	public Advancement.Builder requireCriterion(String name) {
+		return requireCriteria(List.of(name));
 	}
 
 	@Override
-	public void requireCriteria(List<String> names) {
+	public Advancement.Builder requireCriteria(List<String> names) {
 		if (names.isEmpty()) {
 			throw new IllegalArgumentException("Cannot require an empty list of criteria");
 		}
@@ -119,6 +121,8 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 		newRequirements.add(List.copyOf(names));
 
 		this.requirements = Optional.of(new AdvancementRequirements(newRequirements));
+
+		return (Advancement.Builder) (Object) this;
 	}
 
 	// Intercept the build process to filter the criteria map before it becomes immutable
