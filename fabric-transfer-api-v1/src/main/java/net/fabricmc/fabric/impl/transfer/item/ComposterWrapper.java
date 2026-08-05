@@ -43,6 +43,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.providers.number.ResolvableNumber;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -130,7 +131,7 @@ public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.Pendi
 			location.level.playSound(null, location.pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 		} else if (pendingAction.compostProvider != null && location.level instanceof ServerLevel serverLevel) {
 			BlockState state = location.getBlockState();
-			int layersToAdd = getLayersToAdd(serverLevel, state, pendingAction.compostProvider);
+			int layersToAdd = getLayersToAdd(serverLevel, location.pos, state, pendingAction.compostProvider);
 			boolean increaseSuccessful = layersToAdd > 0;
 
 			if (increaseSuccessful) {
@@ -229,10 +230,11 @@ public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.Pendi
 		}
 	}
 
-	private static int getLayersToAdd(ServerLevel level, BlockState state, ResolvableNumber provider) {
+	private static int getLayersToAdd(ServerLevel level, BlockPos pos, BlockState state, ResolvableNumber provider) {
 		LootContext lootContext = new LootContext.Builder(
 				new LootParams.Builder(level)
 						.withParameter(LootContextParams.BLOCK_STATE, state)
+						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
 						.create(LootContextParamSets.BLOCK_INTERACT)
 		).create(Optional.empty());
 		return provider.getInt(lootContext, 0);
