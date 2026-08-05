@@ -2,7 +2,7 @@ package net.fabricmc.fabric.mixin.advancement;
 
 import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
-import net.fabricmc.fabric.api.advancement.event.v1.FabricAdvancementBuilder;
+import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
