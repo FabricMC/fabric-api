@@ -1,22 +1,5 @@
 package net.fabricmc.fabric.mixin.advancement;
 
-import com.google.common.collect.ImmutableMap;
-import com.llamalad7.mixinextras.injector.ModifyReceiver;
-import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRequirements;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.advancements.triggers.Criterion;
-import net.minecraft.resources.Identifier;
-
-import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +7,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import com.google.common.collect.ImmutableMap;
+import com.llamalad7.mixinextras.injector.ModifyReceiver;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
+
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.resources.Identifier;
 
 @Mixin(Advancement.Builder.class)
 public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {

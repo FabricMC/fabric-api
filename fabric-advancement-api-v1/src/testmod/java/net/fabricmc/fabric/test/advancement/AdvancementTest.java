@@ -2,10 +2,12 @@ package net.fabricmc.fabric.test.advancement;
 
 import java.util.Optional;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.advancement.v1.AdvancementEvents;
 import net.fabricmc.fabric.api.advancement.v1.AdvancementSource;
 import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.DisplayInfo;
@@ -13,8 +15,6 @@ import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
-
-import net.fabricmc.api.ModInitializer;
 
 public class AdvancementTest implements ModInitializer {
 	private static final Identifier TACTICAL_FISHING = Identifier.withDefaultNamespace("husbandry/tactical_fishing");
@@ -78,7 +78,7 @@ public class AdvancementTest implements ModInitializer {
 				}
 
 				if (!builder.getCriteria().containsKey("stone_pickaxe")) {
-					throw new AssertionError("stone_pickaxe criterion should have been added");
+					throw new AssertionError("stone_pickaxe criterion should be added");
 				}
 
 				// Require the new criterion without touching other configured requirements
@@ -115,7 +115,7 @@ public class AdvancementTest implements ModInitializer {
 				throw new AssertionError("tactical_fishing advancement should exist in the loaded map");
 			}
 
-			var tacticalFishing = advancements.get(TACTICAL_FISHING);
+			Advancement tacticalFishing = advancements.get(TACTICAL_FISHING);
 
 			if (tacticalFishing.criteria().containsKey("pufferfish_bucket")) {
 				throw new AssertionError("pufferfish_bucket criterion should not be present on the loaded advancement");

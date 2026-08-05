@@ -1,15 +1,7 @@
 package net.fabricmc.fabric.mixin.advancement;
 
-import net.fabricmc.fabric.api.advancement.v1.AdvancementEvents;
-import net.fabricmc.fabric.api.advancement.v1.AdvancementSource;
-import net.fabricmc.fabric.api.advancement.v1.AdvancementUtil;
-import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.ServerAdvancementManager;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,8 +10,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementEvents;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementSource;
+import net.fabricmc.fabric.api.advancement.v1.AdvancementUtil;
+import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
+
+import net.minecraft.advancements.Advancement;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @Mixin(ServerAdvancementManager.class)
 public class ServerAdvancementManagerMixin {
@@ -37,6 +38,7 @@ public class ServerAdvancementManagerMixin {
 
 			// replace event
 			Advancement replacement = AdvancementEvents.REPLACE.invoker().replaceAdvancement(id, advancement, source, registries);
+
 			if (replacement != null) {
 				advancement = replacement;
 				source = AdvancementSource.REPLACED;
