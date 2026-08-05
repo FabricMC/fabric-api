@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.gamerule.client.sync;
 
+import java.util.Objects;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -24,8 +26,6 @@ import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleMap;
 
 import net.fabricmc.fabric.mixin.gamerule.sync.LevelMixin;
-
-import java.util.Objects;
 
 @Mixin(ClientLevel.class)
 public class ClientLevelMixin extends LevelMixin {

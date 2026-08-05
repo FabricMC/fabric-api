@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.gamerules.v1.client;
+package net.fabricmc.fabric.api.gamerule.v1.client;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.gamerules.GameRule;
