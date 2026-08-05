@@ -27,7 +27,7 @@ import net.minecraft.core.particles.ParticleTypes;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.gamerules.v1.client.ClientGameRuleEvents;
+import net.fabricmc.fabric.api.gamerule.v1.client.ClientGameRuleEvents;
 import net.fabricmc.fabric.test.gamerule.GameRulesTestMod;
 
 public class ClientGameRulesTestMod implements ClientModInitializer {
