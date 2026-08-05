@@ -26,7 +26,7 @@ import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.gamerules.v1.client.ClientGameRuleEvents;
+import net.fabricmc.fabric.api.gamerule.v1.client.ClientGameRuleEvents;
 
 public final class ClientGameRuleEventsImpl {
 	private ClientGameRuleEventsImpl() {
@@ -38,9 +38,9 @@ public final class ClientGameRuleEventsImpl {
 		//noinspection unchecked
 		return (Event<ClientGameRuleEvents.ValueSync<T>>) (Event<?>) VALUE_SYNCS.computeIfAbsent(rule, gameRule -> {
 			//noinspection unchecked
-			return (Event<ClientGameRuleEvents.ValueSync<?>>) (Event<?>) EventFactory.createArrayBacked(ClientGameRuleEvents.ValueSync.class, (Function<ClientGameRuleEvents.ValueSync<T>[], ClientGameRuleEvents.ValueSync<T>>) callbacks -> (value, server) -> {
+			return (Event<ClientGameRuleEvents.ValueSync<?>>) (Event<?>) EventFactory.createArrayBacked(ClientGameRuleEvents.ValueSync.class, (Function<ClientGameRuleEvents.ValueSync<T>[], ClientGameRuleEvents.ValueSync<T>>) callbacks -> (value, level) -> {
 				for (ClientGameRuleEvents.ValueSync<T> changedCallback : callbacks) {
-					changedCallback.onGameRuleSynced(value, server);
+					changedCallback.onGameRuleSynced(value, level);
 				}
 			});
 		});

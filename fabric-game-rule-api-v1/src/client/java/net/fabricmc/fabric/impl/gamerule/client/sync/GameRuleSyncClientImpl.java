@@ -16,15 +16,14 @@
 
 package net.fabricmc.fabric.impl.gamerule.client.sync;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRulesList;
-import net.fabricmc.fabric.api.gamerules.v1.client.ClientGameRuleEvents;
-
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.gamerules.GameRuleMap;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.gamerule.v1.FabricSyncedGameRulesList;
+import net.fabricmc.fabric.api.gamerule.v1.client.ClientGameRuleEvents;
 import net.fabricmc.fabric.impl.gamerule.client.ClientGameRuleEventsImpl;
 import net.fabricmc.fabric.impl.gamerule.sync.ClientboundJoinSyncGameRulesPayload;
 import net.fabricmc.fabric.impl.gamerule.sync.ClientboundSyncGameRulePayload;
@@ -35,6 +34,7 @@ public class GameRuleSyncClientImpl implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncGameRulePayload.ID, (payload, context) -> {
 			ClientLevel level = context.client().level;
+
 			if (level instanceof FabricSyncedGameRulesList gameRulesList) {
 				updateClientGameRules(level, gameRulesList.getSyncedGameRules(), payload);
 			}
