@@ -69,7 +69,7 @@ public abstract class LevelRendererMixin {
 		renderContext.prepare(Minecraft.getInstance().gameRenderer, (LevelRenderer) (Object) this, levelRenderState, submitNodeStorage);
 	}
 
-	@Inject(method = "prepareChunkRenders", at = @At("RETURN"))
+	@Inject(method = {"prepareChunkRenders", "prepareChunkRendersIndirect"}, at = @At("RETURN"))
 	private void prepareChunkRenders(CallbackInfoReturnable<ChunkSectionsToRender> cir) {
 		renderContext.setSectionsToRender(cir.getReturnValue());
 	}
