@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
+import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 
 import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 
@@ -33,7 +33,7 @@ public class ClimateSamplerMixin implements MultiNoiseSamplerHooks {
 	private Long seed = null;
 
 	@Unique
-	private ImprovedNoise endBiomesSampler = null;
+	private PerlinNoise endBiomesSampler = null;
 
 	@Override
 	public void fabric_setSeed(long seed) {
@@ -46,10 +46,10 @@ public class ClimateSamplerMixin implements MultiNoiseSamplerHooks {
 	}
 
 	@Override
-	public ImprovedNoise fabric_getEndBiomesSampler() {
+	public PerlinNoise fabric_getEndBiomesSampler() {
 		if (endBiomesSampler == null) {
 			Preconditions.checkState(seed != null, "MultiNoiseSampler doesn't have a seed set, created using different method?");
-			endBiomesSampler = new ImprovedNoise(new WorldgenRandom(new LegacyRandomSource(seed)));
+			endBiomesSampler = new PerlinNoise(new WorldgenRandom(new LegacyRandomSource(seed)));
 		}
 
 		return endBiomesSampler;

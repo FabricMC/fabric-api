@@ -98,7 +98,7 @@ def generateRenderPipelinesFields(List<String> lines, FileSystem fs) {
 	}
 
 	for (def method : node.methods) {
-		if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0) {
+		if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0 && (!method.name.startsWith("lambda"))) {
 			lines.add("transitive-accessible method $node.name $method.name $method.desc")
 		}
 	}

@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.Aquifer;
-import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.Beardifier;
 import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
@@ -41,7 +41,7 @@ public class NoiseChunkMixin {
 	private long seed;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(int horizontalSize, RandomState randomState, int i, int j, NoiseSettings generationShapeConfig, DensityFunctions.BeardifierOrMarker arg, NoiseGeneratorSettings chunkGeneratorSettings, Aquifer.FluidPicker fluidLevelSampler, Blender blender, CallbackInfo ci) {
+	private void init(int horizontalSize, RandomState randomState, int i, int j, NoiseSettings generationShapeConfig, Beardifier beardifier, NoiseGeneratorSettings chunkGeneratorSettings, Aquifer.FluidPicker fluidLevelSampler, Blender blender, CallbackInfo ci) {
 		seed = ((MultiNoiseSamplerHooks) (Object) randomState.sampler()).fabric_getSeed();
 	}
 

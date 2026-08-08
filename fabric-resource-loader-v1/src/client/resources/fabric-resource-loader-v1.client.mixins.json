@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "BuiltInPackSourceMixin",
+    "ClientLanguageMixin",
     "ClientTooltipComponentMixin",
     "CreateWorldScreenMixin",
     "GameOptionsWriteVisitorMixin",

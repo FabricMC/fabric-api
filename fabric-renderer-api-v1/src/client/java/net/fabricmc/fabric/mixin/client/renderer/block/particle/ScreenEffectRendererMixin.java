@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.block.particle;
 
-import com.llamalad7.mixinextras.expression.Definition;
-import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -25,8 +23,6 @@ import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -34,7 +30,9 @@ import net.minecraft.client.renderer.block.BlockStateModelSet;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 @Mixin(ScreenEffectRenderer.class)
 abstract class ScreenEffectRendererMixin {
@@ -53,10 +51,14 @@ abstract class ScreenEffectRendererMixin {
 		return original.call(models, state);
 	}
 
-	@Definition(id = "blockState", local = @Local(type = BlockState.class, name = "blockState"))
-	@Expression("return blockState")
-	@Inject(method = "getViewBlockingState", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
-	private static void onReturnGetInWallBlockState(CallbackInfoReturnable<@Nullable BlockState> cir, @Local(name = "testPos") BlockPos.MutableBlockPos testPos) {
-		pos = testPos.immutable();
+	@WrapOperation(method = "lambda$getViewBlockingState$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isViewBlocking(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/AABB;)Z"))
+	private static boolean captureViewBlockingPosition(BlockState state, BlockGetter level, BlockPos blockPos, AABB bounds, Operation<Boolean> original) {
+		boolean viewBlocking = original.call(state, level, blockPos, bounds);
+
+		if (viewBlocking) {
+			pos = blockPos.immutable();
+		}
+
+		return viewBlocking;
 	}
 }

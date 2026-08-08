@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -116,7 +117,7 @@ public interface PlayerInventoryStorage extends ContainerStorage {
 	 * @param throwRandomly If true, the variant will be thrown in a random direction from the entity regardless of which direction the entity is facing.
 	 * @param retainOwnership If true, set the {@code Thrower} NBT data to the player's UUID.
 	 * @param transaction The transaction this operation is part of.
-	 * @see Player#drop(ItemStack, boolean, boolean)
+	 * @see LivingEntity#createItemStackToDrop(ItemStack, boolean, boolean)
 	 */
 	void drop(ItemVariant variant, long amount, boolean throwRandomly, boolean retainOwnership, TransactionContext transaction);
 
@@ -129,7 +130,7 @@ public interface PlayerInventoryStorage extends ContainerStorage {
 	 * @param amount How many of the variant to drop.
 	 * @param retainOwnership If true, set the {@code Thrower} NBT data to the player's UUID.
 	 * @param transaction The transaction this operation is part of.
-	 * @see Player#drop(ItemStack, boolean, boolean)
+	 * @see LivingEntity#createItemStackToDrop(ItemStack, boolean, boolean)
 	 */
 	default void drop(ItemVariant variant, long amount, boolean retainOwnership, TransactionContext transaction) {
 		drop(variant, amount, false, retainOwnership, transaction);
@@ -143,7 +144,7 @@ public interface PlayerInventoryStorage extends ContainerStorage {
 	 * @param variant The variant to drop.
 	 * @param amount How many of the variant to drop.
 	 * @param transaction The transaction this operation is part of.
-	 * @see Player#drop(ItemStack, boolean, boolean)
+	 * @see LivingEntity#createItemStackToDrop(ItemStack, boolean, boolean)
 	 */
 	default void drop(ItemVariant variant, long amount, TransactionContext transaction) {
 		drop(variant, amount, false, transaction);

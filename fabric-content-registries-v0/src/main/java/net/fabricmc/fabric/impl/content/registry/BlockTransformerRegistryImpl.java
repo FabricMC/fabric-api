@@ -26,6 +26,7 @@ import net.minecraft.world.item.component.BlockTransformerMappings;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.CopyPropertiesProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedStateProvider;
 
 public final class BlockTransformerRegistryImpl {
 	private BlockTransformerRegistryImpl() {
@@ -64,38 +65,38 @@ public final class BlockTransformerRegistryImpl {
 	}
 
 	private static BlockTransformer.BlockTransformData createStripping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
-		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlockState))
+		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder().ifTrueThenProvide(fromBlockPredicate, new CopyPropertiesProvider(toBlockState)).build())
 				.sound(SoundEvents.AXE_STRIP)
 				.build();
 	}
 
 	private static BlockTransformer.BlockTransformData createTilling(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
-		return BlockTransformer.BlockTransformData.builder(
-						BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlockState
-				)
+		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder()
+				.ifTrueThenProvide(BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlockState)
+				.build())
 				.sound(SoundEvents.HOE_TILL)
 				.disallowedFaces(List.of(Direction.DOWN))
 				.build();
 	}
 
 	private static BlockTransformer.BlockTransformData createFlattening(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
-		return BlockTransformer.BlockTransformData.builder(
-						BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlockState
-				)
+		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder()
+				.ifTrueThenProvide(BlockPredicate.allOf(fromBlockPredicate, BlockPredicate.matchesTag(Direction.UP, BlockTags.AIR)), toBlockState)
+				.build())
 				.sound(SoundEvents.SHOVEL_FLATTEN)
 				.disallowedFaces(List.of(Direction.DOWN))
 				.build();
 	}
 
 	private static BlockTransformer.BlockTransformData createOxidationScraping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
-		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlockState))
+		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder().ifTrueThenProvide(fromBlockPredicate, new CopyPropertiesProvider(toBlockState)).build())
 				.sound(SoundEvents.AXE_SCRAPE)
 				.particle(BlockTransformer.TransformParticle.SCRAPE)
 				.build();
 	}
 
 	private static BlockTransformer.BlockTransformData createWaxScraping(BlockPredicate fromBlockPredicate, BlockStateProvider toBlockState) {
-		return BlockTransformer.BlockTransformData.builder(fromBlockPredicate, new CopyPropertiesProvider(toBlockState))
+		return BlockTransformer.BlockTransformData.builder(RuleBasedStateProvider.builder().ifTrueThenProvide(fromBlockPredicate, new CopyPropertiesProvider(toBlockState)).build())
 				.sound(SoundEvents.AXE_WAX_OFF)
 				.particle(BlockTransformer.TransformParticle.WAX_OFF)
 				.build();

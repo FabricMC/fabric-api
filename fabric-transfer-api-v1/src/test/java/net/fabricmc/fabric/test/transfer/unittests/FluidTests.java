@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -157,7 +158,7 @@ class FluidTests extends AbstractTransferApiTest {
 	void testStreamCodec() {
 		FluidVariant variant = FluidVariant.of(Fluids.WATER, DataComponentPatch.builder().set(TEST, 1).build());
 		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-		RegistryFriendlyByteBuf rbuf = new RegistryFriendlyByteBuf(buf, staticDrm());
+		RegistryFriendlyByteBuf rbuf = new RegistryFriendlyByteBuf(buf, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
 		FluidVariant.PACKET_CODEC.encode(rbuf, variant);
 
 		FluidVariant decoded = FluidVariant.PACKET_CODEC.decode(rbuf);

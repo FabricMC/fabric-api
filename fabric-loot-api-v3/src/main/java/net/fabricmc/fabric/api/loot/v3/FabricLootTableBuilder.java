@@ -104,7 +104,7 @@ public interface FabricLootTableBuilder {
 
 		builder.setParamSet(table.getParamSet());
 		builder.pools(accessor.fabric_getPools());
-		builder.apply(accessor.fabric_getFunctions());
+		accessor.fabric_getModifier().ifPresent(builder::apply);
 		accessor.fabric_getRandomSequence().ifPresent(builder::setRandomSequence);
 
 		return builder;

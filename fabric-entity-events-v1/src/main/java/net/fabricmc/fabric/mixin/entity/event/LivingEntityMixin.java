@@ -92,8 +92,10 @@ abstract class LivingEntityMixin {
 	}
 
 	@Inject(method = "startSleeping", at = @At("RETURN"))
-	private void onSleep(BlockPos pos, CallbackInfo info) {
-		EntitySleepEvents.START_SLEEPING.invoker().onStartSleeping((LivingEntity) (Object) this, pos);
+	private void onSleep(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+		if (cir.getReturnValueZ()) {
+			EntitySleepEvents.START_SLEEPING.invoker().onStartSleeping((LivingEntity) (Object) this, pos);
+		}
 	}
 
 	@Inject(method = "stopSleeping", at = @At("HEAD"))

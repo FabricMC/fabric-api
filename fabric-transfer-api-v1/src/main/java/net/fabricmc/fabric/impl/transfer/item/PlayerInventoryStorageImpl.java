@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -133,7 +134,12 @@ class PlayerInventoryStorageImpl extends ContainerStorageImpl implements PlayerI
 
 				while (remainder > 0) {
 					int dropped = (int) Math.min(ItemVariantImpl.getMaxStackSize(entry.key), remainder);
-					inventory.player.drop(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
+					ItemEntity itemEntity = inventory.player.createItemStackToDrop(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
+
+					if (itemEntity != null) {
+						inventory.player.level().addFreshEntity(itemEntity);
+					}
+
 					remainder -= dropped;
 				}
 			}

@@ -17,11 +17,13 @@
 package net.fabricmc.fabric.test.resource.reloader;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.PeriodicNotificationManager;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.client.resources.language.LanguageManager;
@@ -60,7 +62,7 @@ public class ResourceLoaderImplTest {
 		resourceLoader.addListenerOrdering(dummyReloader4.id, ResourceReloaderKeys.BEFORE_VANILLA);
 
 		var languageReloader = new LanguageManager(
-				"en_us", clientLanguage -> {
+				mock(Minecraft.class), "en_us", clientLanguage -> {
 		});
 		var splashTextsReloader = new SplashManager(null);
 		var periodicNotificationManager = new PeriodicNotificationManager(Identifier.parse("a"), o -> true);

@@ -398,7 +398,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear0 = searchState.isLightPermeable();
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[1]);
 		searchState = level.getBlockState(searchPos);
@@ -410,7 +410,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear1 = searchState.isLightPermeable();
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[2]);
 		searchState = level.getBlockState(searchPos);
@@ -422,7 +422,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear2 = searchState.isLightPermeable();
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[3]);
 		searchState = level.getBlockState(searchPos);
@@ -434,7 +434,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear3 = searchState.isLightPermeable();
 
 		// c = corner - values at corners of face
 		int cLight0, cLight1, cLight2, cLight3;
@@ -453,7 +453,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo0 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight0 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear0 = searchState.isLightPermeable();
 		}
 
 		if (!isClear3 && !isClear0) {
@@ -465,7 +465,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo1 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight1 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear1 = searchState.isLightPermeable();
 		}
 
 		if (!isClear2 && !isClear1) {
@@ -478,7 +478,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo2 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight2 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear2 = searchState.isLightPermeable();
 		}
 
 		if (!isClear3 && !isClear1) {
@@ -491,7 +491,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo3 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight3 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear3 = searchState.isLightPermeable();
 		}
 
 		// If on block face and neighbor isn't occluding, "center" will be neighbor light
@@ -508,10 +508,10 @@ public class AoCalculator {
 		// dark room with active sculk sensor above slabs).
 		if (isOnBlockFace && !searchState.isSolidRender()) {
 			lightCenter = lightCache.getLightCoords(searchState, level, searchPos);
-			isClearCenter = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			isClearCenter = searchState.isLightPermeable();
 		} else {
 			lightCenter = lightCache.getLightCoords(blockState, level, pos);
-			isClearCenter = !blockState.isViewBlocking(level, pos) || blockState.getLightDampening() == 0;
+			isClearCenter = blockState.isLightPermeable();
 		}
 
 		float aoCenter = lightCache.getShadeBrightness(level.getBlockState(lightPos), level, lightPos);

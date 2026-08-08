@@ -133,8 +133,9 @@ public class FakePlayer extends ServerPlayer {
 	}
 
 	@Override
-	public void startSleeping(BlockPos pos) {
+	public boolean startSleeping(BlockPos pos) {
 		// Don't lock bed forever.
+		return false;
 	}
 
 	@Override

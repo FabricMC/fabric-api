@@ -24,6 +24,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -54,9 +55,9 @@ public final class ParticleTestSetup implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(Commands.literal("addparticletestblocks").executes(context -> {
 				Inventory inventory = context.getSource().getPlayerOrException().getInventory();
-				inventory.placeItemBackInInventory(new ItemStack(ALWAYS_TINTED));
-				inventory.placeItemBackInInventory(new ItemStack(TINTED_OVER_WATER));
-				inventory.placeItemBackInInventory(new ItemStack(NEVER_TINTED));
+				inventory.placeItemBackInInventory(new ItemStack(ALWAYS_TINTED), Prediction.SERVER_ONLY);
+				inventory.placeItemBackInInventory(new ItemStack(TINTED_OVER_WATER), Prediction.SERVER_ONLY);
+				inventory.placeItemBackInInventory(new ItemStack(NEVER_TINTED), Prediction.SERVER_ONLY);
 				return Command.SINGLE_SUCCESS;
 			}));
 		});

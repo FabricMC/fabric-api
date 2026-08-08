@@ -88,9 +88,10 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			Optional<Boolean> cull,
 			@Nullable VertexFormat[] vertexFormatPerBuffer,
 			Optional<PrimitiveTopology> vertexFormatMode,
+			int pushConstantSize,
 			Operation<RenderPipeline.Snippet> original
 	) {
-		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(shaders, shaderDefines, bindGroupLayouts, colorTargetStates, activeColorTargetStateCount, depthStencilState, polygonMode, cull, vertexFormatPerBuffer, vertexFormatMode), usePipelineDrawModeForGui);
+		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(shaders, shaderDefines, bindGroupLayouts, colorTargetStates, activeColorTargetStateCount, depthStencilState, polygonMode, cull, vertexFormatPerBuffer, vertexFormatMode, pushConstantSize), usePipelineDrawModeForGui);
 	}
 
 	@ModifyReturnValue(

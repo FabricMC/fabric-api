@@ -35,7 +35,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.TheEndBiomeSource;
-import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
+import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 
 /**
  * Internal data for modding Vanilla's {@link TheEndBiomeSource}.
@@ -109,7 +109,7 @@ public final class TheEndBiomeData {
 		private final @Nullable Map<Holder<Biome>, WeightedPicker<Holder<Biome>>> endBarrensMap;
 
 		// cache for our own sampler (used for random biome replacement selection)
-		private final Map<Climate.Sampler, ImprovedNoise> samplers = new WeakHashMap<>();
+		private final Map<Climate.Sampler, PerlinNoise> samplers = new WeakHashMap<>();
 
 		public Overrides(HolderGetter<Biome> biomeRegistry) {
 			this.customBiomes = ADDED_BIOMES.stream().map(biomeRegistry::getOrThrow).collect(Collectors.toSet());

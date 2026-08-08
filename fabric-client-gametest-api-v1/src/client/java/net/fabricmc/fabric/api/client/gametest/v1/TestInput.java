@@ -28,6 +28,8 @@ import net.minecraft.core.BlockPos;
 
 /**
  * The client gametest input handler used to simulate inputs to the client.
+ *
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestInput {

@@ -23,7 +23,7 @@ import java.util.function.Function;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
+import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 
 /**
  * Picks entries with arbitrary double weights using a binary search.
@@ -55,8 +55,8 @@ public final class WeightedPicker<T> {
 		return entries.size();
 	}
 
-	public T pickFromNoise(ImprovedNoise sampler, double x, double y, double z) {
-		double target = Mth.clamp(Math.abs(sampler.noise(x, y, z)), 0, 1) * getCurrentWeightTotal();
+	public T pickFromNoise(PerlinNoise sampler, double x, double y, double z) {
+		double target = Mth.clamp(Math.abs(sampler.get(x, y, z)), 0, 1) * getCurrentWeightTotal();
 
 		return search(target).entry();
 	}

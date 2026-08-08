@@ -14,7 +14,18 @@
  * limitations under the License.
  */
 
-@NullMarked
-package net.fabricmc.fabric.impl.permission;
+package net.fabricmc.fabric.mixin.resource.client;
 
-import org.jspecify.annotations.NullMarked;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+import net.minecraft.client.resources.language.ClientLanguage;
+
+@Mixin(ClientLanguage.class)
+abstract class ClientLanguageMixin {
+	@ModifyExpressionValue(method = "loadFrom", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
+	private static boolean allowMissingLanguageFiles(boolean empty) {
+		return false;
+	}
+}

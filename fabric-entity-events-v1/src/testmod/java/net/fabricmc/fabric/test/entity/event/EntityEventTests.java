@@ -30,6 +30,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -252,14 +253,14 @@ public final class EntityEventTests implements ModInitializer {
 
 	private static void addSleepWools(Player player) {
 		Inventory inventory = player.getInventory();
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.blue().asItem(), "Can't start sleeping"));
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.yellow().asItem(), "Sleep whenever"));
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.green().asItem(), "Allow nearby monsters"));
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.red().asItem(), "Detect nearby monsters"));
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.white().asItem(), "Don't set spawn"));
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.black().asItem(), "Don't reset time"));
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.orange().asItem(), "Don't set occupied state"));
-		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.cyan().asItem(), "Wake up high above"));
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.blue().asItem(), "Can't start sleeping"), Prediction.SERVER_ONLY);
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.yellow().asItem(), "Sleep whenever"), Prediction.SERVER_ONLY);
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.green().asItem(), "Allow nearby monsters"), Prediction.SERVER_ONLY);
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.red().asItem(), "Detect nearby monsters"), Prediction.SERVER_ONLY);
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.white().asItem(), "Don't set spawn"), Prediction.SERVER_ONLY);
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.black().asItem(), "Don't reset time"), Prediction.SERVER_ONLY);
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.orange().asItem(), "Don't set occupied state"), Prediction.SERVER_ONLY);
+		inventory.placeItemBackInInventory(createNamedItem(Blocks.WOOL.cyan().asItem(), "Wake up high above"), Prediction.SERVER_ONLY);
 	}
 
 	private static void assertOnServerThread(MinecraftServer server) {

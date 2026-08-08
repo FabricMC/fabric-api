@@ -23,11 +23,9 @@
     "lifecycle.DedicatedServerMixin",
     "screenshot.NativeImageMixin",
     "screenshot.DeltaTrackerDefaultValueAccessor",
-    "threading.ConnectionMixin",
     "threading.MainMixin",
     "threading.MinecraftMixin",
     "threading.MinecraftServerMixin",
-    "threading.BlockableEventLoopMixin",
     "world.CreateWorldScreenMixin",
     "world.GameRulesAccessor"
   ],

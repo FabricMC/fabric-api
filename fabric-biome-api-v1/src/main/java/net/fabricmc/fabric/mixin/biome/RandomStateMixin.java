@@ -45,7 +45,7 @@ public class RandomStateMixin {
 	private Climate.Sampler sampler;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(HolderGetter<NormalNoise.NoiseParameters> noises, long seed, boolean useLegacyRandom, BlockState defaultBlock, int seaLevel, NoiseRouter noiseRouter, List<SpawnTargetPoint> spawnTarget, Optional<Aquifer.Config> aquifers, List<OreVeinifier> oreVeins, CallbackInfo ci) {
+	private void init(HolderGetter<NormalNoise> noises, long seed, boolean useLegacyRandom, BlockState defaultBlock, int seaLevel, NoiseRouter noiseRouter, List<SpawnTargetPoint> spawnTarget, Optional<Aquifer.Config> aquifers, List<OreVeinifier> oreVeins, CallbackInfo ci) {
 		((MultiNoiseSamplerHooks) (Object) sampler).fabric_setSeed(seed);
 	}
 }

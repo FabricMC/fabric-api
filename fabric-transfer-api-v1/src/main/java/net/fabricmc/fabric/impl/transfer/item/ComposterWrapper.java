@@ -26,10 +26,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -45,7 +42,8 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ResolvableNumber;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -61,11 +59,11 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  * Implementation of {@code Storage<ItemVariant>} for composters.
  */
 public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.PendingAction> {
-	record PendingAction(@Nullable ResourceKey<NumberProvider> compostProvider, boolean extractBonemeal) {
+	record PendingAction(@Nullable ResolvableNumber compostProvider, boolean extractBonemeal) {
 		private static final PendingAction NONE = new PendingAction(null, false);
 		private static final PendingAction EXTRACT_BONEMEAL = new PendingAction(null, true);
 
-		private static PendingAction insert(ResourceKey<NumberProvider> compostProvider) {
+		private static PendingAction insert(ResolvableNumber compostProvider) {
 			return new PendingAction(compostProvider, false);
 		}
 	}
@@ -133,7 +131,7 @@ public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.Pendi
 			location.level.playSound(null, location.pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 		} else if (pendingAction.compostProvider != null && location.level instanceof ServerLevel serverLevel) {
 			BlockState state = location.getBlockState();
-			int layersToAdd = getLayersToAdd(serverLevel, state, pendingAction.compostProvider);
+			int layersToAdd = getLayersToAdd(serverLevel, location.pos, state, pendingAction.compostProvider);
 			boolean increaseSuccessful = layersToAdd > 0;
 
 			if (increaseSuccessful) {
@@ -168,7 +166,7 @@ public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.Pendi
 			if (location.getBlockState().getValue(ComposterBlock.LEVEL) >= 7) return 0;
 			// Check that the item is compostable.
 			Compostable compostable = resource.getComponents().get(DataComponents.COMPOSTABLE);
-			if (compostable == null || !(location.level instanceof ServerLevel serverLevel) || getNumberProvider(serverLevel, compostable.layers()) == null) return 0;
+			if (compostable == null || !(location.level instanceof ServerLevel)) return 0;
 
 			// Schedule insertion.
 			updateSnapshots(transaction);
@@ -232,29 +230,13 @@ public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.Pendi
 		}
 	}
 
-	private static int getLayersToAdd(ServerLevel level, BlockState state, ResourceKey<NumberProvider> provider) {
-		NumberProvider numberProvider = getNumberProvider(level, provider);
-
-		if (numberProvider == null) {
-			return 0;
-		}
-
+	private static int getLayersToAdd(ServerLevel level, BlockPos pos, BlockState state, ResolvableNumber provider) {
 		LootContext lootContext = new LootContext.Builder(
 				new LootParams.Builder(level)
 						.withParameter(LootContextParams.BLOCK_STATE, state)
+						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
 						.create(LootContextParamSets.BLOCK_INTERACT)
 		).create(Optional.empty());
-		return numberProvider.getInt(lootContext);
-	}
-
-	@Nullable
-	private static NumberProvider getNumberProvider(ServerLevel level, ResourceKey<NumberProvider> provider) {
-		return level.getServer()
-				.reloadableRegistries()
-				.lookup()
-				.lookup(Registries.NUMBER_PROVIDER)
-				.flatMap(registry -> registry.get(provider))
-				.map(Holder.Reference::value)
-				.orElse(null);
+		return provider.getInt(lootContext, 0);
 	}
 }
