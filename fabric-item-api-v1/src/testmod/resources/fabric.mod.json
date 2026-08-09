@@ -10,13 +10,14 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.item.CustomDamageTest",
-      "net.fabricmc.fabric.test.item.DefaultItemComponentTest",
-      "net.fabricmc.fabric.test.item.CustomModelIdTest",
-      "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
-      "net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest",
       "net.fabricmc.fabric.test.item.ComponentTooltipProviderTest",
       "net.fabricmc.fabric.test.item.CreatorNamespaceTest",
+      "net.fabricmc.fabric.test.item.CustomDamageTest",
+      "net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest",
+      "net.fabricmc.fabric.test.item.CustomModelIdTest",
+      "net.fabricmc.fabric.test.item.DefaultItemComponentTest",
+      "net.fabricmc.fabric.test.item.ItemClickBehaviorTest",
+      "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
       "net.fabricmc.fabric.test.item.ModifyComponentsInPropertiesTestSetup"
     ],
     "client": [
