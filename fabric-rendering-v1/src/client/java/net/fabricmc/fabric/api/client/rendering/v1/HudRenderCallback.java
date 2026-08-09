@@ -22,6 +22,10 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * @deprecated Use {@link HudLayerRegistrationCallback} instead. For common use cases, see {@link LayeredDrawerWrapper}.
+ */
+@Deprecated
 public interface HudRenderCallback {
 	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (matrixStack, delta) -> {
 		for (HudRenderCallback event : listeners) {
