@@ -39,9 +39,9 @@ import net.fabricmc.fabric.api.util.EventResult;
 /// which is only ever handled client-side.
 @FunctionalInterface
 public interface ItemClickBehaviorCallback {
-	/// Callback that runs when
+	/// Callback that runs in
 	/// [net.minecraft.world.inventory.AbstractContainerMenu#tryItemClickBehaviourOverride(Player,
-	/// ClickAction, Slot, ItemStack, ItemStack)] is run.
+	/// ClickAction, Slot, ItemStack, ItemStack)].
 	Event<ItemClickBehaviorCallback> EVENT = EventFactory.createArrayBacked(
 			ItemClickBehaviorCallback.class,
 			callbacks -> (ItemStack hoveredItem, Slot hoveredSlot, ItemStack itemHeldByCursor, SlotAccess slotHeldByCursor, ClickAction clickAction, Player player) -> {
