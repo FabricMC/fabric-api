@@ -26,14 +26,22 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.EventResult;
 
+/// A single event which allows for overriding item behavior otherwise implemented via
+/// [ItemStack#overrideStackedOnOther(Slot, ClickAction, Player)] and
+/// [ItemStack#overrideOtherStackedOnMe(ItemStack, Slot, ClickAction, Player, SlotAccess)] on a
+/// per-item basis.
+///
+/// The event runs whenever a slot in an [net.minecraft.world.inventory.AbstractContainerMenu] is
+/// clicked and provides the item in the slot and the item currently carried by the cursor. Either
+/// item can be empty.
+///
+/// This behavior runs on both the client & server side except the creative mode inventory menu,
+/// which is only ever handled client-side.
+@FunctionalInterface
 public interface ItemClickBehaviorCallback {
-	/// A single event which allows for overriding item behavior otherwise implemented via
-	/// [ItemStack#overrideStackedOnOther(Slot, ClickAction, Player)] and
-	/// [ItemStack#overrideOtherStackedOnMe(ItemStack, Slot, ClickAction, Player, SlotAccess)] on a
-	/// per-item basis.
-	///
-	/// The event runs whenever a slot in an [net.minecraft.world.inventory.AbstractContainerMenu]
-	/// is clicked and provides the item in the slot and the item currently carried by the cursor.
+	/// Callback that runs when
+	/// [net.minecraft.world.inventory.AbstractContainerMenu#tryItemClickBehaviourOverride(Player,
+	/// ClickAction, Slot, ItemStack, ItemStack)] is run.
 	Event<ItemClickBehaviorCallback> EVENT = EventFactory.createArrayBacked(
 			ItemClickBehaviorCallback.class,
 			callbacks -> (ItemStack hoveredItem, Slot hoveredSlot, ItemStack itemHeldByCursor, SlotAccess slotHeldByCursor, ClickAction clickAction, Player player) -> {
@@ -52,6 +60,8 @@ public interface ItemClickBehaviorCallback {
 				return EventResult.PASS;
 			});
 
+	/// Handles menu interactions when clicking items on top of each other in a container menu.
+	///
 	/// @param hoveredItem      the item in the slot hovered by the mouse cursor
 	/// @param hoveredSlot      the slot hovered by the mouse cursor
 	/// @param itemHeldByCursor the item carried by the cursor
