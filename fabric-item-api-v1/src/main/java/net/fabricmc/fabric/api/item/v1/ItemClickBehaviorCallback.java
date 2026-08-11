@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.EventResult;
 
-/// A single event which allows for overriding item behavior otherwise implemented via
+/// A single event that allows for overriding item behavior otherwise implemented via
 /// [ItemStack#overrideStackedOnOther(Slot, ClickAction, Player)] and
 /// [ItemStack#overrideOtherStackedOnMe(ItemStack, Slot, ClickAction, Player, SlotAccess)] on a
 /// per-item basis.
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.util.EventResult;
 /// clicked and provides the item in the slot and the item currently carried by the cursor. Either
 /// item can be empty.
 ///
-/// This behavior runs on both the client & server side except the creative mode inventory menu,
+/// This behavior runs on both the client and server side except the creative mode inventory menu,
 /// which is only ever handled client-side.
 @FunctionalInterface
 public interface ItemClickBehaviorCallback {
@@ -69,10 +69,10 @@ public interface ItemClickBehaviorCallback {
 	/// @param clickAction      the mouse button that was used in the click
 	/// @param player           the player
 	/// @return [EventResult#ALLOW] to allow normal container menu click behavior to run,
-	///        [EventResult#DENY] to prevent normal click behavior, which allows for implementing a
+	/// 		[EventResult#DENY] to prevent normal click behavior, which allows for implementing a
 	/// 		custom interaction as vanilla does for bundles, [EventResult#PASS] to fall back to other
 	/// 		callbacks and eventually resolve [ItemStack#overrideStackedOnOther(Slot, ClickAction,
-	///        Player)] and [ItemStack#overrideOtherStackedOnMe(ItemStack, Slot, ClickAction, Player,
-	///        SlotAccess)]
+	/// 		Player)] and [ItemStack#overrideOtherStackedOnMe(ItemStack, Slot, ClickAction, Player,
+	/// 		SlotAccess)]
 	EventResult onItemClickBehavior(ItemStack hoveredItem, Slot hoveredSlot, ItemStack itemHeldByCursor, SlotAccess slotHeldByCursor, ClickAction clickAction, Player player);
 }

@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.util.EventResult;
 @Mixin(AbstractContainerMenu.class)
 abstract class AbstractContainerMenuMixin {
 	@Inject(method = "tryItemClickBehaviourOverride", at = @At("HEAD"), cancellable = true)
-	private void tryItemClickBehaviourOverride(Player player, ClickAction clickAction, Slot slot, ItemStack clicked, ItemStack carried, CallbackInfoReturnable<Boolean> callback) {
+	private void overrideContainerMenuItemClickBehaviour(Player player, ClickAction clickAction, Slot slot, ItemStack clicked, ItemStack carried, CallbackInfoReturnable<Boolean> callback) {
 		EventResult result = ItemClickBehaviorCallback.EVENT.invoker()
 				.onItemClickBehavior(clicked,
 						slot,
