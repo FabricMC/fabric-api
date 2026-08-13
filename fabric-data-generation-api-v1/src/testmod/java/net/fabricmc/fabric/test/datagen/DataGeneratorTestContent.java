@@ -39,6 +39,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -79,6 +80,10 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static final ResourceKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY = ResourceKey.create(
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
 			Identifier.fromNamespaceAndPath(MOD_ID, "tinier_potato")
+	);
+	public static final ResourceKey<NumberProvider> TEST_NUMBER_PROVIDER_KEY = ResourceKey.create(
+			Registries.NUMBER_PROVIDER,
+			Identifier.fromNamespaceAndPath(MOD_ID, "tiniest_potato")
 	);
 	// Empty registry
 	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =

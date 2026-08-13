@@ -46,6 +46,7 @@ public final class DynamicRegistriesImpl {
 	static {
 		WORLD_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLD_REGISTRIES);
 		WORLD_REGISTRIES.addAll(RegistryDataLoader.DIMENSION_REGISTRIES);
+		WORLD_REGISTRIES.addAll(RegistryDataLoader.RELOADABLE_REGISTRIES);
 		Set<ResourceKey<? extends Registry<?>>> vanillaDynamicRegistryKeys = new HashSet<>();
 
 		for (RegistryDataLoader.RegistryData<?> worldgenEntry : RegistryDataLoader.WORLD_REGISTRIES) {

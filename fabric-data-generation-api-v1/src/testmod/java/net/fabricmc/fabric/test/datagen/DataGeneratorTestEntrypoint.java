@@ -27,6 +27,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_I
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_ITEM_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_NUMBER_PROVIDER_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_SOUND;
 
 import java.io.IOException;
@@ -127,6 +128,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(ExistingEnglishLangProvider::new);
 		pack.addProvider(JapaneseLangProvider::new);
 		pack.addProvider(TestDynamicRegistryProvider::new);
+		pack.addProvider(TestReloadableDynamicRegistryProvider::new);
 		pack.addProvider(TestPredicateProvider::new);
 		pack.addProvider(TestCustomCodecProvider::new);
 
@@ -498,6 +500,28 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public String getName() {
 			return "Test Dynamic Registry";
+		}
+	}
+
+	/**
+	 * Tests generating files for a reloadable dynamic registry.
+	 */
+	private static class TestReloadableDynamicRegistryProvider extends FabricDynamicRegistryProvider {
+		private TestReloadableDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+			super(output, registriesFuture);
+		}
+
+		@Override
+		protected void configure(HolderLookup.Provider registries, Entries entries) {
+			entries.add(
+					TEST_NUMBER_PROVIDER_KEY,
+					new ConstantValue(123.0f)
+			);
+		}
+
+		@Override
+		public String getName() {
+			return "Test Reloadable Dynamic Registry";
 		}
 	}
 
