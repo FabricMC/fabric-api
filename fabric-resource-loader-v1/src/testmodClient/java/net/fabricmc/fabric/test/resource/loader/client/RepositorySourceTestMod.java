@@ -42,7 +42,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.client.pack.ClientMutablePackResources;
 import net.fabricmc.fabric.api.resource.v1.pack.InMemoryPackResources;
-import net.fabricmc.fabric.api.resource.v1.pack.SimplePackResourcesSupplierFactory;
+import net.fabricmc.fabric.api.resource.v1.pack.SimplePackResourcesSupplier;
 
 public class RepositorySourceTestMod implements ClientModInitializer {
 	private static final String PACK_NAME = "Visible Test Virtual Pack";
@@ -62,7 +62,7 @@ public class RepositorySourceTestMod implements ClientModInitializer {
 
 			profileAdder.accept(Objects.requireNonNull(Pack.readMetaAndCreate(
 					location,
-					SimplePackResourcesSupplierFactory.of(TestPackResources::new),
+					SimplePackResourcesSupplier.of(TestPackResources::new),
 					PackType.CLIENT_RESOURCES,
 					new PackSelectionConfig(false, Pack.Position.TOP, false)
 			)));

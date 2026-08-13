@@ -22,18 +22,26 @@ import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
-import net.fabricmc.fabric.impl.resource.pack.SimplePackResourcesSupplier;
-
 /// Provides the factory of a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `packFactory`.
-public final class SimplePackResourcesSupplierFactory {
-	private SimplePackResourcesSupplierFactory() {
-		throw new UnsupportedOperationException("SimplePackResourcesSupplierFactory only contains static definitions.");
+public final class SimplePackResourcesSupplier {
+	private SimplePackResourcesSupplier() {
+		throw new UnsupportedOperationException("SimplePackResourcesSupplier only contains static definitions.");
 	}
 
 	/// Provides a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `packFactory`.
 	///
 	/// @param packFactory the factory of the pack resources
 	public static Pack.ResourcesSupplier of(Function<PackLocationInfo, PackResources> packFactory) {
-		return new SimplePackResourcesSupplier(packFactory);
+		return new Pack.ResourcesSupplier() {
+			@Override
+			public PackResources openPrimary(PackLocationInfo location) {
+				return packFactory.apply(location);
+			}
+
+			@Override
+			public PackResources openFull(PackLocationInfo location, Pack.Metadata metadata) {
+				return packFactory.apply(location);
+			}
+		};
 	}
 }

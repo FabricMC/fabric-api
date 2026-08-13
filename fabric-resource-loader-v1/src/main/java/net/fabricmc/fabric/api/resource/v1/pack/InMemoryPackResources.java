@@ -92,9 +92,11 @@ public abstract class InMemoryPackResources implements MutablePackResources {
 	}
 
 	@Override
-	public void listResources(PackType type, String namespace, String startingPath, ResourceOutput consumer) {
+	public void listResources(PackType type, String namespace, String directory, ResourceOutput consumer) {
+		String normalizedDirectory = this.normalizeDirectory(directory);
+
 		this.getResourceMap(type).entrySet().stream()
-				.filter(entry -> entry.getKey().getNamespace().equals(namespace) && entry.getKey().getPath().startsWith(startingPath))
+				.filter(entry -> entry.getKey().getNamespace().equals(namespace) && entry.getKey().getPath().startsWith(normalizedDirectory))
 				.forEach(entry -> {
 					byte[] bytes = entry.getValue().get();
 
@@ -102,6 +104,14 @@ public abstract class InMemoryPackResources implements MutablePackResources {
 						consumer.accept(entry.getKey(), () -> new ByteArrayInputStream(bytes));
 					}
 				});
+	}
+
+	private String normalizeDirectory(String directory) {
+		if (directory.endsWith("/")) {
+			return directory;
+		} else {
+			return directory + '/';
+		}
 	}
 
 	@Override
