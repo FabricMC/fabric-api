@@ -6,11 +6,15 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
+    "fabric-api-base": "*",
     "fabric-advancement-api-v1": "*"
   },
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.advancement.AdvancementTest"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.advancement.AdvancementGameTest"
     ]
   }
 }

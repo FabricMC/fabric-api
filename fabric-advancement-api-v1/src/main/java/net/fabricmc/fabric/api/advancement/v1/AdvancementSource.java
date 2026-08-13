@@ -21,19 +21,24 @@ package net.fabricmc.fabric.api.advancement.v1;
  */
 public enum AdvancementSource {
 	/**
-	 * Represents a vanilla advancement.
+	 * An advancement loaded from the vanilla data of the game.
 	 */
 	VANILLA(true),
 	/**
-	 * Represents an advancement created by a mod.
+	 * An advancement loaded from the bundled resources of a mod.
 	 */
 	MOD(true),
 	/**
-	 * Represents an advancement created by a datapack.
+	 * An advancement loaded from a data pack that is not bundled with the game or a mod,
+	 * such as one installed by the user in the world's {@code datapacks} directory.
 	 */
 	DATA_PACK(false),
 	/**
-	 * Represents an advancement that has been modified with the advancement API.
+	 * An advancement that has been replaced by {@link AdvancementEvents#REPLACE}.
+	 *
+	 * <p>This source hides the source of the advancement that was replaced. It is only seen by
+	 * {@link AdvancementEvents#MODIFY} and by the {@code REPLACE} listeners registered after the
+	 * one that replaced the advancement.
 	 */
 	REPLACED(false);
 

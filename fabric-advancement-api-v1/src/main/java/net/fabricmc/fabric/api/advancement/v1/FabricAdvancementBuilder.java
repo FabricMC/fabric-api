@@ -29,69 +29,146 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.resources.Identifier;
 
+/**
+ * Convenience extensions to {@link Advancement.Builder} for reading the values already set on the
+ * builder and for removing or requiring criteria.
+ *
+ * <p>This interface is automatically injected to {@link Advancement.Builder}.
+ */
 @ApiStatus.NonExtendable
 public interface FabricAdvancementBuilder {
-	default Advancement.Builder removeCriterion(String name) {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
+	/**
+	 * Returns the criteria of this builder.
+	 *
+	 * <p>The returned map is an immutable copy; use {@link #setCriteria(Map)} to write modified
+	 * criteria back to this builder.
+	 *
+	 * @return the criteria, keyed by their name
+	 */
 	default Map<String, Criterion<?>> getCriteria() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default Optional<Identifier> getParent() {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	default Optional<DisplayInfo> getDisplay() {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	default AdvancementRewards getRewards() {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	default AdvancementRequirements getRequirements() {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
-
-	default boolean isSendsTelemetryEvent() {
+	/**
+	 * Replaces all criteria of this builder.
+	 *
+	 * <p>Requirements referring to criteria that are not in {@code criteria} are dropped,
+	 * just like they are by {@link #removeCriterion(String)}.
+	 *
+	 * @param criteria the new criteria, keyed by their name
+	 * @return this builder
+	 */
+	default Advancement.Builder setCriteria(Map<String, Criterion<?>> criteria) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
-	 * Marks a single criterion as required to obtain the advancement, on top of
-	 * whatever requirements are already configured on this builder.
+	 * Removes a criterion from this builder.
 	 *
-	 * @param name the name of the criterion to require
+	 * <p>The criterion is also removed from the {@linkplain #getRequirements() requirements}.
+	 * A requirement group that only contained the removed criterion is dropped entirely, which
+	 * makes the remaining groups the only way to obtain the advancement.
+	 *
+	 * <p>The criterion can be added back with {@link Advancement.Builder#addCriterion(String, Criterion)}.
+	 *
+	 * @param name the name of the removed criterion
+	 * @return this builder
+	 */
+	default Advancement.Builder removeCriterion(String name) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Makes a criterion required to obtain the advancement, in addition to the requirements
+	 * already set on this builder.
+	 *
+	 * @param name the name of the required criterion
+	 * @return this builder
 	 */
 	default Advancement.Builder requireCriterion(String name) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
-	 * Marks a group of criteria as required to obtain the advancement, where satisfying
-	 * <b>any one</b> of {@code names} fulfills this requirement, on top of whatever
-	 * requirements are already configured on this builder.
+	 * Makes a group of criteria required to obtain the advancement, in addition to the requirements
+	 * already set on this builder. Completing any one of {@code names} fulfills the added group.
 	 *
-	 * @param names the names of the criteria, any one of which fulfills this requirement group
+	 * @param names the names of the criteria of the added requirement group
+	 * @return this builder
 	 */
 	default Advancement.Builder requireCriteria(List<String> names) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
+	/**
+	 * Returns the requirements of this builder, or {@link AdvancementRequirements#EMPTY}
+	 * if none have been set.
+	 *
+	 * @return the requirements
+	 */
+	default AdvancementRequirements getRequirements() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Returns the identifier of the parent advancement of this builder.
+	 *
+	 * @return the parent identifier, or an empty optional if this is a root advancement
+	 */
+	default Optional<Identifier> getParent() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Returns the display info of this builder.
+	 *
+	 * @return the display info, or an empty optional if the advancement is not displayed
+	 */
+	default Optional<DisplayInfo> getDisplay() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Returns the rewards granted when the advancement is obtained.
+	 *
+	 * @return the rewards
+	 */
+	default AdvancementRewards getRewards() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Returns whether the advancement sends a telemetry event when it is obtained.
+	 *
+	 * @return {@code true} if a telemetry event is sent, {@code false} otherwise
+	 */
+	default boolean isSendsTelemetryEvent() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Creates a builder copy of an advancement.
+	 *
+	 * @param advancement the advancement
+	 * @return the copied builder
+	 */
+	// Advancement only stores the identifier of its parent, so the deprecated overload is the only one usable here.
+	@SuppressWarnings("removal")
 	static Advancement.Builder copyOf(Advancement advancement) {
-		Advancement.Builder advancementBuilder = new Advancement.Builder();
-		advancement.parent().ifPresent(advancementBuilder::parent);
-		advancement.criteria().forEach(advancementBuilder::addCriterion);
-		advancementBuilder.requirements(advancement.requirements());
-		advancementBuilder.rewards(advancement.rewards());
-		advancement.display().ifPresent(advancementBuilder::display);
+		// Not Advancement.Builder#advancement, which always enables telemetry events.
+		Advancement.Builder builder = new Advancement.Builder();
+		advancement.parent().ifPresent(builder::parent);
+		advancement.criteria().forEach(builder::addCriterion);
+		// The requirements have to be copied explicitly, otherwise the builder would recreate them
+		// from all criteria with its default strategy, making every criterion required.
+		builder.requirements(advancement.requirements());
+		builder.rewards(advancement.rewards());
+		advancement.display().ifPresent(builder::display);
 
 		if (advancement.sendsTelemetryEvent()) {
-			advancementBuilder.sendsTelemetryEvent();
+			builder.sendsTelemetryEvent();
 		}
 
-		return advancementBuilder;
+		return builder;
 	}
 }
