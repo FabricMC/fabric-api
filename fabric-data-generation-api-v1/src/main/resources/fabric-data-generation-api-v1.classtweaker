@@ -319,6 +319,11 @@ transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerato
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	generateSimpleSpecialItemModel	(Lnet/minecraft/world/level/block/Block;Ljava/util/Optional;Lnet/minecraft/client/renderer/special/SpecialModelRenderer$Unbaked;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCopperChainItem	(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCandleAndCandleCake	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
+transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	ROTATION_FACING	Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;
+transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	ROTATIONS_COLUMN_WITH_FACING	Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;
+transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	ROTATION_TORCH	Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;
+transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	ROTATION_HORIZONTAL_FACING_ALT	Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;
+transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	ROTATION_HORIZONTAL_FACING	Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;
 transitive-accessible	method	net/minecraft/data/loot/BlockLootSubProvider	hasSilkTouch	()Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition$Builder;
 transitive-accessible	method	net/minecraft/data/loot/BlockLootSubProvider	doesNotHaveSilkTouch	()Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition$Builder;
 transitive-accessible	method	net/minecraft/data/loot/BlockLootSubProvider	hasShears	()Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition$Builder;

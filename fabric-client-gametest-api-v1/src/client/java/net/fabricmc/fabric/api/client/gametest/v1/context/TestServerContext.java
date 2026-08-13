@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.gametest.v1.context;
 
+import java.util.function.Predicate;
+
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
 import org.jetbrains.annotations.ApiStatus;
@@ -27,7 +29,7 @@ import net.minecraft.server.MinecraftServer;
  * Context for a client gametest containing various helpful functions while a server (integrated or dedicated) is
  * running.
  *
- * <p>Functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestServerContext {
@@ -39,7 +41,10 @@ public interface TestServerContext {
 	void runCommand(String command);
 
 	/**
-	 * Runs the given action on the server thread, and waits for it to complete.
+	 * Runs the given action on the server thread, and waits for it to complete. If already on the server thread,
+	 * this action is run directly.
+	 *
+	 * <p>This method can be called from the client gametest thread and the server thread.
 	 *
 	 * @param action The action to run on the server thread
 	 * @param <E> The type of the checked exception that the action throws
@@ -48,7 +53,10 @@ public interface TestServerContext {
 	<E extends Throwable> void runOnServer(FailableConsumer<MinecraftServer, E> action) throws E;
 
 	/**
-	 * Runs the given function on the server thread, and returns the result.
+	 * Runs the given function on the server thread, and returns the result. If already on the server thread,
+	 * the function is run directly.
+	 *
+	 * <p>This method can be called from the client gametest thread and the server thread.
 	 *
 	 * @param function The function to run on the server thread
 	 * @return The result of the function
@@ -57,4 +65,22 @@ public interface TestServerContext {
 	 * @throws E When the function throws an exception
 	 */
 	<T extends @Nullable Object, E extends Throwable> T computeOnServer(FailableFunction<MinecraftServer, T, E> function) throws E;
+
+	/**
+	 * Waits for a predicate to be true. Fails if the predicate is not satisfied after {@link ClientGameTestContext#DEFAULT_TIMEOUT} ticks.
+	 *
+	 * @param predicate The predicate to check
+	 * @return The number of ticks waited
+	 */
+	int waitFor(Predicate<MinecraftServer> predicate);
+
+	/**
+	 * Waits for a predicate to be true. Fails if the predicate is not satisfied after {@code timeout} ticks. If
+	 * {@code timeout} is {@link ClientGameTestContext#NO_TIMEOUT}, there is no timeout.
+	 *
+	 * @param predicate The predicate to check
+	 * @param timeout The number of ticks before timing out
+	 * @return The number of ticks waited
+	 */
+	int waitFor(Predicate<MinecraftServer> predicate, int timeout);
 }

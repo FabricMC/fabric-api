@@ -101,7 +101,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 			if (this.fabric_shouldTryToSync() && type.isSynced()) {
 				AttachmentChange change = new AttachmentChange(fabric_getSyncTargetInfo(), type, value);
-				acknowledgeSyncedEntry(type, change);
+				// a removal has to drop the entry, otherwise it gets resent to every new tracker
+				acknowledgeSyncedEntry(type, value == null ? null : change);
 				this.fabric_syncChange(type, change);
 			}
 		}
@@ -192,6 +193,10 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			syncedAttachments.remove(type);
 
 			if (fabric_shouldDeferSync()) {
+				if (deferredSyncedAttachments == null) {
+					deferredSyncedAttachments = Collections.newSetFromMap(new IdentityHashMap<>());
+				}
+
 				deferredSyncedAttachments.add(type);
 			}
 		} else {

@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.component.DataComponentType;
 
@@ -31,6 +32,16 @@ import net.minecraft.core.component.DataComponentType;
  */
 @ApiStatus.NonExtendable
 public interface FabricComponentMapBuilder {
+	/**
+	 * Gets the current value for the component type in the builder, or {@code null} if it is not present.
+	 * @param type The component type
+	 * @param <T> The type of the component data
+	 * @return Returns the current value in the map builder, or {@code null} if not present
+	 */
+	default <T> @Nullable T get(DataComponentType<T> type) {
+		throw new AssertionError("Implemented in Mixin");
+	}
+
 	/**
 	 * Gets the current value for the component type in the builder, or creates and adds a new value if it is not present.
 	 *

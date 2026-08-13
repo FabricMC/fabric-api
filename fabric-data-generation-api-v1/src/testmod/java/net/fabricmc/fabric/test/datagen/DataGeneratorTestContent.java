@@ -27,6 +27,7 @@ import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -82,6 +83,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 	// Empty registry
 	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic_empty"));
+
+	public static final TagKey<SoundEvent> EQUIP_SOUNDS = TagKey.create(Registries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_equip_sounds"));
 
 	@Override
 	public void onInitialize() {

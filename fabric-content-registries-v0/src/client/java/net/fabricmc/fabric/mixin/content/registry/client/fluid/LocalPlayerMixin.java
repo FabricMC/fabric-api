@@ -27,7 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionRegistryImpl;
-import net.fabricmc.fabric.mixin.content.registry.fluid.EntityAccessor;
+import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(LocalPlayer.class)
 public class LocalPlayerMixin {
@@ -37,10 +37,8 @@ public class LocalPlayerMixin {
 			return true;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid && EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).canMoveDownInFluid(tagKey, (Entity) (Object) this)) {
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids()) {
+			if (EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).canMoveDownInFluid(tagKey, (Entity) (Object) this)) {
 				return true;
 			}
 		}
@@ -54,10 +52,8 @@ public class LocalPlayerMixin {
 			return true;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid && EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).canSwimInFluid(tagKey, (Entity) (Object) this)) {
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids()) {
+			if (EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).canSwimInFluid(tagKey, (Entity) (Object) this)) {
 				return true;
 			}
 		}
@@ -71,10 +67,8 @@ public class LocalPlayerMixin {
 			return true;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid && !EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).canSprintInFluid(tagKey, (LivingEntity) (Object) this)) {
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids()) {
+			if (!EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).canSprintInFluid(tagKey, (LivingEntity) (Object) this)) {
 				return true;
 			}
 		}

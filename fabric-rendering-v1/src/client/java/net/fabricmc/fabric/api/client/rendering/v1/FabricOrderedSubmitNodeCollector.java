@@ -37,5 +37,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @see SubmitRenderPhases Vanilla's built-in render phases.
 	 * @see FeatureRendererRegistry Registry for custom feature renderers.
 	 */
-	<T extends SubmitNode> void submitCustom(SubmitRenderPhase<T> phase, T node);
+	default <T extends SubmitNode> void submitCustom(SubmitRenderPhase<T> phase, T node) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
 }

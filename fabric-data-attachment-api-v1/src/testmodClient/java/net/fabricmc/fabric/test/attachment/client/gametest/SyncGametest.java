@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -45,16 +44,12 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class SyncGametest implements FabricClientGameTest {
 	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-syncing-gametest");
-
-	private static ServerPlayer getSinglePlayer(MinecraftServer server) {
-		return server.getPlayerList().getPlayers().getFirst();
-	}
 
 	private static void setSyncedWithAll(AttachmentTarget target) {
 		set(target, AttachmentTestMod.SYNCED_WITH_ALL);
@@ -130,12 +125,12 @@ public class SyncGametest implements FabricClientGameTest {
 
 			LOGGER.info("Joining dedicated server");
 
-			try (TestServerConnection connection = serverContext.connect()) {
-				connection.getClientLevel().waitForChunksDownload();
+			try (TestDedicatedServerConnection connection = serverContext.connect()) {
+				connection.waitForChunksDownload();
 
 				LOGGER.info("Setting up rest of synced attachments");
 				serverContext.runOnServer(server -> {
-					ServerPlayer player = getSinglePlayer(server);
+					ServerPlayer player = connection.getServerPlayer();
 					setSyncedWithAll(player);
 					set(player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					set(player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
@@ -150,12 +145,11 @@ public class SyncGametest implements FabricClientGameTest {
 					set(server.overworld().getBlockEntity(state.furnacePos), AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 				});
 
-				// safety
-				context.waitTick();
+				connection.waitForClientboundPackets();
 
 				LOGGER.info("Testing synced attachments (1/2)");
 				context.runOnClient(client -> {
-					ClientLevel level = Objects.requireNonNull(client.level);
+					ClientLevel level = connection.getClientLevel();
 					Entity villager = level.getEntity(state.villagerId);
 					BlockEntity furnace = level.getBlockEntity(state.furnacePos);
 
@@ -184,9 +178,9 @@ public class SyncGametest implements FabricClientGameTest {
 
 				// Test modifying attachments using the data command, and that the changes are synced to the client.
 				serverContext.runCommand("data modify entity @n[name=\"TestVillager\"] \"fabric:attachments\".\"fabric-data-attachment-api-v1-testmod:synced_item\".id set value \"minecraft:diamond\"");
-				context.waitTick();
+				connection.waitForClientboundPackets();
 				context.runOnClient(client -> {
-					ClientLevel level = Objects.requireNonNull(client.level);
+					ClientLevel level = connection.getClientLevel();
 					Entity villager = level.getEntity(state.villagerId);
 					ItemStack syncedItem = villager.getAttached(AttachmentTestMod.SYNCED_ITEM);
 
@@ -199,10 +193,9 @@ public class SyncGametest implements FabricClientGameTest {
 				// now teleport to nether, on roof to avoid suffocation when switching to survival
 				serverContext.runCommand("execute in minecraft:the_nether run tp @p ~ 128 ~");
 				serverContext.runCommand("gamemode survival @p");
-				serverContext.runOnServer(server -> getSinglePlayer(server).removeAttached(AttachmentTestMod.SYNCED_CREATIVE_ONLY));
+				serverContext.runOnServer(server -> connection.getServerPlayer().removeAttached(AttachmentTestMod.SYNCED_CREATIVE_ONLY));
 
-				// safety
-				context.waitTick();
+				connection.waitForClientboundPackets();
 
 				LOGGER.info("Testing synced attachments (2/2)");
 				context.runOnClient(client -> {
