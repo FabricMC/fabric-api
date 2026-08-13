@@ -27,15 +27,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Suppliers;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.logging.LogUtils;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
@@ -61,10 +57,8 @@ import net.fabricmc.loader.api.FabricLoader;
 /// The resources of this pack are stored in memory instead of it being on-disk.
 public abstract class InMemoryPackResources implements MutablePackResources {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final ExecutorService EXECUTOR_SERVICE;
 	private static final boolean DUMP = TriState.fromSystemProperty("fabric.resource_loader.debug.pack.dump_from_in_memory")
 			.orElse(FabricLoader.getInstance().isDevelopmentEnvironment());
-	private static final String VIRTUAL_ASYNC_THREADS_PROPERTY = "fabric.resource_loader.pack.virtual_async_threads";
 	private final Map<Identifier, Supplier<byte[]>> assets = new ConcurrentHashMap<>();
 	private final Map<Identifier, Supplier<byte[]>> data = new ConcurrentHashMap<>();
 	private final Map<String, Supplier<byte[]>> root = new ConcurrentHashMap<>();
@@ -159,19 +153,16 @@ public abstract class InMemoryPackResources implements MutablePackResources {
 		this.getResourceMap(type).put(id, () -> resource);
 	}
 
-	@Override
-	public void putResource(String fileName, Supplier<byte[]> resource) {
+	private void putResource(String fileName, Supplier<byte[]> resource) {
 		this.root.put(fileName, Suppliers.memoize(resource::get));
 	}
 
-	@Override
-	public void putResource(PackType type, Identifier id, Supplier<byte[]> resource) {
+	private void putResource(PackType type, Identifier id, Supplier<byte[]> resource) {
 		this.getResourceMap(type).put(id, Suppliers.memoize(resource::get));
 	}
 
 	@Override
-	public Future<byte[]> putResourceAsync(String fileName, Function<String, byte[]> resourceFactory) {
-		Future<byte[]> future = EXECUTOR_SERVICE.submit(() -> resourceFactory.apply(fileName));
+	public void putResourceAsync(String fileName, Future<byte[]> future) {
 		this.putResource(fileName, () -> {
 			try {
 				return future.get();
@@ -179,12 +170,10 @@ public abstract class InMemoryPackResources implements MutablePackResources {
 				throw new RuntimeException(e);
 			}
 		});
-		return future;
 	}
 
 	@Override
-	public Future<byte[]> putResourceAsync(PackType type, Identifier id, Function<Identifier, byte[]> resourceFactory) {
-		Future<byte[]> future = EXECUTOR_SERVICE.submit(() -> resourceFactory.apply(id));
+	public void putResourceAsync(PackType type, Identifier id, Future<byte[]> future) {
 		this.putResource(type, id, () -> {
 			try {
 				return future.get();
@@ -192,7 +181,6 @@ public abstract class InMemoryPackResources implements MutablePackResources {
 				throw new RuntimeException(e);
 			}
 		});
-		return future;
 	}
 
 	@Override
@@ -248,24 +236,6 @@ public abstract class InMemoryPackResources implements MutablePackResources {
 		case CLIENT_RESOURCES -> this.assets;
 		case SERVER_DATA -> this.data;
 		};
-	}
-
-	static {
-		int threads = Math.max(Runtime.getRuntime().availableProcessors() / 2 - 1, 1);
-		String threadsOverride = System.getProperty(VIRTUAL_ASYNC_THREADS_PROPERTY);
-
-		if (threadsOverride != null) {
-			try {
-				threads = Integer.parseInt(threadsOverride);
-			} catch (NumberFormatException e) {
-				LOGGER.error("Could not use the number provided by the property \"{}\": ", VIRTUAL_ASYNC_THREADS_PROPERTY, e);
-			}
-		}
-
-		EXECUTOR_SERVICE = Executors.newFixedThreadPool(
-				threads,
-				new ThreadFactoryBuilder().setDaemon(true).setNameFormat("Fabric-Resource-Loader-Virtual-Pack-Worker-%s").build()
-		);
 	}
 
 	/// Represents an in-memory resource pack with a static location.

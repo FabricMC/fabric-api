@@ -17,9 +17,8 @@
 package net.fabricmc.fabric.api.resource.v1.pack;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -35,66 +34,39 @@ public interface MutablePackResources extends PackResources {
 	/// @param fileName the name of the file
 	/// @param resource the resource content
 	/// @see #putResource(PackType, Identifier, byte[])
-	///@see #putResource(String, Supplier)
-	/// @see #putResourceAsync(String, Function)
+	/// @see #putResourceAsync(String, Future)
 	void putResource(String fileName, byte[] resource);
 
 	/// Puts a resource into the resource pack for the given side and path.
 	///
-	/// @param type     the resource type
-	/// @param id       the path of the resource
+	/// @param type the resource type
+	/// @param id the path of the resource
 	/// @param resource the resource content
 	/// @see #putResource(String, byte[])
-	/// @see #putResource(PackType, Identifier, Supplier)
-	/// @see #putResourceAsync(PackType, Identifier, Function)
+	/// @see #putResourceAsync(PackType, Identifier, Future)
 	void putResource(PackType type, Identifier id, byte[] resource);
-
-	/// Puts a resource into the resource pack's root.
-	///
-	/// @param fileName the name of the file
-	/// @param resource the supplier of the resource content
-	/// @apiNote the supplier is {@link com.google.common.base.Suppliers#memoize(com.google.common.base.Supplier) memoized}
-	/// @see #putResource(PackType, Identifier, Supplier)
-	/// @see #putResource(String, byte[])
-	/// @see #putResourceAsync(String, Function)
-	void putResource(String fileName, Supplier<byte[]> resource);
-
-	/// Puts a resource into the resource pack for the given side and path.
-	///
-	/// @param type     the resource type
-	/// @param id       the path of the resource
-	/// @param resource the supplier of the resource content
-	/// @apiNote the supplier is {@link com.google.common.base.Suppliers#memoize(com.google.common.base.Supplier) memoized}
-	/// @see #putResource(String, Supplier)
-	/// @see #putResource(PackType, Identifier, byte[])
-	/// @see #putResourceAsync(PackType, Identifier, Function)
-	void putResource(PackType type, Identifier id, Supplier<byte[]> resource);
 
 	/// Puts a resource into the resource pack's root asynchronously.
 	///
-	/// @param fileName        the name of the file
-	/// @param resourceFactory the factory of the resource content
-	/// @return the future
-	/// @see #putResourceAsync(PackType, Identifier, Function)
+	/// @param fileName the name of the file
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(PackType, Identifier, Future)
 	/// @see #putResource(String, byte[])
-	/// @see #putResource(String, Supplier)
-	Future<byte[]> putResourceAsync(String fileName, Function<String, byte[]> resourceFactory);
+	void putResourceAsync(String fileName, Future<byte[]> future);
 
 	/// Puts a resource into the resource pack for the given side and path asynchronously.
 	///
-	/// @param type            the resource type
-	/// @param id              the path of the resource
-	/// @param resourceFactory the factory of the resource content
-	/// @return the future
-	/// @see #putResourceAsync(String, Function)
+	/// @param type the resource type
+	/// @param id the path of the resource
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(String, Future)
 	/// @see #putResource(PackType, Identifier, byte[])
-	/// @see #putResource(PackType, Identifier, Supplier)
-	Future<byte[]> putResourceAsync(PackType type, Identifier id, Function<Identifier, byte[]> resourceFactory);
+	void putResourceAsync(PackType type, Identifier id, Future<byte[]> future);
 
 	/// Puts a text resource into the resource pack's root.
 	///
 	/// @param fileName the name of the file
-	/// @param text     the resource content
+	/// @param text the resource content
 	/// @see #putResource(String, byte[])
 	default void putText(String fileName, String text) {
 		this.putResource(fileName, text.getBytes(StandardCharsets.UTF_8));
@@ -103,53 +75,30 @@ public interface MutablePackResources extends PackResources {
 	/// Puts a text resource into the resource pack for the given side and path.
 	///
 	/// @param type the resource type
-	/// @param id   the path of the resource
+	/// @param id the path of the resource
 	/// @param text the resource content
 	/// @see #putResource(PackType, Identifier, byte[])
 	default void putText(PackType type, Identifier id, String text) {
 		this.putResource(type, id, text.getBytes(StandardCharsets.UTF_8));
 	}
 
-	/// Puts a text resource into the resource pack's root.
-	///
-	/// @param fileName     the name of the file
-	/// @param textSupplier the supplier of the resource content
-	/// @apiNote the supplier is {@link com.google.common.base.Suppliers#memoize(com.google.common.base.Supplier) memoized}
-	/// @see #putResource(String, Supplier)
-	default void putText(String fileName, Supplier<String> textSupplier) {
-		this.putResource(fileName, () -> textSupplier.get().getBytes(StandardCharsets.UTF_8));
-	}
-
-	/// Puts a text resource into the resource pack for the given side and path.
-	///
-	/// @param type         the resource type
-	/// @param id           the path of the resource
-	/// @param textSupplier the supplier of the resource content
-	/// @apiNote the supplier is {@link com.google.common.base.Suppliers#memoize(com.google.common.base.Supplier) memoized}
-	/// @see #putResource(PackType, Identifier, Supplier)
-	default void putText(PackType type, Identifier id, Supplier<String> textSupplier) {
-		this.putResource(type, id, () -> textSupplier.get().getBytes(StandardCharsets.UTF_8));
-	}
-
 	/// Puts a text resource into the resource pack's root asynchronously.
 	///
-	/// @param fileName    the name of the file
-	/// @param textFactory the factory of the resource content
-	/// @return the future
-	/// @see #putResourceAsync(String, Function)
-	default Future<byte[]> putTextAsync(String fileName, Function<String, String> textFactory) {
-		return this.putResourceAsync(fileName, textFactory.andThen(text -> text.getBytes(StandardCharsets.UTF_8)));
+	/// @param fileName the name of the file
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(String, Future)
+	default void putTextAsync(String fileName, CompletableFuture<String> future) {
+		this.putResourceAsync(fileName, future.thenApply(text -> text.getBytes(StandardCharsets.UTF_8)));
 	}
 
 	/// Puts a text resource into the resource pack for the given side and path asynchronously.
 	///
-	/// @param type        the resource type
-	/// @param id          the path of the resource
-	/// @param textFactory the factory of the resource content
-	/// @return the future
-	/// @see #putResourceAsync(PackType, Identifier, Function)
-	default Future<byte[]> putTextAsync(PackType type, Identifier id, Function<Identifier, String> textFactory) {
-		return this.putResourceAsync(type, id, textFactory.andThen(text -> text.getBytes(StandardCharsets.UTF_8)));
+	/// @param type the resource type
+	/// @param id the path of the resource
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(PackType, Identifier, Future)
+	default void putTextAsync(PackType type, Identifier id, CompletableFuture<String> future) {
+		this.putResourceAsync(type, id, future.thenApply(text -> text.getBytes(StandardCharsets.UTF_8)));
 	}
 
 	/// Puts a JSON resource into the resource pack's root.
@@ -173,52 +122,27 @@ public interface MutablePackResources extends PackResources {
 		this.putText(type, id, codec.encodeStart(JsonOps.INSTANCE, value).getOrThrow().toString());
 	}
 
-	/// Puts a JSON resource into the resource pack's root.
-	///
-	/// @param fileName      the name of the file
-	/// @param codec         the codec to serialize the value into JSON
-	/// @param valueSupplier the supplier of the resource content
-	/// @apiNote the supplier is {@link com.google.common.base.Suppliers#memoize(com.google.common.base.Supplier) memoized}
-	/// @see #putResource(String, Supplier)
-	default <T> void putJson(String fileName, Codec<T> codec, Supplier<T> valueSupplier) {
-		this.putText(fileName, () -> codec.encodeStart(JsonOps.INSTANCE, valueSupplier.get()).getOrThrow().toString());
-	}
-
-	/// Puts a JSON resource into the resource pack for the given side and path.
-	///
-	/// @param type          the resource type
-	/// @param id            the path of the resource
-	/// @param codec         the codec to serialize the value into JSON
-	/// @param valueSupplier the supplier of the resource content
-	/// @apiNote the supplier is {@link com.google.common.base.Suppliers#memoize(com.google.common.base.Supplier) memoized}
-	/// @see #putResource(PackType, Identifier, Supplier)
-	default <T> void putJson(PackType type, Identifier id, Codec<T> codec, Supplier<T> valueSupplier) {
-		this.putText(type, id, () -> codec.encodeStart(JsonOps.INSTANCE, valueSupplier.get()).getOrThrow().toString());
-	}
-
 	/// Puts a JSON resource into the resource pack's root asynchronously.
 	///
-	/// @param fileName     the name of the file
-	/// @param codec        the codec to serialize the value into JSON
-	/// @param valueFactory the factory of the resource content
-	/// @return the future
-	/// @see #putResourceAsync(String, Function)
-	default <T> Future<byte[]> putJsonAsync(String fileName, Codec<T> codec, Function<String, T> valueFactory) {
-		return this.putTextAsync(fileName, valueFactory.andThen(
+	/// @param fileName the name of the file
+	/// @param codec the codec to serialize the value into JSON
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(String, Future)
+	default <T> void putJsonAsync(String fileName, Codec<T> codec, CompletableFuture<T> future) {
+		this.putTextAsync(fileName, future.thenApply(
 				value -> codec.encodeStart(JsonOps.INSTANCE, value).getOrThrow().toString()
 		));
 	}
 
 	/// Puts a JSON resource into the resource pack for the given side and path asynchronously.
 	///
-	/// @param type         the resource type
-	/// @param id           the path of the resource
-	/// @param codec        the codec to serialize the value into JSON
-	/// @param valueFactory the factory of the resource content
-	/// @return the future
-	/// @see #putResourceAsync(PackType, Identifier, Function)
-	default <T> Future<byte[]> putJsonAsync(PackType type, Identifier id, Codec<T> codec, Function<Identifier, T> valueFactory) {
-		return this.putTextAsync(type, id, valueFactory.andThen(
+	/// @param type the resource type
+	/// @param id the path of the resource
+	/// @param codec the codec to serialize the value into JSON
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(PackType, Identifier, Future)
+	default <T> void putJsonAsync(PackType type, Identifier id, Codec<T> codec, CompletableFuture<T> future) {
+		this.putTextAsync(type, id, future.thenApply(
 				value -> codec.encodeStart(JsonOps.INSTANCE, value).getOrThrow().toString()
 		));
 	}

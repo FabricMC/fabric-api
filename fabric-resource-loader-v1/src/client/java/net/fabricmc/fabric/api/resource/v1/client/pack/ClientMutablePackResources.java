@@ -17,9 +17,8 @@
 package net.fabricmc.fabric.api.resource.v1.client.pack;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
@@ -34,7 +33,7 @@ public interface ClientMutablePackResources extends MutablePackResources {
 	/// Puts an image resource into the resource pack's root.
 	///
 	/// @param fileName the name of the file
-	/// @param image    the resource content
+	/// @param image the resource content
 	/// @see #putResource(String, byte[])
 	default void putImage(String fileName, NativeImage image) throws IOException {
 		this.putResource(fileName, NativeImageUtils.toBytes(image));
@@ -42,50 +41,20 @@ public interface ClientMutablePackResources extends MutablePackResources {
 
 	/// Puts an image resource into the resource pack for the given path in the `assets` directory.
 	///
-	/// @param id    the path of the resource
+	/// @param id the path of the resource
 	/// @param image the resource content
 	/// @see #putResource(PackType, Identifier, byte[])
 	default void putImage(Identifier id, NativeImage image) throws IOException {
 		this.putResource(PackType.CLIENT_RESOURCES, id, NativeImageUtils.toBytes(image));
 	}
 
-	/// Puts an image resource into the resource pack's root.
-	///
-	/// @param fileName      the name of the file
-	/// @param imageSupplier the supplier of the resource content
-	/// @see #putResource(String, Supplier)
-	default void putImage(String fileName, Supplier<NativeImage> imageSupplier) {
-		this.putResource(fileName, () -> {
-			try (NativeImage image = imageSupplier.get()) {
-				return NativeImageUtils.toBytes(image);
-			} catch (IOException e) {
-				throw new RuntimeException("Failed to serialize image for file " + fileName, e);
-			}
-		});
-	}
-
-	/// Puts an image resource into the resource pack for the given path in the `assets` directory.
-	///
-	/// @param id            the path of the resource
-	/// @param imageSupplier the supplier of the resource content
-	/// @see #putResource(PackType, Identifier, Supplier)
-	default void putImage(Identifier id, Supplier<NativeImage> imageSupplier) {
-		this.putResource(PackType.CLIENT_RESOURCES, id, () -> {
-			try (NativeImage image = imageSupplier.get()) {
-				return NativeImageUtils.toBytes(image);
-			} catch (IOException e) {
-				throw new RuntimeException("Failed to serialize image for resource " + id, e);
-			}
-		});
-	}
-
 	/// Puts an image resource into the resource pack's root asynchronously.
 	///
-	/// @param fileName     the name of the file
-	/// @param imageFactory the factory of the resource content
-	/// @see #putResourceAsync(String, Function)
-	default Future<byte[]> putImageAsync(String fileName, Function<String, NativeImage> imageFactory) {
-		return this.putResourceAsync(fileName, imageFactory.andThen(image -> {
+	/// @param fileName the name of the file
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(String, Future)
+	default void putImageAsync(String fileName, CompletableFuture<NativeImage> future) {
+		this.putResourceAsync(fileName, future.thenApply(image -> {
 			try (image) {
 				return NativeImageUtils.toBytes(image);
 			} catch (IOException e) {
@@ -96,14 +65,13 @@ public interface ClientMutablePackResources extends MutablePackResources {
 
 	/// Puts an image resource into the resource pack for the given path in the `assets` directory asynchronously.
 	///
-	/// @param id           the path of the resource
-	/// @param imageFactory the factory of the resource content
-	/// @apiNote the supplier is {@link com.google.common.base.Suppliers#memoize(com.google.common.base.Supplier) memoized}
-	/// @see #putResourceAsync(PackType, Identifier, Function)
-	default Future<byte[]> putImageAsync(
-			Identifier id, Function<Identifier, NativeImage> imageFactory
+	/// @param id the path of the resource
+	/// @param future the future of the resource content
+	/// @see #putResourceAsync(PackType, Identifier, Future)
+	default void putImageAsync(
+			Identifier id, CompletableFuture<NativeImage> future
 	) {
-		return this.putResourceAsync(PackType.CLIENT_RESOURCES, id, imageFactory.andThen(image -> {
+		this.putResourceAsync(PackType.CLIENT_RESOURCES, id, future.thenApply(image -> {
 			try (image) {
 				return NativeImageUtils.toBytes(image);
 			} catch (IOException e) {

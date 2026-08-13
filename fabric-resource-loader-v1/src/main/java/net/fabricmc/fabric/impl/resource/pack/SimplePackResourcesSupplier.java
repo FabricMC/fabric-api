@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.resource.v1.pack;
+package net.fabricmc.fabric.impl.resource.pack;
 
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
@@ -23,7 +23,6 @@ import net.minecraft.server.packs.repository.Pack;
 /// Represents a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `pack`.
 ///
 /// @param pack the pack resources
-//CHECKSTYLE.OFF: MatchXpath
 public record SimplePackResourcesSupplier(PackResources pack) implements Pack.ResourcesSupplier {
 	@Override
 	public PackResources openPrimary(PackLocationInfo location) {
