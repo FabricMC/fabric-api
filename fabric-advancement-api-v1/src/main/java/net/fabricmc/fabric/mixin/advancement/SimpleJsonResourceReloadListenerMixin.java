@@ -33,17 +33,17 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 
-import net.fabricmc.fabric.api.advancement.v1.AdvancementUtil;
+import net.fabricmc.fabric.impl.advancement.AdvancementSourceTracker;
 
 @Mixin(SimpleJsonResourceReloadListener.class)
-public class SimpleJsonResourceReloadListenerMixin {
+public abstract class SimpleJsonResourceReloadListenerMixin {
 	@ModifyExpressionValue(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/FileToIdConverter;fileToId(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;"))
 	private static Identifier fillSourceMap(Identifier id, ResourceManager manager, FileToIdConverter lister, DynamicOps<JsonElement> ops, Codec<?> codec, Map<Identifier, ?> result, @Local(name = "entry") Map.Entry<Identifier, Resource> entry) {
 		final String dirName = lister.prefix();
 
 		// Make sure we only process files from the advancement registry path
 		if (Registries.ADVANCEMENT.identifier().getPath().equals(dirName)) {
-			AdvancementUtil.SOURCES.put(id, AdvancementUtil.determineSource(entry.getValue()));
+			AdvancementSourceTracker.put(result, id, AdvancementSourceTracker.determineSource(entry.getValue()));
 		}
 
 		return id;

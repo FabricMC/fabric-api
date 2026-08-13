@@ -17,7 +17,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.18.4",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-resource-loader-v1": "*"
   },
   "description": "Hooks for manipulating advancements.",
   "mixins": [

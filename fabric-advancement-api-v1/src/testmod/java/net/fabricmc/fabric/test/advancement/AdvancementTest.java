@@ -16,12 +16,16 @@
 
 package net.fabricmc.fabric.test.advancement;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.InventoryChangeTrigger;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -33,8 +37,8 @@ import net.fabricmc.fabric.api.advancement.v1.AdvancementSource;
 import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
 
 public class AdvancementTest implements ModInitializer {
-	private static final Identifier TACTICAL_FISHING = Identifier.withDefaultNamespace("husbandry/tactical_fishing");
-	private static final Identifier RECIPE_BOOK = Identifier.withDefaultNamespace("recipes/root");
+	static final Identifier TACTICAL_FISHING = Identifier.withDefaultNamespace("husbandry/tactical_fishing");
+	static final Identifier RECIPE_BOOK = Identifier.withDefaultNamespace("recipes/root");
 
 	@Override
 	public void onInitialize() {
@@ -85,6 +89,10 @@ public class AdvancementTest implements ModInitializer {
 					throw new AssertionError("tactical_fishing advancement should originally have a pufferfish_bucket criterion");
 				}
 
+				if (!builder.getRequirements().names().contains("pufferfish_bucket")) {
+					throw new AssertionError("tactical_fishing advancement should originally require the pufferfish_bucket criterion");
+				}
+
 				// Remove the vanilla criterion and add our own
 				builder.removeCriterion("pufferfish_bucket");
 				builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
@@ -93,12 +101,38 @@ public class AdvancementTest implements ModInitializer {
 					throw new AssertionError("pufferfish_bucket criterion should have been removed from getCriteria()");
 				}
 
+				if (builder.getRequirements().names().contains("pufferfish_bucket")) {
+					throw new AssertionError("pufferfish_bucket criterion should have been removed from the requirements");
+				}
+
 				if (!builder.getCriteria().containsKey("stone_pickaxe")) {
 					throw new AssertionError("stone_pickaxe criterion should be added");
 				}
 
-				// Require the new criterion without touching other configured requirements
+				// A removed criterion can be added back
+				builder.removeCriterion("stone_pickaxe");
+				builder.addCriterion("stone_pickaxe", InventoryChangeTrigger.TriggerInstance.hasItems(Items.STONE_PICKAXE));
+
+				if (!builder.getCriteria().containsKey("stone_pickaxe")) {
+					throw new AssertionError("stone_pickaxe criterion should be added back after being removed");
+				}
+
+				// The criteria can also be read, modified and written back in one go
+				Map<String, Criterion<?>> criteria = new HashMap<>(builder.getCriteria());
+				criteria.put("diamond_sword", InventoryChangeTrigger.TriggerInstance.hasItems(Items.DIAMOND_SWORD));
+				builder.setCriteria(criteria);
+
+				if (!builder.getCriteria().keySet().equals(criteria.keySet())) {
+					throw new AssertionError("setCriteria should have set the criteria to " + criteria.keySet() + ", got " + builder.getCriteria().keySet());
+				}
+
+				// Require the new criteria without touching other configured requirements
 				builder.requireCriterion("stone_pickaxe");
+				builder.requireCriteria(List.of("stone_pickaxe", "diamond_sword"));
+
+				if (!builder.getRequirements().names().contains("diamond_sword")) {
+					throw new AssertionError("diamond_sword criterion should be required after requireCriteria");
+				}
 
 				// Swap the display but keep the rest of the original display's properties
 				DisplayInfo originalDisplay = display.get();
@@ -139,6 +173,10 @@ public class AdvancementTest implements ModInitializer {
 
 			if (!tacticalFishing.criteria().containsKey("stone_pickaxe")) {
 				throw new AssertionError("stone_pickaxe criterion should be present on the loaded advancement");
+			}
+
+			if (!tacticalFishing.criteria().containsKey("diamond_sword")) {
+				throw new AssertionError("diamond_sword criterion should be present on the loaded advancement");
 			}
 
 			if (!tacticalFishing.sendsTelemetryEvent()) {

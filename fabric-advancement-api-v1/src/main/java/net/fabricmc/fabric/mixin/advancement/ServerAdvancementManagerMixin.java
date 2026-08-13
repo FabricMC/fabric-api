@@ -35,36 +35,41 @@ import net.minecraft.util.profiling.ProfilerFiller;
 
 import net.fabricmc.fabric.api.advancement.v1.AdvancementEvents;
 import net.fabricmc.fabric.api.advancement.v1.AdvancementSource;
-import net.fabricmc.fabric.api.advancement.v1.AdvancementUtil;
 import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
+import net.fabricmc.fabric.impl.advancement.AdvancementSourceTracker;
 
+/**
+ * Implements the events from {@link AdvancementEvents}.
+ */
 @Mixin(ServerAdvancementManager.class)
-public class ServerAdvancementManagerMixin {
-	@Final
+abstract class ServerAdvancementManagerMixin {
 	@Shadow
+	@Final
 	private HolderLookup.Provider registries;
 
 	@Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
 	private void onApply(Map<Identifier, Advancement> preparations, ResourceManager manager, ProfilerFiller profiler, CallbackInfo ci) {
+		// Populated inside SimpleJsonResourceReloadListenerMixin
+		Map<Identifier, AdvancementSource> sources = AdvancementSourceTracker.remove(preparations);
 		Map<Identifier, Advancement> modifiedAdvancements = new HashMap<>();
 
 		preparations.forEach((id, advancement) -> {
-			// get the source, defaulting to DATA_PACK
-			AdvancementSource source = AdvancementUtil.SOURCES.getOrDefault(id, AdvancementSource.DATA_PACK);
+			AdvancementSource source = sources.getOrDefault(id, AdvancementSource.DATA_PACK);
 
-			// replace event
-			Advancement replacement = AdvancementEvents.REPLACE.invoker().replaceAdvancement(id, advancement, source, registries);
+			// Invoke the REPLACE event for the current advancement.
+			Advancement replacement = AdvancementEvents.REPLACE.invoker().replaceAdvancement(id, advancement, source, this.registries);
 
 			if (replacement != null) {
+				// Set the advancement to MODIFY to be the replacement advancement.
+				// The MODIFY event will also see it as a replaced advancement via the source.
 				advancement = replacement;
 				source = AdvancementSource.REPLACED;
 			}
 
-			// Turn the current advancement into a modifiable builder and then modify event
+			// Turn the current advancement into a modifiable builder and invoke the MODIFY event.
 			Advancement.Builder builder = FabricAdvancementBuilder.copyOf(advancement);
-			AdvancementEvents.MODIFY.invoker().modifyAdvancement(id, builder, source, registries);
+			AdvancementEvents.MODIFY.invoker().modifyAdvancement(id, builder, source, this.registries);
 
-			// Build the advancement and store it
 			modifiedAdvancements.put(id, builder.build(id).value());
 		});
 
@@ -76,8 +81,6 @@ public class ServerAdvancementManagerMixin {
 	@Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("RETURN"))
 	private void onLoaded(Map<Identifier, Advancement> preparations, ResourceManager manager, ProfilerFiller profiler, CallbackInfo ci) {
 		// After everything, so all advancements are loaded
-		AdvancementEvents.ALL_LOADED.invoker().onAdvancementsLoaded(manager, preparations, registries);
-		// And clear the sources for next /reload
-		AdvancementUtil.SOURCES.clear();
+		AdvancementEvents.ALL_LOADED.invoker().onAdvancementsLoaded(manager, preparations, this.registries);
 	}
 }

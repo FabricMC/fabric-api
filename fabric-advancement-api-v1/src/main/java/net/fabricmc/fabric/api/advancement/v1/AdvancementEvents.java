@@ -37,7 +37,11 @@ public final class AdvancementEvents {
 
 	/**
 	 * This event can be used to replace advancements.
-	 * If an advancement is replaced, its source will be marked as {@link AdvancementSource#REPLACED}.
+	 *
+	 * <p>A listener returns the new advancement, or {@code null} to leave the advancement as it is.
+	 * The first listener that returns a new advancement wins: the remaining listeners are not called.
+	 *
+	 * <p>If an advancement is replaced, its source will be marked as {@link AdvancementSource#REPLACED}.
 	 */
 	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (id, original, source, registries) -> {
 		for (Replace listener : listeners) {
@@ -98,10 +102,11 @@ public final class AdvancementEvents {
 		/**
 		 * Replaces advancements.
 		 *
-		 * @param id        the advancement identifier
-		 * @param original  the original advancement
-		 * @param source    the source of the original advancement
-		 * @return the new advancement, or null if it wasn't replaced
+		 * @param id         the advancement identifier
+		 * @param original   the original advancement
+		 * @param source     the source of the original advancement
+		 * @param registries the dynamic registries of the server
+		 * @return the new advancement, or {@code null} to keep the original one
 		 */
 		@Nullable
 		Advancement replaceAdvancement(Identifier id, Advancement original, AdvancementSource source, HolderLookup.Provider registries);
@@ -112,9 +117,10 @@ public final class AdvancementEvents {
 		/**
 		 * Called when an advancement is loading to modify advancements.
 		 *
-		 * @param id        the advancement identifier
-		 * @param builder   a builder of the advancement being loaded
-		 * @param source    the source of the advancement
+		 * @param id         the advancement identifier
+		 * @param builder    a builder of the advancement being loaded
+		 * @param source     the source of the advancement
+		 * @param registries the dynamic registries of the server
 		 */
 		void modifyAdvancement(Identifier id, Advancement.Builder builder, AdvancementSource source, HolderLookup.Provider registries);
 	}
@@ -125,7 +131,8 @@ public final class AdvancementEvents {
 		 * Called when all advancements have been loaded and {@link AdvancementEvents#REPLACE} and {@link AdvancementEvents#MODIFY} have been invoked.
 		 *
 		 * @param resourceManager the server resource manager
-		 * @param advancements    an immutable map of all loaded advancements
+		 * @param advancements    a map of all loaded advancements
+		 * @param registries      the dynamic registries of the server
 		 */
 		void onAdvancementsLoaded(ResourceManager resourceManager, Map<Identifier, Advancement> advancements, HolderLookup.Provider registries);
 	}
