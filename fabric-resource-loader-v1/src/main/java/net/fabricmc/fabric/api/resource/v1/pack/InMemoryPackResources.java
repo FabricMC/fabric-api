@@ -117,12 +117,12 @@ public abstract class InMemoryPackResources implements MutablePackResources {
 		if (!this.root.containsKey(PackResources.PACK_META)) {
 			if (metadataSectionType == PackMetadataSection.CLIENT_TYPE) {
 				return (T) new PackMetadataSection(
-						Component.literal("A virtual resource pack."),
+						Component.translatable("pack.description.fabric.virtual"),
 						new InclusiveRange<>(SharedConstants.getCurrentVersion().packVersion(PackType.CLIENT_RESOURCES))
 				);
 			} else if (metadataSectionType == PackMetadataSection.SERVER_TYPE) {
 				return (T) new PackMetadataSection(
-						Component.literal("A virtual resource pack."),
+						Component.translatable("pack.description.fabric.virtual"),
 						new InclusiveRange<>(SharedConstants.getCurrentVersion().packVersion(PackType.SERVER_DATA))
 				);
 			}

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.resource.loader.client;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -61,7 +62,7 @@ public class RepositorySourceTestMod implements ClientModInitializer {
 
 			profileAdder.accept(Objects.requireNonNull(Pack.readMetaAndCreate(
 					location,
-					new SimplePackResourcesSupplierFactory(new TestPackResources(location)),
+					SimplePackResourcesSupplierFactory.of(new TestPackResources(location)),
 					PackType.CLIENT_RESOURCES,
 					new PackSelectionConfig(false, Pack.Position.TOP, false)
 			)));
@@ -75,9 +76,14 @@ public class RepositorySourceTestMod implements ClientModInitializer {
 		TestPackResources(PackLocationInfo location) {
 			super(location);
 
-			this.putText("pack.mcmeta", this::createPackMeta);
-			this.putImage("pack.png", this::createRandomImage);
-			this.putImage(DIRT_IDENTIFIER, this::createRandomImage);
+			this.putText("pack.mcmeta", this.createPackMeta());
+
+			try {
+				this.putImage("pack.png", this.createRandomImage());
+				this.putImage(DIRT_IDENTIFIER, this.createRandomImage());
+			} catch (IOException e) {
+				throw new RuntimeException("Failed to generate textures.", e);
+			}
 		}
 
 		private String createPackMeta() {

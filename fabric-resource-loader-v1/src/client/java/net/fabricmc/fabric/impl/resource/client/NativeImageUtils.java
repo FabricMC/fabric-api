@@ -26,6 +26,12 @@ import org.lwjgl.stb.STBImage;
 
 public final class NativeImageUtils {
 	public static byte[] toBytes(NativeImage image) throws IOException {
+		if (!image.format().supportedByStb()) {
+			throw new UnsupportedOperationException("Don't know how to write format " + image.format());
+		} else {
+			image.checkAllocated();
+		}
+
 		try (
 				var stream = new ByteArrayOutputStream();
 				WritableByteChannel channel = Channels.newChannel(stream)

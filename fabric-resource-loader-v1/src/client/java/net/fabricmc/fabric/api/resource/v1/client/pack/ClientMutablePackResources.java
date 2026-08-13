@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.resource.v1.client.pack;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
@@ -52,7 +51,7 @@ public interface ClientMutablePackResources extends MutablePackResources {
 	///
 	/// @param fileName the name of the file
 	/// @param future the future of the resource content
-	/// @see #putResourceAsync(String, Future)
+	/// @see #putResourceAsync(String, java.util.concurrent.Future)
 	default void putImageAsync(String fileName, CompletableFuture<NativeImage> future) {
 		this.putResourceAsync(fileName, future.thenApply(image -> {
 			try (image) {
@@ -67,7 +66,7 @@ public interface ClientMutablePackResources extends MutablePackResources {
 	///
 	/// @param id the path of the resource
 	/// @param future the future of the resource content
-	/// @see #putResourceAsync(PackType, Identifier, Future)
+	/// @see #putResourceAsync(PackType, Identifier, java.util.concurrent.Future)
 	default void putImageAsync(
 			Identifier id, CompletableFuture<NativeImage> future
 	) {
