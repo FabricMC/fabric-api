@@ -16,21 +16,24 @@
 
 package net.fabricmc.fabric.api.resource.v1.pack;
 
+import java.util.function.Function;
+
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
 import net.fabricmc.fabric.impl.resource.pack.SimplePackResourcesSupplier;
 
-/// Provides the factory of a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `pack`.
+/// Provides the factory of a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `packFactory`.
 public final class SimplePackResourcesSupplierFactory {
 	private SimplePackResourcesSupplierFactory() {
 		throw new UnsupportedOperationException("SimplePackResourcesSupplierFactory only contains static definitions.");
 	}
 
-	/// Provides a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `pack`.
+	/// Provides a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `packFactory`.
 	///
-	/// @param pack the pack resources
-	public static Pack.ResourcesSupplier of(PackResources pack) {
-		return new SimplePackResourcesSupplier(pack);
+	/// @param packFactory the factory of the pack resources
+	public static Pack.ResourcesSupplier of(Function<PackLocationInfo, PackResources> packFactory) {
+		return new SimplePackResourcesSupplier(packFactory);
 	}
 }

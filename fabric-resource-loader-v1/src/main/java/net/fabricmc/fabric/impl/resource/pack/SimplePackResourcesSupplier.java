@@ -16,21 +16,24 @@
 
 package net.fabricmc.fabric.impl.resource.pack;
 
+import java.util.function.Function;
+
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
 /// Represents a very simple implementation of [Pack.ResourcesSupplier] which only opens the given `pack`.
 ///
-/// @param pack the pack resources
-public record SimplePackResourcesSupplier(PackResources pack) implements Pack.ResourcesSupplier {
+/// @param factory the factory of the pack resources
+public record SimplePackResourcesSupplier(
+		Function<PackLocationInfo, PackResources> factory) implements Pack.ResourcesSupplier {
 	@Override
 	public PackResources openPrimary(PackLocationInfo location) {
-		return this.pack;
+		return this.factory.apply(location);
 	}
 
 	@Override
 	public PackResources openFull(PackLocationInfo location, Pack.Metadata metadata) {
-		return this.pack;
+		return this.factory.apply(location);
 	}
 }

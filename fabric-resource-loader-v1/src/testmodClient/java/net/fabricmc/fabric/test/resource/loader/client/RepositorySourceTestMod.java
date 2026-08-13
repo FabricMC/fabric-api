@@ -62,7 +62,7 @@ public class RepositorySourceTestMod implements ClientModInitializer {
 
 			profileAdder.accept(Objects.requireNonNull(Pack.readMetaAndCreate(
 					location,
-					SimplePackResourcesSupplierFactory.of(new TestPackResources(location)),
+					SimplePackResourcesSupplierFactory.of(TestPackResources::new),
 					PackType.CLIENT_RESOURCES,
 					new PackSelectionConfig(false, Pack.Position.TOP, false)
 			)));
