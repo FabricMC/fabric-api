@@ -19,24 +19,15 @@
     "fabricloader": ">=0.18.4",
     "fabric-api-base": "*",
     "fabric-data-generation-api-v1": "*",
-    "fabric-networking-api-v1": "*",
-    "fabric-resource-conditions-api-v1": "*",
-    "fabric-registry-sync-v0": "*"
+    "fabric-resource-conditions-api-v1": "*"
   },
   "description": "Allows conveniently attaching data to holders via datapack",
   "mixins": [
-    "fabric-holder-component-api-v1.mixins.json",
-    {
-      "config": "fabric-holder-component-api-v1.client.mixins.json",
-      "environment": "client"
-    }
+    "fabric-holder-component-api-v1.mixins.json"
   ],
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.impl.holder.component.HolderComponentEntrypoint"
-    ],
-    "client": [
-      "net.fabricmc.fabric.impl.client.holder.component.HolderComponentClientEntrypoint"
     ]
   },
   "accessWidener": "fabric-holder-component-api-v1.classtweaker",
