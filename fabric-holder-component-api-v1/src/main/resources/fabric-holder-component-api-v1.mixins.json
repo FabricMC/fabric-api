@@ -7,7 +7,6 @@
     "ReloadableServerResourcesMixin",
     "extension.BlockEntityTypeMixin",
     "extension.BlockMixin",
-    "extension.DataComponentMapBuilderMixin",
     "extension.EntityTypeMixin",
     "extension.FluidMixin",
     "extension.HolderMixin",
