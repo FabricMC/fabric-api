@@ -17,17 +17,12 @@
 package net.fabricmc.fabric.impl.holder.component;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.holder.component.v1.FabricDataComponentInitializers;
-import net.fabricmc.fabric.impl.holder.component.data.DataHolderComponentInitializer;
 
 public class HolderComponentEntrypoint implements ModInitializer {
 	public static final String MOD_ID = "fabric-holder-component-api-v1";
 
 	@Override
 	public void onInitialize() {
-		FabricDataComponentInitializers.registerInitializer(
-				FabricDataComponentInitializers.DATA_HOLDER_COMPONENTS,
-				new DataHolderComponentInitializer()
-		);
+
 	}
 }

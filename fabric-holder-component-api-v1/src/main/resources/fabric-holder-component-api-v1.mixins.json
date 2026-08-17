@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "DataComponentInitializersMixin",
-    "RegistryOpsAccessor",
     "ReloadableServerResourcesMixin",
     "extension.BlockEntityTypeMixin",
     "extension.BlockMixin",

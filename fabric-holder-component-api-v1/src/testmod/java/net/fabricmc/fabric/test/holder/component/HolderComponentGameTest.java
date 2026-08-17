@@ -29,23 +29,6 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class HolderComponentGameTest {
 	@GameTest
-	public void testComponentChangesFromJSON(GameTestHelper helper) {
-		// We test for the addition a pig variant to ensure that dynamic registries are present
-		// when holder components are loaded from JSON
-		Holder<PigVariant> pigVariant = Items.WHEAT_SEEDS.get(DataComponents.PIG_VARIANT);
-		helper.assertTrue(
-				pigVariant != null && pigVariant.is(PigVariants.TEMPERATE),
-				"Wheat Seeds must have 'pig/variant' component with value 'temperate'"
-		);
-		helper.assertFalse(
-				Items.MELON_SEEDS.has(DataComponents.CUSTOM_NAME),
-				"Wheat Seeds must have its 'custom_name' component removed"
-		);
-
-		helper.succeed();
-	}
-
-	@GameTest
 	public void testComponentChangesFromInitializer(GameTestHelper helper) {
 		// We test for the addition a pig variant to ensure that DataComponentInitializers can both
 		// modify components and access dynamic registries

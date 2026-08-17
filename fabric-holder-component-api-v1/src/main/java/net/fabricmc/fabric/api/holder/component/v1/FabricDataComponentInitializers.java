@@ -27,9 +27,6 @@ import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializers
 /// @see FabricDataComponentInitializer
 // TODO: Finish docs
 public final class FabricDataComponentInitializers {
-	/// @see FabricDataComponentInitializers#addInitializerOrdering(Identifier, Identifier)
-	public static final Identifier DATA_HOLDER_COMPONENTS = Identifier.fromNamespaceAndPath("fabric", "data_holder_components");
-
 	private FabricDataComponentInitializers() {
 	}
 
