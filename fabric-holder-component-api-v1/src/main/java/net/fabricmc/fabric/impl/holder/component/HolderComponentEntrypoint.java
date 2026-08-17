@@ -23,6 +23,5 @@ public class HolderComponentEntrypoint implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
 	}
 }
