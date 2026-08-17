@@ -38,8 +38,8 @@ public class HolderComponentGameTest {
 				"Melon Seeds must have 'pig/variant' component with value 'temperate'"
 		);
 		helper.assertFalse(
-				Items.MELON_SEEDS.has(DataComponents.CUSTOM_NAME),
-				"Melon Seeds must have its 'custom_name' component removed"
+				Items.MELON_SEEDS.has(DataComponents.ITEM_NAME),
+				"Melon Seeds must have its 'item_name' component removed"
 		);
 
 		helper.succeed();
