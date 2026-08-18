@@ -50,19 +50,29 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final PackOutput.PathProvider pathProvider;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 	private final Codec<T> codec;
+	private final String extension;
 
-	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec) {
+	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec, String extension) {
 		this.pathProvider = pathProvider;
 		this.registriesFuture = Objects.requireNonNull(registriesFuture);
 		this.codec = codec;
+		this.extension = extension;
 	}
 
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
-		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec);
+		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec, "json");
+	}
+
+	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec, String extension) {
+		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec, extension);
 	}
 
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
-		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec);
+		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec, "json");
+	}
+
+	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec, String extension) {
+		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec, extension);
 	}
 
 	@Override
@@ -101,7 +111,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 
 	private CompletableFuture<?> write(CachedOutput output, Map<Identifier, JsonElement> entries) {
 		return CompletableFuture.allOf(entries.entrySet().stream().map(entry -> {
-			Path path = this.pathProvider.json(entry.getKey());
+			Path path = this.pathProvider.file(entry.getKey(), extension);
 			return DataProvider.saveStable(output, entry.getValue(), path);
 		}).toArray(CompletableFuture[]::new));
 	}
