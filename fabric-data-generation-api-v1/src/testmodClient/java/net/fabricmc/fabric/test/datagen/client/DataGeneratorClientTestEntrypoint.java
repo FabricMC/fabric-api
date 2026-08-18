@@ -19,14 +19,19 @@ package net.fabricmc.fabric.test.datagen.client;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+
+import com.mojang.serialization.Codec;
 
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSources;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
+import net.minecraft.client.resources.metadata.animation.AnimationFrame;
+import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
@@ -53,6 +58,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		final FabricDataGenerator.Pack pack = dataGenerator.createBuiltinResourcePack(Identifier.fromNamespaceAndPath(MOD_ID, "example_builtin"));
 		pack.addProvider(TestAtlasSourceProvider::new);
+		pack.addProvider(TestAnimationMetadataProvider::new);
 		pack.addProvider(TestModelProvider::new);
 		pack.addProvider(TestSoundsProvider::new);
 	}
@@ -70,6 +76,34 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		@Override
 		public String getName() {
 			return "Atlas Sources";
+		}
+	}
+
+	private static class TestAnimationMetadataProvider extends FabricCodecDataProvider<AnimationMetadataSection> {
+		private static final Codec<AnimationMetadataSection> CODEC = AnimationMetadataSection.CODEC.fieldOf("animation").codec();
+
+		protected TestAnimationMetadataProvider(FabricPackOutput packOutput, CompletableFuture<Provider> registriesFuture) {
+			super(packOutput, registriesFuture, PackOutput.Target.RESOURCE_PACK, "textures", CODEC, "mcmeta");
+		}
+
+		@Override
+		protected void configure(BiConsumer<Identifier, AnimationMetadataSection> provider, Provider registryLookup) {
+			provider.accept(Identifier.fromNamespaceAndPath(MOD_ID, "block/animation_metadata_example"), new AnimationMetadataSection(
+					Optional.of(List.of(
+							new AnimationFrame(1),
+							new AnimationFrame(2, Optional.of(20)),
+							new AnimationFrame(3)
+					)),
+					Optional.of(16),
+					Optional.of(16),
+					10,
+					true
+			));
+		}
+
+		@Override
+		public String getName() {
+			return "Animation Metadata";
 		}
 	}
 
