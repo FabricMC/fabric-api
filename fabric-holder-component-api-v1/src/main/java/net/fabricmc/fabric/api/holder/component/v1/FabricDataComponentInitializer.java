@@ -21,7 +21,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-/// Extended version of [net.minecraft.core.component.DataComponentInitializers.Initializer] that allows adding components to arbitrary holders instead of having to define what holders are to be given components at registration.
+/// Extended version of [net.minecraft.core.component.DataComponentInitializers.Initializer] that allows adding components to arbitrary holders instead of having to define what holders are to be given components at registration, and provides access to the server's {@link ResourceManager}.
 @FunctionalInterface
 public interface FabricDataComponentInitializer {
 	void run(Context context);

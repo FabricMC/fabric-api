@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.holder.component.v1;
 import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 
-/// This interface is injected into several vanilla classes via mixin. Do not implement it yourself, implement [DataComponentHolder] instead.
+/// This interface is injected into several vanilla classes via mixin in order to provide access to components. Do not implement it yourself, implement [DataComponentHolder] instead.
 /// @see DataComponentHolder
 public interface FabricDataComponentHolder extends DataComponentHolder {
 	@Override
