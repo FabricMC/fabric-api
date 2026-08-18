@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.holder.component.v1;
 
-import net.minecraft.core.component.DataComponentInitializers;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializersImpl;
@@ -25,7 +24,7 @@ import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializers
 ///
 /// [Fabric Data Component Initializers][FabricDataComponentInitializer] are used to add components to [Holders][net.minecraft.core.Holder]. They are run right before the end of a resource reload.
 ///
-/// [FabricDataComponentInitializer] provides more capabilities than [DataComponentInitializers.Initializer]. For example, it allows adding components dynamically based on registries and/or datapack resources.
+/// [FabricDataComponentInitializer] provides more capabilities than [net.minecraft.core.component.DataComponentInitializers.Initializer]. For example, it allows adding components dynamically based on registries and/or datapack resources.
 /// @see net.minecraft.core.component.DataComponentInitializers DataComponentInitializers
 /// @see FabricDataComponentInitializer
 // TODO: Finish docs
