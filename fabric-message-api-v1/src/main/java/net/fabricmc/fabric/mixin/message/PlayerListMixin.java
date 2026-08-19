@@ -69,5 +69,20 @@ public abstract class PlayerListMixin {
 		}
 
 		ServerMessageEvents.COMMAND_MESSAGE.invoker().onCommandMessage(message, source, boundChatType);
+
+		// Vanilla used to delegate to the ServerPlayer overload when the source is a player,
+		// which triggered the chat events as documented. It no longer does, so trigger them here.
+		ServerPlayer sender = source.getPlayer();
+
+		if (sender == null) {
+			return;
+		}
+
+		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, boundChatType)) {
+			ci.cancel();
+			return;
+		}
+
+		ServerMessageEvents.CHAT_MESSAGE.invoker().onChatMessage(message, sender, boundChatType);
 	}
 }

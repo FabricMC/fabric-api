@@ -35,7 +35,6 @@ import net.fabricmc.fabric.impl.content.registry.fluid.SimpleConfiguredFluidBeha
 /**
  * Interface for handling common entity fluid interactions.
  */
-@ApiStatus.Experimental
 public interface FluidBehavior {
 	/**
 	 * A simple fluid behavior that acts similarly to water.

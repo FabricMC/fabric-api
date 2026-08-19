@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.tags.TagKey;
@@ -33,7 +32,6 @@ import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionReg
 /**
  * A registry for fluid tags, that should be tracked by {@link Entity}'s {@link EntityFluidInteraction}.
  */
-@ApiStatus.Experimental
 public final class EntityFluidInteractionRegistry {
 	private EntityFluidInteractionRegistry() {
 	}

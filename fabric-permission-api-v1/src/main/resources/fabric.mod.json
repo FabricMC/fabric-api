@@ -26,6 +26,6 @@
   ],
   "accessWidener": "fabric-permission-api-v1.classtweaker",
   "custom": {
-    "fabric-api:module-lifecycle": "experimental"
+    "fabric-api:module-lifecycle": "stable"
   }
 }

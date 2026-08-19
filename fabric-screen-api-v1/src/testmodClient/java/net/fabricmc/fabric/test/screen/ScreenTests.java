@@ -78,16 +78,16 @@ public final class ScreenTests implements ClientModInitializer {
 					.findAny()
 					.orElseThrow(() -> new AssertionError("Failed to find the \"Stop Sound\" button in the screen's elements"));
 
-			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, event) -> {
+			ScreenKeyboardEvents.allowKeyPress(screen).register((_, event) -> {
 				LOGGER.info("Allow Key Press, Event: {}", event);
 				return true; // Let actions continue
 			});
 
-			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, event) -> {
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_, event) -> {
 				LOGGER.warn("After Key Press, Event: {}", event);
 			});
 
-			ScreenKeyboardEvents.allowCharType(screen).register((_screen, event) -> {
+			ScreenKeyboardEvents.allowCharType(screen).register((_, event) -> {
 				LOGGER.warn("Allow Char Type, Event: {}, Character: {}", event, event.codepointAsString());
 				return true;
 			});
@@ -96,23 +96,30 @@ public final class ScreenTests implements ClientModInitializer {
 		} else if (screen instanceof GrindstoneScreen) {
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn BEHIND both the container screen interface and the darkened background, text, items, the carried item, tooltips, etc.
-			ScreenEvents.beforeExtract(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.beforeExtract(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 34, 20, 20);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) - 34, 20, 20);
 			});
 
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn ABOVE both the container screen interface and the darkened background, but still BEHIND text, items, the carried item, tooltips, etc.
-			ScreenEvents.afterBackground(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.afterBackground(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 10, 20, 20);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) - 10, 20, 20);
+			});
+
+			// Register render event to draw an icon on the screen
+			// Expected result: the icon is drawn ABOVE both the container screen interface and the darkened background, text, items, but still BEHIND the carried item, tooltips, etc.
+			ScreenEvents.afterForeground(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
+				// Render an armor icon to test
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) + 14, 20, 20);
 			});
 
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn ABOVE everything, including the background, container screen interface, text, items, the carried item, tooltips, etc.
-			ScreenEvents.afterExtract(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.afterExtract(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) + 14, 20, 20);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) + 38, 20, 20);
 			});
 		}
 	}

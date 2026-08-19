@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.item",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "AbstractContainerMenuMixin",
     "AbstractFurnaceBlockEntityMixin",
     "AnvilMenuMixin",
     "BrewingStandBlockEntityMixin",
