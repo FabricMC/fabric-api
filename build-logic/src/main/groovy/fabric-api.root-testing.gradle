@@ -40,8 +40,9 @@ for (def moduleProject : includedModuleProjects) {
 }
 
 dependencies {
-	testmodImplementation files(moduleTestmodOutputs)
-	testmodClientImplementation files(moduleTestmodClientOutputs)
+	testmodCompileOnly files(moduleTestmodOutputs)
+	testmodClientCompileOnly files(moduleTestmodClientOutputs)
+	testmodRuntimeOnly files(nestedTestModJars)
 
 	for (def moduleProject : includedModuleProjects) {
 		add(moduleTestmodOutputDependencies.name, dependencies.project(path: moduleProject.path, configuration: "fabricApiTestmodOutputElements"))
