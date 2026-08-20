@@ -17,12 +17,15 @@
 package net.fabricmc.fabric.test.dimension;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -56,11 +59,11 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void applyCarvers(WorldGenRegion worldGenRegion, long seed, RandomState randomState, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk) {
+	public void applyCarvers(@Nullable WorldGenRegion biomeRegion, RandomState randomState, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk, Blender blender) {
 	}
 
 	@Override
-	public void buildSurface(WorldGenRegion region, StructureManager structureManager, RandomState randomState, ChunkAccess chunk) {
+	public void buildSurface(StructureManager structureManager, RandomState randomState, ChunkAccess chunk, BiomeManager biomeManager, Blender blender, Set<Holder<Biome>> possibleBiomes) {
 	}
 
 	@Override

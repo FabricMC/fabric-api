@@ -35,7 +35,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 /**
@@ -278,55 +278,52 @@ public interface BiomeModificationContext {
 		void addFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey);
 
 		/**
-		 * Adds a configured world carver to this biome.
+		 * Adds a world carver to this biome.
 		 */
-		void addCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey);
+		void addCarver(ResourceKey<WorldCarver> carverKey);
 
 		/**
 		 * Removes all carvers with the given key from this biome.
 		 *
 		 * @return True if any carvers were removed.
 		 */
-		boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey);
+		boolean removeCarver(ResourceKey<WorldCarver> carverKey);
 	}
 
 	interface MobSpawnSettingsContext {
 		/**
-		 * Associated JSON property: <code>creature_spawn_probability</code>.
-		 *
-		 * @see MobSpawnSettings#getCreatureProbability()
-		 * @see MobSpawnSettings.Builder#creatureGenerationProbability(float)
+		 * Associated environment attribute: {@link EnvironmentAttributes#CREATURE_WORLD_GEN_SPAWN_PROBABILITY}.
 		 */
 		void setCreatureGenerationProbability(float probability);
 
 		/**
 		 * Provides a view of all spawns of the given category.
 		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 *
-		 * @see MobSpawnSettings#getMobs(MobCategory)
+		 * @see MobSpawnSettings#getMobsToSpawn(MobCategory)
 		 */
 		@UnmodifiableView List<Weighted<MobSpawnSettings.SpawnerData>> getMobs(MobCategory category);
 
 		/**
-		 * Associated JSON property: <code>spawners</code>.
+		 * Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 *
-		 * @see MobSpawnSettings#getMobs(MobCategory)
-		 * @see MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
+		 * @see MobSpawnSettings#getMobsToSpawn(MobCategory)
+		 * @see MobSpawnSettings.Builder
 		 */
 		void addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data, int weight);
 
 		/**
 		 * Removes any spawns matching the given predicate from this biome, and returns true if any matched.
 		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 */
 		boolean removeSpawns(BiPredicate<MobCategory, MobSpawnSettings.SpawnerData> predicate);
 
 		/**
 		 * Removes all spawns of the given entity type.
 		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 *
 		 * @return True if any spawns were removed.
 		 */
@@ -337,7 +334,7 @@ public interface BiomeModificationContext {
 		/**
 		 * Removes all spawns of the given category.
 		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 */
 		default void clearSpawns(MobCategory category) {
 			removeSpawns((mobCategory, spawnEntry) -> mobCategory == category);
@@ -346,24 +343,24 @@ public interface BiomeModificationContext {
 		/**
 		 * Removes all spawns.
 		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 */
 		default void clearSpawns() {
 			removeSpawns((mobCategory, spawnEntry) -> true);
 		}
 
 		/**
-		 * Associated JSON property: <code>spawn_costs</code>.
+		 * Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 *
 		 * @see MobSpawnSettings#getMobSpawnCost(EntityType)
-		 * @see MobSpawnSettings.Builder#addMobCharge(EntityType, double, double)
+		 * @see MobSpawnSettings.Builder#addMobSpawnCost(EntityType, double, double)
 		 */
 		void addMobCharge(EntityType<?> entityType, double charge, double energyBudget);
 
 		/**
 		 * Removes a spawn cost entry for a given entity type.
 		 *
-		 * <p>Associated JSON property: <code>spawn_costs</code>.
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 */
 		void clearMobCharge(EntityType<?> entityType);
 	}

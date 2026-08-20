@@ -174,16 +174,25 @@ public interface QuadView {
 	RenderType itemRenderType();
 
 	/**
+	 * @see MutableQuadView#itemGlintRenderType(RenderType)
+	 */
+	RenderType itemGlintRenderType();
+
+	/**
+	 * @see MutableQuadView#itemGlintSpecialRenderType(RenderType)
+	 */
+	RenderType itemGlintSpecialRenderType();
+
+	/**
 	 * @see MutableQuadView#emissive(boolean)
 	 */
 	boolean emissive();
 
 	/**
-	 * This method is equivalent to {@link BakedQuad.MaterialInfo#shade()}.
-	 *
-	 * @see MutableQuadView#diffuseShade(boolean)
+	 * @see MutableQuadView#shadeDirectionOverride(Direction)
 	 */
-	boolean diffuseShade();
+	@Nullable
+	Direction shadeDirectionOverride();
 
 	/**
 	 * @see MutableQuadView#ambientOcclusion(TriState)
@@ -252,7 +261,7 @@ public interface QuadView {
 			}
 		}
 
-		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), tintIndex(), diffuseShade(), lightEmission);
+		BakedQuad.MaterialInfo materialInfo = new BakedQuad.MaterialInfo(sprite, chunkLayer(), itemRenderType(), itemGlintRenderType(), itemGlintSpecialRenderType(), tintIndex(), shadeDirectionOverride(), lightEmission);
 
 		return new BakedQuad(
 				position0,

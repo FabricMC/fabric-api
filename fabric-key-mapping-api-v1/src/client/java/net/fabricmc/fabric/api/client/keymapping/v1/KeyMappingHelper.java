@@ -29,8 +29,8 @@ import net.fabricmc.fabric.mixin.client.keymapping.KeyMappingAccessor;
  * Helper for registering {@link KeyMapping}s.
  *
  * <pre>{@code
- * KeyMapping left = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.left", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, KeyMapping.Category.MISC));
- * KeyMapping right = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.right", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, KeyMapping.Category.MISC));
+ * KeyMapping left = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.left", InputConstants.Type.KEYBOARD, InputConstants.KEY_P, KeyMapping.Category.MISC));
+ * KeyMapping right = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.right", InputConstants.Type.KEYBOARD, InputConstants.KEY_U, KeyMapping.Category.MISC));
  * }</pre>
  *
  * @see KeyMapping

@@ -17,10 +17,12 @@
 package net.fabricmc.fabric.mixin.loot;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -36,17 +38,17 @@ import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 @Mixin(LootPool.class)
 public interface LootPoolAccessor {
 	@Accessor("rolls")
-	NumberProvider fabric_getRolls();
+	Holder<NumberProvider> fabric_getRolls();
 
 	@Accessor("bonusRolls")
-	NumberProvider fabric_getBonusRolls();
+	Holder<NumberProvider> fabric_getBonusRolls();
 
 	@Accessor("entries")
 	List<LootPoolEntryContainer> fabric_getEntries();
 
-	@Accessor("conditions")
-	List<LootItemCondition> fabric_getConditions();
+	@Accessor("condition")
+	Optional<Holder<LootItemCondition>> fabric_getCondition();
 
-	@Accessor("functions")
-	List<LootItemFunction> fabric_getFunctions();
+	@Accessor("modifier")
+	Optional<Holder<LootItemFunction>> fabric_getModifier();
 }

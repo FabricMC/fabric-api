@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -23,7 +24,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SignItem;
+import net.minecraft.world.item.StandingAndWallBlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CeilingHangingSignBlock;
@@ -51,8 +52,8 @@ public class TealSignTest implements ModInitializer {
 	public static final CeilingHangingSignBlock TEAL_HANGING_SIGN = new CeilingHangingSignBlock(TEAL_WOOD_TYPE, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_HANGING_SIGN).setId(TEAL_HANGING_SIGN_KEY));
 	public static final ResourceKey<Block> TEAL_WALL_HANGING_SIGN_KEY = ObjectBuilderTestConstants.block("teal_wall_hanging_sign");
 	public static final WallHangingSignBlock TEAL_WALL_HANGING_SIGN = new WallHangingSignBlock(TEAL_WOOD_TYPE, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_HANGING_SIGN).setId(TEAL_WALL_HANGING_SIGN_KEY));
-	public static final SignItem TEAL_SIGN_ITEM = new SignItem(TEAL_SIGN, TEAL_WALL_SIGN, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, TEAL_SIGN_KEY.identifier())));
-	public static final HangingSignItem TEAL_HANGING_SIGN_ITEM = new HangingSignItem(TEAL_HANGING_SIGN, TEAL_WALL_HANGING_SIGN, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, TEAL_HANGING_SIGN_KEY.identifier())));
+	public static final StandingAndWallBlockItem TEAL_SIGN_ITEM = new StandingAndWallBlockItem(TEAL_SIGN, TEAL_WALL_SIGN, Direction.DOWN, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, TEAL_SIGN_KEY.identifier())).signText());
+	public static final HangingSignItem TEAL_HANGING_SIGN_ITEM = new HangingSignItem(TEAL_HANGING_SIGN, TEAL_WALL_HANGING_SIGN, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, TEAL_HANGING_SIGN_KEY.identifier())).signText());
 
 	@Override
 	public void onInitialize() {

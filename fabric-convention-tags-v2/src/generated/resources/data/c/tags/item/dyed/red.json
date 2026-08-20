@@ -12,7 +12,10 @@
     "minecraft:red_stained_glass_pane",
     "minecraft:red_terracotta",
     "minecraft:red_wool",
+    "minecraft:red_wool_slab",
+    "minecraft:red_wool_stairs",
     "minecraft:red_bundle",
+    "minecraft:red_cushion",
     "minecraft:red_harness"
   ]
 }

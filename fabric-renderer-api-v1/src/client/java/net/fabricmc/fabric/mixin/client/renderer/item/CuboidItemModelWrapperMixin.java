@@ -16,24 +16,29 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.item;
 
+import java.util.List;
+
 import com.llamalad7.mixinextras.sugar.Local;
-import org.spongepowered.asm.mixin.Final;
+import org.joml.Matrix4fc;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.item.ModelRenderProperties;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
 
 // NOTE: We intentionally do not validate the mesh like vanilla validates the quad list. Nowadays,
@@ -42,14 +47,20 @@ import net.fabricmc.fabric.api.client.renderer.v1.model.MeshQuadCollection;
 // meshes.
 @Mixin(CuboidItemModelWrapper.class)
 abstract class CuboidItemModelWrapperMixin implements ItemModel {
-	@Shadow
-	@Final
-	private QuadCollection quads;
+	@Unique
+	private Mesh mesh;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void onReturnInit(List<ItemTintSource> tints, QuadCollection quads, ModelRenderProperties properties, Matrix4fc transformation, CallbackInfo ci) {
+		if (quads instanceof MeshQuadCollection meshQuadCollection) {
+			mesh = meshQuadCollection.getMesh();
+		}
+	}
 
 	@Inject(method = "update", at = @At("RETURN"))
 	private void onReturnUpdate(ItemStackRenderState output, ItemStack item, ItemModelResolver resolver, ItemDisplayContext displayContext, ClientLevel level, ItemOwner owner, int seed, CallbackInfo ci, @Local(name = "layer") ItemStackRenderState.LayerRenderState layer) {
-		if (quads instanceof MeshQuadCollection meshQuadCollection) {
-			meshQuadCollection.getMesh().outputTo(layer.emitter());
+		if (mesh != null) {
+			mesh.outputTo(layer.emitter());
 		}
 	}
 }

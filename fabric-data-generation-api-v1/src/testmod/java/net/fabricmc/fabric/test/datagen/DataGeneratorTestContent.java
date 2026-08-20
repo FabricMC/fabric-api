@@ -27,6 +27,7 @@ import net.minecraft.references.BlockItemId;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -79,9 +81,15 @@ public class DataGeneratorTestContent implements ModInitializer {
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
 			Identifier.fromNamespaceAndPath(MOD_ID, "tinier_potato")
 	);
+	public static final ResourceKey<NumberProvider> TEST_NUMBER_PROVIDER_KEY = ResourceKey.create(
+			Registries.NUMBER_PROVIDER,
+			Identifier.fromNamespaceAndPath(MOD_ID, "tiniest_potato")
+	);
 	// Empty registry
 	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic_empty"));
+
+	public static final TagKey<SoundEvent> EQUIP_SOUNDS = TagKey.create(Registries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_equip_sounds"));
 
 	@Override
 	public void onInitialize() {

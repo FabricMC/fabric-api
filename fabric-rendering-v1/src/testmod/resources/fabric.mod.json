@@ -16,6 +16,7 @@
       "net.fabricmc.fabric.test.rendering.client.AdvancementRenderingTests",
       "net.fabricmc.fabric.test.rendering.client.AtlasTests",
       "net.fabricmc.fabric.test.rendering.client.ArmorRenderingTests",
+      "net.fabricmc.fabric.test.rendering.client.BuiltInBlockModelsTest",
       "net.fabricmc.fabric.test.rendering.client.CustomSpriteSourcesTest",
       "net.fabricmc.fabric.test.rendering.client.CustomColorResolverTest",
       "net.fabricmc.fabric.test.rendering.client.DebugOptionsTests",

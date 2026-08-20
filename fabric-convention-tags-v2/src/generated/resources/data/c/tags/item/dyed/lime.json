@@ -12,7 +12,10 @@
     "minecraft:lime_stained_glass_pane",
     "minecraft:lime_terracotta",
     "minecraft:lime_wool",
+    "minecraft:lime_wool_slab",
+    "minecraft:lime_wool_stairs",
     "minecraft:lime_bundle",
+    "minecraft:lime_cushion",
     "minecraft:lime_harness"
   ]
 }

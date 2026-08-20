@@ -32,9 +32,9 @@ import net.minecraft.client.renderer.feature.submit.SubmitNode;
  * @see FabricOrderedSubmitNodeCollector#submitCustom(SubmitRenderPhase, SubmitNode)
  */
 public class SubmitRenderPhase<T extends SubmitNode> {
-	private final Function<SubmitNodeCollection, FeatureRenderPhase<T>> phaseGetter;
+	private final Function<SubmitNodeCollection, FeatureRenderPhase<? super T>> phaseGetter;
 
-	public SubmitRenderPhase(Function<SubmitNodeCollection, FeatureRenderPhase<T>> phaseGetter) {
+	public SubmitRenderPhase(Function<SubmitNodeCollection, FeatureRenderPhase<? super T>> phaseGetter) {
 		this.phaseGetter = phaseGetter;
 	}
 

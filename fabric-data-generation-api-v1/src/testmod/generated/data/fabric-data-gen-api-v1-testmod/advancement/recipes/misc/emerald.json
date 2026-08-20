@@ -24,7 +24,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fabric-data-gen-api-v1-testmod:emerald"
+        "recipes": "fabric-data-gen-api-v1-testmod:emerald"
       }
     }
   },

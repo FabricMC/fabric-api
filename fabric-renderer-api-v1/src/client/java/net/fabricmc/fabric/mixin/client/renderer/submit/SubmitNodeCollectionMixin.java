@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
@@ -35,13 +36,15 @@ import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.feature.phase.FeatureRenderPhase;
 import net.minecraft.client.renderer.feature.phase.SimpleFeatureRenderPhase;
-import net.minecraft.client.renderer.feature.phase.TranslucentFeatureRenderPhase;
+import net.minecraft.client.renderer.feature.submit.TranslucentSubmit;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -51,6 +54,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.api.client.renderer.v1.render.submit.ExtendedItemSubmit;
+import net.fabricmc.fabric.impl.client.renderer.MeshViewRenderTypeGroups;
 
 @Mixin(SubmitNodeCollection.class)
 abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
@@ -59,7 +63,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 	public SimpleFeatureRenderPhase solid;
 	@Shadow
 	@Final
-	public TranslucentFeatureRenderPhase translucentBlocksAndItems;
+	public FeatureRenderPhase<? super TranslucentSubmit> translucentBlocksAndItems;
 	@Shadow
 	@Final
 	public SimpleFeatureRenderPhase breakingOverlay;
@@ -95,25 +99,35 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector {
 	}
 
 	@Override
-	public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress) {
+	public void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress, boolean isBlockTranslucent) {
 		PoseStack.Pose pose = poseStack.last().copy();
-		RenderType renderType = ModelBakery.DESTROY_TYPES.get(progress);
-		breakingOverlay.submit(new ExtendedBlockModelSubmit(pose, _ -> renderType, List.copyOf(parts), mesh, BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, pose));
+		List<RenderType> destroyTypes = Minecraft.getInstance().gameRenderer.useImprovedTransparency() && isBlockTranslucent ? ModelBakery.DESTROY_TYPES_OIT : ModelBakery.DESTROY_TYPES;
+		RenderType renderType = destroyTypes.get(progress);
+		SimpleFeatureRenderPhase targetPhase = isBlockTranslucent ? breakingOverlay : solid;
+		targetPhase.submit(new ExtendedBlockModelSubmit(pose, _ -> renderType, List.copyOf(parts), mesh, BlockModelRenderState.EMPTY_TINTS, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0, pose));
 	}
 
 	@Override
-	public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
+	public void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, ItemQuads quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 		PoseStack.Pose pose = poseStack.last().copy();
-		ExtendedItemSubmit submit = new ExtendedItemSubmit(pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads, mesh, foilType);
+		MeshViewRenderTypeGroups splitMesh = MeshViewRenderTypeGroups.split(mesh);
 
-		if (submit.hasTranslucency()) {
-			translucentBlocksAndItems.submit(submit);
-		} else {
-			solid.submit(submit);
+		if (!quads.translucent().isEmpty() || splitMesh.translucent().size() > 0) {
+			translucentBlocksAndItems.submit(new ExtendedItemSubmit(
+					pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.translucent(), splitMesh.translucent(), foilType
+			));
+		}
+
+		if (!quads.solid().isEmpty() || splitMesh.solid().size() > 0) {
+			solid.submit(new ExtendedItemSubmit(
+					pose, displayContext, lightCoords, overlayCoords, 0, tintLayers, quads.solid(), splitMesh.solid(), foilType
+			));
 		}
 
 		if (outlineColor != 0) {
-			outline.submit(new ExtendedItemSubmit(pose, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, ItemStackRenderState.LayerRenderState.EMPTY_TINTS, quads, mesh, ItemStackRenderState.FoilType.NONE));
+			outline.submit(new ExtendedItemSubmit(
+					pose, displayContext, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, outlineColor, ItemStackRenderState.LayerRenderState.EMPTY_TINTS, quads.all(), mesh, ItemStackRenderState.FoilType.NONE
+			));
 		}
 	}
 

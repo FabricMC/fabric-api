@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client.rendering.hud;
 
 import java.util.Optional;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

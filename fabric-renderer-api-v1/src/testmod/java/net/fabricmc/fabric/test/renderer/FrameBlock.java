@@ -20,6 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +53,7 @@ public class FrameBlock extends Block implements EntityBlock, FabricBlock {
 				// Try to remove if the stack in hand is empty
 				if (currentBlock != null) {
 					if (!level.isClientSide()) {
-						player.getInventory().placeItemBackInInventory(new ItemStack(currentBlock));
+						player.getInventory().placeItemBackInInventory(new ItemStack(currentBlock), Prediction.SERVER_ONLY);
 						frame.setBlock(null);
 					}
 
@@ -82,7 +83,7 @@ public class FrameBlock extends Block implements EntityBlock, FabricBlock {
 				stack.consume(1, player);
 
 				if (currentBlock != null) {
-					player.getInventory().placeItemBackInInventory(new ItemStack(currentBlock));
+					player.getInventory().placeItemBackInInventory(new ItemStack(currentBlock), Prediction.SERVER_ONLY);
 				}
 
 				frame.setBlock(handBlock);

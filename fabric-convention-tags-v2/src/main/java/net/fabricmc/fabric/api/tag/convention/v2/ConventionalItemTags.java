@@ -21,6 +21,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.ColorCollection;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
@@ -470,10 +471,32 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> WHITE_DYES = register("dyes/white");
 	public static final TagKey<Item> YELLOW_DYES = register("dyes/yellow");
 
+	/**
+	 * Dye color tags as a color collection, for convenience.
+	 */
+	public static final ColorCollection<TagKey<Item>> COLOR_DYES = new ColorCollection<>(
+			WHITE_DYES,
+			ORANGE_DYES,
+			MAGENTA_DYES,
+			LIGHT_BLUE_DYES,
+			YELLOW_DYES,
+			LIME_DYES,
+			PINK_DYES,
+			GRAY_DYES,
+			LIGHT_GRAY_DYES,
+			CYAN_DYES,
+			PURPLE_DYES,
+			BLUE_DYES,
+			BROWN_DYES,
+			GREEN_DYES,
+			RED_DYES,
+			BLACK_DYES
+	);
+
 	// Items created with dyes
 	/**
-	 * Tag that holds all blocks and items that can be dyed a specific color.
-	 * (Does not include color blending items like leather armor.
+	 * Tag that holds all blocks and items which are dyed a specific color.
+	 * (Does not include color blending items like leather armor)
 	 *
 	 * <p>Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
 	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
@@ -497,6 +520,57 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> RED_DYED = register("dyed/red");
 	public static final TagKey<Item> WHITE_DYED = register("dyed/white");
 	public static final TagKey<Item> YELLOW_DYED = register("dyed/yellow");
+
+	/**
+	 * Dyed color tags as a color collection, for convenience.
+	 */
+	public static final ColorCollection<TagKey<Item>> COLOR_DYED = new ColorCollection<>(
+			WHITE_DYED,
+			ORANGE_DYED,
+			MAGENTA_DYED,
+			LIGHT_BLUE_DYED,
+			YELLOW_DYED,
+			LIME_DYED,
+			PINK_DYED,
+			GRAY_DYED,
+			LIGHT_GRAY_DYED,
+			CYAN_DYED,
+			PURPLE_DYED,
+			BLUE_DYED,
+			BROWN_DYED,
+			GREEN_DYED,
+			RED_DYED,
+			BLACK_DYED
+	);
+
+	/**
+	 * Tag that holds items which can be dyed but do not have their own color already, like glass.
+	 * (Does not include color blending items like leather armor)
+	 */
+	public static final TagKey<Item> UNDYED_SIMPLE_DYEABLE = register("dyeable/simple/undyed");
+
+	/**
+	 * Tag that holds items which can be dyed despite already having a color, like wool.
+	 * (Does not include color blending items like leather armor)
+	 */
+	public static final TagKey<Item> REDYEABLE_SIMPLE_DYEABLE = register("dyeable/simple/redyeable");
+
+	/**
+	 * Tag that holds items which can be dyed in a simple fashion without color blending, typically
+	 * in the standard 16 colors, whether they have a color already or not.
+	 */
+	public static final TagKey<Item> SIMPLE_DYEABLE = register("dyeable/simple");
+
+	/**
+	 * Tag that holds items which can be dyed in a dynamic color blending fashion, like leather armor.
+	 * <br>Note this also includes Firework Stars, which store colors in a different fashion to most.
+	 */
+	public static final TagKey<Item> DYNAMIC_DYEABLE = register("dyeable/dynamic");
+
+	/**
+	 * Tag that holds items which can have dye applied to them, whether they have a color already or not.
+	 */
+	public static final TagKey<Item> DYEABLE = register("dyeable");
 
 	// Storage blocks - categories
 	/**

@@ -48,8 +48,8 @@ public abstract class ValidateAnnotationsTask extends SourceTask {
 					throw new RuntimeException("Found @Environment annotation in file: " + file);
 				}
 
-				if (!directory.equals("api") && API_STATUS_INTERNAL.matcher(contents).find()) {
-					throw new RuntimeException("Found @ApiStatus.Internal in implementation file: " + file);
+				if (!directory.equals("api") && !file.getName().equals("package-info.java") && API_STATUS_INTERNAL.matcher(contents).find()) {
+					throw new RuntimeException("Found @ApiStatus.Internal in non-package-info implementation file: " + file);
 				}
 			});
 		}

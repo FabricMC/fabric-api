@@ -25,6 +25,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
@@ -38,7 +39,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
-import net.fabricmc.fabric.test.attachment.mixin.ZombieAccessor;
 
 public class AttachmentCopyTests {
 	// using a lambda type because serialization shouldn't play a role in this
@@ -83,8 +83,7 @@ public class AttachmentCopyTests {
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 
-		ZombieAccessor zombieAccessor = (ZombieAccessor) mob;
-		zombieAccessor.invokeConvertTo(helper.getLevel(), EntityTypes.DROWNED);
+		mob.convertTo(EntityTypes.DROWNED, ConversionParams.single(mob, true, true), _ -> { });
 		List<Drowned> drowned = helper.getEntities(EntityTypes.DROWNED);
 
 		if (drowned.size() != 1) {

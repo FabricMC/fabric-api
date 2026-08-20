@@ -32,6 +32,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.registry.fluid.FluidBehavior;
+import net.fabricmc.fabric.mixin.content.registry.fluid.EntityAccessor;
 import net.fabricmc.fabric.mixin.content.registry.fluid.LivingEntityAccessor;
 
 public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> movementSpeed,
@@ -41,7 +42,9 @@ public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> moveme
 											boolean allowMovingDown, boolean allowBoats,
 											boolean allowSwimming, boolean makeMobsFloat,
 											boolean makeRiddenMobsFloat, boolean drowning,
-											BiPredicate<TagKey<Fluid>, LivingEntity> allowSprinting) implements FluidBehavior {
+											BiPredicate<TagKey<Fluid>, LivingEntity> allowSprinting,
+											FluidBehavior.Builder.OnEnter onEnter,
+											FluidBehavior.Builder.OnExit onExit) implements FluidBehavior {
 	public static final FluidBehavior WATER_LIKE = new Builder()
 			.movementSpeed(entity -> {
 				float speed = 0.02F;
@@ -81,7 +84,10 @@ public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> moveme
 				return entity.getFluidFallingAdjustedMovement(baseGravity, isFalling, movement);
 			}).fallDistanceModifier(0).flowingPushScale(0.014).gravityMultiplier(0).makeMobsFloat(true)
 			.makeRiddenMobsFloat(true).enableDrowning(true).allowSwimming(true).allowMovingDown(true)
-			.allowBoats(true).allowSprinting((fluid, entity) -> entity.isEyeInFluid(fluid)).build();
+			.allowBoats(true).allowSprinting((fluid, entity) -> entity.isEyeInFluid(fluid))
+			.onEnteredFluid((entity, firstTick) -> {
+				if (!firstTick) ((EntityAccessor) entity).callDoWaterSplashEffect();
+			}).build();
 
 	@Override
 	public void handleFluidInteractionUpdate(TagKey<Fluid> fluid, Entity entity, EntityFluidInteraction interaction, boolean canPushEntity) {
@@ -107,7 +113,6 @@ public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> moveme
 		float speed = this.movementSpeed.applyAsFloat(entity);
 		entity.moveRelative(speed, input);
 		entity.move(MoverType.SELF, entity.getDeltaMovement());
-
 		entity.setDeltaMovement(this.movementSlowdown.apply(entity, entity.getDeltaMovement(), entity.getFluidHeight(fluid) <= entity.getFluidJumpThreshold(), baseGravity, isFalling));
 
 		if (baseGravity != 0.0F && this.gravityMultiplier != 0.0F) {
@@ -123,6 +128,15 @@ public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> moveme
 				entity.setDeltaMovement(entity.getDeltaMovement().add(0.0F, 0.04F, 0.0F));
 			}
 		}
+	}
+
+	@Override
+	public void travelFlyingInFluid(TagKey<Fluid> fluid, LivingEntity entity, Vec3 input, float waterSpeed, float lavaSpeed, float airSpeed) {
+		float speed = this.movementSpeed.applyAsFloat(entity);
+
+		entity.moveRelative(speed, input);
+		entity.move(MoverType.SELF, entity.getDeltaMovement());
+		entity.setDeltaMovement(this.movementSlowdown.apply(entity, entity.getDeltaMovement(), false, 0, false));
 	}
 
 	@Override
@@ -145,9 +159,19 @@ public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> moveme
 		return this.allowSprinting.test(fluid, entity);
 	}
 
+	@Override
+	public void onFluidEntered(TagKey<Fluid> fluid, Entity entity, boolean firstTick) {
+		this.onEnter.onFluidEntered(entity, firstTick);
+	}
+
+	@Override
+	public void onFluidExited(TagKey<Fluid> fluid, Entity entity) {
+		this.onExit.onFluidExited(entity);
+	}
+
 	public static class Builder implements FluidBehavior.Builder {
 		private ToFloatFunction<LivingEntity> movementSpeed = _ -> 0.02f;
-		private MovementSlowdownFunction movementSlowdown = (_, m, _, _, _) -> m.multiply(0.65f, 0.8f, 0.65f);
+		private MovementSlowdownFunction movementSlowdown = (_, m, isBelowJumpThreshold, _, _) -> isBelowJumpThreshold ? m.scale(0.65f) : m.multiply(0.65f, 0.8f, 0.65f);
 		private float gravityMultiplier = 1 / 16f;
 		private double flowingPushScale = 0.014f;
 		private boolean allowMovingDown = false;
@@ -158,6 +182,8 @@ public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> moveme
 		private boolean drowning = false;
 		private float fallDistanceModifier = 0;
 		private BiPredicate<TagKey<Fluid>, LivingEntity> allowSprinting = (_, _) -> true;
+		private OnEnter onEnter = (_, _) -> { };
+		private OnExit onExit = _ -> { };
 
 		@Override
 		public FluidBehavior.Builder movementSpeed(float value) {
@@ -268,10 +294,23 @@ public record SimpleConfiguredFluidBehavior(ToFloatFunction<LivingEntity> moveme
 		}
 
 		@Override
+		public FluidBehavior.Builder onEnteredFluid(OnEnter callback) {
+			this.onEnter = callback;
+			return this;
+		}
+
+		@Override
+		public FluidBehavior.Builder onExitedFluid(OnExit callback) {
+			this.onExit = callback;
+			return this;
+		}
+
+		@Override
 		public FluidBehavior build() {
 			return new SimpleConfiguredFluidBehavior(this.movementSpeed, this.movementSlowdown,
 					this.gravityMultiplier, this.fallDistanceModifier, this.flowingPushScale, this.allowMovingDown, this.allowBoats, this.allowSwimming,
-					this.makeMobsFloat, this.makeRiddenMobsFloat, this.drowning, this.allowSprinting);
+					this.makeMobsFloat, this.makeRiddenMobsFloat, this.drowning, this.allowSprinting,
+					this.onEnter, this.onExit);
 		}
 	}
 }

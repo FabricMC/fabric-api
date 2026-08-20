@@ -8,6 +8,7 @@ fabricApiModule {
 	)
 
 	testDependencies(
-		'fabric-command-api-v2'
+		'fabric-command-api-v2',
+		'fabric-events-interaction-v0'
 	)
 }

@@ -25,13 +25,15 @@
       "net.fabricmc.fabric.test.object.builder.BlockEntityTypeBuilderTest",
       "net.fabricmc.fabric.test.object.builder.TealSignTest",
       "net.fabricmc.fabric.test.object.builder.DimensionDataStorageTest",
-      "net.fabricmc.fabric.test.object.builder.EntityDataAccessorTest"
+      "net.fabricmc.fabric.test.object.builder.EntityDataAccessorTest",
+      "net.fabricmc.fabric.test.object.builder.FabricDefaultAttributeRegistryTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.object.builder.client.EntityDataAccessorClientTest"
     ],
     "fabric-gametest": [
-      "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest"
+      "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest",
+      "net.fabricmc.fabric.test.object.builder.FabricDefaultAttributeRegistryGameTest"
     ]
   }
 }

@@ -19,22 +19,17 @@ package net.fabricmc.fabric.test.item.unittest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentInitializers;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
@@ -43,7 +38,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemLore;
 
-import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
 import net.fabricmc.fabric.test.item.ComponentTooltipProviderTest;
 
 public class ItemComponentTooltipProviderRegistryTest {
@@ -53,22 +47,7 @@ public class ItemComponentTooltipProviderRegistryTest {
 		Bootstrap.bootStrap();
 
 		new ComponentTooltipProviderTest().onInitialize();
-
-		for (Item item : BuiltInRegistries.ITEM) {
-			item.builtInRegistryHolder().bindComponents(DataComponentMap.EMPTY);
-		}
-
-		DefaultItemComponentImpl.modifyItemComponents(new HolderLookup.Provider() {
-			@Override
-			public @NonNull Stream<ResourceKey<? extends Registry<?>>> listRegistryKeys() {
-				return Stream.empty();
-			}
-
-			@Override
-			public <T> @NonNull Optional<? extends HolderLookup.RegistryLookup<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
-				return Optional.empty();
-			}
-		});
+		BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(VanillaRegistries.createWorldLookup()).forEach(DataComponentInitializers.PendingComponents::apply);
 	}
 
 	@Test
@@ -77,21 +56,25 @@ public class ItemComponentTooltipProviderRegistryTest {
 		stack.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
 		assertEquals("""
+				Golden Sword
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
+				This Item is Happy :)
 
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
-				This Item is Happy :)
+				When in Main Hand:
+				+3 Attack Damage
+				-2.4 Attack Speed
 				Unbreakable
 				This Item is Sadder :'(""", getTooltip(stack));
 	}
@@ -102,7 +85,7 @@ public class ItemComponentTooltipProviderRegistryTest {
 		stack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("Hello"))));
 
 		assertEquals("""
-
+				Pig Spawn Egg
 				Hello
 				This Item is the Saddest :
 				This Item is Sad :(""", getTooltip(stack));

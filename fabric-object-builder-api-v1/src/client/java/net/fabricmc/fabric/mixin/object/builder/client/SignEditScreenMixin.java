@@ -25,11 +25,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractSignEditScreen;
 import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 
 @Mixin(SignEditScreen.class)
 public abstract class SignEditScreenMixin extends AbstractSignEditScreen {
-	private SignEditScreenMixin(SignBlockEntity blockEntity, boolean filtered, boolean bl) {
-		super(blockEntity, filtered, bl);
+	private SignEditScreenMixin(SignBlockEntity blockEntity, SignTextSlot slot, boolean filtered) {
+		super(blockEntity, slot, filtered);
 	}
 
 	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/Identifier;withDefaultNamespace(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;"))

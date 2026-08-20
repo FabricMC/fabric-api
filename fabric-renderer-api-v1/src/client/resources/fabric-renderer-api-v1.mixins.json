@@ -12,7 +12,7 @@
     "block.model.WeightedVariantsMixin",
     "block.particle.BlockMarkerMixin",
     "block.particle.BlockStateModelSetMixin",
-    "block.particle.ScreenEffectRendererMixin",
+    "block.particle.LevelExtractorMixin",
     "block.particle.TerrainParticleMixin",
     "block.render.BlockModelRenderStateMixin",
     "block.render.BlockStateModelWrapperMixin",

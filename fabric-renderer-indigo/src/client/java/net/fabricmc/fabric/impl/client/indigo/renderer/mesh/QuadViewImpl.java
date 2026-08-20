@@ -265,13 +265,23 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
+	public RenderType itemGlintRenderType() {
+		return EncodingFormat.itemGlintRenderType(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	public RenderType itemGlintSpecialRenderType() {
+		return EncodingFormat.itemGlintSpecialRenderType(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
 	public boolean emissive() {
 		return EncodingFormat.emissive(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
-	public boolean diffuseShade() {
-		return EncodingFormat.diffuseShade(data[baseIndex + HEADER_BITS]);
+	public @Nullable Direction shadeDirectionOverride() {
+		return EncodingFormat.shadeDirectionOverride(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ServerboundPlayChannelEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
-	public static final KeyMapping OPEN = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-networking-api-v1-testmod.open", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyMapping.Category.MISC));
+	public static final KeyMapping OPEN = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-networking-api-v1-testmod.open", InputConstants.Type.KEYBOARD, SDLScancode.SDL_SCANCODE_MENU, KeyMapping.Category.MISC));
 	static final Set<Identifier> SUPPORTED_SERVERBOUND_CHANNELS = new HashSet<>();
 
 	@Override

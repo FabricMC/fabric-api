@@ -7,7 +7,6 @@
   },
   "display": {
     "announce_to_chat": false,
-    "background": "minecraft:textures/gui/advancements/backgrounds/end.png",
     "description": {
       "translate": "advancements.test.adventure_child.description"
     },

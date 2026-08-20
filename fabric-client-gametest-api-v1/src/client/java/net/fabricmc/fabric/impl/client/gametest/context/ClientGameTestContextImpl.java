@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.apache.commons.lang3.function.FailableConsumer;
@@ -39,7 +40,6 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -276,7 +276,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	private static boolean pressMatchingButton(AbstractWidget widget, String text) {
-		var clickEvent = new MouseButtonInfo(GLFW.GLFW_KEY_UNKNOWN, 0);
+		var clickEvent = new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0);
 
 		if (widget instanceof Button button) {
 			if (text.equals(button.getMessage().getString())) {
@@ -389,7 +389,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			if (options.size != null) {
 				client.getWindow().setWidth(options.size.x);
 				client.getWindow().setHeight(options.size.y);
-				client.gameRenderer.mainRenderTarget().resize(options.size.x, options.size.y);
+				client.gameRenderer.resize(options.size.x, options.size.y);
 			}
 
 			return new Vector2i(prevWidth, prevHeight);
@@ -398,8 +398,9 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		try {
 			CompletableFuture<T> future = computeOnClient(client -> {
 				DeltaTracker.DefaultValue deltaTracker = DeltaTrackerDefaultValueAccessor.create(options.deltaTicks);
+				client.gameRenderer.update(deltaTracker);
 				client.gameRenderer.extract(deltaTracker, true);
-				client.gameRenderer.render(deltaTracker, true);
+				client.gameRenderer.render();
 				RenderSystem.getDevice().createCommandEncoder().submit();
 				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
@@ -427,7 +428,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 				computeOnClient(client -> {
 					client.getWindow().setWidth(prevSize.x);
 					client.getWindow().setHeight(prevSize.y);
-					client.gameRenderer.mainRenderTarget().resize(prevSize.x, prevSize.y);
+					client.gameRenderer.resize(prevSize.x, prevSize.y);
 					return null;
 				});
 			}
@@ -526,19 +527,27 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	@Override
 	public <E extends Throwable> void runOnClient(FailableConsumer<Minecraft, E> action) throws E {
-		ThreadingImpl.checkOnGametestThread("runOnClient");
+		ThreadingImpl.checkOnGametestOrClientThread("runOnClient");
 		Preconditions.checkNotNull(action, "action");
 
-		ThreadingImpl.runOnClient(() -> action.accept(Minecraft.getInstance()));
+		if (ThreadingImpl.unsafeClientInstance.isSameThread()) {
+			action.accept(Minecraft.getInstance());
+		} else {
+			ThreadingImpl.runOnClient(() -> action.accept(Minecraft.getInstance()));
+		}
 	}
 
 	@Override
 	public <T, E extends Throwable> T computeOnClient(FailableFunction<Minecraft, T, E> function) throws E {
-		ThreadingImpl.checkOnGametestThread("computeOnClient");
+		ThreadingImpl.checkOnGametestOrClientThread("computeOnClient");
 		Preconditions.checkNotNull(function, "function");
 
-		MutableObject<T> result = new MutableObject<>();
-		ThreadingImpl.runOnClient(() -> result.setValue(function.apply(Minecraft.getInstance())));
-		return result.getValue();
+		if (ThreadingImpl.unsafeClientInstance.isSameThread()) {
+			return function.apply(Minecraft.getInstance());
+		} else {
+			MutableObject<T> result = new MutableObject<>();
+			ThreadingImpl.runOnClient(() -> result.setValue(function.apply(Minecraft.getInstance())));
+			return result.getValue();
+		}
 	}
 }

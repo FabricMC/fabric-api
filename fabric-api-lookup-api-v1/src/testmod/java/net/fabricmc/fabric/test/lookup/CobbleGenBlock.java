@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import com.mojang.serialization.MapCodec;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -27,11 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public class CobbleGenBlock extends BaseEntityBlock {
 	public CobbleGenBlock(Properties settings) {
 		super(settings);
-	}
-
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		throw new UnsupportedOperationException("not implemented yet");
 	}
 
 	@Nullable

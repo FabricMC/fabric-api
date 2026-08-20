@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.random.Weighted;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
@@ -145,10 +146,13 @@ public final class BiomeSelectors {
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(Set<EntityType<?>> entityTypes) {
 		return context -> {
-			MobSpawnSettings spawnSettings = context.getBiome().getMobSettings();
+			MobSpawnSettings spawnSettings = context.getBiome().getAttributes().applyModifier(
+					EnvironmentAttributes.NATURAL_MOB_SPAWNS,
+					EnvironmentAttributes.NATURAL_MOB_SPAWNS.defaultValue()
+			);
 
 			for (MobCategory mobCategory : MobCategory.values()) {
-				for (Weighted<MobSpawnSettings.SpawnerData> spawnEntry : spawnSettings.getMobs(mobCategory).unwrap()) {
+				for (Weighted<MobSpawnSettings.SpawnerData> spawnEntry : spawnSettings.getMobsToSpawn(mobCategory).unwrap()) {
 					if (entityTypes.contains(spawnEntry.value().type())) {
 						return true;
 					}

@@ -17,9 +17,15 @@
   ],
   "depends": {
     "fabricloader": ">=0.18.4",
-    "fabric-resource-loader-v1": "*"
+    "fabric-resource-loader-v1": "*",
+    "fabric-networking-api-v1": "*"
   },
   "description": "Allows registration of client game tests.",
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestImpl"
+    ]
+  },
   "mixins": [
     "fabric-client-gametest-api-v1.mixins.json"
   ],

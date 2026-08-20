@@ -102,6 +102,8 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 - Avoid exposing java `record`s as public API.
     - Records expose more than is necessary for most APIs, which makes them difficult to evolve.
     - Prefer to expose an interface that is implemented by an impl record.
+- Always make constructors `private` in utility classes.
+    - Utility classes are never instantiated, so ensure that they are final and their constructors are made `private`.
 - Avoid creating constant interfaces or creating an interface that is never implemented and intended only to hold `static final` fields.
     - Constant interfaces confuse users by suggesting they are intended to be implemented.
     - This is a common Java anti-pattern.
@@ -128,7 +130,7 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
         }
     
         // Holder class is not meant for instantiation.
-        private ExampleEvents() {
+        private FooEvents() {
         }
     }
     ```
@@ -227,7 +229,7 @@ public final class FooEvents {
     }
 
     // Holder class is not meant for instantiation.
-    private ExampleEvents() {
+    private FooEvents() {
     }
 }
 ```

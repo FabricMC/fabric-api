@@ -39,6 +39,10 @@
     {
       "id": "#c:ores/quartz",
       "required": false
+    },
+    {
+      "id": "#minecraft:ores",
+      "required": false
     }
   ]
 }

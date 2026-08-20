@@ -26,8 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -47,9 +46,9 @@ public abstract class RecipeManagerMixin implements FabricRecipeManager {
 	@Unique
 	private SynchronizedRecipes synchronizedRecipes = SynchronizedRecipesImpl.EMPTY;
 
-	@Inject(method = "apply(Lnet/minecraft/world/item/crafting/RecipeMap;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At("HEAD"))
-	private void updateSynchronizedRecipes(RecipeMap preparedRecipes, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
-		this.synchronizedRecipes = new SynchronizedRecipesImpl(preparedRecipes);
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void updateSynchronizedRecipes(HolderLookup.Provider registries, CallbackInfo ci) {
+		this.synchronizedRecipes = new SynchronizedRecipesImpl(this.recipes);
 	}
 
 	@Override

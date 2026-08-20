@@ -20,11 +20,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 
 public record TestNestedDynamicObject(Holder<TestDynamicObject> nested) {
 	public static final Codec<TestNestedDynamicObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			RegistryFileCodec.create(CustomDynamicRegistryTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
+			RegistryCodecs.holder(CustomDynamicRegistryTest.TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC)
 					.fieldOf("nested")
 					.forGetter(TestNestedDynamicObject::nested)
 	).apply(instance, TestNestedDynamicObject::new));

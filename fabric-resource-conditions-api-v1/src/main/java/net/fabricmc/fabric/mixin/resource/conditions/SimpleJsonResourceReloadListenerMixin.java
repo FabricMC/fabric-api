@@ -27,7 +27,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -46,10 +48,13 @@ public class SimpleJsonResourceReloadListenerMixin {
 	@Unique
 	private static final Object SKIP_DATA_MARKER = new Object();
 
-	@WrapOperation(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;"))
-	private static DataResult<?> applyResourceConditions(Codec<?> instance, DynamicOps<JsonElement> dynamicOps, Object object, Operation<DataResult<?>> original,
-														@Local(argsOnly = true) FileToIdConverter resourceFinder,
-														@Local(name = "entry") Map.Entry<Identifier, Resource> entry) {
+	@Shadow
+	@Final
+	private FileToIdConverter lister;
+
+	@WrapOperation(method = "prepare", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;"))
+	private DataResult<?> applyResourceConditions(Codec<?> instance, DynamicOps<JsonElement> dynamicOps, Object object, Operation<DataResult<?>> original,
+													@Local(name = "entry") Map.Entry<Identifier, Resource> entry) {
 		final JsonElement resourceData = (JsonElement) object;
 		RegistryOps.@Nullable RegistryInfoLookup registryInfo = null;
 
@@ -60,7 +65,7 @@ public class SimpleJsonResourceReloadListenerMixin {
 		if (resourceData.isJsonObject()) {
 			JsonObject obj = resourceData.getAsJsonObject();
 
-			final String dataType = resourceFinder.prefix();
+			final String dataType = this.lister.prefix();
 
 			if (!ResourceConditionsImpl.applyResourceConditions(obj, dataType, entry.getKey(), registryInfo)) {
 				return DataResult.success(SKIP_DATA_MARKER);
@@ -71,7 +76,7 @@ public class SimpleJsonResourceReloadListenerMixin {
 	}
 
 	// parse.ifSuccess
-	@Inject(method = "lambda$scanDirectory$0", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "lambda$prepare$0", at = @At("HEAD"), cancellable = true)
 	private static void skipData(Map<?, ?> map, Identifier identifier, Object object, CallbackInfo ci) {
 		if (object == SKIP_DATA_MARKER) {
 			ci.cancel();

@@ -6,3 +6,9 @@ plugins {
 loom {
 	accessWidenerPath = file('src/client/resources/fabric-client-gametest-api-v1.classtweaker')
 }
+
+fabricApiModule {
+	moduleDependencies(
+		':fabric-networking-api-v1'
+	)
+}

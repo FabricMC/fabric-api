@@ -71,14 +71,13 @@ public class BrewingStandGameTest {
 				setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
-				ItemStack.EMPTY,
+				new ItemStack(Items.GLASS_BOTTLE),
 				ItemStack.EMPTY);
 
 		helper.succeed();
 	}
 
-	//@GameTest(templateName = EMPTY_STRUCTURE)
-	// Skip see: https://github.com/FabricMC/fabric/pull/2874
+	@GameTest
 	public void fabricRemainderTest(GameTestHelper helper) {
 		helper.setBlock(POS, Blocks.BREWING_STAND);
 		BrewingStandBlockEntity blockEntity = helper.getBlockEntity(POS, BrewingStandBlockEntity.class);

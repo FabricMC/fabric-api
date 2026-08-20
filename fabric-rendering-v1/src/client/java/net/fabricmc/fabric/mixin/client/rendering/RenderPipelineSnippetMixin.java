@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import java.util.Optional;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

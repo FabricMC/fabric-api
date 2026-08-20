@@ -36,6 +36,7 @@ run
 *.log
 *.log.gz
 focus.txt
+.mixin.out/
 
 # Windows
 *.db

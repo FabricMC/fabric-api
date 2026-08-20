@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
  */
 public final class ModelHelper {
 	/** @see #faceFromIndex(int) */
-	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
+	private static final @Nullable Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
 	public static final int NULL_FACE_ID = 6;

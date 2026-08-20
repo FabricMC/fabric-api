@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.item;
 
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.Renderer;
@@ -66,7 +64,7 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 		}
 	}
 
-	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"))
+	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILnet/minecraft/client/resources/model/geometry/ItemQuads;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"))
 	private void submitItemProxy(
 			SubmitNodeCollector submitNodeCollector,
 			PoseStack poseStack,
@@ -75,7 +73,7 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 			int overlay,
 			int outlineColor,
 			int[] tints,
-			List<BakedQuad> quads,
+			ItemQuads quads,
 			ItemStackRenderState.FoilType foilType
 	) {
 		if (mutableMesh != null && mutableMesh.size() > 0) {

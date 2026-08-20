@@ -27,8 +27,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
@@ -37,6 +39,7 @@ public final class Registration {
 	public static final Block PILLAR_BLOCK = register("pillar", Block::new, BlockBehaviour.Properties.of());
 	public static final OctagonalColumnBlock OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", OctagonalColumnBlock::new, BlockBehaviour.Properties.of().noOcclusion().strength(1.8F));
 	public static final Block RIVERSTONE_BLOCK = register("riverstone", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
+	public static final Block FAKE_DIRT = register("fake_dirt", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL));
 
 	public static final BlockItem FRAME_ITEM = registerItem("frame", settings -> new BlockItem(FRAME_BLOCK, settings));
 	public static final BlockItem PILLAR_ITEM = registerItem("pillar", settings -> new BlockItem(PILLAR_BLOCK, settings));
@@ -44,6 +47,7 @@ public final class Registration {
 	public static final BlockItem RIVERSTONE_ITEM = registerItem("riverstone", settings -> new BlockItem(RIVERSTONE_BLOCK, settings));
 	public static final BlockItem CHORUS_END_STONE = registerItem("chorus_end_stone", settings -> new BlockItem(Blocks.END_STONE, settings));
 	public static final BlockItem CHORUS_GLASS = registerItem("chorus_glass", settings -> new BlockItem(Blocks.GLASS, settings));
+	public static final BlockItem FAKE_DIRT_ITEM = registerItem("fake_dirt", settings -> new BlockItem(FAKE_DIRT, settings));
 
 	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCK).build());
 

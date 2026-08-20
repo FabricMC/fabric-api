@@ -46,8 +46,10 @@ public class FlatLighter {
 	 * even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
 	 */
 	public void applyDirectionalBrightness(CardinalLighting cardinalLighting, MutableQuadViewImpl quad, boolean vanillaShade) {
-		if (!quad.diffuseShade()) {
-			final float directionalBrightness = cardinalLighting.up();
+		final Direction shadeDirectionOverride = quad.shadeDirectionOverride();
+
+		if (shadeDirectionOverride != null) {
+			final float directionalBrightness = cardinalLighting.byFace(shadeDirectionOverride);
 
 			if (directionalBrightness != 1.0f) {
 				for (int i = 0; i < 4; i++) {

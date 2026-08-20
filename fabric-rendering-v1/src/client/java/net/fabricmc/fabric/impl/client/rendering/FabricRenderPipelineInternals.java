@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 public final class FabricRenderPipelineInternals {
 	private static final ThreadLocal<Optional<Boolean>> SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI = ThreadLocal.withInitial(Optional::empty);

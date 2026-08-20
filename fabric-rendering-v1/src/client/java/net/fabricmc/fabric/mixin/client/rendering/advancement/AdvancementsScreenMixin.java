@@ -40,7 +40,7 @@ abstract class AdvancementsScreenMixin {
 
 	@WrapOperation(method = "extractWindow", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;extractIcon(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V"))
 	private void wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original, @Local(name = "mouseX") int mouseX, @Local(name = "mouseY") int mouseY) {
-		AdvancementHolder holder = tab.getRootNode().holder();
+		AdvancementHolder holder = tab.getRootAdvancement();
 
 		if (AdvancementRendererRegistryImpl.getIconRenderer(holder.id()) != null) {
 			boolean hovered = tab.isMouseOver(xo, yo, mouseX, mouseY);

@@ -163,6 +163,7 @@ final class TestAnnotationLocator {
 
 			return new TestData<>(
 					testEnvironment,
+					ResourceKey.create(Registries.DIMENSION, Identifier.parse(gameTest.dimension())),
 					Identifier.parse(gameTest.structure()),
 					gameTest.maxTicks(),
 					gameTest.setupTicks(),

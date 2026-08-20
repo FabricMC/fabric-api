@@ -18,7 +18,10 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -104,6 +107,39 @@ public final class ScreenKeyboardEvents {
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterKeyReleaseEvent();
 	}
 
+	/**
+	 * An event that checks if typing a character should be allowed.
+	 *
+	 * @return the event
+	 */
+	public static Event<AllowCharType> allowCharType(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAllowCharTypeEvent();
+	}
+
+	/**
+	 * An event that is called before typing a character is processed for a screen.
+	 *
+	 * @return the event
+	 */
+	public static Event<BeforeCharType> beforeCharType(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getBeforeCharTypeEvent();
+	}
+
+	/**
+	 * An event that is called after typing a character is processed for a screen.
+	 *
+	 * @return the event
+	 */
+	public static Event<AfterCharType> afterCharType(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAfterCharTypeEvent();
+	}
+
 	private ScreenKeyboardEvents() {
 	}
 
@@ -112,10 +148,10 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a key should be allowed to be pressed.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the scancode, keycode and modifiers
 		 * @return whether the key press should be processed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		boolean allowKeyPress(Screen screen, KeyEvent event);
 	}
@@ -125,9 +161,9 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a key press is handled.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void beforeKeyPress(Screen screen, KeyEvent event);
 	}
@@ -137,9 +173,9 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a key press is handled.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void afterKeyPress(Screen screen, KeyEvent event);
 	}
@@ -149,10 +185,10 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a pressed key should be allowed to be released.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the scancode, keycode and modifiers
 		 * @return whether the key press should be released
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		boolean allowKeyRelease(Screen screen, KeyEvent event);
 	}
@@ -162,9 +198,9 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a pressed key has been released.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void beforeKeyRelease(Screen screen, KeyEvent event);
 	}
@@ -174,10 +210,44 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a pressed key has been released.
 		 *
-		 * @param event the key press event, containing the key, scancode and modifiers
-		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 * @param event the key press event, containing the scancode, keycode and modifiers
+		 * @see InputConstants#KEY_Q
+		 * @see InputConstants#MOD_SHIFT
 		 */
 		void afterKeyRelease(Screen screen, KeyEvent event);
+	}
+
+	@FunctionalInterface
+	public interface AllowCharType {
+		/**
+		 * Checks if typing a character should be allowed.
+		 *
+		 * @param event the char type event, containing the codepoint
+		 * @return whether the character should be typed
+		 * @see CharacterEvent#codepointAsString()
+		 */
+		boolean allowCharType(Screen screen, CharacterEvent event);
+	}
+
+	@FunctionalInterface
+	public interface BeforeCharType {
+		/**
+		 * Called before a character is typed.
+		 *
+		 * @param event the char type event, containing the codepoint
+		 * @see CharacterEvent#codepointAsString()
+		 */
+		void beforeCharType(Screen screen, CharacterEvent event);
+	}
+
+	@FunctionalInterface
+	public interface AfterCharType {
+		/**
+		 * Called after a character is typed.
+		 *
+		 * @param event the char type event, containing the codepoint
+		 * @see CharacterEvent#codepointAsString()
+		 */
+		void afterCharType(Screen screen, CharacterEvent event);
 	}
 }

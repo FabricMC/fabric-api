@@ -39,6 +39,8 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 @ApiStatus.NonExtendable
 public interface FabricLootTableSubProvider extends LootTableSubProvider, DataProvider {
+	void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer);
+
 	/**
 	 * Return a new exporter that applies the specified conditions to any loot table it receives.
 	 *

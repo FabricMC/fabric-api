@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -38,8 +39,8 @@ public interface LootTableAccessor {
 	@Accessor("pools")
 	List<LootPool> fabric_getPools();
 
-	@Accessor("functions")
-	List<LootItemFunction> fabric_getFunctions();
+	@Accessor("modifier")
+	Optional<Holder<LootItemFunction>> fabric_getModifier();
 
 	@Accessor("randomSequence")
 	Optional<Identifier> fabric_getRandomSequence();

@@ -25,10 +25,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.commands.Commands;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.RegistryLayer;
+import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.permissions.PermissionSet;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -41,8 +39,8 @@ public class ReloadableServerResourcesMixin {
 	private RegistryAccess layeredRegistries;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(LayeredRegistryAccess<RegistryLayer> layeredRegistries, HolderLookup.Provider loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, List newComponents, CallbackInfo ci) {
-		this.layeredRegistries = layeredRegistries.compositeAccess();
+	private void init(ReloadableServerRegistries.LoadResult loadingContext, FeatureFlagSet enabledFeatures, Commands.CommandSelection commandSelection, List postponedTags, PermissionSet functionCompilationPermissions, List newComponents, CallbackInfo ci) {
+		this.layeredRegistries = loadingContext.layers().compositeAccess();
 	}
 
 	@Inject(method = "updateComponentsAndStaticRegistryTags", at = @At("TAIL"))

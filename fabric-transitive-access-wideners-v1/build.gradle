@@ -36,6 +36,8 @@ abstract class GenerateTransitiveAccessWidenersClassTweakerTask extends Abstract
 		generateNoiseRouterDataFieldsAndMethods(lines)
 		lines.add("")
 		generateRenderPipelinesFields(lines)
+		lines.add("")
+		generateBuiltInBlockModelsMethods(lines)
 
 		validateAccessWidener(lines)
 		writeOutput(lines)
@@ -65,13 +67,13 @@ abstract class GenerateTransitiveAccessWidenersClassTweakerTask extends Abstract
 		def node = readClass("net/minecraft/client/renderer/RenderPipelines")
 
 		for (def field : node.fields) {
-			if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/blaze3d/pipeline/RenderPipeline\$Snippet;") {
+			if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/renderpearl/api/pipeline/RenderPipeline\$Snippet;") {
 				lines.add("transitive-accessible field ${node.name} ${field.name} ${field.desc}")
 			}
 		}
 
 		for (def method : node.methods) {
-			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0) {
+			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && (method.access & Opcodes.ACC_STATIC) != 0 && !method.name.startsWith("lambda")) {
 				lines.add("transitive-accessible method ${node.name} ${method.name} ${method.desc}")
 			}
 		}
@@ -149,6 +151,25 @@ abstract class GenerateTransitiveAccessWidenersClassTweakerTask extends Abstract
 		lines.add("transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper\$EnchantmentInSlotVisitor")
 		lines.add("transitive-accessible class net/minecraft/world/item/enchantment/Enchantment\$GenericAction")
 		lines.add("transitive-accessible class net/minecraft/world/item/enchantment/Enchantment\$FloatAction")
+	}
+
+	private void generateBuiltInBlockModelsMethods(List<String> lines) {
+		lines.add("# Private methods of BuiltInBlockModels and BuiltInBlockModels\$Builder")
+
+		for (def node : [
+				readClass("net/minecraft/client/renderer/block/BuiltInBlockModels"),
+				readClass("net/minecraft/client/renderer/block/BuiltInBlockModels\$Builder")
+		]) {
+			for (def method : node.methods) {
+				if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("lambda\$")) {
+					lines.add("transitive-accessible method ${node.name} ${method.name} ${method.desc}")
+				}
+			}
+		}
+
+		lines.add("transitive-accessible class net/minecraft/client/renderer/block/BuiltInBlockModels\$Builder")
+		lines.add("transitive-accessible class net/minecraft/client/renderer/block/BuiltInBlockModels\$ModelFactory")
+		lines.add("transitive-accessible class net/minecraft/client/renderer/block/BuiltInBlockModels\$SpecialModelFactory")
 	}
 
 	private static boolean isTrackedDataAccessor(String name, String descriptor) {

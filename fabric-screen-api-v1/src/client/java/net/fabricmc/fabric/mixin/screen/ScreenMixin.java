@@ -33,6 +33,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -63,11 +64,13 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenEvents.AfterTick> afterTickEvent;
 	@Unique
-	private Event<ScreenEvents.BeforeExtract> beforeRenderEvent;
+	private Event<ScreenEvents.BeforeExtract> beforeExtractEvent;
 	@Unique
 	private Event<ScreenEvents.AfterBackground> afterBackgroundEvent;
 	@Unique
-	private Event<ScreenEvents.AfterExtract> afterRenderEvent;
+	private Event<ScreenEvents.AfterForeground> afterForegroundEvent;
+	@Unique
+	private Event<ScreenEvents.AfterExtract> afterExtractEvent;
 
 	// Keyboard
 	@Unique
@@ -82,6 +85,12 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenKeyboardEvents.BeforeKeyRelease> beforeKeyReleaseEvent;
 	@Unique
 	private Event<ScreenKeyboardEvents.AfterKeyRelease> afterKeyReleaseEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.AllowCharType> allowCharTypeEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.BeforeCharType> beforeCharTypeEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.AfterCharType> afterCharTypeEvent;
 
 	// Mouse
 	@Unique
@@ -110,8 +119,15 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
 	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
-	public final void extractWithTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+	public final void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
 		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
+	}
+
+	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
+	public final void extractForeground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+		if (!(((Object) this) instanceof AbstractContainerScreen<?>)) {
+			ScreenEvents.afterForeground(((Screen) (Object) this)).invoker().afterForeground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
+		}
 	}
 
 	@Inject(method = "init(II)V", at = @At("HEAD"))
@@ -139,9 +155,10 @@ abstract class ScreenMixin implements ScreenExtensions {
 		// All elements are repopulated on the screen, so we need to reinitialize all events
 		this.fabricButtons = null;
 		this.removeEvent = ScreenEventFactory.createRemoveEvent();
-		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
+		this.beforeExtractEvent = ScreenEventFactory.createBeforeExtractEvent();
 		this.afterBackgroundEvent = ScreenEventFactory.createAfterBackgroundEvent();
-		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
+		this.afterForegroundEvent = ScreenEventFactory.createAfterForegroundEvent();
+		this.afterExtractEvent = ScreenEventFactory.createAfterExtractEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
 
@@ -152,6 +169,9 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.allowKeyReleaseEvent = ScreenEventFactory.createAllowKeyReleaseEvent();
 		this.beforeKeyReleaseEvent = ScreenEventFactory.createBeforeKeyReleaseEvent();
 		this.afterKeyReleaseEvent = ScreenEventFactory.createAfterKeyReleaseEvent();
+		this.allowCharTypeEvent = ScreenEventFactory.createAllowCharTypeEvent();
+		this.beforeCharTypeEvent = ScreenEventFactory.createBeforeCharTypeEvent();
+		this.afterCharTypeEvent = ScreenEventFactory.createAfterCharTypeEvent();
 
 		// Mouse
 		this.allowMouseClickEvent = ScreenEventFactory.createAllowMouseClickEvent();
@@ -210,8 +230,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	}
 
 	@Override
-	public Event<ScreenEvents.BeforeExtract> fabric_getBeforeRenderEvent() {
-		return ensureEventsAreInitialized(this.beforeRenderEvent);
+	public Event<ScreenEvents.BeforeExtract> fabric_getBeforeExtractEvent() {
+		return ensureEventsAreInitialized(this.beforeExtractEvent);
 	}
 
 	@Override
@@ -220,8 +240,13 @@ abstract class ScreenMixin implements ScreenExtensions {
 	}
 
 	@Override
-	public Event<ScreenEvents.AfterExtract> fabric_getAfterRenderEvent() {
-		return ensureEventsAreInitialized(this.afterRenderEvent);
+	public Event<ScreenEvents.AfterForeground> fabric_getAfterForegroundEvent() {
+		return ensureEventsAreInitialized(this.afterForegroundEvent);
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterExtract> fabric_getAfterExtractEvent() {
+		return ensureEventsAreInitialized(this.afterExtractEvent);
 	}
 
 	// Keyboard
@@ -254,6 +279,21 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Override
 	public Event<ScreenKeyboardEvents.AfterKeyRelease> fabric_getAfterKeyReleaseEvent() {
 		return ensureEventsAreInitialized(this.afterKeyReleaseEvent);
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.AllowCharType> fabric_getAllowCharTypeEvent() {
+		return ensureEventsAreInitialized(this.allowCharTypeEvent);
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.BeforeCharType> fabric_getBeforeCharTypeEvent() {
+		return ensureEventsAreInitialized(this.beforeCharTypeEvent);
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.AfterCharType> fabric_getAfterCharTypeEvent() {
+		return ensureEventsAreInitialized(this.afterCharTypeEvent);
 	}
 
 	// Mouse

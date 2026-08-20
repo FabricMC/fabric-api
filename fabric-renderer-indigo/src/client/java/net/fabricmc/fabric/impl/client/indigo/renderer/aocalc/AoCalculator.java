@@ -20,9 +20,12 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.CUBIC_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
+import java.util.BitSet;
+
 import com.mojang.blaze3d.vertex.QuadInstance;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +50,9 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
+	/** The number of possible combinations returned by {@link #computeFace(Direction, boolean, Direction)}. */
+	private static final int FACE_DATA_COUNT = 6 * 2 * 6;
+
 	private final BlockModelLighter.Cache lightCache;
 
 	private final BlockPos.MutableBlockPos lightPos = new BlockPos.MutableBlockPos();
@@ -56,11 +62,11 @@ public class AoCalculator {
 	private BlockState state;
 	private BlockPos pos;
 
-	/** caches results of {@link #computeFace(Direction, boolean, boolean)} for the current block. */
-	private final AoFaceData[] faceData = new AoFaceData[24];
+	/** caches results of {@link #computeFace(Direction, boolean, Direction)} for the current block. */
+	private final AoFaceData[] faceData = new AoFaceData[FACE_DATA_COUNT];
 
 	/** indicates which elements of {@link #faceData} have been computed for the current block. */
-	private int completionFlags = 0;
+	private final BitSet completionFlags = new BitSet(FACE_DATA_COUNT);
 
 	/** holds per-corner weights - used locally to avoid new allocation. */
 	private final float[] w = new float[4];
@@ -72,7 +78,7 @@ public class AoCalculator {
 	public AoCalculator(BlockModelLighter.Cache lightCache) {
 		this.lightCache = lightCache;
 
-		for (int i = 0; i < 24; i++) {
+		for (int i = 0; i < FACE_DATA_COUNT; i++) {
 			faceData[i] = new AoFaceData();
 		}
 	}
@@ -82,7 +88,7 @@ public class AoCalculator {
 		this.level = level;
 		this.state = state;
 		this.pos = pos;
-		completionFlags = 0;
+		completionFlags.clear();
 	}
 
 	public void clear() {
@@ -137,7 +143,7 @@ public class AoCalculator {
 	private final Vector3f vanillaPos1 = new Vector3f();
 	private final Vector3f vanillaPos2 = new Vector3f();
 	private final Vector3f vanillaPos3 = new Vector3f();
-	private final BakedQuad.MaterialInfo vanillaMaterialInfo = new BakedQuad.MaterialInfo(null, ChunkSectionLayer.SOLID, Sheets.cutoutBlockItemSheet(), -1, true, 0);
+	private final BakedQuad.MaterialInfo vanillaMaterialInfo = new BakedQuad.MaterialInfo(null, ChunkSectionLayer.SOLID, Sheets.cutoutBlockItemSheet(), Sheets.cutoutBlockItemGlintSheet(), Sheets.cutoutBlockItemGlintSpecialSheet(), -1, null, 0);
 
 	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
 		// calculateShape only uses the vertex positions and light face of the quad, so making a new BakedQuad every
@@ -173,32 +179,32 @@ public class AoCalculator {
 		}
 
 		if ((flags & CUBIC_FLAG) == 0) {
-			vanillaPartialFace(quad, quad.lightFace(), isOnLightFace, quad.diffuseShade());
+			vanillaPartialFace(quad, quad.lightFace(), isOnLightFace, quad.shadeDirectionOverride());
 		} else {
-			vanillaFullFace(quad, quad.lightFace(), isOnLightFace, quad.diffuseShade());
+			vanillaFullFace(quad, quad.lightFace(), isOnLightFace, quad.shadeDirectionOverride());
 		}
 	}
 
 	private void calcEnhanced(QuadViewImpl quad) {
 		switch (quad.geometryFlags()) {
 		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG | CUBIC_FLAG:
-			vanillaFullFace(quad, quad.lightFace(), true, quad.diffuseShade());
+			vanillaFullFace(quad, quad.lightFace(), true, quad.shadeDirectionOverride());
 			break;
 
 		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG:
-			vanillaPartialFace(quad, quad.lightFace(), true, quad.diffuseShade());
+			vanillaPartialFace(quad, quad.lightFace(), true, quad.shadeDirectionOverride());
 			break;
 
 		case AXIS_ALIGNED_FLAG | CUBIC_FLAG:
-			blendedFullFace(quad, quad.lightFace(), quad.diffuseShade());
+			blendedFullFace(quad, quad.lightFace(), quad.shadeDirectionOverride());
 			break;
 
 		case AXIS_ALIGNED_FLAG:
-			blendedPartialFace(quad, quad.lightFace(), quad.diffuseShade());
+			blendedPartialFace(quad, quad.lightFace(), quad.shadeDirectionOverride());
 			break;
 
 		default:
-			irregularFace(quad, quad.diffuseShade());
+			irregularFace(quad, quad.shadeDirectionOverride());
 			break;
 		}
 	}
@@ -218,53 +224,53 @@ public class AoCalculator {
 		}
 	}
 
-	private void vanillaFullFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
-		fullFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shade));
+	private void vanillaFullFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, @Nullable Direction shadeDirectionOverride) {
+		fullFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shadeDirectionOverride));
 	}
 
-	private void vanillaPartialFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
-		partialFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shade));
+	private void vanillaPartialFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, @Nullable Direction shadeDirectionOverride) {
+		partialFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shadeDirectionOverride));
 	}
 
-	/** Used in {@link #blendedInsetFace(QuadViewImpl, int, Direction, boolean)} as return variable to avoid new allocation. */
+	/** Used in {@link #blendedInsetFace(QuadViewImpl, int, Direction, Direction)} as return variable to avoid new allocation. */
 	private final AoFaceData tmpFace = new AoFaceData();
 
 	/** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face. */
-	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
+	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
 		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
 		final float w0 = 1 - w1;
-		return AoFaceData.weightedMean(computeFace(lightFace, true, shade), w0, computeFace(lightFace, false, shade), w1, tmpFace);
+		return AoFaceData.weightedMean(computeFace(lightFace, true, shadeDirectionOverride), w0, computeFace(lightFace, false, shadeDirectionOverride), w1, tmpFace);
 	}
 
 	/**
-	 * Like {@link #blendedInsetFace(QuadViewImpl, int, Direction, boolean)} but optimizes if depth is 0 or 1.
+	 * Like {@link #blendedInsetFace(QuadViewImpl, int, Direction, Direction)} but optimizes if depth is 0 or 1.
 	 * Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
 	 */
-	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
+	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
 		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
 
 		if (Mth.equal(w1, 0)) {
-			return computeFace(lightFace, true, shade);
+			return computeFace(lightFace, true, shadeDirectionOverride);
 		} else if (Mth.equal(w1, 1)) {
-			return computeFace(lightFace, false, shade);
+			return computeFace(lightFace, false, shadeDirectionOverride);
 		} else {
 			final float w0 = 1 - w1;
-			return AoFaceData.weightedMean(computeFace(lightFace, true, shade), w0, computeFace(lightFace, false, shade), w1, tmpFace);
+			return AoFaceData.weightedMean(computeFace(lightFace, true, shadeDirectionOverride), w0, computeFace(lightFace, false, shadeDirectionOverride), w1, tmpFace);
 		}
 	}
 
-	private void blendedFullFace(QuadViewImpl quad, Direction lightFace, boolean shade) {
-		fullFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shade));
+	private void blendedFullFace(QuadViewImpl quad, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
+		fullFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shadeDirectionOverride));
 	}
 
-	private void blendedPartialFace(QuadViewImpl quad, Direction lightFace, boolean shade) {
-		partialFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shade));
+	private void blendedPartialFace(QuadViewImpl quad, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
+		partialFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shadeDirectionOverride));
 	}
 
 	/** used exclusively in irregular face to avoid new heap allocations each call. */
 	private final Vector3f vertexNormal = new Vector3f();
 
-	private void irregularFace(QuadViewImpl quad, boolean shade) {
+	private void irregularFace(QuadViewImpl quad, @Nullable Direction shadeDirectionOverride) {
 		final Vector3fc faceNorm = quad.faceNormal();
 		Vector3fc normal;
 		final float[] w = this.w;
@@ -280,7 +286,7 @@ public class AoCalculator {
 
 			if (!Mth.equal(0f, x)) {
 				final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
-				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
+				final AoFaceData fd = gatherInsetFace(quad, i, face, shadeDirectionOverride);
 				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = x * x;
 				final float a = fd.weightedAo(w);
@@ -298,7 +304,7 @@ public class AoCalculator {
 
 			if (!Mth.equal(0f, y)) {
 				final Direction face = y > 0 ? Direction.UP : Direction.DOWN;
-				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
+				final AoFaceData fd = gatherInsetFace(quad, i, face, shadeDirectionOverride);
 				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = y * y;
 				final float a = fd.weightedAo(w);
@@ -316,7 +322,7 @@ public class AoCalculator {
 
 			if (!Mth.equal(0f, z)) {
 				final Direction face = z > 0 ? Direction.SOUTH : Direction.NORTH;
-				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
+				final AoFaceData fd = gatherInsetFace(quad, i, face, shadeDirectionOverride);
 				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = z * z;
 				final float a = fd.weightedAo(w);
@@ -335,14 +341,20 @@ public class AoCalculator {
 		}
 	}
 
-	private AoFaceData computeFace(Direction lightFace, boolean isOnBlockFace, boolean shade) {
-		final int faceDataIndex = shade ? (isOnBlockFace ? lightFace.get3DDataValue() : lightFace.get3DDataValue() + 6) : (isOnBlockFace ? lightFace.get3DDataValue() + 12 : lightFace.get3DDataValue() + 18);
-		final int mask = 1 << faceDataIndex;
+	private AoFaceData computeFace(Direction lightFace, boolean isOnBlockFace, @Nullable Direction shadeDirectionOverride) {
+		// Use the override option if it's available, otherwise use the lightFace instead
+		// Same as BlockModelLighter#getDirectionalBrightness
+		final Direction shadeDirection = shadeDirectionOverride != null ? shadeDirectionOverride : lightFace;
+
+		final int faceDataIndex = shadeDirection.get3DDataValue()
+				+ (lightFace.get3DDataValue() * 6)
+				+ (isOnBlockFace ? 36 : 0);
+
 		final AoFaceData result = faceData[faceDataIndex];
 
-		if ((completionFlags & mask) == 0) {
-			completionFlags |= mask;
-			computeFace(result, lightFace, isOnBlockFace, shade);
+		if (!completionFlags.get(faceDataIndex)) {
+			completionFlags.set(faceDataIndex);
+			computeFace(result, lightFace, isOnBlockFace, shadeDirection);
 		}
 
 		return result;
@@ -356,7 +368,7 @@ public class AoCalculator {
 	 * in vanilla logic for some blocks that aren't full opaque cubes.
 	 * Except for parameterization, the logic itself is practically identical to vanilla.
 	 */
-	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace, boolean shade) {
+	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace, Direction shadeDirection) {
 		final BlockAndTintGetter level = this.level;
 		final BlockPos pos = this.pos;
 		final BlockState blockState = this.state;
@@ -386,7 +398,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear0 = searchState.isLightPermeable();
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[1]);
 		searchState = level.getBlockState(searchPos);
@@ -398,7 +410,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear1 = searchState.isLightPermeable();
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[2]);
 		searchState = level.getBlockState(searchPos);
@@ -410,7 +422,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear2 = searchState.isLightPermeable();
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[3]);
 		searchState = level.getBlockState(searchPos);
@@ -422,7 +434,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+		final boolean isClear3 = searchState.isLightPermeable();
 
 		// c = corner - values at corners of face
 		int cLight0, cLight1, cLight2, cLight3;
@@ -441,7 +453,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo0 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight0 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear0 = searchState.isLightPermeable();
 		}
 
 		if (!isClear3 && !isClear0) {
@@ -453,7 +465,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo1 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight1 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear1 = searchState.isLightPermeable();
 		}
 
 		if (!isClear2 && !isClear1) {
@@ -466,7 +478,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo2 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight2 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear2 = searchState.isLightPermeable();
 		}
 
 		if (!isClear3 && !isClear1) {
@@ -479,7 +491,7 @@ public class AoCalculator {
 			searchState = level.getBlockState(searchPos);
 			cAo3 = lightCache.getShadeBrightness(searchState, level, searchPos);
 			cLight3 = lightCache.getLightCoords(searchState, level, searchPos);
-			cIsClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			cIsClear3 = searchState.isLightPermeable();
 		}
 
 		// If on block face and neighbor isn't occluding, "center" will be neighbor light
@@ -496,14 +508,14 @@ public class AoCalculator {
 		// dark room with active sculk sensor above slabs).
 		if (isOnBlockFace && !searchState.isSolidRender()) {
 			lightCenter = lightCache.getLightCoords(searchState, level, searchPos);
-			isClearCenter = !searchState.isViewBlocking(level, searchPos) || searchState.getLightDampening() == 0;
+			isClearCenter = searchState.isLightPermeable();
 		} else {
 			lightCenter = lightCache.getLightCoords(blockState, level, pos);
-			isClearCenter = !blockState.isViewBlocking(level, pos) || blockState.getLightDampening() == 0;
+			isClearCenter = blockState.isLightPermeable();
 		}
 
 		float aoCenter = lightCache.getShadeBrightness(level.getBlockState(lightPos), level, lightPos);
-		float shadeBrightness = shade ? level.cardinalLighting().byFace(lightFace) : level.cardinalLighting().up();
+		float shadeBrightness = level.cardinalLighting().byFace(shadeDirection);
 
 		result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * shadeBrightness;
 		result.a1 = ((ao2 + ao0 + cAo0 + aoCenter) * 0.25F) * shadeBrightness;

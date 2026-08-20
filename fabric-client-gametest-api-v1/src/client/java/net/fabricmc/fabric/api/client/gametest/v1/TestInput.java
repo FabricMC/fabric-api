@@ -28,6 +28,8 @@ import net.minecraft.core.BlockPos;
 
 /**
  * The client gametest input handler used to simulate inputs to the client.
+ *
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestInput {
@@ -75,7 +77,7 @@ public interface TestInput {
 	 *
 	 * <h4>Most key mappings will only start reacting to this when a tick is waited.</h4>
 	 *
-	 * @param keyCode The key code of the key to hold
+	 * @param keyCode The SDL scancode of the key to hold
 	 * @see #releaseKey(int)
 	 * @see #pressKey(int)
 	 */
@@ -87,7 +89,7 @@ public interface TestInput {
 	 *
 	 * <h4>Most key mappings will only start reacting to this when a tick is waited.</h4>
 	 *
-	 * @param button The mouse button to hold
+	 * @param button The SDL mouse button to hold
 	 * @see #releaseMouse(int)
 	 * @see #pressMouse(int)
 	 */
@@ -155,7 +157,7 @@ public interface TestInput {
 	 *
 	 * <h4>Most key mappings will only react to this when a tick is waited.</h4>
 	 *
-	 * @param keyCode The GLFW key code of the key to release
+	 * @param keyCode The SDL scancode of the key to release
 	 * @see #holdKey(int)
 	 */
 	void releaseKey(int keyCode);
@@ -165,7 +167,7 @@ public interface TestInput {
 	 *
 	 * <h4>Most key mappings will only react to this when a tick is waited.</h4>
 	 *
-	 * @param button The GLFW mouse button to release
+	 * @param button The SDL mouse button to release
 	 * @see #holdMouse(int)
 	 */
 	void releaseMouse(int button);
@@ -238,7 +240,7 @@ public interface TestInput {
 	 * <p>For sending Unicode text input (e.g. into text boxes), use {@link #typeChar(int)} or
 	 * {@link #typeChars(String)} instead.
 	 *
-	 * @param keyCode The GLFW key code of the key to press
+	 * @param keyCode The SDL scancode of the key to press
 	 * @see #holdKey(int)
 	 */
 	void pressKey(int keyCode);
@@ -249,7 +251,7 @@ public interface TestInput {
 	 * <p>A tick is waited because most key mappings need a tick to happen to react to the press. If you don't want the
 	 * delay, use {@link #holdMouseFor(int, int) holdMouseFor} with a tick count of {@code 0}.
 	 *
-	 * @param button The GLFW mouse button to press
+	 * @param button The SDL mouse button to press
 	 * @see #holdMouse(int)
 	 */
 	void pressMouse(int button);
@@ -301,7 +303,7 @@ public interface TestInput {
 	 * <p>Although the key will be released when this method returns, <strong>most key mappings will only react to this
 	 * when a tick is waited.</strong>
 	 *
-	 * @param keyCode The GLFW key code of the key to hold
+	 * @param keyCode The SDL scancode of the key to hold
 	 * @param ticks The number of ticks to hold the key for
 	 * @see #holdKey(int)
 	 */
@@ -314,7 +316,7 @@ public interface TestInput {
 	 * <p>Although the mouse button will be released when this method returns, <strong>most key mappings will only react
 	 * to this when a tick is waited.</strong>
 	 *
-	 * @param button The GLFW mouse button to hold
+	 * @param button The SDL mouse button to hold
 	 * @param ticks The number of ticks to hold the mouse button for
 	 * @see #holdMouse(int)
 	 */

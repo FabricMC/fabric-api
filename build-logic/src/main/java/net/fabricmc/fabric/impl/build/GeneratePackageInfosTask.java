@@ -67,22 +67,7 @@ public abstract class GeneratePackageInfosTask extends DefaultTask {
 					return FileVisitResult.CONTINUE;
 				}
 
-				Path existingPackageInfo = directory.resolve("package-info.java");
-
-				if (Files.exists(existingPackageInfo)) {
-					String text = Files.readString(existingPackageInfo, StandardCharsets.UTF_8);
-
-					if (!text.contains("@NullMarked")) {
-						throw new RuntimeException("package-info.java " + existingPackageInfo + " is missing @NullMarked annotation.");
-					}
-
-					return FileVisitResult.CONTINUE;
-				}
-
 				Path relativePath = root.relativize(directory);
-				Path target = output.resolve(relativePath);
-				Files.createDirectories(target);
-
 				String packageName = relativePath.toString().replace(java.io.File.separatorChar, '.');
 
 				if (packageName.equals("net.fabricmc.fabric.api.util") && getProjectName().get().equals("fabric-content-registries-v0")) {
@@ -90,6 +75,22 @@ public abstract class GeneratePackageInfosTask extends DefaultTask {
 				}
 
 				boolean isImpl = relativePath.toString().matches("^(net[/\\\\]fabricmc[/\\\\]fabric[/\\\\](impl|mixin)).*");
+				Path existingPackageInfo = directory.resolve("package-info.java");
+
+				if (Files.exists(existingPackageInfo)) {
+					String text = Files.readString(existingPackageInfo, StandardCharsets.UTF_8);
+
+					if (!text.contains("@NullMarked")) {
+						throw new RuntimeException("package-info.java " + existingPackageInfo + " is missing @NullMarked annotation.");
+					} else if (isImpl && !text.contains("@ApiStatus.Internal")) {
+						throw new RuntimeException("Impl package-info.java " + existingPackageInfo + " is missing @ApiStatus.Internal annotation.");
+					}
+
+					return FileVisitResult.CONTINUE;
+				}
+
+				Path target = output.resolve(relativePath);
+				Files.createDirectories(target);
 				Files.writeString(target.resolve("package-info.java"), packageInfo(headerText, packageName, isImpl), StandardCharsets.UTF_8);
 				return FileVisitResult.CONTINUE;
 			}

@@ -27,18 +27,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 
 /**
  * <h1>Implementation notes</h1>
  *
- * <p>When a client test is running, ticks are run in a much more controlled way than in vanilla. A tick is split into 4
+ * <p>When a client test is running, ticks are run in a much more controlled way than in vanilla. A tick is split into 2
  * phases:
  * <ol>
  *     <li>{@linkplain #PHASE_TICK} - The client and server threads run a single tick in parallel, if they exist. The test thread waits.</li>
- *     <li>{@linkplain #PHASE_SERVER_TASKS} - The server runs its task queue, if the server exists. The other threads wait.</li>
- *     <li>{@linkplain #PHASE_CLIENT_TASKS} - The client runs its task queue, if the client exists. The other threads wait.</li>
  *     <li>{@linkplain #PHASE_TEST} - The test thread runs test code while the client and server threads wait for tasks to be handed off.</li>
  * </ol>
  *
@@ -51,13 +50,8 @@ import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
  * released while leaving {@linkplain #taskToRun} as {@code null}, which they will interpret to mean they are to
  * continue into {@linkplain #PHASE_TICK}.
  *
- * <p>The reason these phases were chosen are to make client-server communication as consistent as possible. The task
- * queues are when most packets are handled, and without them being run in sequence it would be unspecified whether a
- * packet would be handled on the current tick until the next one. The server task queue is before the client so that
- * changes on the server appear on the client more readily. The test phase is run after the task queues rather than at
- * the end of the physical tick (i.e. {@code Minecraft}'s and {@code MinecraftServer}'s {@code tick} methods), for
- * no particular reason other than to avoid needing a 5th phase, and having a power of 2 number of phases is convenient
- * when using {@linkplain Phaser}, as it doesn't break when the phase counter overflows.
+ * <p>Having a power of 2 number of phases is convenient when using {@linkplain Phaser}, as it doesn't break when the
+ * phase counter overflows.
  *
  * <p>Other challenges include that a client or server can be started during {@linkplain #PHASE_TEST} but haven't
  * reached their semaphore code yet meaning they are unable to accept tasks. This is solved by setting a flag to true
@@ -77,10 +71,8 @@ public final class ThreadingImpl {
 	private static final String TASK_ON_OTHER_THREAD_METHOD_NAME = "runTaskOnOtherThread";
 
 	public static final int PHASE_TICK = 0;
-	public static final int PHASE_SERVER_TASKS = 1;
-	public static final int PHASE_CLIENT_TASKS = 2;
-	public static final int PHASE_TEST = 3;
-	private static final int PHASE_MASK = 3;
+	public static final int PHASE_TEST = 1;
+	private static final int PHASE_MASK = 1;
 
 	public static final Phaser PHASER = new Phaser();
 	private static volatile boolean enablePhases = true;
@@ -103,6 +95,11 @@ public final class ThreadingImpl {
 	public static Runnable taskToRun = null;
 
 	private static volatile boolean gameCrashed = false;
+
+	public static volatile boolean networkSyncReceived = false;
+
+	// Reference to Minecraft instance to avoid calling Minecraft.getInstance() on gametest thread (which has a check against doing that)
+	public static Minecraft unsafeClientInstance;
 
 	public static void enterPhase(int phase) {
 		while (enablePhases && getNextPhase() != phase) {
@@ -176,6 +173,22 @@ public final class ThreadingImpl {
 
 	public static void checkOnGametestThread(String methodName) {
 		Preconditions.checkState(Thread.currentThread() == testThread, "%s can only be called from the client gametest thread", methodName);
+	}
+
+	public static void checkOnClientThread(String methodName) {
+		Preconditions.checkState(unsafeClientInstance.isSameThread(), "%s can only be called from the client thread", methodName);
+	}
+
+	public static void checkOnGametestOrClientThread(String methodName) {
+		Preconditions.checkState(Thread.currentThread() == testThread || unsafeClientInstance.isSameThread(), "%s can only be called from the client gametest thread or the client thread", methodName);
+	}
+
+	public static void checkOnServerThread(String methodName, MinecraftServer server) {
+		Preconditions.checkState(server.isSameThread(), "%s can only be called from the server thread", methodName);
+	}
+
+	public static void checkOnGametestOrServerThread(String methodName, MinecraftServer server) {
+		Preconditions.checkState(Thread.currentThread() == testThread || server.isSameThread(), "%s can only be called from the client gametest thread or the server thread", methodName);
 	}
 
 	public static <E extends Throwable> void runOnClient(FailableRunnable<E> action) throws E {

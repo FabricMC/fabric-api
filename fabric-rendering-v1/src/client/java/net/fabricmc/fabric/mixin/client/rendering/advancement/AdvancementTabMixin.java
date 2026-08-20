@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -44,10 +43,6 @@ import net.fabricmc.fabric.impl.client.rendering.advancement.AdvancementRenderer
 
 @Mixin(AdvancementTab.class)
 abstract class AdvancementTabMixin {
-	@Shadow
-	@Final
-	private AdvancementNode rootNode;
-
 	@Shadow
 	private double scrollX;
 
@@ -77,7 +72,7 @@ abstract class AdvancementTabMixin {
 
 	@ModifyExpressionValue(method = "extractContents", at = @At(value = "CONSTANT", args = "intValue=-1", ordinal = 0))
 	private int preBackgroundRender(int original, @Share("backgroundRenderer") LocalRef<AdvancementRenderer.BackgroundRenderer> backgroundRenderer) {
-		AdvancementHolder holder = rootNode.holder();
+		AdvancementHolder holder = root.getAdvancement();
 		backgroundRenderer.set(AdvancementRendererRegistryImpl.getBackgroundRenderer(holder.id()));
 		return backgroundRenderer.get() == null || backgroundRenderer.get().shouldRenderOriginalBackground() ? original : Integer.MAX_VALUE;
 	}
@@ -87,7 +82,7 @@ abstract class AdvancementTabMixin {
 		if (backgroundRenderer.get() != null) {
 			AdvancementProgress progress = ((AdvancementWidgetAccessor) root).fabric_getProgress();
 			backgroundRenderer.get().extractAdvancementBackground(
-					new AdvancementRenderContextImpl.BackgroundImpl(graphics, rootNode.holder(), progress, bounds.get(), scrollX, scrollY)
+					new AdvancementRenderContextImpl.BackgroundImpl(graphics, root.getAdvancement(), progress, bounds.get(), scrollX, scrollY)
 			);
 		}
 	}

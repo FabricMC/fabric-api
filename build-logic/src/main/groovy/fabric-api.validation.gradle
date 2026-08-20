@@ -20,14 +20,17 @@ tasks.check.dependsOn "validateAnnotations"
 for (def sourceSet in [sourceSets.main, sourceSets.client]) {
 	def sourceSetName = sourceSet.name
 	def taskName = sourceSet.getTaskName('generate', 'PackageInfos')
-	def task = tasks.register(taskName, GeneratePackageInfosTask) {
+	def generateTask = tasks.register(taskName, GeneratePackageInfosTask) {
 		group = 'fabric'
 		description = "Generates package-info files for $sourceSetName packages."
 		sourceRoot.set(file("src/$sourceSetName/java"))
 		header.set(rootProject.file('HEADER'))
 		outputDir.set(file("src/generated/$sourceSetName"))
 	}
-	sourceSet.java.srcDir task
+	sourceSet.java.srcDir generateTask
+	tasks.named("ideaSyncTask").configure {
+		dependsOn generateTask
+	}
 
 	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'PackageInfos'), Delete) {
 		group = 'fabric'

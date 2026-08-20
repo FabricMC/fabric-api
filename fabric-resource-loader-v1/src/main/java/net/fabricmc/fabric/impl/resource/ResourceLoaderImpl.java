@@ -53,12 +53,10 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
-import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import net.fabricmc.fabric.impl.resource.pack.ModNioPackResources;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public sealed class ResourceLoaderImpl implements ResourceLoader permits DataResourceLoaderImpl {
@@ -66,9 +64,6 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	private static final Map<PackType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(PackType.class);
 	private static final Set<BuiltinPackResourcesEntry> BUILTIN_PACK_RESOURCES = new HashSet<>();
 
-	private static final boolean DEBUG_RELOADERS_IDENTITY_STRICT = Boolean.getBoolean("fabric.resource_loader.debug.reloaders_identity.strict");
-	private static final boolean DEBUG_RELOADERS_IDENTITY = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_identity")
-			.orElse(DEBUG_RELOADERS_IDENTITY_STRICT || FabricLoader.getInstance().isDevelopmentEnvironment());
 	public static final boolean DEBUG_PROFILE_RESOURCE_RELOADERS = Boolean.getBoolean("fabric.resource_loader.debug.profile_resource_reloaders");
 	private static final boolean DEBUG_RELOADERS_ORDER = Boolean.getBoolean("fabric.resource_loader.debug.reloaders_order");
 
@@ -132,22 +127,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		if (reloader instanceof FabricResourceReloader identifiable) {
 			return identifiable.fabric$getId();
 		} else {
-			if (DEBUG_RELOADERS_IDENTITY) {
-				String message = "The resource listener at %s does not use identifiable registration making ordering support more difficult for other modders.".formatted(reloader.getClass().getName());
-				LOGGER.warn(message);
-
-				if (DEBUG_RELOADERS_IDENTITY_STRICT) {
-					throw new IllegalStateException(message);
-				}
-			}
-
-			return Identifier.fromNamespaceAndPath("unknown",
-					"private/"
-							+ reloader.getClass().getName()
-							.replace(".", "/")
-							.replace("$", "_")
-							.toLowerCase(Locale.ROOT)
-			);
+			return Identifier.withDefaultNamespace("private/" + reloader.getClass().getSimpleName().toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9/._-]", "_"));
 		}
 	}
 

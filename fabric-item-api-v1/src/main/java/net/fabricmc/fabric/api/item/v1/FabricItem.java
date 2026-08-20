@@ -19,9 +19,13 @@ package net.fabricmc.fabric.api.item.v1;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.function.TriFunction;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentInitializers;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -168,6 +172,30 @@ public interface FabricItem {
 	 * This interface is automatically implemented on all item properties via Mixin and interface injection.
 	 */
 	interface Properties {
+		/**
+		 * Modifies the value of a component. The original value may be null if no initializer for this component type was registered, or the initializer for this component type was registered after the modifier. Returning null will remove the value for this component type.
+		 * @param type the {@link DataComponentType} of the component to modify
+		 * @param modifier the modifier to run on the component
+		 * @param <T> the type of the component
+		 * @return this builder
+		 */
+		default <T> Item.Properties modifyComponent(DataComponentType<T> type, TriFunction<@Nullable T, HolderLookup.Provider, ResourceKey<Item>, @Nullable T> modifier) {
+			return this.modifyComponents((builder, registries, id) -> {
+				builder.set(type, modifier.apply(builder.get(type), registries, id));
+			});
+		}
+
+		/**
+		 * Modifies the value of all components initialized by initializers up to this point.
+		 * @param modifier the modifier to apply
+		 * @return this builder
+		 */
+		default Item.Properties modifyComponents(DataComponentInitializers.Initializer<Item> modifier) {
+			Item.Properties self = (Item.Properties) this;
+			self.componentInitializer = self.componentInitializer.andThen(modifier);
+			return self;
+		}
+
 		/**
 		 * Sets the equipment slot provider of the item.
 		 *

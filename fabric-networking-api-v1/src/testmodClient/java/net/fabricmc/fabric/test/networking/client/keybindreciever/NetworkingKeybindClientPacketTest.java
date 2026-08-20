@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.networking.client.keybindreciever;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import net.minecraft.client.KeyMapping;
 
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.test.networking.keybindreciever.KeybindPayload;
 // Sends a packet to the server when a keymapping was pressed
 // The server in response will send a chat message to the client.
 public class NetworkingKeybindClientPacketTest implements ClientModInitializer {
-	public static final KeyMapping TEST_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-networking-api-v1-testmod.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_BRACKET, KeyMapping.Category.MISC));
+	public static final KeyMapping TEST_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-networking-api-v1-testmod.test", InputConstants.Type.KEYBOARD, SDLScancode.SDL_SCANCODE_RIGHTBRACKET, KeyMapping.Category.MISC));
 
 	@Override
 	public void onInitializeClient() {

@@ -12,7 +12,10 @@
     "minecraft:white_stained_glass_pane",
     "minecraft:white_terracotta",
     "minecraft:white_wool",
+    "minecraft:white_wool_slab",
+    "minecraft:white_wool_stairs",
     "minecraft:white_bundle",
+    "minecraft:white_cushion",
     "minecraft:white_harness"
   ]
 }

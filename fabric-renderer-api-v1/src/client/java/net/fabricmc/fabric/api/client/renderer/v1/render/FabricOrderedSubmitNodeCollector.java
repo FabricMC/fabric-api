@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.Mesh;
@@ -60,20 +60,21 @@ public interface FabricOrderedSubmitNodeCollector {
 
 	/**
 	 * Alternative to
-	 * {@link OrderedSubmitNodeCollector#submitBreakingBlockModel(PoseStack, List, int)} that also
+	 * {@link OrderedSubmitNodeCollector#submitBreakingBlockModel(PoseStack, List, int, boolean)} that also
 	 * accepts a {@link Mesh}.
 	 *
 	 * @param poseStack the pose stack
 	 * @param parts the vanilla {@linkplain BlockStateModelPart parts}
 	 * @param mesh the mesh
 	 * @param progress the breaking progress
+	 * @param isBlockTranslucent whether the broken block should be considered translucent
 	 */
-	default void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress) {
-		((OrderedSubmitNodeCollector) this).submitBreakingBlockModel(poseStack, parts, progress);
+	default void submitBreakingBlockModel(PoseStack poseStack, List<BlockStateModelPart> parts, Mesh mesh, int progress, boolean isBlockTranslucent) {
+		((OrderedSubmitNodeCollector) this).submitBreakingBlockModel(poseStack, parts, progress, isBlockTranslucent);
 	}
 
 	/**
-	 * Alternative to {@link OrderedSubmitNodeCollector#submitItem(PoseStack, ItemDisplayContext, int, int, int, int[], List, ItemStackRenderState.FoilType)}
+	 * Alternative to {@link OrderedSubmitNodeCollector#submitItem(PoseStack, ItemDisplayContext, int, int, int, int[], ItemQuads, ItemStackRenderState.FoilType)}
 	 * that also accepts a {@link MeshView}.
 	 *
 	 * @param poseStack the pose stack
@@ -86,7 +87,7 @@ public interface FabricOrderedSubmitNodeCollector {
 	 * @param mesh the mesh
 	 * @param foilType the foil type
 	 */
-	default void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, List<BakedQuad> quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
+	default void submitItem(PoseStack poseStack, ItemDisplayContext displayContext, int lightCoords, int overlayCoords, int outlineColor, int[] tintLayers, ItemQuads quads, MeshView mesh, ItemStackRenderState.FoilType foilType) {
 		((OrderedSubmitNodeCollector) this).submitItem(poseStack, displayContext, lightCoords, overlayCoords, outlineColor, tintLayers, quads, foilType);
 	}
 }

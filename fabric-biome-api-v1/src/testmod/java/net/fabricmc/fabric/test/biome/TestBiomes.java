@@ -32,7 +32,7 @@ import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public final class TestBiomes {
@@ -48,11 +48,11 @@ public final class TestBiomes {
 
 	public static void bootstrap(BootstrapContext<Biome> context) {
 		HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
-		HolderGetter<ConfiguredWorldCarver<?>> configuredCarvers = context.lookup(Registries.CONFIGURED_CARVER);
+		HolderGetter<WorldCarver> carvers = context.lookup(Registries.CARVER);
 
 		context.register(EXAMPLE_BIOME, createExample());
-		context.register(TEST_CRIMSON_FOREST, NetherBiomes.crimsonForest(placedFeatures, configuredCarvers));
-		context.register(CUSTOM_PLAINS, OverworldBiomes.plains(placedFeatures, configuredCarvers, false, false, false));
+		context.register(TEST_CRIMSON_FOREST, NetherBiomes.crimsonForest(placedFeatures, carvers));
+		context.register(CUSTOM_PLAINS, OverworldBiomes.plains(placedFeatures, carvers, false, false, false));
 		context.register(TEST_END_HIGHLANDS, createEndHighlands(placedFeatures));
 		context.register(TEST_END_MIDLANDS, createEndMidlands());
 		context.register(TEST_END_BARRRENS, createEndBarrens());

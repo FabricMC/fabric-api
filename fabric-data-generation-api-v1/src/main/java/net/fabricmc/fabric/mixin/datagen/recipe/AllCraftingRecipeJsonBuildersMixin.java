@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+import net.minecraft.data.recipes.CustomCraftingRecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -35,6 +36,7 @@ import net.minecraft.world.item.crafting.Recipe;
 		ShapelessRecipeBuilder.class,
 		SingleItemRecipeBuilder.class,
 		TransmuteRecipeBuilder.class,
+		CustomCraftingRecipeBuilder.class,
 })
 abstract class AllCraftingRecipeJsonBuildersMixin {
 	@ModifyVariable(method = "save(Lnet/minecraft/data/recipes/RecipeOutput;Lnet/minecraft/resources/ResourceKey;)V", at = @At("HEAD"), argsOnly = true, name = "id")

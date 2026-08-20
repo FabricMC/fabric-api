@@ -39,7 +39,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableContext;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
+import net.fabricmc.fabric.mixin.datagen.loot.BlockLootSubProviderAccessor;
 
 /**
  * Extend this class and implement {@link FabricBlockLootSubProvider#generate}.
@@ -52,7 +54,7 @@ public abstract class FabricBlockLootSubProvider extends BlockLootSubProvider im
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
 	protected FabricBlockLootSubProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), registriesFuture.join());
+		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), new FabricLootTableContext(registriesFuture.join()));
 		this.output = packOutput;
 		this.registriesFuture = registriesFuture;
 	}
@@ -75,6 +77,7 @@ public abstract class FabricBlockLootSubProvider extends BlockLootSubProvider im
 	@Override
 	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
 		generate();
+		Map<ResourceKey<LootTable>, LootTable.Builder> map = ((BlockLootSubProviderAccessor) this).getMap();
 
 		for (Map.Entry<ResourceKey<LootTable>, LootTable.Builder> entry : map.entrySet()) {
 			ResourceKey<LootTable> resourceKey = entry.getKey();
@@ -108,6 +111,11 @@ public abstract class FabricBlockLootSubProvider extends BlockLootSubProvider im
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
 		return FabricLootTableProviderImpl.run(output, this, LootContextParamSets.BLOCK, this.output, registriesFuture);
+	}
+
+	@Override
+	public void run() {
+		generate();
 	}
 
 	@Override

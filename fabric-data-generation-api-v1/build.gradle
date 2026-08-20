@@ -108,6 +108,12 @@ abstract class GenerateDataClassTweakerTask extends AbstractGenerateClassTweaker
 			task.addMethod(lines, "transitive-accessible", owner, method)
 		}
 
+		visitStaticFinalFields(classes.get("net/minecraft/client/data/models/BlockModelGenerators")) { field, owner ->
+			if (field.desc == "Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;") {
+				lines.add("transitive-accessible\tfield\t${owner}\t${field.name}\t${field.desc}")
+			}
+		}
+
 		visitMethods(classes.get("net/minecraft/data/loot/BlockLootSubProvider")) { method, owner ->
 			task.addMethod(lines, "transitive-accessible", owner, method)
 		}
@@ -162,6 +168,18 @@ abstract class GenerateDataClassTweakerTask extends AbstractGenerateClassTweaker
 			}
 
 			visitor(method, classNode.name)
+		}
+	}
+
+	void visitStaticFinalFields(ClassNode classNode, Closure visitor) {
+		classNode.fields.forEach { field ->
+			int access = Opcodes.ACC_STATIC | Opcodes.ACC_FINAL
+
+			if ((field.access & access) != access || (field.access & Opcodes.ACC_PUBLIC) != 0) {
+				return
+			}
+
+			visitor(field, classNode.name)
 		}
 	}
 

@@ -77,7 +77,9 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		quad.cullFace(null);
 		quad.chunkLayer(ChunkSectionLayer.CUTOUT);
 		quad.itemRenderType(ItemRenderType.DEFAULT.renderType);
-		quad.diffuseShade(true);
+		quad.itemGlintRenderType(ItemGlintRenderType.DEFAULT.renderType);
+		quad.itemGlintSpecialRenderType(ItemGlintSpecialRenderType.DEFAULT.renderType);
+		quad.shadeDirectionOverride(null);
 		quad.ambientOcclusion(TriState.DEFAULT);
 		quad.foilType(null);
 		quad.tintIndex(-1);
@@ -193,10 +195,32 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl itemRenderType(RenderType renderType) {
-		ItemRenderType enumValue = ItemRenderType.RENDER_TYPE_2_ENUM.get(renderType);
+		ItemRenderType enumValue = ItemRenderType.RENDER_TYPE_TO_ENUM.get(renderType);
 
 		if (enumValue != null) {
 			data[baseIndex + HEADER_BITS] = EncodingFormat.itemRenderType(data[baseIndex + HEADER_BITS], enumValue);
+		}
+
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl itemGlintRenderType(RenderType renderType) {
+		ItemGlintRenderType enumValue = ItemGlintRenderType.RENDER_TYPE_TO_ENUM.get(renderType);
+
+		if (enumValue != null) {
+			data[baseIndex + HEADER_BITS] = EncodingFormat.itemGlintRenderType(data[baseIndex + HEADER_BITS], enumValue);
+		}
+
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl itemGlintSpecialRenderType(RenderType renderType) {
+		ItemGlintSpecialRenderType enumValue = ItemGlintSpecialRenderType.RENDER_TYPE_TO_ENUM.get(renderType);
+
+		if (enumValue != null) {
+			data[baseIndex + HEADER_BITS] = EncodingFormat.itemGlintSpecialRenderType(data[baseIndex + HEADER_BITS], enumValue);
 		}
 
 		return this;
@@ -209,8 +233,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl diffuseShade(boolean shade) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.diffuseShade(data[baseIndex + HEADER_BITS], shade);
+	public MutableQuadViewImpl shadeDirectionOverride(@Nullable Direction shadeDirection) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.shadeDirectionOverride(data[baseIndex + HEADER_BITS], shadeDirection);
 		return this;
 	}
 
@@ -313,7 +337,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		chunkLayer(materialInfo.layer());
 		itemRenderType(materialInfo.itemRenderType());
 		tintIndex(materialInfo.tintIndex());
-		diffuseShade(materialInfo.shade());
+		shadeDirectionOverride(materialInfo.shadeDirectionOverride());
 		emissive(lightEmission == 15);
 		return this;
 	}

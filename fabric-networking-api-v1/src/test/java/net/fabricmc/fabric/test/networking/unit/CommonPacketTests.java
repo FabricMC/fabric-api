@@ -29,12 +29,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +45,7 @@ import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -70,6 +71,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 public class CommonPacketTests {
 	private static final CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CommonVersionPayload> VERSION_PAYLOAD_TYPE = new CustomPacketPayload.TypeAndCodec<>(CommonVersionPayload.TYPE, CommonVersionPayload.CODEC);
 	private static final CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CommonRegisterPayload> REGISTER_PAYLOAD_TYPE = new CustomPacketPayload.TypeAndCodec<>(CommonRegisterPayload.TYPE, CommonRegisterPayload.CODEC);
+	private static final StreamCodec<ByteBuf, List<Identifier>> IDENTIFIER_LIST_CODEC = Identifier.STREAM_CODEC.apply(ByteBufCodecs.list());
 
 	private PacketSender packetSender;
 	private ChannelInfoHolder channelInfoHolder;
@@ -258,7 +260,7 @@ public class CommonPacketTests {
 		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("play"); // Target phase
-		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
+		IDENTIFIER_LIST_CODEC.encode(buf, List.of(Identifier.fromNamespaceAndPath("fabric", "test")));
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
 		packetHandler.receive(payload, clientContext);
@@ -271,7 +273,7 @@ public class CommonPacketTests {
 		FriendlyByteBuf response = readResponse(packetSender, REGISTER_PAYLOAD_TYPE);
 		assertEquals(1, response.readVarInt());
 		assertEquals("play", response.readUtf());
-		assertIterableEquals(List.of(Identifier.fromNamespaceAndPath("fabric", "global_client")), response.readCollection(HashSet::new, FriendlyByteBuf::readIdentifier));
+		assertIterableEquals(List.of(Identifier.fromNamespaceAndPath("fabric", "global_client")), IDENTIFIER_LIST_CODEC.decode(response));
 		assertEquals(0, response.readableBytes());
 	}
 
@@ -288,7 +290,7 @@ public class CommonPacketTests {
 		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("configuration"); // Target phase
-		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
+		IDENTIFIER_LIST_CODEC.encode(buf, List.of(Identifier.fromNamespaceAndPath("fabric", "test")));
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
 		packetHandler.receive(payload, clientContext);
@@ -301,7 +303,7 @@ public class CommonPacketTests {
 		FriendlyByteBuf response = readResponse(packetSender, REGISTER_PAYLOAD_TYPE);
 		assertEquals(1, response.readVarInt());
 		assertEquals("configuration", response.readUtf());
-		assertIterableEquals(List.of(Identifier.fromNamespaceAndPath("fabric", "global_configuration_client")), response.readCollection(HashSet::new, FriendlyByteBuf::readIdentifier));
+		assertIterableEquals(List.of(Identifier.fromNamespaceAndPath("fabric", "global_configuration_client")), IDENTIFIER_LIST_CODEC.decode(response));
 		assertEquals(0, response.readableBytes());
 	}
 
@@ -317,7 +319,7 @@ public class CommonPacketTests {
 		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("play"); // Target phase
-		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
+		IDENTIFIER_LIST_CODEC.encode(buf, List.of(Identifier.fromNamespaceAndPath("fabric", "test")));
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
 		packetHandler.receive(payload, serverContext);
@@ -339,7 +341,7 @@ public class CommonPacketTests {
 		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("configuration"); // Target phase
-		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
+		IDENTIFIER_LIST_CODEC.encode(buf, List.of(Identifier.fromNamespaceAndPath("fabric", "test")));
 
 		CommonRegisterPayload payload = CommonRegisterPayload.CODEC.decode(buf);
 		packetHandler.receive(payload, serverContext);

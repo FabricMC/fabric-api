@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.renderer.v1.render.submit;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -29,7 +28,6 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.client.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadView;
 
 /**
  * An alternative to {@link ItemFeatureRenderer.Submit} that accepts a {@link MeshView}.
@@ -41,28 +39,6 @@ public record ExtendedItemSubmit(PoseStack.Pose pose, ItemDisplayContext display
 								ItemStackRenderState.FoilType foilType) implements TranslucentSubmit {
 	//CHECKSTYLE.ON: MatchXpath
 	public static final FeatureRendererType<ExtendedItemSubmit> TYPE = FeatureRendererType.create("Extended Item");
-
-	public boolean hasTranslucency() {
-		for (BakedQuad quad : quads()) {
-			if (quad.materialInfo().itemRenderType().hasBlending()) {
-				return true;
-			}
-		}
-
-		var quadInspector = new Consumer<QuadView>() {
-			private boolean translucent = false;
-
-			@Override
-			public void accept(QuadView quad) {
-				if (quad.itemRenderType().hasBlending()) {
-					translucent = true;
-				}
-			}
-		};
-		mesh.forEach(quadInspector);
-
-		return quadInspector.translucent;
-	}
 
 	@Override
 	public float distanceToCameraSq() {

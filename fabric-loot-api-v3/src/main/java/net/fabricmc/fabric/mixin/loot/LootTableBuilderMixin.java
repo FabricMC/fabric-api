@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -46,10 +47,6 @@ abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 	@Mutable
 	private ImmutableList.Builder<LootPool> pools;
 
-	@Shadow
-	@Final
-	private ImmutableList.Builder<LootItemFunction> functions;
-
 	@Unique
 	private LootTable.Builder self() {
 		// noinspection ConstantConditions
@@ -64,8 +61,7 @@ abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 
 	@Override
 	public LootTable.Builder apply(LootItemFunction function) {
-		this.functions.add(function);
-		return self();
+		return self().apply(Holder.direct(function));
 	}
 
 	@Override
@@ -76,7 +72,7 @@ abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 
 	@Override
 	public LootTable.Builder apply(Collection<? extends LootItemFunction> functions) {
-		this.functions.addAll(functions);
+		functions.forEach(this::apply);
 		return self();
 	}
 

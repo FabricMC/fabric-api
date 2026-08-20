@@ -62,20 +62,6 @@ public final class VillagerInteractionRegistries {
 	}
 
 	/**
-	 * Registers an item to be edible by villagers.
-	 * @param item      the item to register
-	 * @param foodValue the amount of breeding power the item has (1 = normal food item, 4 = bread)
-	 */
-	public static void registerFood(ItemLike item, int foodValue) {
-		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
-		Integer oldValue = VillagerInteractionRegistriesImpl.getFoodRegistry().put(item.asItem(), foodValue);
-
-		if (oldValue != null) {
-			LOGGER.info("Overriding previous food value of {}, was: {}, now: {}", item.asItem().toString(), oldValue, foodValue);
-		}
-	}
-
-	/**
 	 * Registers a hero of the village gifts loot table to a profession.
 	 * @param profession the profession to modify
 	 * @param lootTable  the loot table to associate with the profession

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.client.keymapping;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLScancode;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.ToggleKeyMapping;
@@ -35,10 +35,10 @@ public class KeyMappingsTest implements ClientModInitializer {
 		KeyMapping.Category category2 = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("fabric-key-mapping-api-v1-testmod", "test_category_2"));
 		KeyMapping.Category category1 = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("fabric-key-mapping-api-v1-testmod", "test_category_1"));
 
-		KeyMapping binding1 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_1", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, category1));
-		KeyMapping binding2 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_2", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, category1));
-		KeyMapping stickyBinding = KeyMappingHelper.registerKeyMapping(new ToggleKeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_sticky", GLFW.GLFW_KEY_R, category2, () -> true, false));
-		KeyMapping duplicateBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_duplicate", GLFW.GLFW_KEY_RIGHT_SHIFT, category2));
+		KeyMapping binding1 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_1", InputConstants.Type.KEYBOARD, SDLScancode.SDL_SCANCODE_P, category1));
+		KeyMapping binding2 = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_2", InputConstants.Type.KEYBOARD, SDLScancode.SDL_SCANCODE_U, category1));
+		KeyMapping stickyBinding = KeyMappingHelper.registerKeyMapping(new ToggleKeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_sticky", SDLScancode.SDL_SCANCODE_R, category2, () -> true, false));
+		KeyMapping duplicateBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.test_keymapping_duplicate", SDLScancode.SDL_SCANCODE_RSHIFT, category2));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player == null) return;

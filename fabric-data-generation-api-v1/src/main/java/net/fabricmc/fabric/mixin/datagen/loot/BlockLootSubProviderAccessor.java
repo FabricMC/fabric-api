@@ -16,14 +16,21 @@
 
 package net.fabricmc.fabric.mixin.datagen.loot;
 
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 @Mixin(BlockLootSubProvider.class)
 public interface BlockLootSubProviderAccessor {
 	@Accessor()
-	HolderLookup.Provider getRegistries();
+	LootTableSubProvider.Context getOutput();
+
+	@Accessor()
+	Map<ResourceKey<LootTable>, LootTable.Builder> getMap();
 }

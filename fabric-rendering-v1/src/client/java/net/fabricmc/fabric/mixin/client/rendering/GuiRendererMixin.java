@@ -22,22 +22,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.IndexType;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.RenderPass;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -99,25 +91,6 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 	@Inject(method = "close", at = @At("RETURN"))
 	private void closeRendererPools(CallbackInfo ci) {
 		pipRendererPools.values().forEach(PictureInPictureRendererPool::close);
-	}
-
-	@WrapOperation(
-			method = "executeDraw",
-			at = @At(
-					value = "INVOKE",
-					target = "Lcom/mojang/blaze3d/systems/RenderPass;setIndexBuffer(Lcom/mojang/blaze3d/buffers/GpuBuffer;Lcom/mojang/blaze3d/IndexType;)V"
-			)
-	)
-	private void fixNonQuadIndexing(RenderPass instance, GpuBuffer buffer, IndexType indexType, Operation<Void> original, @Coerce GuiRendererDrawAccessor draw) {
-		RenderPipeline pipeline = draw.fabric$pipeline();
-
-		if (pipeline.usePipelineDrawModeForGui() && pipeline.getPrimitiveTopology() != PrimitiveTopology.QUADS) {
-			RenderSystem.AutoStorageIndexBuffer shapeIndexBuffer = RenderSystem.getSequentialBuffer(pipeline.getPrimitiveTopology());
-			buffer = shapeIndexBuffer.getBuffer(((StagedVertexBufferDrawAccessor) draw.fabric$Draw()).fabric$indexCount());
-			indexType = shapeIndexBuffer.type();
-		}
-
-		original.call(instance, buffer, indexType);
 	}
 
 	@ModifyExpressionValue(method = "addElementToMesh", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;scissorChanged(Lnet/minecraft/client/gui/navigation/ScreenRectangle;Lnet/minecraft/client/gui/navigation/ScreenRectangle;)Z"))

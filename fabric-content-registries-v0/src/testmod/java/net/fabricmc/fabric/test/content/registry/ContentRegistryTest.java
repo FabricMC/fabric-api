@@ -22,26 +22,22 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.BlockTransformer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.food.VillagerFood;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -50,22 +46,22 @@ import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.WeatheringCopperFullBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.CompostableRegistry;
-import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
+import net.fabricmc.fabric.api.registry.BlockTransformerRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
-import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
-import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
 import net.fabricmc.fabric.api.registry.fluid.EntityFluidInteractionRegistry;
@@ -107,16 +103,10 @@ public final class ContentRegistryTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Expected behavior:
-		//  - obsidian is now compostable
 		//  - diamond block is now flammable
 		//  - sand is now flammable
-		//  - red wool is flattenable to yellow wool
 		//  - custom items prefixed with 'smelting fuels included by' are valid smelting fuels
 		//  - dead bush is now considered as a dangerous block like sweet berry bushes (all entities except foxes should avoid it)
-		//  - quartz pillars are strippable to hay blocks
-		//  - hay blocks are strippable to tnt
-		//  - oak stairs are strippable to spruce stairs, while preserving all block state properties
-		//  - green wool is tillable to lime wool
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
 		//  - the 'test_oxidizing' block will randomly tick to oxidize into an 'exposed_test_oxidizing' block
@@ -124,31 +114,29 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - villagers can now collect oak saplings
 		//  - assign a loot table to the nitwit villager type
 		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a vibration frequency of 2
-		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
-		//  - if Redstone Experiments experiment is enabled, luck potions can be brewed from awkward potions with a bundle
-		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
 		//  - new test fluids acts as a proper liquid like water / lava
+		//  - dried kelp blocks can be transformed into dead brain coral blocks by a shovel, without any sound or particle
+		//  - bamboo mosaics can be transformed into bamboo blocks by a hoe, in precisely the same manner as tilling dirt into farmland
+		//  - any wool stairs can be transformed into a white wool slab by an axe, in precisely the same manner as stripping a log
+		//  - acacia stairs and birch stairs can be transformed into a top-half pale oak slab by a shovel, in precisely the same manner as flattening dirt into a path
 
-		CompostableRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
-		FlattenableBlockRegistry.register(Blocks.WOOL.red(), Blocks.WOOL.yellow().defaultBlockState());
 
-		FuelValueEvents.BUILD.register((builder, context) -> {
-			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, context.baseSmeltTime() / 4);
-			builder.add(SMELTING_FUELS_INCLUDED_BY_TAG, context.baseSmeltTime() / 2);
-		});
-
-		FuelValueEvents.EXCLUSIONS.register((builder, context) -> {
-			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
+		DefaultItemComponentEvents.MODIFY.register(context -> {
+			context.modify(SMELTING_FUEL_INCLUDED_BY_ITEM, builder -> builder.set(
+					DataComponents.COOKING_FUEL,
+					new CookingFuel(NumberProviders.COOKING_TIME_BAMBOO, NumberProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+			));
+			context.modify(item -> item.builtInRegistryHolder().is(SMELTING_FUELS_INCLUDED_BY_TAG), (builder, item) -> builder.set(
+					DataComponents.COOKING_FUEL,
+					new CookingFuel(NumberProviders.COOKING_TIME_DRY_PLANTS, NumberProviders.COOKING_DEFAULT_SPEED_MULTIPLIER)
+			));
+			context.modify(item -> item.builtInRegistryHolder().is(SMELTING_FUELS_EXCLUDED_BY_TAG) || item.builtInRegistryHolder().is(ItemTags.NON_FLAMMABLE_WOOD),
+					(builder, item) -> builder.set(DataComponents.COOKING_FUEL, null));
 		});
 
 		LandPathTypeRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGING, PathType.DAMAGING_IN_NEIGHBOR);
-		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
-		StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.TNT);
-		StrippableBlockRegistry.registerCopyState(Blocks.OAK_STAIRS, Blocks.SPRUCE_STAIRS);
-
-		TillableBlockRegistry.register(Blocks.WOOL.green(), context -> true, HoeItem.changeIntoState(Blocks.WOOL.lime().defaultBlockState()));
 
 		OxidizableBlocksRegistry.registerNextStage(Blocks.COPPER_ORE, Blocks.IRON_ORE);
 		OxidizableBlocksRegistry.registerNextStage(Blocks.IRON_ORE, Blocks.GOLD_ORE);
@@ -184,7 +172,8 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		LOGGER.info("OxidizableBlocksRegistry random ticks test passed!");
 
-		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
+		DefaultItemComponentEvents.MODIFY.register(context ->
+				context.modify(Items.APPLE, builder -> builder.set(DataComponents.VILLAGER_FOOD, new VillagerFood(4))));
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
 
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, ResourceKey.create(Registries.LOOT_TABLE, Identifier.withDefaultNamespace("fake_loot_table")));
@@ -202,27 +191,17 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("VibrationFrequencyRegistry test passed!");
 		}
 
-		ResourceKey<Item> dirtyPotionKey = ResourceKey.create(Registries.ITEM, id("dirty_potion"));
-		var dirtyPotion = new DirtyPotionItem(new Item.Properties().stacksTo(1).setId(dirtyPotionKey));
-		Registry.register(BuiltInRegistries.ITEM, dirtyPotionKey, dirtyPotion);
-		/* Mods should use PotionBrewingRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
-		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
-		FabricPotionBrewingBuilder.BUILD.register(builder -> {
-			builder.addContainer(dirtyPotion);
-			builder.registerItemRecipe(Items.POTION, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.DIRT)), dirtyPotion);
-			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(BlockItemTags.SMALL_FLOWERS.item())), Potions.HEALING);
-
-			if (builder.getEnabledFeatures().contains(FeatureFlags.REDSTONE_EXPERIMENTS)) {
-				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(Items.BUNDLE), Potions.LUCK);
-			}
-		});
-
 		EntityFluidInteractionRegistry.register(TEST_FLUID_KEY, FluidBehavior.simple()
 				.allowBoats(true).allowMovingDown(true).allowSwimming(false).enableDrowning(false)
 				.gravityMultiplier(-0.25f).makeMobsFloat(true).flowingPushScale(-0.02f)
 				.movementSpeed(0.02f).movementSlowdown(0.8f, 0.6f).fallDistanceModifier(0.8f).build());
 
 		EntityFluidInteractionRegistry.register(WATER_LIKE_FLUID_KEY, FluidBehavior.WATER_LIKE);
+
+		BlockTransformerRegistry.registerShovel(BlockTransformer.BlockTransformData.builder(BlockPredicate.matchesBlocks(Blocks.DRIED_KELP_BLOCK), Blocks.DEAD_BRAIN_CORAL_BLOCK).build());
+		BlockTransformerRegistry.registerTilling(Blocks.BAMBOO_MOSAIC, Blocks.BAMBOO_BLOCK);
+		BlockTransformerRegistry.registerStripping(BlockTags.WOOL_STAIRS, Blocks.WOOL_SLAB.white());
+		BlockTransformerRegistry.registerFlattening(new Block[]{Blocks.ACACIA_STAIRS, Blocks.BIRCH_STAIRS}, Blocks.PALE_OAK_SLAB.defaultBlockState().setValue(BlockStateProperties.SLAB_TYPE, SlabType.TOP));
 	}
 
 	public static class TestEventBlock extends Block {
@@ -235,17 +214,6 @@ public final class ContentRegistryTest implements ModInitializer {
 			// Emit the test event
 			level.gameEvent(player, TEST_EVENT, pos);
 			return InteractionResult.SUCCESS;
-		}
-	}
-
-	public static class DirtyPotionItem extends PotionItem {
-		public DirtyPotionItem(Properties properties) {
-			super(properties);
-		}
-
-		@Override
-		public Component getName(ItemStack stack) {
-			return Component.literal("Dirty ").append(Items.POTION.getName(stack));
 		}
 	}
 

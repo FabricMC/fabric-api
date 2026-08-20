@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "MultiPlayerGameModeMixin",
-    "ItemInHandRendererMixin",
+    "FirstPersonHandsAndItemsMixin",
     "ItemStackMixin"
   ],
   "injectors": {

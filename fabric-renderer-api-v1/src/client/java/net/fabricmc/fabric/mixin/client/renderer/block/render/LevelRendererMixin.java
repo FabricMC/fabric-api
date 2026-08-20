@@ -50,11 +50,11 @@ abstract class LevelRendererMixin {
 	private void cancelCollectParts(BlockStateModel model, RandomSource random, List<BlockStateModelPart> output) {
 	}
 
-	@Redirect(method = "submitBlockDestroyAnimation(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/LevelRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBreakingBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;I)V"))
-	private void submitBreakingBlockModelProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int progress, @Local(name = "random") RandomSource random, @Local(name = "state") BlockBreakingRenderState state, @Local(name = "model") BlockStateModel model, @Share("mutableMesh") LocalRef<MutableMesh> mutableMeshRef) {
+	@Redirect(method = "submitBlockDestroyAnimation(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/LevelRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBreakingBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/List;IZ)V"))
+	private void submitBreakingBlockModelProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, List<BlockStateModelPart> parts, int progress, boolean isBlockTranslucent, @Local(name = "random") RandomSource random, @Local(name = "state") BlockBreakingRenderState state, @Local(name = "model") BlockStateModel model, @Share("mutableMesh") LocalRef<MutableMesh> mutableMeshRef) {
 		MutableMesh mutableMesh = mutableMeshRef.get();
 		mutableMesh.clear();
 		model.emitQuads(mutableMesh.emitter(), BlockAndTintGetter.EMPTY, state.blockPos(), state.blockState(), random, _ -> false);
-		submitNodeCollector.submitBreakingBlockModel(poseStack, parts, mutableMesh.immutableCopy(), progress);
+		submitNodeCollector.submitBreakingBlockModel(poseStack, parts, mutableMesh.immutableCopy(), progress, isBlockTranslucent);
 	}
 }

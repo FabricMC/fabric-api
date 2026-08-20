@@ -39,7 +39,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableContext;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
+import net.fabricmc.fabric.mixin.datagen.loot.EntityLootSubProviderAccessor;
 
 /**
  * Extend this class and implement {@link FabricEntityLootSubProvider#generate()}.
@@ -53,7 +55,7 @@ public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider 
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
 	protected FabricEntityLootSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(FeatureFlags.REGISTRY.allFlags(), registriesFuture.join());
+		super(FeatureFlags.REGISTRY.allFlags(), new FabricLootTableContext(registriesFuture.join()));
 
 		this.output = output;
 		this.registriesFuture = registriesFuture;
@@ -79,8 +81,9 @@ public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider 
 	@Override
 	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
 		this.generate();
+		Map<EntityType<?>, Map<ResourceKey<LootTable>, LootTable.Builder>> map = ((EntityLootSubProviderAccessor) this).getMap();
 
-		for (Map<ResourceKey<LootTable>, LootTable.Builder> tables : this.map.values()) {
+		for (Map<ResourceKey<LootTable>, LootTable.Builder> tables : map.values()) {
 			// Register each of this particular entity type's loot tables
 			for (Map.Entry<ResourceKey<LootTable>, LootTable.Builder> entry : tables.entrySet()) {
 				biConsumer.accept(entry.getKey(), entry.getValue());
@@ -103,7 +106,7 @@ public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider 
 						return;
 					}
 
-					Map<ResourceKey<LootTable>, LootTable.Builder> tables = this.map.get(entityType);
+					Map<ResourceKey<LootTable>, LootTable.Builder> tables = map.get(entityType);
 
 					if (tables == null || !tables.containsKey(mainLootTableKey)) {
 						missing.add(entityTypeId);
@@ -122,6 +125,11 @@ public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider 
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
 		return FabricLootTableProviderImpl.run(output, this, LootContextParamSets.ENTITY, this.output, this.registriesFuture);
+	}
+
+	@Override
+	public void run() {
+		generate();
 	}
 
 	@Override

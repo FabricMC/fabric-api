@@ -37,6 +37,7 @@ import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -74,7 +75,7 @@ public abstract class MinecraftMixin {
 			method = "startUseItem",
 			cancellable = true
 	)
-	private void injectUseEntityCallback(CallbackInfo ci, @Local(name = "hand") InteractionHand hand, @Local(name = "entityHit") EntityHitResult hitResult, @Local(name = "entity") Entity entity) {
+	private void injectUseEntityCallback(CallbackInfo ci, @Local(name = "hand") InteractionHand hand, @Local(name = "swingAnimation") SwingAnimation swingAnimation, @Local(name = "entityHit") EntityHitResult hitResult, @Local(name = "entity") Entity entity) {
 		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.level(), hand, entity, hitResult);
 
 		if (result != InteractionResult.PASS) {
@@ -84,8 +85,8 @@ public abstract class MinecraftMixin {
 			}
 
 			if (result instanceof InteractionResult.Success success) {
-				if (success.swingSource() == InteractionResult.SwingSource.CLIENT) {
-					player.swing(hand);
+				if (success.swingSource() == InteractionResult.SwingSource.PREDICTED) {
+					player.swing(hand, swingAnimation, false);
 				}
 			}
 
