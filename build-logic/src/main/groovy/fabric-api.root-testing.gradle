@@ -11,20 +11,20 @@ def includedModuleProjects = rootProject.allprojects.findAll {
 // Root gametest consumes module-published testmod outputs without reading child sourceSets directly.
 def nestedTestmodJarDependencies = configurations.dependencyScope("fabricApiNestedTestmodJarDependencies")
 def nestedTestModJars = configurations.resolvable("fabricApiNestedTestmodJars") {
-	extendsFrom nestedTestmodJarDependencies.get()
-	FabricApiBuildUtils.configureJavaRuntimeJarVariant(project, delegate)
+	extendsFrom nestedTestmodJarDependencies
+	FabricApiBuildUtils.configureJavaRuntimeJarVariant(delegate)
 }
 
 def moduleTestmodOutputDependencies = configurations.dependencyScope("fabricApiModuleTestmodOutputDependencies")
 def moduleTestmodOutputs = configurations.resolvable("fabricApiModuleTestmodOutputs") {
-	extendsFrom moduleTestmodOutputDependencies.get()
-	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(project, delegate, "testmod")
+	extendsFrom moduleTestmodOutputDependencies
+	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(delegate, "testmod")
 }
 
 def moduleTestmodClientOutputDependencies = configurations.dependencyScope("fabricApiModuleTestmodClientOutputDependencies")
 def moduleTestmodClientOutputs = configurations.resolvable("fabricApiModuleTestmodClientOutputs") {
-	extendsFrom moduleTestmodClientOutputDependencies.get()
-	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(project, delegate, "testmodClient")
+	extendsFrom moduleTestmodClientOutputDependencies
+	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(delegate, "testmodClient")
 }
 
 for (def moduleProject : includedModuleProjects) {
@@ -85,4 +85,4 @@ runGametest {
 	outputs.file project.layout.buildDirectory.file("junit.xml")
 }
 
-loom.nestJars(tasks.named("testmodJar"), nestedTestModJars.get())
+loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)

@@ -9,8 +9,3 @@ tasks.withType(JavaCompile).configureEach {
 java {
 	withSourcesJar()
 }
-
-tasks.withType(AbstractArchiveTask).configureEach {
-	preserveFileTimestamps = false
-	reproducibleFileOrder = true
-}

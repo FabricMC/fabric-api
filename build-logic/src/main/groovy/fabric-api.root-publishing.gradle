@@ -33,14 +33,14 @@ aggregatePomDependencies.add([
 // Resolve module-published source/classpath variants for the aggregate root Javadoc task.
 def moduleJavadocSourceDependencies = configurations.dependencyScope("fabricApiModuleJavadocSourceDependencies")
 def moduleJavadocSources = configurations.resolvable("fabricApiModuleJavadocSources") {
-	extendsFrom moduleJavadocSourceDependencies.get()
-	FabricApiBuildUtils.configureDocumentationSourcesVariant(project, delegate)
+	extendsFrom moduleJavadocSourceDependencies
+	FabricApiBuildUtils.configureDocumentationSourcesVariant(delegate)
 }
 
 def moduleJavadocClasspathDependencies = configurations.dependencyScope("fabricApiModuleJavadocClasspathDependencies")
 def moduleJavadocClasspath = configurations.resolvable("fabricApiModuleJavadocClasspath") {
-	extendsFrom moduleJavadocClasspathDependencies.get()
-	FabricApiBuildUtils.configureJavaApiClassesVariant(project, delegate)
+	extendsFrom moduleJavadocClasspathDependencies
+	FabricApiBuildUtils.configureJavaApiClassesVariant(delegate)
 }
 
 javadoc {

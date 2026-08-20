@@ -92,8 +92,8 @@ check.dependsOn "validateMixinNames"
 // Testmods need selected modules' client outputs, resolved through their internal outgoing variant.
 def clientOutputDependencies = configurations.dependencyScope("fabricApiClientOutputDependencies")
 def clientOutputs = configurations.resolvable("fabricApiClientOutputs") {
-	extendsFrom clientOutputDependencies.get()
-	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(project, delegate, "client")
+	extendsFrom clientOutputDependencies
+	FabricApiBuildUtils.configureJavaRuntimeClassesVariant(delegate, "client")
 }
 
 def addClientOutputDependency = { String projectPath ->

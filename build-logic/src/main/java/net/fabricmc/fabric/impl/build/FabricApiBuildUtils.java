@@ -119,67 +119,67 @@ public final class FabricApiBuildUtils {
 
 	public static void configureInternalDocumentationSourcesVariant(Project project, Configuration configuration, String capabilityName) {
 		configureInternalCapability(project, configuration, capabilityName);
-		configureDocumentationSourcesVariant(project, configuration);
+		configureDocumentationSourcesVariant(configuration);
 	}
 
 	public static void configureInternalJavaApiClassesVariant(Project project, Configuration configuration, String capabilityName) {
 		configureInternalCapability(project, configuration, capabilityName);
-		configureJavaApiClassesVariant(project, configuration);
+		configureJavaApiClassesVariant(configuration);
 	}
 
 	public static void configureInternalJavaRuntimeClassesVariant(Project project, Configuration configuration, String capabilityName, String sourceSetName) {
 		configureInternalCapability(project, configuration, capabilityName);
-		configureJavaRuntimeClassesVariant(project, configuration, sourceSetName);
+		configureJavaRuntimeClassesVariant(configuration, sourceSetName);
 	}
 
 	public static void configureInternalJavaRuntimeJarVariant(Project project, Configuration configuration, String capabilityName) {
 		configureInternalCapability(project, configuration, capabilityName);
-		configureJavaRuntimeJarVariant(project, configuration);
+		configureJavaRuntimeJarVariant(configuration);
 	}
 
-	public static void configureDocumentationSourcesVariant(Project project, Configuration configuration) {
-		configureDocumentationSourcesAttributes(project, configuration.getAttributes());
+	public static void configureDocumentationSourcesVariant(Configuration configuration) {
+		configureDocumentationSourcesAttributes(configuration.getAttributes());
 	}
 
-	public static void configureJavaApiClassesVariant(Project project, Configuration configuration) {
-		configureJavaApiClassesAttributes(project, configuration.getAttributes());
+	public static void configureJavaApiClassesVariant(Configuration configuration) {
+		configureJavaApiClassesAttributes(configuration.getAttributes());
 	}
 
-	public static void configureJavaRuntimeClassesVariant(Project project, Configuration configuration, String sourceSetName) {
-		configureJavaRuntimeClassesAttributes(project, configuration.getAttributes(), sourceSetName);
+	public static void configureJavaRuntimeClassesVariant(Configuration configuration, String sourceSetName) {
+		configureJavaRuntimeClassesAttributes(configuration.getAttributes(), sourceSetName);
 	}
 
-	public static void configureJavaRuntimeJarVariant(Project project, Configuration configuration) {
-		configureJavaRuntimeJarAttributes(project, configuration.getAttributes());
+	public static void configureJavaRuntimeJarVariant(Configuration configuration) {
+		configureJavaRuntimeJarAttributes(configuration.getAttributes());
 	}
 
 	private static void configureInternalCapability(Project project, Configuration configuration, String capabilityName) {
 		configuration.getOutgoing().capability("%s:%s-fabric-api-%s:%s".formatted(project.getGroup(), project.getName(), capabilityName, project.getVersion()));
 	}
 
-	private static void configureDocumentationSourcesAttributes(Project project, AttributeContainer attributes) {
-		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.DOCUMENTATION));
-		attributes.attribute(DocsType.DOCS_TYPE_ATTRIBUTE, project.getObjects().named(DocsType.class, DocsType.SOURCES));
-		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, "directory"));
+	private static void configureDocumentationSourcesAttributes(AttributeContainer attributes) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, attributes.named(Category.class, Category.DOCUMENTATION));
+		attributes.attribute(DocsType.DOCS_TYPE_ATTRIBUTE, attributes.named(DocsType.class, DocsType.SOURCES));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, attributes.named(LibraryElements.class, "directory"));
 	}
 
-	private static void configureJavaApiClassesAttributes(Project project, AttributeContainer attributes) {
-		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
-		attributes.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_API));
-		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.CLASSES));
+	private static void configureJavaApiClassesAttributes(AttributeContainer attributes) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, attributes.named(Category.class, Category.LIBRARY));
+		attributes.attribute(Usage.USAGE_ATTRIBUTE, attributes.named(Usage.class, Usage.JAVA_API));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, attributes.named(LibraryElements.class, LibraryElements.CLASSES));
 	}
 
-	private static void configureJavaRuntimeClassesAttributes(Project project, AttributeContainer attributes, String sourceSetName) {
-		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
-		attributes.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME));
-		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.CLASSES));
+	private static void configureJavaRuntimeClassesAttributes(AttributeContainer attributes, String sourceSetName) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, attributes.named(Category.class, Category.LIBRARY));
+		attributes.attribute(Usage.USAGE_ATTRIBUTE, attributes.named(Usage.class, Usage.JAVA_RUNTIME));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, attributes.named(LibraryElements.class, LibraryElements.CLASSES));
 		attributes.attribute(SOURCE_SET_ATTRIBUTE, sourceSetName);
 	}
 
-	private static void configureJavaRuntimeJarAttributes(Project project, AttributeContainer attributes) {
-		attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
-		attributes.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME));
-		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.JAR));
+	private static void configureJavaRuntimeJarAttributes(AttributeContainer attributes) {
+		attributes.attribute(Category.CATEGORY_ATTRIBUTE, attributes.named(Category.class, Category.LIBRARY));
+		attributes.attribute(Usage.USAGE_ATTRIBUTE, attributes.named(Usage.class, Usage.JAVA_RUNTIME));
+		attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, attributes.named(LibraryElements.class, LibraryElements.JAR));
 	}
 
 	private static VersionCatalog libs(Project project) {

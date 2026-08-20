@@ -44,8 +44,8 @@ configurations {
 	}
 
 	consumable("fabricApiJavadocClasspathElements") {
-		extendsFrom configurations.getByName(sourceSets.main.compileClasspathConfigurationName)
-		extendsFrom configurations.getByName(sourceSets.client.compileClasspathConfigurationName)
+		extendsFrom configurations.named(sourceSets.main.compileClasspathConfigurationName)
+		extendsFrom configurations.named(sourceSets.client.compileClasspathConfigurationName)
 		FabricApiBuildUtils.configureInternalJavaApiClassesVariant(project, delegate, "javadoc-classpath")
 	}
 
