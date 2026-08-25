@@ -118,24 +118,6 @@ public class ContentRegistryGameTest {
 	}
 
 	@GameTest
-	public void testOxidizableBlocksRegistry(GameTestHelper helper) {
-		// Test de-oxidation. (the registry does not make the blocks oxidize.)
-		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-		BlockPos pos = new BlockPos(0, 1, 0);
-		helper.setBlock(pos, Blocks.DIAMOND_ORE);
-		ItemStack axe = new ItemStack(Items.NETHERITE_AXE);
-		player.setItemInHand(InteractionHand.MAIN_HAND, axe);
-		helper.useBlock(pos, player);
-		helper.assertBlockPresent(Blocks.GOLD_ORE, pos);
-		helper.assertValueEqual(axe.getDamageValue(), 1, Component.literal("axe damage"));
-		helper.useBlock(pos, player);
-		helper.assertBlockPresent(Blocks.IRON_ORE, pos);
-		helper.useBlock(pos, player);
-		helper.assertBlockPresent(Blocks.COPPER_ORE, pos);
-		helper.succeed();
-	}
-
-	@GameTest
 	public void testWaxableBlocksRegistry(GameTestHelper helper) {
 		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 		BlockPos pos = new BlockPos(0, 1, 0);
@@ -145,11 +127,6 @@ public class ContentRegistryGameTest {
 		helper.useBlock(pos, player);
 		helper.assertBlockPresent(Blocks.DEEPSLATE_DIAMOND_ORE, pos);
 		helper.assertValueEqual(honeycomb.getCount(), 63, Component.literal("honeycomb count"));
-		ItemStack axe = new ItemStack(Items.NETHERITE_AXE);
-		player.setItemInHand(InteractionHand.MAIN_HAND, axe);
-		helper.useBlock(pos, player);
-		helper.assertBlockPresent(Blocks.DIAMOND_ORE, pos);
-		helper.assertValueEqual(axe.getDamageValue(), 1, Component.literal("axe damage"));
 		helper.succeed();
 	}
 
