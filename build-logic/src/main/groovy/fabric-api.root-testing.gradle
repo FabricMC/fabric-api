@@ -85,4 +85,13 @@ runGametest {
 	outputs.file project.layout.buildDirectory.file("junit.xml")
 }
 
+runClientGametest {
+	if (providers.environmentVariable("ENABLE_TRACY").getOrNull() == "true") {
+		tracy {
+			tracyCapture = file("tracy-capture")
+			output = file("profile.tracy")
+		}
+	}
+}
+
 loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
