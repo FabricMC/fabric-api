@@ -72,6 +72,7 @@ jobs:
         if: always()
         with:
           name: Tracy Profile (${{ matrix.graphics_backend }})
+          archive: false
           path: profile.tracy
 
   server_test:
