@@ -6,10 +6,7 @@ fabricApiModule {
 	moduleDependencies(
 		'fabric-api-base',
 		'fabric-lifecycle-events-v1',
-		'fabric-resource-loader-v1'
-	)
-
-	testDependencies(
+		'fabric-resource-loader-v1',
 		'fabric-item-api-v1'
 	)
 }

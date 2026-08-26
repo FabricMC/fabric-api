@@ -18,7 +18,10 @@ package net.fabricmc.fabric.api.item.v1;
 
 /**
  * Determines where an enchantment has been loaded from.
+ *
+ * @deprecated Use {@link ResourceSource} instead.
  */
+@Deprecated
 public enum EnchantmentSource {
 	/**
 	 * An enchantment loaded from the vanilla data pack.
@@ -43,13 +46,44 @@ public enum EnchantmentSource {
 	}
 
 	/**
-	 * Returns whether this enchantment source is builtin and bundled in the vanilla or mod resources.
+	 * Returns whether this enchantment source is built-in and bundled in the vanilla or mod resources.
 	 *
-	 * <p>{@link #VANILLA} and {@link #MOD} are builtin.
+	 * <p>{@link #VANILLA} and {@link #MOD} are built-in.
 	 *
-	 * @return {@code true} if builtin, {@code false} otherwise
+	 * @return {@code true} if built-in, {@code false} otherwise
 	 */
 	public boolean isBuiltin() {
 		return builtin;
+	}
+
+	/**
+	 * Converts to the new {@link ResourceSource} which should be used instead of this class.
+	 *
+	 * @return The {@link ResourceSource} equivalent of this.
+	 */
+	public ResourceSource toResourceSource() {
+		// I don't like this case indentation but checkstyle demands it
+		return switch (this) {
+		case VANILLA -> ResourceSource.VANILLA;
+		case MOD -> ResourceSource.MOD;
+		case DATA_PACK -> ResourceSource.DATA_PACK;
+		};
+	}
+
+	/**
+	 * Converts to the new {@link ResourceSource} which should be used instead of this class.
+	 *
+	 * @return The {@link ResourceSource} equivalent of this.
+	 *
+	 * @deprecated {@link ResourceSource} should be used instead of EnchantmentSource.
+	 */
+	@Deprecated
+	public static EnchantmentSource fromResourceSource(ResourceSource source) {
+		// I don't like this case indentation but checkstyle demands it
+		return switch (source) {
+		case ResourceSource.VANILLA -> VANILLA;
+		case ResourceSource.MOD -> MOD;
+		case ResourceSource.DATA_PACK -> DATA_PACK;
+		};
 	}
 }

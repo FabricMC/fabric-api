@@ -8,7 +8,6 @@
   "mixins": [
     "BlockBehaviourAccessor",
     "BlockBehaviourBlockStateBaseMixin",
-    "BlockTransformersMixin",
     "FireBlockMixin",
     "GiveGiftToHeroAccessor",
     "GiveGiftToHeroMixin",

@@ -49,7 +49,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 	public void onInitialize() {
 		EnchantmentEvents.MODIFY_WITH_LOOKUP.register(
 				(key, builder, source, registries) -> {
-					if (source.isBuiltin() && key == WEIRD_IMPALING) {
+					if (source.isBuiltIn() && key == WEIRD_IMPALING) {
 						// make impaling set things on fire
 						builder.withEffect(
 								EnchantmentEffectComponents.POST_ATTACK,

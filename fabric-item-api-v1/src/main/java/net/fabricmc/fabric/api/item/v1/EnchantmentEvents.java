@@ -145,8 +145,26 @@ public final class EnchantmentEvents {
 		void modify(
 				ResourceKey<Enchantment> key,
 				Enchantment.Builder builder,
-				EnchantmentSource source
+				ResourceSource source
 		);
+
+		/**
+		 * Modifies the effects of an {@link Enchantment}.
+		 *
+		 * @param key The ID of the enchantment
+		 * @param builder The enchantment builder
+		 * @param source The source of the enchantment
+		 *
+		 * @deprecated Use {@link ResourceSource} variant instead.
+		 */
+		@Deprecated
+		default void modify(
+				ResourceKey<Enchantment> key,
+				Enchantment.Builder builder,
+				EnchantmentSource source
+		) {
+			this.modify(key, builder, source.toResourceSource());
+		}
 	}
 
 	@FunctionalInterface
@@ -162,8 +180,28 @@ public final class EnchantmentEvents {
 		void modify(
 				ResourceKey<Enchantment> key,
 				Enchantment.Builder builder,
-				EnchantmentSource source,
+				ResourceSource source,
 				RegistryOps.RegistryInfoLookup registryInfoLookup
 		);
+
+		/**
+		 * Modifies the effects of an {@link Enchantment}.
+		 *
+		 * @param key The ID of the enchantment
+		 * @param builder The enchantment builder
+		 * @param source The source of the enchantment
+		 * @param registryInfoLookup Lookup interface used to access registry information
+		 *
+		 * @deprecated Use {@link ResourceSource} variant instead.
+		 */
+		@Deprecated
+		default void modify(
+				ResourceKey<Enchantment> key,
+				Enchantment.Builder builder,
+				EnchantmentSource source,
+				RegistryOps.RegistryInfoLookup registryInfoLookup
+		) {
+			this.modify(key, builder, source.toResourceSource(), registryInfoLookup);
+		}
 	}
 }
