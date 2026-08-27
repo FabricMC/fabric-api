@@ -1,7 +1,7 @@
 [versions]
 fabric-loader = "0.19.3"
 fabric-installer = "1.1.2"
-fabric-loom = "1.17.19"
+fabric-loom = "1.17.20"
 spotless = "8.6.0"
 remote-sign = "0.5.0"
 mod-publish = "2.0.1"

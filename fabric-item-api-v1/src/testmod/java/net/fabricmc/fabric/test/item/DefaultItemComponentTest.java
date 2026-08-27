@@ -24,6 +24,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
@@ -69,10 +70,15 @@ public class DefaultItemComponentTest implements ModInitializer {
 			});
 		});
 
-		// Make all fireworks glint
 		DefaultItemComponentEvents.MODIFY.register(latePhase, context -> {
+			// Make all fireworks glint
 			context.modify(item -> item.components().has(DataComponents.FIREWORKS), (builder, item) -> {
 				builder.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+			});
+
+			// Make all pickaxes have the custom pickaxe block transformer
+			context.modify((item) -> item.getDefaultInstance().is(ItemTags.PICKAXES), (builder, registryLookup, item) -> {
+				builder.set(DataComponents.BLOCK_TRANSFORMER, registryLookup.getOrThrow(CustomBlockTransformsTest.PICKAXE));
 			});
 		});
 	}

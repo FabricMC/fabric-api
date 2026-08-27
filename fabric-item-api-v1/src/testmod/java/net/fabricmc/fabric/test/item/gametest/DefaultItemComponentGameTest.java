@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.item.gametest;
 
 import java.util.function.Consumer;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -29,6 +31,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Fireworks;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
+import net.fabricmc.fabric.test.item.CustomBlockTransformsTest;
 
 public class DefaultItemComponentGameTest {
 	@GameTest
@@ -70,6 +73,12 @@ public class DefaultItemComponentGameTest {
 
 		if (enchantGlint != Boolean.TRUE) {
 			throw helper.assertionException("Enchantment glint override not set on gold nugget");
+		}
+
+		Holder<BlockTransformer> pickaxeBlockTransform = Items.WOODEN_PICKAXE.components().get(DataComponents.BLOCK_TRANSFORMER);
+
+		if (!pickaxeBlockTransform.is(CustomBlockTransformsTest.PICKAXE)) {
+			throw helper.assertionException("Block transformer not set on pickaxes");
 		}
 
 		helper.succeed();

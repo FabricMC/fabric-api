@@ -25,22 +25,26 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
-import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
-import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
+import net.fabricmc.fabric.api.item.v1.ResourceSource;
 import net.fabricmc.fabric.mixin.item.EnchantmentBuilderAccessor;
 
 public class EnchantmentUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EnchantmentUtil.class);
 
+	@Nullable
+	@Deprecated
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
+		return modify(key, originalEnchantment, source.toResourceSource(), registryInfoLookup);
+	}
+
 	@SuppressWarnings({"unchecked", "deprecation"})
 	@Nullable
-	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, ResourceSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
 		Enchantment.Builder builder = Enchantment.enchantment(originalEnchantment.definition());
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 		BuilderExtensions builderExtensions = (BuilderExtensions) builder;
@@ -57,7 +61,7 @@ public class EnchantmentUtil {
 					}
 				});
 
-		// Reset the modified flag before invoking the event as we setup the builder above
+		// Reset the modified flag before invoking the event as we set up the builder above
 		builderExtensions.fabric$resetModified();
 
 		EnchantmentEvents.MODIFY.invoker().modify(key, builder, source);
@@ -77,21 +81,9 @@ public class EnchantmentUtil {
 		return null;
 	}
 
+	@Deprecated
 	public static EnchantmentSource determineSource(Resource resource) {
-		if (resource != null) {
-			PackSource packSource = resource.getFabricPackSource();
-
-			if (packSource == PackSource.BUILT_IN) {
-				return EnchantmentSource.VANILLA;
-			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModPackSource) {
-				return EnchantmentSource.MOD;
-			}
-		}
-
-		// If not builtin or mod, assume external data pack.
-		// It might also be a virtual enchantment injected via mixin instead of being loaded
-		// from a resource, but we can't determine that here.
-		return EnchantmentSource.DATA_PACK;
+		return EnchantmentSource.fromResourceSource(ResourceUtil.determineSource(resource));
 	}
 
 	private EnchantmentUtil() { }

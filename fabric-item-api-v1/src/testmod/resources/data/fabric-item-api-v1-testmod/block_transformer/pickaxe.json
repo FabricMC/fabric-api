@@ -1,0 +1,26 @@
+[
+  {
+    "block_state_provider": {
+      "type": "minecraft:rule_based_state_provider",
+      "rules": [
+        {
+          "if_true": {
+            "type": "minecraft:all_of",
+            "predicates": [
+              {
+                "type": "minecraft:matching_blocks",
+                "blocks": "minecraft:stone_bricks"
+              }
+            ]
+          },
+          "then": {
+            "type": "minecraft:simple_state_provider",
+            "state": "minecraft:cracked_stone_bricks"
+          }
+        }
+      ]
+    },
+    "item_damage_per_use": 1,
+    "sound": "minecraft:block.stone.hit"
+  }
+]

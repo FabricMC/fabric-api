@@ -53,14 +53,18 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install -y mesa-vulkan-drivers
       - run: |
-          curl -L -o tracy-capture https://github.com/modmuss50/tracy-utils/releases/download/0.0.2/linux-x86_64-tracy-capture
+          curl --fail --location --output "$RUNNER_TEMP/tracy.zip" https://github.com/wolfpld/tracy/releases/download/v0.14.1/linux-0.14.1.zip
+          echo "4f57574337b206cac86758081ab21c37cf9c83fc12170d2e339e1f4ee94ff590  $RUNNER_TEMP/tracy.zip" | sha256sum --check
+          unzip -q "$RUNNER_TEMP/tracy.zip" tracy-capture
           chmod +x tracy-capture
           mkdir run && echo "eula=true" >> run/eula.txt
           echo 'version:4896' >> run/options.txt
           echo 'preferredGraphicsBackend:"${{ matrix.graphics_backend }}"' >> run/options.txt
       - run: ./gradlew runClientGametest --stacktrace --warning-mode=fail
         env:
-          ENABLE_TRACY: false
+          ENABLE_TRACY: true
+      - run: if [ -f profile.tracy ]; then mv profile.tracy "profile-${{ matrix.graphics_backend }}.tracy"; fi
+        if: always()
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -70,7 +74,8 @@ jobs:
         if: always()
         with:
           name: Tracy Profile (${{ matrix.graphics_backend }})
-          path: profile.tracy
+          archive: false
+          path: profile-${{ matrix.graphics_backend }}.tracy
 
   server_test:
     runs-on: ubuntu-24.04

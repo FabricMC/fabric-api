@@ -19,7 +19,8 @@
     "fabricloader": ">=0.19.3",
     "fabric-api-base": "*",
     "fabric-lifecycle-events-v1": "*",
-    "fabric-resource-loader-v1": "*"
+    "fabric-resource-loader-v1": "*",
+    "fabric-item-api-v1": "*"
   },
   "description": "Adds registries for vanilla mechanics that are missing them.",
   "mixins": [
