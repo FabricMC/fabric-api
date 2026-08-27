@@ -70,9 +70,10 @@ public enum EnchantmentSource {
 	}
 
 	/**
-	 * Converts to the new {@link ResourceSource} which should be used instead of this class.
+	 * Converts from the new {@link ResourceSource} which should be used instead of this class.
 	 *
-	 * @return The {@link ResourceSource} equivalent of this.
+	 * @param source The {@link ResourceSource} to convert from.
+	 * @return The {@link EnchantmentSource} equivalent of the given source.
 	 *
 	 * @deprecated {@link ResourceSource} should be used instead of EnchantmentSource.
 	 */
