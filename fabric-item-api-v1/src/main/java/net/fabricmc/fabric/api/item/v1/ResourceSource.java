@@ -27,7 +27,7 @@ public enum ResourceSource {
 	/**
 	 * Something loaded from mods' bundled resources.
 	 *
-	 * <p>This includes the additional builtin data packs registered by mods
+	 * <p>This includes the additional built-in data packs registered by mods
 	 * with Fabric Resource Loader.
 	 */
 	MOD(true),

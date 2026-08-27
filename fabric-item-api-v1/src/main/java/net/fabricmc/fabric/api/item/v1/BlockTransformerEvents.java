@@ -39,7 +39,7 @@ public final class BlockTransformerEvents {
 	 * either vanilla, from a data pack, or from another mod.
 	 *
 	 * <p>For instance, a mod might add a transformer for one of its tools, and you may wish to add a new transformation
-	 * to tha transformer for your own blocks.
+	 * to the transformer for your own blocks.
 	 *
 	 * <p>For your own block transformers, you should simply define them in your mod's data pack. See the
 	 * <a href="https://minecraft.wiki/w/Block_transformer_definition">Block Transformer Definition page</a> on the
