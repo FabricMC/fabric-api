@@ -61,7 +61,9 @@ public final class BlockTransformerEvents {
 	@FunctionalInterface
 	public interface Modify {
 		/**
-		 * Modifies a {@link BlockTransformer}.
+		 * Allows for modification of a {@link BlockTransformer}.
+		 *
+		 * <p>Modification is achieved by altering the list of {@link BlockTransformer.BlockTransformData transform data}.
 		 *
 		 * @param key The ID of the block transformer
 		 * @param transforms The list of transform data
