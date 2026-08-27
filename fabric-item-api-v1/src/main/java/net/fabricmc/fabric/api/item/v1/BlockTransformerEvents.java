@@ -25,7 +25,30 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Events relating to block transformers, allowing for advanced modification of block transformers as they're loaded.
+ *
+ * <p>For adding new transformations to the vanilla transformers of axes, shovels, and hoes, see {@link BlockTransformerHelper}
+ * or the various {@linkplain net.minecraft.tags.BlockTags block tags} utilized by those vanilla transformers.
+ */
 public final class BlockTransformerEvents {
+	/**
+	 * An event that allows a {@link BlockTransformer} to be modified without needing to fully override it.
+	 *
+	 * <p>This should only be used to modify the behavior of <em>external</em> block transformers, where 'external' means
+	 * either vanilla, from a data pack, or from another mod.
+	 *
+	 * <p>For instance, a mod might add a transformer for one of its tools, and you may wish to add a new transformation
+	 * to tha transformer for your own blocks.
+	 *
+	 * <p>For your own block transformers, you should simply define them in your mod's data pack. See the
+	 * <a href="https://minecraft.wiki/w/Block_transformer_definition">Block Transformer Definition page</a> on the
+	 * Minecraft Wiki for more information, and consider generating the JSON files with data generation.
+	 *
+	 * <p>Note: If you wish to add transformations to axes, shovels, or hoes, consider using methods in
+	 * {@link BlockTransformerHelper} or extending the {@linkplain net.minecraft.tags.BlockTags relevant block tags}
+	 * through your mod's data pack instead.
+	 */
 	public static final Event<BlockTransformerEvents.Modify> MODIFY = EventFactory.createArrayBacked(
 			BlockTransformerEvents.Modify.class,
 			callbacks -> (key, transforms, source, registries) -> {

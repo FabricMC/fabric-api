@@ -62,7 +62,6 @@ public enum EnchantmentSource {
 	 * @return The {@link ResourceSource} equivalent of this.
 	 */
 	public ResourceSource toResourceSource() {
-		// I don't like this case indentation but checkstyle demands it
 		return switch (this) {
 		case VANILLA -> ResourceSource.VANILLA;
 		case MOD -> ResourceSource.MOD;
@@ -79,7 +78,6 @@ public enum EnchantmentSource {
 	 */
 	@Deprecated
 	public static EnchantmentSource fromResourceSource(ResourceSource source) {
-		// I don't like this case indentation but checkstyle demands it
 		return switch (source) {
 		case ResourceSource.VANILLA -> VANILLA;
 		case ResourceSource.MOD -> MOD;
