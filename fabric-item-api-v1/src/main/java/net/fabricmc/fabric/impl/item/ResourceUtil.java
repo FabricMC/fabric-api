@@ -36,8 +36,8 @@ public interface ResourceUtil {
 		}
 
 		// If not built-in or mod, assume external data pack.
-		// It might also be a virtual enchantment injected via mixin instead of being loaded
-		// from a resource, but we can't determine that here.
+		// It might also be injected via mixin instead of being loaded from a resource,
+		// but we can't determine that here.
 		return ResourceSource.DATA_PACK;
 	}
 }
