@@ -111,10 +111,8 @@ public final class ConventionalBlockItemTags {
 	public static final BlockItemTagId GLASS_BLOCKS_TINTED = register("glass_blocks/tinted");
 	public static final BlockItemTagId GLASS_PANES = register("glass_panes");
 	public static final BlockItemTagId GLASS_PANES_COLORLESS = register("glass_panes/colorless");
-	public static final BlockItemTagId SHULKER_BOXES = register(BlockTags.SHULKER_BOXES, ConventionalItemTags.SHULKER_BOXES);
 	public static final BlockItemTagId GLAZED_TERRACOTTAS = register("glazed_terracottas");
 	public static final BlockItemTagId CONCRETES = register("concretes");
-	public static final BlockItemTagId CONCRETE_POWDERS = register(BlockTags.CONCRETE_POWDERS, ConventionalItemTags.CONCRETE_POWDERS);
 
 	// Related to budding mechanics
 	/**
