@@ -312,4 +312,46 @@ public class ContentRegistryGameTest {
 			helper.succeed();
 		});
 	}
+
+	private void setupFluidFlowBox(GameTestHelper helper, BlockPos center, Block baseBlock) {
+		helper.setBlock(center, Blocks.GRASS_BLOCK);
+
+		for (Direction d : Direction.Plane.HORIZONTAL) {
+			helper.setBlock(center.relative(d), baseBlock);
+			helper.setBlock(center.above().relative(d), Blocks.AIR);
+		}
+
+		helper.setBlock(center.above(), ContentRegistryTest.TEST_FLUID_BLOCK);
+	}
+
+	private void assertFluidFlowInteraction(GameTestHelper helper, int ticksToDelay, BlockPos center) {
+		helper.runAfterDelay(ticksToDelay, () -> {
+			for (Direction d : Direction.Plane.HORIZONTAL) {
+				helper.assertBlockPresent(Blocks.ICE, center.above().relative(d));
+			}
+
+			helper.succeed();
+		});
+	}
+
+	@GameTest(maxTicks = 40)
+	public void flowingTestFluidCreatesIce(GameTestHelper helper) {
+		BlockPos center = BlockPos.ZERO.above();
+		setupFluidFlowBox(helper, center, Blocks.BLUE_ICE);
+		assertFluidFlowInteraction(helper, 20, center);
+	}
+
+	@GameTest(maxTicks = 60)
+	public void flowingTestFluidCreatesIceAfterFlow(GameTestHelper helper) {
+		BlockPos center = BlockPos.ZERO.above();
+		setupFluidFlowBox(helper, center, Blocks.GRASS_BLOCK);
+
+		helper.runAfterDelay(20, () -> {
+			for (Direction d : Direction.Plane.HORIZONTAL) {
+				helper.setBlock(center.relative(d), Blocks.BLUE_ICE);
+			}
+		});
+
+		assertFluidFlowInteraction(helper, 40, center);
+	}
 }

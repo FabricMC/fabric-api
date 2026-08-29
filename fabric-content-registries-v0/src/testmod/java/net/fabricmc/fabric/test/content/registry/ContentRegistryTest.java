@@ -27,6 +27,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -61,6 +63,7 @@ import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
 import net.fabricmc.fabric.api.registry.fluid.EntityFluidInteractionRegistry;
 import net.fabricmc.fabric.api.registry.fluid.FluidBehavior;
+import net.fabricmc.fabric.api.registry.fluid.FluidFlowCallback;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-content-registries-v0-testmod";
@@ -188,6 +191,18 @@ public final class ContentRegistryTest implements ModInitializer {
 				.movementSpeed(0.02f).movementSlowdown(0.8f, 0.6f).fallDistanceModifier(0.8f).build());
 
 		EntityFluidInteractionRegistry.register(WATER_LIKE_FLUID_KEY, FluidBehavior.WATER_LIKE);
+
+		FluidFlowCallback.EVENT.register((fluid, level, position) -> {
+			// Check we are the test fluid
+			if (!fluid.is(TEST_FLUID_KEY)) return true;
+
+			// Check we are above blue ice
+			if (!level.getBlockState(position.below()).is(Blocks.BLUE_ICE)) return true;
+
+			level.setBlockAndUpdate(position, Blocks.ICE.defaultBlockState());
+			level.playSound(null, position, SoundEvents.GLASS_PLACE, SoundSource.BLOCKS, 1, 1);
+			return false;
+		});
 	}
 
 	public static class TestEventBlock extends Block {
