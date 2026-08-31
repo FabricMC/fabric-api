@@ -21,6 +21,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndLightGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -43,5 +44,18 @@ public interface FabricBlockState {
 	default BlockState getAppearance(BlockAndLightGetter level, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		BlockState self = (BlockState) this;
 		return self.getBlock().getAppearance(self, level, pos, side, sourceState, sourcePos);
+	}
+
+	/**
+	 * Returns the enchantment power provided by the block.
+	 *
+	 * @param level the level this block is in
+	 * @param pos position of this block, whose power is being queried
+	 * @return the enchantment power
+	 * @see FabricBlock#getProvidedEnchantmentPower
+	 */
+	default float getProvidedEnchantmentPower(Level level, BlockPos pos) {
+		BlockState self = (BlockState) this;
+		return self.getBlock().getProvidedEnchantmentPower(self, level, pos);
 	}
 }

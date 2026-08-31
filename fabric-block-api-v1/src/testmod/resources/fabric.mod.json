@@ -12,5 +12,8 @@
     "main": [
       "net.fabricmc.fabric.test.block.ClimbableTrapdoorTest"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-block-api-v1-testmod.mixins.json"
+  ]
 }
