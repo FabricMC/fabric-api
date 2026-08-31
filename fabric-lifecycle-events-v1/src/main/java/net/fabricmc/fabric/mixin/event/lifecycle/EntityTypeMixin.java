@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
@@ -31,14 +31,14 @@ import net.fabricmc.fabric.impl.event.lifecycle.EntityLoadDataSetter;
 @Mixin(EntityType.class)
 public class EntityTypeMixin {
 	@Inject(
-			method = "create(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/EntitySpawnReason;)Lnet/minecraft/world/entity/Entity;",
+			method = "create(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/EntitySpawnRequest;)Lnet/minecraft/world/entity/Entity;",
 			at = @At("RETURN")
 	)
-	private <T extends Entity> void setSpawnReason(Level level, EntitySpawnReason reason, CallbackInfoReturnable<T> cir) {
+	private <T extends Entity> void setSpawnReason(Level level, EntitySpawnRequest request, CallbackInfoReturnable<T> cir) {
 		T entity = cir.getReturnValue();
 
 		if (entity != null) {
-			((EntityLoadDataSetter) entity).fabric_setSpawnReason(reason);
+			((EntityLoadDataSetter) entity).fabric_setSpawnReason(request.reason());
 		}
 	}
 }
