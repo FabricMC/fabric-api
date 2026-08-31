@@ -61,7 +61,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	/**
 	 * The height at which vanilla begins rendering status bars; this is used for health and food / mount health.
 	 */
-	static final int DEFAULT_HEIGHT = 39;
+	static final int DEFAULT_HEIGHT = 29;
 	/**
 	 * The height at which the held item tooltip renders in vanilla; for our purposes we already subtract the default
 	 * height.
@@ -73,6 +73,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 */
 	static final int OVERLAY_MESSAGE_HEIGHT = 68 - DEFAULT_HEIGHT;
 	static final int TEXT_HEIGHT_DELTA = OVERLAY_MESSAGE_HEIGHT - HELD_ITEM_TOOLTIP_HEIGHT;
+	/**
+	 * Height provider for the vanilla info bar.
+	 */
+	static final StatusBarHeightProvider INFO_BAR = _ -> 10;
 	/**
 	 * Height provider for the vanilla health bar.
 	 */
@@ -127,22 +131,26 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * <p>Do not use {@link Map#of()}; it does not preserve insertion order.
 	 */
 	static final Map<Identifier, ResolvedHeightProvider> RESOLVED_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
-			VanillaHudElements.HEALTH_BAR,
+			VanillaHudElements.INFO_BAR,
 			ResolvedHeightProvider.ZERO,
+			VanillaHudElements.HEALTH_BAR,
+			INFO_BAR::getStatusBarHeight,
 			VanillaHudElements.ARMOR_BAR,
 			HEALTH_BAR::getStatusBarHeight,
 			VanillaHudElements.MOUNT_HEALTH,
-			ResolvedHeightProvider.ZERO,
+			INFO_BAR::getStatusBarHeight,
 			VanillaHudElements.FOOD_BAR,
-			ResolvedHeightProvider.ZERO,
+			INFO_BAR::getStatusBarHeight,
 			VanillaHudElements.AIR_BAR,
-			reduceToIntFunctions(MOUNT_HEALTH, FOOD_BAR, Integer::sum));
+			reduceToIntFunctions(reduceToIntFunctions(INFO_BAR, MOUNT_HEALTH, Integer::sum), FOOD_BAR, Integer::sum));
 	/**
 	 * Height providers registered for the left side above the hotbar.
 	 *
 	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
 	 */
 	static final Map<Identifier, StatusBarHeightProvider> LEFT_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
+			VanillaHudElements.INFO_BAR,
+			INFO_BAR,
 			VanillaHudElements.HEALTH_BAR,
 			HEALTH_BAR,
 			VanillaHudElements.ARMOR_BAR,
@@ -153,6 +161,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
 	 */
 	static final Map<Identifier, StatusBarHeightProvider> RIGHT_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
+			VanillaHudElements.INFO_BAR,
+			INFO_BAR,
 			VanillaHudElements.MOUNT_HEALTH,
 			MOUNT_HEALTH,
 			VanillaHudElements.FOOD_BAR,
