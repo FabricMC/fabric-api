@@ -27,7 +27,7 @@ import org.jetbrains.annotations.ApiStatus;
  * the <a href="https://aka.ms/MinecraftEULA">Minecraft EULA</a>, you can write the file at build-time by setting
  * {@code fabricApi.configureTests { eula = true }} in your {@code build.gradle}.
  *
- * <p>Functions in this class can only be called on the client gametest thread.
+ * <p>Unless otherwise specified, methods in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface TestDedicatedServerContext extends TestServerContext, AutoCloseable {
@@ -37,7 +37,7 @@ public interface TestDedicatedServerContext extends TestServerContext, AutoClose
 	 *
 	 * @return The connection handle to the dedicated server
 	 */
-	TestServerConnection connect();
+	TestDedicatedServerConnection connect();
 
 	/**
 	 * Stops the dedicated server.

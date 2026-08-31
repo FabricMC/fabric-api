@@ -28,6 +28,7 @@
     "fluid.AbstractBoatMixin",
     "fluid.EntityAccessor",
     "fluid.EntityMixin",
+    "fluid.FloatGoalMixin",
     "fluid.LivingEntityAccessor",
     "fluid.LivingEntityMixin",
     "fluid.SwimMixin"

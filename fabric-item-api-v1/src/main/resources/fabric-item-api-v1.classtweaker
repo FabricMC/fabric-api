@@ -1,4 +1,5 @@
 classTweaker	v1	official
+accessible field net/minecraft/world/item/Item$Properties componentInitializer Lnet/minecraft/core/component/DataComponentInitializers$Initializer;
 accessible class net/minecraft/resources/RegistryLoadTask$PendingRegistration
 accessible class net/minecraft/core/component/DataComponentInitializers$BakedEntry
 accessible class net/minecraft/core/component/DataComponentInitializers$PendingComponentBuilders
@@ -6,3 +7,4 @@ transitive-inject-interface	net/minecraft/world/item/Item	net/fabricmc/fabric/ap
 transitive-inject-interface	net/minecraft/world/item/Item$Properties	net/fabricmc/fabric/api/item/v1/FabricItem$Properties
 transitive-inject-interface	net/minecraft/world/item/ItemStack	net/fabricmc/fabric/api/item/v1/FabricItemStack
 transitive-inject-interface	net/minecraft/core/component/DataComponentMap$Builder	net/fabricmc/fabric/api/item/v1/FabricComponentMapBuilder
+transitive-inject-interface net/minecraft/world/item/TooltipFlag net/fabricmc/fabric/api/item/v1/FabricTooltipFlag

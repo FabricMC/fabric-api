@@ -27,6 +27,7 @@ import net.minecraft.world.entity.ai.behavior.Swim;
 import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(Swim.class)
 public class SwimMixin {
@@ -36,10 +37,8 @@ public class SwimMixin {
 			return true;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) mob).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid && EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).shouldTryFloatingInFluid(tagKey, mob)) {
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) mob).fabric_api$getTouchedCustomFluids()) {
+			if (EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).shouldTryFloatingInFluid(tagKey, mob)) {
 				return true;
 			}
 		}

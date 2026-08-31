@@ -112,6 +112,12 @@ tasks.register('generateClassTweaker') {
 			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
+		visitStaticFinalFields(classes["net/minecraft/client/data/models/BlockModelGenerators"]) { name, desc, owner ->
+			if (desc == "Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;") {
+				out += "transitive-accessible\tfield\t${owner}\t${name}\t${desc}\n"
+			}
+		}
+
 		visitMethods(classes["net/minecraft/data/loot/BlockLootSubProvider"]) { name, desc, owner ->
 			out += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
@@ -158,6 +164,16 @@ static def visitFinalMethods(ClassNode classNode, closure) {
 			return
 
 		if (it.name.startsWith("<"))
+			return
+
+		closure(it.name, it.desc, classNode.name)
+	}
+}
+
+static def visitStaticFinalFields(ClassNode classNode, closure) {
+	classNode.fields.forEach {
+		int access = Opcodes.ACC_STATIC | Opcodes.ACC_FINAL
+		if ((it.access & access) != access || (it.access & Opcodes.ACC_PUBLIC) != 0)
 			return
 
 		closure(it.name, it.desc, classNode.name)

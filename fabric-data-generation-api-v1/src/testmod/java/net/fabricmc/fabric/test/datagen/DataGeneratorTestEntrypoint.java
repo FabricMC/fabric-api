@@ -57,12 +57,15 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.registries.RegistryPatchGenerator;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.references.BlockItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -131,6 +134,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider((output, registries) -> new TestItemTagsProvider(output, registries, blockTagsProvider));
 		pack.addProvider(TestBiomeTagsProvider::new);
 		pack.addProvider(TestGameEventTagsProvider::new);
+		pack.addProvider(TestVanillaSoundEventTagsProvider::new);
 
 		// TODO replace with a client only entrypoint with FMJ 2
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -547,6 +551,35 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			private static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					RegistryFixedCodec.create(Registries.BIOME).fieldOf("biome").forGetter(Entry::biome)
 			).apply(instance, Entry::new));
+		}
+	}
+
+	/**
+	 * Ensure that vanilla generators that do not extend {@linkplain FabricTagsProvider} still work.
+	 * @see <a href="https://github.com/FabricMC/fabric-api/issues/5431">github-5431</a>
+	 */
+	private static class TestVanillaSoundEventTagsProvider extends TagsProvider<SoundEvent> {
+		private TestVanillaSoundEventTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+			super(output, Registries.SOUND_EVENT, lookupProvider);
+		}
+
+		private static ResourceKey<SoundEvent> key(Holder<SoundEvent> holder) {
+			return holder.unwrapKey().orElseThrow();
+		}
+
+		@Override
+		protected void addTags(HolderLookup.Provider registries) {
+			tag(DataGeneratorTestContent.EQUIP_SOUNDS)
+					.add(key(SoundEvents.ARMOR_EQUIP_TURTLE))
+					.add(key(SoundEvents.ARMOR_EQUIP_ELYTRA))
+					.add(key(SoundEvents.ARMOR_EQUIP_LEATHER))
+					.add(key(SoundEvents.ARMOR_EQUIP_CHAIN))
+					.add(key(SoundEvents.ARMOR_EQUIP_COPPER))
+					.add(key(SoundEvents.ARMOR_EQUIP_IRON))
+					.add(key(SoundEvents.ARMOR_EQUIP_GOLD))
+					.add(key(SoundEvents.ARMOR_EQUIP_DIAMOND))
+					.add(key(SoundEvents.ARMOR_EQUIP_NETHERITE))
+					.add(key(SoundEvents.ARMOR_EQUIP_GENERIC));
 		}
 	}
 }

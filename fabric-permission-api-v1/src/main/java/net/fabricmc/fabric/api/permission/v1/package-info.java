@@ -102,9 +102,7 @@
  * });
  * }</pre>
  */
-@ApiStatus.Experimental
 @NullMarked
 package net.fabricmc.fabric.api.permission.v1;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;

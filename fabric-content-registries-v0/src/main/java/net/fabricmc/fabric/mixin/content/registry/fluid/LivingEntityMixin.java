@@ -24,8 +24,10 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -36,6 +38,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
@@ -49,29 +52,25 @@ public abstract class LivingEntityMixin extends Entity {
 			return true;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid) {
-				return true;
-			}
-		}
-
-		return false;
+		return !((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids().isEmpty();
 	}
 
 	@WrapWithCondition(method = "travelInFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;travelInLava(Lnet/minecraft/world/phys/Vec3;DZD)V"))
 	private boolean travelInCustomFluid(LivingEntity instance, Vec3 vec3, double input, boolean baseGravity, double isFalling) {
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid) {
-				EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).travelInFluid(tagKey, (LivingEntity) (Object) this, vec3, input, baseGravity, isFalling);
-				return false;
-			}
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids()) {
+			EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).travelInFluid(tagKey, (LivingEntity) (Object) this, vec3, input, baseGravity, isFalling);
+			return false;
 		}
 
 		return true;
+	}
+
+	@Inject(method = "travelFlying(Lnet/minecraft/world/phys/Vec3;FFF)V", at = @At("HEAD"), cancellable = true)
+	private void travelFlyingInCustomFluid(Vec3 input, float waterSpeed, float lavaSpeed, float airSpeed, CallbackInfo ci) {
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids()) {
+			EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).travelFlyingInFluid(tagKey, (LivingEntity) (Object) this, input, waterSpeed, lavaSpeed, airSpeed);
+			ci.cancel();
+		}
 	}
 
 	@Definition(id = "WATER", field = "Lnet/minecraft/tags/FluidTags;WATER:Lnet/minecraft/tags/TagKey;")
@@ -83,13 +82,9 @@ public abstract class LivingEntityMixin extends Entity {
 			return original;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid) {
-				fluid.set(tagKey);
-				return ((EntityAccessor) this).getFluidInteraction().getFluidHeight(tagKey);
-			}
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids()) {
+			fluid.set(tagKey);
+			return this.getFluidHeight(tagKey);
 		}
 
 		return 0;
@@ -101,8 +96,8 @@ public abstract class LivingEntityMixin extends Entity {
 			return true;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isEyeInFluid(tagKey);
+		for (TagKey<Fluid> tagKey : ((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids()) {
+			boolean inFluid = this.isEyeInFluid(tagKey);
 
 			if (inFluid && EntityFluidInteractionRegistryImpl.getFluidBehavior(tagKey).canDrownInFluid(tagKey, (LivingEntity) (Object) this)) {
 				return true;
@@ -122,15 +117,7 @@ public abstract class LivingEntityMixin extends Entity {
 			return true;
 		}
 
-		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {
-			boolean inFluid = ((EntityAccessor) this).getFluidInteraction().isInFluid(tagKey);
-
-			if (inFluid) {
-				return true;
-			}
-		}
-
-		return false;
+		return !((InternalEntityFluidExtension) this).fabric_api$getTouchedCustomFluids().isEmpty();
 	}
 
 	@ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInLava()Z"),

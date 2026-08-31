@@ -42,6 +42,12 @@ abstract class DataComponentMapBuilderMixin implements FabricComponentMapBuilder
 	@Shadow
 	public abstract <T> DataComponentMap.Builder set(DataComponentType<T> dataComponentType, @Nullable T object);
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public @Nullable <T> T get(DataComponentType<T> type) {
+		return (T) this.map.get(type);
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getOrCreate(DataComponentType<T> type, Supplier<T> fallback) {

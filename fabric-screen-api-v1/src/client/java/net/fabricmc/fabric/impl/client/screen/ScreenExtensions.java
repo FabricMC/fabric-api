@@ -39,11 +39,13 @@ public interface ScreenExtensions {
 
 	Event<ScreenEvents.AfterTick> fabric_getAfterTickEvent();
 
-	Event<ScreenEvents.BeforeExtract> fabric_getBeforeRenderEvent();
+	Event<ScreenEvents.BeforeExtract> fabric_getBeforeExtractEvent();
 
 	Event<ScreenEvents.AfterBackground> fabric_getAfterBackgroundEvent();
 
-	Event<ScreenEvents.AfterExtract> fabric_getAfterRenderEvent();
+	Event<ScreenEvents.AfterForeground> fabric_getAfterForegroundEvent();
+
+	Event<ScreenEvents.AfterExtract> fabric_getAfterExtractEvent();
 
 	// Keyboard
 

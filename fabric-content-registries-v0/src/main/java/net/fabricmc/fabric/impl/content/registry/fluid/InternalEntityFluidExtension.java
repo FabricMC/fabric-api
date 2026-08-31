@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 
-@NullMarked
-package net.fabricmc.fabric.impl.permission;
+package net.fabricmc.fabric.impl.content.registry.fluid;
 
-import org.jspecify.annotations.NullMarked;
+import java.util.Set;
+
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
+
+/**
+ * Internal fluid extension.
+ */
+public interface InternalEntityFluidExtension {
+	Set<TagKey<Fluid>> fabric_api$getTouchedCustomFluids();
+}

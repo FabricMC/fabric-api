@@ -7,8 +7,7 @@ for (def sourceSet in [
 	// We have to capture the source set name for the lazy string literals,
 	// otherwise it'll just be whatever the last source set is in the list.
 	def sourceSetName = sourceSet.name
-	def taskName = sourceSet.getTaskName('generate', 'PackageInfos')
-	def task = tasks.register(taskName, GeneratePackageInfos) {
+	def generateTask = tasks.register(sourceSet.getTaskName('generate', 'PackageInfos'), GeneratePackageInfos) {
 		group = 'fabric'
 		description = "Generates package-info files for $sourceSetName packages."
 
@@ -18,7 +17,8 @@ for (def sourceSet in [
 		header = rootProject.file('HEADER')
 		outputDir = file("src/generated/$sourceSetName")
 	}
-	sourceSet.java.srcDir task
+	sourceSet.java.srcDir generateTask
+	ideaSyncTask.dependsOn generateTask
 
 	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'PackageInfos'), Delete) {
 		group = 'fabric'
@@ -53,38 +53,42 @@ abstract class GeneratePackageInfos extends DefaultTask {
 		def root = sourceRoot.get().asFile.toPath()
 
 		root.eachDirRecurse {
-			def containsJava = Files.list(it).any {
-				Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+			def containsJava = Files.list(it).withCloseable { stream ->
+				stream.any {
+					Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+				}
 			}
 
 			if (!containsJava) {
 				return
 			}
 
-			// Check existing package-info.java to ensure it has @NullMarked
-			def existingPackageInfo = it.resolve('package-info.java')
-			if (Files.exists(existingPackageInfo)) {
-				if (!existingPackageInfo.text.contains("@NullMarked")) {
-					throw new RuntimeException("package-info.java ${existingPackageInfo} is missing @NullMarked annotation.")
-				}
-
-				return
-			}
-
 			def relativePath = root.relativize(it)
 			def target = output.resolve(relativePath)
-			Files.createDirectories(target)
-
 			def packageName = relativePath.toString().replace(File.separator, '.')
+			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
+			def isImpl = relativePath.toString() =~ implPattern
 
 			if (packageName == "net.fabricmc.fabric.api.util" && projectName.get() == "fabric-content-registries-v0") {
 				// Hack: This package clashes with api-base, don't generate any annotations for it.
 				return
 			}
 
-			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
-			def isImpl = relativePath.toString() =~ implPattern
+			// Check existing explicit package-info.java to ensure it has @NullMarked / @ApiStatus.Internal
+			def existingPackageInfo = it.resolve('package-info.java')
+			if (Files.exists(existingPackageInfo)) {
+				def text = existingPackageInfo.text
 
+				if (!text.contains("@NullMarked")) {
+					throw new RuntimeException("package-info.java ${existingPackageInfo} is missing @NullMarked annotation.")
+				} else if (isImpl && !text.contains("@ApiStatus.Internal")) {
+					throw new RuntimeException("Impl package-info.java ${existingPackageInfo} is missing @ApiStatus.Internal annotation.")
+				}
+
+				return
+			}
+
+			Files.createDirectories(target)
 			target.resolve('package-info.java').withWriter {
 				if (isImpl) {
 					it.write("""$headerText
