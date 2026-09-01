@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-advancement-api-v1-testmod",
+  "name": "Fabric Advancement API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-api-base": "*",
+    "fabric-advancement-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.advancement.AdvancementTest"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.advancement.AdvancementGameTest"
+    ]
+  }
+}

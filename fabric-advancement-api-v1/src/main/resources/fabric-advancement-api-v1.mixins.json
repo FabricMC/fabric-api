@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.advancement",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "ServerAdvancementManagerMixin",
+    "SimpleJsonResourceReloadListenerMixin",
+    "AdvancementBuilderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
