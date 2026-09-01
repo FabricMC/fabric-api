@@ -30,6 +30,10 @@ public class FabricClientGameTestImpl implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		if (!TestSystemProperties.ENABLED) {
+			return;
+		}
+
 		ThreadingImpl.unsafeClientInstance = Minecraft.getInstance();
 
 		PayloadTypeRegistry.serverboundPlay().register(GameTestSyncPayload.TYPE, GameTestSyncPayload.CODEC);

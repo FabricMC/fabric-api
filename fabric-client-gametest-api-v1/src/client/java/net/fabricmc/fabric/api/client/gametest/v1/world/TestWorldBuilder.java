@@ -30,14 +30,14 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
  * A builder used for creating singleplayer worlds and dedicated servers.
  *
  * <p>Worlds from this builder default to being flat worlds with settings and game rules designed for consistency of
- * tests, see the package documentation for details. To disable this, use {@link #setUseConsistentSettings}. If you need
+ * tests, see the module documentation for details. To disable this, use {@link #setUseConsistentSettings}. If you need
  * to re-enable a particular setting, you can override it using {@link #adjustSettings}.
  */
 @ApiStatus.NonExtendable
 public interface TestWorldBuilder {
 	/**
 	 * Sets whether to use consistent world settings. Consistent settings are designed for consistency of tests. See the
-	 * package documentation for details on what the consistent settings are.
+	 * module documentation for details on what the consistent settings are.
 	 *
 	 * <p>If disabled, the world builder will default to creating worlds with the default world preset in survival mode,
 	 * as if clicking straight through the create world screen without changing any settings.

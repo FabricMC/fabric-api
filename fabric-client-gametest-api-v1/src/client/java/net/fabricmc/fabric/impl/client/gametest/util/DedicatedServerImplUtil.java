@@ -44,6 +44,8 @@ import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 public final class DedicatedServerImplUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 	private static final Properties DEFAULT_SERVER_PROPERTIES = Util.make(new Properties(), properties -> {
+		// When adding to the list of default server options, remember to update the list in module documentation
+
 		// allow non-authenticated connections from localhost
 		properties.setProperty("online-mode", "false");
 
@@ -55,6 +57,8 @@ public final class DedicatedServerImplUtil {
 
 		// stops other players from joining the server and interfering with the tests
 		properties.setProperty("max-players", "1");
+
+		// When adding to the list of default server options, remember to update the list in module documentation
 	});
 
 	// If this field is set, it causes the create world screen to write the level.dat file to the specified folder

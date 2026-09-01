@@ -86,7 +86,7 @@ public final class ScreenKeyboardEvents {
 	}
 
 	/**
-	 * An event that is called after the release of a key is processed for a screen.
+	 * An event that is called before the release of a key is processed for a screen.
 	 *
 	 * @return the event
 	 */
