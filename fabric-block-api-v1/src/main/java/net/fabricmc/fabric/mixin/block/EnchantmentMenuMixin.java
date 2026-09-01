@@ -16,28 +16,31 @@
 
 package net.fabricmc.fabric.mixin.block;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.EnchantmentMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 @Mixin(EnchantmentMenu.class)
 public class EnchantmentMenuMixin {
-	@Inject(method = "lambda$slotsChanged$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/EnchantingTableBlock;isValidBookShelf(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Z"))
-	private void addEnchantingPower(ItemStack itemStack, Level level, BlockPos pos, CallbackInfo ci, @Local(name = "offset") BlockPos offset, @Share("power") LocalFloatRef power) {
-		power.set(
-				power.get()
-				+ level.getBlockState(pos.offset(offset)).getProvidedEnchantmentPower(level, pos.offset(offset))
-		);
+	@WrapOperation(method = "lambda$slotsChanged$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/EnchantingTableBlock;isValidBookShelf(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Z"))
+	private boolean addEnchantingPower(Level level, BlockPos pos, BlockPos offset, Operation<Boolean> original, @Share("power") LocalFloatRef power) {
+		if (original.call(level, pos, offset)) {
+			power.set(
+					power.get()
+					+ level.getBlockState(pos.offset(offset)).getProvidedEnchantmentPower(level, pos.offset(offset))
+			);
+			return true;
+		}
+
+		return false;
 	}
 
 	@ModifyArg(method = "lambda$slotsChanged$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getEnchantmentCost(Lnet/minecraft/util/RandomSource;IILnet/minecraft/world/item/ItemStack;)I"), index = 2)

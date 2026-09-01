@@ -110,14 +110,13 @@ public interface FabricBlock {
 	/**
 	 * Return a for custom enchantment power level. A value of {@code 1.0f} means that the state is equivalent to one bookshelf.
 	 *
-	 * <p>Returning negative values is allowed and will decrease the enchantment power and
-	 * {@link net.minecraft.world.level.block.EnchantingTableBlock#isValidBookShelf EnchantingTableBlock#isValidBookShelf} will return {@code false}.
+	 * <p>Important: Your block must be in {@link BlockTags#ENCHANTMENT_POWER_PROVIDER} to effect enchanting.
 	 *
-	 * <p>Note: Fractional powers are summed and then rounded to the nearest integer, with 0.5 rounding down.
-	 *
-	 * <p>Note: Your block does not need to be in {@link BlockTags#ENCHANTMENT_POWER_PROVIDER} to effect enchanting.
+	 * <p>Returning negative values is allowed and will decrease the enchantment power
 	 *
 	 * <p>Defaults to returning {@code 1.0f} for any blocks in {@link BlockTags#ENCHANTMENT_POWER_PROVIDER}, {@code 0.0f} otherwise.
+	 *
+	 * <p>Note: Fractional powers are summed and then rounded to the nearest integer, with 0.5 rounding down.
 	 *
 	 * @param state state of this block, whose power is being queried
 	 * @param level the level this block is in

@@ -46,6 +46,6 @@ public class ChiseledBookShelfBlockMixin implements FabricBlock {
 			}
 		}
 
-		return power;
+		return power == 0 ? -15 : power;
 	}
 }
