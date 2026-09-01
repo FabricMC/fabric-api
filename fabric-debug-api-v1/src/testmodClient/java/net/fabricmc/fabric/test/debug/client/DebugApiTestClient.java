@@ -16,23 +16,43 @@
 
 package net.fabricmc.fabric.test.debug.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.DebugEntryCategory;
+import net.minecraft.client.gui.components.debug.DebugScreenEntryStatus;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
 import net.minecraft.gizmos.TextGizmo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.debug.DebugValueAccess;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.debug.v1.ClientDebugSubscriptionRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.DebugKeyBindingRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.DebugScreenEntryRegistry;
+import net.fabricmc.fabric.api.client.debug.v1.DebugScreenProfiles;
 import net.fabricmc.fabric.api.client.debug.v1.renderer.DebugRendererRegistry;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.test.debug.DebugApiTest;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class DebugApiTestClient implements ClientModInitializer {
+	KeyMapping susKeyBinding = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-debug-api-v1-testmod.sus_overlay", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, KeyMapping.Category.DEBUG));
+	static Identifier susGraphicsIdentifier = Identifier.fromNamespaceAndPath("fabric-debug-api-v1-testmod", "sus_graphics");
+	static Identifier susTextIdentifier = Identifier.fromNamespaceAndPath("fabric-debug-api-v1-testmod", "sus_text");
+	public static DebugEntryCategory SUSSY_CATEGORY = new DebugEntryCategory(
+			Component.literal("Sussy category"),
+			0.1F
+	);
+
 	@Override
 	public void onInitializeClient() {
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
@@ -46,6 +66,19 @@ public class DebugApiTestClient implements ClientModInitializer {
 					DebugApiTest.DEBUG_SUS_AVATAR
 			);
 		}
+
+		// Create an entry for setting the visibility of the text in the debug menu AKA the f3 overlay
+		DebugScreenEntryRegistry.register(susTextIdentifier, new SussyTextEntry());
+		DebugScreenProfiles.set(susTextIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
+		// Create an entry for setting the visibility of the sus graphics
+		DebugScreenEntryRegistry.register(susGraphicsIdentifier, new SussyGraphicsEntry());
+		DebugScreenProfiles.set(susGraphicsIdentifier, net.minecraft.client.gui.components.debug.DebugScreenProfile.DEFAULT, DebugScreenEntryStatus.ALWAYS_ON);
+
+		// F3 + X will toggle the visibility of the lovely sus graphics.
+		DebugKeyBindingRegistry.register(susKeyBinding, () -> {
+			Minecraft.getInstance().debugEntries.toggleStatus(susGraphicsIdentifier);
+			return true;
+		});
 	}
 
 	public static class SuspiciousDebugRenderer implements DebugRenderer.SimpleDebugRenderer {
@@ -61,6 +94,10 @@ public class DebugApiTestClient implements ClientModInitializer {
 				Frustum frustum,
 				float g
 		) {
+			if (!Minecraft.getInstance().debugEntries.isCurrentlyEnabled(susGraphicsIdentifier)) {
+				return;
+			}
+
 			debugValueAccess.forEachEntity(
 					DebugApiTest.SUS_AVATAR,
 					(entity, susDebugInfo) -> {
