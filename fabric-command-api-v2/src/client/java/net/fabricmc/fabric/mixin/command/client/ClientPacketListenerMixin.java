@@ -65,6 +65,9 @@ abstract class ClientPacketListenerMixin implements ClientCommandInternals.LastR
 	@Shadow
 	private RegistryAccess.Frozen registryAccess;
 
+	@Shadow
+	public abstract void handleCommands(ClientboundCommandsPacket packet);
+
 	@Unique
 	private @Nullable ClientboundCommandsPacket lastReceivedCommandsPacket = null;
 
@@ -79,11 +82,32 @@ abstract class ClientPacketListenerMixin implements ClientCommandInternals.LastR
 		ClientCommandInternals.setActiveDispatcher(dispatcher);
 		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher, CommandBuildContext.simple(this.registryAccess, this.enabledFeatures));
 		ClientCommandInternals.finalizeInit();
+
+		// Check if commands were already received to handle custom server implementations
+		// that don't follow vanilla packet order
+		if (this.lastReceivedCommandsPacket != null) {
+			// Rebuilds commands if command packet was already received.
+			this.handleCommands(this.lastReceivedCommandsPacket);
+		} else {
+			// Add commands even if packet wasn't received, in case of custom server impl that doesn't send commands at all.
+			// Unlikely, but can happen technically.
+			this.addClientCommands();
+		}
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "handleCommands", at = @At("RETURN"))
 	private void onOnCommandTree(ClientboundCommandsPacket packet, CallbackInfo info) {
+		this.addClientCommands();
+	}
+
+	@Unique
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private void addClientCommands() {
+		// Client commands might have not been set up yet (or are just empty)!
+		if (ClientCommandInternals.isEmpty()) {
+			return;
+		}
+
 		// Add the commands to the vanilla dispatcher for completion.
 		// It's done here because both the server and the client commands have
 		// to be in the same dispatcher and completion results.
