@@ -1,5 +1,6 @@
 {
   "commands.datapack.fabric.internal": "Impossible d'activer ou désactiver le pack interne Fabric \"%s\".",
+  "pack.description.fabric.virtual": "Ressources virtuelles.",
   "pack.description.modResources": "Ressources de mod.",
   "pack.name.fabricMod": "Mod Fabric \"%s\"",
   "pack.name.fabricMod.subPack": "Mod Fabric \"%s\" (%s)",
