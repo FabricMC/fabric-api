@@ -29,6 +29,7 @@ import net.minecraft.network.chat.CommonComponents;
 
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
+@Deprecated
 public class ButtonListTests {
 	@Test
 	public void testSize() {
