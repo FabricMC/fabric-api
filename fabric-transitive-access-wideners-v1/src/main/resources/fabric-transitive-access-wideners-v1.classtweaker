@@ -144,6 +144,14 @@ transitive-accessible   method  net/minecraft/data/worldgen/biome/EndBiomes base
 
 transitive-accessible   method  net/minecraft/data/worldgen/biome/NetherBiomes baseBiome ()Lnet/minecraft/world/level/biome/Biome$BiomeBuilder;
 
+# Loot Functions
+transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/SetComponentsFunction <init> (Ljava/util/Optional;Lnet/minecraft/core/component/DataComponentPatch;)V
+transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/ModifyContainerContents <init> (Ljava/util/Optional;Lnet/minecraft/world/level/storage/loot/ContainerComponentManipulator;Lnet/minecraft/core/Holder;)V
+transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/SetWrittenBookPagesFunction <init> (Ljava/util/Optional;Ljava/util/List;Lnet/minecraft/world/level/storage/loot/functions/ListOperation;)V
+transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/SetItemFunction <init> (Ljava/util/Optional;Lnet/minecraft/core/Holder;)V
+transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/SetFireworksFunction <init> (Ljava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;)V
+transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/ToggleTooltips <init> (Ljava/util/Optional;Ljava/util/Map;)V
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/world/level/block/AttachedStemBlock <init> (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/tags/TagKey;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
