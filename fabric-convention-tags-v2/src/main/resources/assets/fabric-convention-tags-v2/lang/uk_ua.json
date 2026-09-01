@@ -170,6 +170,7 @@
   "tag.item.c.bricks.resin": "Смоляні цеглини",
   "tag.item.c.buckets": "Відра",
   "tag.item.c.buckets.empty": "Порожні відра",
+  "tag.item.c.buckets.entity_dry": "Сухі відра зі сутністю",
   "tag.item.c.buckets.entity_water": "Відра води зі сутністю",
   "tag.item.c.buckets.lava": "Відра лави",
   "tag.item.c.buckets.milk": "Відра молока",

@@ -170,6 +170,7 @@
   "tag.item.c.bricks.resin": "Mattoni di resina",
   "tag.item.c.buckets": "Secchi",
   "tag.item.c.buckets.empty": "Secchi vuoti",
+  "tag.item.c.buckets.entity_dry": "Secchi secchi con entità",
   "tag.item.c.buckets.entity_water": "Secchi d'acqua con entità",
   "tag.item.c.buckets.lava": "Secchi di lava",
   "tag.item.c.buckets.milk": "Secchi di latte",
