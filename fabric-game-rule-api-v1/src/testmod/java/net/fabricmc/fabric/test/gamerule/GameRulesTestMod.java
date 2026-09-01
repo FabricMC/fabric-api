@@ -70,6 +70,11 @@ public class GameRulesTestMod implements ModInitializer {
 			.category(RED_CATEGORY)
 			.buildAndRegister(id("red_enum"));
 
+	// A rule whose value can be queried from the client
+	public static final GameRule<Boolean> SYNCED_BOOLEAN = GameRuleBuilder.forBoolean(false)
+			.synced()
+			.buildAndRegister(id("synced_boolean"));
+
 	public static final AtomicBoolean FIRE_DAMAGE_CHANGED = new AtomicBoolean(false);
 
 	private static Identifier id(String name) {
@@ -138,6 +143,9 @@ public class GameRulesTestMod implements ModInitializer {
 
 		GameRuleEvents.changeCallback(GameRules.FIRE_DAMAGE).register(
 				(value, server) -> FIRE_DAMAGE_CHANGED.set(true)
+		);
+		GameRuleEvents.changeCallback(SYNCED_BOOLEAN).register(
+				(value, server) -> LOGGER.info("Boolean game rule set to {}!", value)
 		);
 	}
 }
