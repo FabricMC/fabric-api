@@ -8,3 +8,8 @@ accessible	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRI
 mutable	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
 accessible field net/minecraft/resources/RegistryLoadTask registry Lnet/minecraft/core/WritableRegistry;
 transitive-inject-interface	net/minecraft/core/Registry	net/fabricmc/fabric/api/event/registry/FabricRegistry
+accessible field net/minecraft/core/RegistrySetBuilder entries Ljava/util/List;
+accessible class net/minecraft/core/RegistrySetBuilder$RegistryStub
+transitive-inject-interface net/minecraft/core/RegistrySetBuilder net/fabricmc/fabric/api/event/registry/FabricRegistrySetBuilder
+accessible field net/minecraft/data/registries/VanillaRegistries BUILDER Lnet/minecraft/core/RegistrySetBuilder;
+accessible method net/minecraft/data/registries/VanillaRegistries validateThatAllBiomeFeaturesHaveBiomeFilter (Lnet/minecraft/core/HolderLookup$Provider;)V
