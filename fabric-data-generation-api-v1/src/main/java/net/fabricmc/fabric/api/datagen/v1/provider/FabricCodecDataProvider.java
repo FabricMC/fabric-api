@@ -59,18 +59,54 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 		this.extension = extension;
 	}
 
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the specified target and directory with the {@code json} file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param target the {@link PackOutput.Target} under which files will be written
+	 * @param directoryName the path under the target in which generated files will be written
+	 * @param codec the codec to use
+	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
 		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec, "json");
 	}
 
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the specified target and directory with the provided file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param target the {@link PackOutput.Target} under which files will be written
+	 * @param directoryName the path under the target in which generated files will be written
+	 * @param codec the codec to use
+	 * @param extension the file extension to use for generated files, for example {@code mcmeta}. Must not start with a dot
+	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec, String extension) {
 		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec, extension);
 	}
 
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the path of the specified registry with the {@code json} file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param key the {@link ResourceKey} of the registry to generate for, used for determining where the generated files are written
+	 * @param codec the codec to use
+	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
 		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec, "json");
 	}
 
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the path of the specified registry with the provided file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param key the {@link ResourceKey} of the registry to generate for, used for determining where the generated files are written
+	 * @param codec the codec to use
+	 * @param extension the file extension to use for generated files, for example {@code mcmeta}. Must not start with a dot
+	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec, String extension) {
 		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec, extension);
 	}
