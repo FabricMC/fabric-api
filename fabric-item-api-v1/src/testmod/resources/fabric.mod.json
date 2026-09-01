@@ -18,6 +18,7 @@
       "net.fabricmc.fabric.test.item.DefaultItemComponentTest",
       "net.fabricmc.fabric.test.item.ItemClickBehaviorTest",
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
+      "net.fabricmc.fabric.test.item.UseOnBeforeBlockTest",
       "net.fabricmc.fabric.test.item.ModifyComponentsInPropertiesTestSetup"
     ],
     "client": [
