@@ -11,6 +11,7 @@
     "CapeFeatureRendererMixin",
     "ClientWorldMixin",
     "DimensionEffectsAccessor",
+    "DimensionEffectsMixin",
     "EntityModelLayersAccessor",
     "EntityModelsMixin",
     "EntityRenderersMixin",
