@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
@@ -44,6 +45,12 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.BuiltInPackSource;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.ServerPacksSource;
+import net.minecraft.server.packs.resources.CloseableResourceManager;
+import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -112,7 +119,7 @@ public final class FabricDataGenHelper {
 		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
 		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
 		CompletableFuture<HolderLookup.Provider> worldRegistriesFuture = CompletableFuture.supplyAsync(() -> createWorldLookupProvider(entrypoints), Util.backgroundExecutor());
-		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenApplyAsync(FabricDataGenHelper::createReloadableLookupProvider, Util.backgroundExecutor());
+		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenComposeAsync(FabricDataGenHelper::createReloadableLookupProvider, Util.backgroundExecutor());
 
 		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.FIXED_ORDER_FIELDS;
 		Object2IntOpenHashMap<String> defaultJsonKeySortOrders = new Object2IntOpenHashMap<>(jsonKeySortOrders);
@@ -181,17 +188,21 @@ public final class FabricDataGenHelper {
 		return registryLookup;
 	}
 
-	private static HolderLookup.Provider createReloadableLookupProvider(HolderLookup.Provider registryLookup) {
-		RegistrySetBuilder reloadableRegistryBuilder = new RegistrySetBuilder();
-		addEmptyRegistries(reloadableRegistryBuilder, VanillaRegistries.RELOADABLE_BUILDER);
-		return reloadableRegistryBuilder.build(registryLookup);
-	}
+	private static CompletableFuture<HolderLookup.Provider> createReloadableLookupProvider(HolderLookup.Provider registryLookup) {
+		PackRepository packRepository = ServerPacksSource.createVanillaTrustedRepository();
+		packRepository.reload();
+		packRepository.setSelected(List.of(BuiltInPackSource.VANILLA_ID));
 
-	private static void addEmptyRegistries(RegistrySetBuilder target, RegistrySetBuilder source) {
-		source.entries.stream()
-				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
-				.distinct()
-				.forEach(key -> addEmptyRegistry(target, key));
+		CloseableResourceManager resourceManager = new MultiPackResourceManager(PackType.SERVER_DATA, packRepository.openAllSelected());
+		CompletableFuture<RegistryAccess.Frozen> reloadableRegistriesFuture = RegistryDataLoader.load(
+				resourceManager,
+				registryLookup.listRegistries().toList(),
+				RegistryDataLoader.RELOADABLE_REGISTRIES,
+				Util.backgroundExecutor()
+		);
+		return reloadableRegistriesFuture.thenApply(reloadableRegistries -> HolderLookup.Provider.create(
+				Stream.concat(registryLookup.listRegistries(), reloadableRegistries.listRegistries())
+		)).whenComplete((_, _) -> resourceManager.close());
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
