@@ -61,9 +61,9 @@ import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
+import net.fabricmc.fabric.api.registry.fluid.AllowFluidFlow;
 import net.fabricmc.fabric.api.registry.fluid.EntityFluidInteractionRegistry;
 import net.fabricmc.fabric.api.registry.fluid.FluidBehavior;
-import net.fabricmc.fabric.api.registry.fluid.FluidFlowCallback;
 
 public final class ContentRegistryTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-content-registries-v0-testmod";
@@ -192,7 +192,7 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		EntityFluidInteractionRegistry.register(WATER_LIKE_FLUID_KEY, FluidBehavior.WATER_LIKE);
 
-		FluidFlowCallback.EVENT.register((fluid, level, position) -> {
+		AllowFluidFlow.EVENT.register((fluid, level, position) -> {
 			// Check we are the test fluid
 			if (!fluid.is(TEST_FLUID_KEY)) return true;
 
@@ -201,6 +201,18 @@ public final class ContentRegistryTest implements ModInitializer {
 
 			level.setBlockAndUpdate(position, Blocks.ICE.defaultBlockState());
 			level.playSound(null, position, SoundEvents.GLASS_PLACE, SoundSource.BLOCKS, 1, 1);
+			return false;
+		});
+
+		AllowFluidFlow.EVENT.register((fluid, level, position) -> {
+			// Check we are the water like fluid
+			if (!fluid.is(WATER_LIKE_FLUID_KEY)) return true;
+
+			// Check we are above magma blocks
+			if (!level.getBlockState(position.below()).is(Blocks.MAGMA_BLOCK)) return true;
+
+			level.playSound(null, position, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
+			// Not updating the block state here would likely be a bug in a mod, but it allows us to test specific behavior in the game tests.
 			return false;
 		});
 	}

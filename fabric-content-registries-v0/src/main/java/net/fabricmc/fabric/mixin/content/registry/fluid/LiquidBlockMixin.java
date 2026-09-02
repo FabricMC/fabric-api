@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.registry.fluid.FluidFlowCallback;
+import net.fabricmc.fabric.api.registry.fluid.AllowFluidFlow;
 
 @Mixin(LiquidBlock.class)
 public abstract class LiquidBlockMixin extends Block {
@@ -38,8 +38,8 @@ public abstract class LiquidBlockMixin extends Block {
 
 	@Inject(method = "shouldSpreadLiquid", at = @At("HEAD"), cancellable = true)
 	private void shouldSpreadLiquid(Level level, BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> cir) {
-		if (!FluidFlowCallback.EVENT.invoker().onFlow(level.getFluidState(pos), level, pos)) {
-			cir.setReturnValue(true);
+		if (!AllowFluidFlow.EVENT.invoker().allowFlow(level.getFluidState(pos), level, pos)) {
+			cir.setReturnValue(false);
 		}
 	}
 }

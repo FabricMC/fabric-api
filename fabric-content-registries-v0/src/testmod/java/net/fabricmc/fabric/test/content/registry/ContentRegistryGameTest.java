@@ -313,7 +313,7 @@ public class ContentRegistryGameTest {
 		});
 	}
 
-	private void setupFluidFlowBox(GameTestHelper helper, BlockPos center, Block baseBlock) {
+	private void setupFluidFlowBox(GameTestHelper helper, BlockPos center, LiquidBlock fluidBlock, Block baseBlock) {
 		helper.setBlock(center, Blocks.GRASS_BLOCK);
 
 		for (Direction d : Direction.Plane.HORIZONTAL) {
@@ -321,13 +321,13 @@ public class ContentRegistryGameTest {
 			helper.setBlock(center.above().relative(d), Blocks.AIR);
 		}
 
-		helper.setBlock(center.above(), ContentRegistryTest.TEST_FLUID_BLOCK);
+		helper.setBlock(center.above(), fluidBlock);
 	}
 
-	private void assertFluidFlowInteraction(GameTestHelper helper, int ticksToDelay, BlockPos center) {
+	private void assertFluidFlowInteraction(GameTestHelper helper, int ticksToDelay, BlockPos center, Block toCheck) {
 		helper.runAfterDelay(ticksToDelay, () -> {
 			for (Direction d : Direction.Plane.HORIZONTAL) {
-				helper.assertBlockPresent(Blocks.ICE, center.above().relative(d));
+				helper.assertBlockPresent(toCheck, center.above().relative(d));
 			}
 
 			helper.succeed();
@@ -337,14 +337,14 @@ public class ContentRegistryGameTest {
 	@GameTest(maxTicks = 40)
 	public void flowingTestFluidCreatesIce(GameTestHelper helper) {
 		BlockPos center = BlockPos.ZERO.above();
-		setupFluidFlowBox(helper, center, Blocks.BLUE_ICE);
-		assertFluidFlowInteraction(helper, 20, center);
+		setupFluidFlowBox(helper, center, ContentRegistryTest.TEST_FLUID_BLOCK, Blocks.BLUE_ICE);
+		assertFluidFlowInteraction(helper, 20, center, Blocks.ICE);
 	}
 
 	@GameTest(maxTicks = 60)
 	public void flowingTestFluidCreatesIceAfterFlow(GameTestHelper helper) {
 		BlockPos center = BlockPos.ZERO.above();
-		setupFluidFlowBox(helper, center, Blocks.GRASS_BLOCK);
+		setupFluidFlowBox(helper, center, ContentRegistryTest.TEST_FLUID_BLOCK, Blocks.GRASS_BLOCK);
 
 		helper.runAfterDelay(20, () -> {
 			for (Direction d : Direction.Plane.HORIZONTAL) {
@@ -352,6 +352,70 @@ public class ContentRegistryGameTest {
 			}
 		});
 
-		assertFluidFlowInteraction(helper, 40, center);
+		assertFluidFlowInteraction(helper, 40, center, Blocks.ICE);
+	}
+
+	@GameTest(maxTicks = 40)
+	public void flowingWaterLikeFluidDoesNotFlow(GameTestHelper helper) {
+		BlockPos center = BlockPos.ZERO.above();
+		setupFluidFlowBox(helper, center, ContentRegistryTest.WATER_LIKE_FLUID_BLOCK, Blocks.MAGMA_BLOCK);
+		assertFluidFlowInteraction(helper, 20, center, Blocks.AIR);
+	}
+
+	@GameTest(maxTicks = 60)
+	public void flowingWaterLikeFluidDoesNotEvaporateOnMagmaBlockPlace(GameTestHelper helper) {
+		// Specifically checks LiquidBlock#neighborChanged shouldSpreadLiquid call
+
+		BlockPos center = BlockPos.ZERO.above();
+		setupFluidFlowBox(helper, center, ContentRegistryTest.WATER_LIKE_FLUID_BLOCK, Blocks.GRASS_BLOCK);
+
+		helper.runAfterDelay(10, () -> {
+			for (Direction d : Direction.Plane.HORIZONTAL) {
+				helper.setBlock(center.relative(d), Blocks.MAGMA_BLOCK);
+			}
+		});
+
+		helper.runAfterDelay(20, () -> {
+			for (Direction d : Direction.Plane.HORIZONTAL) {
+				helper.setBlock(center.above().relative(d, 2), Blocks.AIR);
+			}
+		});
+
+		// Since our handler doesn't set the block to air or anything, the fluid still exists above the magma but will not flow.
+		// We are specifically checking that flow is prevented into the new air blocks.
+		helper.runAfterDelay(39, () -> {
+			for (Direction d : Direction.Plane.HORIZONTAL) {
+				helper.assertBlockPresent(Blocks.AIR, center.above().relative(d, 2));
+			}
+		});
+
+		assertFluidFlowInteraction(helper, 40, center, ContentRegistryTest.WATER_LIKE_FLUID_BLOCK);
+	}
+
+	@GameTest(maxTicks = 60)
+	public void flowingWaterLikeFluidDoesNotEvaporateOnLiquidBlockPlace(GameTestHelper helper) {
+		// Specifically checks LiquidBlock#onPlace shouldSpreadLiquid call
+
+		BlockPos center = BlockPos.ZERO.above();
+
+		helper.setBlock(center, Blocks.MAGMA_BLOCK);
+
+		for (Direction d : Direction.Plane.HORIZONTAL) {
+			helper.setBlock(center.above().relative(d), Blocks.AIR);
+		}
+
+		helper.setBlock(center.above(), ContentRegistryTest.WATER_LIKE_FLUID_BLOCK);
+
+		// Since our handler doesn't set the block to air or anything, the fluid still exists above the magma but will not flow.
+		// We are specifically checking that flow is prevented into the existing air blocks.
+		helper.runAfterDelay(10, () -> {
+			helper.assertBlockPresent(ContentRegistryTest.WATER_LIKE_FLUID_BLOCK, center.above());
+
+			for (Direction d : Direction.Plane.HORIZONTAL) {
+				helper.assertBlockPresent(Blocks.AIR, center.above().relative(d, 1));
+			}
+
+			helper.succeed();
+		});
 	}
 }

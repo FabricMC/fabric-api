@@ -29,7 +29,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-import net.fabricmc.fabric.api.registry.fluid.FluidFlowCallback;
+import net.fabricmc.fabric.api.registry.fluid.AllowFluidFlow;
 
 @Mixin(FlowingFluid.class)
 public abstract class FlowingFluidMixin extends Fluid {
@@ -39,7 +39,7 @@ public abstract class FlowingFluidMixin extends Fluid {
 
 	@Inject(method = "spreadTo", at = @At("HEAD"), cancellable = true)
 	private void shouldSpreadLiquid(LevelAccessor level, BlockPos pos, BlockState state, Direction direction, FluidState target, CallbackInfo ci) {
-		if (!FluidFlowCallback.EVENT.invoker().onFlow(level.getFluidState(pos.relative(direction.getOpposite())), level, pos)) {
+		if (!AllowFluidFlow.EVENT.invoker().allowFlow(level.getFluidState(pos.relative(direction.getOpposite())), level, pos)) {
 			ci.cancel();
 		}
 	}
