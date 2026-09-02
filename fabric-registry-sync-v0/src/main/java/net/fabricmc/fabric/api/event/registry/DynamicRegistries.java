@@ -133,7 +133,7 @@ public final class DynamicRegistries {
 	 * @see RegistryDataLoader#RELOADABLE_REGISTRIES
 	 */
 	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getReloadableRegistries() {
-		return RegistryDataLoader.RELOADABLE_REGISTRIES;
+		return DynamicRegistriesImpl.getReloadableRegistries();
 	}
 
 	/**
