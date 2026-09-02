@@ -180,7 +180,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private void addRegistryEntries(
 			FabricDataGenerator.Pack pack, CompletableFuture<HolderLookup.Provider> worldRegistries, CompletableFuture<HolderLookup.Provider> reloadableRegistries
 	) {
-		var extraReloadableRegistries = RegistryPatchGenerator.createReloadableLookup(
+		CompletableFuture<RegistrySetBuilder.PatchedRegistries> extraReloadableRegistries = RegistryPatchGenerator.createReloadableLookup(
 				worldRegistries, reloadableRegistries,
 				new RegistrySetBuilder()
 						.add(TEST_DATAGEN_RELOADABLE_REGISTRY_KEY, b -> {
