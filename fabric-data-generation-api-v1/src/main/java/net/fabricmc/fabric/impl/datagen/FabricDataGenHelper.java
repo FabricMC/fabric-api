@@ -183,15 +183,10 @@ public final class FabricDataGenHelper {
 
 	private static HolderLookup.Provider createReloadableLookupProvider(HolderLookup.Provider registryLookup) {
 		RegistrySetBuilder reloadableRegistryBuilder = new RegistrySetBuilder();
-		addEmptyRegistries(reloadableRegistryBuilder, VanillaRegistries.RELOADABLE_BUILDER);
+		for (var registry : DynamicRegistries.getReloadableRegistries()){
+			addEmptyRegistry(reloadableRegistryBuilder, registry.key());
+		}
 		return reloadableRegistryBuilder.build(registryLookup);
-	}
-
-	private static void addEmptyRegistries(RegistrySetBuilder target, RegistrySetBuilder source) {
-		source.entries.stream()
-				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
-				.distinct()
-				.forEach(key -> addEmptyRegistry(target, key));
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
