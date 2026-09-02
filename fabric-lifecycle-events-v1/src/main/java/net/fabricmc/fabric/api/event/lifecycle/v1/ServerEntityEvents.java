@@ -18,7 +18,9 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 
@@ -63,6 +65,28 @@ public final class ServerEntityEvents {
 		}
 	});
 
+	/**
+	 * Called during {@link ItemEntity#tick()} on the logical server if an entity tries to pick up any {@link ItemEntity}.
+	 *
+	 * <p>Picking up of an item is determined by {@link ItemEntity#onPlayerCollision(PlayerEntity)}.
+	 *
+	 * <p>Returning {@code false} prevents vanilla from handling the pick-up.
+	 */
+	public static final Event<ItemPickup> ITEM_PICKUP = EventFactory.createArrayBacked(
+			ItemPickup.class,
+			(callbacks) -> (playerEntity, itemEntity, itemStack) -> {
+				for (ItemPickup callback : callbacks) {
+					boolean shouldContinue = callback.onPickup(playerEntity, itemEntity, itemStack);
+
+					if (!shouldContinue) {
+						return false;
+					}
+				}
+
+				return true;
+			}
+	);
+
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerWorld world);
@@ -76,5 +100,10 @@ public final class ServerEntityEvents {
 	@FunctionalInterface
 	public interface EquipmentChange {
 		void onChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack currentStack);
+	}
+
+	@FunctionalInterface
+	public interface ItemPickup {
+		boolean onPickup(PlayerEntity playerEntity, ItemEntity itemEntity, ItemStack itemStack);
 	}
 }

@@ -6,6 +6,7 @@
     "ChunkGeneratingMixin",
     "ChunkHolderMixin",
     "DataPackContentsMixin",
+    "ItemEntityMixin",
     "LivingEntityMixin",
     "MinecraftServerMixin",
     "PlayerManagerMixin",
