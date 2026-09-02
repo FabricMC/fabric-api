@@ -207,7 +207,11 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value    The value of the entry.
 		 */
 		default void add(StatType<?> statType, String value) {
-			add("stat_type." + Registries.STAT_TYPE.getId(statType).toString().replace(':', '.'), value);
+			if (statType.getName() instanceof TranslatableTextContent translatableTextContent) {
+				add(translatableTextContent.getKey(), value);
+			} else { // fallback to Util.createTranslationKey formatting (should it error instead?)
+				add(Util.createTranslationKey("stat_type", Registries.STAT_TYPE.getId(statType)), value);
+			}
 		}
 
 		/**
