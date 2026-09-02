@@ -55,6 +55,7 @@
     "renderstate.ItemStackRenderStateMixin",
     "renderstate.LevelRenderStateMixin",
     "renderstate.ParticlesRenderStateMixin",
+    "renderstate.PlayerRenderStateMixin",
     "renderstate.RenderStateMixin",
     "renderstate.SkyRenderStateMixin",
     "renderstate.WeatherRenderStateMixin",
