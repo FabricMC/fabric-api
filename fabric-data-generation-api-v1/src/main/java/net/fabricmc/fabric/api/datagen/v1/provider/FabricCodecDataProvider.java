@@ -80,7 +80,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 * @param target the {@link PackOutput.Target} under which files will be written
 	 * @param directoryName the path under the target in which generated files will be written
 	 * @param codec the codec to use
-	 * @param extension the file extension to use for generated files, for example {@code mcmeta}. Must not start with a dot
+	 * @param extension the file extension without a {@code .} to use for generated files, for example {@code "mcmeta"}
 	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec, String extension) {
 		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec, extension);
@@ -105,7 +105,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	 * @param registriesFuture the registry access
 	 * @param key the {@link ResourceKey} of the registry to generate for, used for determining where the generated files are written
 	 * @param codec the codec to use
-	 * @param extension the file extension to use for generated files, for example {@code mcmeta}. Must not start with a dot
+	 * @param extension the file extension without a {@code .} to use for generated files, for example {@code "mcmeta"}
 	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec, String extension) {
 		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec, extension);
