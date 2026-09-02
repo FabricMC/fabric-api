@@ -83,7 +83,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		@ApiStatus.Internal
 		Entries(HolderLookup.Provider registries, String modId) {
 			this.registries = registries;
-			this.queuedEntries = DynamicRegistries.getWorldRegistries().stream()
+			this.queuedEntries = DynamicRegistries.getAllDynamicRegistries().stream()
 					// Some modded dynamic registries might not be in the wrapper lookup, filter them out
 					.filter(e -> registries.lookup(e.key()).isPresent())
 					.collect(Collectors.toMap(
