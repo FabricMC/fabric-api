@@ -22,6 +22,7 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Unmodifiable;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceKey;
 
@@ -34,11 +35,14 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * Custom dynamic registries can be registered with {@link #register(ResourceKey, Codec)}. These registries will not be
  * <a href="#sync">synced to the client</a>.
  *
+ * <p>The list of all dynamic registries, whether from vanilla or mods, can be accessed using
+ * {@link #getAllDynamicRegistries()}.
+ *
  * <p>The list of all world registries, whether from vanilla or mods, can be accessed using
  * {@link #getWorldRegistries()}.
  *
- * <p>The list of all bootstrapping registries, whether from vanilla or mods, can be accessed using
- *  * {@link #getBootstrappingRegistries()}.
+ * <p>The list of all reloadable registries, whether from vanilla or mods, can be accessed using
+ * {@link #getReloadableRegistries()}.
  *
  * <p>Tags for the entries of a custom registry must be placed in
  * {@code /tags/<registry namespace>/<registry path>/}. For example, the tags for the example
@@ -82,41 +86,54 @@ public final class DynamicRegistries {
 	}
 
 	/**
-	 * Returns an unmodifiable list of all world registries, including modded ones.
+	 * Returns an unmodifiable list of all dynamic registries, including modded ones.
 	 *
 	 * <p>The list will not reflect any changes caused by later registrations.
 	 *
 	 * @return an unmodifiable list of all dynamic registries
 	 *
-	 * @apiNote A world registry is defined as a registry which is loaded from datapacks.
+	 * @apiNote A dynamic registry is defined as a registry which is loaded from datapacks.
 	 * <br>Those registries are loaded by the game at different times, and some are not patched.
+	 * This includes all registries defined in {@link RegistryDataLoader#WORLD_REGISTRIES},
+	 * {@link RegistryDataLoader#DIMENSION_REGISTRIES} and {@link RegistryDataLoader#RELOADABLE_REGISTRIES}.
+	 */
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getAllDynamicRegistries() {
+		return DynamicRegistriesImpl.getAllDynamicRegistries();
+	}
+
+	/**
+	 * Returns an unmodifiable list of all world dynamic registries, including modded ones.
+	 *
+	 * <p>The list will not reflect any changes caused by later registrations.
+	 *
+	 * @return an unmodifiable list of all world registries
+	 *
+	 * @apiNote A world registry is a registry which is loaded from datapacks when a world is
+	 * loaded. This typically contains registries defining game content, such as
+	 * {@link Registries#BIOME minecraft:biome} or {@link Registries#FROG_VARIANT
+	 * minecraft:frog_variant},but does not include reloadable registries like
+	 * {@link Registries#RECIPE minecraft:recipe}.
+	 * @see RegistryDataLoader#WORLD_REGISTRIES
 	 */
 	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getWorldRegistries() {
 		return DynamicRegistriesImpl.getWorldRegistries();
 	}
 
 	/**
-	 * Returns an unmodifiable list of all bootstrapping dynamic registries, including modded ones.
+	 * Returns an unmodifiable list of all world dynamic registries, including modded ones.
 	 *
 	 * <p>The list will not reflect any changes caused by later registrations.
 	 *
-	 * @return an unmodifiable list of all bootstrapping registries
+	 * @return an unmodifiable list of all reloadable registries
 	 *
-	 * @apiNote A bootstrapping registry is defined as a registry with entries being data generated in vanilla from its own registry builder.
-	 * <br>Those registries are the ones that should be built for data generation backends.
-	 * <br>For example, it does not include the <code>minecraft:dimension</code> registry.
+	 * @apiNote A world registry is a registry which is loaded from datapacks. Unlike
+	 * {@link #getWorldRegistries()}, these registries can be reloaded. This typically contains
+	 * registries defining non-persistent content, such as {@link Registries#RECIPE
+	 * minecraft:recipe} or {@link Registries#LOOT_TABLE minecraft:loot_table}.
+	 * @see RegistryDataLoader#RELOADABLE_REGISTRIES
 	 */
-	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
-		return DynamicRegistriesImpl.getBootstrappingRegistries();
-	}
-
-	/**
-	 * @deprecated Either use {@link #getWorldRegistries()} if you wish to get all world registries, including <code>minecraft:dimension</code>,
-	 * or use {@link #getBootstrappingRegistries()} if you wish to avoid the latter.
-	 */
-	@Deprecated
-	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		return DynamicRegistriesImpl.getBootstrappingRegistries();
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getReloadableRegistries() {
+		return DynamicRegistriesImpl.getReloadableRegistries();
 	}
 
 	/**
@@ -177,6 +194,23 @@ public final class DynamicRegistries {
 	public static <T> void registerSynced(ResourceKey<? extends Registry<T>> key, Codec<T> serverCodec, Codec<T> clientCodec, SyncOption... options) {
 		DynamicRegistriesImpl.register(key, serverCodec);
 		DynamicRegistriesImpl.addSyncedRegistry(key, clientCodec, options);
+	}
+
+	/**
+	 * Registers a reloadable dynamic registry.
+	 *
+	 * <p>The entries of the registry will be loaded from data packs at the file path
+	 * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}, and
+	 * will be refreshed when datapacks are uploaded.
+	 *
+	 * <p>Reloadable registries are <strong>NOT</strong> synced to the client.
+	 *
+	 * @param key   the unique key of the registry
+	 * @param codec the codec used to load registry entries from data packs
+	 * @param <T>   the entry type of the registry
+	 */
+	public static <T> void registerReloadable(ResourceKey<? extends Registry<T>> key, Codec<T> codec) {
+		DynamicRegistriesImpl.registerReloadable(key, codec);
 	}
 
 	/**

@@ -170,7 +170,7 @@ public final class FabricDataGenHelper {
 				.flatMap(RegistrySetBuilder.RegistryStub::requiredRegistries)
 				.forEach(vanillaWorldRegistries::add);
 
-		for (RegistryDataLoader.RegistryData<?> registry : DynamicRegistries.getBootstrappingRegistries()) {
+		for (RegistryDataLoader.RegistryData<?> registry : DynamicRegistries.getWorldRegistries()) {
 			if (!vanillaWorldRegistries.contains(registry.key())) {
 				addEmptyRegistry(registryBuilder, registry.key());
 			}

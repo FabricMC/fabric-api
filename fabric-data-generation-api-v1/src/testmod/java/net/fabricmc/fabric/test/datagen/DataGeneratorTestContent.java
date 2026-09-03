@@ -88,6 +88,13 @@ public class DataGeneratorTestContent implements ModInitializer {
 	// Empty registry
 	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic_empty"));
+	// Reloadable registry
+	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_RELOADABLE_REGISTRY_KEY =
+			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_reloadable"));
+	public static final ResourceKey<TestDatagenObject> TEST_RELOADABLE_REGISTRY_ITEM_KEY = ResourceKey.create(
+			TEST_DATAGEN_RELOADABLE_REGISTRY_KEY,
+			Identifier.fromNamespaceAndPath(MOD_ID, "cuttlefish")
+	);
 
 	public static final TagKey<SoundEvent> EQUIP_SOUNDS = TagKey.create(Registries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_equip_sounds"));
 
@@ -113,6 +120,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
+		DynamicRegistries.registerReloadable(TEST_DATAGEN_RELOADABLE_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
 	private static BlockItemId createBlockItemId(String name) {

@@ -26,6 +26,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ColorCollection;
 
+import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
+
 /**
  * See {@link net.minecraft.tags.BlockItemTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
@@ -338,7 +340,7 @@ public final class ConventionalBlockItemTags {
 	/**
 	 * Tag that holds all head based blocks such as Skeleton Skull or Player Head. (Named skulls to match minecraft:skulls item tag)
 	 */
-	public static final BlockItemTagId SKULLS = register(ConventionalBlockTags.SKULLS, ItemTags.SKULLS);
+	public static final BlockItemTagId SKULLS = register(TagRegistration.BLOCK_TAG.registerC("skulls"), ItemTags.SKULLS);
 	public static final BlockItemTagId ROPES = register("ropes");
 	public static final BlockItemTagId CHAINS = register("chains");
 

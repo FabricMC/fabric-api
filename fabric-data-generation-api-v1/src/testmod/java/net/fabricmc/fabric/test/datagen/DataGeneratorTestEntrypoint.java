@@ -25,9 +25,11 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_B
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ENTITY_TYPE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_RELOADABLE_REGISTRY_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_ITEM_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_NUMBER_PROVIDER_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_RELOADABLE_REGISTRY_ITEM_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_SOUND;
 
 import java.io.IOException;
@@ -57,6 +59,7 @@ import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -121,6 +124,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		final FabricDataGenerator.Pack pack = dataGenerator.createPack();
 
+		addRegistryEntries(pack, dataGenerator.getWorldRegistries(), dataGenerator.getRegistries());
+
 		pack.addProvider(TestRecipeProvider::new);
 		pack.addProvider(TestAdvancementProvider::new);
 		pack.addProvider(TestBlockLootSubProvider::new);
@@ -170,6 +175,20 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 	private void bootstrapTestDatagenRegistry(BootstrapContext<DataGeneratorTestContent.TestDatagenObject> context) {
 		context.register(TEST_DYNAMIC_REGISTRY_ITEM_KEY, new DataGeneratorTestContent.TestDatagenObject(":tiny_potato:"));
+	}
+
+	private void addRegistryEntries(
+			FabricDataGenerator.Pack pack, CompletableFuture<HolderLookup.Provider> worldRegistries, CompletableFuture<HolderLookup.Provider> reloadableRegistries
+	) {
+		CompletableFuture<RegistrySetBuilder.PatchedRegistries> extraReloadableRegistries = RegistryPatchGenerator.createReloadableLookup(
+				worldRegistries, reloadableRegistries,
+				new RegistrySetBuilder()
+						.add(TEST_DATAGEN_RELOADABLE_REGISTRY_KEY, b -> {
+							b.register(TEST_RELOADABLE_REGISTRY_ITEM_KEY, new DataGeneratorTestContent.TestDatagenObject("test"));
+						})
+		);
+
+		pack.addProvider((PackOutput o) -> RegistriesDatapackGenerator.forReloadableLayer(o, extraReloadableRegistries.thenApply(RegistrySetBuilder.PatchedRegistries::patches)));
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {

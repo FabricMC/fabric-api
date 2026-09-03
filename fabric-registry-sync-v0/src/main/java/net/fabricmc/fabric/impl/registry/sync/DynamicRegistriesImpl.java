@@ -35,8 +35,9 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class DynamicRegistriesImpl {
-	private static final List<RegistryDataLoader.RegistryData<?>> WORLD_REGISTRIES;
-	private static final List<RegistryDataLoader.RegistryData<?>> BOOTSTRAPPING_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLD_REGISTRIES);
+	private static final List<RegistryDataLoader.RegistryData<?>> ALL_DYNAMIC_REGISTRIES;
+	private static final List<RegistryDataLoader.RegistryData<?>> WORLD_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLD_REGISTRIES);
+	private static final List<RegistryDataLoader.RegistryData<?>> RELOADABLE_REGISTRIES = new ArrayList<>(RegistryDataLoader.RELOADABLE_REGISTRIES);
 
 	private static final Set<ResourceKey<? extends Registry<?>>> VANILLA_DYNAMIC_REGISTRY_KEYS;
 	public static final Set<ResourceKey<? extends Registry<?>>> FABRIC_DYNAMIC_REGISTRY_KEYS = new HashSet<>();
@@ -44,17 +45,14 @@ public final class DynamicRegistriesImpl {
 	public static final Set<ResourceKey<? extends Registry<?>>> SKIP_EMPTY_SYNC_REGISTRIES = new HashSet<>();
 
 	static {
-		WORLD_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLD_REGISTRIES);
-		WORLD_REGISTRIES.addAll(RegistryDataLoader.DIMENSION_REGISTRIES);
-		WORLD_REGISTRIES.addAll(RegistryDataLoader.RELOADABLE_REGISTRIES);
+		ALL_DYNAMIC_REGISTRIES = new ArrayList<>(RegistryDataLoader.WORLD_REGISTRIES);
+		ALL_DYNAMIC_REGISTRIES.addAll(RegistryDataLoader.DIMENSION_REGISTRIES);
+		ALL_DYNAMIC_REGISTRIES.addAll(RegistryDataLoader.RELOADABLE_REGISTRIES);
+
 		Set<ResourceKey<? extends Registry<?>>> vanillaDynamicRegistryKeys = new HashSet<>();
 
-		for (RegistryDataLoader.RegistryData<?> worldgenEntry : RegistryDataLoader.WORLD_REGISTRIES) {
+		for (RegistryDataLoader.RegistryData<?> worldgenEntry : ALL_DYNAMIC_REGISTRIES) {
 			vanillaDynamicRegistryKeys.add(worldgenEntry.key());
-		}
-
-		for (RegistryDataLoader.RegistryData<?> dimensionEntry : RegistryDataLoader.DIMENSION_REGISTRIES) {
-			vanillaDynamicRegistryKeys.add(dimensionEntry.key());
 		}
 
 		VANILLA_DYNAMIC_REGISTRY_KEYS = Collections.unmodifiableSet(vanillaDynamicRegistryKeys);
@@ -63,21 +61,27 @@ public final class DynamicRegistriesImpl {
 	private DynamicRegistriesImpl() {
 	}
 
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getAllDynamicRegistries() {
+		return List.copyOf(ALL_DYNAMIC_REGISTRIES);
+	}
+
 	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getWorldRegistries() {
 		return List.copyOf(WORLD_REGISTRIES);
 	}
 
-	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getBootstrappingRegistries() {
-		return List.copyOf(BOOTSTRAPPING_REGISTRIES);
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getReloadableRegistries() {
+		return List.copyOf(RELOADABLE_REGISTRIES);
 	}
 
-	private static void addDynamicRegistryData(ResourceKey<? extends Registry<?>> key, RegistryDataLoader.RegistryData<?> data) {
+	private static void addDynamicRegistryData(
+			List<RegistryDataLoader.RegistryData<?>> registries, ResourceKey<? extends Registry<?>> key, RegistryDataLoader.RegistryData<?> data
+	) {
 		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
-		BOOTSTRAPPING_REGISTRIES.add(data);
-		WORLD_REGISTRIES.add(data);
+		registries.add(data);
+		ALL_DYNAMIC_REGISTRIES.add(data);
 	}
 
-	public static <T> RegistryDataLoader.RegistryData<T> register(ResourceKey<? extends Registry<T>> key, Codec<T> serverCodec) {
+	public static <T> void register(ResourceKey<? extends Registry<T>> key, Codec<T> serverCodec) {
 		Objects.requireNonNull(key, "Registry key cannot be null");
 		Objects.requireNonNull(serverCodec, "Server codec cannot be null");
 
@@ -86,8 +90,7 @@ public final class DynamicRegistriesImpl {
 		}
 
 		var entry = new RegistryDataLoader.RegistryData<>(key, serverCodec, RegistryValidator.none());
-		addDynamicRegistryData(key, entry);
-		return entry;
+		addDynamicRegistryData(WORLD_REGISTRIES, key, entry);
 	}
 
 	public static <T> void addSyncedRegistry(ResourceKey<? extends Registry<T>> key, Codec<T> clientCodec, DynamicRegistries.SyncOption... options) {
@@ -112,5 +115,17 @@ public final class DynamicRegistriesImpl {
 				SKIP_EMPTY_SYNC_REGISTRIES.add(key);
 			}
 		}
+	}
+
+	public static <T> void registerReloadable(ResourceKey<? extends Registry<T>> key, Codec<T> serverCodec) {
+		Objects.requireNonNull(key, "Registry key cannot be null");
+		Objects.requireNonNull(serverCodec, "Server codec cannot be null");
+
+		if (VANILLA_DYNAMIC_REGISTRY_KEYS.contains(key) || FABRIC_DYNAMIC_REGISTRY_KEYS.contains(key)) {
+			throw new IllegalArgumentException("Dynamic registry " + key + " has already been registered!");
+		}
+
+		var entry = new RegistryDataLoader.RegistryData<>(key, serverCodec, RegistryValidator.none());
+		addDynamicRegistryData(RELOADABLE_REGISTRIES, key, entry);
 	}
 }

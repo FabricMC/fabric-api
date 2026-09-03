@@ -23,28 +23,28 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.data.registries.RegistryPatchGenerator;
+import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.resources.RegistryDataLoader;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
-@Mixin(RegistryPatchGenerator.class)
-class RegistryPatchGeneratorMixin {
+@Mixin(RegistriesDatapackGenerator.class)
+class RegistriesDatapackGeneratorMixin {
 	@Redirect(
 			at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLD_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC),
-			method = "lambda$createWorldLookup$0"
+			method = "forWorldLayer"
 	)
 	private static List<RegistryDataLoader.RegistryData<?>> getWorldRegistries() {
-		// Register cloners for all world registries (including modded ones).
+		// Write all world registries, including modded ones.
 		return DynamicRegistries.getWorldRegistries();
 	}
 
 	@Redirect(
 			at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;RELOADABLE_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC),
-			method = "lambda$createReloadableLookup$0"
+			method = "forReloadableLayer"
 	)
 	private static List<RegistryDataLoader.RegistryData<?>> getReloadableRegistries() {
-		// Register cloners for all reloadable registries (including modded ones).
+		// Write all reloadable registries, including modded ones.
 		return DynamicRegistries.getReloadableRegistries();
 	}
 }

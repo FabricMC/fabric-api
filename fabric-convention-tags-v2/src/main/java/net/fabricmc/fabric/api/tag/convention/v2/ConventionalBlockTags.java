@@ -344,7 +344,7 @@ public final class ConventionalBlockTags {
 	/**
 	 * Tag that holds all head based blocks such as Skeleton Skull or Player Head. (Named skulls to match minecraft:skulls item tag)
 	 */
-	public static final TagKey<Block> SKULLS = register("skulls");
+	public static final TagKey<Block> SKULLS = ConventionalBlockItemTags.SKULLS.block();
 	public static final TagKey<Block> ROPES = ConventionalBlockItemTags.ROPES.block();
 	public static final TagKey<Block> CHAINS = ConventionalBlockItemTags.CHAINS.block();
 

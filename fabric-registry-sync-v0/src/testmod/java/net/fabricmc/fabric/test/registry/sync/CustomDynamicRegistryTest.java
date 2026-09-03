@@ -44,6 +44,8 @@ public final class CustomDynamicRegistryTest implements ModInitializer {
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_dynamic_synced_2"));
 	public static final ResourceKey<Registry<TestDynamicObject>> TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY =
 			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_dynamic_synced_empty"));
+	public static final ResourceKey<Registry<TestDynamicObject>> TEST_RELOADABLE =
+			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_reloadable"));
 
 	private static final ResourceKey<TestDynamicObject> SYNCED_ENTRY_KEY =
 			ResourceKey.create(TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY, Identifier.fromNamespaceAndPath("fabric-registry-sync-v0-testmod", "synced"));
@@ -57,12 +59,14 @@ public final class CustomDynamicRegistryTest implements ModInitializer {
 		DynamicRegistries.registerSynced(TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC, TestDynamicObject.NETWORK_CODEC);
 		DynamicRegistries.registerSynced(TEST_NESTED_DYNAMIC_REGISTRY_KEY, TestNestedDynamicObject.CODEC);
 		DynamicRegistries.registerSynced(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY, TestDynamicObject.CODEC, DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY);
+		DynamicRegistries.registerReloadable(TEST_RELOADABLE, TestDynamicObject.CODEC);
 
 		DynamicRegistrySetupCallback.EVENT.register(registryView -> {
 			addListenerForDynamic(registryView, TEST_DYNAMIC_REGISTRY_KEY);
 			addListenerForDynamic(registryView, TEST_SYNCED_1_DYNAMIC_REGISTRY_KEY);
 			addListenerForDynamic(registryView, TEST_SYNCED_2_DYNAMIC_REGISTRY_KEY);
 			addListenerForDynamic(registryView, TEST_NESTED_DYNAMIC_REGISTRY_KEY);
+			addListenerForDynamic(registryView, TEST_RELOADABLE);
 		});
 
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
