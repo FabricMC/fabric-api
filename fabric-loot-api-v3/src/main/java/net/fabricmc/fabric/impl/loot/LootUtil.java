@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -48,14 +50,8 @@ public final class LootUtil {
 		RELOAD_PROVIDERS.remove(resourceManager);
 	}
 
-	public static HolderLookup.Provider getReloadProvider(ResourceManager resourceManager) {
-		HolderLookup.Provider provider = RELOAD_PROVIDERS.get(resourceManager);
-
-		if (provider == null) {
-			throw new IllegalStateException("Missing registry lookup provider for loot table reload");
-		}
-
-		return provider;
+	public static HolderLookup.@Nullable Provider getActiveReloadProvider(ResourceManager resourceManager) {
+		return RELOAD_PROVIDERS.get(resourceManager);
 	}
 
 	public static LootTable modifyLootTable(ResourceKey<LootTable> key, LootTable table, LootTableSource source, HolderLookup.Provider provider) {

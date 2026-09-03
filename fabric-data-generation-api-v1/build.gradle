@@ -21,6 +21,7 @@ fabricApiModule {
 
 	testDependencies(
 		':fabric-creative-tab-api-v1',
+		':fabric-loot-api-v3',
 		':fabric-object-builder-api-v1'
 	)
 }

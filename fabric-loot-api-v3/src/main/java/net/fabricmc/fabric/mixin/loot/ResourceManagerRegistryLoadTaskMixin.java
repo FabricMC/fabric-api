@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
@@ -51,11 +52,17 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 			return result;
 		}
 
+		HolderLookup.Provider provider = LootUtil.getActiveReloadProvider(this.resourceManager);
+
+		if (provider == null) {
+			return result;
+		}
+
 		return result.mapLeft(value -> (T) LootUtil.modifyLootTable(
 				(ResourceKey<LootTable>) key,
 				(LootTable) value,
 				LootUtil.determineSource(resource),
-				LootUtil.getReloadProvider(this.resourceManager)
+				provider
 		));
 	}
 }

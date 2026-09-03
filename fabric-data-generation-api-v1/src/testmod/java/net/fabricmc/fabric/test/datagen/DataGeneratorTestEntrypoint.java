@@ -532,6 +532,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(HolderLookup.Provider registries, Entries entries) {
+			registries.lookupOrThrow(Registries.LOOT_TABLE)
+					.getOrThrow(BuiltInLootTables.PIGLIN_BARTERING);
+
 			entries.add(
 					TEST_NUMBER_PROVIDER_KEY,
 					new ConstantValue(123)
