@@ -47,8 +47,21 @@ public final class KeyBindingHelper {
 	 * @throws IllegalArgumentException when a key binding with the same ID is already registered
 	 */
 	public static KeyBinding registerKeyBinding(KeyBinding keyBinding) {
+		return registerKeyBinding(keyBinding, KeyBindingContext.IN_GAME);
+	}
+
+	/**
+	 * Registers the keybinding and add the keybinding category if required.
+	 *
+	 * @param keyBinding the keybinding
+	 * @param context    the keybinding context
+	 * @return the keybinding itself
+	 * @throws IllegalArgumentException when a key binding with the same ID is already registered
+	 */
+	public static KeyBinding registerKeyBinding(KeyBinding keyBinding, KeyBindingContext context) {
 		Objects.requireNonNull(keyBinding, "key binding cannot be null");
-		return KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
+		Objects.requireNonNull(context, "context cannot be null");
+		return KeyBindingRegistryImpl.registerKeyBinding(keyBinding, context);
 	}
 
 	/**

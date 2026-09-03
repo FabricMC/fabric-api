@@ -37,7 +37,7 @@ public interface KeyBindingRegistry {
 
 		@Override
 		public boolean register(FabricKeyBinding binding) {
-			return KeyBindingRegistryImpl.registerKeyBinding(binding) != null;
+			return KeyBindingHelper.registerKeyBinding(binding) != null;
 		}
 	};
 

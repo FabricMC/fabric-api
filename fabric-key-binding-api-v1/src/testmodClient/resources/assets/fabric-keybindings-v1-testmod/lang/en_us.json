@@ -1,8 +1,18 @@
 {
   "key.category.first.test": "First Test Category",
   "key.category.second.test": "Second Test Category",
+  "key.category.context": "Context Test Category",
   "key.fabric-key-binding-api-v1-testmod.test_keybinding_1": "Test 1",
   "key.fabric-key-binding-api-v1-testmod.test_keybinding_2": "Test 2",
   "key.fabric-key-binding-api-v1-testmod.test_keybinding_sticky": "Sticky Test",
-  "key.fabric-key-binding-api-v1-testmod.test_keybinding_duplicate": "Duplicate Test"
+  "key.fabric-key-binding-api-v1-testmod.test_keybinding_duplicate": "Duplicate Test",
+  "key.fabric-key-binding-api-v1-testmod.in_game_keybinding": "In Game",
+  "key.fabric-key-binding-api-v1-testmod.screen_keybinding": "In Screen",
+  "key.fabric-key-binding-api-v1-testmod.all_keybinding": "All",
+  "key.fabric-key-binding-api-v1-testmod.custom_context_1": "Custom Context 1",
+  "key.fabric-key-binding-api-v1-testmod.custom_context_2": "Custom Context 2",
+  "key.fabric-key-binding-api-v1-testmod.custom_context_3": "Custom Context 3",
+  "key.fabric-key-binding-api-v1-testmod.custom_context_4": "Custom Context 4",
+  "key.fabric-key-binding-api-v1-testmod.diamond_sword": "Diamond Sword",
+  "key.fabric-key-binding-api-v1-testmod.netherite_sword": "Netherite Sword"
 }

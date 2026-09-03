@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.keybinding;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,10 +27,13 @@ import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingContext;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 
 public final class KeyBindingRegistryImpl {
+	public static final Map<InputUtil.Key, List<KeyBinding>> KEY_TO_BINDINGS = new HashMap<>();
 	private static final List<KeyBinding> MODDED_KEY_BINDINGS = new ReferenceArrayList<>(); // ArrayList with identity based comparisons for contains/remove/indexOf etc., required for correctly handling duplicate keybinds
 
 	private KeyBindingRegistryImpl() {
@@ -51,7 +56,7 @@ public final class KeyBindingRegistryImpl {
 		return true;
 	}
 
-	public static KeyBinding registerKeyBinding(KeyBinding binding) {
+	public static KeyBinding registerKeyBinding(KeyBinding binding, KeyBindingContext context) {
 		if (MinecraftClient.getInstance().options != null) {
 			throw new IllegalStateException("GameOptions has already been initialised");
 		}
@@ -66,6 +71,7 @@ public final class KeyBindingRegistryImpl {
 
 		// This will do nothing if the category already exists.
 		addCategory(binding.getCategory());
+		((KeyBindingExtensions) binding).fabric_setContext(context);
 		MODDED_KEY_BINDINGS.add(binding);
 		return binding;
 	}
@@ -79,5 +85,9 @@ public final class KeyBindingRegistryImpl {
 		newKeysAll.removeAll(MODDED_KEY_BINDINGS);
 		newKeysAll.addAll(MODDED_KEY_BINDINGS);
 		return newKeysAll.toArray(new KeyBinding[0]);
+	}
+
+	public static void putToMap(InputUtil.Key key, KeyBinding binding) {
+		KEY_TO_BINDINGS.computeIfAbsent(key, k -> new ArrayList<>()).add(binding);
 	}
 }

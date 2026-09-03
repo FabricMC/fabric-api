@@ -1,0 +1,3 @@
+{
+  "fabric.keybinding.conflicts": "This key is conflicting with:\n%s"
+}

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.screen;
 
 import java.util.List;
 
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,9 +26,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingContext;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -35,6 +39,8 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 public final class ScreenTests implements ClientModInitializer {
 	public static final Identifier GUI_ICONS_TEXTURE = new Identifier("textures/gui/icons.png");
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricScreenApiTests");
+
+	private static final KeyBinding SCREEN_BINDING = new KeyBinding("key.fabric-screen-api-v1-testmod.screen_keybinding", GLFW.GLFW_KEY_EQUAL, "key.category.context");
 
 	@Override
 	public void onInitializeClient() {
@@ -44,6 +50,7 @@ public final class ScreenTests implements ClientModInitializer {
 		});
 
 		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
+		KeyBindingHelper.registerKeyBinding(SCREEN_BINDING, KeyBindingContext.IN_SCREEN);
 	}
 
 	private void afterInitScreen(MinecraftClient client, Screen screen, int windowWidth, int windowHeight) {
@@ -88,5 +95,11 @@ public final class ScreenTests implements ClientModInitializer {
 				LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
 			});
 		}
+
+		ScreenKeyboardEvents.beforeKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
+			if (SCREEN_BINDING.isPressed()) {
+				LOGGER.info("Screen key binding was pressed on screen {}!", screen.getClass().getSimpleName());
+			}
+		});
 	}
 }

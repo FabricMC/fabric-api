@@ -26,12 +26,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -149,7 +151,21 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.beforeMouseScrollEvent = ScreenEventFactory.createBeforeMouseScrollEvent();
 		this.afterMouseScrollEvent = ScreenEventFactory.createAfterMouseScrollEvent();
 
+		// Make KeyBinding.isPressed and wasPressed work on screen
+		// Registered here to make sure it is called first
+		beforeKeyPressEvent.register((screen, keycode, scancode, modifiers) -> onKeyBind(InputUtil.fromKeyCode(keycode, scancode), true));
+		beforeKeyReleaseEvent.register((screen, keycode, scancode, modifiers) -> onKeyBind(InputUtil.fromKeyCode(keycode, scancode), false));
+		beforeMouseClickEvent.register((screen, mouseX, mouseY, button) -> onKeyBind(InputUtil.Type.MOUSE.createFromCode(button), true));
+		beforeMouseReleaseEvent.register((screen, mouseX, mouseY, button) -> onKeyBind(InputUtil.Type.MOUSE.createFromCode(button), false));
+		removeEvent.register(screen -> KeyBinding.unpressAll());
+
 		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, width, height);
+	}
+
+	@Unique
+	private static void onKeyBind(InputUtil.Key key, boolean pressed) {
+		KeyBinding.setKeyPressed(key, pressed);
+		if (pressed) KeyBinding.onKeyPressed(key);
 	}
 
 	@Unique

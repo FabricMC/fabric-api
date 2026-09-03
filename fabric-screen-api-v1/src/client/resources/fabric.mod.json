@@ -17,7 +17,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.8.2",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-key-binding-api-v1": "*"
   },
   "description": "Adds screen related hooks.",
   "mixins": [
