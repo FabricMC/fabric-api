@@ -40,6 +40,7 @@ import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.CameraEntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.FirstPersonHandsAndItemsRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.state.level.ParticlesRenderState;
 import net.minecraft.client.renderer.state.level.PlayerRenderState;
@@ -56,6 +57,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 		BlockEntityRenderState.class,
 		EntityRenderState.class,
 		EntityRenderState.LeashState.class,
+		FirstPersonHandsAndItemsRenderState.class,
 		FogData.class,
 		ItemStackRenderState.class,
 		ItemStackRenderState.LayerRenderState.class,
@@ -74,6 +76,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 		LevelRenderState.class,
 		ParticlesRenderState.class,
 		PlayerRenderState.class,
+		PlayerRenderState.ItemActivationRenderState.class,
 		SkyRenderState.class,
 		WeatherRenderState.class,
 		WorldBorderRenderState.class
