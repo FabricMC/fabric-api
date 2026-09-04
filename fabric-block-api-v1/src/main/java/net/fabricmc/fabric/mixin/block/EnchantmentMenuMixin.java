@@ -46,6 +46,6 @@ public class EnchantmentMenuMixin {
 	@ModifyArg(method = "lambda$slotsChanged$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getEnchantmentCost(Lnet/minecraft/util/RandomSource;IILnet/minecraft/world/item/ItemStack;)I"), index = 2)
 	int replaceBookcasesWithPower(int bookcases, @Share("power") LocalFloatRef power) {
 		// Round x.5 to x
-		return -Math.round(-power.get());
+		return Math.max(-Math.round(-power.get()), 0);
 	}
 }
