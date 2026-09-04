@@ -51,6 +51,22 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
+	 * Return a colored version of the name that should be used for the passed fluid variant.
+	 */
+	default Component getColoredName(FluidVariant fluidVariant) {
+		return getName(fluidVariant).copy().withColor(this.getAssociatedColor(fluidVariant));
+	}
+
+	/**
+	 * Return the associated flat color of the passed fluid variant.
+	 *
+	 * <p>By default, it's used for the {@link #getColoredName(FluidVariant)} color selection.
+	 */
+	default int getAssociatedColor(FluidVariant fluidVariant) {
+		return -1;
+	}
+
+	/**
 	 * Return the sound corresponding to this fluid being filled, or none if no sound is available.
 	 *
 	 * <p>If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound.

@@ -93,18 +93,38 @@ public final class FluidVariantRendering {
 	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, TooltipFlag) the other overload}, the current tooltip context is automatically used.
 	 */
 	public static List<Component> getTooltip(FluidVariant fluidVariant) {
-		return getTooltip(fluidVariant, Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+		return getTooltip(fluidVariant, false, Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 	}
 
 	/**
 	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
+	 *
+	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, TooltipFlag) the other overload}, the current tooltip context is automatically used.
+	 */
+	public static List<Component> getTooltip(FluidVariant fluidVariant, boolean coloredName) {
+		return getTooltip(fluidVariant, coloredName, Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+	}
+
+	/**
+	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
+	 * and the id of the fluid if advanced tooltips are enabled.
+	 *
+	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, boolean, TooltipFlag)}, the name will always use default (white) color.
 	 */
 	public static List<Component> getTooltip(FluidVariant fluidVariant, TooltipFlag flag) {
+		return getTooltip(fluidVariant, false, flag);
+	}
+
+	/**
+	 * Return a mutable list: the tooltip for the passed fluid variant, including the name (either colored or default) and additional lines if available
+	 * and the id of the fluid if advanced tooltips are enabled.
+	 */
+	public static List<Component> getTooltip(FluidVariant fluidVariant, boolean coloredName, TooltipFlag flag) {
 		List<Component> tooltip = new ArrayList<>();
 
 		// Name first
-		tooltip.add(FluidVariantAttributes.getName(fluidVariant));
+		tooltip.add(coloredName ? FluidVariantAttributes.getColoredName(fluidVariant) : FluidVariantAttributes.getName(fluidVariant));
 
 		// Additional tooltip information
 		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, flag);

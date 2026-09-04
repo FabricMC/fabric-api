@@ -35,7 +35,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 /**
  * Renders the water sprite in the top left of the screen, to make sure that it correctly depends on the position.
@@ -43,8 +42,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 public class FluidVariantRenderTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		FluidVariantAttributes.enableColoredVanillaFluidNames();
-
 		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("fabric-transfer-api-v1-testmod", "fluid_variant"), (graphics, tickDelta) -> {
 			Player player = Minecraft.getInstance().player;
 			if (player == null) return;
@@ -65,7 +62,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, fluidModel.flowingMaterial().sprite(), 0, renderY, 16, 16, color);
 				renderY += 16;
 
-				List<Component> tooltip = FluidVariantRendering.getTooltip(variant);
+				List<Component> tooltip = FluidVariantRendering.getTooltip(variant, true);
 				Font font = Minecraft.getInstance().font;
 
 				renderY += 2;
