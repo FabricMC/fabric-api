@@ -257,6 +257,54 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		default void add(SoundEvent sound, String value) {
 			add(Util.makeDescriptionId("subtitles", sound.location()), value);
 		}
+		
+		/**
+     * Auto translates a {@link Block}
+     *
+     * Input a block, example: Blocks.CRAFTING_TABLE,
+     * and it will add it to the Language provider,
+     * output will be "Crafting Table"
+     */
+    default void autoTranslate(Block block) {
+        String snakeCase = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        String replaceUnderscores = snakeCase.replace('_', ' ');
+        String[] words = replaceUnderscores.split(" ");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                result.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1))
+                        .append(" ");
+            }
+        }
+        String titleCase = result.toString().trim();
+
+        this.add(block, titleCase);
+    }
+
+    /**
+     * Auto translates an {@link Item}
+     *
+     * Input an item, example: Items.NETHERITE_HOE,
+     * and it will add it to the Language provider,
+     * output will be "Netherite Hoe"
+     */
+    default void autoTranslate(Item item) {
+        String snakeCase = BuiltInRegistries.ITEM.getKey(item).getPath();
+        String replaceUnderscores = snakeCase.replace('_', ' ');
+        String[] words = replaceUnderscores.split(" ");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                result.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1))
+                        .append(" ");
+            }
+        }
+        String titleCase = result.toString().trim();
+
+        this.add(item, titleCase);
+    }
 
 		/**
 		 * Merges an existing language file into the generated language file.
