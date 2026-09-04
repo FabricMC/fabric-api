@@ -5,22 +5,23 @@
   "mixins": [
     "BlocksMixin",
     "BootstrapMixin",
-    "SerializableChunkDataMixin",
+    "BuiltInRegistriesAccessor",
+    "BuiltInRegistriesMixin",
     "DebugLevelSourceAccessor",
     "RegistriesDatapackGeneratorMixin",
     "RegistryPatchGeneratorMixin",
     "ReloadableServerRegistriesMixin",
     "IdMapperMixin",
     "MainMixin",
-    "BuiltInRegistriesAccessor",
-    "BuiltInRegistriesMixin",
+    "MappedRegistryAccessor",
+    "MappedRegistryMixin",
+    "MinecraftServerMixin",
     "RegistriesMixin",
     "RegistryDataLoaderMixin",
     "RegistryMixin",
-    "WorldLoaderMixin",
     "RegistrySynchronizationMixin",
-    "MappedRegistryAccessor",
-    "MappedRegistryMixin"
+    "SerializableChunkDataMixin",
+    "WorldLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

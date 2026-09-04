@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.registry.sync;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -45,26 +46,32 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced with RegistryTagContainer from RegistryTagManager.
 		RegistryAttributeHolder.get(BuiltInRegistries.FLUID)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// MobEffectInstance serialises with raw id.
 		RegistryAttributeHolder.get(BuiltInRegistries.MOB_EFFECT)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in ClientboundSectionBlocksUpdatePacket among other places, a pallet is used when saving.
 		RegistryAttributeHolder.get(BuiltInRegistries.BLOCK)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in ClientboundAddEntityPacket and RegistryTagManager
 		RegistryAttributeHolder.get(BuiltInRegistries.ENTITY_TYPE)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in RegistryTagManager
 		RegistryAttributeHolder.get(BuiltInRegistries.ITEM)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via ByteBufCodecs.registry
 		RegistryAttributeHolder.get(BuiltInRegistries.POTION)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Doesnt seem to be accessed apart from registering?
@@ -97,6 +104,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced. Vanilla uses raw ids in ClientboundBlockEntityDataPacket, and mods use the Vanilla syncing since 1.18
 		RegistryAttributeHolder.get(BuiltInRegistries.BLOCK_ENTITY_TYPE)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via ByteBufCodecs.registry
@@ -136,6 +144,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced by rawID in 24w03a+
 		RegistryAttributeHolder.get(BuiltInRegistries.ATTRIBUTE)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in ClientboundAwardStatsPacket
@@ -144,10 +153,12 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced by rawID in EntityDataSerializers.VILLAGER_DATA
 		RegistryAttributeHolder.get(BuiltInRegistries.VILLAGER_TYPE)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID in EntityDataSerializers.VILLAGER_DATA
 		RegistryAttributeHolder.get(BuiltInRegistries.VILLAGER_PROFESSION)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
@@ -185,6 +196,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced by rawID.
 		RegistryAttributeHolder.get(BuiltInRegistries.DATA_COMPONENT_TYPE)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID.
@@ -193,6 +205,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Synced by rawID.
 		RegistryAttributeHolder.get(BuiltInRegistries.MAP_DECORATION_TYPE)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via ByteBufCodecs.registry
@@ -218,5 +231,13 @@ public class FabricRegistryInit implements ModInitializer {
 		// Synced via ByteBufCodecs.registryValue
 		RegistryAttributeHolder.get(BuiltInRegistries.DEBUG_SUBSCRIPTION)
 				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Required for save integrity
+		RegistryAttributeHolder.get(Registries.BIOME)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED);
+
+		// Required for save integrity
+		RegistryAttributeHolder.get(Registries.ENCHANTMENT)
+				.addAttribute(RegistryAttribute.SAVE_DATA_VALIDATED);
 	}
 }

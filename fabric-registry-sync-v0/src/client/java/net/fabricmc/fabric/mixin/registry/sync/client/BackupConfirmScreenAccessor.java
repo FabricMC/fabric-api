@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.registry;
+package net.fabricmc.fabric.mixin.registry.sync.client;
 
-public enum RegistryAttribute {
-	/**
-	 * Registry will be synced to the client when modded.
-	 */
-	SYNCED,
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-	/**
-	 * Registry has been modded.
-	 */
-	MODDED,
+import net.minecraft.client.gui.components.MultiLineLabel;
+import net.minecraft.client.gui.screens.BackupConfirmScreen;
 
-	/**
-	 * Registry is optional, any connecting client will not be disconnected if the registry is not present.
-	 */
-	OPTIONAL,
-
-	/**
-	 * Registry contents are validated to contain all entries available previously.
-	 */
-	SAVE_DATA_VALIDATED
+@Mixin(BackupConfirmScreen.class)
+public interface BackupConfirmScreenAccessor {
+	@Accessor("message")
+	MultiLineLabel fabric_getMessage();
 }

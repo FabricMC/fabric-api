@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.registry;
+package net.fabricmc.fabric.impl.registry.sync.validate;
 
-public enum RegistryAttribute {
-	/**
-	 * Registry will be synced to the client when modded.
-	 */
-	SYNCED,
+import java.util.List;
 
-	/**
-	 * Registry has been modded.
-	 */
-	MODDED,
+import net.minecraft.network.chat.Component;
 
-	/**
-	 * Registry is optional, any connecting client will not be disconnected if the registry is not present.
-	 */
-	OPTIONAL,
-
-	/**
-	 * Registry contents are validated to contain all entries available previously.
-	 */
-	SAVE_DATA_VALIDATED
+public record Details(List<Section> sections) {
+	public record Section(Component header, List<Component> lines) { }
 }

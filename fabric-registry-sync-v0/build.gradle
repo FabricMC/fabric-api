@@ -15,5 +15,6 @@ fabricApiModule {
 	testDependencies(
 		':fabric-lifecycle-events-v1',
 		':fabric-command-api-v2',
+		':fabric-client-gametest-api-v1'
 	)
 }
