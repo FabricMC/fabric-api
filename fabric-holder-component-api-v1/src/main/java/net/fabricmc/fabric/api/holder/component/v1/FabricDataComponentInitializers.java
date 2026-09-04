@@ -27,7 +27,6 @@ import net.fabricmc.fabric.impl.holder.component.FabricDataComponentInitializers
 /// [FabricDataComponentInitializer] provides more capabilities than [net.minecraft.core.component.DataComponentInitializers.Initializer]. For example, it allows adding components dynamically based on registries and/or datapack resources.
 /// @see net.minecraft.core.component.DataComponentInitializers DataComponentInitializers
 /// @see FabricDataComponentInitializer
-// TODO: Finish docs
 public final class FabricDataComponentInitializers {
 	private FabricDataComponentInitializers() {
 	}
