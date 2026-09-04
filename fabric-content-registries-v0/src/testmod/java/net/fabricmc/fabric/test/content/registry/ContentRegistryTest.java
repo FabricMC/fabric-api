@@ -27,6 +27,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -60,6 +62,7 @@ import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
+import net.fabricmc.fabric.api.registry.fluid.AllowFluidFlow;
 import net.fabricmc.fabric.api.registry.fluid.EntityFluidInteractionRegistry;
 import net.fabricmc.fabric.api.registry.fluid.FluidBehavior;
 
@@ -189,6 +192,30 @@ public final class ContentRegistryTest implements ModInitializer {
 				.movementSpeed(0.02f).movementSlowdown(0.8f, 0.6f).fallDistanceModifier(0.8f).build());
 
 		EntityFluidInteractionRegistry.register(WATER_LIKE_FLUID_KEY, FluidBehavior.WATER_LIKE);
+
+		AllowFluidFlow.EVENT.register((fluid, level, position) -> {
+			// Check we are the test fluid
+			if (!fluid.is(TEST_FLUID_KEY)) return true;
+
+			// Check we are above blue ice
+			if (!level.getBlockState(position.below()).is(Blocks.BLUE_ICE)) return true;
+
+			level.setBlockAndUpdate(position, Blocks.ICE.defaultBlockState());
+			level.playSound(null, position, SoundEvents.GLASS_PLACE, SoundSource.BLOCKS, 1, 1);
+			return false;
+		});
+
+		AllowFluidFlow.EVENT.register((fluid, level, position) -> {
+			// Check we are the water like fluid
+			if (!fluid.is(WATER_LIKE_FLUID_KEY)) return true;
+
+			// Check we are above magma blocks
+			if (!level.getBlockState(position.below()).is(Blocks.MAGMA_BLOCK)) return true;
+
+			level.playSound(null, position, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
+			// Not updating the block state here would likely be a bug in a mod, but it allows us to test specific behavior in the game tests.
+			return false;
+		});
 	}
 
 	public static class TestEventBlock extends Block {
