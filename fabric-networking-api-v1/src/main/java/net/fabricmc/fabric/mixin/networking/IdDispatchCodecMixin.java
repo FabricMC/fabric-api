@@ -18,7 +18,15 @@ package net.fabricmc.fabric.mixin.networking;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.VarInt;
+import net.minecraft.network.protocol.common.CommonPacketTypes;
+
+import net.minecraft.resources.Identifier;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,6 +37,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(IdDispatchCodec.class)
 public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements StreamCodec<B, V> {
@@ -45,6 +55,25 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 
 		if (payload != null && payload.type() != null) {
 			throw new EncoderException("Failed to encode packet '%s' (%s)".formatted(packetType, payload.type().id().toString()), e);
+		}
+	}
+
+	// Add the custom payload id to the error message
+	@Inject(method = "decode(Lio/netty/buffer/ByteBuf;)Ljava/lang/Object;", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/Throwable;)Lio/netty/handler/codec/DecoderException;"))
+	public void decode(B input, CallbackInfoReturnable<V> cir, @Local(name = "entry") IdDispatchCodec.Entry<B, V, T> entry, @Local(name = "e") Exception e) {
+		if (entry.type() == CommonPacketTypes.CLIENTBOUND_CUSTOM_PAYLOAD || entry.type() == CommonPacketTypes.SERVERBOUND_CUSTOM_PAYLOAD) {
+			Identifier identifier;
+			try {
+				FriendlyByteBuf friendlyByteBuf = new FriendlyByteBuf(input.resetReaderIndex());
+				int _ = VarInt.read(friendlyByteBuf);
+				// see CustomPacketPayload$1#decode
+				identifier = friendlyByteBuf.readIdentifier();
+				System.out.println("BROKEN: " + identifier);
+			} catch (Throwable t) {
+				// we weren't able to recover the id, fallback to vanilla's exception handling
+				return;
+			}
+			throw new DecoderException("Failed to decode packet '%s' (%s)".formatted(entry.type(), identifier), e);
 		}
 	}
 }
