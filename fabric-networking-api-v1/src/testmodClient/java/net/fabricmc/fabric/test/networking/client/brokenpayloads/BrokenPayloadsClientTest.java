@@ -25,7 +25,7 @@ import net.fabricmc.fabric.test.networking.brokenpayloads.BrokenOnEncode;
 import net.fabricmc.fabric.test.networking.brokenpayloads.ServerboundSendBrokenOnDecodeCustomPacketToClient;
 import net.fabricmc.fabric.test.networking.brokenpayloads.ServerboundSendBrokenOnEncodeCustomPacketToClient;
 
-public class BrokenPacketsClientTest implements ClientModInitializer {
+public class BrokenPayloadsClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {

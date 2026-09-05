@@ -20,7 +20,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-public class BrokenPacketsTest implements ModInitializer {
+public class BrokenPayloadsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.serverboundPlay().register(ServerboundSendBrokenOnDecodeCustomPacketToClient.TYPE, ServerboundSendBrokenOnDecodeCustomPacketToClient.STREAM_CODEC);
