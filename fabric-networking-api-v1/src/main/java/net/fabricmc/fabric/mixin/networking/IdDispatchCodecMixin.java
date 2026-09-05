@@ -61,6 +61,7 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 	public void decode(B input, CallbackInfoReturnable<V> cir, @Share("copy") LocalRef<ByteBuf> copy) {
 		copy.set(input.duplicate());
 	}
+
 	@Inject(method = "decode(Lio/netty/buffer/ByteBuf;)Ljava/lang/Object;", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/Throwable;)Lio/netty/handler/codec/DecoderException;"))
 	public void decode(B input, CallbackInfoReturnable<V> cir, @Local(name = "entry") IdDispatchCodec.Entry<B, V, T> entry, @Local(name = "e") Exception e, @Share("copy") LocalRef<ByteBuf> copy) {
 		if (entry.type() == CommonPacketTypes.CLIENTBOUND_CUSTOM_PAYLOAD || entry.type() == CommonPacketTypes.SERVERBOUND_CUSTOM_PAYLOAD) {
