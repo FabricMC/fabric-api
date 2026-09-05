@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
@@ -55,13 +57,17 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 	}
 
 	// Add the custom payload id to the error message
+	@Inject(method = "decode(Lio/netty/buffer/ByteBuf;)Ljava/lang/Object;", at = @At("HEAD"))
+	public void decode(B input, CallbackInfoReturnable<V> cir, @Share("copy") LocalRef<ByteBuf> copy) {
+		copy.set(input.duplicate());
+	}
 	@Inject(method = "decode(Lio/netty/buffer/ByteBuf;)Ljava/lang/Object;", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/Throwable;)Lio/netty/handler/codec/DecoderException;"))
-	public void decode(B input, CallbackInfoReturnable<V> cir, @Local(name = "entry") IdDispatchCodec.Entry<B, V, T> entry, @Local(name = "e") Exception e) {
+	public void decode(B input, CallbackInfoReturnable<V> cir, @Local(name = "entry") IdDispatchCodec.Entry<B, V, T> entry, @Local(name = "e") Exception e, @Share("copy") LocalRef<ByteBuf> copy) {
 		if (entry.type() == CommonPacketTypes.CLIENTBOUND_CUSTOM_PAYLOAD || entry.type() == CommonPacketTypes.SERVERBOUND_CUSTOM_PAYLOAD) {
 			Identifier identifier;
 
 			try {
-				FriendlyByteBuf friendlyByteBuf = new FriendlyByteBuf(input.resetReaderIndex());
+				FriendlyByteBuf friendlyByteBuf = new FriendlyByteBuf(copy.get());
 				int _ = VarInt.read(friendlyByteBuf);
 				// see CustomPacketPayload$1#decode
 				identifier = friendlyByteBuf.readIdentifier();
