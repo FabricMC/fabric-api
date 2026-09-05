@@ -108,6 +108,8 @@ public class DisconnectScreenTest implements ClientModInitializer {
 
 			@Override
 			public BrokenOnReceive decode(ByteBuf input) {
+				input.readCharSequence(15, StandardCharsets.UTF_8);
+				input.markReaderIndex();
 				throw new RuntimeException("Error");
 			}
 		};
