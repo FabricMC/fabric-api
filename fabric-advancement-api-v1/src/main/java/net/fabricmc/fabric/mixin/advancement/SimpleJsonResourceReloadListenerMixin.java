@@ -20,6 +20,8 @@ import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
@@ -47,5 +49,17 @@ public abstract class SimpleJsonResourceReloadListenerMixin {
 		}
 
 		return id;
+	}
+
+	// If the scan fails partway through, the result map never reaches ServerAdvancementManager#apply,
+	// so the entry recorded by fillSourceMap above would otherwise never be removed from the tracker.
+	@WrapMethod(method = "scanDirectory(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/resources/FileToIdConverter;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V")
+	private static void discardSourcesOnFailure(ResourceManager manager, FileToIdConverter lister, DynamicOps<JsonElement> ops, Codec<?> codec, Map<Identifier, ?> result, Operation<Void> original) {
+		try {
+			original.call(manager, lister, ops, codec, result);
+		} catch (Throwable t) {
+			AdvancementSourceTracker.remove(result);
+			throw t;
+		}
 	}
 }
