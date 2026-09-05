@@ -59,6 +59,7 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 	public void decode(B input, CallbackInfoReturnable<V> cir, @Local(name = "entry") IdDispatchCodec.Entry<B, V, T> entry, @Local(name = "e") Exception e) {
 		if (entry.type() == CommonPacketTypes.CLIENTBOUND_CUSTOM_PAYLOAD || entry.type() == CommonPacketTypes.SERVERBOUND_CUSTOM_PAYLOAD) {
 			Identifier identifier;
+
 			try {
 				FriendlyByteBuf friendlyByteBuf = new FriendlyByteBuf(input.resetReaderIndex());
 				int _ = VarInt.read(friendlyByteBuf);
@@ -69,6 +70,7 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 				// we weren't able to recover the id, fallback to vanilla's exception handling
 				return;
 			}
+
 			throw new DecoderException("Failed to decode packet '%s' (%s)".formatted(entry.type(), identifier), e);
 		}
 	}
