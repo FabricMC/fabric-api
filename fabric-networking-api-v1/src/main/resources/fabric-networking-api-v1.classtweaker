@@ -2,6 +2,7 @@ classTweaker	v1	official
 accessible	field	net/minecraft/network/VarInt	MAX_VARINT_SIZE	I
 accessible	field	net/minecraft/network/protocol/common/ServerboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I
 accessible	field	net/minecraft/network/protocol/common/ClientboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I
+accessible	class	net/minecraft/network/codec/IdDispatchCodec$Entry
 transitive-inject-interface	net/minecraft/server/network/ServerConfigurationPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/FabricServerConfigurationPacketListenerImpl
 transitive-inject-interface	net/minecraft/server/network/ServerCommonPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
 transitive-inject-interface	net/minecraft/server/network/ServerLoginPacketListenerImpl	net/fabricmc/fabric/api/networking/v1/context/PacketContextProvider
