@@ -65,7 +65,6 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 				int _ = VarInt.read(friendlyByteBuf);
 				// see CustomPacketPayload$1#decode
 				identifier = friendlyByteBuf.readIdentifier();
-				System.out.println("BROKEN: " + identifier);
 			} catch (Throwable t) {
 				// we weren't able to recover the id, fallback to vanilla's exception handling
 				return;
