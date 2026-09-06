@@ -40,7 +40,7 @@ public interface FabricAdvancementBuilder {
 	/**
 	 * Returns the criteria of this builder.
 	 *
-	 * <p>The returned map is an immutable copy; use {@link #setCriteria(Map)} to write modified
+	 * <p>The returned map is an immutable copy; use {@link #updateCriteria(Map)} to write modified
 	 * criteria back to this builder.
 	 *
 	 * @return the criteria, keyed by their name
@@ -58,7 +58,7 @@ public interface FabricAdvancementBuilder {
 	 * @param criteria the new criteria, keyed by their name
 	 * @return this builder
 	 */
-	default Advancement.Builder setCriteria(Map<String, Criterion<?>> criteria) {
+	default Advancement.Builder updateCriteria(Map<String, Criterion<?>> criteria) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

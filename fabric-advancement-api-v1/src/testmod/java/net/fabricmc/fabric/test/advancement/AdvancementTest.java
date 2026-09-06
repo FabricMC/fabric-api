@@ -120,10 +120,10 @@ public class AdvancementTest implements ModInitializer {
 				// The criteria can also be read, modified and written back in one go
 				Map<String, Criterion<?>> criteria = new HashMap<>(builder.getCriteria());
 				criteria.put("diamond_sword", InventoryChangeTrigger.TriggerInstance.hasItems(Items.DIAMOND_SWORD));
-				builder.setCriteria(criteria);
+				builder.updateCriteria(criteria);
 
 				if (!builder.getCriteria().keySet().equals(criteria.keySet())) {
-					throw new AssertionError("setCriteria should have set the criteria to " + criteria.keySet() + ", got " + builder.getCriteria().keySet());
+					throw new AssertionError("updateCriteria should have set the criteria to " + criteria.keySet() + ", got " + builder.getCriteria().keySet());
 				}
 
 				// Require the new criteria without touching other configured requirements

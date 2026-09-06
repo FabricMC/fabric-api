@@ -40,7 +40,7 @@ public final class AdvancementGameTest {
 
 		helper.assertFalse(advancement.criteria().containsKey("pufferfish_bucket"), Component.literal("removed criterion should be gone"));
 		helper.assertTrue(advancement.criteria().containsKey("stone_pickaxe"), Component.literal("added criterion should be present"));
-		helper.assertTrue(advancement.criteria().containsKey("diamond_sword"), Component.literal("criterion added with setCriteria should be present"));
+		helper.assertTrue(advancement.criteria().containsKey("diamond_sword"), Component.literal("criterion added with updateCriteria should be present"));
 		helper.assertTrue(advancement.sendsTelemetryEvent(), Component.literal("advancement should send telemetry events"));
 		helper.succeed();
 	}

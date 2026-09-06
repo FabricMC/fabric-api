@@ -111,7 +111,7 @@ public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilde
 	}
 
 	@Override
-	public Advancement.Builder setCriteria(Map<String, Criterion<?>> criteria) {
+	public Advancement.Builder updateCriteria(Map<String, Criterion<?>> criteria) {
 		Objects.requireNonNull(criteria, "criteria cannot be null");
 
 		this.modifiedCriteria = new LinkedHashMap<>(criteria);
