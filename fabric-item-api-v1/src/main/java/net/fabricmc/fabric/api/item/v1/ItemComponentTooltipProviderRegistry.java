@@ -38,7 +38,20 @@ public interface ItemComponentTooltipProviderRegistry {
 	 */
 	static void addFirst(DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
-		ItemComponentTooltipProviderRegistryImpl.addFirst(componentType);
+		ItemComponentTooltipProviderRegistryImpl.addFirst(componentType, c -> c);
+	}
+
+	/**
+	 * Adds the specified item component type to the list of tooltip providers to be called first. The component will
+	 * render at the top of the tooltip.
+	 *
+	 * @param componentType the component type to add
+	 * @param getter custom getter providing the TooltipProvider
+	 */
+	static <T> void addFirst(DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		Preconditions.checkNotNull(componentType, "componentType");
+		Preconditions.checkNotNull(getter, "getter");
+		ItemComponentTooltipProviderRegistryImpl.addFirst(componentType, getter);
 	}
 
 	/**
@@ -49,7 +62,20 @@ public interface ItemComponentTooltipProviderRegistry {
 	 */
 	static void addLast(DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
-		ItemComponentTooltipProviderRegistryImpl.addLast(componentType);
+		ItemComponentTooltipProviderRegistryImpl.addLast(componentType, c -> c);
+	}
+
+	/**
+	 * Adds the specified item component type to the list of tooltip providers to be called last. The component will
+	 * render at the bottom of the tooltip.
+	 *
+	 * @param componentType the component type to add
+	 * @param getter custom getter providing the TooltipProvider
+	 */
+	static <T> void addLast(DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		Preconditions.checkNotNull(componentType, "componentType");
+		Preconditions.checkNotNull(getter, "getter");
+		ItemComponentTooltipProviderRegistryImpl.addLast(componentType, getter);
 	}
 
 	/**
@@ -62,7 +88,22 @@ public interface ItemComponentTooltipProviderRegistry {
 	static void addBefore(DataComponentType<?> anchor, DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");
-		ItemComponentTooltipProviderRegistryImpl.addBefore(anchor, componentType);
+		ItemComponentTooltipProviderRegistryImpl.addBefore(anchor, componentType, c -> c);
+	}
+
+	/**
+	 * Adds the specified item component type to the list of tooltip providers so that it will render
+	 * before the tooltip provider associated with the specified anchor component type.
+	 *
+	 * @param anchor the component type before which the specified component type will be rendered
+	 * @param componentType the component type to add
+	 * @param getter custom getter providing the TooltipProvider
+	 */
+	static <T> void addBefore(DataComponentType<?> anchor, DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		Preconditions.checkNotNull(anchor, "anchor");
+		Preconditions.checkNotNull(componentType, "componentType");
+		Preconditions.checkNotNull(getter, "getter");
+		ItemComponentTooltipProviderRegistryImpl.addBefore(anchor, componentType, getter);
 	}
 
 	/**
@@ -75,6 +116,20 @@ public interface ItemComponentTooltipProviderRegistry {
 	static void addAfter(DataComponentType<?> anchor, DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");
-		ItemComponentTooltipProviderRegistryImpl.addAfter(anchor, componentType);
+		ItemComponentTooltipProviderRegistryImpl.addAfter(anchor, componentType, c -> c);
+	}
+
+	/**
+	 * Adds the specified item component type to the list of tooltip providers so that it will render
+	 * after the tooltip provider associated with the specified anchor component type.
+	 *
+	 * @param anchor the component type after which the specified component type will be rendered
+	 * @param componentType the component type to add
+	 */
+	static <T> void addAfter(DataComponentType<?> anchor, DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		Preconditions.checkNotNull(anchor, "anchor");
+		Preconditions.checkNotNull(componentType, "componentType");
+		Preconditions.checkNotNull(getter, "getter");
+		ItemComponentTooltipProviderRegistryImpl.addAfter(anchor, componentType, getter);
 	}
 }

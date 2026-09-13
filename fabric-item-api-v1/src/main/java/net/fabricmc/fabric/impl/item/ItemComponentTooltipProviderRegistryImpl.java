@@ -33,29 +33,29 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TooltipProvider;
 
 public final class ItemComponentTooltipProviderRegistryImpl {
-	private static final List<DataComponentType<? extends TooltipProvider>> first = new ArrayList<>();
-	private static final List<DataComponentType<? extends TooltipProvider>> last = new ArrayList<>();
-	private static final Map<DataComponentType<?>, List<DataComponentType<? extends TooltipProvider>>> before = new IdentityHashMap<>();
-	private static final Map<DataComponentType<?>, List<DataComponentType<? extends TooltipProvider>>> after = new IdentityHashMap<>();
+	private static final List<TooltipPair<?>> first = new ArrayList<>();
+	private static final List<TooltipPair<?>> last = new ArrayList<>();
+	private static final Map<DataComponentType<?>, List<TooltipPair<?>>> before = new IdentityHashMap<>();
+	private static final Map<DataComponentType<?>, List<TooltipPair<?>>> after = new IdentityHashMap<>();
 	private static boolean hasModdedEntries = false;
 
-	public static void addFirst(DataComponentType<? extends TooltipProvider> componentType) {
-		first.add(componentType);
+	public static <T> void addFirst(DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		first.add(new TooltipPair<>(componentType, getter));
 		onModified();
 	}
 
-	public static void addLast(DataComponentType<? extends TooltipProvider> componentType) {
-		last.add(componentType);
+	public static <T> void addLast(DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		last.add(new TooltipPair<>(componentType, getter));
 		onModified();
 	}
 
-	public static void addBefore(DataComponentType<?> anchor, DataComponentType<? extends TooltipProvider> componentType) {
-		before.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
+	public static <T> void addBefore(DataComponentType<?> anchor, DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		before.computeIfAbsent(anchor, k -> new ArrayList<>()).add(new TooltipPair<>(componentType, getter));
 		onModified();
 	}
 
-	public static void addAfter(DataComponentType<?> anchor, DataComponentType<? extends TooltipProvider> componentType) {
-		after.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
+	public static <T> void addAfter(DataComponentType<?> anchor, DataComponentType<T> componentType, TooltipProvider.Getter<T> getter) {
+		after.computeIfAbsent(anchor, k -> new ArrayList<>()).add(new TooltipPair<>(componentType, getter));
 		onModified();
 	}
 
@@ -77,8 +77,8 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 	) {
 		Set<DataComponentType<?>> cycleDetector = new HashSet<>();
 
-		for (DataComponentType<? extends TooltipProvider> componentType : first) {
-			appendCustomComponentTooltip(stack, componentType, context, displayComponent, componentConsumer, flag, cycleDetector);
+		for (TooltipPair<?> tooltipPair : first) {
+			tooltipPair.appendCustomComponentTooltip(stack, context, displayComponent, componentConsumer, flag, cycleDetector);
 		}
 	}
 
@@ -91,8 +91,8 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 	) {
 		Set<DataComponentType<?>> cycleDetector = new HashSet<>();
 
-		for (DataComponentType<? extends TooltipProvider> componentType : last) {
-			appendCustomComponentTooltip(stack, componentType, context, displayComponent, componentConsumer, flag, cycleDetector);
+		for (TooltipPair<?> tooltipPair : last) {
+			tooltipPair.appendCustomComponentTooltip(stack, context, displayComponent, componentConsumer, flag, cycleDetector);
 		}
 	}
 
@@ -105,11 +105,11 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			TooltipFlag flag,
 			Set<DataComponentType<?>> cycleDetector
 	) {
-		List<DataComponentType<? extends TooltipProvider>> befores = before.get(componentType);
+		List<TooltipPair<?>> befores = before.get(componentType);
 
 		if (befores != null) {
-			for (DataComponentType<? extends TooltipProvider> beforeComponentType : befores) {
-				appendCustomComponentTooltip(stack, beforeComponentType, context, displayComponent, componentConsumer, flag, cycleDetector);
+			for (TooltipPair<?> beforeTooltipPair : befores) {
+				beforeTooltipPair.appendCustomComponentTooltip(stack, context, displayComponent, componentConsumer, flag, cycleDetector);
 			}
 		}
 	}
@@ -123,32 +123,33 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			TooltipFlag flag,
 			Set<DataComponentType<?>> cycleDetector
 	) {
-		List<DataComponentType<? extends TooltipProvider>> afters = after.get(componentType);
+		List<TooltipPair<?>> afters = after.get(componentType);
 
 		if (afters != null) {
-			for (DataComponentType<? extends TooltipProvider> afterComponentType : afters) {
-				appendCustomComponentTooltip(stack, afterComponentType, context, displayComponent, componentConsumer, flag, cycleDetector);
+			for (TooltipPair<?> afterTooltipPair : afters) {
+				afterTooltipPair.appendCustomComponentTooltip(stack, context, displayComponent, componentConsumer, flag, cycleDetector);
 			}
 		}
 	}
 
-	private static void appendCustomComponentTooltip(
-			ItemStack stack,
-			DataComponentType<? extends TooltipProvider> componentType,
-			Item.TooltipContext context,
-			TooltipDisplay displayComponent,
-			Consumer<Component> componentConsumer,
-			TooltipFlag flag,
-			Set<DataComponentType<?>> cycleDetector
-	) {
-		if (!cycleDetector.add(componentType)) {
-			return;
+	private record TooltipPair<T>(DataComponentType<T> component, TooltipProvider.Getter<T> getter) {
+		private void appendCustomComponentTooltip(
+				ItemStack stack,
+				Item.TooltipContext context,
+				TooltipDisplay displayComponent,
+				Consumer<Component> componentConsumer,
+				TooltipFlag flag,
+				Set<DataComponentType<?>> cycleDetector
+		) {
+			if (!cycleDetector.add(this.component())) {
+				return;
+			}
+
+			onBefore(stack, this.component(), context, displayComponent, componentConsumer, flag, cycleDetector);
+			stack.addToTooltip(this.component(), this.getter(), context, displayComponent, componentConsumer, flag);
+			onAfter(stack, this.component(), context, displayComponent, componentConsumer, flag, cycleDetector);
+
+			cycleDetector.remove(this.component());
 		}
-
-		onBefore(stack, componentType, context, displayComponent, componentConsumer, flag, cycleDetector);
-		stack.addToTooltip(componentType, context, displayComponent, componentConsumer, flag);
-		onAfter(stack, componentType, context, displayComponent, componentConsumer, flag, cycleDetector);
-
-		cycleDetector.remove(componentType);
 	}
 }

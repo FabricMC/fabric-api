@@ -23,6 +23,9 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.TooltipProvider;
 
@@ -65,16 +68,35 @@ public class ComponentTooltipProviderTest implements ModInitializer {
 						.build()
 		);
 
+		DataComponentType<Unit> unitComponent = Registry.register(
+				BuiltInRegistries.DATA_COMPONENT_TYPE,
+				"fabric-item-api-v1-testmod:unit_component",
+				DataComponentType.<Unit>builder().persistent(Unit.CODEC).build()
+		);
+
+		DataComponentType<Integer> colorComponent = Registry.register(
+				BuiltInRegistries.DATA_COMPONENT_TYPE,
+				"fabric-item-api-v1-testmod:color_component",
+				DataComponentType.<Integer>builder().persistent(ExtraCodecs.STRING_RGB_COLOR).build()
+		);
+
 		ItemComponentTooltipProviderRegistry.addFirst(happyComponent);
 		ItemComponentTooltipProviderRegistry.addLast(sadComponent);
 		ItemComponentTooltipProviderRegistry.addBefore(DataComponents.UNBREAKABLE, sadderComponent);
 		ItemComponentTooltipProviderRegistry.addAfter(DataComponents.LORE, saddestComponent);
+		ItemComponentTooltipProviderRegistry.addLast(unitComponent,
+				_ -> (_, c, _, _) -> c.accept(Component.literal("Unit Haver")));
+		ItemComponentTooltipProviderRegistry.addBefore(DataComponents.DAMAGE, colorComponent,
+				val -> (_, c, _, _) -> c.accept(Component.literal(String.format("#%05X", val & 0xFFFFF)).withColor(val)));
 
 		DefaultItemComponentEvents.MODIFY.register(context -> {
 			context.modify(Items.GOLDEN_SWORD, builder -> builder.set(happyComponent, TestComponent.ONE));
 			context.modify(Items.PIG_SPAWN_EGG, builder -> builder.set(sadComponent, TestComponent.TWO));
 			context.modify(Items.GOLDEN_SWORD, builder -> builder.set(sadderComponent, TestComponent.THREE));
 			context.modify(Items.PIG_SPAWN_EGG, builder -> builder.set(saddestComponent, TestComponent.FOUR));
+
+			context.modify(Items.GOLDEN_SWORD, builder -> builder.set(unitComponent, Unit.INSTANCE));
+			context.modify(Items.PIG_SPAWN_EGG, builder -> builder.set(colorComponent, TextColor.RED.getValue()));
 		});
 	}
 
