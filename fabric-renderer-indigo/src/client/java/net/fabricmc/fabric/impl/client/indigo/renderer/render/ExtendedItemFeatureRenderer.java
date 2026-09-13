@@ -19,9 +19,9 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.jspecify.annotations.Nullable;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
@@ -53,8 +53,12 @@ public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<Exten
 		}
 	};
 
+	private final ItemSheetedDecalTextureGenerator sheetedDecalTextureGenerator = new ItemSheetedDecalTextureGenerator();
+	private final Matrix4f cameraInversePose = new Matrix4f();
+	private final Matrix3f normalInversePose = new Matrix3f();
+
 	private ExtendedItemSubmit submit;
-	private PoseStack.@Nullable Pose foilDecalPose;
+	private boolean isSheetedDecalTextureGeneratorPrepared = false;
 	private OutputType outputType;
 
 	@Override
@@ -64,7 +68,8 @@ public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<Exten
 		}
 
 		submit = null;
-		foilDecalPose = null;
+		isSheetedDecalTextureGeneratorPrepared = false;
+		sheetedDecalTextureGenerator.clear();
 	}
 
 	private void prepareSubmit(ExtendedItemSubmit submit) {
@@ -73,7 +78,7 @@ public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<Exten
 		if (submit.outlineColor() != 0) {
 			outputType = OutputType.OUTLINE;
 		} else {
-			foilDecalPose = null;
+			isSheetedDecalTextureGeneratorPrepared = false;
 			outputType = OutputType.MAIN;
 		}
 
@@ -117,11 +122,15 @@ public class ExtendedItemFeatureRenderer extends RenderTypeFeatureRenderer<Exten
 		VertexConsumer vertexConsumer = getVertexBuilder(renderType);
 
 		if (foilType == ItemStackRenderState.FoilType.SPECIAL) {
-			if (foilDecalPose == null) {
-				foilDecalPose = ItemFeatureRendererAccessor.fabric_computeFoilDecalPose(submit.displayContext(), submit.pose());
+			if (!isSheetedDecalTextureGeneratorPrepared) {
+				PoseStack.Pose foilDecalPose = ItemFeatureRendererAccessor.fabric_computeFoilDecalPose(submit.displayContext(), submit.pose());
+				cameraInversePose.set(foilDecalPose.pose()).invert();
+				normalInversePose.set(foilDecalPose.normal()).invert();
+				sheetedDecalTextureGenerator.prepare(vertexConsumer, cameraInversePose, normalInversePose, ItemFeatureRenderer.SPECIAL_FOIL_TEXTURE_SCALE);
+				isSheetedDecalTextureGeneratorPrepared = true;
 			}
 
-			vertexConsumer = new SheetedDecalTextureGenerator(vertexConsumer, foilDecalPose, ItemFeatureRenderer.SPECIAL_FOIL_TEXTURE_SCALE);
+			vertexConsumer = sheetedDecalTextureGenerator;
 		}
 
 		quad.buffer(submit.overlayCoords(), submit.pose(), vertexConsumer);
