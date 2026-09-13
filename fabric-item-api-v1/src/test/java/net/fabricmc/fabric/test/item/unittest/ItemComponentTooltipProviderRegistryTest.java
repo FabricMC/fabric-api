@@ -76,7 +76,8 @@ public class ItemComponentTooltipProviderRegistryTest {
 				+3 Attack Damage
 				-2.4 Attack Speed
 				Unbreakable
-				This Item is Sadder :'(""", getTooltip(stack));
+				This Item is Sadder :'(
+				Unit Haver""", getTooltip(stack));
 	}
 
 	@Test
@@ -88,6 +89,7 @@ public class ItemComponentTooltipProviderRegistryTest {
 				Pig Spawn Egg
 				Hello
 				This Item is the Saddest :
+				#FF5555
 				This Item is Sad :(""", getTooltip(stack));
 	}
 

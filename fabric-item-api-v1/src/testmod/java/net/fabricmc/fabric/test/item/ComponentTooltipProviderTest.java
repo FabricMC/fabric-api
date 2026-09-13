@@ -87,7 +87,7 @@ public class ComponentTooltipProviderTest implements ModInitializer {
 		ItemComponentTooltipProviderRegistry.addLast(unitComponent,
 				_ -> (_, c, _, _) -> c.accept(Component.literal("Unit Haver")));
 		ItemComponentTooltipProviderRegistry.addBefore(DataComponents.DAMAGE, colorComponent,
-				val -> (_, c, _, _) -> c.accept(Component.literal(String.format("#%05X", val & 0xFFFFF)).withColor(val)));
+				val -> (_, c, _, _) -> c.accept(Component.literal(String.format("#%06X", val & 0xFFFFFF)).withColor(val)));
 
 		DefaultItemComponentEvents.MODIFY.register(context -> {
 			context.modify(Items.GOLDEN_SWORD, builder -> builder.set(happyComponent, TestComponent.ONE));
