@@ -54,8 +54,11 @@ abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory, SingleS
 
 	@Override
 	public void fabric_onFinalCommit(int slot, ItemStack oldStack, ItemStack newStack) {
-		// Call setStack again without suppressing vanilla logic,
-		// where now the record will actually getting played/stopped.
-		setStack(newStack);
+		if (newStack.isEmpty() && !oldStack.isEmpty()) {
+			inventory.set(0, oldStack);
+			removeStack();
+		} else {
+			setStack(newStack);
+		}
 	}
 }

@@ -376,4 +376,34 @@ public class VanillaStorageTests {
 		context.checkBlockState(pos, state -> state.get(JukeboxBlock.HAS_RECORD), () -> "Jukebox should have its state changed");
 		context.complete();
 	}
+
+	/**
+	 * Regression test for https://github.com/FabricMC/fabric/issues/4220.
+	 */
+	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
+	public void testJukeboxExtraction(TestContext context) {
+		BlockPos pos = new BlockPos(2, 2, 2);
+		context.setBlockState(pos, Blocks.JUKEBOX.getDefaultState());
+		Storage<ItemVariant> storage = ItemStorage.SIDED.find(context.getWorld(), context.getAbsolutePos(pos), Direction.UP);
+
+		try (Transaction tx = Transaction.openOuter()) {
+			if (storage.insert(ItemVariant.of(Items.MUSIC_DISC_11), 1, tx) != 1) {
+				context.throwPositionedException("Failed to insert a record", pos);
+			}
+
+			tx.commit();
+		}
+
+		try (Transaction tx = Transaction.openOuter()) {
+			if (storage.extract(ItemVariant.of(Items.MUSIC_DISC_11), 1, tx) != 1) {
+				context.throwPositionedException("Failed to extract a record", pos);
+			}
+
+			context.checkBlockState(pos, state -> state.get(JukeboxBlock.HAS_RECORD), () -> "Jukebox should keep its state during the transaction");
+			tx.commit();
+		}
+
+		context.checkBlockState(pos, state -> !state.get(JukeboxBlock.HAS_RECORD), () -> "Jukebox should stop playing after extraction");
+		context.complete();
+	}
 }
