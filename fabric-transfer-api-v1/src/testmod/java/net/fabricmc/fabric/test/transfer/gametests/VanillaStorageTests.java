@@ -390,6 +390,7 @@ public class VanillaStorageTests {
 			if (storage.insert(ItemVariant.of(Items.MUSIC_DISC_11), 1, tx) != 1) {
 				context.throwPositionedException("Failed to insert a record", pos);
 			}
+
 			tx.commit();
 		}
 
@@ -397,6 +398,7 @@ public class VanillaStorageTests {
 			if (storage.extract(ItemVariant.of(Items.MUSIC_DISC_11), 1, tx) != 1) {
 				context.throwPositionedException("Failed to extract a record", pos);
 			}
+
 			context.checkBlockState(pos, state -> state.get(JukeboxBlock.HAS_RECORD), () -> "Jukebox should keep its state during the transaction");
 			tx.commit();
 		}
