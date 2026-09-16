@@ -284,7 +284,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 	private static <E> CompletableFuture<?> writeToPath(Path path, CachedOutput cache, DynamicOps<JsonElement> json, Encoder<E> encoder, E value, @Nullable ResourceCondition[] conditions) {
 		Optional<JsonElement> optional = encoder.encodeStart(json, value).resultOrPartial((error) -> {
-			LOGGER.error("Couldn't serialize element {}: {}", path, error);
+			throw new IllegalStateException("Couldn't serialize element " + path + ": " + error);
 		});
 
 		if (optional.isPresent()) {

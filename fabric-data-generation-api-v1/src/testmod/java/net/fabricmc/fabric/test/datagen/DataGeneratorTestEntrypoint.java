@@ -54,6 +54,7 @@ import net.minecraft.advancements.triggers.RecipeUnlockedTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.component.DataComponentPatch;
@@ -81,9 +82,13 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.trading.TradeCost;
+import net.minecraft.world.item.trading.TradeSet;
+import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
@@ -151,6 +156,10 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(TestBiomeTagsProvider::new);
 		pack.addProvider(TestGameEventTagsProvider::new);
 		pack.addProvider(TestVanillaSoundEventTagsProvider::new);
+
+		if (System.getProperty("fabric-data-generation-api-v1.test-failure") != null) {
+			pack.addProvider(TestThrowingDynamicRegistryProvider::new);
+		}
 
 		// TODO replace with a client only entrypoint with FMJ 2
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -684,6 +693,26 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					.add(key(SoundEvents.ARMOR_EQUIP_DIAMOND))
 					.add(key(SoundEvents.ARMOR_EQUIP_NETHERITE))
 					.add(key(SoundEvents.ARMOR_EQUIP_GENERIC));
+		}
+	}
+
+	private static class TestThrowingDynamicRegistryProvider extends FabricDynamicRegistryProvider {
+		private TestThrowingDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+			super(output, registriesFuture);
+		}
+
+		@Override
+		protected void configure(HolderLookup.Provider registries, Entries entries) {
+			// TradeSet doesn't allow HolderSets with direct holder entries, causing it to fail serializing this object.
+			entries.add(ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath("fabric-data-gen-api-v1-testmod", "throw")),
+					new TradeSet(HolderSet.direct(Holder.direct(
+							VillagerTrade.builder(new TradeCost(Items.STONE, 1), new ItemStackTemplate(Items.STONE), 1, 1, 1).build()
+					)), ContextIntProviders.exactly(1), false, Optional.empty()));
+		}
+
+		@Override
+		public String getName() {
+			return "Test Throwing Dynamic Registry";
 		}
 	}
 }
