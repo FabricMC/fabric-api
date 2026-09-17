@@ -57,7 +57,7 @@ public final class ScreenEvents {
 	 * public void onInitializeClient() {
 	 * 	ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 	 * 		if (screen instanceof AbstractContainerScreen) {
-	 * 			ScreenEvents.afterRender(screen).register((screen1, graphics, mouseX, mouseY, tickProgress) -> {
+	 * 			ScreenEvents.afterExtract(screen).register((screen1, graphics, mouseX, mouseY, tickProgress) -> {
 	 * 				...
 	 * 			});
 	 * 		}
