@@ -138,12 +138,11 @@ public class AdvancementTest implements ModInitializer {
 				DisplayInfo originalDisplay = display.get();
 				builder.display(Items.DIAMOND_SWORD,
 						Component.literal("Tactical Warrior"),
-						originalDisplay.getDescription(),
-						null,
+						originalDisplay.description(),
 						AdvancementType.TASK,
-						originalDisplay.shouldShowToast(),
-						originalDisplay.shouldAnnounceChat(),
-						originalDisplay.isHidden());
+						originalDisplay.showToast(),
+						originalDisplay.announceToChat(),
+						originalDisplay.hidden());
 
 				builder.rewards(AdvancementRewards.Builder.experience(50).build());
 				builder.sendsTelemetryEvent();
@@ -156,16 +155,12 @@ public class AdvancementTest implements ModInitializer {
 		});
 
 		// Test advancement all loaded event
-		AdvancementEvents.ALL_LOADED.register((manager, advancements, registries) -> {
-			if (advancements.isEmpty()) {
-				throw new AssertionError("advancements map should not be empty");
+		AdvancementEvents.ALL_LOADED.register((manager, advancementRegistry, registries) -> {
+			if (advancementRegistry.get(TACTICAL_FISHING).isEmpty()) {
+				throw new AssertionError("tactical_fishing advancement should exist");
 			}
 
-			if (!advancements.containsKey(TACTICAL_FISHING)) {
-				throw new AssertionError("tactical_fishing advancement should exist in the loaded map");
-			}
-
-			Advancement tacticalFishing = advancements.get(TACTICAL_FISHING);
+			Advancement tacticalFishing = advancementRegistry.getValue(TACTICAL_FISHING);
 
 			if (tacticalFishing.criteria().containsKey("pufferfish_bucket")) {
 				throw new AssertionError("pufferfish_bucket criterion should not be present on the loaded advancement");
