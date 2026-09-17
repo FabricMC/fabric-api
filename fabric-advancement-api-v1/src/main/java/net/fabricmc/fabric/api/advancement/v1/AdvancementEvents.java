@@ -16,12 +16,11 @@
 
 package net.fabricmc.fabric.api.advancement.v1;
 
-import net.minecraft.core.Registry;
-
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 

@@ -21,18 +21,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Decoder;
-
-import net.fabricmc.fabric.impl.advancement.AdvancementHolderProvider;
-
-import net.fabricmc.fabric.impl.advancement.AdvancementUtil;
-
-import net.minecraft.advancements.Advancement;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -40,6 +34,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceManagerRegistryLoadTask;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+
+import net.fabricmc.fabric.impl.advancement.AdvancementHolderProvider;
+import net.fabricmc.fabric.impl.advancement.AdvancementUtil;
 
 @Mixin(ResourceManagerRegistryLoadTask.class)
 abstract class ResourceManagerRegistryLoadTaskMixin {
