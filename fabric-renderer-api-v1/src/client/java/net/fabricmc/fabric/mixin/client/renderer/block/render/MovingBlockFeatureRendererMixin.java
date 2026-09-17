@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.BlockQuadOutput;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.FeatureFrameContext;
 import net.minecraft.client.renderer.feature.MovingBlockFeatureRenderer;
 import net.minecraft.client.renderer.feature.RenderTypeFeatureRenderer;
@@ -62,7 +63,7 @@ abstract class MovingBlockFeatureRendererMixin extends RenderTypeFeatureRenderer
 		MovingBlockQuadConsumer quadConsumer = new MovingBlockQuadConsumer() {
 			@Override
 			public void accept(MutableQuadView quad) {
-				RenderType renderType = ChunkSectionLayerHelper.getMovingBlockRenderType(quad.chunkLayer());
+				RenderType renderType = ChunkSectionLayerHelper.getMovingBlockRenderType(forceTranslucent ? ChunkSectionLayer.TRANSLUCENT : quad.chunkLayer());
 				VertexConsumer buffer;
 
 				if (outlineColor != 0 && renderType.outline().isPresent()) {
@@ -81,7 +82,7 @@ abstract class MovingBlockFeatureRendererMixin extends RenderTypeFeatureRenderer
 
 	@Redirect(method = "buildGroup", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/block/ModelBlockRenderer.tesselateBlock(Lnet/minecraft/client/renderer/block/BlockQuadOutput;FFFLnet/minecraft/client/renderer/block/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/renderer/block/dispatch/BlockStateModel;J)V"))
 	private void tesselateBlockProxy(ModelBlockRenderer blockRenderer, BlockQuadOutput output, float x, float y, float z, BlockAndTintGetter level, BlockPos pos, BlockState blockState, BlockStateModel model, long seed, @Local(name = "submit") MovingBlockFeatureRenderer.Submit submit, @Share("altBlockRenderer") LocalRef<AltModelBlockRenderer> altBlockRenderer, @Share("altQuadOutput") LocalRef<QuadEmitter> altQuadOutput, @Share("quadConsumer") LocalRef<MovingBlockQuadConsumer> quadConsumer) {
-		quadConsumer.get().outlineColor(submit.outlineColor());
+		quadConsumer.get().prepare(submit.outlineColor(), submit.forceTranslucent());
 		altBlockRenderer.get().tesselateBlock(altQuadOutput.get(), x, y, z, level, pos, blockState, model, seed);
 	}
 }

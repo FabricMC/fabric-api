@@ -22,8 +22,10 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.MutableQuadView;
 
 public abstract class MovingBlockQuadConsumer implements Consumer<MutableQuadView> {
 	protected int outlineColor;
+	protected boolean forceTranslucent;
 
-	public void outlineColor(int outlineColor) {
+	public void prepare(int outlineColor, boolean forceTranslucent) {
 		this.outlineColor = outlineColor;
+		this.forceTranslucent = forceTranslucent;
 	}
 }
