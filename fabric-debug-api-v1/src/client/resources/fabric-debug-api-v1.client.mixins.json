@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "ClientDebugSubscriberMixin",
-    "DebugRendererMixin"
+    "DebugRendererMixin",
+    "DebugScreenEntriesMixin",
+    "KeyboardHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
