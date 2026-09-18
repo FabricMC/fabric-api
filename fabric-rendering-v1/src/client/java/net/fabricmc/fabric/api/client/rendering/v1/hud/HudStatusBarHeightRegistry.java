@@ -60,11 +60,12 @@ public final class HudStatusBarHeightRegistry {
 	 * actual element must also be taken into account here; so when an element currently does not actually render
 	 * {@code 0} must be returned.
 	 *
-	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#HEALTH_BAR},
-	 * {@link HudStatusBarHeightRegistryImpl#ARMOR_BAR}
+	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#INFO_BAR},
+	 * {@link HudStatusBarHeightRegistryImpl#HEALTH_BAR}, {@link HudStatusBarHeightRegistryImpl#ARMOR_BAR}
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
 	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
+	 * (Method {@link #replaceLeft(Identifier, Function)} might be more suitable for this use case.)
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
@@ -88,11 +89,13 @@ public final class HudStatusBarHeightRegistry {
 	 * actual element must also be taken into account here; so when an element currently does not actually render
 	 * {@code 0} must be returned.
 	 *
-	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#MOUNT_HEALTH},
-	 * {@link HudStatusBarHeightRegistryImpl#FOOD_BAR}, {@link HudStatusBarHeightRegistryImpl#AIR_BAR}
+	 * <p>Vanilla height providers for this side are: {@link HudStatusBarHeightRegistryImpl#INFO_BAR},
+	 * {@link HudStatusBarHeightRegistryImpl#MOUNT_HEALTH}, {@link HudStatusBarHeightRegistryImpl#FOOD_BAR},
+	 * {@link HudStatusBarHeightRegistryImpl#AIR_BAR}
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
 	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
+	 * (Method {@link #replaceRight(Identifier, Function)} might be more suitable for this use case.)
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
@@ -105,6 +108,46 @@ public final class HudStatusBarHeightRegistry {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");
 		HudStatusBarHeightRegistryImpl.addRight(id, heightProvider);
+	}
+
+	/// Replaces the height provider for a status bar on the left side above the hotbar.
+	///
+	/// This can be used to delegate to the original height provider when needed,
+	/// convenient for conditionally hiding or conditionally resizing a bar.
+	/// This can be used on vanilla bars as well.
+	///
+	/// Registration is frozen once the client has fully started.
+	///
+	/// @param id       the [Identifier]; must have a corresponding [StatusBarHeightProvider]
+	///                 registered by vanilla or any mod.
+	/// @param replacer the replacer function that takes a [StatusBarHeightProvider]
+	///                 and returns a new [StatusBarHeightProvider].
+	///
+	/// @see #addLeft(Identifier, StatusBarHeightProvider)
+	public static void replaceLeft(Identifier id, Function<StatusBarHeightProvider, StatusBarHeightProvider> replacer) {
+		Objects.requireNonNull(id, "id is null");
+		Objects.requireNonNull(replacer, "replacer is null");
+		HudStatusBarHeightRegistryImpl.replaceLeft(id, replacer);
+	}
+
+	/// Replaces the height provider for a status bar on the right side above the hotbar.
+	///
+	/// This can be used to delegate to the original height provider when needed,
+	/// convenient for conditionally hiding or conditionally resizing a bar.
+	/// This can be used on vanilla bars as well.
+	///
+	/// Registration is frozen once the client has fully started.
+	///
+	/// @param id       the [Identifier]; must have a corresponding [StatusBarHeightProvider]
+	///                 registered by vanilla or any mod.
+	/// @param replacer the replacer function that takes a [StatusBarHeightProvider]
+	///                 and returns a new [StatusBarHeightProvider].
+	///
+	/// @see #addRight(Identifier, StatusBarHeightProvider)
+	public static void replaceRight(Identifier id, Function<StatusBarHeightProvider, StatusBarHeightProvider> replacer) {
+		Objects.requireNonNull(id, "id is null");
+		Objects.requireNonNull(replacer, "replacer is null");
+		HudStatusBarHeightRegistryImpl.replaceRight(id, replacer);
 	}
 
 	/// Gets the total calculated Y offset for a given HUD element ID
