@@ -190,6 +190,7 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.add(Biomes.BIRCH_FOREST)
 				.add(Biomes.OLD_GROWTH_BIRCH_FOREST)
 				.add(Biomes.DARK_FOREST)
+				.add(Biomes.DAPPLED_FOREST)
 				.add(Biomes.PALE_GARDEN)
 				.add(Biomes.CHERRY_GROVE)
 				.add(Biomes.MEADOW)
@@ -330,6 +331,8 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.add(Biomes.WINDSWEPT_SAVANNA);
 		builder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_DARK_OAK)
 				.add(Biomes.DARK_FOREST);
+		tag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_POPLAR)
+				.add(Biomes.DAPPLED_FOREST);
 		builder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_MANGROVE)
 				.add(Biomes.MANGROVE_SWAMP);
 		builder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_CHERRY)
@@ -349,6 +352,7 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.addTag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_JUNGLE)
 				.addTag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_ACACIA)
 				.addTag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_DARK_OAK)
+				.addTag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_POPLAR)
 				.addTag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_MANGROVE)
 				.addTag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_CHERRY)
 				.addTag(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_PALE_OAK)
@@ -365,6 +369,7 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.add(Biomes.BIRCH_FOREST)
 				.add(Biomes.OLD_GROWTH_BIRCH_FOREST)
 				.add(Biomes.DARK_FOREST)
+				.add(Biomes.DAPPLED_FOREST)
 				.add(Biomes.PALE_GARDEN)
 				.add(Biomes.WINDSWEPT_FOREST);
 		builder(ConventionalBiomeTags.IS_JUNGLE_TREE)

@@ -122,6 +122,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> PRIMARY_WOOD_TYPE_JUNGLE = register("primary_wood_type/jungle");
 	public static final TagKey<Biome> PRIMARY_WOOD_TYPE_ACACIA = register("primary_wood_type/acacia");
 	public static final TagKey<Biome> PRIMARY_WOOD_TYPE_DARK_OAK = register("primary_wood_type/dark_oak");
+	public static final TagKey<Biome> PRIMARY_WOOD_TYPE_POPLAR = register("primary_wood_type/poplar");
 	public static final TagKey<Biome> PRIMARY_WOOD_TYPE_MANGROVE = register("primary_wood_type/mangrove");
 	public static final TagKey<Biome> PRIMARY_WOOD_TYPE_CHERRY = register("primary_wood_type/cherry");
 	public static final TagKey<Biome> PRIMARY_WOOD_TYPE_PALE_OAK = register("primary_wood_type/pale_oak");

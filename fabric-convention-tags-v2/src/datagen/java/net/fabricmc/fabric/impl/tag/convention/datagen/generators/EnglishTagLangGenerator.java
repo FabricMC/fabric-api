@@ -517,6 +517,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_JUNGLE, "Jungle Primary Wood Type");
 		translationBuilder.add(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_ACACIA, "Acacia Primary Wood Type");
 		translationBuilder.add(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_DARK_OAK, "Dark Oak Primary Wood Type");
+		translationBuilder.add(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_POPLAR, "Poplar Primary Wood Type");
 		translationBuilder.add(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_MANGROVE, "Mangrove Primary Wood Type");
 		translationBuilder.add(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_CHERRY, "Cherry Primary Wood Type");
 		translationBuilder.add(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_PALE_OAK, "Pale Oak Primary Wood Type");
