@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:brewing",
+  "input": {
+    "item": "minecraft:potion",
+    "potion_contents": {
+      "potions": "minecraft:water"
+    }
+  },
+  "output": {
+    "components": {
+      "minecraft:potion_contents": {
+        "potion": "fabric-data-gen-api-v1-testmod:haste"
+      }
+    },
+    "id": "minecraft:potion"
+  },
+  "reagent": {
+    "item": "fabric-data-gen-api-v1-testmod:simple_block"
+  }
+}

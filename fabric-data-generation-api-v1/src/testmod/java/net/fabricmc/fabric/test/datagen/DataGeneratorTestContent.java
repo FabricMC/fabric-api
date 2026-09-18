@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.datagen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -28,6 +29,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -36,6 +39,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -96,6 +100,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 			Identifier.fromNamespaceAndPath(MOD_ID, "cuttlefish")
 	);
 
+	public static Holder<Potion> HASTE_POTION;
+
 	public static final TagKey<SoundEvent> EQUIP_SOUNDS = TagKey.create(Registries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_equip_sounds"));
 
 	@Override
@@ -121,6 +127,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
 		DynamicRegistries.registerReloadable(TEST_DATAGEN_RELOADABLE_REGISTRY_KEY, TestDatagenObject.CODEC);
+
+		HASTE_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(MOD_ID, "haste"), new Potion("haste", new MobEffectInstance(MobEffects.HASTE, 900)));
 	}
 
 	private static BlockItemId createBlockItemId(String name) {

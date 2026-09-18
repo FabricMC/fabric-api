@@ -84,6 +84,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.trading.TradeCost;
@@ -110,6 +111,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBrewingProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootSubProvider;
@@ -233,6 +235,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			return new RecipeProvider(recipes, advancements) {
 				@Override
 				public void buildRecipes() {
+					new FabricBrewingProvider(output) {
+						@Override
+						protected void buildMixes() {
+							buildMix(
+									// Input potion.
+									Potions.WATER,
+									// Ingredient
+									SIMPLE_BLOCK.asItem(),
+									// Output potion.
+									DataGeneratorTestContent.HASTE_POTION
+							);
+
+						}
+					}.buildRecipes();
+
 					planksFromLog(SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
 
 					shapeless(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).requires(Items.ITEM_FRAME)
