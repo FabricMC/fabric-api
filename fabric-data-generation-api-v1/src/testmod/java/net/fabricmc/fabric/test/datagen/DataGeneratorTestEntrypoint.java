@@ -246,7 +246,6 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 									// Output potion.
 									DataGeneratorTestContent.HASTE_POTION
 							);
-
 						}
 					}.buildRecipes();
 
