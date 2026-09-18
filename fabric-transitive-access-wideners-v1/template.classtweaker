@@ -142,4 +142,8 @@ transitive-accessible   method  net/minecraft/data/worldgen/biome/EndBiomes base
 
 transitive-accessible   method  net/minecraft/data/worldgen/biome/NetherBiomes baseBiome ()Lnet/minecraft/world/level/biome/Biome$BiomeBuilder;
 
+# Vanilla Registry Bootstraps
+transitive-accessible field net/minecraft/data/registries/VanillaRegistries BUILDER Lnet/minecraft/core/RegistrySetBuilder;
+transitive-accessible method net/minecraft/data/registries/VanillaRegistries validateThatAllBiomeFeaturesHaveBiomeFilter (Lnet/minecraft/core/HolderLookup$Provider;)V
+
 ### Generated access wideners below
