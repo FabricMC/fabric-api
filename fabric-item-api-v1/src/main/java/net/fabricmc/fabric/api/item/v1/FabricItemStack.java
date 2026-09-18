@@ -18,11 +18,20 @@ package net.fabricmc.fabric.api.item.v1;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -31,6 +40,32 @@ import net.fabricmc.fabric.api.util.TriState;
  * This interface is automatically implemented on all item stacks via Mixin and interface injection.
  */
 public interface FabricItemStack {
+	/**
+	 * This method is like {@link net.minecraft.world.item.ItemStack#useOn(UseOnContext)} but will be called before
+	 * {@link net.minecraft.world.level.block.state.BlockState#useItemOn(ItemStack, Level, Player, InteractionHand, BlockHitResult)}.
+	 *
+	 * @param useOnContext the context for the item interaction
+	 * @return anything other than {@link net.minecraft.world.InteractionResult#PASS} to consume the item interaction and prevent further handling
+	 * @see FabricItem#useOnBeforeBlock(UseOnContext)
+	 */
+	default InteractionResult useOnBeforeBlock(final UseOnContext useOnContext) {
+		Player player = useOnContext.getPlayer();
+		BlockPos pos = useOnContext.getClickedPos();
+
+		if (player != null && !player.getAbilities().mayBuild && !((ItemStack) this).canPlaceOnBlockInAdventureMode(new BlockInWorld(useOnContext.getLevel(), pos, false))) {
+			return InteractionResult.PASS;
+		}
+
+		Item usedItem = ((ItemStack) this).getItem();
+		InteractionResult result = usedItem.useOnBeforeBlock(useOnContext);
+
+		if (player != null && result instanceof InteractionResult.Success success && success.wasItemInteraction()) {
+			player.awardStat(Stats.ITEM_USED.get(usedItem));
+		}
+
+		return result;
+	}
+
 	/**
 	 * Return a leftover item for use in recipes.
 	 *

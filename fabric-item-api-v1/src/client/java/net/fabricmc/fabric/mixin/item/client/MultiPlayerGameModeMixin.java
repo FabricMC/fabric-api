@@ -20,12 +20,19 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.BlockHitResult;
 
 @Mixin(MultiPlayerGameMode.class)
 public class MultiPlayerGameModeMixin {
@@ -63,5 +70,30 @@ public class MultiPlayerGameModeMixin {
 		}
 
 		return stackUnchanged;
+	}
+
+	/**
+	 * Allows a FabricItem to receive an item interaction before the block interaction is handled.
+	 */
+	@Inject(
+			method = "performUseItemOn",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"
+			),
+			cancellable = true
+	)
+	private static void fabricPerformUseItemOnBeforeBlockInteractionInject(
+			final LocalPlayer player, final InteractionHand hand, final BlockHitResult blockHit,
+			CallbackInfoReturnable<InteractionResult> cir
+	) {
+		ItemStack itemStack = player.getItemInHand(hand);
+
+		UseOnContext context = new UseOnContext(player, hand, blockHit);
+		InteractionResult ret = itemStack.useOnBeforeBlock(context);
+
+		if (ret != InteractionResult.PASS) {
+			cir.setReturnValue(ret);
+		}
 	}
 }
