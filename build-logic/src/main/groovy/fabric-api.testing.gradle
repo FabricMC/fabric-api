@@ -35,6 +35,16 @@ sourceSets {
 	}
 }
 
+loom.mods.register(project.name) {
+	sourceSet sourceSets.main
+	sourceSet sourceSets.client
+}
+
+loom.mods.register(project.name + "-testmod") {
+	sourceSet sourceSets.testmod
+	sourceSet sourceSets.testmodClient
+}
+
 loom {
 	runs {
 		testmodClient {

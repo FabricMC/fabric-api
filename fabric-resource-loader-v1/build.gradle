@@ -15,6 +15,7 @@ fabricApiModule {
 		':fabric-lifecycle-events-v1',
 		':fabric-api-base',
 		':fabric-gametest-api-v1',
+		':fabric-resource-conditions-api-v1',
 		':fabric-resource-loader-v1'
 	)
 }

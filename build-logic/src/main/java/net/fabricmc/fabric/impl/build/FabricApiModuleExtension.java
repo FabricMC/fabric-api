@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.impl.build;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import groovy.util.Node;
 import org.gradle.api.Project;
@@ -31,8 +33,11 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.compile.JavaCompile;
 
+import net.fabricmc.loom.api.LoomGradleExtensionAPI;
+
 public class FabricApiModuleExtension {
 	private final Project project;
+	private final Set<String> registeredModProjects = new HashSet<>();
 
 	public FabricApiModuleExtension(Project project) {
 		this.project = project;
@@ -50,6 +55,7 @@ public class FabricApiModuleExtension {
 		List<Project> dependencyProjects = dependencyProjects(dependencyNames);
 		SourceSet clientSourceSet = sourceSets().getByName("client");
 		String dependencyNamesInput = String.join(",", dependencyNames.stream().map(FabricApiBuildUtils::moduleName).toList());
+		registerDependencyMods(dependencyProjects);
 
 		for (String dependencyName : dependencyNames) {
 			project.getDependencies().add("api", project.getDependencies().project(Map.of("path", FabricApiBuildUtils.projectPath(dependencyName))));
@@ -86,6 +92,7 @@ public class FabricApiModuleExtension {
 	private void configureTestDependencies(List<String> dependencyNames) {
 		List<Project> dependencyProjects = dependencyProjects(dependencyNames);
 		SourceSet testmodClientSourceSet = sourceSets().getByName("testmodClient");
+		registerDependencyMods(dependencyProjects);
 
 		for (String dependencyName : dependencyNames) {
 			project.getDependencies().add("testmodImplementation", project.getDependencies().project(Map.of("path", FabricApiBuildUtils.projectPath(dependencyName))));
@@ -104,6 +111,25 @@ public class FabricApiModuleExtension {
 
 	private SourceSetContainer sourceSets() {
 		return project.getExtensions().getByType(JavaPluginExtension.class).getSourceSets();
+	}
+
+	private void registerDependencyMods(List<Project> dependencyProjects) {
+		LoomGradleExtensionAPI loom = project.getExtensions().getByType(LoomGradleExtensionAPI.class);
+
+		for (Project dependencyProject : dependencyProjects) {
+			if (dependencyProject == project || !registeredModProjects.add(dependencyProject.getPath())) {
+				continue;
+			}
+
+			loom.getMods().register(dependencyProject.getName(), mod -> {
+				mod.sourceSet("main", dependencyProject.getPath());
+				mod.sourceSet("client", dependencyProject.getPath());
+			});
+			loom.getMods().register(dependencyProject.getName() + "-testmod", mod -> {
+				mod.sourceSet("testmod", dependencyProject.getPath());
+				mod.sourceSet("testmodClient", dependencyProject.getPath());
+			});
+		}
 	}
 
 	private void addDependencyClientOutputs(String configurationName, SourceSet sourceSet, List<Project> dependencyProjects) {
