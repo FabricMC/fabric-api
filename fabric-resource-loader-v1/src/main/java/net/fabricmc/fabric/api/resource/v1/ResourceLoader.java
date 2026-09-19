@@ -22,6 +22,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.flag.FeatureFlagSet;
 
@@ -74,6 +75,11 @@ public interface ResourceLoader {
 	 * @see #registerReloadListener(Identifier, PreparableReloadListener) register a new reload listener
 	 */
 	void addListenerOrdering(Identifier firstListener, Identifier secondListener);
+
+	/// Registers a [repository source][RepositorySource] for this resource loader.
+	///
+	/// @param repositorySource the repository source to register
+	void registerRepositorySource(RepositorySource repositorySource);
 
 	/**
 	 * Registers a built-in resource pack.

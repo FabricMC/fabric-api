@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -46,6 +47,7 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
@@ -79,6 +81,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	private final Map<Identifier, PreparableReloadListener> addedReloaders = new LinkedHashMap<>();
 	private final Set<ReloaderOrder> reloadersOrdering = new LinkedHashSet<>();
 	private final PackType type;
+	private final Set<RepositorySource> repositorySources = new ObjectOpenHashSet<>();
 
 	ResourceLoaderImpl(PackType type) {
 		this.type = type;
@@ -126,6 +129,17 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		this.reloadersOrdering.add(new ReloaderOrder(firstListener, secondListener));
 	}
 
+	@Override
+	public void registerRepositorySource(RepositorySource repositorySource) {
+		if (this.repositorySources.contains(repositorySource)) {
+			throw new IllegalStateException(
+					"Tried to register repository source %s twice!".formatted(repositorySource)
+			);
+		}
+
+		this.repositorySources.add(repositorySource);
+	}
+
 	private Identifier getResourceReloaderIdForSorting(PreparableReloadListener reloader) {
 		if (reloader instanceof FabricResourceReloader identifiable) {
 			return identifiable.fabric$getId();
@@ -149,7 +163,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		}
 	}
 
-	public static List<PreparableReloadListener> sort(PackType type, List<PreparableReloadListener> listeners) {
+	public static List<PreparableReloadListener> sort(@Nullable PackType type, List<PreparableReloadListener> listeners) {
 		if (type == null) {
 			return listeners;
 		}
@@ -374,6 +388,12 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 				}, type, selectionInfo);
 				consumer.accept(profile);
 			}
+		}
+	}
+
+	public static void registerModProvidedPacks(PackType type, Consumer<Pack> consumer) {
+		for (RepositorySource source : get(type).repositorySources) {
+			source.loadPacks(consumer);
 		}
 	}
 

@@ -17,6 +17,9 @@
       "net.fabricmc.fabric.test.resource.loader.ResourceReloaderTestMod",
       "net.fabricmc.fabric.test.resource.loader.VanillaBuiltinPackInjectionTestMod"
     ],
+    "client": [
+      "net.fabricmc.fabric.test.resource.loader.client.RepositorySourceTestMod"
+    ],
     "server": [
       "net.fabricmc.fabric.test.resource.loader.LanguageTestMod"
     ],

@@ -77,7 +77,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 	private final boolean modBundled;
 
 	@Nullable
-	public static ModNioPackResources create(String id, ModContainer mod, String subPath, PackType type, PackActivationType activationType, boolean modBundled) {
+	public static ModNioPackResources create(String id, ModContainer mod, @Nullable String subPath, PackType type, PackActivationType activationType, boolean modBundled) {
 		List<Path> rootPaths = mod.getRootPaths();
 		List<Path> paths;
 
@@ -164,7 +164,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 						namespaces.add(s);
 					}
 				} catch (IOException e) {
-					LOGGER.warn("getNamespaces in mod " + modId + " failed!", e);
+					LOGGER.warn("getNamespaces in mod {} failed!", modId, e);
 				}
 			}
 
@@ -174,7 +174,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 		return ret;
 	}
 
-	private Path getPath(String filename) {
+	private @Nullable Path getPath(String filename) {
 		if (this.hasAbsentNs(filename)) return null;
 
 		for (Path basePath : this.basePaths) {
@@ -211,7 +211,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 		return !this.namespaces.get(this.type).contains(filename.substring(prefixLen, nsEnd));
 	}
 
-	private IoSupplier<InputStream> openFile(String filename) {
+	private @Nullable IoSupplier<InputStream> openFile(String filename) {
 		Path path = this.getPath(filename);
 
 		if (path != null && Files.isRegularFile(path)) {
@@ -269,7 +269,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 					}
 				});
 			} catch (IOException e) {
-				LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + mod.getMetadata().getId() + " failed!", e);
+				LOGGER.warn("findResources at {} in namespace {}, mod {} failed!", path, namespace, mod.getMetadata().getId(), e);
 			}
 		}
 	}
@@ -280,7 +280,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 	}
 
 	@Override
-	public <T> T getMetadataSection(MetadataSectionType<T> metaReader) throws IOException {
+	public <T> @Nullable T getMetadataSection(MetadataSectionType<T> metaReader) throws IOException {
 		try (InputStream is = Objects.requireNonNull(this.openFile("pack.mcmeta")).get()) {
 			ResourceMetadata resourceMetadata = ResourceMetadata.fromJsonStream(is);
 			Optional<T> section = resourceMetadata.getSection(metaReader);
