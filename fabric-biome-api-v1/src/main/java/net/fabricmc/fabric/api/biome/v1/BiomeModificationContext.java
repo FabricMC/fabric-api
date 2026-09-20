@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +27,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -77,13 +73,6 @@ public interface BiomeModificationContext {
 	 * Returns the modification context for the biomes mob spawn settings.
 	 */
 	MobSpawnSettingsContext getMobSpawnSettings();
-
-	/**
-	 * Returns the {@link RegistryAccess} of the level the biomes are being modified for.
-	 *
-	 * @see BiomeSelectionContext#getRegistryAccess()
-	 */
-	RegistryAccess getRegistryAccess();
 
 	interface WeatherContext {
 		/**
@@ -571,17 +560,7 @@ public interface BiomeModificationContext {
 		 * @see MobSpawnSettings#getMobsInCategory(MobCategory)
 		 */
 		@UnmodifiableView
-		default Set<MobCategory> getMobCategories() {
-			Set<MobCategory> categories = EnumSet.noneOf(MobCategory.class);
-
-			for (MobCategory category : MobCategory.values()) {
-				if (!this.getMobs(category).isEmpty()) {
-					categories.add(category);
-				}
-			}
-
-			return Collections.unmodifiableSet(categories);
-		}
+		Set<MobCategory> getMobCategories();
 
 		/**
 		 * Returns an unmodifiable view of all spawns of this biome, grouped by mob category. Categories
@@ -590,14 +569,6 @@ public interface BiomeModificationContext {
 		 * @see MobSpawnSettings#getMobsInCategory(MobCategory)
 		 */
 		@UnmodifiableView
-		default Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> getMobs() {
-			Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> mobs = new EnumMap<>(MobCategory.class);
-
-			for (MobCategory category : this.getMobCategories()) {
-				mobs.put(category, this.getMobs(category));
-			}
-
-			return Collections.unmodifiableMap(mobs);
-		}
+		Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> getMobs();
 	}
 }

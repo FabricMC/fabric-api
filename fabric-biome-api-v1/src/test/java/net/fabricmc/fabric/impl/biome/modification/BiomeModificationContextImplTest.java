@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.biome.modification;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -124,8 +123,6 @@ class BiomeModificationContextImplTest {
 
 		Biome biome = createBiome();
 		BiomeModificationContextImpl context = new BiomeModificationContextImpl(registries, biome);
-
-		assertSame(registries, context.getRegistryAccess());
 
 		BiomeModificationContext.WeatherContext weather = context.getWeather();
 		weather.setPrecipitation(true);

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -102,11 +103,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	@Override
 	public MobSpawnSettingsContext getMobSpawnSettings() {
 		return spawnSettings;
-	}
-
-	@Override
-	public RegistryAccess getRegistryAccess() {
-		return this.registries;
 	}
 
 	/**
@@ -591,6 +587,34 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobCharges() {
 			return Collections.unmodifiableMap(this.mobSpawnCosts);
+		}
+
+		@Override
+		public @UnmodifiableView Set<MobCategory> getMobCategories() {
+			Set<MobCategory> categories = EnumSet.noneOf(MobCategory.class);
+
+			for (MobCategory category : MobCategory.values()) {
+				if (!fabricSpawners.get(category).isEmpty()) {
+					categories.add(category);
+				}
+			}
+
+			return Collections.unmodifiableSet(categories);
+		}
+
+		@Override
+		public @UnmodifiableView Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> getMobs() {
+			Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> mobs = new EnumMap<>(MobCategory.class);
+
+			for (MobCategory category : MobCategory.values()) {
+				List<Weighted<MobSpawnSettings.SpawnerData>> spawns = fabricSpawners.get(category);
+
+				if (!spawns.isEmpty()) {
+					mobs.put(category, Collections.unmodifiableList(spawns));
+				}
+			}
+
+			return Collections.unmodifiableMap(mobs);
 		}
 	}
 }
