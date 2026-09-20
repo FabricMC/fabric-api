@@ -17,14 +17,21 @@
 package net.fabricmc.fabric.api.biome.v1;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.random.Weighted;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
@@ -89,6 +96,28 @@ public interface BiomeModificationContext {
 		 * @see Biome.BiomeBuilder#downfall(float)
 		 */
 		void setDownfall(float downfall);
+
+		/**
+		 * @see Biome.ClimateSettings#hasPrecipitation()
+		 * @see Biome#hasPrecipitation()
+		 */
+		boolean hasPrecipitation();
+
+		/**
+		 * @see Biome.ClimateSettings#temperature()
+		 * @see Biome#getBaseTemperature()
+		 */
+		float getTemperature();
+
+		/**
+		 * @see Biome.ClimateSettings#temperatureModifier()
+		 */
+		Biome.TemperatureModifier getTemperatureModifier();
+
+		/**
+		 * @see Biome.ClimateSettings#downfall()
+		 */
+		float getDownfall();
 	}
 
 	interface AttributesContext {
@@ -113,6 +142,45 @@ public interface BiomeModificationContext {
 		 * @see Biome.BiomeBuilder#modifyAttribute(EnvironmentAttribute, AttributeModifier, Object)
 		 */
 		<T, M> void setModifier(EnvironmentAttribute<T> key, AttributeModifier<T, M> modifier, M value);
+
+		/**
+		 * Returns the attribute entry for the given attribute, or {@code null} if it is not present.
+		 *
+		 * <p>This reflects any {@link #addAll(EnvironmentAttributeMap)}, {@link #set(EnvironmentAttribute, Object)}
+		 * or {@link #setModifier(EnvironmentAttribute, AttributeModifier, Object)} call performed earlier in
+		 * the current modification pass.
+		 *
+		 * @see EnvironmentAttributeMap#get(EnvironmentAttribute)
+		 */
+		<T> EnvironmentAttributeMap.@Nullable Entry<T, ?> get(EnvironmentAttribute<T> attribute);
+
+		/**
+		 * Returns whether the given attribute is currently present.
+		 *
+		 * @see EnvironmentAttributeMap#contains(EnvironmentAttribute)
+		 */
+		default boolean contains(EnvironmentAttribute<?> attribute) {
+			return this.get(attribute) != null;
+		}
+
+		/**
+		 * Returns the current value of the given attribute, resolved using the attribute's default value
+		 * when the attribute is not present.
+		 *
+		 * @see EnvironmentAttributeMap#applyModifier(EnvironmentAttribute, Object)
+		 * @see EnvironmentAttribute#defaultValue()
+		 */
+		default <T> T getValue(EnvironmentAttribute<T> attribute) {
+			return this.applyModifier(attribute, attribute.defaultValue());
+		}
+
+		/**
+		 * Applies the current modifier of the given attribute to {@code value}, or returns {@code value}
+		 * unchanged when the attribute is not present.
+		 *
+		 * @see EnvironmentAttributeMap#applyModifier(EnvironmentAttribute, Object)
+		 */
+		<T> T applyModifier(EnvironmentAttribute<T> attribute, T value);
 	}
 
 	interface EffectsContext {
@@ -249,6 +317,31 @@ public interface BiomeModificationContext {
 		 */
 		@Deprecated
 		void setMusicVolume(float volume);
+
+		/**
+		 * @see BiomeSpecialEffects#waterColor()
+		 */
+		int getWaterColor();
+
+		/**
+		 * @see BiomeSpecialEffects#foliageColorOverride()
+		 */
+		Optional<Integer> getFoliageColorOverride();
+
+		/**
+		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
+		 */
+		Optional<Integer> getDryFoliageColorOverride();
+
+		/**
+		 * @see BiomeSpecialEffects#grassColorOverride()
+		 */
+		Optional<Integer> getGrassColorOverride();
+
+		/**
+		 * @see BiomeSpecialEffects#grassColorModifier()
+		 */
+		BiomeSpecialEffects.GrassColorModifier getGrassColorModifier();
 	}
 
 	interface GenerationSettingsContext {
@@ -288,6 +381,45 @@ public interface BiomeModificationContext {
 		 * @return True if any carvers were removed.
 		 */
 		boolean removeCarver(ResourceKey<WorldCarver> carverKey);
+
+		/**
+		 * Returns an unmodifiable view of the placed features in the given generation step.
+		 *
+		 * <p>This reflects any {@link #addFeature(GenerationStep.Decoration, ResourceKey)} or
+		 * {@link #removeFeature(GenerationStep.Decoration, ResourceKey)} call performed earlier in the
+		 * current modification pass.
+		 */
+		@UnmodifiableView
+		List<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration step);
+
+		/**
+		 * Returns whether the given feature is present in the given generation step.
+		 */
+		boolean hasFeature(GenerationStep.Decoration step, Holder<PlacedFeature> feature);
+
+		/**
+		 * Returns whether the given feature is present in any generation step.
+		 */
+		default boolean hasFeature(Holder<PlacedFeature> feature) {
+			for (GenerationStep.Decoration step : GenerationStep.Decoration.values()) {
+				if (this.hasFeature(step, feature)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Returns an unmodifiable view of the carvers of this biome.
+		 */
+		@UnmodifiableView
+		List<Holder<WorldCarver>> getCarvers();
+
+		/**
+		 * Returns whether the given carver is present in this biome.
+		 */
+		boolean hasCarver(Holder<WorldCarver> carver);
 	}
 
 	interface MobSpawnSettingsContext {
@@ -308,10 +440,43 @@ public interface BiomeModificationContext {
 		/**
 		 * Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 *
-		 * @see MobSpawnSettings#getMobsToSpawn(MobCategory)
-		 * @see MobSpawnSettings.Builder
+		 * @deprecated Use {@link #addSpawn(EntityType, int, IntProvider)} or
+		 * {@link #addSpawn(EntityType, int, int, int)} instead, the mob category is now taken from the entity type.
+		 * @see MobSpawnSettings.Builder#addSpawn(EntityType, int, IntProvider)
 		 */
+		@Deprecated
 		void addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data, int weight);
+
+		/**
+		 * Adds a spawn entry for the given entity type to the mob category reported by the entity type.
+		 *
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
+		 *
+		 * @see MobSpawnSettings.Builder#addSpawn(EntityType, int, IntProvider)
+		 */
+		default void addSpawn(EntityType<?> entityType, int weight, IntProvider count) {
+			this.addSpawn(entityType.getCategory(), new MobSpawnSettings.SpawnerData(entityType, count), weight);
+		}
+
+		/**
+		 * Adds a spawn entry for the given entity type to the mob category reported by the entity type, using a
+		 * constant count when {@code minCount} and {@code maxCount} are equal and a uniform count otherwise.
+		 *
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
+		 *
+		 * @see MobSpawnSettings.Builder#addSpawn(EntityType, int, int, int)
+		 */
+		default void addSpawn(EntityType<?> entityType, int weight, int minCount, int maxCount) {
+			IntProvider count;
+
+			if (minCount == maxCount) {
+				count = new ConstantInt(minCount);
+			} else {
+				count = new UniformInt(minCount, maxCount);
+			}
+
+			this.addSpawn(entityType, weight, count);
+		}
 
 		/**
 		 * Removes any spawns matching the given predicate from this biome, and returns true if any matched.
@@ -363,5 +528,47 @@ public interface BiomeModificationContext {
 		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 */
 		void clearMobCharge(EntityType<?> entityType);
+
+		/**
+		 * Returns the spawn cost currently set for the given entity type, or {@code null} if none is set.
+		 *
+		 * <p>This reflects any {@link #addMobCharge(EntityType, double, double)} or
+		 * {@link #clearMobCharge(EntityType)} call performed earlier in the current modification pass.
+		 *
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
+		 *
+		 * @see MobSpawnSettings#getMobSpawnCost(EntityType)
+		 */
+		MobSpawnSettings.@Nullable MobSpawnCost getMobCharge(EntityType<?> entityType);
+
+		/**
+		 * Returns an unmodifiable view of all spawn costs currently set for this biome, keyed by entity type.
+		 *
+		 * <p>This reflects any {@link #addMobCharge(EntityType, double, double)} or
+		 * {@link #clearMobCharge(EntityType)} call performed earlier in the current modification pass.
+		 *
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
+		 *
+		 * @see MobSpawnSettings#allSpawnCosts()
+		 */
+		@UnmodifiableView
+		Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobCharges();
+
+		/**
+		 * Returns an unmodifiable view of all mob categories that currently have at least one spawn.
+		 *
+		 * @see MobSpawnSettings#getMobsInCategory(MobCategory)
+		 */
+		@UnmodifiableView
+		Set<MobCategory> getMobCategories();
+
+		/**
+		 * Returns an unmodifiable view of all spawns of this biome, grouped by mob category. Categories
+		 * without spawns are omitted.
+		 *
+		 * @see MobSpawnSettings#getMobsInCategory(MobCategory)
+		 */
+		@UnmodifiableView
+		Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> getMobs();
 	}
 }

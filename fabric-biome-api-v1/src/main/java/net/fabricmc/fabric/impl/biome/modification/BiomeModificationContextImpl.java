@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -136,6 +137,26 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		public void setDownfall(float downfall) {
 			biome.climateSettings = new Biome.ClimateSettings(biome.climateSettings.hasPrecipitation(), biome.climateSettings.temperature(), biome.climateSettings.temperatureModifier(), downfall);
 		}
+
+		@Override
+		public boolean hasPrecipitation() {
+			return biome.climateSettings.hasPrecipitation();
+		}
+
+		@Override
+		public float getTemperature() {
+			return biome.climateSettings.temperature();
+		}
+
+		@Override
+		public Biome.TemperatureModifier getTemperatureModifier() {
+			return biome.climateSettings.temperatureModifier();
+		}
+
+		@Override
+		public float getDownfall() {
+			return biome.climateSettings.downfall();
+		}
 	}
 
 	private class AttributesContextImpl implements AttributesContext {
@@ -185,6 +206,16 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(biome.getAttributes());
 			attributes.modify(key, modifier, value);
 			biome.attributes = attributes.build();
+		}
+
+		@Override
+		public <T> EnvironmentAttributeMap.@Nullable Entry<T, ?> get(EnvironmentAttribute<T> attribute) {
+			return biome.getAttributes().get(attribute);
+		}
+
+		@Override
+		public <T> T applyModifier(EnvironmentAttribute<T> attribute, T value) {
+			return biome.getAttributes().applyModifier(attribute, value);
 		}
 
 		private void updateSpawnSettings(Runnable update) {
@@ -240,6 +271,31 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public void setMusicVolume(float volume) {
 			attributes.set(EnvironmentAttributes.MUSIC_VOLUME, volume);
+		}
+
+		@Override
+		public int getWaterColor() {
+			return this.effects.waterColor();
+		}
+
+		@Override
+		public Optional<Integer> getFoliageColorOverride() {
+			return this.effects.foliageColorOverride();
+		}
+
+		@Override
+		public Optional<Integer> getDryFoliageColorOverride() {
+			return this.effects.dryFoliageColorOverride();
+		}
+
+		@Override
+		public Optional<Integer> getGrassColorOverride() {
+			return this.effects.grassColorOverride();
+		}
+
+		@Override
+		public BiomeSpecialEffects.GrassColorModifier getGrassColorModifier() {
+			return this.effects.grassColorModifier();
 		}
 	}
 
@@ -357,6 +413,35 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			}
 
 			return false;
+		}
+
+		@Override
+		public List<Holder<PlacedFeature>> getFeatures(GenerationStep.Decoration step) {
+			int index = step.ordinal();
+
+			if (index >= generationSettings.features.size()) {
+				return List.of();
+			}
+
+			return generationSettings.features.get(index).stream().toList();
+		}
+
+		@Override
+		public boolean hasFeature(GenerationStep.Decoration step, Holder<PlacedFeature> feature) {
+			int index = step.ordinal();
+
+			return index < generationSettings.features.size()
+					&& generationSettings.features.get(index).contains(feature);
+		}
+
+		@Override
+		public List<Holder<WorldCarver>> getCarvers() {
+			return generationSettings.carvers.stream().toList();
+		}
+
+		@Override
+		public boolean hasCarver(Holder<WorldCarver> carver) {
+			return generationSettings.carvers.contains(carver);
 		}
 
 		private <T> HolderSet<T> plus(@Nullable HolderSet<T> values, Holder<T> holder) {
@@ -491,6 +576,45 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public void clearMobCharge(EntityType<?> entityType) {
 			rebuildSpawnSettings |= mobSpawnCosts.remove(entityType) != null;
+		}
+
+		@Override
+		public MobSpawnSettings.@Nullable MobSpawnCost getMobCharge(EntityType<?> entityType) {
+			Objects.requireNonNull(entityType);
+			return this.mobSpawnCosts.get(entityType);
+		}
+
+		@Override
+		public Map<EntityType<?>, MobSpawnSettings.MobSpawnCost> getMobCharges() {
+			return Collections.unmodifiableMap(this.mobSpawnCosts);
+		}
+
+		@Override
+		public @UnmodifiableView Set<MobCategory> getMobCategories() {
+			Set<MobCategory> categories = EnumSet.noneOf(MobCategory.class);
+
+			for (MobCategory category : MobCategory.values()) {
+				if (!fabricSpawners.get(category).isEmpty()) {
+					categories.add(category);
+				}
+			}
+
+			return Collections.unmodifiableSet(categories);
+		}
+
+		@Override
+		public @UnmodifiableView Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> getMobs() {
+			Map<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> mobs = new EnumMap<>(MobCategory.class);
+
+			for (MobCategory category : MobCategory.values()) {
+				List<Weighted<MobSpawnSettings.SpawnerData>> spawns = fabricSpawners.get(category);
+
+				if (!spawns.isEmpty()) {
+					mobs.put(category, Collections.unmodifiableList(spawns));
+				}
+			}
+
+			return Collections.unmodifiableMap(mobs);
 		}
 	}
 }
