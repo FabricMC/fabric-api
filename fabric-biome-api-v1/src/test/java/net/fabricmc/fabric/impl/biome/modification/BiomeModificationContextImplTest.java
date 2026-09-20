@@ -75,11 +75,7 @@ class BiomeModificationContextImplTest {
 			update.apply(context.getAttributes(), cowSpawns());
 			assertEquals(List.of(EntityTypes.COW), getSpawnTypes(creatureView), update.name());
 
-			context.getMobSpawnSettings().addSpawn(
-					MobCategory.MONSTER,
-					new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, ConstantInt.of(1)),
-					1
-			);
+			context.getMobSpawnSettings().addSpawn(EntityTypes.ZOMBIE, 1, ConstantInt.of(1));
 			context.freeze();
 
 			MobSpawnSettings spawnSettings = resolveSpawnSettings(biome, baseSpawns());
@@ -100,11 +96,7 @@ class BiomeModificationContextImplTest {
 			Biome biome = createBiome();
 			BiomeModificationContextImpl context = createContext(biome);
 
-			context.getMobSpawnSettings().addSpawn(
-					MobCategory.MONSTER,
-					new MobSpawnSettings.SpawnerData(EntityTypes.ZOMBIE, ConstantInt.of(1)),
-					1
-			);
+			context.getMobSpawnSettings().addSpawn(EntityTypes.ZOMBIE, 1, ConstantInt.of(1));
 			update.apply(context.getAttributes(), cowSpawns());
 			context.freeze();
 
@@ -168,7 +160,7 @@ class BiomeModificationContextImplTest {
 		spawnSettings.clearMobCharge(EntityTypes.ZOMBIE);
 		assertNull(spawnSettings.getMobCharge(EntityTypes.ZOMBIE));
 
-		spawnSettings.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityTypes.COW, ConstantInt.of(1)), 1);
+		spawnSettings.addSpawn(EntityTypes.COW, 1, 1, 2);
 		assertTrue(spawnSettings.getMobCategories().contains(MobCategory.CREATURE));
 		assertTrue(spawnSettings.getMobs().containsKey(MobCategory.CREATURE));
 

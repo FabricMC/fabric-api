@@ -33,6 +33,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.random.Weighted;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
@@ -448,10 +451,43 @@ public interface BiomeModificationContext {
 		/**
 		 * Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
 		 *
-		 * @see MobSpawnSettings#getMobsToSpawn(MobCategory)
-		 * @see MobSpawnSettings.Builder
+		 * @deprecated Use {@link #addSpawn(EntityType, int, IntProvider)} or
+		 * {@link #addSpawn(EntityType, int, int, int)} instead, the mob category is now taken from the entity type.
+		 * @see MobSpawnSettings.Builder#addSpawn(EntityType, int, IntProvider)
 		 */
+		@Deprecated
 		void addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data, int weight);
+
+		/**
+		 * Adds a spawn entry for the given entity type to the mob category reported by the entity type.
+		 *
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
+		 *
+		 * @see MobSpawnSettings.Builder#addSpawn(EntityType, int, IntProvider)
+		 */
+		default void addSpawn(EntityType<?> entityType, int weight, IntProvider count) {
+			this.addSpawn(entityType.getCategory(), new MobSpawnSettings.SpawnerData(entityType, count), weight);
+		}
+
+		/**
+		 * Adds a spawn entry for the given entity type to the mob category reported by the entity type, using a
+		 * constant count when {@code minCount} and {@code maxCount} are equal and a uniform count otherwise.
+		 *
+		 * <p>Associated environment attribute: {@link EnvironmentAttributes#NATURAL_MOB_SPAWNS}.
+		 *
+		 * @see MobSpawnSettings.Builder#addSpawn(EntityType, int, int, int)
+		 */
+		default void addSpawn(EntityType<?> entityType, int weight, int minCount, int maxCount) {
+			IntProvider count;
+
+			if (minCount == maxCount) {
+				count = new ConstantInt(minCount);
+			} else {
+				count = new UniformInt(minCount, maxCount);
+			}
+
+			this.addSpawn(entityType, weight, count);
+		}
 
 		/**
 		 * Removes any spawns matching the given predicate from this biome, and returns true if any matched.
