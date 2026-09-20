@@ -31,6 +31,7 @@ public interface ScreenExtensions {
 		return (ScreenExtensions) screen;
 	}
 
+	@Deprecated
 	List<AbstractWidget> fabric_getButtons();
 
 	Event<ScreenEvents.Remove> fabric_getRemoveEvent();

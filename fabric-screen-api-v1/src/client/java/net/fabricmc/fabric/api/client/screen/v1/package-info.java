@@ -24,8 +24,6 @@
  * <p>For screen events related to the use of a mouse, see {@link net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents}.
  *
  * <p>For screen events related to the use of a keyboard, see {@link net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents}.
- *
- * @see net.fabricmc.fabric.api.client.screen.v1.Screens
  */
 @NullMarked
 package net.fabricmc.fabric.api.client.screen.v1;

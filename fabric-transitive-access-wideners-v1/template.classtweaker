@@ -6,6 +6,13 @@ transitive-accessible	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet
 transitive-accessible	class	net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
 transitive-accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
 
+# Adding widgets to and removing widgets from screens
+transitive-accessible	field	net/minecraft/client/gui/screens/Screen	minecraft	Lnet/minecraft/client/Minecraft;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	addRenderableWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	addRenderableOnly	(Lnet/minecraft/client/gui/components/Renderable;)Lnet/minecraft/client/gui/components/Renderable;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	addWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+transitive-accessible	method	net/minecraft/client/gui/screens/Screen	removeWidget	(Lnet/minecraft/client/gui/components/events/GuiEventListener;)V
+
 # Data contained in loot tables and pools
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	entries	Ljava/util/List;
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	conditions	Ljava/util/List;

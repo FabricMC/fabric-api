@@ -37,7 +37,6 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
  *
  * <p>The primary entrypoint into a screen is when it is being opened, this is signified by an event {@link ScreenEvents#BEFORE_INIT before} and {@link ScreenEvents#AFTER_INIT after} initialization of the screen.
  *
- * @see Screens
  * @see ScreenKeyboardEvents
  * @see ScreenMouseEvents
  */
@@ -45,10 +44,8 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 public final class ScreenEvents {
 	/**
 	 * An event that is called before {@link Screen#init(int, int) a screen is initialized} to its default state.
-	 * It should be noted some methods in {@link Screens} such as a screen's {@link Screen#getFont() font} may not be initialized yet, and as such their use is discouraged.
 	 *
-	 * <!--<p>Typically this event is used to register screen events such as listening to when child elements are added to the screen. ------ Uncomment when child add/remove event is added for elements-->
-	 * You can still use {@link ScreenEvents#AFTER_INIT} to register events such as keyboard and mouse events.
+	 * <p>You can still use {@link ScreenEvents#AFTER_INIT} to register events such as keyboard and mouse events.
 	 *
 	 * <p>The {@link ScreenExtensions} provided by the {@code info} parameter may be used to register tick, render events, keyboard, mouse, additional and removal of child elements (including buttons).
 	 * For example, to register an event on container-like screens after render, the following code could be used:
