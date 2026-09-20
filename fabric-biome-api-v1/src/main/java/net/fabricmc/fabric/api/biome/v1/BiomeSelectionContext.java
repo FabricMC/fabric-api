@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -41,6 +42,15 @@ public interface BiomeSelectionContext {
 	Biome getBiome();
 
 	Holder<Biome> getBiomeHolder();
+
+	/**
+	 * Returns the {@link RegistryAccess} of the level the biomes are being modified for.
+	 *
+	 * <p>This is the same registry access that backs the lookups used by the other methods on this
+	 * context, and can be used to look up any registry entry (biomes, placed features, carvers,
+	 * structures, tags, etc.) while selecting and modifying biomes.
+	 */
+	RegistryAccess getRegistryAccess();
 
 	/**
 	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
