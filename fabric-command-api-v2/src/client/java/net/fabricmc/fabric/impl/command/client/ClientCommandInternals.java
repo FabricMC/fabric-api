@@ -68,6 +68,10 @@ public final class ClientCommandInternals {
 		return activeDispatcher;
 	}
 
+	public static boolean isEmpty() {
+		return activeDispatcher == null || activeDispatcher.getRoot().getChildren().isEmpty();
+	}
+
 	/**
 	 * Executes a client-sided command. Callers should ensure that this is only called
 	 * on slash-prefixed messages and the slash needs to be removed before calling.
@@ -227,6 +231,11 @@ public final class ClientCommandInternals {
 	}
 
 	public static void addCommands(CommandDispatcher<FabricClientCommandSource> target, FabricClientCommandSource source) {
+		if (activeDispatcher == null) {
+			LOGGER.warn("Tried to add client commands, but the dispatcher wasn't set up!");
+			return;
+		}
+
 		Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> nodes = new HashMap<>();
 		nodes.put(activeDispatcher.getRoot(), target.getRoot());
 		copyChildren(activeDispatcher.getRoot(), target.getRoot(), source, nodes);
