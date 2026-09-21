@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.resource.reloader;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +44,10 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackFormat;
 import net.minecraft.server.packs.repository.Pack;
 
-import net.fabricmc.fabric.impl.resource.pack.FabricPack;
+import net.fabricmc.fabric.api.resource.v1.pack.FabricPack;
 import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.pack.PackHooks;
 
 public class ModPackResourcesUtilTests {
 	private static final Gson GSON = new Gson();
@@ -206,6 +209,55 @@ public class ModPackResourcesUtilTests {
 		);
 	}
 
+	@Test
+	void testHiddenFlag() {
+		Map<String, Pack> profiles = new TreeMap<>();
+		Pack pack = mockProfile(profiles, "mod_a", null);
+
+		assertTrue(pack instanceof FabricPack, "Pack should implement the public FabricPack interface");
+		assertFalse(pack.isHidden(), "Pack should not be hidden by default");
+
+		assertTrue(pack.setHidden(true), "setHidden(true) should report the pack as hidden");
+		assertTrue(pack.isHidden(), "setHidden(true) should hide the pack");
+
+		assertFalse(pack.setHidden(false), "setHidden(false) should report the pack as revealed");
+		assertFalse(pack.isHidden(), "setHidden(false) should reveal the pack");
+	}
+
+	@Test
+	void testParentGatedPackStaysHiddenWhenRevealed() {
+		Map<String, Pack> profiles = new TreeMap<>();
+		Pack pack = mockProfile(profiles, "mod_a", ModResourcePackCreator.BASE_PARENT);
+
+		assertTrue(((PackHooks) pack).fabric$isHiddenByParents(), "A parent-gated pack is hidden by parents");
+		assertTrue(pack.isHidden(), "A parent-gated pack is hidden");
+
+		assertTrue(pack.setHidden(false), "setHidden(false) should report a parent-gated pack as still hidden");
+		assertTrue(((PackHooks) pack).fabric$isHiddenByParents(), "Clearing the explicit flag does not remove the parent predicate");
+		assertTrue(pack.isHidden(), "A parent-gated pack stays hidden after setHidden(false)");
+	}
+
+	@Test
+	void testExplicitlyHiddenPackIsNotAutoEnabled() {
+		Map<String, Pack> profiles = new TreeMap<>();
+		Pack vanilla = mockProfile(profiles, "vanilla", null);
+		Pack hidden = mockProfile(profiles, "hidden_pack", null);
+		hidden.setHidden(true);
+
+		// An explicitly hidden pack must not be mistaken for a parent-gated internal pack.
+		assertFalse(((PackHooks) hidden).fabric$isHiddenByParents(), "Explicit hiding must not set a parent predicate");
+
+		var enabled = new ArrayList<>(List.of(vanilla));
+		ModPackResourcesUtil.refreshAutoEnabledPacks(enabled, profiles);
+
+		assertEquals(
+				List.of(vanilla.getId()),
+				enabled.stream().map(Pack::getId).toList(),
+				"An explicitly hidden pack without a parent predicate must not be auto-enabled"
+		);
+		assertFalse(enabled.contains(hidden), "The explicitly hidden pack must not be auto-enabled");
+	}
+
 	private Pack mockProfile(Map<String, Pack> packs, String id, @Nullable Predicate<Set<String>> parents) {
 		Pack pack = new Pack(
 				new PackLocationInfo(
@@ -222,7 +274,7 @@ public class ModPackResourcesUtilTests {
 						false)
 		);
 
-		if (parents != null) ((FabricPack) pack).fabric$setParentsPredicate(parents);
+		if (parents != null) ((PackHooks) pack).fabric$setParentsPredicate(parents);
 
 		packs.put(id, pack);
 		return pack;
