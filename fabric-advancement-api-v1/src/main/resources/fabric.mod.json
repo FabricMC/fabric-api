@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-advancement-api-v1",
+  "name": "Fabric Advancement API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-advancement-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "fabric-api-base": "*",
+    "fabric-resource-loader-v1": "*"
+  },
+  "description": "Hooks for manipulating advancements.",
+  "mixins": [
+    "fabric-advancement-api-v1.mixins.json"
+  ],
+  "accessWidener": "fabric-advancement-api-v1.classtweaker",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}
