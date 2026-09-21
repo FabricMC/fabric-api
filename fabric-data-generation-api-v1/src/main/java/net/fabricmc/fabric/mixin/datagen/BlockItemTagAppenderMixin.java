@@ -44,10 +44,7 @@ abstract class BlockItemTagAppenderMixin<T> implements FabricTagAppender<T> {
 
 	@Override
 	public BlockItemTagAppender<T> setReplace(boolean replace) {
-		if (this.original.getBuilder() instanceof TagBuilderHooks builder) {
-			builder.fabric_setReplace(replace);
-		}
-
+		this.original.getBuilder().setReplace(replace);
 		return (BlockItemTagAppender<T>) (Object) this;
 	}
 

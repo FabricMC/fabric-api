@@ -22,10 +22,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagEntry;
 
 public interface TagBuilderHooks {
-	void fabric_setReplace(boolean replace);
-
-	boolean fabric_isReplaced();
-
 	void fabric_forceAddTag(Identifier tag);
 
 	List<TagEntry> fabric_getRemove();

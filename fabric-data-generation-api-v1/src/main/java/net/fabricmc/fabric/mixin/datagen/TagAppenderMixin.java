@@ -47,7 +47,7 @@ interface TagAppenderMixin<T> extends FabricTagAppender<T> {
 
 		@Override
 		public TagAppender<T> setReplace(boolean replace) {
-			((TagBuilderHooks) this.val$builder).fabric_setReplace(replace);
+			this.val$builder.setReplace(replace);
 			return (TagAppender<T>) this;
 		}
 

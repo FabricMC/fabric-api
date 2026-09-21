@@ -64,11 +64,6 @@ public class TagsProviderMixin<T> {
 		return value;
 	}
 
-	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
-	private boolean addReplaced(boolean replaced, @Local(name = "builder") TagBuilder builder) {
-		return ((TagBuilderHooks) builder).fabric_isReplaced();
-	}
-
 	@SuppressWarnings({"unchecked", "ConstantValue"})
 	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
 	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] cfs, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput cache) {

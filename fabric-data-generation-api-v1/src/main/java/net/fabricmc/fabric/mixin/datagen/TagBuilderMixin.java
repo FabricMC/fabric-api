@@ -38,18 +38,6 @@ public abstract class TagBuilderMixin implements TagBuilderHooks {
 
 	@Unique
 	private final List<TagEntry> remove = new ArrayList<>();
-	@Unique
-	private boolean replace = false;
-
-	@Override
-	public void fabric_setReplace(boolean replace) {
-		this.replace = replace;
-	}
-
-	@Override
-	public boolean fabric_isReplaced() {
-		return this.replace;
-	}
 
 	@Override
 	public void fabric_forceAddTag(Identifier tag) {
