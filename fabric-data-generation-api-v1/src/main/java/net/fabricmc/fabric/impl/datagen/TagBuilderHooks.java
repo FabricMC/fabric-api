@@ -16,17 +16,8 @@
 
 package net.fabricmc.fabric.impl.datagen;
 
-import java.util.List;
-
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagEntry;
 
 public interface TagBuilderHooks {
 	void fabric_forceAddTag(Identifier tag);
-
-	List<TagEntry> fabric_getRemove();
-
-	void fabric_removeElement(Identifier id);
-
-	void fabric_removeTag(Identifier tag);
 }

@@ -42,7 +42,6 @@ import net.minecraft.tags.TagBuilder;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.impl.datagen.TagAliasGenerator;
-import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
 
 @Mixin(TagsProvider.class)
@@ -60,7 +59,7 @@ public class TagsProviderMixin<T> {
 
 	@ModifyArg(method = "lambda$run$5", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/DataProvider;saveStable(Lnet/minecraft/data/CachedOutput;Lnet/minecraft/core/HolderLookup$Provider;Lcom/mojang/serialization/Codec;Ljava/lang/Object;Ljava/nio/file/Path;)Ljava/util/concurrent/CompletableFuture;"), index = 3)
 	private T addRemove(T value, @Local(name = "builder") TagBuilder builder) {
-		((TagFileHooks) value).fabric_setRemove(((TagBuilderHooks) builder).fabric_getRemove());
+		((TagFileHooks) value).fabric_setRemove(builder.getRemove());
 		return value;
 	}
 

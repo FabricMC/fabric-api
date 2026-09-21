@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.datagen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,34 +27,35 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagEntry;
 
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 
 @Mixin(TagBuilder.class)
-public abstract class TagBuilderMixin implements TagBuilderHooks {
-	@Shadow
-	public abstract TagBuilder add(TagEntry entry);
-
+public abstract class TagBuilderMixin implements FabricTagBuilder, TagBuilderHooks {
 	@Unique
 	private final List<TagEntry> remove = new ArrayList<>();
+
+	@Override
+	public List<TagEntry> getRemove() {
+		return this.remove;
+	}
+
+	@Override
+	public void removeElement(Identifier id) {
+		this.remove.add(TagEntry.element(id));
+	}
+
+	@Override
+	public void removeTag(Identifier tag) {
+		this.remove.add(TagEntry.tag(tag));
+	}
 
 	@Override
 	public void fabric_forceAddTag(Identifier tag) {
 		this.add(new ForcedTagEntry(tag));
 	}
 
-	@Override
-	public List<TagEntry> fabric_getRemove() {
-		return Collections.unmodifiableList(remove);
-	}
-
-	@Override
-	public void fabric_removeElement(Identifier id) {
-		remove.add(TagEntry.element(id));
-	}
-
-	@Override
-	public void fabric_removeTag(Identifier tag) {
-		remove.add(TagEntry.tag(tag));
-	}
+	@Shadow
+	public abstract TagBuilder add(TagEntry entry);
 }
