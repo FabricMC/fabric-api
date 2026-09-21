@@ -44,9 +44,9 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
-import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 import net.fabricmc.fabric.impl.resource.pack.ModNioPackResources;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.pack.PackHooks;
 import net.fabricmc.loader.api.FabricLoader;
 
 // Track built-in resource packs if they are enabled by default.
@@ -85,7 +85,7 @@ public final class DefaultResourcePackStorage {
 
 		for (Pack profile : profiles) {
 			// Hidden packs are always enabled.
-			if (((FabricPack) profile).fabric$isHidden()) {
+			if (((PackHooks) profile).fabric$isHiddenByParents()) {
 				continue;
 			}
 

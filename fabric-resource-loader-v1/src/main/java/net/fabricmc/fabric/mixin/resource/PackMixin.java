@@ -31,8 +31,9 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
 import net.fabricmc.fabric.api.resource.v1.FabricResource;
+import net.fabricmc.fabric.api.resource.v1.pack.FabricPack;
 import net.fabricmc.fabric.impl.resource.PackSourceTracker;
-import net.fabricmc.fabric.impl.resource.pack.FabricPack;
+import net.fabricmc.fabric.impl.resource.pack.PackHooks;
 
 /**
  * Implements pack source tracking (for {@link FabricResource}).
@@ -42,11 +43,13 @@ import net.fabricmc.fabric.impl.resource.pack.FabricPack;
  * @see PackSourceTracker
  */
 @Mixin(Pack.class)
-abstract class PackMixin implements FabricPack {
+abstract class PackMixin implements FabricPack, PackHooks {
 	@Unique
 	private static final Predicate<Set<String>> DEFAULT_PARENT_PREDICATE = parents -> true;
 	@Unique
 	private Predicate<Set<String>> parentsPredicate = DEFAULT_PARENT_PREDICATE;
+	@Unique
+	private boolean hidden = false;
 
 	@Shadow
 	public abstract PackLocationInfo location();
@@ -57,7 +60,18 @@ abstract class PackMixin implements FabricPack {
 	}
 
 	@Override
-	public boolean fabric$isHidden() {
+	public boolean isHidden() {
+		return this.hidden || this.fabric$isHiddenByParents();
+	}
+
+	@Override
+	public boolean setHidden(boolean hidden) {
+		this.hidden = hidden;
+		return isHidden();
+	}
+
+	@Override
+	public boolean fabric$isHiddenByParents() {
 		return this.parentsPredicate != DEFAULT_PARENT_PREDICATE;
 	}
 
