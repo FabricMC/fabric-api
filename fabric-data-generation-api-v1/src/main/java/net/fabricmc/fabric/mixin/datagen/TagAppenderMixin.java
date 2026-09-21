@@ -47,7 +47,7 @@ interface TagAppenderMixin<T> extends FabricTagAppender<T> {
 
 		@Override
 		public TagAppender<T> setReplace(boolean replace) {
-			((TagBuilderHooks) this.val$builder).fabric_setReplace(replace);
+			this.val$builder.setReplace(replace);
 			return (TagAppender<T>) this;
 		}
 
@@ -59,7 +59,7 @@ interface TagAppenderMixin<T> extends FabricTagAppender<T> {
 
 		@Override
 		public TagAppender<T> remove(ResourceKey<T> element) {
-			((TagBuilderHooks) this.val$builder).fabric_removeElement(element.identifier());
+			this.val$builder.removeElement(element.identifier());
 			return (TagAppender<T>) this;
 		}
 
@@ -70,19 +70,19 @@ interface TagAppenderMixin<T> extends FabricTagAppender<T> {
 
 		@Override
 		public TagAppender<T> removeAll(final Collection<ResourceKey<T>> elements) {
-			elements.forEach(element -> ((TagBuilderHooks) this.val$builder).fabric_removeElement(element.identifier()));
+			elements.forEach(element -> this.val$builder.removeElement(element.identifier()));
 			return (TagAppender<T>) this;
 		}
 
 		@Override
 		public TagAppender<T> removeAll(final Stream<ResourceKey<T>> elements) {
-			elements.forEach(element -> ((TagBuilderHooks) this.val$builder).fabric_removeElement(element.identifier()));
+			elements.forEach(element -> this.val$builder.removeElement(element.identifier()));
 			return (TagAppender<T>) this;
 		}
 
 		@Override
 		public TagAppender<T> removeTag(TagKey<T> tag) {
-			((TagBuilderHooks) this.val$builder).fabric_removeTag(tag.location());
+			this.val$builder.removeTag(tag.location());
 			return (TagAppender<T>) this;
 		}
 

@@ -52,5 +52,6 @@ transitive-inject-interface	net/minecraft/data/loot/BlockLootSubProvider	net/fab
 transitive-inject-interface	net/minecraft/data/loot/EntityLootSubProvider	net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootSubProvider
 transitive-inject-interface	net/minecraft/data/recipes/RecipeOutput	net/fabricmc/fabric/api/datagen/v1/recipe/FabricRecipeOutput
 transitive-inject-interface	net/minecraft/data/tags/TagAppender	net/fabricmc/fabric/api/datagen/v1/provider/FabricTagAppender<TT;>
+transitive-inject-interface net/minecraft/tags/TagBuilder net/fabricmc/fabric/api/datagen/v1/provider/FabricTagBuilder
 
 ### Generated access wideners below
