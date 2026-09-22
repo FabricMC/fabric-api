@@ -32,6 +32,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
  * <p>Worlds from this builder default to being flat worlds with settings and game rules designed for consistency of
  * tests, see the module documentation for details. To disable this, use {@link #setUseConsistentSettings}. If you need
  * to re-enable a particular setting, you can override it using {@link #adjustSettings}.
+ *
+ * <p>Singleplayer worlds created via this builder are by default deleted at the start of the next client gametest run.
+ * Use {@link #disableAutoDeletion()} to disable this behavior for an individual world, or the
+ * {@code fabric.client.gametest.disableOldWorldDeletion} system property to disable it globally.
  */
 @ApiStatus.NonExtendable
 public interface TestWorldBuilder {
@@ -57,17 +61,30 @@ public interface TestWorldBuilder {
 	TestWorldBuilder adjustSettings(Consumer<WorldCreationUiState> settingsAdjuster);
 
 	/**
+	 * Prevents this singleplayer world from being automatically deleted on the next client gametest run.
+	 * Has no effect on dedicated server worlds.
+	 *
+	 * @return This world builder instance
+	 */
+	TestWorldBuilder disableAutoDeletion();
+
+	/**
 	 * Creates and joins a singleplayer world with the configured world settings.
+	 *
+	 * <p>Must be called on the client gametest thread.
 	 *
 	 * @return The singleplayer context of the world that was joined
 	 */
 	TestSingleplayerContext create();
 
 	/**
-	 * Creates and starts a dedicated server with the configured world settings.
+	 * Creates and starts a dedicated server with the configured world settings. Deletes the existing
+	 * dedicated server world if it exists.
 	 *
 	 * <p>The dedicated server will only run if the EULA has been accepted in {@code eula.txt}. See
 	 * {@link TestDedicatedServerContext} for details.
+	 *
+	 * <p>Must be called on the client gametest thread.
 	 *
 	 * @return The dedicated server context of the server that was created
 	 */
@@ -80,6 +97,8 @@ public interface TestWorldBuilder {
 	 *
 	 * <p>The dedicated server will only run if the EULA has been accepted in {@code eula.txt}. See
 	 * {@link TestDedicatedServerContext} for details.
+	 *
+	 * <p>Must be called on the client gametest thread.
 	 *
 	 * @param serverProperties The custom server properties to be written to the {@code server.properties} file.
 	 * @return The dedicated server context of the server that was created.

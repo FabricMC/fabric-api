@@ -33,6 +33,9 @@ public final class TestSystemProperties {
 	// Disable the joining of async stack traces in ThreadingImpl.
 	public static final boolean DISABLE_JOIN_ASYNC_STACK_TRACES = System.getProperty("fabric.client.gametest.disableJoinAsyncStackTraces") != null;
 
+	// Disable the deletion of singleplayer worlds from the previous run
+	public static final boolean DISABLE_OLD_WORLD_DELETION = System.getProperty("fabric.client.gametest.disableOldWorldDeletion") != null;
+
 	// A comma separated list of mod ids to run tests for. When empty, all tests are run.
 	public static final String MOD_ID_FILTER_PROPERTY = "fabric.client.gametest.modid";
 }

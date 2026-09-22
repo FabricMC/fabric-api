@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.impl.client.gametest.context.ClientGameTestContextImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
+import net.fabricmc.fabric.impl.client.gametest.world.TestWorldBuilderImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
@@ -40,6 +41,10 @@ public class FabricClientGameTestRunner {
 	public static void start() {
 		// make the game think the window is focused
 		((WindowHooks) (Object) Minecraft.getInstance().getWindow()).fabric_focus();
+
+		if (!TestSystemProperties.DISABLE_OLD_WORLD_DELETION) {
+			TestWorldBuilderImpl.deleteOldSingleplayerWorlds();
+		}
 
 		List<EntrypointContainer<FabricClientGameTest>> gameTests = getTestToRun();
 

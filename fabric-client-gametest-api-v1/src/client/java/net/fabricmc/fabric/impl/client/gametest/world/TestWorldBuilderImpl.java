@@ -17,12 +17,15 @@
 package net.fabricmc.fabric.impl.client.gametest.world;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Properties;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import com.google.common.base.Preconditions;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.file.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +37,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.util.FileUtil;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
@@ -42,6 +46,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder;
+import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 import net.fabricmc.fabric.impl.client.gametest.context.TestDedicatedServerContextImpl;
 import net.fabricmc.fabric.impl.client.gametest.context.TestSingleplayerContextImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
@@ -50,8 +55,10 @@ import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
 
 public class TestWorldBuilderImpl implements TestWorldBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
+	private static final String DELETE_ME_FILE_NAME = ".fabric-client-gametest-delete-me";
 	private final ClientGameTestContext context;
 	private boolean useConsistentSettings = true;
+	private boolean disableAutoDeletion = TestSystemProperties.DISABLE_OLD_WORLD_DELETION;
 
 	private Consumer<WorldCreationUiState> settingsAdjustor = creator -> {
 	};
@@ -75,11 +82,26 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 	}
 
 	@Override
+	public TestWorldBuilder disableAutoDeletion() {
+		this.disableAutoDeletion = true;
+		return this;
+	}
+
+	@Override
 	public TestSingleplayerContext create() {
 		ThreadingImpl.checkOnGametestThread("create");
 		Preconditions.checkState(!ThreadingImpl.isServerRunning, "Cannot create a world when a server is running");
 
-		Path saveDirectory = navigateCreateWorldScreen();
+		Path saveDirectory = navigateCreateWorldScreen(saveDir -> {
+			if (!disableAutoDeletion) {
+				try {
+					FileUtil.createDirectoriesSafe(saveDir);
+					Files.createFile(saveDir.resolve(DELETE_ME_FILE_NAME));
+				} catch (IOException e) {
+					LOGGER.error("Failed to create delete me file", e);
+				}
+			}
+		});
 		ClientGameTestImpl.waitForWorldLoad(context);
 
 		MinecraftServer server = context.computeOnClient(Minecraft::getSingleplayerServer);
@@ -94,13 +116,14 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		DedicatedServerImplUtil.saveLevelDataTo = Path.of(serverProperties.getProperty("level-name", "world"));
 
 		try {
-			FileUtils.deleteDirectory(DedicatedServerImplUtil.saveLevelDataTo.toFile());
+			PathUtils.deleteDirectory(DedicatedServerImplUtil.saveLevelDataTo);
 		} catch (IOException e) {
 			LOGGER.error("Failed to clean up old dedicated server world", e);
 		}
 
 		try {
-			navigateCreateWorldScreen();
+			navigateCreateWorldScreen(_ -> {
+			});
 		} finally {
 			DedicatedServerImplUtil.saveLevelDataTo = null;
 		}
@@ -109,13 +132,13 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		return new TestDedicatedServerContextImpl(context, server);
 	}
 
-	private Path navigateCreateWorldScreen() {
+	private Path navigateCreateWorldScreen(Consumer<Path> preCreateAction) {
 		Path saveDirectory = context.computeOnClient(client -> {
 			Screen oldScreen = client.gui.screen();
 			CreateWorldScreen.openFresh(client, () -> client.gui.setScreen(oldScreen));
 
 			if (!(client.gui.screen() instanceof CreateWorldScreen createWorldScreen)) {
-				throw new AssertionError("CreateWorldScreen.show did not set the current screen");
+				throw new AssertionError("CreateWorldScreen.openFresh did not set the current screen");
 			}
 
 			WorldCreationUiState creator = createWorldScreen.getUiState();
@@ -129,8 +152,8 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 			return client.getLevelSource().getBaseDir().resolve(creator.getTargetFolder());
 		});
 
+		preCreateAction.accept(saveDirectory);
 		context.clickScreenButton("selectWorld.create");
-
 		return saveDirectory;
 	}
 
@@ -145,5 +168,25 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		creator.getGameRules().set(GameRules.SPAWN_MOBS, false, null);
 		creator.getGameRules().set(GameRules.RESPAWN_RADIUS, 0, null);
 		// When adding to the list of default world creation options, remember to update the list in module documentation
+	}
+
+	public static void deleteOldSingleplayerWorlds() {
+		Path savesDir = Minecraft.getInstance().getLevelSource().getBaseDir();
+
+		try (Stream<Path> worldDirs = Files.list(savesDir)) {
+			worldDirs.forEach(worldDir -> {
+				if (Files.exists(worldDir.resolve(DELETE_ME_FILE_NAME))) {
+					try {
+						PathUtils.deleteDirectory(worldDir);
+					} catch (IOException e) {
+						LOGGER.error("Failed to delete old singleplayer world", e);
+					}
+				}
+			});
+		} catch (NoSuchFileException _) {
+			// Saves folder doesn't exist yet
+		} catch (IOException e) {
+			LOGGER.error("Failed to list old singleplayer worlds", e);
+		}
 	}
 }
