@@ -20,8 +20,6 @@ import java.util.Optional;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
-
-
 /**
  * General purpose Fabric extensions to the {@link RenderPipeline} class.
  *

@@ -21,8 +21,6 @@ import java.util.function.Supplier;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
-
-
 public final class FabricRenderPipelineInternals {
 	private static final ThreadLocal<Optional<Boolean>> SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI = ThreadLocal.withInitial(Optional::empty);
 

@@ -49,7 +49,7 @@ public abstract class CustomPayloadStreamCodecMixin<B extends FriendlyByteBuf> i
 			"writeCap(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload$Type;Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V",
 			"decode(Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;"
 	}, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload$1;findCodec(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/network/codec/StreamCodec;"))
-	private StreamCodec<? super B,? extends CustomPacketPayload> wrapGetCodec(@Coerce StreamCodec<B, CustomPacketPayload> instance, Identifier identifier, Operation<StreamCodec<B, CustomPacketPayload>> original, B buf) {
+	private StreamCodec<? super B, ? extends CustomPacketPayload> wrapGetCodec(@Coerce StreamCodec<B, CustomPacketPayload> instance, Identifier identifier, Operation<StreamCodec<B, CustomPacketPayload>> original, B buf) {
 		if (customPayloadTypeProvider != null) {
 			CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload> payloadType = customPayloadTypeProvider.get(buf, identifier);
 
