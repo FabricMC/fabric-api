@@ -102,8 +102,8 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 		PlacementUtils.register(context, PLACED_COMMON_ORE, features.getOrThrow(COMMON_ORE),
 				CountPlacement.of(25),
 				HeightRangePlacement.uniform(
-					VerticalAnchor.BOTTOM,
-					VerticalAnchor.TOP
+					VerticalAnchor.bottom(),
+					VerticalAnchor.top()
 				)
 		);
 	}
