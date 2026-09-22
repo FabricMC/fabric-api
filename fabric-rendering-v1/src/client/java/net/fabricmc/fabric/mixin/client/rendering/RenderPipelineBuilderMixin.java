@@ -23,15 +23,15 @@ import java.util.Optional;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.GpuFormat;
 import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
 import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.DepthStencilState;
 import com.mojang.renderpearl.api.pipeline.PolygonMode;
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import com.mojang.renderpearl.api.pipeline.ShaderType;
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -74,24 +74,25 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			method = "buildSnippet",
 			at = @At(
 					value = "NEW",
-					target = "Lcom/mojang/renderpearl/api/pipeline/RenderPipeline$Snippet;"
+					target = "(Ljava/util/Map;Ljava/util/Optional;Ljava/util/Optional;[Lcom/mojang/renderpearl/api/pipeline/ColorTargetState;ILjava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;[Lcom/mojang/blaze3d/vertex/VertexFormat;Ljava/util/Optional;I)Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;"
 			)
 	)
 	private RenderPipeline.Snippet copyUsePipelineDrawModeForGuiToSnippet(
 			Map<ShaderType, Identifier> shaders,
 			Optional<ShaderDefines> shaderDefines,
 			Optional<List<BindGroupLayout>> bindGroupLayouts,
-			@Nullable ColorTargetState[] colorTargetStates,
+			ColorTargetState[] colorTargetStates,
 			int activeColorTargetStateCount,
 			Optional<DepthStencilState> depthStencilState,
+			Optional<GpuFormat> depthStencilFormat,
 			Optional<PolygonMode> polygonMode,
 			Optional<Boolean> cull,
-			@Nullable VertexFormat[] vertexFormatPerBuffer,
+			VertexFormat[] vertexFormatPerBuffer,
 			Optional<PrimitiveTopology> vertexFormatMode,
 			int pushConstantSize,
 			Operation<RenderPipeline.Snippet> original
 	) {
-		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(shaders, shaderDefines, bindGroupLayouts, colorTargetStates, activeColorTargetStateCount, depthStencilState, polygonMode, cull, vertexFormatPerBuffer, vertexFormatMode, pushConstantSize), usePipelineDrawModeForGui);
+		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(shaders, shaderDefines, bindGroupLayouts, colorTargetStates, activeColorTargetStateCount, depthStencilState, depthStencilFormat, polygonMode, cull, vertexFormatPerBuffer, vertexFormatMode, pushConstantSize), usePipelineDrawModeForGui);
 	}
 
 	@ModifyReturnValue(

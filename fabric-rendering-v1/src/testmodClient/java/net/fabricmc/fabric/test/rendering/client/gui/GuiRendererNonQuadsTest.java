@@ -18,12 +18,12 @@ package net.fabricmc.fabric.test.rendering.client.gui;
 
 import java.util.function.BiFunction;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.renderpearl.api.pipeline.BlendFunction;
 import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
 

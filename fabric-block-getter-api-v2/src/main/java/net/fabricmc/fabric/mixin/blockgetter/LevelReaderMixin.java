@@ -28,7 +28,7 @@ import net.minecraft.world.level.biome.Biome;
 @Mixin(LevelReader.class)
 public interface LevelReaderMixin extends BlockAndLightGetter {
 	@Shadow
-	Holder<Biome> getBiome(BlockPos pos);
+	Holder<Biome> getBiome(int x, int y, int z);
 
 	@Override
 	default boolean hasBiomes() {
@@ -37,6 +37,6 @@ public interface LevelReaderMixin extends BlockAndLightGetter {
 
 	@Override
 	default Holder<Biome> getBiomeFabric(BlockPos pos) {
-		return getBiome(pos);
+		return getBiome(pos.getX(), pos.getY(), pos.getZ());
 	}
 }

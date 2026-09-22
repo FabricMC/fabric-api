@@ -67,7 +67,7 @@ abstract class GenerateTransitiveAccessWidenersClassTweakerTask extends Abstract
 		def node = readClass("net/minecraft/client/renderer/RenderPipelines")
 
 		for (def field : node.fields) {
-			if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/renderpearl/api/pipeline/RenderPipeline\$Snippet;") {
+			if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/blaze3d/pipeline/RenderPipeline\$Snippet;") {
 				lines.add("transitive-accessible field ${node.name} ${field.name} ${field.desc}")
 			}
 		}

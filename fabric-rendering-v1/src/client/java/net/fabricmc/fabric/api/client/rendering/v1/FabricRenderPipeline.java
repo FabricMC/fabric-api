@@ -18,7 +18,9 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Optional;
 
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+
+
 
 /**
  * General purpose Fabric extensions to the {@link RenderPipeline} class.
