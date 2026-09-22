@@ -38,7 +38,10 @@ dependencies {
 	}
 }
 
-loom.nestJars(tasks.named("jar"), configurations.nestedJars)
+loom {
+	nestJars(tasks.named("jar"), configurations.nestedJars)
+	uncompressNestedJars = true
+}
 
 tasks.register("checkNoDuplicateFiles", Zip) {
 	inputs.files configurations.nestedJars
