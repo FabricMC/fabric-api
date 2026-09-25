@@ -70,6 +70,17 @@ class ArrayBackedEvent<T> extends Event<T> {
 		}
 	}
 
+	void unregister(Identifier phaseIdentifier, T listener) {
+		Objects.requireNonNull(phaseIdentifier, "Tried to unregister a listener for a null phase!");
+		Objects.requireNonNull(listener, "Tried to unregister a null listener!");
+
+		synchronized (lock) {
+			if (getOrCreatePhase(phaseIdentifier, false).removeListener(listener)) {
+				rebuildInvoker(handlers.length - 1);
+			}
+		}
+	}
+
 	private EventPhaseData<T> getOrCreatePhase(Identifier id, boolean sortIfCreate) {
 		EventPhaseData<T> phase = phases.get(id);
 
