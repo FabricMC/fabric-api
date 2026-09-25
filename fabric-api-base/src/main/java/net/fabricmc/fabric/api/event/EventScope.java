@@ -26,6 +26,7 @@ import net.fabricmc.fabric.impl.base.event.ScopedEventListenerImpl;
  * A closeable wrapper around a terminal {@link Event} listener.
  * When an instance of {@link EventScope} is closed,
  * the {@linkplain Event event's listener} will be unregistered.
+ *
  * <p>
  * This class implements {@link AutoCloseable}
  * and is intended to be used in a try-with-resources block.
