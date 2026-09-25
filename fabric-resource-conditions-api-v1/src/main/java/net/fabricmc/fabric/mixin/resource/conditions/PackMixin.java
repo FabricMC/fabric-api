@@ -28,17 +28,21 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.server.packs.PackMetadataResources;
 import net.minecraft.server.packs.repository.Pack;
 
-import net.fabricmc.fabric.impl.resource.conditions.OverlayConditionsMetadata;
+import net.fabricmc.fabric.api.resource.conditions.v1.FabricOverlayMetadataSection;
 
 @Mixin(Pack.class)
 public class PackMixin {
 	@ModifyVariable(method = "readPackMetadata", at = @At("STORE"), name = "overlaySet")
 	private static List<String> applyOverlayConditions(List<String> overlays, @Local(name = "pack") PackMetadataResources pack) throws IOException {
 		List<String> appliedOverlays = new ArrayList<>(overlays);
-		OverlayConditionsMetadata overlayMetadata = pack.getMetadataSection(OverlayConditionsMetadata.SERIALIZER);
+		FabricOverlayMetadataSection overlayMetadata = pack.getMetadataSection(FabricOverlayMetadataSection.TYPE);
 
 		if (overlayMetadata != null) {
-			appliedOverlays.addAll(overlayMetadata.appliedOverlays());
+			for (FabricOverlayMetadataSection.Entry entry : overlayMetadata.overlays()) {
+				if (entry.condition().test(null)) {
+					appliedOverlays.add(entry.overlay());
+				}
+			}
 		}
 
 		return List.copyOf(appliedOverlays);
