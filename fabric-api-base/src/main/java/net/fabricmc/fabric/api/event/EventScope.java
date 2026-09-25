@@ -23,7 +23,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.impl.base.event.ScopedEventListenerImpl;
 
 /**
- * A closeable wrapper around a terminal {@link Event}.
+ * A closeable wrapper around a terminal {@link Event} listener.
  * When an instance of {@link EventScope} is closed,
  * the {@linkplain Event event} will be unregistered.
  * <p>
