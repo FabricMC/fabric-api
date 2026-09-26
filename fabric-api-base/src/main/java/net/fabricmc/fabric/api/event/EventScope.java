@@ -25,11 +25,20 @@ import net.fabricmc.fabric.impl.base.event.ScopedEventListenerImpl;
 /**
  * A closeable wrapper around a terminal {@link Event} listener.
  * When an instance of {@link EventScope} is closed,
- * the {@linkplain Event event's listener} will be unregistered.
+ * the
+ * {@linkplain Event#register(Identifier, Object) event's listener}
+ * will be unregistered.
  *
  * <p>
  * This class implements {@link AutoCloseable}
  * and is intended to be used in a try-with-resources block.
+ *
+ * @apiNote {@linkplain #create(Event, Identifier, Object) Creating}
+ * and {@linkplain #close() closing} scoped event listeners are
+ * performance intensive actions and should be done
+ * sparingly and infrequently when used outside game tests.
+ * Scope creation and destruction have {@code O(n)} time complexity
+ * where {@code n} is the number of subscribed event listeners.
  */
 @ApiStatus.NonExtendable
 public interface EventScope extends AutoCloseable {
