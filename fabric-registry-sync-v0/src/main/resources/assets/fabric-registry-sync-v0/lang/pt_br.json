@@ -1,7 +1,23 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Entrada de registro recebida desconhecida pelo cliente.",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "%d entradas de registro recebidas desconhecidas pelo cliente.",
+  "fabric-registry-sync-v0.missing-entries.description": "Alguns conteúdos usados nesse mundo não estão mais presentes. Isso significa que assim que o jogo tentar carregá-los, eles serão perdidos e você não poderá restaurá-los sem carregar uma versão mais antiga do mundo. Isso normalmente acontece se você removeu ou mudou as versões dos mods usados nesse mundo. Você pode checar os detalhes abaixo para ver o que está faltando!",
+  "fabric-registry-sync-v0.missing-entries.details.missing_for_namespace": "%s entradas do '%s' namespace:",
+  "fabric-registry-sync-v0.missing-entries.details.missing_for_namespace.entry": " - %s",
+  "fabric-registry-sync-v0.missing-entries.details.missing_for_namespace.too_many": "E mais %d...",
+  "fabric-registry-sync-v0.missing-entries.details.missing_registry": "Registros de conteúdo ausente.",
+  "fabric-registry-sync-v0.missing-entries.details.missing_registry.entry": " - %s",
+  "fabric-registry-sync-v0.missing-entries.details.missing_registry_entry": "Entradas ausentes em '%s' registros (%s total).",
+  "fabric-registry-sync-v0.missing-entries.details.title": "Detalhes sobre conteúdo ausente",
+  "fabric-registry-sync-v0.missing-entries.invalid_file": "Falha ao ler o arquivo contendo os dados do registro de conteúdo! Isso significa que ele pode estar corrompido ou bloqueado por outro processo. Devido a isso, não é possível determinar a compatibilidade do mundo com a instância atual do Minecraft!",
+  "fabric-registry-sync-v0.missing-entries.title": "Conteúdo ausente detectado!",
+  "fabric-registry-sync-v0.missing-entries.unsupported_version": "O arquivo contendo os dados do registro de conteúdo foi escrito usando uma versão incompatível. Devido a isso, é possível que alguma informação seja perdida ou ignorada!",
+  "fabric-registry-sync-v0.unknown-registry.footer": "E mais %d...",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Isso é normalmente causado por um conjunto de mods incompatível entre o cliente e o servidor.",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2": " Consulte os logs do cliente para obter mais detalhes.\nOs seguintes registros não estão presentes no cliente:\n\n",
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Foram recebidos %d registros desconhecidos para este cliente.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Foi recebido um registro desconhecido para este cliente.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "E mais %d...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "A causa é uma incompatibilidade entre os mods do cliente e servidor.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Veja os logs do cliente para saber mais.\nOs seguintes namespaces de entrada do registro podem estar relacionados:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "E mais %d..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "%d entradas de registro recebidas desconhecidas pelo cliente.",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Entrada de registro recebida desconhecida pelo cliente."
 }
