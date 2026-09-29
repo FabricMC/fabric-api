@@ -23,30 +23,17 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-import java.util.Collections;
-import java.util.Set;
 import java.util.function.Function;
-
-import com.google.common.collect.MapMaker;
 
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
 public final class EventFactoryImpl {
-	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS
-			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
-
 	private EventFactoryImpl() { }
 
-	public static void invalidate() {
-		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
-	}
-
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
-		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, invokerFactory);
-		ARRAY_BACKED_EVENTS.add(event);
-		return event;
+		return new ArrayBackedEvent<>(type, invokerFactory);
 	}
 
 	public static void ensureContainsDefault(Identifier[] defaultPhases) {

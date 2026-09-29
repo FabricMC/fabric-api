@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.entity.event.v1;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -72,22 +71,6 @@ public final class ServerPlayerEvents {
 		}
 	});
 
-	/**
-	 * An event that is called when a player takes fatal damage.
-	 *
-	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayer}.
-	 */
-	@Deprecated
-	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
-		for (AllowDeath callback : callbacks) {
-			if (!callback.allowDeath(player, damageSource, damageAmount)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
-
 	@FunctionalInterface
 	public interface CopyFrom {
 		/**
@@ -132,34 +115,6 @@ public final class ServerPlayerEvents {
 		void onLeave(ServerPlayer player);
 	}
 
-	/**
-	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayer}.
-	 */
-	@Deprecated
-	@FunctionalInterface
-	public interface AllowDeath {
-		/**
-		 * Called when a player takes fatal damage (before totems of undying can take effect).
-		 *
-		 * @param player the player
-		 * @param damageSource the fatal damage damageSource
-		 * @param damageAmount the damageAmount of damage that has killed the player
-		 * @return true if the death should go ahead, false otherwise.
-		 */
-		boolean allowDeath(ServerPlayer player, DamageSource damageSource, float damageAmount);
-	}
-
 	private ServerPlayerEvents() {
-	}
-
-	static {
-		// Forward general living entity event to (older) player-specific event.
-		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, damageSource, damageAmount) -> {
-			if (entity instanceof ServerPlayer player) {
-				return ServerPlayerEvents.ALLOW_DEATH.invoker().allowDeath(player, damageSource, damageAmount);
-			}
-
-			return true;
-		});
 	}
 }

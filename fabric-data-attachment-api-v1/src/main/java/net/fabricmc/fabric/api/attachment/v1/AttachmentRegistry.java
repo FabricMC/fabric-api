@@ -98,18 +98,6 @@ public final class AttachmentRegistry {
 	}
 
 	/**
-	 * Creates a {@link Builder}, that gives finer control over the attachment's properties. Calling this method
-	 * directly is not recommended, as it requires explicit type parameters. {@link #create} should be used instead.
-	 *
-	 * @param <A> the type of the attached data
-	 * @return a {@link Builder} instance
-	 */
-	@Deprecated
-	public static <A> Builder<A> builder() {
-		return AttachmentRegistryImpl.builder();
-	}
-
-	/**
 	 * A builder for creating {@link AttachmentType}s with finer control over their properties.
 	 *
 	 * @param <A> the type of the attached data

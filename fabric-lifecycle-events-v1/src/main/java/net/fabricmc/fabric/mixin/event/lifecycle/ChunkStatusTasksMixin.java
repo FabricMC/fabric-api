@@ -47,10 +47,6 @@ abstract class ChunkStatusTasksMixin {
 		// We fire the event at TAIL since the chunk is guaranteed to be a LevelChunk then.
 		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(worldGenContext.level(), levelChunk, generated);
 
-		if (generated) {
-			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(worldGenContext.level(), levelChunk);
-		}
-
 		// Handles the case where the chunk becomes accessible from being completely unloaded, only fires if chunkHolder has been set to at least that full chunk status
 		FullChunkStatusEventTracker chunkStatusTracker = (FullChunkStatusEventTracker) chunkHolder;
 

@@ -40,19 +40,6 @@ public final class VillagerInteractionRegistries {
 	}
 
 	/**
-	 * Registers an item to be collectable (picked up from item entity)
-	 * by any profession villagers.
-	 *
-	 * @param item the item to register
-	 * @deprecated Add items to the {@linkplain net.minecraft.tags.ItemTags#VILLAGER_PICKS_UP {@code minecraft:villager_picks_up} item tag} instead.
-	 */
-	@Deprecated
-	public static void registerGatherableItem(ItemLike item) {
-		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
-		VillagerInteractionRegistriesImpl.getGatherableItemRegistry().add(item.asItem());
-	}
-
-	/**
 	 * Registers an item to be used in a composter by farmer villagers.
 	 * @param item the item to register
 	 */

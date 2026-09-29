@@ -88,33 +88,6 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 		return from(new DefaultedMappedRegistry<T>(defaultId.toString(), key, Lifecycle.stable(), false));
 	}
 
-	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link MappedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
-	 *
-	 * @param registryId The registry {@link Identifier} used as the registry id
-	 * @param <T> The type stored in the Registry
-	 * @return An instance of FabricRegistryBuilder
-	 * @deprecated Please migrate to {@link FabricRegistryBuilder#create(ResourceKey)}
-	 */
-	@Deprecated
-	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> create(Class<T> type, Identifier registryId) {
-		return create(ResourceKey.createRegistryKey(registryId));
-	}
-
-	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
-	 *
-	 * @param registryId The registry {@link Identifier} used as the registry id
-	 * @param defaultId The default registry id
-	 * @param <T> The type stored in the Registry
-	 * @return An instance of FabricRegistryBuilder
-	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createDefaulted(ResourceKey, Identifier)}
-	 */
-	@Deprecated
-	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
-		return createDefaulted(ResourceKey.createRegistryKey(registryId), defaultId);
-	}
-
 	private final R registry;
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
 

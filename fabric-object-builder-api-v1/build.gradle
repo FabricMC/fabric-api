@@ -5,6 +5,7 @@ plugins {
 fabricApiModule {
 	moduleDependencies(
 		'fabric-api-base',
+		'fabric-transitive-access-wideners-v1',
 		'fabric-registry-sync-v0',
 		'fabric-resource-loader-v1'
 	)

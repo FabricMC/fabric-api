@@ -29,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Prediction;
 import net.minecraft.util.Unit;
@@ -131,8 +132,12 @@ public final class EntityEventTests implements ModInitializer {
 			return true;
 		});
 
-		// Test that the legacy event still works
-		ServerPlayerEvents.ALLOW_DEATH.register((player, source, amount) -> {
+		// Prevent player death when holding an apple in the main hand
+		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
+			if (!(entity instanceof ServerPlayer player)) {
+				return true;
+			}
+
 			if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == Items.APPLE) {
 				player.setHealth(3.0f);
 				return false;

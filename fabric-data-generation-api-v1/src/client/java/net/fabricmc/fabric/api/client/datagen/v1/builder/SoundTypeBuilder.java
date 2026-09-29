@@ -25,7 +25,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Util;
 
@@ -60,15 +59,6 @@ public interface SoundTypeBuilder {
 	 */
 	static SoundTypeBuilder of() {
 		return new SoundTypeBuilderImpl();
-	}
-
-	/**
-	 * @deprecated Source is not a field interpreted by vanilla in the sounds file,
-	 * calling this method will have no effect.
-	 */
-	@Deprecated(forRemoval = true)
-	default SoundTypeBuilder source(SoundSource source) {
-		return this;
 	}
 
 	/**
