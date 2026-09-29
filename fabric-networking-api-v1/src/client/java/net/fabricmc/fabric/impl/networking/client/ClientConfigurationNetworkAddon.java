@@ -121,7 +121,6 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 
 	public void handleComplete() {
 		ClientConfigurationConnectionEvents.COMPLETE.invoker().onConfigurationComplete(this.listener, this.client);
-		ClientConfigurationConnectionEvents.READY.invoker().onConfigurationReady(this.listener, this.client);
 		ClientNetworkingImpl.setClientConfigurationAddon(null);
 	}
 

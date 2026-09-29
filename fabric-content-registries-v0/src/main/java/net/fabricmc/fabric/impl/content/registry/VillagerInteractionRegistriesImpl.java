@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.world.item.Item;
 
@@ -26,13 +24,7 @@ import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
 import net.fabricmc.fabric.mixin.content.registry.WorkAtComposterAccessor;
 
 public final class VillagerInteractionRegistriesImpl {
-	private static final Set<Item> GATHERABLE_ITEMS = new HashSet<>();
-
 	private VillagerInteractionRegistriesImpl() {
-	}
-
-	public static Set<Item> getGatherableItemRegistry() {
-		return GATHERABLE_ITEMS;
 	}
 
 	public static List<Item> getCompostableRegistry() {

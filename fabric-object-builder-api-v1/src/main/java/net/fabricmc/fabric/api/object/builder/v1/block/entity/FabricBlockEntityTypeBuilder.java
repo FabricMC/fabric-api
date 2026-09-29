@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.mojang.datafixers.types.Type;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -96,14 +95,6 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 
 	public BlockEntityType<T> build() {
 		return new ExtendedBlockEntityType<>(factory::create, new HashSet<>(blocks), canPotentiallyExecuteCommands);
-	}
-
-	/**
-	 * @deprecated Use {@link #build()} instead.
-	 */
-	@Deprecated
-	public BlockEntityType<T> build(@Nullable Type<?> type) {
-		return build();
 	}
 
 	@FunctionalInterface

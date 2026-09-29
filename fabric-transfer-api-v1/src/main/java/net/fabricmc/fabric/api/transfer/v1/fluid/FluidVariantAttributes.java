@@ -211,10 +211,4 @@ public final class FluidVariantAttributes {
 			}
 		});
 	}
-
-	/**
-	 * @deprecated Use {@link FluidVariantAttributes#getColoredName(FluidVariant)} instead.
-	 */
-	@Deprecated(forRemoval = true)
-	public static void enableColoredVanillaFluidNames() { }
 }

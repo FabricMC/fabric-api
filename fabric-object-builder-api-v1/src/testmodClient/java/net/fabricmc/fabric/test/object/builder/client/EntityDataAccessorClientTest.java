@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.test.object.builder.client;
 
+import net.minecraft.client.renderer.entity.EntityRenderers;
+
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.test.object.builder.EntityDataAccessorTest;
 
 public class EntityDataAccessorClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		EntityRendererRegistry.register(EntityDataAccessorTest.TRACK_STACK_ENTITY, TrackStackEntityRenderer::new);
+		EntityRenderers.register(EntityDataAccessorTest.TRACK_STACK_ENTITY, TrackStackEntityRenderer::new);
 	}
 }

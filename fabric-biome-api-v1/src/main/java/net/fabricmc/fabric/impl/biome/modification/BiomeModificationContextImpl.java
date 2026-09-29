@@ -40,7 +40,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FeatureTags;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.attribute.EnvironmentAttribute;
@@ -198,23 +197,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		private final BiomeSpecialEffects effects = biome.getSpecialEffects();
 
 		@Override
-		public void setFogColor(int color) {
-			attributes.set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(color));
-		}
-
-		@Override
 		public void setWaterColor(int color) {
 			effects.waterColor = color;
-		}
-
-		@Override
-		public void setWaterFogColor(int color) {
-			attributes.set(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(color));
-		}
-
-		@Override
-		public void setSkyColor(int color) {
-			attributes.set(EnvironmentAttributes.SKY_COLOR, ARGB.vector3fFromRGB24(color));
 		}
 
 		@Override
@@ -235,11 +219,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public void setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier colorModifier) {
 			effects.grassColorModifier = Objects.requireNonNull(colorModifier);
-		}
-
-		@Override
-		public void setMusicVolume(float volume) {
-			attributes.set(EnvironmentAttributes.MUSIC_VOLUME, volume);
 		}
 	}
 

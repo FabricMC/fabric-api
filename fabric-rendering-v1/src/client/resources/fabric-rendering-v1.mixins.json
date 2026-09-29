@@ -6,7 +6,6 @@
     "AtlasManagerAccessor",
     "AtlasManagerMixin",
     "BlockColorsMixin",
-    "BlockEntityRenderersMixin",
     "BuiltInBlockModelsMixin",
     "CapeLayerMixin",
     "ClientLevelMixin",

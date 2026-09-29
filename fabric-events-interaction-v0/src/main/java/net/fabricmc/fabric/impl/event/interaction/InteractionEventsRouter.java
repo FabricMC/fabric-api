@@ -19,33 +19,13 @@ package net.fabricmc.fabric.impl.event.interaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.block.BlockAttackInteractionAware;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 
 public class InteractionEventsRouter implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) -> {
-			BlockState state = level.getBlockState(pos);
-
-			if (state instanceof BlockAttackInteractionAware) {
-				if (((BlockAttackInteractionAware) state).onAttackInteraction(state, level, pos, player, hand, direction)) {
-					return InteractionResult.FAIL;
-				}
-			} else if (state.getBlock() instanceof BlockAttackInteractionAware) {
-				if (((BlockAttackInteractionAware) state.getBlock()).onAttackInteraction(state, level, pos, player, hand, direction)) {
-					return InteractionResult.FAIL;
-				}
-			}
-
-			return InteractionResult.PASS;
-		});
-
 		/*
 		* This code is for telling the client that the block wasn't actually broken.
 		* This covers a 3x3 area due to how vanilla redstone handles updates, as it considers

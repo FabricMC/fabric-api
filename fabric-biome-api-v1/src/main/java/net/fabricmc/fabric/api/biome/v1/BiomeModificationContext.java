@@ -117,34 +117,10 @@ public interface BiomeModificationContext {
 
 	interface EffectsContext {
 		/**
-		 * @deprecated Set the fog color using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#FOG_COLOR
-		 */
-		@Deprecated
-		void setFogColor(int color);
-
-		/**
 		 * @see BiomeSpecialEffects#waterColor()
 		 * @see BiomeSpecialEffects.Builder#waterColor(int)
 		 */
 		void setWaterColor(int color);
-
-		/**
-		 * @deprecated Set the water fog color using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#WATER_FOG_COLOR
-		 */
-		@Deprecated
-		void setWaterFogColor(int color);
-
-		/**
-		 * @deprecated Set the sky color using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#SKY_COLOR
-		 */
-		@Deprecated
-		void setSkyColor(int color);
 
 		/**
 		 * @see BiomeSpecialEffects#foliageColorOverride()
@@ -241,14 +217,6 @@ public interface BiomeModificationContext {
 		 * @see BiomeSpecialEffects.Builder#grassColorModifier(BiomeSpecialEffects.GrassColorModifier)
 		 */
 		void setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier colorModifier);
-
-		/**
-		 * @deprecated Set the music volume using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#MUSIC_VOLUME
-		 */
-		@Deprecated
-		void setMusicVolume(float volume);
 	}
 
 	interface GenerationSettingsContext {

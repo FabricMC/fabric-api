@@ -108,32 +108,4 @@ public final class EventFactory {
 
 		return event;
 	}
-
-	/**
-	 * @deprecated This is not to be used in events anymore.
-	 */
-	@Deprecated
-	public static String getHandlerName(Object handler) {
-		return handler.getClass().getName();
-	}
-
-	/**
-	 * @deprecated Always returns {@code false}, do not use. This is not to be used in events anymore, standard Java profilers will do fine.
-	 */
-	@Deprecated
-	public static boolean isProfilingEnabled() {
-		return false;
-	}
-
-	/**
-	 * Invalidate and re-create all existing "invoker" instances across
-	 * events created by this EventFactory. Use this if, for instance,
-	 * the profilingEnabled field changes.
-	 *
-	 * @deprecated Do not use, will be removed in a future release.
-	 */
-	@Deprecated(forRemoval = true)
-	public static void invalidate() {
-		EventFactoryImpl.invalidate();
-	}
 }

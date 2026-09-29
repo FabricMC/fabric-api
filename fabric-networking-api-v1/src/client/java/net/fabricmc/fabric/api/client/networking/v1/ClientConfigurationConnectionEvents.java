@@ -95,25 +95,4 @@ public final class ClientConfigurationConnectionEvents {
 	public interface Disconnect {
 		void onConfigurationDisconnect(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
-
-	// Deprecated:
-
-	/**
-	 * @deprecated replaced by {@link #COMPLETE}
-	 */
-	@Deprecated
-	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (listener, client) -> {
-		for (ClientConfigurationConnectionEvents.Ready callback : callbacks) {
-			callback.onConfigurationReady(listener, client);
-		}
-	});
-
-	/**
-	 * @deprecated replaced by {@link ClientConfigurationConnectionEvents.Complete}
-	 */
-	@Deprecated
-	@FunctionalInterface
-	public interface Ready {
-		void onConfigurationReady(ClientConfigurationPacketListenerImpl listener, Minecraft client);
-	}
 }

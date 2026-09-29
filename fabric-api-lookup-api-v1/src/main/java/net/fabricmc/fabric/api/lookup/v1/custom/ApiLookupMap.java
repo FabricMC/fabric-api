@@ -129,29 +129,4 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 		 */
 		L get(Identifier identifier, Class<?> apiClass, Class<?> contextClass);
 	}
-
-	/**
-	 * Create a new instance.
-	 *
-	 * @param lookupFactory The factory that is used to create API lookup instances.
-	 * @deprecated {@link LookupConstructor} should be used instead of lookup factory, to expose the identifier.
-	 */
-	@Deprecated(forRemoval = true)
-	static <L> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
-		return create((id, apiClass, contextClass) -> lookupFactory.get(apiClass, contextClass));
-	}
-
-	/**
-	 * @deprecated {@link LookupConstructor} should be used instead as it also passes the identifier.
-	 */
-	@Deprecated(forRemoval = true)
-	interface LookupFactory<L> {
-		/**
-		 * Create a new API lookup implementation.
-		 *
-		 * @param apiClass The API class passed to {@link #getLookup}.
-		 * @param contextClass The context class passed to {@link #getLookup}.
-		 */
-		L get(Class<?> apiClass, Class<?> contextClass);
-	}
 }

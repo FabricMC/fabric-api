@@ -13,7 +13,6 @@
     "GiveGiftToHeroMixin",
     "HoneycombItemMixin",
     "PathfindingContextMixin",
-    "VillagerMixin",
     "WalkNodeEvaluatorMixin",
     "WeatheringCopperMixin",
     "WorkAtComposterAccessor",
