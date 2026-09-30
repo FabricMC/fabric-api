@@ -53,7 +53,7 @@ public class EventScopeTest {
 	void testEventScope() {
 		Foo foo = () -> false;
 
-		try (EventScope _ = EventScope.create(EVENT, foo)) {
+		try (EventScope _ = EVENT.registerScoped(foo)) {
 			assertFalse(EVENT.invoker().doSomething(), "Event Foo in EventScope was not registered.");
 		}
 

@@ -19,11 +19,18 @@ package net.fabricmc.fabric.impl.base.event;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.EventScope;
 
 // Because this needs to be public, we call it this so it doesn't auto complete.
 public final class ScopedEventListenerImpl<T> implements EventScope {
-	private final ArrayBackedEvent<T> event;
+	public static final ScopedEventListenerImpl<?> EMPTY_FOR_COMPATIBILITY_REASONS_SORRY =
+			new ScopedEventListenerImpl<>(
+					EventFactory.createArrayBacked(Object.class, new Object(), _ -> new Object()),
+					Event.DEFAULT_PHASE,
+					new Object()
+			);
+	private final Event<T> event;
 	private final Identifier phase;
 	private final T listener;
 
@@ -32,19 +39,15 @@ public final class ScopedEventListenerImpl<T> implements EventScope {
 			Identifier phase,
 			T listener
 	) {
-		// This is done for compatibility with subclasses of Event even though mods
-		//  absolutely should not be doing that.
-		if (!(event instanceof ArrayBackedEvent<T> arrayBackedEvent)) {
-			throw new IllegalArgumentException("Only ArrayBackedEvent instances may be scoped. Do not create classes extending Event!");
-		}
-
-		this.event = arrayBackedEvent;
+		this.event = event;
 		this.phase = phase;
 		this.listener = listener;
 	}
 
 	@Override
 	public void close() {
-		this.event.unregister(this.phase, this.listener);
+		if (this != EMPTY_FOR_COMPATIBILITY_REASONS_SORRY) {
+			this.event.unregister(this.phase, this.listener);
+		}
 	}
 }

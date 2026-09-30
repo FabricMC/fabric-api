@@ -20,6 +20,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.impl.base.event.ScopedEventListenerImpl;
+
 /**
  * Base class for Fabric's event implementations.
  *
@@ -75,6 +77,71 @@ public abstract class Event<T> {
 	}
 
 	/**
+	 * Register a temporary listener to the event.
+	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
+	 *
+	 * <p>Scoped event listeners are a kind of temporary event listener that is invoked when
+	 * the event is invoked until the associated {@link EventScope} is closed.
+	 * Because {@link EventScope} extends {@link AutoCloseable}, it is intended to be used in
+	 * a try-with-resources so it only lives as long as the try-with-resources block's scope.
+	 *
+	 * <h2>Listener Ordering</h2>
+	 * <p>For performance reasons, ordering of scoped listeners and permanent listeners
+	 * within the same phase is not guaranteed and <b>should not be relied on</b>!
+	 * {@linkplain #addPhaseOrdering(Identifier, Identifier) Create} or use earlier phases
+	 * if you are using scoped listeners on a short-circuiting event or otherwise care about
+	 * listener invocation order.
+	 *
+	 * @param listener The desired listener.
+	 * @return A closeable wrapper around a temporary event listener.
+	 * @apiNote {@linkplain #registerScoped(Identifier, Object) Creating}
+	 * and {@linkplain EventScope#close() closing} scoped event listeners are
+	 * performance intensive actions and should be done
+	 * sparingly and infrequently when used outside game tests.
+	 * Scope creation and destruction have {@code O(n)} time complexity
+	 * where {@code n} is the number of subscribed event listeners.
+	 * @see EventScope
+	 * @see #registerScoped(Identifier, Object)
+	 */
+	public EventScope registerScoped(T listener) {
+		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
+		return ScopedEventListenerImpl.EMPTY_FOR_COMPATIBILITY_REASONS_SORRY;
+	}
+
+	/**
+	 * Register a temporary listener to the event for the specified phase.
+	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
+	 *
+	 * <p>Scoped event listeners are a kind of temporary event listener that is invoked when
+	 * the event is invoked until the associated {@link EventScope} is closed.
+	 * Because {@link EventScope} extends {@link AutoCloseable}, it is intended to be used in
+	 * a try-with-resources so it only lives as long as the try-with-resources block's scope.
+	 *
+	 * <h2>Listener Ordering</h2>
+	 * <p>For performance reasons, ordering of scoped listeners and permanent listeners
+	 * within the same phase is not guaranteed and <b>should not be relied on</b>!
+	 * {@linkplain #addPhaseOrdering(Identifier, Identifier) Create} or use earlier phases
+	 * if you are using scoped listeners on a short-circuiting event or otherwise care about
+	 * listener invocation order.
+	 *
+	 * @param phase Identifier of the phase this listener should be registered for. It will be created if it didn't exist yet.
+	 * @param listener The desired listener.
+	 * @return A closeable wrapper around a temporary event listener.
+	 * @apiNote {@linkplain #registerScoped(Object) Creating}
+	 * and {@linkplain EventScope#close() closing} scoped event listeners are
+	 * performance intensive actions and should be done
+	 * sparingly and infrequently when used outside game tests.
+	 * Scope creation and destruction have {@code O(n)} time complexity
+	 * where {@code n} is the number of subscribed event listeners.
+	 * @see EventScope
+	 * @see #registerScoped(Object)
+	 */
+	public EventScope registerScoped(Identifier phase, T listener) {
+		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
+		return ScopedEventListenerImpl.EMPTY_FOR_COMPATIBILITY_REASONS_SORRY;
+	}
+
+	/**
 	 * Request that listeners registered for one phase be executed before listeners registered for another phase.
 	 * Relying on the default phases supplied to {@link EventFactory#createWithPhases} should be preferred over manually
 	 * registering phase ordering dependencies.
@@ -86,6 +153,16 @@ public abstract class Event<T> {
 	 * @param secondPhase The identifier of the phase that should run after the other. It will be created if it didn't exist yet.
 	 */
 	public void addPhaseOrdering(Identifier firstPhase, Identifier secondPhase) {
+		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
+	}
+
+	/**
+	 * Do not call this method if you are not {@code fabric-api-base}.
+	 * This method will break API or ABI at any time.
+	 */
+	// The only reason why this method isn't protected/private is so we can avoid any terrible hacks.
+	@ApiStatus.OverrideOnly
+	public void unregister(Identifier phase, T listener) {
 		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
 	}
 }
