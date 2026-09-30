@@ -94,8 +94,7 @@ public abstract class Event<T> {
 	///
 	/// @param listener The desired listener.
 	/// @return A closeable wrapper around a temporary event listener.
-	/// @apiNote [Creating][#registerScoped(Identifier, Object)]
-	/// and [closing][EventScope#close()] scoped event listeners are
+	/// @apiNote Creating and closing scoped event listeners are
 	/// performance intensive actions and should be done
 	/// sparingly and infrequently when used outside game tests.
 	/// Scope creation and destruction have `O(n)` time complexity
@@ -126,8 +125,7 @@ public abstract class Event<T> {
 	/// @param phase Identifier of the phase this listener should be registered for. It will be created if it didn't exist yet.
 	/// @param listener The desired listener.
 	/// @return A closeable wrapper around a temporary event listener.
-	/// @apiNote [Creating][#registerScoped(Object)]
-	/// and [closing][EventScope#close()] scoped event listeners are
+	/// @apiNote Creating and closing scoped event listeners are
 	/// performance intensive actions and should be done
 	/// sparingly and infrequently when used outside game tests.
 	/// Scope creation and destruction have `O(n)` time complexity
