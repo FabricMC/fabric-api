@@ -121,23 +121,22 @@ public interface ResourceLoader {
 	}
 
 	/**
-	 * Registers a built-in resource pack located at a custom path inside the mod JAR.
+	 * Registers a built-in pack located at a custom path.
 	 *
-	 * <p>Unlike {@link #registerBuiltinPack(Identifier, ModContainer, PackActivationType)}, which expects the resource pack
-	 * to be located under the {@code "resourcepacks/<id path>"} directory, this overload reads the resource pack from
-	 * {@code path} inside every root of the mod. The path is relative to the mod root and must use {@code /} as separator.
+	 * <p>This overload reads the pack from {@code path} inside every root of the mod.
+	 * The path is relative to the mod root and must use {@code /} as separator.
 	 *
-	 * <p>The resource pack is registered for both {@link PackType#CLIENT_RESOURCES} and {@link PackType#SERVER_DATA}; a side
+	 * <p>The pack is registered for both {@link PackType#CLIENT_RESOURCES} and {@link PackType#SERVER_DATA}; a side
 	 * is only added if it contains any namespaces. This makes it possible to bundle a data pack under a custom path such as
 	 * {@code "data/<namespace>/datapacks/<path>"}, which will only produce a server data pack.
 	 *
 	 * <p>The display name defaults to {@code "<namespace>/<id path>"}.
 	 *
-	 * @param id             the identifier of the resource pack
-	 * @param path           the path of the resource pack inside the mod JAR, for example {@code "data/examplemod/datapacks/my_pack"}
+	 * @param id             the identifier of the pack
+	 * @param path           the path of the pack, for example {@code "data/examplemod/datapacks/my_pack"}
 	 * @param container      the mod container
-	 * @param activationType the activation type of the resource pack
-	 * @return {@code true} if successfully registered the resource pack, or {@code false} otherwise
+	 * @param activationType the activation type of the pack
+	 * @return {@code true} if successfully registered the pack, or {@code false} otherwise
 	 * @see #registerBuiltinPack(Identifier, String, ModContainer, Component, PackActivationType)
 	 */
 	static boolean registerBuiltinPack(Identifier id, String path, ModContainer container, PackActivationType activationType) {
@@ -145,23 +144,21 @@ public interface ResourceLoader {
 	}
 
 	/**
-	 * Registers a built-in resource pack located at a custom path inside the mod JAR.
+	 * Registers a built-in pack located at a custom path.
 	 *
-	 * <p>Unlike {@link #registerBuiltinPack(Identifier, ModContainer, Component, PackActivationType)}, which expects the
-	 * resource pack to be located under the {@code "resourcepacks/<id path>"} directory, this overload reads the resource
-	 * pack from {@code path} inside every root of the mod. The path is relative to the mod root and must use {@code /} as
-	 * separator.
+	 * <p>This overload reads the pack from {@code path} inside every root of the mod.
+	 * The path is relative to the mod root and must use {@code /} as separator.
 	 *
-	 * <p>The resource pack is registered for both {@link PackType#CLIENT_RESOURCES} and {@link PackType#SERVER_DATA}; a side
+	 * <p>The pack is registered for both {@link PackType#CLIENT_RESOURCES} and {@link PackType#SERVER_DATA}; a side
 	 * is only added if it contains any namespaces. This makes it possible to bundle a data pack under a custom path such as
 	 * {@code "data/<namespace>/datapacks/<path>"}, which will only produce a server data pack.
 	 *
-	 * @param id             the identifier of the resource pack
-	 * @param path           the path of the resource pack inside the mod JAR, for example {@code "data/examplemod/datapacks/my_pack"}
+	 * @param id             the identifier of the pack
+	 * @param path           the path of the pack, for example {@code "data/examplemod/datapacks/my_pack"}
 	 * @param container      the mod container
-	 * @param displayName    the display name of the resource pack, should include mod name for clarity
-	 * @param activationType the activation type of the resource pack
-	 * @return {@code true} if successfully registered the resource pack, or {@code false} otherwise
+	 * @param displayName    the display name of the pack, should include mod name for clarity
+	 * @param activationType the activation type of the pack
+	 * @return {@code true} if successfully registered the pack, or {@code false} otherwise
 	 * @see #registerBuiltinPack(Identifier, String, ModContainer, PackActivationType)
 	 * @see #registerBuiltinPack(Identifier, ModContainer, Component, PackActivationType)
 	 */
