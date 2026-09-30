@@ -76,66 +76,64 @@ public abstract class Event<T> {
 		register(listener);
 	}
 
-	/**
-	 * Register a temporary listener to the event.
-	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
-	 *
-	 * <p>Scoped event listeners are a kind of temporary event listener that is invoked when
-	 * the event is invoked until the associated {@link EventScope} is closed.
-	 * Because {@link EventScope} extends {@link AutoCloseable}, it is intended to be used in
-	 * a try-with-resources so it only lives as long as the try-with-resources block's scope.
-	 *
-	 * <h2>Listener Ordering</h2>
-	 * <p>For performance reasons, ordering of scoped listeners and permanent listeners
-	 * within the same phase is not guaranteed and <b>should not be relied on</b>!
-	 * {@linkplain #addPhaseOrdering(Identifier, Identifier) Create} or use earlier phases
-	 * if you are using scoped listeners on a short-circuiting event or otherwise care about
-	 * listener invocation order.
-	 *
-	 * @param listener The desired listener.
-	 * @return A closeable wrapper around a temporary event listener.
-	 * @apiNote {@linkplain #registerScoped(Identifier, Object) Creating}
-	 * and {@linkplain EventScope#close() closing} scoped event listeners are
-	 * performance intensive actions and should be done
-	 * sparingly and infrequently when used outside game tests.
-	 * Scope creation and destruction have {@code O(n)} time complexity
-	 * where {@code n} is the number of subscribed event listeners.
-	 * @see EventScope
-	 * @see #registerScoped(Identifier, Object)
-	 */
+	/// Register a temporary listener to the event.
+	/// Have a look at [EventFactory#createWithPhases] for an explanation of event phases.
+	///
+	/// Scoped event listeners are a kind of temporary event listener that is invoked when
+	/// the event is invoked until the associated [EventScope] is closed.
+	/// Because [EventScope] extends [AutoCloseable], it is intended to be used in
+	/// a try-with-resources so it only lives as long as the try-with-resources block's scope.
+	///
+	/// ## Listener Ordering
+	///
+	/// For performance reasons, ordering of scoped listeners and permanent listeners
+	/// within the same phase is not guaranteed and **should not be relied on**!
+	/// [Create][#addPhaseOrdering(Identifier, Identifier)] or use earlier phases
+	/// if you are using scoped listeners on a short-circuiting event or otherwise care about
+	/// listener invocation order.
+	///
+	/// @param listener The desired listener.
+	/// @return A closeable wrapper around a temporary event listener.
+	/// @apiNote [Creating][#registerScoped(Identifier, Object)]
+	/// and [closing][EventScope#close()] scoped event listeners are
+	/// performance intensive actions and should be done
+	/// sparingly and infrequently when used outside game tests.
+	/// Scope creation and destruction have `O(n)` time complexity
+	/// where `n` is the number of subscribed event listeners.
+	/// @see EventScope
+	/// @see #registerScoped(Identifier, Object)
 	public EventScope registerScoped(T listener) {
 		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
 		return ScopedEventListenerImpl.EMPTY_FOR_COMPATIBILITY_REASONS_SORRY;
 	}
 
-	/**
-	 * Register a temporary listener to the event for the specified phase.
-	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
-	 *
-	 * <p>Scoped event listeners are a kind of temporary event listener that is invoked when
-	 * the event is invoked until the associated {@link EventScope} is closed.
-	 * Because {@link EventScope} extends {@link AutoCloseable}, it is intended to be used in
-	 * a try-with-resources so it only lives as long as the try-with-resources block's scope.
-	 *
-	 * <h2>Listener Ordering</h2>
-	 * <p>For performance reasons, ordering of scoped listeners and permanent listeners
-	 * within the same phase is not guaranteed and <b>should not be relied on</b>!
-	 * {@linkplain #addPhaseOrdering(Identifier, Identifier) Create} or use earlier phases
-	 * if you are using scoped listeners on a short-circuiting event or otherwise care about
-	 * listener invocation order.
-	 *
-	 * @param phase Identifier of the phase this listener should be registered for. It will be created if it didn't exist yet.
-	 * @param listener The desired listener.
-	 * @return A closeable wrapper around a temporary event listener.
-	 * @apiNote {@linkplain #registerScoped(Object) Creating}
-	 * and {@linkplain EventScope#close() closing} scoped event listeners are
-	 * performance intensive actions and should be done
-	 * sparingly and infrequently when used outside game tests.
-	 * Scope creation and destruction have {@code O(n)} time complexity
-	 * where {@code n} is the number of subscribed event listeners.
-	 * @see EventScope
-	 * @see #registerScoped(Object)
-	 */
+	/// Register a temporary listener to the event for the specified phase.
+	/// Have a look at [EventFactory#createWithPhases] for an explanation of event phases.
+	///
+	/// Scoped event listeners are a kind of temporary event listener that is invoked when
+	/// the event is invoked until the associated [EventScope] is closed.
+	/// Because [EventScope] extends [AutoCloseable], it is intended to be used in
+	/// a try-with-resources so it only lives as long as the try-with-resources block's scope.
+	///
+	/// ## Listener Ordering
+	///
+	/// For performance reasons, ordering of scoped listeners and permanent listeners
+	/// within the same phase is not guaranteed and **should not be relied on**!
+	/// [Create][#addPhaseOrdering(Identifier, Identifier)] or use earlier phases
+	/// if you are using scoped listeners on a short-circuiting event or otherwise care about
+	/// listener invocation order.
+	///
+	/// @param phase Identifier of the phase this listener should be registered for. It will be created if it didn't exist yet.
+	/// @param listener The desired listener.
+	/// @return A closeable wrapper around a temporary event listener.
+	/// @apiNote [Creating][#registerScoped(Object)]
+	/// and [closing][EventScope#close()] scoped event listeners are
+	/// performance intensive actions and should be done
+	/// sparingly and infrequently when used outside game tests.
+	/// Scope creation and destruction have `O(n)` time complexity
+	/// where `n` is the number of subscribed event listeners.
+	/// @see EventScope
+	/// @see #registerScoped(Object)
 	public EventScope registerScoped(Identifier phase, T listener) {
 		// This is not abstract to avoid breaking existing Event subclasses, but they should really not be subclassing Event.
 		return ScopedEventListenerImpl.EMPTY_FOR_COMPATIBILITY_REASONS_SORRY;
