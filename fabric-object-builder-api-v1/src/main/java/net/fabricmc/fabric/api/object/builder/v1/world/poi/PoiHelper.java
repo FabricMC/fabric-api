@@ -39,7 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
  *
  * @deprecated Use {@link PoiTypes#register(Registry, ResourceKey, Set, int, int)} instead.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public final class PoiHelper {
 	private PoiHelper() {
 	}
