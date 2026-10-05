@@ -36,16 +36,16 @@ import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 @Mixin(TagBuilder.class)
 public abstract class TagBuilderMixin implements FabricTagBuilder, TagBuilderHooks {
 	@Unique
-	private final List<TagEntry> remove = new ArrayList<>();
+	private final List<TagEntry> removals = new ArrayList<>();
 
 	@Override
-	public @UnmodifiableView List<TagEntry> getRemove() {
-		return Collections.unmodifiableList(this.remove);
+	public @UnmodifiableView List<TagEntry> getRemovals() {
+		return Collections.unmodifiableList(this.removals);
 	}
 
 	@Override
 	public TagBuilder remove(TagEntry entry) {
-		this.remove.add(entry);
+		this.removals.add(entry);
 		return (TagBuilder) (Object) this;
 	}
 

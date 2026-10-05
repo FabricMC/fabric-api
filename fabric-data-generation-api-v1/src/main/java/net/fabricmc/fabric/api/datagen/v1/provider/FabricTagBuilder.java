@@ -43,7 +43,7 @@ public interface FabricTagBuilder {
 	 *
 	 * @return the removal entries
 	 */
-	default @UnmodifiableView List<TagEntry> getRemove() {
+	default @UnmodifiableView List<TagEntry> getRemovals() {
 		throw new AssertionError("Implemented via mixin");
 	}
 
