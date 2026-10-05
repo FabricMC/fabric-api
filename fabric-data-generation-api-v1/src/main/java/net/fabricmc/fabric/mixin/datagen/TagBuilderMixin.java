@@ -17,8 +17,10 @@
 package net.fabricmc.fabric.mixin.datagen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.UnmodifiableView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,18 +39,24 @@ public abstract class TagBuilderMixin implements FabricTagBuilder, TagBuilderHoo
 	private final List<TagEntry> remove = new ArrayList<>();
 
 	@Override
-	public List<TagEntry> getRemove() {
-		return this.remove;
+	public @UnmodifiableView List<TagEntry> getRemove() {
+		return Collections.unmodifiableList(this.remove);
 	}
 
 	@Override
-	public void removeElement(Identifier id) {
-		this.remove.add(TagEntry.element(id));
+	public TagBuilder remove(TagEntry entry) {
+		this.remove.add(entry);
+		return (TagBuilder) (Object) this;
 	}
 
 	@Override
-	public void removeTag(Identifier tag) {
-		this.remove.add(TagEntry.tag(tag));
+	public TagBuilder removeElement(Identifier id) {
+		return this.remove(TagEntry.element(id));
+	}
+
+	@Override
+	public TagBuilder removeTag(Identifier tag) {
+		return this.remove(TagEntry.tag(tag));
 	}
 
 	@Override

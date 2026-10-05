@@ -18,41 +18,56 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnmodifiableView;
+
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagEntry;
 
 /**
- * Fabric extensions for {@link TagBuilder}.
- * Automatically implemented on {@link TagBuilder} via a mixin.
+ * Fabric extensions for {@link TagBuilder}. Automatically implemented on {@link TagBuilder} via a
+ * mixin.
  *
- * <p>These methods add entries to the {@code fabric:remove} list, which is written to the generated
- * tag JSON and applied when the tag is loaded. Removals are prefixed with {@code !} when serialized
- * to a string list.
+ * <p>These methods add entries to the {@code fabric:remove} list, which is written to the
+ * generated tag JSON and applied when the tag is loaded. Removals are prefixed with {@code !} when
+ * serialized to a string list.
  *
- * <p>Removals are applied leniently: a removal whose element or referenced tag cannot be resolved is
- * skipped and never fails the tag, so there is no separate "optional removal" variant.
+ * <p>Removals are applied leniently: a removal whose element or referenced tag cannot be resolved
+ * is skipped and never fails the tag, so there is no separate "optional removal" variant.
  */
+@ApiStatus.NonExtendable
 public interface FabricTagBuilder {
 	/**
 	 * Returns the list of entries marked for removal, in insertion order.
 	 *
-	 * <p>The returned list is mutable and backed by this builder. Adding to it has the same effect as
-	 * calling {@link #removeElement(Identifier)} or {@link #removeTag(Identifier)}, which exist as
-	 * convenience methods. The list must not be replaced, only mutated.
+	 * <p>The returned list is mutable and backed by this builder. Adding to it has the same effect
+	 * as calling {@link #removeElement(Identifier)} or {@link #removeTag(Identifier)}, which exist
+	 * as convenience methods. The list must not be replaced, only mutated.
 	 *
 	 * @return the removal entries
 	 */
-	default List<TagEntry> getRemove() {
+	default @UnmodifiableView List<TagEntry> getRemove() {
 		throw new AssertionError("Implemented via mixin");
 	}
 
 	/**
-	 * Marks an existing entry for removal. Does nothing at load time when the entry is absent.
+	 * Marks an entry for removal. Does nothing at load time when the entry is absent.
+	 *
+	 * @param entry the tag entry
+	 * @return the tag builder
+	 */
+	default TagBuilder remove(TagEntry entry) {
+		throw new AssertionError("Implemented via mixin");
+	}
+
+	/**
+	 * Marks an existing element for removal. Does nothing at load time when the entry is absent.
 	 *
 	 * @param id the entry id
+	 * @return the tag builder
 	 */
-	default void removeElement(Identifier id) {
+	default TagBuilder removeElement(Identifier id) {
 		throw new AssertionError("Implemented via mixin");
 	}
 
@@ -60,8 +75,9 @@ public interface FabricTagBuilder {
 	 * Marks a referenced tag for removal. Does nothing at load time when the tag is absent.
 	 *
 	 * @param tag the tag id
+	 * @return the tag builder
 	 */
-	default void removeTag(Identifier tag) {
+	default TagBuilder removeTag(Identifier tag) {
 		throw new AssertionError("Implemented via mixin");
 	}
 }
