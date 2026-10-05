@@ -39,11 +39,7 @@ import net.minecraft.tags.TagEntry;
 @ApiStatus.NonExtendable
 public interface FabricTagBuilder {
 	/**
-	 * Returns the list of entries marked for removal, in insertion order.
-	 *
-	 * <p>The returned list is mutable and backed by this builder. Adding to it has the same effect
-	 * as calling {@link #removeElement(Identifier)} or {@link #removeTag(Identifier)}, which exist
-	 * as convenience methods. The list must not be replaced, only mutated.
+	 * Returns a view of the entries marked for removal.
 	 *
 	 * @return the removal entries
 	 */
