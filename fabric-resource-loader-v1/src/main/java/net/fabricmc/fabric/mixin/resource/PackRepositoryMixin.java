@@ -43,9 +43,9 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.repository.RepositorySource;
 
-import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.pack.PackHooks;
 
 @Mixin(PackRepository.class)
 public abstract class PackRepositoryMixin {
@@ -99,7 +99,7 @@ public abstract class PackRepositoryMixin {
 	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local(name = "selectedCopy") List<Pack> selectedCopy) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
 			Set<String> currentlyEnabled = selectedCopy.stream().map(Pack::getId).collect(Collectors.toSet());
-			selectedCopy.removeIf(p -> !((FabricPack) p).fabric$parentsEnabled(currentlyEnabled));
+			selectedCopy.removeIf(p -> !((PackHooks) p).fabric$parentsEnabled(currentlyEnabled));
 			LOGGER.debug("[Fabric] Internal pack auto-removed upon disabling {}, result: {}", profile, selectedCopy.stream().map(Pack::getId).toList());
 		}
 	}

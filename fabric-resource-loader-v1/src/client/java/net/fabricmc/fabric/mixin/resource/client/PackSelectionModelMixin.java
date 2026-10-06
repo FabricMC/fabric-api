@@ -31,8 +31,6 @@ import net.minecraft.client.gui.screens.packs.PackSelectionModel;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackRepository;
 
-import net.fabricmc.fabric.impl.resource.pack.FabricPack;
-
 @Mixin(PackSelectionModel.class)
 public class PackSelectionModelMixin {
 	@Shadow
@@ -49,13 +47,13 @@ public class PackSelectionModelMixin {
 	 */
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void removeHiddenPacksInit(Consumer<PackSelectionModel.EntryBase> updateCallback, Function iconIdSupplier, PackRepository packRepository, Consumer applier, CallbackInfo ci) {
-		this.selected.removeIf(profile -> ((FabricPack) profile).fabric$isHidden());
-		this.unselected.removeIf(profile -> ((FabricPack) profile).fabric$isHidden());
+		this.selected.removeIf(profile -> profile.isHidden());
+		this.unselected.removeIf(profile -> profile.isHidden());
 	}
 
 	@Inject(method = "findNewPacks", at = @At("TAIL"))
 	private void removeHiddenPacksRefresh(CallbackInfo ci) {
-		this.selected.removeIf(profile -> ((FabricPack) profile).fabric$isHidden());
-		this.unselected.removeIf(profile -> ((FabricPack) profile).fabric$isHidden());
+		this.selected.removeIf(profile -> profile.isHidden());
+		this.unselected.removeIf(profile -> profile.isHidden());
 	}
 }
