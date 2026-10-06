@@ -190,8 +190,12 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
 ### Events
 
 - Events should not be used if there is only one subscriber, like a handler in a registered unique namespace.
-- Events should be produced and fully usable with minimal object allocation.
-  - In particular, avoid data holder objects for inputs, but rather pass them as separate parameters.
+- When an event has parameters that are likely to evolve over time, use a context object. Context objects hold the parameters of an event in an object, and can be evolved over time without necessitating a breaking change to the API.
+    - Context objects are typically `@ApiStatus.NonExtendable` interfaces with methods for accessing each parameter. They are typically implemented using a `record` in the internal package.
+- Care should be taken over the performance of frequently-called events.
+    - Examples of frequently-called events include events that are called every tick or every frame, especially events that can be called multiple times in a tick or frame, for example once per entity.
+    - In particular, allocating context objects for inputs can add extra pressure to the garbage collector. If an event is frequently called, consider not using a context object, or reusing the same context object.
+        - When reusing context objects, take special care over the possibility of the event being called recursively or on different threads.
 - Events should use dedicated callback interfaces.
     - Callback interfaces should be `@FunctionalInterface`s.
     - Callback methods should be uniquely named such that a handler can implement multiple at once.
