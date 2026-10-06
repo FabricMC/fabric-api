@@ -237,6 +237,23 @@
             <message key="matchxpath.match" value="public records are not allowed in API packages"/>
         </module>
 
+        <!-- Prevent implicit public constructors on utility classes in API packages -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //CLASS_DEF[
+                    (./MODIFIERS/LITERAL_PUBLIC or parent::OBJBLOCK/parent::INTERFACE_DEF)
+                    and not(./MODIFIERS/LITERAL_ABSTRACT)
+                    and not(./EXTENDS_CLAUSE)
+                    and not(./OBJBLOCK/CTOR_DEF)
+                    and not(./OBJBLOCK/VARIABLE_DEF[not(./MODIFIERS/LITERAL_STATIC)])
+                    and not(./OBJBLOCK/METHOD_DEF[not(./MODIFIERS/LITERAL_STATIC)])
+                    and not(parent::OBJBLOCK/parent::*[self::CLASS_DEF or self::ENUM_DEF or self::RECORD_DEF] and not(./MODIFIERS/LITERAL_STATIC))
+                    and ancestor::COMPILATION_UNIT/PACKAGE_DEF//IDENT[@text='api']
+                ]
+            "/>
+            <message key="matchxpath.match" value="utility classes in API packages must declare a private constructor, or a public constructor to make clear it's not a utility class"/>
+        </module>
+
         <!-- Prevent non-@Unique fields in Mixin classes -->
         <module name="MatchXpath">
             <property name="query" value="

@@ -55,4 +55,9 @@ public final class DebugRendererRegistry {
 			register(debugSubscription, rendererFactory);
 		}
 	}
+
+	/// @deprecated This constructor is retained for backwards compatibility. Do not construct this utility class.
+	@Deprecated(forRemoval = true)
+	public DebugRendererRegistry() {
+	}
 }
