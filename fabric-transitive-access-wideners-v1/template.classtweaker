@@ -149,4 +149,5 @@ transitive-accessible   method  net/minecraft/world/level/storage/loot/functions
 
 # PoiType registration
 transitive-accessible	method	net/minecraft/world/entity/ai/village/poi/PoiTypes	register	(Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/core/Holder;
+
 ### Generated access wideners below
