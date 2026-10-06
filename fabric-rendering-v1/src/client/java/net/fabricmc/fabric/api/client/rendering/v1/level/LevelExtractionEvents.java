@@ -82,4 +82,11 @@ public class LevelExtractionEvents {
 	public interface EndExtraction {
 		void endExtraction(LevelExtractionContext context);
 	}
+
+	/**
+	 * @deprecated This constructor is retained for backwards compatibility. Do not construct this utility class.
+	 */
+	@Deprecated(forRemoval = true)
+	public LevelExtractionEvents() {
+	}
 }

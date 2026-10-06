@@ -59,4 +59,9 @@ public final class ClientDebugSubscriptionRegistry {
 			register(debugSubscription);
 		}
 	}
+
+	/// @deprecated This constructor is retained for backwards compatibility. Do not construct this utility class.
+	@Deprecated(forRemoval = true)
+	public ClientDebugSubscriptionRegistry() {
+	}
 }

@@ -57,4 +57,11 @@ public final class PictureInPictureRendererRegistry {
 		 */
 		Minecraft minecraft();
 	}
+
+	/**
+	 * @deprecated This constructor is retained for backwards compatibility. Do not construct this utility class.
+	 */
+	@Deprecated(forRemoval = true)
+	public PictureInPictureRendererRegistry() {
+	}
 }
