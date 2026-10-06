@@ -33,6 +33,7 @@
       "net.fabricmc.fabric.test.rendering.client.gui.GuiRendererNonQuadsTest"
     ],
     "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.rendering.client.HudStatusBarHeightsTest",
       "net.fabricmc.fabric.test.rendering.client.HudTests",
       "net.fabricmc.fabric.test.rendering.client.LevelRenderEventsTests",
       "net.fabricmc.fabric.test.rendering.client.gui.PictureInPictureRendererTest"
