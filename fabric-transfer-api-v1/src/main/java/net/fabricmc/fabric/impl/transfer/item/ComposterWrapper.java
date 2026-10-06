@@ -136,7 +136,7 @@ public class ComposterWrapper extends SnapshotParticipant<ComposterWrapper.Pendi
 
 			if (increaseSuccessful) {
 				// Mimic ComposterBlock#addToComposter logic.
-				int newLevel = Mth.clamp(state.getValue(ComposterBlock.LEVEL) + layersToAdd, 0, 7);
+				int newLevel = Math.clamp(state.getValue(ComposterBlock.LEVEL) + layersToAdd, 0, 7);
 				BlockState newState = state.setValue(ComposterBlock.LEVEL, newLevel);
 				location.setBlockState(newState);
 				location.level.gameEvent(GameEvent.BLOCK_CHANGE, location.pos, GameEvent.Context.of(newState));

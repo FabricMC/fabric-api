@@ -34,6 +34,9 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.client.gui.components.AbstractCycleButton;
+
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -76,7 +79,7 @@ import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCompari
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotOptionsImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.world.TestWorldBuilderImpl;
-import net.fabricmc.fabric.mixin.client.gametest.gui.CycleButtonAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.AbstractCycleButtonAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.gui.ScreenAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.lifecycle.OptionsAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.screenshot.DeltaTrackerDefaultValueAccessor;
@@ -285,8 +288,8 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			}
 		}
 
-		if (widget instanceof CycleButton<?> button) {
-			CycleButtonAccessor accessor = (CycleButtonAccessor) button;
+		if (widget instanceof AbstractCycleButton<?> button) {
+			AbstractCycleButtonAccessor accessor = (AbstractCycleButtonAccessor) button;
 
 			if (text.equals(accessor.getName().getString())) {
 				button.onPress(clickEvent);

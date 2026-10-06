@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.api.object.builder.v1.block.type;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.sounds.BlockSoundSet;
+import net.minecraft.world.level.block.sounds.BlockSoundSets;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 /**
@@ -34,7 +36,7 @@ public final class BlockSetTypeBuilder {
 	private boolean openableByWindCharge = true;
 	private boolean buttonActivatedByArrows = true;
 	private BlockSetType.PressurePlateSensitivity pressurePlateActivationRule = BlockSetType.PressurePlateSensitivity.EVERYTHING;
-	private SoundType soundType = SoundType.WOOD;
+	private ResourceKey<BlockSoundSet> blockSoundSet = BlockSoundSets.WOOD;
 	private SoundEvent doorCloseSound = SoundEvents.WOODEN_DOOR_CLOSE;
 	private SoundEvent doorOpenSound = SoundEvents.WOODEN_DOOR_OPEN;
 	private SoundEvent trapdoorCloseSound = SoundEvents.WOODEN_TRAPDOOR_CLOSE;
@@ -95,12 +97,12 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's sound type.
 	 *
-	 * <p>Defaults to {@link SoundType#WOOD}.
+	 * <p>Defaults to {@link BlockSoundSets#WOOD}.
 	 *
 	 * @return this builder for chaining
 	 */
-	public BlockSetTypeBuilder soundType(SoundType soundType) {
-		this.soundType = soundType;
+	public BlockSetTypeBuilder blockSoundSet(ResourceKey<BlockSoundSet> blockSoundSet) {
+		this.blockSoundSet = blockSoundSet;
 		return this;
 	}
 
@@ -213,7 +215,7 @@ public final class BlockSetTypeBuilder {
 		copy.openableByWindCharge(builder.openableByWindCharge);
 		copy.buttonActivatedByArrows(builder.buttonActivatedByArrows);
 		copy.pressurePlateActivationRule(builder.pressurePlateActivationRule);
-		copy.soundType(builder.soundType);
+		copy.blockSoundSet(builder.blockSoundSet);
 		copy.doorCloseSound(builder.doorCloseSound);
 		copy.doorOpenSound(builder.doorOpenSound);
 		copy.trapdoorCloseSound(builder.trapdoorCloseSound);
@@ -238,7 +240,7 @@ public final class BlockSetTypeBuilder {
 		copy.openableByWindCharge(setType.canOpenByWindCharge());
 		copy.buttonActivatedByArrows(setType.canButtonBeActivatedByArrows());
 		copy.pressurePlateActivationRule(setType.pressurePlateSensitivity());
-		copy.soundType(setType.soundType());
+		copy.blockSoundSet(setType.blockSoundSet());
 		copy.doorCloseSound(setType.doorClose());
 		copy.doorOpenSound(setType.doorOpen());
 		copy.trapdoorCloseSound(setType.trapdoorClose());
@@ -276,6 +278,6 @@ public final class BlockSetTypeBuilder {
 	 */
 	public BlockSetType build(Identifier id) {
 		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule,
-				soundType, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
+				blockSoundSet, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
 	}
 }

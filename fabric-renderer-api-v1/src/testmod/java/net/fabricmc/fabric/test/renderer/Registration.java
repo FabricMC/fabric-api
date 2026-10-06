@@ -27,8 +27,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.sounds.BlockSoundSets;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
@@ -39,7 +39,7 @@ public final class Registration {
 	public static final Block PILLAR_BLOCK = register("pillar", Block::new, BlockBehaviour.Properties.of());
 	public static final OctagonalColumnBlock OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", OctagonalColumnBlock::new, BlockBehaviour.Properties.of().noOcclusion().strength(1.8F));
 	public static final Block RIVERSTONE_BLOCK = register("riverstone", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-	public static final Block FAKE_DIRT = register("fake_dirt", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL));
+	public static final Block FAKE_DIRT = register("fake_dirt", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.5F).sound(BlockSoundSets.GRAVEL));
 
 	public static final BlockItem FRAME_ITEM = registerItem("frame", settings -> new BlockItem(FRAME_BLOCK, settings));
 	public static final BlockItem PILLAR_ITEM = registerItem("pillar", settings -> new BlockItem(PILLAR_BLOCK, settings));

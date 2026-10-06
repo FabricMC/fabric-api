@@ -6,7 +6,7 @@
     "ClientChunkCacheAccessor",
     "ClientChunkCacheStorageAccessor",
     "ClientLevelAccessor",
-    "gui.CycleButtonAccessor",
+    "gui.AbstractCycleButtonAccessor",
     "gui.ScreenAccessor",
     "gui.ScreenMixin",
     "input.GlCommandEncoderMixin",

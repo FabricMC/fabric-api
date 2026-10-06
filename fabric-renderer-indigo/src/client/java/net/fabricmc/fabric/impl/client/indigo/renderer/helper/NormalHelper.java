@@ -41,10 +41,10 @@ public final class NormalHelper {
 	 * The extra value is for use by shaders.
 	 */
 	public static int packNormal(float x, float y, float z, float w) {
-		x = Mth.clamp(x, -1, 1);
-		y = Mth.clamp(y, -1, 1);
-		z = Mth.clamp(z, -1, 1);
-		w = Mth.clamp(w, -1, 1);
+		x = Math.clamp(x, -1, 1);
+		y = Math.clamp(y, -1, 1);
+		z = Math.clamp(z, -1, 1);
+		w = Math.clamp(w, -1, 1);
 
 		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16) | (((int) (w * PACK) & 0xFF) << 24);
 	}
@@ -60,9 +60,9 @@ public final class NormalHelper {
 	 * Like {@link #packNormal(float, float, float, float)}, but without a {@code w} value.
 	 */
 	public static int packNormal(float x, float y, float z) {
-		x = Mth.clamp(x, -1, 1);
-		y = Mth.clamp(y, -1, 1);
-		z = Mth.clamp(z, -1, 1);
+		x = Math.clamp(x, -1, 1);
+		y = Math.clamp(y, -1, 1);
+		z = Math.clamp(z, -1, 1);
 
 		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16);
 	}

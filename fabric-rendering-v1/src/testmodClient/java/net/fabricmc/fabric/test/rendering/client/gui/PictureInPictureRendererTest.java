@@ -25,6 +25,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.social.EntityPortraitWidget;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
@@ -59,7 +60,7 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 				ScreenEvents.afterExtract(screen).register((screen1, graphics, mouseX, mouseY, tickDelta) -> {
 					// no need to modify anything about this player, since they're in different locations they will be
 					// looking towards the mouse at different angles
-					InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
+					EntityPortraitWidget.extractEntityInInventoryFollowsMouse(graphics, 26, 8, 75, 78, 30.0F, 0.0625F, mouseX, mouseY, client.player);
 				});
 			}
 		});
