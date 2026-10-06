@@ -77,4 +77,11 @@ public final class BlockTransformerEvents {
 				RegistryOps.RegistryInfoLookup registryInfoLookup
 		);
 	}
+
+	/**
+	 * @deprecated This constructor is retained for backwards compatibility. Do not construct this utility class.
+	 */
+	@Deprecated(forRemoval = true)
+	public BlockTransformerEvents() {
+	}
 }

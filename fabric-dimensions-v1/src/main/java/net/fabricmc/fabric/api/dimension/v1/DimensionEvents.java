@@ -42,4 +42,11 @@ public class DimensionEvents {
 	public interface ModifyAttributes {
 		void modifyDimensionAttributes(Holder<DimensionType> dimension, EnvironmentAttributeMap.Builder attributes, HolderLookup.Provider registries);
 	}
+
+	/**
+	 * @deprecated This constructor is retained for backwards compatibility. Do not construct this utility class.
+	 */
+	@Deprecated(forRemoval = true)
+	public DimensionEvents() {
+	}
 }

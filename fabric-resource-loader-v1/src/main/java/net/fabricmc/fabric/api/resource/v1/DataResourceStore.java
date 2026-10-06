@@ -29,6 +29,12 @@ public interface DataResourceStore {
 	 * @param <T> the type of this key
 	 */
 	final class Key<T> {
+		/**
+		 * Constructs a new instance of {@code Key}.
+		 */
+		public Key() {
+			// explicit constructor to make clear that this class is meant to be constructed
+		}
 	}
 
 	/**
