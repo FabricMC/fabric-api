@@ -32,6 +32,7 @@ import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.ModContainer;
 
 /**
@@ -64,14 +65,35 @@ public final class FabricDataGenerator extends DataGenerator.Cached {
 	/**
 	 * Create a new {@link Pack} instance for generating a builtin resource pack.
 	 *
-	 * <p>To be used in conjunction with {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack}
+	 * <p>To be used in conjunction with
+	 * {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerBuiltinPack(Identifier, ModContainer, PackActivationType)}.
 	 *
 	 * <p>The path in which the resource pack is generated is {@code "resourcepacks/<id path>"}. {@code id path} being the path specified
 	 * in the identifier.
+	 *
+	 * @param id   the identifier of the resource pack
+	 * @see #createBuiltinPack(Identifier, String)
 	 */
 	public Pack createBuiltinResourcePack(Identifier id) {
-		Path path = this.vanillaPackOutput.getOutputFolder().resolve("resourcepacks").resolve(id.getPath());
-		return new Pack(true, id.toString(), new FabricPackOutput(modContainer, path, strictValidation));
+		return createBuiltinPack(id, "resourcepacks/" + id.getPath());
+	}
+
+	/**
+	 * Create a new {@link Pack} instance for generating a builtin pack located at a custom path.
+	 *
+	 * <p>To be used in conjunction with
+	 * {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerBuiltinPack(Identifier, String, ModContainer, PackActivationType)}.
+	 *
+	 * <p>The path is relative to the mod root and must use {@code /} as separator. This makes it possible to generate a data
+	 * pack under a custom path such as {@code "data/<namespace>/datapacks/<path>"}.
+	 *
+	 * @param id   the identifier of the pack
+	 * @param path the path of the pack, for example {@code "data/examplemod/datapacks/my_pack"}
+	 * @see #createBuiltinResourcePack(Identifier)
+	 */
+	public Pack createBuiltinPack(Identifier id, String path) {
+		Path outputPath = this.vanillaPackOutput.getOutputFolder().resolve(path);
+		return new Pack(true, id.toString(), new FabricPackOutput(modContainer, outputPath, strictValidation));
 	}
 
 	/**
