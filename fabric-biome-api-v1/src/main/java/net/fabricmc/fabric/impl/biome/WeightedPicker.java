@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 
 /**
