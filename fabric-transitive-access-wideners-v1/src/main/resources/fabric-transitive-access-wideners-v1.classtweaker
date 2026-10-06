@@ -153,7 +153,7 @@ transitive-accessible   method  net/minecraft/world/level/storage/loot/functions
 transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/ToggleTooltips <init> (Ljava/util/Optional;Ljava/util/Map;)V
 
 # PoiType registration
-transitive-accessible	method	net/minecraft/world/entity/ai/village/poi/PoiTypes	register	(Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/core/Holder;
+transitive-accessible   method net/minecraft/world/entity/ai/village/poi/PoiTypes register (Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/core/Holder;
 
 ### Generated access wideners below
 # Constructors of non-abstract block classes
