@@ -42,6 +42,25 @@ class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
 		listeners[oldLength] = listener;
 	}
 
+	boolean removeListener(T listener) {
+		int indexToRemove;
+
+		for (indexToRemove = listeners.length - 1; indexToRemove >= 0; indexToRemove--) {
+			if (listeners[indexToRemove] == listener) {
+				break;
+			}
+		}
+
+		if (indexToRemove == -1) {
+			return false;
+		}
+
+		T[] newListeners = Arrays.copyOf(listeners, listeners.length - 1);
+		System.arraycopy(listeners, indexToRemove + 1, newListeners, indexToRemove, newListeners.length - indexToRemove);
+		listeners = newListeners;
+		return true;
+	}
+
 	@Override
 	protected String getDescription() {
 		return id.toString();
