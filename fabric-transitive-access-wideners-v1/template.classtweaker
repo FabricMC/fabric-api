@@ -147,4 +147,7 @@ transitive-accessible   method  net/minecraft/world/level/storage/loot/functions
 transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/SetFireworksFunction <init> (Ljava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;)V
 transitive-accessible   method  net/minecraft/world/level/storage/loot/functions/ToggleTooltips <init> (Ljava/util/Optional;Ljava/util/Map;)V
 
+# PoiType registration
+transitive-accessible   method  net/minecraft/world/entity/ai/village/poi/PoiTypes register (Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/world/entity/ai/village/poi/PoiType;
+
 ### Generated access wideners below
