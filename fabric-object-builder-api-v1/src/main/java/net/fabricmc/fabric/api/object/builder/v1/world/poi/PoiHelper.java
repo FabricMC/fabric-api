@@ -20,6 +20,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -35,7 +36,10 @@ import net.minecraft.world.level.block.state.BlockState;
  *
  * <p>A point of interest or POI is typically used by villagers to specify their workstation blocks, meeting zones and homes.
  * Points of interest are also used by bees to specify where their bee hive is and nether portals to find existing portals.
+ *
+ * @deprecated Use {@link PoiTypes#register(Registry, ResourceKey, Set, int, int)} instead.
  */
+@Deprecated(forRemoval = true)
 public final class PoiHelper {
 	private PoiHelper() {
 	}
