@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.modprotocol.client",
+  "compatibilityLevel": "JAVA_25",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "ClientCommonPacketListenerImplMixin",
+    "ClientConfigurationPacketListenerImplMixin",
+    "DisconnectedScreenMixin",
+    "ServerSelectionListOnlineServerEntryMixin",
+    "ServerDataMixin",
+    "ServerStatusPingerClientStatusPacketListenerMixin"
+  ]
+}
