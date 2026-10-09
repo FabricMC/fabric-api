@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
@@ -38,62 +39,85 @@ import net.fabricmc.loader.api.ModContainer;
  * An extension to vanilla's {@link DataGenerator} providing mod specific data, and helper functions.
  */
 public final class FabricDataGenerator extends DataGenerator.Cached {
-	private final ModContainer modContainer;
+	private final Path output;
+	@Nullable
+	private ModContainer activeModContainer;
 	private final boolean strictValidation;
-	private final FabricPackOutput fabricOutput;
 	private final CompletableFuture<HolderLookup.Provider> worldRegistriesFuture;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
 	@ApiStatus.Internal
-	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> worldRegistriesFuture, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	public FabricDataGenerator(Path output, boolean strictValidation, CompletableFuture<HolderLookup.Provider> worldRegistriesFuture, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		super(output, SharedConstants.getCurrentVersion(), true);
-		this.modContainer = Objects.requireNonNull(mod);
+		this.output = output;
 		this.strictValidation = strictValidation;
-		this.fabricOutput = new FabricPackOutput(mod, output, strictValidation);
 		this.worldRegistriesFuture = worldRegistriesFuture;
 		this.registriesFuture = registriesFuture;
 	}
 
 	/**
-	 * Create a default {@link Pack} instance for generating a mod's data.
+	 * Create a default {@link Pack} instance for generating the currently active mod's data.
 	 */
 	public Pack createPack() {
-		return new Pack(true, modContainer.getMetadata().getName(), this.fabricOutput);
+		ModContainer modContainer = this.getModContainer();
+		return new Pack(
+				true,
+				modContainer.getMetadata().getName(),
+				new FabricPackOutput(modContainer, this.output, this.strictValidation)
+		);
 	}
 
 	/**
 	 * Create a new {@link Pack} instance for generating a builtin resource pack.
 	 *
-	 * <p>To be used in conjunction with {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack}
+	 * <p>To be used in conjunction with {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerBuiltinPack}
 	 *
 	 * <p>The path in which the resource pack is generated is {@code "resourcepacks/<id path>"}. {@code id path} being the path specified
 	 * in the identifier.
 	 */
 	public Pack createBuiltinResourcePack(Identifier id) {
 		Path path = this.vanillaPackOutput.getOutputFolder().resolve("resourcepacks").resolve(id.getPath());
-		return new Pack(true, id.toString(), new FabricPackOutput(modContainer, path, strictValidation));
+		return new Pack(
+				true,
+				id.toString(),
+				new FabricPackOutput(this.getModContainer(), path, strictValidation)
+		);
 	}
 
 	/**
-	 * Returns the {@link ModContainer} for the mod that this data generator has been created for.
+	 * Marks {@code modContainer} as the active {@link ModContainer}.
 	 *
-	 * @return a {@link ModContainer} instance
+	 * <p>When set to {@code null}, will unmark any mod container from being active, which in turn throws a {@link NullPointerException} when trying to access the mod container via {@link FabricDataGenerator#getModContainer()}.</p>
+	 *
+	 * @param modContainer The mod container.
+	 */
+	@ApiStatus.Internal
+	public void markModContainerAsActive(@Nullable ModContainer modContainer) {
+		this.activeModContainer = modContainer;
+	}
+
+	/**
+	 * Returns the active {@link ModContainer} that this data generator is collecting providers for.
+	 *
+	 * @return the currently active {@link ModContainer}
+	 *
+	 * @throws NullPointerException If no mod container is currently marked as active.
 	 */
 	public ModContainer getModContainer() {
-		return modContainer;
+		return Objects.requireNonNull(this.activeModContainer, "No mod container has been marked as active");
 	}
 
 	/**
-	 * Returns the mod ID for the mod that this data generator has been created for.
+	 * Returns the mod ID for the mod that this data generator is currently active for.
 	 *
 	 * @return a mod ID
 	 */
 	public String getModId() {
-		return getModContainer().getMetadata().getId();
+		return this.getModContainer().getMetadata().getId();
 	}
 
 	/**
-	 * When enabled data providers can do strict validation to ensure that all entries have data generated for them.
+	 * When enabled, data providers can do strict validation to ensure that all entries have data generated for them.
 	 *
 	 * @return if strict validation should be enabled
 	 */
