@@ -54,6 +54,9 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * <p>Payload types registered with this method will be split into multiple packets,
 	 * allowing to send packets larger than the vanilla limited size.
 	 *
+	 * <p><strong>Security:</strong> A high maximum size for serverbound payloads may allow clients
+	 * to exhaust the server's memory. Set the smallest limit that accommodates legitimate payloads.
+	 *
 	 * @param type          the payload type
 	 * @param codec         the codec for the payload type
 	 * @param <T>           the payload class
@@ -70,6 +73,9 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 *
 	 * <p>Payload types registered with this method will be split into multiple packets,
 	 * allowing to send packets larger than the vanilla limited size.
+	 *
+	 * <p><strong>Security:</strong> A high maximum size for serverbound payloads may allow clients
+	 * to exhaust the server's memory. Set the smallest limit that accommodates legitimate payloads.
 	 *
 	 * <p>The {@code maxPacketSizeSupplier} will be called once, right before the first packet of this payload type
 	 * is sent/received on either side. This allows mods some leeway particularly during mod initialization to

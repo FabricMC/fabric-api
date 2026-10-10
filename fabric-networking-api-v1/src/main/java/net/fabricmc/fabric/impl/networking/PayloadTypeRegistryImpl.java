@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.networking;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.IntSupplier;
@@ -114,10 +115,38 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 			maxPacketSize = Integer.MAX_VALUE;
 		}
 
+		if (this.flow == PacketFlow.SERVERBOUND) {
+			if (maxSize == Integer.MAX_VALUE) {
+				NetworkingImpl.LOGGER.warn("Serverbound {} payload '{}' uses Integer.MAX_VALUE as its packet size limit. A client could exhaust server memory with a large split packet. Set a reasonable maximum size for this payload", this.protocol, id);
+			}
+
+			long maxHeapSize = Runtime.getRuntime().maxMemory();
+
+			if (maxPacketSize > maxHeapSize) {
+				NetworkingImpl.LOGGER.warn("Serverbound {} payload '{}' allows packets up to {}, exceeding the JVM heap limit of {}. A client could exhaust server memory with a large split packet", this.protocol, id, formatByteSize(maxPacketSize), formatByteSize(maxHeapSize));
+			}
+		}
+
 		// No need to enable splitting, if packet's max size is smaller than chunk
 		if (maxPacketSize > this.minimalSplittableSize) {
 			this.maxPacketSizes.put(id, maxPacketSize);
 		}
+	}
+
+	private static String formatByteSize(long bytes) {
+		if (bytes >= 1024L * 1024 * 1024) {
+			return String.format(Locale.ROOT, "%.1f GiB", bytes / (1024.0 * 1024 * 1024));
+		}
+
+		if (bytes >= 1024L * 1024) {
+			return String.format(Locale.ROOT, "%.1f MiB", bytes / (1024.0 * 1024));
+		}
+
+		if (bytes >= 1024) {
+			return String.format(Locale.ROOT, "%.1f KiB", bytes / 1024.0);
+		}
+
+		return bytes + " bytes";
 	}
 
 	public CustomPacketPayload.@Nullable TypeAndCodec<B, ? extends CustomPacketPayload> get(Identifier id) {
