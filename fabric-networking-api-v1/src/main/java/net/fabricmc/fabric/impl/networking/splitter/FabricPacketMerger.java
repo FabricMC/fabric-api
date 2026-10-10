@@ -146,6 +146,9 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 	}
 
 	private static class Merger {
+		// Netty grows buffers above 4 MiB in 4 MiB steps.
+		private static final int MAX_INITIAL_BUFFER_SIZE = 12 * 1024 * 1024;
+
 		private final PacketDecoderAccessor packetDecoder;
 		private final Identifier packetId;
 		private final int finalSize;
@@ -155,7 +158,7 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 		Merger(PacketDecoder<?> packetDecoder, Identifier identifier, int finalSize) {
 			this.packetDecoder = (PacketDecoderAccessor) packetDecoder;
 			this.packetId = identifier;
-			this.byteBuf = Unpooled.buffer(finalSize);
+			this.byteBuf = Unpooled.buffer(Math.min(finalSize, MAX_INITIAL_BUFFER_SIZE), finalSize);
 			this.finalSize = finalSize;
 		}
 
