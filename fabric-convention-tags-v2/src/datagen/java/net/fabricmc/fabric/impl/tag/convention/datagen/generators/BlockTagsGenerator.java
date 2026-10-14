@@ -69,6 +69,8 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.add(BlockItemIds.DIORITE)
 				.add(BlockItemIds.GRANITE)
 				.add(BlockItemIds.TUFF)
+				.add(BlockItemIds.CALCITE)
+				.add(BlockItemIds.DRIPSTONE_BLOCK)
 				.add(BlockItemIds.DEEPSLATE);
 		builder(ConventionalBlockTags.NORMAL_COBBLESTONES)
 				.add(BlockItemIds.COBBLESTONE);

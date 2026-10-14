@@ -5,6 +5,8 @@
     "minecraft:diorite",
     "minecraft:granite",
     "minecraft:tuff",
+    "minecraft:calcite",
+    "minecraft:dripstone_block",
     "minecraft:deepslate"
   ]
 }
