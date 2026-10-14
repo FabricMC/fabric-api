@@ -106,6 +106,12 @@ public class ClientTagGameTests implements FabricClientGameTest {
 	}
 
 	private static void clientTagTests(Minecraft client) {
+		TagKey<String> clientRegistryTag = tagKey(ClientTagTest.CLIENT_REGISTRY_KEY, "examples");
+
+		if (!ClientTags.isInWithLocalFallback(clientRegistryTag, "example")) {
+			throw new AssertionError("Expected to find the custom client registry entry in its local tag");
+		}
+
 		if (ClientTags.getOrCreateLocalTag(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS) == null) {
 			throw new AssertionError("Expected to load c:increase_block_drops, but it was not found!");
 		}
