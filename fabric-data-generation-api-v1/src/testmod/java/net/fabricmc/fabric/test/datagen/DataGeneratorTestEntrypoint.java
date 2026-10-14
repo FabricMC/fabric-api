@@ -238,14 +238,11 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 					new FabricBrewingProvider(output) {
 						@Override
 						protected void buildMixes() {
-							buildMix(
-									// Input potion.
-									Potions.WATER,
-									// Ingredient
-									SIMPLE_BLOCK.asItem(),
-									// Output potion.
-									DataGeneratorTestContent.HASTE_POTION
-							);
+							buildMix(Potions.WATER, SIMPLE_BLOCK.asItem(), DataGeneratorTestContent.HASTE_POTION);
+							buildMix(Potions.AWKWARD, SIMPLE_BLOCK.asItem(), DataGeneratorTestContent.HASTE_POTION);
+							buildMix(Potions.POISON, SIMPLE_BLOCK.asItem(), DataGeneratorTestContent.HASTE_POTION);
+							buildMix(DataGeneratorTestContent.EXAMPLE_POTION, SIMPLE_BLOCK.asItem(), DataGeneratorTestContent.HASTE_POTION);
+							buildMix(DataGeneratorTestContent.HASTE_POTION, Items.DIAMOND, Potions.POISON);
 						}
 					}.buildRecipes();
 
