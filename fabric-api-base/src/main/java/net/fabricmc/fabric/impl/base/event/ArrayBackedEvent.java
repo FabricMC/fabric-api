@@ -28,6 +28,7 @@ import java.util.function.Function;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventScope;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 
 class ArrayBackedEvent<T> extends Event<T> {
@@ -67,6 +68,30 @@ class ArrayBackedEvent<T> extends Event<T> {
 		synchronized (lock) {
 			getOrCreatePhase(phaseIdentifier, true).addListener(listener);
 			rebuildInvoker(handlers.length + 1);
+		}
+	}
+
+	@Override
+	public EventScope registerScoped(T listener) {
+		this.register(listener);
+		return new ScopedEventListenerImpl<>(this, Event.DEFAULT_PHASE, listener);
+	}
+
+	@Override
+	public EventScope registerScoped(Identifier phaseIdentifier, T listener) {
+		this.register(phaseIdentifier, listener);
+		return new ScopedEventListenerImpl<>(this, phaseIdentifier, listener);
+	}
+
+	@Override
+	public void unregister(Identifier phaseIdentifier, T listener) {
+		Objects.requireNonNull(phaseIdentifier, "Tried to unregister a listener for a null phase!");
+		Objects.requireNonNull(listener, "Tried to unregister a null listener!");
+
+		synchronized (lock) {
+			if (getOrCreatePhase(phaseIdentifier, false).removeListener(listener)) {
+				rebuildInvoker(handlers.length - 1);
+			}
 		}
 	}
 
