@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.ColorCollection;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 
 public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvider {
@@ -201,6 +202,12 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 		generateGlassTags();
 		generateGlazeTerracottaTags();
 		generateConcreteTags();
+		builder(ConventionalBlockItemTags.ICE)
+				.add(BlockItemIds.ICE)
+				.add(BlockItemIds.PACKED_ICE)
+				.add(BlockItemIds.BLUE_ICE)
+				.add(BlockItemIds.BRITTLE_ICE)
+				.add(BlockIds.FROSTED_ICE);
 		builder(ConventionalBlockTags.WOODEN_BARRELS)
 				.add(BlockItemIds.BARREL);
 		builder(ConventionalBlockTags.BARRELS)
