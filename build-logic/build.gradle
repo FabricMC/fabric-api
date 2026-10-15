@@ -15,6 +15,8 @@ repositories {
 
 dependencies {
 	implementation libs.fabric.loom
+	implementation libs.asm
+	implementation libs.asm.tree
 	implementation "com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:${libs.versions.spotless.get()}"
 	implementation "me.modmuss50.remotesign:me.modmuss50.remotesign.gradle.plugin:${libs.versions.remote.sign.get()}"
 	implementation "me.modmuss50.mod-publish-plugin:me.modmuss50.mod-publish-plugin.gradle.plugin:${libs.versions.mod.publish.get()}"
