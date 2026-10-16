@@ -73,7 +73,8 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.addOptionalTag(BiomeTags.IS_SAVANNA);
 		builder(ConventionalBiomeTags.IS_ICY)
 				.add(Biomes.FROZEN_PEAKS)
-				.add(Biomes.ICE_SPIKES);
+				.add(Biomes.ICE_SPIKES)
+				.add(Biomes.ICE_CAVES);
 		builder(ConventionalBiomeTags.IS_AQUATIC_ICY)
 				.add(Biomes.FROZEN_RIVER)
 				.add(Biomes.DEEP_FROZEN_OCEAN)
@@ -131,7 +132,8 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.add(Biomes.LUSH_CAVES)
 				.add(Biomes.DRIPSTONE_CAVES)
 				.add(Biomes.SULFUR_CAVES)
-				.add(Biomes.DEEP_DARK);
+				.add(Biomes.DEEP_DARK)
+				.add(Biomes.ICE_CAVES);
 		builder(ConventionalBiomeTags.IS_VOID)
 				.add(Biomes.THE_VOID);
 		builder(ConventionalBiomeTags.IS_DEEP_OCEAN)
@@ -169,7 +171,8 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.add(Biomes.COLD_OCEAN)
 				.add(Biomes.FROZEN_OCEAN)
 				.add(Biomes.DEEP_COLD_OCEAN)
-				.add(Biomes.DEEP_FROZEN_OCEAN);
+				.add(Biomes.DEEP_FROZEN_OCEAN)
+				.add(Biomes.ICE_CAVES);
 		builder(ConventionalBiomeTags.IS_COLD_END)
 				.add(Biomes.THE_END)
 				.add(Biomes.SMALL_END_ISLANDS)

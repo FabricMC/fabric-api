@@ -19,6 +19,7 @@
     "minecraft:cold_ocean",
     "minecraft:frozen_ocean",
     "minecraft:deep_cold_ocean",
-    "minecraft:deep_frozen_ocean"
+    "minecraft:deep_frozen_ocean",
+    "minecraft:ice_caves"
   ]
 }
