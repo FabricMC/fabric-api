@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.modprotocol",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "MinecraftServerMixin",
+    "BuiltInRegistriesMixin",
+    "ServerStatusMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-mod-protocol-api-v1",
+  "name": "Fabric Mod Protocol API (v1)",
+  "description": "Required mod version sync, validation and requirement system.",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-mod-protocol-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric-api/issues",
+    "sources": "https://github.com/FabricMC/fabric-api"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.modprotocol.ModProtocolInit"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.modprotocol.client.ClientModProtocolInit"
+    ]
+  },
+  "mixins": [
+    "fabric-mod-protocol-api-v1.mixins.json",
+    {
+      "config": "fabric-mod-protocol-api-v1.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "fabric-api-base": "*",
+    "fabric-networking-api-v1": "*"
+  },
+  "custom": {
+    "fabric-api:module-lifecycle": "experimental"
+  }
+}
