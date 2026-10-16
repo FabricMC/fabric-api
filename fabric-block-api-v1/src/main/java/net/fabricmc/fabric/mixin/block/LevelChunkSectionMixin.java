@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 
 @Mixin(LevelChunkSection.class)
-public class LevelChunkSectionMixin {
+class LevelChunkSectionMixin {
 	/**
 	 * Makes Chunk Sections not have isAir = true modded blocks be replaced with AIR against their will.
 	 * Mojang report: https://bugs.mojang.com/browse/MC-232360

@@ -36,7 +36,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.fabricmc.fabric.impl.client.particle.ParticleGroupRegistryImpl;
 
 @Mixin(ParticleEngine.class)
-public abstract class ParticleEngineMixin {
+abstract class ParticleEngineMixin {
 	@Shadow
 	@Final
 	@Mutable

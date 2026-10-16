@@ -28,7 +28,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.command.v2.FabricEntitySelectorParser;
 
 @Mixin(EntitySelectorParser.class)
-public class EntitySelectorParserMixin implements FabricEntitySelectorParser {
+class EntitySelectorParserMixin implements FabricEntitySelectorParser {
 	@Unique
 	private final Set<Identifier> flags = new HashSet<>();
 

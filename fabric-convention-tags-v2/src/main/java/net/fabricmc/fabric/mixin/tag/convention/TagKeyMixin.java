@@ -23,5 +23,5 @@ import net.minecraft.tags.TagKey;
 import net.fabricmc.fabric.api.tag.FabricTagKey;
 
 @Mixin(TagKey.class)
-public interface TagKeyMixin extends FabricTagKey {
+interface TagKeyMixin extends FabricTagKey {
 }

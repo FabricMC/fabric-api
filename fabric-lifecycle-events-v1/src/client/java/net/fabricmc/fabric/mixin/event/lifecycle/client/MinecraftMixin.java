@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 @Mixin(Minecraft.class)
-public abstract class MinecraftMixin {
+abstract class MinecraftMixin {
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void onStartTick(CallbackInfo info) {
 		ClientTickEvents.START_CLIENT_TICK.invoker().onStartTick((Minecraft) (Object) this);

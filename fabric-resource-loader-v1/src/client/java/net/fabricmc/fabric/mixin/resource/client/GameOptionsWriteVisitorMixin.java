@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.resource.pack.FabricPack;
  * Mixins to the anonymous class in #write method.
  */
 @Mixin(targets = "net.minecraft.client.Options$3")
-public class GameOptionsWriteVisitorMixin {
+class GameOptionsWriteVisitorMixin {
 	@Unique
 	private static List<String> toPackListString(List<String> packs) {
 		var copy = new ArrayList<String>(packs.size());

@@ -29,7 +29,7 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.fabricmc.fabric.api.serialization.v1.value.FabricValueInput;
 
 @Mixin(TagValueInput.class)
-public class TagValueInputMixin implements FabricValueInput {
+class TagValueInputMixin implements FabricValueInput {
 	@Shadow
 	@Final
 	private CompoundTag input;

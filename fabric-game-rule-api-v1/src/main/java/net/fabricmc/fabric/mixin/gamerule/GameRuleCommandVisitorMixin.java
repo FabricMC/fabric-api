@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 @Mixin(targets = "net.minecraft.server.commands.GameRuleCommand$1")
-public abstract class GameRuleCommandVisitorMixin {
+abstract class GameRuleCommandVisitorMixin {
 	@Final
 	@Shadow
 	LiteralArgumentBuilder<CommandSourceStack> val$base;

@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicAccess;
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 @Mixin(ShelfBlockEntity.class)
-public abstract class ShelfBlockEntityMixin implements SpecialLogicContainer, SpecialLogicAccess {
+abstract class ShelfBlockEntityMixin implements SpecialLogicContainer, SpecialLogicAccess {
 	@Unique
 	boolean fabric_suppressSpecialLogic;
 

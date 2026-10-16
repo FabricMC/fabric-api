@@ -27,7 +27,7 @@ import net.minecraft.world.level.GameType;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerMixin {
+class ServerPlayerMixin {
 	@Inject(method = "calculateGameModeForNewPlayer", at = @At("HEAD"), cancellable = true)
 	public void fakePlayerGameMode(GameType backupGameMode, CallbackInfoReturnable<GameType> cir) {
 		// Set the default game mode of the fake player to survival, regardless of the servers forced game mode.

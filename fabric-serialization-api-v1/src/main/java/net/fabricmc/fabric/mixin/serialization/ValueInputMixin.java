@@ -23,5 +23,5 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.fabricmc.fabric.api.serialization.v1.value.FabricValueInput;
 
 @Mixin(ValueInput.class)
-public interface ValueInputMixin extends FabricValueInput {
+interface ValueInputMixin extends FabricValueInput {
 }

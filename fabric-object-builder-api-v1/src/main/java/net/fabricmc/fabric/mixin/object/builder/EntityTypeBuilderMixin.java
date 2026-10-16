@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
 
 @Mixin(EntityType.Builder.class)
-public abstract class EntityTypeBuilderMixin<T extends Entity> implements FabricEntityType.Builder<T>, FabricEntityTypeImpl.Builder {
+abstract class EntityTypeBuilderMixin<T extends Entity> implements FabricEntityType.Builder<T>, FabricEntityTypeImpl.Builder {
 	@Shadow
 	public abstract EntityType<T> build(ResourceKey<EntityType<?>> resourceKey);
 

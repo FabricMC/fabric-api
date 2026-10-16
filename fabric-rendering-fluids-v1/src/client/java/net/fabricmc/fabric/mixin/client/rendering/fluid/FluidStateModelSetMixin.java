@@ -32,7 +32,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingRegistryImpl;
 
 @Mixin(FluidStateModelSet.class)
-public abstract class FluidStateModelSetMixin {
+abstract class FluidStateModelSetMixin {
 	@WrapMethod(method = "bake")
 	private static Map<Fluid, FluidModel> bake(MaterialBaker materials, Operation<Map<Fluid, FluidModel>> original) {
 		Map<Fluid, FluidModel> models = new IdentityHashMap<>(original.call(materials));

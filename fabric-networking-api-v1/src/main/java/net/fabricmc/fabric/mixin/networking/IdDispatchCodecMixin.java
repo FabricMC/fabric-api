@@ -39,7 +39,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 @Mixin(IdDispatchCodec.class)
-public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements StreamCodec<B, V> {
+abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements StreamCodec<B, V> {
 	// Add the custom payload id to the error message
 	@Inject(method = "encode(Lio/netty/buffer/ByteBuf;Ljava/lang/Object;)V", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/Throwable;)Lio/netty/handler/codec/EncoderException;"))
 	public void encode(B byteBuf, V packet, CallbackInfo ci, @Local(name = "type") T packetType, @Local(name = "e") Exception e) {

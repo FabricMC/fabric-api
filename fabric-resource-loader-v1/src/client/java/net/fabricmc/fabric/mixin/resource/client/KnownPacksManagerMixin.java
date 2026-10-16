@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 @Mixin(KnownPacksManager.class)
-public class KnownPacksManagerMixin {
+class KnownPacksManagerMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("KnownPacksManagerMixin");
 

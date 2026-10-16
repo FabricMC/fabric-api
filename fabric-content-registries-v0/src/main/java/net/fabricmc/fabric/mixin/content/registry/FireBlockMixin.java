@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.content.registry.FireBlockHooks;
 import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
 
 @Mixin(FireBlock.class)
-public class FireBlockMixin implements FireBlockHooks {
+class FireBlockMixin implements FireBlockHooks {
 	@Unique
 	private FlammableBlockRegistryImpl registry;
 

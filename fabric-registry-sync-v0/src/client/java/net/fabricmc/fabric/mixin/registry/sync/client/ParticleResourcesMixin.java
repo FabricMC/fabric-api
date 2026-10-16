@@ -31,7 +31,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.fabricmc.fabric.impl.registry.sync.trackers.Int2ObjectMapTracker;
 
 @Mixin(ParticleResources.class)
-public class ParticleResourcesMixin {
+class ParticleResourcesMixin {
 	@Final
 	@Shadow
 	private Int2ObjectMap<ParticleProvider<?>> providers;

@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.resource.client.DefaultResourcePackStorage;
 import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 
 @Mixin(Options.class)
-public class OptionsMixin {
+class OptionsMixin {
 	@Shadow
 	public List<String> resourcePacks;
 

@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 @Mixin(BuiltInRegistries.class)
-public class BuiltInRegistriesMixin {
+class BuiltInRegistriesMixin {
 	@Unique
 	private static boolean hasInitialised = false;
 

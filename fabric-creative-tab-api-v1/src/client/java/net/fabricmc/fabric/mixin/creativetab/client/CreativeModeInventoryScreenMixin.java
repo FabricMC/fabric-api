@@ -44,8 +44,8 @@ import net.fabricmc.fabric.impl.client.creativetab.FabricCreativeGuiComponents;
 import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabImpl;
 
 @Mixin(CreativeModeInventoryScreen.class)
-public abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<ItemPickerMenu> implements FabricCreativeModeInventoryScreen {
-	public CreativeModeInventoryScreenMixin(ItemPickerMenu menu, Inventory playerInventory, Component component) {
+abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<ItemPickerMenu> implements FabricCreativeModeInventoryScreen {
+	CreativeModeInventoryScreenMixin(ItemPickerMenu menu, Inventory playerInventory, Component component) {
 		super(menu, playerInventory, component);
 	}
 

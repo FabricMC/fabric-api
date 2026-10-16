@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SDLEventHandler.class)
-public class SDLEventHandlerMixin {
+class SDLEventHandlerMixin {
 	@Inject(method = {
 			"handleKeyEvent",
 			"handleTextEditingEvent",

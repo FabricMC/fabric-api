@@ -27,7 +27,7 @@ import net.minecraft.server.notifications.NotificationManager;
 import net.fabricmc.fabric.mixin.event.lifecycle.MinecraftServerMixin;
 
 @Mixin(DedicatedServer.class)
-public abstract class DedicatedServerMixin extends MinecraftServerMixin {
+abstract class DedicatedServerMixin extends MinecraftServerMixin {
 	@Redirect(method = "initServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/notifications/NotificationManager;serverStarted()V"))
 	private void deferServerStartedNotification(NotificationManager instance) {
 		// Delay the JSON RPC server started notification until the ServerLifecycleEvents.SERVER_STARTED event is fired.

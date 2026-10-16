@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.StateIdTracker;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockItemTracker;
 
 @Mixin(Bootstrap.class)
-public class BootstrapMixin {
+class BootstrapMixin {
 	@Inject(method = "bootStrap", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/Bootstrap;wrapStreams()V"))
 	private static void afterInitialize(CallbackInfo info) {
 		// These seemingly pointless accesses are done to make sure each

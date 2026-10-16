@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSavedData;
 import net.fabricmc.fabric.impl.attachment.GlobalAttachmentsImpl;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin implements GlobalAttachmentsProvider {
+abstract class MinecraftServerMixin implements GlobalAttachmentsProvider {
 	@Shadow
 	@Final
 	private SavedDataStorage savedDataStorage;

@@ -28,7 +28,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 
 @Mixin(VanillaAdventureAdvancements.class)
-public class VanillaAdventureAdvancementsMixin {
+class VanillaAdventureAdvancementsMixin {
 	@ModifyExpressionValue(method = "validateMobsToKill", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/worldgen/BootstrapContext;listContextElements(Lnet/minecraft/resources/ResourceKey;)Ljava/util/stream/Stream;"))
 	private Stream<Holder.Reference<EntityType<?>>> onlyCheckVanillaEntities(Stream<Holder.Reference<EntityType<?>>> entities) {
 		return entities.filter(entity -> entity.key().identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE));

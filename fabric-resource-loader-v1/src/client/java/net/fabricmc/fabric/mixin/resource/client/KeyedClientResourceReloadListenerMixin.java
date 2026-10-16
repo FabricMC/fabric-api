@@ -70,7 +70,7 @@ import net.fabricmc.fabric.impl.resource.FabricResourceReloader;
 		/* private */
 		LevelExtractor.class, GpuWarnlistManager.class, PeriodicNotificationManager.class
 })
-public abstract class KeyedClientResourceReloadListenerMixin implements FabricResourceReloader {
+abstract class KeyedClientResourceReloadListenerMixin implements FabricResourceReloader {
 	@Unique
 	private Identifier fabric$id;
 

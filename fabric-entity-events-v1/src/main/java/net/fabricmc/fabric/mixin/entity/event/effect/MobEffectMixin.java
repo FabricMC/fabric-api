@@ -23,7 +23,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.fabricmc.fabric.api.entity.event.v1.effect.FabricMobEffect;
 
 @Mixin(MobEffect.class)
-public final class MobEffectMixin implements FabricMobEffect {
+final class MobEffectMixin implements FabricMobEffect {
 	private MobEffectMixin() {
 	}
 }

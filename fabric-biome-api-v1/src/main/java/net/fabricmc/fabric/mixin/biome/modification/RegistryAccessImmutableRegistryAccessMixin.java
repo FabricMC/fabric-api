@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationMarker;
  * {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl} on a per-RegistryAccess basis.
  */
 @Mixin(RegistryAccess.ImmutableRegistryAccess.class)
-public class RegistryAccessImmutableRegistryAccessMixin implements BiomeModificationMarker {
+class RegistryAccessImmutableRegistryAccessMixin implements BiomeModificationMarker {
 	@Unique
 	private boolean modified;
 

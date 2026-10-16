@@ -26,7 +26,7 @@ import net.minecraft.client.particle.ParticleResources;
 import net.fabricmc.fabric.impl.client.particle.ParticleProviderRegistryImpl;
 
 @Mixin(ParticleResources.class)
-public abstract class ParticleResourcesMixin {
+abstract class ParticleResourcesMixin {
 	@Inject(method = "registerProviders", at = @At("RETURN"))
 	private void onRegisterDefaultFactories(CallbackInfo info) {
 		ParticleProviderRegistryImpl.INSTANCE.initialize((ParticleResources) (Object) this);

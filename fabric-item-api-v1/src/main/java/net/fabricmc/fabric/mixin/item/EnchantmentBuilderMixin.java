@@ -27,7 +27,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
 @Mixin(Enchantment.Builder.class)
-public class EnchantmentBuilderMixin implements EnchantmentUtil.BuilderExtensions {
+class EnchantmentBuilderMixin implements EnchantmentUtil.BuilderExtensions {
 	@Unique
 	private boolean didModify = false;
 

@@ -33,7 +33,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 @Mixin(SystemReport.class)
-public abstract class SystemReportMixin {
+abstract class SystemReportMixin {
 	@Shadow
 	public abstract void setDetail(String key, CrashReportDetail<Object> valueSupplier);
 

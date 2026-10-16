@@ -23,5 +23,5 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.fabricmc.fabric.api.blockgetter.v2.RenderDataBlockEntity;
 
 @Mixin(BlockEntity.class)
-public abstract class BlockEntityMixin implements RenderDataBlockEntity {
+abstract class BlockEntityMixin implements RenderDataBlockEntity {
 }

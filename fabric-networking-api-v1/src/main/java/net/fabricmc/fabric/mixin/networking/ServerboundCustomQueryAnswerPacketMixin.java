@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResp
 import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 @Mixin(ServerboundCustomQueryAnswerPacket.class)
-public class ServerboundCustomQueryAnswerPacketMixin {
+class ServerboundCustomQueryAnswerPacketMixin {
 	@Shadow
 	@Final
 	private static int MAX_PAYLOAD_SIZE;

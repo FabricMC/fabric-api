@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.networking.context.PacketContextSetter;
 
 // Lowered the default priority, as this should happen before other mods.
 @Mixin(value = PacketDecoder.class, priority = 500)
-public class PacketDecoderMixin implements PacketContextSetter {
+class PacketDecoderMixin implements PacketContextSetter {
 	@Unique
 	private PacketContext packetContext;
 

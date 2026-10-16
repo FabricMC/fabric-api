@@ -35,7 +35,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 
 @Mixin(ChunkMap.class)
-public abstract class ChunkMapMixin {
+abstract class ChunkMapMixin {
 	@Shadow
 	@Final
 	private ServerLevel level;

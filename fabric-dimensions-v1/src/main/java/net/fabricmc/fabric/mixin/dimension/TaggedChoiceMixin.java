@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.dimension.TaggedChoiceExtension;
 import net.fabricmc.fabric.impl.dimension.TaggedChoiceTypeExtension;
 
 @Mixin(value = TaggedChoice.class)
-public class TaggedChoiceMixin implements TaggedChoiceExtension {
+class TaggedChoiceMixin implements TaggedChoiceExtension {
 	@Unique
 	boolean failSoft = false;
 

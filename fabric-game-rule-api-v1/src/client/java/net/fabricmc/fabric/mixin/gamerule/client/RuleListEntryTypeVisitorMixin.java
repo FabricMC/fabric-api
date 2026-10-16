@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.gamerule.entry.EnumRuleEntry;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 @Mixin(targets = "net.minecraft.client.gui.screens.worldselection.AbstractGameRulesScreen$RuleList$1")
-public abstract class RuleListEntryTypeVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleTypeVisitor {
+abstract class RuleListEntryTypeVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleTypeVisitor {
 	@Final
 	@Shadow
 	private WorldCreationGameRulesScreen.RuleList this$1;

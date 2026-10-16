@@ -50,7 +50,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelRenderContextImpl;
 
 @Mixin(LevelRenderer.class)
-public abstract class LevelRendererMixin {
+abstract class LevelRendererMixin {
 	@Shadow
 	@Final
 	private RenderBuffers renderBuffers;

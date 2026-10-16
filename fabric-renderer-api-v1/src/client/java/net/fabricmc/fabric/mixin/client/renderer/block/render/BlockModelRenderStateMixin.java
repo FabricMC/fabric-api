@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.client.renderer.v1.render.FabricBlockModelRenderState;
 
 @Mixin(BlockModelRenderState.class)
-public abstract class BlockModelRenderStateMixin implements FabricBlockModelRenderState {
+abstract class BlockModelRenderStateMixin implements FabricBlockModelRenderState {
 	@Shadow
 	@Nullable
 	private List<BlockStateModelPart> modelParts;

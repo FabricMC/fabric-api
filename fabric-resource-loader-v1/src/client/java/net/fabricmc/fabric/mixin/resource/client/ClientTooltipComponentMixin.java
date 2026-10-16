@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.resource.client.PackTooltipComponent;
 
 // Since Resource Loader is one of the core modules, we avoid a dependency on the module providing the actual API.
 @Mixin(ClientTooltipComponent.class)
-public interface ClientTooltipComponentMixin {
+interface ClientTooltipComponentMixin {
 	@Inject(method = "create(Lnet/minecraft/world/inventory/tooltip/TooltipComponent;)Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipComponent;", at = @At("HEAD"), cancellable = true)
 	private static void onCreate(TooltipComponent tooltipComponent, CallbackInfoReturnable<ClientTooltipComponent> cir) {
 		if (tooltipComponent instanceof PackTooltipComponent packTooltipComponent) {

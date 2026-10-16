@@ -31,7 +31,7 @@ import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.fabricmc.fabric.impl.resource.FabricMultiPackResourceManager;
 
 @Mixin(MultiPackResourceManager.class)
-public class MultiPackResourceManagerMixin implements FabricMultiPackResourceManager {
+class MultiPackResourceManagerMixin implements FabricMultiPackResourceManager {
 	@Unique
 	private PackType packType;
 

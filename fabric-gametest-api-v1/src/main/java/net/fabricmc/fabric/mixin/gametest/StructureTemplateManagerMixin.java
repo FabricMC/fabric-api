@@ -47,7 +47,7 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 import net.fabricmc.fabric.impl.gametest.FabricGameTestRunner;
 
 @Mixin(StructureTemplateManager.class)
-public abstract class StructureTemplateManagerMixin {
+abstract class StructureTemplateManagerMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER))
 	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorageSource.LevelStorageAccess storageAccess, DataFixer dataFixer, HolderGetter<Block> blockLookup, CallbackInfo ci, @Local(name = "sources") ImmutableList.Builder<TemplateSource> builder) {
 		builder.add(new TemplateSource(dataFixer, blockLookup) {

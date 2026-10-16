@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.client.screen.GuiExtensions;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(Gui.class)
-public class GuiMixin implements GuiExtensions {
+class GuiMixin implements GuiExtensions {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-api-v1");
 	@Unique

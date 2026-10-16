@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItem;
  * Allow canceling the held item update animation if {@link FabricItem#allowComponentsUpdateAnimation} returns false.
  */
 @Mixin(FirstPersonHandsAndItems.class)
-public class FirstPersonHandsAndItemsMixin {
+class FirstPersonHandsAndItemsMixin {
 	@Shadow
 	private ItemStack mainHandItem;
 

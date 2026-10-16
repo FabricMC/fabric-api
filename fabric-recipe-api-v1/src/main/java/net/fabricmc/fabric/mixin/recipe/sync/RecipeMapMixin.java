@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
 import net.fabricmc.fabric.impl.recipe.sync.SyncedSerializerAwarePreparedRecipe;
 
 @Mixin(RecipeMap.class)
-public class RecipeMapMixin implements SyncedSerializerAwarePreparedRecipe {
+class RecipeMapMixin implements SyncedSerializerAwarePreparedRecipe {
 	@Unique
 	private Map<RecipeSerializer<?>, List<RecipeHolder<?>>> bySyncedSerializer;
 

@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 import net.fabricmc.fabric.impl.recipe.sync.client.SynchronizedClientRecipesSetter;
 
 @Mixin(ClientRecipeContainer.class)
-public class ClientRecipeContainerMixin implements FabricRecipeAccess, SynchronizedClientRecipesSetter {
+class ClientRecipeContainerMixin implements FabricRecipeAccess, SynchronizedClientRecipesSetter {
 	@Unique
 	private SynchronizedRecipes synchronizedClientRecipes = SynchronizedRecipesImpl.EMPTY;
 

@@ -31,7 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 @Mixin(AbstractContainerScreen.class)
-public abstract class AbstractContainerScreenMixin extends Screen {
+abstract class AbstractContainerScreenMixin extends Screen {
 	private AbstractContainerScreenMixin(Component title) {
 		super(title);
 	}

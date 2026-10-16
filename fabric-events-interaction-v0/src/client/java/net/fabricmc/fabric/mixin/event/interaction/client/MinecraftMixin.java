@@ -45,7 +45,7 @@ import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(Minecraft.class)
-public abstract class MinecraftMixin {
+abstract class MinecraftMixin {
 	@Unique
 	private boolean attackCancelled;
 

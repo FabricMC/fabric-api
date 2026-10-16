@@ -40,7 +40,7 @@ import net.minecraft.world.level.Level;
 import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
 
 @Mixin(ShapelessRecipe.class)
-public class ShapelessRecipeMixin {
+class ShapelessRecipeMixin {
 	@Final
 	@Shadow
 	private List<Ingredient> ingredients;

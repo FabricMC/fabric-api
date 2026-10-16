@@ -34,7 +34,7 @@ import net.minecraft.world.level.ColorResolver;
 import net.fabricmc.fabric.impl.client.rendering.ColorResolverRegistryImpl;
 
 @Mixin(ClientLevel.class)
-public abstract class ClientLevelMixin {
+abstract class ClientLevelMixin {
 	// Do not use the vanilla map because it is an Object2ObjectArrayMap. Array maps have O(n) retrievals compared to
 	// hash maps' O(1) retrievals. If many custom ColorResolvers are registered, this may have a non-negligible
 	// performance impact.

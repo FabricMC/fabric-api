@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.networking.splitter.FabricPacketSplitter;
 import net.fabricmc.fabric.impl.networking.splitter.SplittablePacket;
 
 @Mixin(ServerboundCustomPayloadPacket.class)
-public class ServerboundCustomPayloadPacketMixin implements SplittablePacket, GenericPayloadAccessor {
+class ServerboundCustomPayloadPacketMixin implements SplittablePacket, GenericPayloadAccessor {
 	@Shadow
 	@Final
 	private CustomPacketPayload payload;

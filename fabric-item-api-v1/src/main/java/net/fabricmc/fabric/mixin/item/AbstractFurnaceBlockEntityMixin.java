@@ -33,7 +33,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
-public abstract class AbstractFurnaceBlockEntityMixin {
+abstract class AbstractFurnaceBlockEntityMixin {
 	// Copy the stack before the .shrink
 	@Inject(method = "consumeFuel", at = @At("HEAD"))
 	private static void copyStack(ServerLevel level, BlockPos pos, NonNullList<ItemStack> items, ItemStack fuel, CallbackInfo ci, @Share("itemStack") LocalRef<ItemStack> copiedStack) {

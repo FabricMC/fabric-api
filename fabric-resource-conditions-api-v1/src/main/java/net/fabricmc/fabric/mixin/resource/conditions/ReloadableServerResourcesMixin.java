@@ -37,7 +37,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(ReloadableServerResources.class)
-public class ReloadableServerResourcesMixin {
+class ReloadableServerResourcesMixin {
 	@Inject(
 			method = "loadResources",
 			at = @At("HEAD")

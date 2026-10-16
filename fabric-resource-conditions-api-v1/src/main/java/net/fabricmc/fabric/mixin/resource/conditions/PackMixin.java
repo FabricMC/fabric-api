@@ -31,7 +31,7 @@ import net.minecraft.server.packs.repository.Pack;
 import net.fabricmc.fabric.api.resource.conditions.v1.FabricOverlayMetadataSection;
 
 @Mixin(Pack.class)
-public class PackMixin {
+class PackMixin {
 	@ModifyVariable(method = "readPackMetadata", at = @At("STORE"), name = "overlaySet")
 	private static List<String> applyOverlayConditions(List<String> overlays, @Local(name = "pack") PackMetadataResources pack) throws IOException {
 		List<String> appliedOverlays = new ArrayList<>(overlays);

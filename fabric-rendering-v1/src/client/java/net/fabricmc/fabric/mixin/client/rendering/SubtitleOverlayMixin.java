@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
 @Mixin(SubtitleOverlay.class)
-public class SubtitleOverlayMixin {
+class SubtitleOverlayMixin {
 	@WrapMethod(method = "extractRenderState")
 	private void wrapExtractRenderState(GuiGraphicsExtractor context, Operation<Void> original) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).extractRenderState(

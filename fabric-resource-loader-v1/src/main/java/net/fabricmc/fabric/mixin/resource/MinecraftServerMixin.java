@@ -48,7 +48,7 @@ import net.fabricmc.fabric.impl.resource.pack.FabricOriginalKnownPacksGetter;
 import net.fabricmc.fabric.impl.resource.pack.ModNioPackResources;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKnownPacksGetter {
+class MinecraftServerMixin implements DataResourceStore, FabricOriginalKnownPacksGetter {
 	@Unique
 	private List<KnownPack> originalKnownPacks;
 

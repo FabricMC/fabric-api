@@ -71,7 +71,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(MappedRegistry.class)
-public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, RemappableRegistry, ListenableRegistry<T>, FabricRegistry {
+abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, RemappableRegistry, ListenableRegistry<T>, FabricRegistry {
 	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
 	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique

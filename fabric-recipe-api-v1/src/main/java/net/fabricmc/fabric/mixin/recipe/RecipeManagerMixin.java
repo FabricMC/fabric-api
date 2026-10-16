@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 
 @Mixin(RecipeManager.class)
-public abstract class RecipeManagerMixin implements FabricRecipeManager {
+abstract class RecipeManagerMixin implements FabricRecipeManager {
 	@Shadow
 	private RecipeMap recipes;
 	@Unique

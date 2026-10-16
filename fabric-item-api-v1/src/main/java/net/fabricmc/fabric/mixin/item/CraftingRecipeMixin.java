@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
 @Mixin(CraftingRecipe.class)
-public interface CraftingRecipeMixin {
+interface CraftingRecipeMixin {
 	@WrapOperation(method = "defaultCraftingReminder", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;"))
 	private static Item captureStack(ItemStack stack, Operation<Item> operation, @Share("stack") LocalRef<ItemStack> stackRef) {
 		stackRef.set(stack);

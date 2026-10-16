@@ -36,7 +36,7 @@ import net.minecraft.server.players.PlayerList;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 @Mixin(PlayerList.class)
-public abstract class PlayerListMixin {
+abstract class PlayerListMixin {
 	@Shadow
 	@Final
 	private MinecraftServer server;

@@ -37,7 +37,7 @@ import net.minecraft.server.packs.resources.ResourceProvider;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
 @Mixin(RegistryDataCollector.class)
-public class RegistryDataCollectorMixin {
+class RegistryDataCollectorMixin {
 	/**
 	 * Keep the pre-24w04a behavior of removing empty registries, even if the client knows that registry.
 	 */

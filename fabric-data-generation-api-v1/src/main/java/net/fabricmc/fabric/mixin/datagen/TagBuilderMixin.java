@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 import net.fabricmc.fabric.impl.datagen.TagBuilderHooks;
 
 @Mixin(TagBuilder.class)
-public abstract class TagBuilderMixin implements FabricTagBuilder, TagBuilderHooks {
+abstract class TagBuilderMixin implements FabricTagBuilder, TagBuilderHooks {
 	@Unique
 	private final List<TagEntry> removals = new ArrayList<>();
 

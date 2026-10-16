@@ -42,8 +42,11 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.MinecraftServerHooks;
 
+// Public for DedicatedServerMixin in the server subpackage.
+//CHECKSTYLE.OFF: MatchXpath
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin implements MinecraftServerHooks {
+	//CHECKSTYLE.ON: MatchXpath
 	@Shadow
 	private MinecraftServer.ReloadableResources resources;
 

@@ -26,7 +26,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.fabricmc.fabric.impl.object.builder.FabricDefaultAttributeRegistryImpl;
 
 @Mixin(BuiltInRegistries.class)
-public class BuiltInRegistriesMixin {
+class BuiltInRegistriesMixin {
 	@Inject(method = "freeze", at = @At("HEAD"))
 	private static void modifyAttributes(CallbackInfo ci) {
 		FabricDefaultAttributeRegistryImpl.invokeModify();

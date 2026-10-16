@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.networking.splitter.PassthroughPacket;
 
 // Lowered the default priority, as this should happen before other mods.
 @Mixin(value = PacketEncoder.class, priority = 500)
-public class PacketEncoderMixin implements PacketContextSetter {
+class PacketEncoderMixin implements PacketContextSetter {
 	@Unique
 	private PacketContext packetContext;
 

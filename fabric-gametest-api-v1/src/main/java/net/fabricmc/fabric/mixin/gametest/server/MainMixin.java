@@ -30,7 +30,7 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 import net.fabricmc.fabric.impl.gametest.FabricGameTestRunner;
 
 @Mixin(Main.class)
-public class MainMixin {
+class MainMixin {
 	@ModifyExpressionValue(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/Eula;hasAgreedToEULA()Z"))
 	private static boolean isEulaAgreedTo(boolean isEulaAgreedTo) {
 		return FabricGameTestRunner.ENABLED || isEulaAgreedTo;

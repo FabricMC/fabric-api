@@ -29,7 +29,7 @@ import net.minecraft.world.level.Level;
 import net.fabricmc.fabric.impl.event.lifecycle.EntityLoadDataSetter;
 
 @Mixin(EntityType.class)
-public class EntityTypeMixin {
+class EntityTypeMixin {
 	@Inject(
 			method = "create(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/EntitySpawnRequest;)Lnet/minecraft/world/entity/Entity;",
 			at = @At("RETURN")

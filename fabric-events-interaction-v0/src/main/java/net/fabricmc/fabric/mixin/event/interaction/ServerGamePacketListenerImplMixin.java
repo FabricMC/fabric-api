@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(ServerGamePacketListenerImpl.class)
-public abstract class ServerGamePacketListenerImplMixin {
+abstract class ServerGamePacketListenerImplMixin {
 	@Shadow
 	public ServerPlayer player;
 

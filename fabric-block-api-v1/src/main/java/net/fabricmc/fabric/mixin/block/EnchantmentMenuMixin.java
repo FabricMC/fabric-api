@@ -29,7 +29,7 @@ import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.level.Level;
 
 @Mixin(EnchantmentMenu.class)
-public class EnchantmentMenuMixin {
+class EnchantmentMenuMixin {
 	@WrapOperation(method = "lambda$slotsChanged$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/EnchantingTableBlock;isValidBookShelf(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Z"))
 	private boolean addEnchantingPower(Level level, BlockPos pos, BlockPos offset, Operation<Boolean> original, @Share("power") LocalFloatRef power) {
 		if (original.call(level, pos, offset)) {

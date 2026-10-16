@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 
 @Mixin(BlockEntityType.class)
-public class BlockEntityTypeMixin<T extends BlockEntity> implements FabricBlockEntityType {
+class BlockEntityTypeMixin<T extends BlockEntity> implements FabricBlockEntityType {
 	@Mutable
 	@Shadow
 	@Final

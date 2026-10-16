@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  * Allows droppers to insert into ItemVariant storages.
  */
 @Mixin(DropperBlock.class)
-public class DropperBlockMixin {
+class DropperBlockMixin {
 	@Inject(
 			at = @At(
 					value = "INVOKE",

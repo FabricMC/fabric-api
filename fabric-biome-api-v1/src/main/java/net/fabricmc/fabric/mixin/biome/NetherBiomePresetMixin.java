@@ -30,7 +30,7 @@ import net.minecraft.world.level.biome.Climate;
 import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
 @Mixin(targets = "net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList$Preset$1")
-public class NetherBiomePresetMixin {
+class NetherBiomePresetMixin {
 	@Inject(method = "apply", at = @At("RETURN"), cancellable = true)
 	public <T> void apply(Function<ResourceKey<Biome>, T> function, CallbackInfoReturnable<Climate.ParameterList<T>> cir) {
 		cir.setReturnValue(NetherBiomeData.withModdedBiomeEntries(cir.getReturnValue(), function));

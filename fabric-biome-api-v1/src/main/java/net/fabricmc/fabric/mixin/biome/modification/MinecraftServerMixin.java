@@ -28,7 +28,7 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin {
+abstract class MinecraftServerMixin {
 	@Shadow
 	public abstract RegistryAccess.Frozen registryAccess();
 

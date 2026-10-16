@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 
 @Mixin(BlockEntityRenderers.class)
-public abstract class BlockEntityRenderersMixin {
+abstract class BlockEntityRenderersMixin {
 	@Shadow()
 	@Final
 	private static Map<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> PROVIDERS;

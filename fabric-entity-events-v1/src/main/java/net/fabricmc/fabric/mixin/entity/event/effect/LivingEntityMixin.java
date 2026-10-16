@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+abstract class LivingEntityMixin extends Entity {
 	private LivingEntityMixin(EntityType<?> entityType, Level level) {
 		super(entityType, level);
 	}

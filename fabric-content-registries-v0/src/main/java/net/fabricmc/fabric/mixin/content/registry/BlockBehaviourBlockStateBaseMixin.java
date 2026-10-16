@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.fabricmc.fabric.impl.content.registry.OxidizableBlocksRegistryImpl;
 
 @Mixin(BlockBehaviour.BlockStateBase.class)
-public abstract class BlockBehaviourBlockStateBaseMixin extends StateHolder<Block, BlockState> implements OxidizableBlocksRegistryImpl.RandomTickCacheRefresher {
+abstract class BlockBehaviourBlockStateBaseMixin extends StateHolder<Block, BlockState> implements OxidizableBlocksRegistryImpl.RandomTickCacheRefresher {
 	@Shadow
 	protected abstract BlockState asState();
 

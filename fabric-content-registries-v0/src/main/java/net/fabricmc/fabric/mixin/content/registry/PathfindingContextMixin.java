@@ -32,7 +32,7 @@ import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 
 @Mixin(PathfindingContext.class)
-public abstract class PathfindingContextMixin {
+abstract class PathfindingContextMixin {
 	@Shadow
 	public abstract BlockState getBlockState(BlockPos blockPos);
 

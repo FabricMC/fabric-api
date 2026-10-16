@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionReg
 import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(LocalPlayer.class)
-public class LocalPlayerMixin {
+class LocalPlayerMixin {
 	@ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInWater()Z"))
 	private boolean handleCustomDownSwimmableFluids(boolean original) {
 		if (original) {

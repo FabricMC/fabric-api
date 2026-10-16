@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.dimension.DimensionModificationMarker;
  * {@link DimensionModificationImpl} on a per-DynamicRegistryManager basis.
  */
 @Mixin(RegistryAccess.ImmutableRegistryAccess.class)
-public class RegistryAccessImmutableRegistryAccessMixin implements DimensionModificationMarker {
+class RegistryAccessImmutableRegistryAccessMixin implements DimensionModificationMarker {
 	@Unique
 	private boolean dimensionsModified;
 

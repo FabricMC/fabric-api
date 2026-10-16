@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
  * @see ModPackResourcesUtil#createTestServerSettings
  */
 @Mixin(GameTestServer.class)
-public class GameTestServerMixin {
+class GameTestServerMixin {
 	@Redirect(method = "create", at = @At(value = "NEW", target = "(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/world/level/DataPackConfig;"))
 	private static DataPackConfig replaceDefaultDataPackConfig(List<String> enabled, List<String> disabled) {
 		return ModPackResourcesUtil.createTestServerSettings(enabled, disabled);

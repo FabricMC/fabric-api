@@ -45,7 +45,7 @@ import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionReg
 import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements EntityFluidExtension, InternalEntityFluidExtension {
+abstract class EntityMixin implements EntityFluidExtension, InternalEntityFluidExtension {
 	@Shadow
 	@Final
 	private EntityFluidInteraction fluidInteraction;

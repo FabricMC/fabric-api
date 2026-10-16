@@ -36,7 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicRegistry;
 
 @Mixin(DetectorRailBlock.class)
-public abstract class DetectorRailBlockMixin {
+abstract class DetectorRailBlockMixin {
 	@Shadow
 	protected abstract <T extends AbstractMinecart> List<T> getInteractingMinecartOfType(Level level, BlockPos blockPos, Class<T> class_, Predicate<Entity> predicate);
 

@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionReg
 import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(Swim.class)
-public class SwimMixin {
+class SwimMixin {
 	@ModifyReturnValue(method = "checkExtraStartConditions", at = @At("RETURN"))
 	private static boolean floatInCustomFluids(boolean original, @Local(argsOnly = true) Mob mob) {
 		if (original) {

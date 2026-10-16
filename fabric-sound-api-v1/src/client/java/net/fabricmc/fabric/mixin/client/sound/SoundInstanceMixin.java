@@ -23,5 +23,5 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.fabricmc.fabric.api.client.sound.v1.FabricSoundInstance;
 
 @Mixin(SoundInstance.class)
-public interface SoundInstanceMixin extends FabricSoundInstance {
+interface SoundInstanceMixin extends FabricSoundInstance {
 }

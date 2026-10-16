@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
 @Mixin(ServerPlayerGameMode.class)
-public class ServerPlayerGameModeMixin {
+class ServerPlayerGameModeMixin {
 	@Final
 	@Shadow
 	protected ServerPlayer player;

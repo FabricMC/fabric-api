@@ -31,7 +31,7 @@ import net.minecraft.world.entity.EntityType;
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootSubProvider;
 
 @Mixin(EntityLootSubProvider.class)
-public class EntityLootSubProviderMixin implements FabricEntityLootSubProvider {
+class EntityLootSubProviderMixin implements FabricEntityLootSubProvider {
 	@ModifyExpressionValue(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/loot/LootTableSubProvider$Context;listContextElements(Lnet/minecraft/resources/ResourceKey;)Ljava/util/stream/Stream;"))
 	private Stream<Holder.Reference<EntityType<?>>> onlyVanillaEntities(Stream<Holder.Reference<EntityType<?>>> entities) {
 		if ((Object) this instanceof VanillaEntityLoot) {

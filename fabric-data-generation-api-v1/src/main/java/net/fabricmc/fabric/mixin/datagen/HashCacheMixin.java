@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.data.HashCache;
 
 @Mixin(HashCache.class)
-public abstract class HashCacheMixin {
+abstract class HashCacheMixin {
 	// Lambda in write()V
 	@Redirect(method = "lambda$purgeStaleAndWrite$0", at = @At(value = "INVOKE", target = "Ljava/time/ZonedDateTime;now()Ljava/time/ZonedDateTime;"))
 	private ZonedDateTime constantTime() {

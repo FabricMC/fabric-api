@@ -28,7 +28,7 @@ import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.resources.Identifier;
 
 @Mixin(SoundEngine.class)
-public class SoundEngineMixin {
+class SoundEngineMixin {
 	@Redirect(
 			method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)Lnet/minecraft/client/sounds/SoundEngine$PlayResult;",
 			at = @At(

@@ -29,7 +29,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.fabricmc.fabric.impl.attachment.DataAccessorHandler;
 
 @Mixin(BlockDataAccessor.class)
-public abstract class BlockDataAccessorMixin implements DataAccessor {
+abstract class BlockDataAccessorMixin implements DataAccessor {
 	@WrapOperation(method = "setData", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;loadWithComponents(Lnet/minecraft/world/level/storage/ValueInput;)V"))
 	public void setData(BlockEntity entity, ValueInput input, Operation<Void> original) {
 		if (entity.getLevel() == null) {

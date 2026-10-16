@@ -29,7 +29,7 @@ import net.minecraft.server.players.PlayerList;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 @Mixin(PlayerList.class)
-public class PlayerListMixin {
+class PlayerListMixin {
 	@Inject(
 			method = "placeNewPlayer",
 			at = @At(value = "NEW", target = "net/minecraft/network/protocol/game/ClientboundUpdateRecipesPacket")

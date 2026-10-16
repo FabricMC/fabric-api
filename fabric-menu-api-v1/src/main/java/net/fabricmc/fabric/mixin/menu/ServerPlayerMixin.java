@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.impl.menu.Networking;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerMixin extends Player {
+abstract class ServerPlayerMixin extends Player {
 	@Shadow
 	private int containerCounter;
 

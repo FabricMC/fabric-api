@@ -23,5 +23,5 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.fabricmc.fabric.api.datagen.v1.recipe.FabricRecipeOutput;
 
 @Mixin(RecipeOutput.class)
-public interface RecipeOutputMixin extends FabricRecipeOutput {
+interface RecipeOutputMixin extends FabricRecipeOutput {
 }

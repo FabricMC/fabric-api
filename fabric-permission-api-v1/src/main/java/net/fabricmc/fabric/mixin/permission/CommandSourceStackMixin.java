@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.permission.v1.PermissionContextOwner;
 import net.fabricmc.fabric.impl.permission.CommandPermissionContext;
 
 @Mixin(CommandSourceStack.class)
-public abstract class CommandSourceStackMixin implements PermissionContextOwner, CommandPermissionContext.Extension {
+abstract class CommandSourceStackMixin implements PermissionContextOwner, CommandPermissionContext.Extension {
 	@Unique
 	private final PermissionContext context = new CommandPermissionContext((CommandSourceStack) ((Object) this));
 	@Unique

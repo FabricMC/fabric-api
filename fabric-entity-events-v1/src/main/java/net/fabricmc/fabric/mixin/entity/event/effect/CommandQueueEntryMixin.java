@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.entity.event.effect.EffectEventContextImpl;
 import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 @Mixin(CommandQueueEntry.class)
-public final class CommandQueueEntryMixin<T extends ExecutionCommandSource<T>, S> {
+final class CommandQueueEntryMixin<T extends ExecutionCommandSource<T>, S> {
 	@Shadow
 	@Final
 	private EntryAction<T> action;

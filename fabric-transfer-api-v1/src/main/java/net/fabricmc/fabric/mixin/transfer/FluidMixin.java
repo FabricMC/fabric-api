@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
  */
 @Mixin(Fluid.class)
 @SuppressWarnings("unused")
-public class FluidMixin implements FluidVariantCache {
+class FluidMixin implements FluidVariantCache {
 	@Unique
 	@SuppressWarnings("ConstantConditions")
 	private final FluidVariant cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, DataComponentPatch.EMPTY);

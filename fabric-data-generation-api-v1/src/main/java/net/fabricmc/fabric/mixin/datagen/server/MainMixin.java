@@ -26,7 +26,7 @@ import net.minecraft.server.Main;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 @Mixin(Main.class)
-public class MainMixin {
+class MainMixin {
 	@Inject(method = "main", at = @At(value = "NEW", target = "net/minecraft/server/dedicated/DedicatedServerSettings"), cancellable = true)
 	private static void main(String[] args, CallbackInfo info) {
 		if (FabricDataGenHelper.ENABLED) {

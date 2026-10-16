@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 @Mixin(CreateWorldScreen.class)
-public abstract class CreateWorldScreenMixin extends Screen {
+abstract class CreateWorldScreenMixin extends Screen {
 	@Shadow
 	private PackRepository tempDataPackRepository;
 

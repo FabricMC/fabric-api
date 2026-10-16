@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequ
 import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 @Mixin(ClientboundCustomQueryPacket.class)
-public class ClientboundCustomQueryPacketMixin {
+class ClientboundCustomQueryPacketMixin {
 	@Shadow
 	@Final
 	private static int MAX_PAYLOAD_SIZE;

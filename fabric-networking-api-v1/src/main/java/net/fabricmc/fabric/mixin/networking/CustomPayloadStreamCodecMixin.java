@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.networking.CustomPayloadTypeProvider;
 import net.fabricmc.fabric.impl.networking.FabricCustomPayloadStreamCodec;
 
 @Mixin(targets = "net.minecraft.network.protocol.common.custom.CustomPacketPayload$1")
-public abstract class CustomPayloadStreamCodecMixin<B extends FriendlyByteBuf> implements StreamCodec<B, CustomPacketPayload>, FabricCustomPayloadStreamCodec<B> {
+abstract class CustomPayloadStreamCodecMixin<B extends FriendlyByteBuf> implements StreamCodec<B, CustomPacketPayload>, FabricCustomPayloadStreamCodec<B> {
 	@Unique
 	private CustomPayloadTypeProvider<B> customPayloadTypeProvider;
 

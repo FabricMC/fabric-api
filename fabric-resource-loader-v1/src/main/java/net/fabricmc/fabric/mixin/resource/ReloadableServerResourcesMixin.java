@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.resource.FabricDataResourceStoreHolder;
 import net.fabricmc.fabric.impl.resource.SetupMarkerResourceReloader;
 
 @Mixin(ReloadableServerResources.class)
-public class ReloadableServerResourcesMixin implements FabricDataResourceStoreHolder {
+class ReloadableServerResourcesMixin implements FabricDataResourceStoreHolder {
 	@Unique
 	private final DataResourceStore.Mutable dataResourceStore = new DataResourceStoreImpl();
 

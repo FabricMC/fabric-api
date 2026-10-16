@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
 import net.fabricmc.fabric.impl.gamerule.GameRuleEventsImpl;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin {
+class MinecraftServerMixin {
 	@Inject(method = "onGameRuleChanged", at = @At("RETURN"))
 	private <T> void handleGameRuleUpdate(GameRule<T> gameRule, T value, CallbackInfo ci) {
 		Event<GameRuleEvents.ValueUpdate<T>> event = GameRuleEventsImpl.getValueUpdate(gameRule);

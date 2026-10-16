@@ -32,7 +32,7 @@ import net.minecraft.world.level.Level;
 import net.fabricmc.fabric.api.event.player.ItemEvents;
 
 @Mixin(ItemStack.class)
-public class ItemStackMixin {
+class ItemStackMixin {
 	@WrapOperation(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"))
 	private InteractionResult handleUseEvent(Item instance, Level level, Player player, InteractionHand interactionHand, Operation<InteractionResult> original) {
 		InteractionResult result = ItemEvents.USE.invoker().use(level, player, interactionHand);

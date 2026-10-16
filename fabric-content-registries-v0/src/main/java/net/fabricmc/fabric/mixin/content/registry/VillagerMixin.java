@@ -29,7 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.fabricmc.fabric.impl.content.registry.VillagerInteractionRegistriesImpl;
 
 @Mixin(Villager.class)
-public class VillagerMixin {
+class VillagerMixin {
 	@WrapOperation(method = "wantsToPickUp", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/tags/TagKey;)Z"))
 	private boolean useGatherableItemsSet(ItemStack stack, TagKey<Item> tag, Operation<Boolean> original) {
 		return VillagerInteractionRegistriesImpl.getGatherableItemRegistry().contains(stack.getItem()) || original.call(stack, tag);

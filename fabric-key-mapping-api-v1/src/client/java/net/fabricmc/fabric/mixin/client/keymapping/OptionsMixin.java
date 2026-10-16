@@ -30,7 +30,7 @@ import net.minecraft.client.Options;
 import net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl;
 
 @Mixin(Options.class)
-public class OptionsMixin {
+class OptionsMixin {
 	@Mutable
 	@Shadow
 	@Final

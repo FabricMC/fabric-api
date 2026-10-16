@@ -30,7 +30,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
 
 @Mixin(DedicatedServer.class)
-public abstract class DedicatedServerMixin {
+abstract class DedicatedServerMixin {
 	@Inject(method = "initServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadLevel()V"))
 	private void captureServerInstance(CallbackInfoReturnable<Boolean> cir) {
 		// Capture the server instance once the server is ready to be connected to

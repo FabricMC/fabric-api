@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
 @Mixin(Blocks.class)
-public class BlocksMixin {
+class BlocksMixin {
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void initShapeCache(CallbackInfo ci) {
 		// Ensure that any blocks added after this point have their shape cache initialized.

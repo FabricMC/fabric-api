@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
 @Mixin(ServerCommonPacketListenerImpl.class)
-public abstract class ServerCommonPacketListenerImplMixin implements PacketListenerExtensions, PacketContextProvider {
+abstract class ServerCommonPacketListenerImplMixin implements PacketListenerExtensions, PacketContextProvider {
 	@Shadow
 	@Final
 	protected MinecraftServer server;

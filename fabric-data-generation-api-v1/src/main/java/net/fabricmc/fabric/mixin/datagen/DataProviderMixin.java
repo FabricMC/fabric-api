@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
 @Mixin(DataProvider.class)
-public interface DataProviderMixin {
+interface DataProviderMixin {
 	/**
 	 * Adjust the default sort order of some keys provided by Fabric API.
 	 */

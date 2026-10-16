@@ -23,5 +23,5 @@ import net.minecraft.world.MenuProvider;
 import net.fabricmc.fabric.api.menu.v1.FabricMenuProvider;
 
 @Mixin(MenuProvider.class)
-public interface MenuProviderMixin extends FabricMenuProvider {
+interface MenuProviderMixin extends FabricMenuProvider {
 }

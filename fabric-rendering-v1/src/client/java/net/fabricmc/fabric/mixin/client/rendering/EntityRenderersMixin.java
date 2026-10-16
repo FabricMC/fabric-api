@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 
 @Mixin(EntityRenderers.class)
-public abstract class EntityRenderersMixin {
+abstract class EntityRenderersMixin {
 	@Shadow()
 	@Final
 	private static Map<EntityType<?>, EntityRendererProvider<?>> PROVIDERS;

@@ -26,7 +26,7 @@ import net.minecraft.core.component.DataComponentInitializers;
 import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
 
 @Mixin(DataComponentInitializers.class)
-public abstract class DataComponentInitializersMixin {
+abstract class DataComponentInitializersMixin {
 	@WrapMethod(method = "createInitializerForRegistry")
 	private static <T> DataComponentInitializers.PendingComponents<T> captureLookup(HolderLookup.Provider context, DataComponentInitializers.PendingComponentBuilders<T> elementBuilders, Operation<DataComponentInitializers.PendingComponents<T>> original) {
 		return ScopedValue.where(DefaultItemComponentImpl.LOOKUP_PROVIDER_SCOPED_VALUE, context).call(() -> original.call(context, elementBuilders));

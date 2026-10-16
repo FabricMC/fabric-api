@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricTypedRule;
 
 @Mixin(GameRulesService.GameRuleUpdate.class)
-public abstract class GameRulesServiceGameRuleUpdateMixin implements FabricTypedRule {
+abstract class GameRulesServiceGameRuleUpdateMixin implements FabricTypedRule {
 	@Nullable
 	@Unique
 	private FabricGameRuleType fabricGameRuleType = null;

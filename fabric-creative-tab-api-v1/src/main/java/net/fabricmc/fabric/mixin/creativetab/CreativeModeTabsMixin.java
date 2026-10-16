@@ -51,7 +51,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabImpl;
 
 @Mixin(CreativeModeTabs.class)
-public class CreativeModeTabsMixin {
+class CreativeModeTabsMixin {
 	@Unique
 	private static final int TABS_PER_PAGE = FabricCreativeModeTabImpl.TABS_PER_PAGE;
 

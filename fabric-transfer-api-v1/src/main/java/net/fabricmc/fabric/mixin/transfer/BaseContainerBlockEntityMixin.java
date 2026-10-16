@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
  * Defer setChanged until the outer transaction close callback when setStack is called from an inventory wrapper.
  */
 @Mixin(BaseContainerBlockEntity.class)
-public class BaseContainerBlockEntityMixin implements SpecialLogicContainer {
+class BaseContainerBlockEntityMixin implements SpecialLogicContainer {
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
 

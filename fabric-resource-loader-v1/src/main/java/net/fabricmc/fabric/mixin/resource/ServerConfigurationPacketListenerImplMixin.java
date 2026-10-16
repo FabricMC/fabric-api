@@ -32,8 +32,8 @@ import net.minecraft.server.packs.repository.KnownPack;
 import net.fabricmc.fabric.impl.resource.pack.FabricOriginalKnownPacksGetter;
 
 @Mixin(ServerConfigurationPacketListenerImpl.class)
-public abstract class ServerConfigurationPacketListenerImplMixin extends ServerCommonPacketListenerImpl {
-	public ServerConfigurationPacketListenerImplMixin(MinecraftServer server, Connection connection, CommonListenerCookie clientData) {
+abstract class ServerConfigurationPacketListenerImplMixin extends ServerCommonPacketListenerImpl {
+	ServerConfigurationPacketListenerImplMixin(MinecraftServer server, Connection connection, CommonListenerCookie clientData) {
 		super(server, connection, clientData);
 	}
 

@@ -33,7 +33,7 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.test.registry.sync.RegistrySyncTest;
 
 @Mixin(ByteBufCodecs.class)
-public interface ByteBufCodecsMixin {
+interface ByteBufCodecsMixin {
 	@Inject(method = "registry(Lnet/minecraft/resources/ResourceKey;Ljava/util/function/Function;)Lnet/minecraft/network/codec/StreamCodec;", at = @At("HEAD"))
 	private static <T, R> void checkSynced(ResourceKey<? extends Registry<T>> registry, Function<Registry<T>, IdMap<R>> registryTransformer, CallbackInfoReturnable<StreamCodec<RegistryFriendlyByteBuf, R>> cir) {
 		RegistrySyncTest.checkSyncedRegistry(registry);

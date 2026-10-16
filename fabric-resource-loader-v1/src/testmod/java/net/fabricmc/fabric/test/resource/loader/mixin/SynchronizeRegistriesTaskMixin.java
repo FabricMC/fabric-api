@@ -34,7 +34,7 @@ import net.minecraft.server.packs.repository.KnownPack;
 import net.fabricmc.fabric.test.resource.loader.BuiltinPackTestMod;
 
 @Mixin(SynchronizeRegistriesTask.class)
-public class SynchronizeRegistriesTaskMixin {
+class SynchronizeRegistriesTaskMixin {
 	@Shadow
 	@Final
 	private List<KnownPack> requestedPacks;

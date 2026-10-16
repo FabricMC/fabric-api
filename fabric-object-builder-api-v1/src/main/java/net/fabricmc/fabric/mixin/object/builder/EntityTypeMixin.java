@@ -28,7 +28,7 @@ import net.minecraft.world.entity.EntityType;
 import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
 
 @Mixin(EntityType.class)
-public abstract class EntityTypeMixin implements FabricEntityTypeImpl {
+abstract class EntityTypeMixin implements FabricEntityTypeImpl {
 	@Unique
 	@Nullable
 	private Boolean alwaysUpdateVelocity;
