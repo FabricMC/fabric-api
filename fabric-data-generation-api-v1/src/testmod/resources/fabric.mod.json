@@ -12,7 +12,8 @@
       "net.fabricmc.fabric.test.datagen.DataGeneratorTestContent"
     ],
     "fabric-datagen": [
-      "net.fabricmc.fabric.test.datagen.DataGeneratorTestEntrypoint"
+      "net.fabricmc.fabric.test.datagen.DataGeneratorTestEntrypoint",
+      "net.fabricmc.fabric.test.datagen.DataGeneratorSecondTestEntrypoint"
     ]
   }
 }
