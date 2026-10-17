@@ -602,9 +602,11 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 		builder(ConventionalItemTags.ENCHANTABLES)
 				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
 				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
-				.addOptionalTag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
 				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)
+				.addOptionalTag(ItemTags.MELEE_WEAPON_ENCHANTABLE)
+				.addOptionalTag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
 				.addOptionalTag(ItemTags.SWEEPING_ENCHANTABLE)
+				.addOptionalTag(ItemTags.LUNGE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.MINING_ENCHANTABLE)
 				.addOptionalTag(ItemTags.MINING_LOOT_ENCHANTABLE)
 				.addOptionalTag(ItemTags.FISHING_ENCHANTABLE)
@@ -614,9 +616,7 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.addOptionalTag(ItemTags.MACE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.FIRE_ASPECT_ENCHANTABLE)
 				.addOptionalTag(ItemTags.DURABILITY_ENCHANTABLE)
-				.addOptionalTag(ItemTags.VANISHING_ENCHANTABLE)
-				.addOptionalTag(ItemTags.LUNGE_ENCHANTABLE)
-				.addOptionalTag(ItemTags.MELEE_WEAPON_ENCHANTABLE);
+				.addOptionalTag(ItemTags.VANISHING_ENCHANTABLE);
 	}
 
 	private void generateVillagerJobSites() {
@@ -760,7 +760,8 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 
 		for (ColorCollection<BlockItemId> colorCollection : List.of(
 				BlockItemIds.BANNER, BlockItemIds.BED, BlockItemIds.DYED_CANDLE, BlockItemIds.CARPET,
-				BlockItemIds.CONCRETE, BlockItemIds.CONCRETE_POWDER, BlockItemIds.GLAZED_TERRACOTTA,
+				BlockItemIds.CONCRETE, BlockItemIds.CONCRETE_SLAB, BlockItemIds.CONCRETE_STAIRS,
+				BlockItemIds.CONCRETE_POWDER, BlockItemIds.GLAZED_TERRACOTTA,
 				BlockItemIds.DYED_SHULKER_BOX, BlockItemIds.STAINED_GLASS, BlockItemIds.STAINED_GLASS_PANE,
 				BlockItemIds.DYED_TERRACOTTA, BlockItemIds.WOOL, BlockItemIds.WOOL_SLAB, BlockItemIds.WOOL_STAIRS)) {
 			ColorCollection.zipApply(builders, colorCollection, BlockItemTagAppender::add);

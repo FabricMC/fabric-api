@@ -410,8 +410,7 @@ public final class BiomeTagsGenerator extends FabricTagsProvider<Biome> {
 				.add(Biomes.CHERRY_GROVE)
 				.addOptionalTag(ConventionalBiomeTags.IS_FLOWER_FOREST);
 		builder(ConventionalBiomeTags.IS_FLOWER_FOREST)
-				.add(Biomes.FLOWER_FOREST)
-				.addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "flower_forests")));
+				.add(Biomes.FLOWER_FOREST);
 		builder(ConventionalBiomeTags.IS_OLD_GROWTH)
 				.add(Biomes.OLD_GROWTH_BIRCH_FOREST)
 				.add(Biomes.OLD_GROWTH_PINE_TAIGA)
