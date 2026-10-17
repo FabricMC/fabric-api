@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemStack;
 @Mixin(FishingHook.class)
 abstract class FishingHookMixin {
 	@WrapOperation(method = "shouldStopFishing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Ljava/lang/Object;)Z"), require = 2)
-	private boolean allowModdedRodsInMainhand(ItemStack instance, Object item, Operation<Boolean> original) {
+	private boolean allowModdedRods(ItemStack instance, Object item, Operation<Boolean> original) {
 		return instance.getItem() instanceof FishingRodItem || original.call(instance, item);
 	}
 }
