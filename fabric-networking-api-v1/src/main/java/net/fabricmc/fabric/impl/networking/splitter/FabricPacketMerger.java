@@ -32,6 +32,7 @@ import net.minecraft.network.protocol.PacketType;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.networking.GenericPayloadAccessor;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.impl.networking.VanillaPacketTypes;
@@ -41,10 +42,12 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 	private final PacketDecoder<?> packetDecoder;
 	private final PayloadTypeRegistryImpl<?> payloadTypeRegistry;
 	private final VanillaPacketTypes vanillaPacketTypes;
+	private final PacketContext context;
 	@Nullable
 	private Merger packetMerger;
 
-	public FabricPacketMerger(PacketDecoder<?> packetDecoder, PayloadTypeRegistryImpl<?> payloadTypeRegistry, VanillaPacketTypes vanillaPacketTypes) {
+	public FabricPacketMerger(PacketContext context, PacketDecoder<?> packetDecoder, PayloadTypeRegistryImpl<?> payloadTypeRegistry, VanillaPacketTypes vanillaPacketTypes) {
+		this.context = context;
 		this.packetDecoder = packetDecoder;
 		this.payloadTypeRegistry = payloadTypeRegistry;
 		this.vanillaPacketTypes = vanillaPacketTypes;
@@ -97,7 +100,8 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 			Identifier payloadId = Identifier.STREAM_CODEC.decode(payload.byteBuf());
 
 			buf.readerIndex(readerIndex);
-			int maxSize = payloadTypeRegistry.getMaxPacketSizeForSplitting(payloadId);
+
+			int maxSize = this.payloadTypeRegistry.getMaxPacketSizeForSplitting(payloadId);
 
 			if (maxSize == -1) {
 				throw new DecoderException("Received '" + payloadId + "' packet doesn't support splitting, but received split data!");
@@ -105,7 +109,11 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 				throw new DecoderException("Received '" + payloadId + "' packet is larger than max allowed size! Got " + packetSize + " bytes, expected " + maxSize + " bytes!");
 			}
 
-			this.packetMerger = new Merger(this.packetDecoder, payloadId, packetSize);
+			if (this.payloadTypeRegistry.allowPayloadDecode(payloadId, this.context)) {
+				this.packetMerger = new MergerImpl(this.packetDecoder, payloadId, packetSize);
+			} else {
+				this.packetMerger = new MergerNoOp(payloadId, packetSize);
+			}
 
 			if (this.packetMerger.add(channelHandlerContext, payload, list)) {
 				throw new DecoderException("Received '" + payloadId + "' as a split packet, but it wasn't actually split!");
@@ -135,7 +143,7 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 		if (this.packetMerger != null) {
 			Merger merger = this.packetMerger;
 			this.packetMerger = null;
-			merger.byteBuf.release();
+			merger.release();
 		}
 	}
 
@@ -145,7 +153,44 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 		}
 	}
 
-	private static class Merger {
+	private interface Merger {
+		boolean add(ChannelHandlerContext channelHandlerContext, FabricSplitPacketPayload payload, List<Object> objects) throws Exception;
+		void release();
+	}
+
+	private static class MergerNoOp implements Merger {
+		private final int finalSize;
+		private final Identifier packetId;
+		private int accumulatedSize;
+
+		MergerNoOp(Identifier identifier, int finalSize) {
+			this.packetId = identifier;
+			this.finalSize = finalSize;
+		}
+
+		@Override
+		public boolean add(ChannelHandlerContext channelHandlerContext, FabricSplitPacketPayload payload, List<Object> objects) throws Exception {
+			int newSize = this.accumulatedSize + payload.byteBuf().readableBytes();
+
+			if (this.finalSize < newSize) {
+				throw new DecoderException("Received too much data for packet '" + this.packetId + "'! Expected " + this.finalSize + " bytes, received " + newSize + " bytes!");
+			}
+
+			this.accumulatedSize += payload.byteBuf().readableBytes();
+
+			if (this.accumulatedSize == this.finalSize) {
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public void release() {
+		}
+	}
+
+	private static class MergerImpl implements Merger {
 		// Netty grows buffers above 4 MiB in 4 MiB steps.
 		private static final int MAX_INITIAL_BUFFER_SIZE = 12 * 1024 * 1024;
 
@@ -155,14 +200,15 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 
 		private final ByteBuf byteBuf;
 
-		Merger(PacketDecoder<?> packetDecoder, Identifier identifier, int finalSize) {
+		MergerImpl(PacketDecoder<?> packetDecoder, Identifier identifier, int finalSize) {
 			this.packetDecoder = (PacketDecoderAccessor) packetDecoder;
 			this.packetId = identifier;
 			this.byteBuf = Unpooled.buffer(Math.min(finalSize, MAX_INITIAL_BUFFER_SIZE), finalSize);
 			this.finalSize = finalSize;
 		}
 
-		boolean add(ChannelHandlerContext channelHandlerContext, FabricSplitPacketPayload payload, List<Object> objects) throws Exception {
+		@Override
+		public boolean add(ChannelHandlerContext channelHandlerContext, FabricSplitPacketPayload payload, List<Object> objects) throws Exception {
 			int newSize = this.byteBuf.readableBytes() + payload.byteBuf().readableBytes();
 
 			if (this.finalSize < newSize) {
@@ -177,6 +223,11 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 			}
 
 			return false;
+		}
+
+		@Override
+		public void release() {
+			this.byteBuf.release();
 		}
 	}
 }

@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.RandomSource;
@@ -39,7 +40,7 @@ public class NetworkingSplitterTest implements ModInitializer {
 	public static final int DATA_SIZE = 20 * 1024 * 1024;
 
 	// 20 MiB of random data source
-	private static final int[][] RANDOM_DATA = {
+	public static final int[][] RANDOM_DATA = {
 			IntStream.generate(RandomSource.create(24534)::nextInt).limit(20).toArray(),
 			IntStream.generate(RandomSource.create(24533)::nextInt).limit(DATA_SIZE / 4).toArray()
 	};
@@ -49,6 +50,7 @@ public class NetworkingSplitterTest implements ModInitializer {
 		// Register the payload on both sides for play and configuration
 		PayloadTypeRegistry.clientboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE + 14);
 		PayloadTypeRegistry.serverboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, () -> DATA_SIZE + 14);
+		PayloadTypeRegistry.serverboundPlay().registerLarge(LargeCreativeOnlyPayload.TYPE, LargeCreativeOnlyPayload.CODEC, DATA_SIZE + 14, PayloadTypeRegistry.Predicates.HAS_INFINITE_MATERIALS);
 
 		// When the client joins, send a packet expecting it to be validated and echoed back
 		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> sender.sendPacket(new LargePayload(0, RANDOM_DATA[0])));
@@ -57,6 +59,10 @@ public class NetworkingSplitterTest implements ModInitializer {
 		// Validate received packet
 		ServerPlayNetworking.registerGlobalReceiver(LargePayload.TYPE, (payload, context) -> {
 			validateLargePacketData(payload.index(), payload.data(), "server");
+		});
+
+		ServerPlayNetworking.registerGlobalReceiver(LargeCreativeOnlyPayload.TYPE, (payload, context) -> {
+			context.player().sendSystemMessage(Component.literal("Received large creative only packet!"));
 		});
 	}
 
@@ -84,6 +90,36 @@ public class NetworkingSplitterTest implements ModInitializer {
 			}
 
 			return new LargePayload(index, data);
+		}
+
+		private void write(FriendlyByteBuf buf) {
+			buf.writeVarInt(this.index);
+			buf.writeVarInt(this.data.length);
+
+			for (int i = 0; i < this.data.length; i++) {
+				buf.writeInt(this.data[i]);
+			}
+		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
+	public record LargeCreativeOnlyPayload(int index, int[] data) implements CustomPacketPayload {
+		public static final Type<LargeCreativeOnlyPayload> TYPE = new Type<>(NetworkingTestmods.id("large_packet_creative_only"));
+		public static final StreamCodec<FriendlyByteBuf, LargeCreativeOnlyPayload> CODEC = StreamCodec.ofMember(LargeCreativeOnlyPayload::write, LargeCreativeOnlyPayload::read);
+
+		private static LargeCreativeOnlyPayload read(FriendlyByteBuf buf) {
+			int index = buf.readVarInt();
+			var data = new int[buf.readVarInt()];
+
+			for (int i = 0; i < data.length; i++) {
+				data[i] = buf.readInt();
+			}
+
+			return new LargeCreativeOnlyPayload(index, data);
 		}
 
 		private void write(FriendlyByteBuf buf) {

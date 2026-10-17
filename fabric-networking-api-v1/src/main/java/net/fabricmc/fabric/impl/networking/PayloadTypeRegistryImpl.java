@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 
 import io.netty.buffer.ByteBufUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -33,6 +34,7 @@ import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.ProtocolInfo;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.SkipPacketDecoderException;
 import net.minecraft.network.VarInt;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
@@ -40,6 +42,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.networking.splitter.FabricPacketSplitter;
 
 public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements PayloadTypeRegistry<B> {
@@ -50,6 +53,7 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	private final Map<Identifier, CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload>> packetTypes = new HashMap<>();
 	private final Object2IntMap<Identifier> maxPacketSizes = new Object2IntOpenHashMap<>();
 	private final Object2ObjectMap<Identifier, IntSupplier> pendingMaxPacketSizes = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectMap<Identifier, Predicate<PacketContext>> allowDecodePredicate = new Object2ObjectOpenHashMap<>();
 	private final ConnectionProtocol protocol;
 	private final PacketFlow flow;
 	private final int minimalSplittableSize;
@@ -85,6 +89,16 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	}
 
 	@Override
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, Predicate<PacketContext> decodePredicate) {
+		Objects.requireNonNull(codec, "decodePredicate");
+		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
+
+		this.allowDecodePredicate.put(type.id(), decodePredicate);
+
+		return typeAndCodec;
+	}
+
+	@Override
 	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize) {
 		if (maxPacketSize < 0) {
 			throw new IllegalArgumentException("Provided maxPacketSize needs to be positive!");
@@ -96,11 +110,31 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 	}
 
 	@Override
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize, Predicate<PacketContext> decodePredicate) {
+		Objects.requireNonNull(codec, "decodePredicate");
+		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = registerLarge(type, codec, maxPacketSize);
+
+		this.allowDecodePredicate.put(type.id(), decodePredicate);
+
+		return typeAndCodec;
+	}
+
+	@Override
 	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier) {
 		Objects.requireNonNull(maxPacketSizeSupplier, "maxPacketSizeSupplier");
 
 		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = register(type, codec);
 		pendingMaxPacketSizes.put(type.id(), maxPacketSizeSupplier);
+		return typeAndCodec;
+	}
+
+	@Override
+	public <T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier, Predicate<PacketContext> decodePredicate) {
+		Objects.requireNonNull(codec, "decodePredicate");
+		CustomPacketPayload.TypeAndCodec<? super B, T> typeAndCodec = registerLarge(type, codec, maxPacketSizeSupplier);
+
+		this.allowDecodePredicate.put(type.id(), decodePredicate);
+
 		return typeAndCodec;
 	}
 
@@ -153,9 +187,16 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 		return packetTypes.get(id);
 	}
 
-	public <T extends CustomPacketPayload> CustomPacketPayload.@Nullable TypeAndCodec<B, T> get(CustomPacketPayload.Type<T> type) {
-		//noinspection unchecked
-		return (CustomPacketPayload.TypeAndCodec<B, T>) packetTypes.get(type.id());
+	public CustomPacketPayload.@Nullable TypeAndCodec<B, ? extends CustomPacketPayload> get(Identifier id, boolean requireValidation) {
+		if (requireValidation) {
+			Predicate<PacketContext> predicate = this.allowDecodePredicate.get(id);
+
+			if (predicate != null && !predicate.test(PacketContext.orElseThrow())) {
+				throw new SkipPacketDecoderException("Packet '" + id + "' isn't allowed to be decoded in current context!");
+			}
+		}
+
+		return packetTypes.get(id);
 	}
 
 	/**
@@ -183,5 +224,11 @@ public class PayloadTypeRegistryImpl<B extends FriendlyByteBuf> implements Paylo
 
 	public PacketFlow getFlow() {
 		return flow;
+	}
+
+	public boolean allowPayloadDecode(Identifier payloadId, PacketContext context) {
+		Predicate<PacketContext> predicate = this.allowDecodePredicate.get(payloadId);
+
+		return predicate == null || predicate.test(context);
 	}
 }

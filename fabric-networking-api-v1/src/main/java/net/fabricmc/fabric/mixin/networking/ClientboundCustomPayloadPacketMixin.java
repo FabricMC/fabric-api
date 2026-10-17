@@ -58,7 +58,7 @@ public class ClientboundCustomPayloadPacketMixin implements SplittablePacket, Ge
 	private static StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload> wrapPlayCodec(CustomPacketPayload.FallbackProvider<RegistryFriendlyByteBuf> unknownCodecFactory, List<CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ?>> types, Operation<StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload>> original) {
 		StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload> codec = original.call(unknownCodecFactory, types);
 		FabricCustomPayloadStreamCodec<RegistryFriendlyByteBuf> fabricCodec = (FabricCustomPayloadStreamCodec<RegistryFriendlyByteBuf>) codec;
-		fabricCodec.fabric_setCustomPayloadTypeProvider((buf, identifier) -> PayloadTypeRegistryImpl.CLIENTBOUND_PLAY.get(identifier));
+		fabricCodec.fabric_setCustomPayloadTypeProvider((buf, identifier, isDecoding) -> PayloadTypeRegistryImpl.CLIENTBOUND_PLAY.get(identifier, isDecoding));
 		return codec;
 	}
 
@@ -73,7 +73,7 @@ public class ClientboundCustomPayloadPacketMixin implements SplittablePacket, Ge
 	private static StreamCodec<FriendlyByteBuf, CustomPacketPayload> wrapConfigCodec(CustomPacketPayload.FallbackProvider<FriendlyByteBuf> unknownCodecFactory, List<CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ?>> types, Operation<StreamCodec<FriendlyByteBuf, CustomPacketPayload>> original) {
 		StreamCodec<FriendlyByteBuf, CustomPacketPayload> codec = original.call(unknownCodecFactory, types);
 		FabricCustomPayloadStreamCodec<FriendlyByteBuf> fabricCodec = (FabricCustomPayloadStreamCodec<FriendlyByteBuf>) codec;
-		fabricCodec.fabric_setCustomPayloadTypeProvider((buf, identifier) -> PayloadTypeRegistryImpl.CLIENTBOUND_CONFIGURATION.get(identifier));
+		fabricCodec.fabric_setCustomPayloadTypeProvider((buf, identifier, isDecoding) -> PayloadTypeRegistryImpl.CLIENTBOUND_CONFIGURATION.get(identifier, isDecoding));
 		return codec;
 	}
 

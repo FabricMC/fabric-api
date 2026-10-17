@@ -111,6 +111,11 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		NetworkingTestmods.LOGGER.info("Hello from networking user!");
 
 		PayloadTypeRegistry.clientboundPlay().register(OverlayPacket.TYPE, OverlayPacket.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(CreativeOnlyPayload.TYPE, CreativeOnlyPayload.CODEC, PayloadTypeRegistry.Predicates.HAS_INFINITE_MATERIALS);
+
+		ServerPlayNetworking.registerGlobalReceiver(CreativeOnlyPayload.TYPE, (payload, context) -> {
+			context.player().sendSystemMessage(Component.literal("Received creative only packet!"));
+		});
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 			PayloadTypeRegistry.clientboundPlay().register(UnknownPayload.TYPE, UnknownPayload.CODEC);
@@ -156,6 +161,16 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 
 			ComponentSerialization.STREAM_CODEC.encode(buf, this.message);
 		}
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
+	public record CreativeOnlyPayload() implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<CreativeOnlyPayload> TYPE = new Type<>(NetworkingTestmods.id("creative_only"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, CreativeOnlyPayload> CODEC = StreamCodec.unit(new CreativeOnlyPayload());
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {

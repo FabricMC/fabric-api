@@ -45,13 +45,23 @@ public abstract class CustomPayloadStreamCodecMixin<B extends FriendlyByteBuf> i
 		this.customPayloadTypeProvider = customPayloadTypeProvider;
 	}
 
-	@WrapOperation(method = {
-			"writeCap(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload$Type;Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V",
-			"decode(Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;"
-	}, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload$1;findCodec(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/network/codec/StreamCodec;"))
-	private StreamCodec<B, ? extends CustomPacketPayload> wrapGetCodec(@Coerce StreamCodec<B, CustomPacketPayload> instance, Identifier identifier, Operation<StreamCodec<B, CustomPacketPayload>> original, B buf) {
+	@WrapOperation(method = "decode(Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload$1;findCodec(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/network/codec/StreamCodec;"))
+	private StreamCodec<B, ? extends CustomPacketPayload> wrapGetCodecDecode(@Coerce StreamCodec<B, CustomPacketPayload> instance, Identifier identifier, Operation<StreamCodec<B, CustomPacketPayload>> original, B buf) {
 		if (customPayloadTypeProvider != null) {
-			CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload> payloadType = customPayloadTypeProvider.get(buf, identifier);
+			CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload> payloadType = customPayloadTypeProvider.get(buf, identifier, true);
+
+			if (payloadType != null) {
+				return payloadType.codec();
+			}
+		}
+
+		return original.call(instance, identifier);
+	}
+
+	@WrapOperation(method = "writeCap", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload$1;findCodec(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/network/codec/StreamCodec;"))
+	private StreamCodec<B, ? extends CustomPacketPayload> wrapGetCodecEncode(@Coerce StreamCodec<B, CustomPacketPayload> instance, Identifier identifier, Operation<StreamCodec<B, CustomPacketPayload>> original, B buf) {
+		if (customPayloadTypeProvider != null) {
+			CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload> payloadType = customPayloadTypeProvider.get(buf, identifier, false);
 
 			if (payloadType != null) {
 				return payloadType.codec();

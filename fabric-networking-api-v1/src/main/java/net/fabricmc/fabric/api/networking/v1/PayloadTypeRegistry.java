@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -24,7 +25,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.game.GameProtocols;
 
+import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
 /**
@@ -44,6 +47,20 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * @return the registered payload type
 	 */
 	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec);
+
+	/**
+	 * Registers a custom payload type.
+	 *
+	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
+	 * and <strong>before registering a packet handler</strong>.
+	 *
+	 * @param type  the payload type
+	 * @param codec the codec for the payload type
+	 * @param decodePredicate a predicate indicating if this packet can be decoded or should be skipped
+	 * @param <T>   the payload class
+	 * @return the registered payload type
+	 */
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, Predicate<PacketContext> decodePredicate);
 
 	/**
 	 * Registers a large custom payload type.
@@ -77,6 +94,27 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * <p><strong>Security:</strong> A high maximum size for serverbound payloads may allow clients
 	 * to exhaust the server's memory. Set the smallest limit that accommodates legitimate payloads.
 	 *
+	 * @param type          the payload type
+	 * @param codec         the codec for the payload type
+	 * @param <T>           the payload class
+	 * @param maxPacketSize the maximum size of payload packet
+	 * @param decodePredicate a predicate indicating if this packet can be decoded or should be skipped
+	 * @return the registered payload type
+	 */
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize, Predicate<PacketContext> decodePredicate);
+
+	/**
+	 * Registers a large custom payload type.
+	 *
+	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
+	 * and <strong>before registering a packet handler</strong>.
+	 *
+	 * <p>Payload types registered with this method will be split into multiple packets,
+	 * allowing to send packets larger than the vanilla limited size.
+	 *
+	 * <p><strong>Security:</strong> A high maximum size for serverbound payloads may allow clients
+	 * to exhaust the server's memory. Set the smallest limit that accommodates legitimate payloads.
+	 *
 	 * <p>The {@code maxPacketSizeSupplier} will be called once, right before the first packet of this payload type
 	 * is sent/received on either side. This allows mods some leeway particularly during mod initialization to
 	 * dynamically determine a suitable max size.
@@ -88,6 +126,31 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * @return the registered payload type
 	 */
 	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier);
+
+	/**
+	 * Registers a large custom payload type.
+	 *
+	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
+	 * and <strong>before registering a packet handler</strong>.
+	 *
+	 * <p>Payload types registered with this method will be split into multiple packets,
+	 * allowing to send packets larger than the vanilla limited size.
+	 *
+	 * <p><strong>Security:</strong> A high maximum size for serverbound payloads may allow clients
+	 * to exhaust the server's memory. Set the smallest limit that accommodates legitimate payloads.
+	 *
+	 * <p>The {@code maxPacketSizeSupplier} will be called once, right before the first packet of this payload type
+	 * is sent/received on either side. This allows mods some leeway particularly during mod initialization to
+	 * dynamically determine a suitable max size.
+	 *
+	 * @param type		    the payload type
+	 * @param codec         the codec for the payload type
+	 * @param maxPacketSizeSupplier the function that returns the max size of payload packet
+	 * @param decodePredicate a predicate indicating if this packet can be decoded or should be skipped
+	 * @param <T>           the payload type
+	 * @return the registered payload type
+	 */
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, IntSupplier maxPacketSizeSupplier, Predicate<PacketContext> decodePredicate);
 
 	/**
 	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) configuration channel.
@@ -115,5 +178,18 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 */
 	static PayloadTypeRegistry<RegistryFriendlyByteBuf> clientboundPlay() {
 		return PayloadTypeRegistryImpl.CLIENTBOUND_PLAY;
+	}
+
+	/**
+	 * Common predicates that can be used for custom payloads.
+	 */
+	final class Predicates {
+		private Predicates() { }
+
+		/// Checks if player has infinite materials (or in simple terms is in Creative Mode)
+		public static final Predicate<PacketContext> HAS_INFINITE_MATERIALS = ctx -> ctx.orElseThrow(PacketContext.CONNECTION).getPacketListener() instanceof GameProtocols.Context context && context.hasInfiniteMaterials();
+
+		/// Checks if player can use command blocks
+		public static final Predicate<PacketContext> CAN_USE_COMMAND_BLOCKS = ctx -> ctx.orElseThrow(PacketContext.CONNECTION).getPacketListener() instanceof GameProtocols.Context context && context.canUseCommandBlocks();
 	}
 }

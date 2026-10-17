@@ -115,7 +115,7 @@ abstract class ConnectionMixin implements ChannelInfoHolder, PacketContextProvid
 		}
 
 		return ((UnconfiguredPipelineHandler.InboundConfigurationTask) transitioner).andThen((context) -> {
-			FabricPacketMerger merger = new FabricPacketMerger(context.pipeline().get(PacketDecoder.class), payloadTypeRegistry, VanillaPacketTypes.get(protocolInfo));
+			FabricPacketMerger merger = new FabricPacketMerger(this.packetContext, context.pipeline().get(PacketDecoder.class), payloadTypeRegistry, VanillaPacketTypes.get(protocolInfo));
 			context.pipeline().addAfter("decoder", "fabric:merger", merger);
 		});
 	}

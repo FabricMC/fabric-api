@@ -53,8 +53,11 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 						.then(ClientCommands.literal("unknown").executes(context -> {
 							ClientPlayNetworking.send(new UnknownPayload("Hello"));
 							return Command.SINGLE_SUCCESS;
-						}
-		))));
+						}))
+						.then(ClientCommands.literal("creative_only").executes(context -> {
+							ClientPlayNetworking.send(new NetworkingPlayPacketTest.CreativeOnlyPayload());
+							return Command.SINGLE_SUCCESS;
+						}))));
 	}
 
 	private record UnknownPayload(String data) implements CustomPacketPayload {
