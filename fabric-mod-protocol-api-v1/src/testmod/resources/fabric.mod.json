@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-mod-protocol-api-v1-testmod",
+  "name": "Fabric Mod Protocol API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-mod-protocol-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.modprotocol.ModProtocolTestmods"
+    ]
+  },
+  "custom": {
+    "fabric:mod_protocol_v1": "1.0.x",
+    "test_fabric:mod_protocol": {
+      "name": "Name",
+      "id": "special:id",
+      "protocol": [0, 1, 2, 3],
+      "version": "Tater"
+    },
+    "test2_fabric:mod_protocol": {
+      "version": "1.2.3",
+      "require": ">=1.0"
+    }
+  }
+}
