@@ -3,6 +3,8 @@
     "minecraft:ice",
     "minecraft:packed_ice",
     "minecraft:blue_ice",
-    "minecraft:brittle_ice"
+    "minecraft:brittle_ice",
+    "minecraft:packed_ice_bricks",
+    "minecraft:chiseled_packed_ice"
   ]
 }

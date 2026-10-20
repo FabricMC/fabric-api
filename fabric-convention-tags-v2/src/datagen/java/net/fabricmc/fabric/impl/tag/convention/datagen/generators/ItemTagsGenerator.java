@@ -98,7 +98,9 @@ public final class ItemTagsGenerator extends FabricTagsProvider.ItemTagsProvider
 				.add(BlockItemIds.ICE)
 				.add(BlockItemIds.PACKED_ICE)
 				.add(BlockItemIds.BLUE_ICE)
-				.add(BlockItemIds.BRITTLE_ICE);
+				.add(BlockItemIds.BRITTLE_ICE)
+				.add(BlockItemIds.PACKED_ICE_BRICKS)
+				.add(BlockItemIds.CHISELED_PACKED_ICE);
 
 		copy(ConventionalBlockItemTags.BUDDING_BLOCKS);
 		copy(ConventionalBlockItemTags.BUDS);
