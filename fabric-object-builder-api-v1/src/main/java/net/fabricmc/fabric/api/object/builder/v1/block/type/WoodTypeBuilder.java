@@ -42,7 +42,7 @@ public final class WoodTypeBuilder {
 	private SoundEvent fenceGateOpenSound = SoundEvents.FENCE_GATE_OPEN;
 
 	/**
-	 * Sets this wood type's sound type.
+	 * Sets this wood type's block sound set.
 	 *
 	 * <p>Defaults to {@link BlockSoundSets#WOOD}.
 	 *
@@ -54,7 +54,7 @@ public final class WoodTypeBuilder {
 	}
 
 	/**
-	 * Sets this wood type's hanging sign sound type.
+	 * Sets this wood type's hanging sign block sound set.
 	 *
 	 * <p>Defaults to {@link BlockSoundSets#HANGING_SIGN}.
 	 *

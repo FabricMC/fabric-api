@@ -95,7 +95,7 @@ public final class BlockSetTypeBuilder {
 	}
 
 	/**
-	 * Sets this block set type's sound type.
+	 * Sets this block set type's block sound set.
 	 *
 	 * <p>Defaults to {@link BlockSoundSets#WOOD}.
 	 *
