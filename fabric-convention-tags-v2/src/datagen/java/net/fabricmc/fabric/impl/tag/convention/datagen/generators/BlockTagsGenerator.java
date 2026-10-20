@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.ColorCollection;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 
 public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvider {
@@ -201,6 +202,12 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 		generateGlassTags();
 		generateGlazeTerracottaTags();
 		generateConcreteTags();
+		builder(ConventionalBlockItemTags.ICE)
+				.add(BlockItemIds.ICE)
+				.add(BlockItemIds.PACKED_ICE)
+				.add(BlockItemIds.BLUE_ICE)
+				.add(BlockItemIds.BRITTLE_ICE)
+				.add(BlockIds.FROSTED_ICE);
 		builder(ConventionalBlockTags.WOODEN_BARRELS)
 				.add(BlockItemIds.BARREL);
 		builder(ConventionalBlockTags.BARRELS)
@@ -276,17 +283,18 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 	private void generateFenceAndFenceGateTags() {
 		builder(ConventionalBlockTags.WOODEN_FENCES)
 				.add(BlockItemIds.OAK_FENCE)
+				.add(BlockItemIds.ACACIA_FENCE)
+				.add(BlockItemIds.DARK_OAK_FENCE)
+				.add(BlockItemIds.PALE_OAK_FENCE)
 				.add(BlockItemIds.SPRUCE_FENCE)
 				.add(BlockItemIds.BIRCH_FENCE)
 				.add(BlockItemIds.JUNGLE_FENCE)
-				.add(BlockItemIds.ACACIA_FENCE)
-				.add(BlockItemIds.DARK_OAK_FENCE)
 				.add(BlockItemIds.CRIMSON_FENCE)
 				.add(BlockItemIds.WARPED_FENCE)
 				.add(BlockItemIds.MANGROVE_FENCE)
 				.add(BlockItemIds.BAMBOO_FENCE)
 				.add(BlockItemIds.CHERRY_FENCE)
-				.add(BlockItemIds.PALE_OAK_FENCE);
+				.add(BlockItemIds.POPLAR_FENCE);
 		builder(ConventionalBlockTags.NETHER_BRICK_FENCES)
 				.add(BlockItemIds.NETHER_BRICK_FENCE);
 		builder(ConventionalBlockTags.FENCES)
@@ -294,17 +302,18 @@ public final class BlockTagsGenerator extends FabricTagsProvider.BlockTagsProvid
 				.addOptionalTag(ConventionalBlockTags.NETHER_BRICK_FENCES);
 		builder(ConventionalBlockTags.WOODEN_FENCE_GATES)
 				.add(BlockItemIds.OAK_FENCE_GATE)
+				.add(BlockItemIds.ACACIA_FENCE_GATE)
+				.add(BlockItemIds.DARK_OAK_FENCE_GATE)
+				.add(BlockItemIds.PALE_OAK_FENCE_GATE)
 				.add(BlockItemIds.SPRUCE_FENCE_GATE)
 				.add(BlockItemIds.BIRCH_FENCE_GATE)
 				.add(BlockItemIds.JUNGLE_FENCE_GATE)
-				.add(BlockItemIds.ACACIA_FENCE_GATE)
-				.add(BlockItemIds.DARK_OAK_FENCE_GATE)
 				.add(BlockItemIds.CRIMSON_FENCE_GATE)
 				.add(BlockItemIds.WARPED_FENCE_GATE)
 				.add(BlockItemIds.MANGROVE_FENCE_GATE)
 				.add(BlockItemIds.BAMBOO_FENCE_GATE)
 				.add(BlockItemIds.CHERRY_FENCE_GATE)
-				.add(BlockItemIds.PALE_OAK_FENCE_GATE);
+				.add(BlockItemIds.POPLAR_FENCE_GATE);
 		builder(ConventionalBlockTags.FENCE_GATES)
 				.addOptionalTag(ConventionalBlockTags.WOODEN_FENCE_GATES);
 		builder(ConventionalBlockTags.IRON_BARS)

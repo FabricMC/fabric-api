@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 
 @Mixin(Minecraft.class)
-public class MinecraftMixin {
+class MinecraftMixin {
 	@Shadow
 	@Final
 	private static Logger LOGGER;

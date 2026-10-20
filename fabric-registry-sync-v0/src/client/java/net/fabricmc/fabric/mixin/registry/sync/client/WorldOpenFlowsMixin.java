@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.client.registry.sync.validate.DetailedBackupConf
 import net.fabricmc.fabric.impl.registry.sync.validate.RegistryCustomContentState;
 
 @Mixin(WorldOpenFlows.class)
-public class WorldOpenFlowsMixin {
+class WorldOpenFlowsMixin {
 	@Unique
 	private RegistryCustomContentState.Missing missingRegistryEntries = RegistryCustomContentState.Missing.NONE;
 

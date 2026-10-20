@@ -23,5 +23,5 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.fabricmc.fabric.api.serialization.v1.value.FabricValueOutput;
 
 @Mixin(ValueOutput.class)
-public interface ValueOutputMixin extends FabricValueOutput {
+interface ValueOutputMixin extends FabricValueOutput {
 }

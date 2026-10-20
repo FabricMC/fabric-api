@@ -23,5 +23,5 @@ import net.minecraft.world.level.BlockGetter;
 import net.fabricmc.fabric.api.blockgetter.v2.FabricBlockGetter;
 
 @Mixin(BlockGetter.class)
-public interface BlockGetterMixin extends FabricBlockGetter {
+interface BlockGetterMixin extends FabricBlockGetter {
 }

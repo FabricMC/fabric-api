@@ -27,7 +27,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.fabricmc.fabric.impl.recipe.sync.SyncedSerializerAwareConnection;
 
 @Mixin(Connection.class)
-public abstract class ConnectionMixin implements SyncedSerializerAwareConnection {
+abstract class ConnectionMixin implements SyncedSerializerAwareConnection {
 	@Unique
 	private Set<RecipeSerializer<?>> syncedRecipeSerializers = Set.of();
 

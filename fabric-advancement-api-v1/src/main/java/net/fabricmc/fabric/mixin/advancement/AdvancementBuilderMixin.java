@@ -44,7 +44,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.advancement.v1.FabricAdvancementBuilder;
 
 @Mixin(Advancement.Builder.class)
-public abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
+abstract class AdvancementBuilderMixin implements FabricAdvancementBuilder {
 	@Shadow
 	@Final
 	private ImmutableMap.Builder<String, Criterion<?>> criteria;

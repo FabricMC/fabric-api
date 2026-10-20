@@ -29,7 +29,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionRegistryImpl;
 
 @Mixin(Hud.class)
-public class HudMixin {
+class HudMixin {
 	@ModifyExpressionValue(method = "extractAirBubbles", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isEyeInFluid(Lnet/minecraft/tags/TagKey;)Z"))
 	private boolean popTheBubbleForCustomFluids(boolean original, @Local(argsOnly = true) Player player) {
 		if (original) {

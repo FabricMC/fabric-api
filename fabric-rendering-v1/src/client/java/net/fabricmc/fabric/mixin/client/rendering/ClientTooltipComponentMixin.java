@@ -27,7 +27,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 
 @Mixin(ClientTooltipComponent.class)
-public interface ClientTooltipComponentMixin {
+interface ClientTooltipComponentMixin {
 	@Inject(
 			method = "create(Lnet/minecraft/world/inventory/tooltip/TooltipComponent;)Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipComponent;",
 			at = @At("HEAD"),

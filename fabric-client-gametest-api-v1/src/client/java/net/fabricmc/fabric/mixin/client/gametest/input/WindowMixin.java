@@ -41,7 +41,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
 
 @Mixin(Window.class)
-public abstract class WindowMixin implements WindowHooks {
+abstract class WindowMixin implements WindowHooks {
 	@Shadow
 	private int x;
 	@Shadow

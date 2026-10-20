@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import net.minecraft.core.component.BlockTransformer;
 
 @Mixin(BlockTransformer.class)
-public class BlockTransformerMixin {
+class BlockTransformerMixin {
 	@ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;listOf(II)Lcom/mojang/serialization/Codec;"), index = 1)
 	private static int removeBlockTransformerSizeLimit(int maxSize) {
 		return Integer.MAX_VALUE;

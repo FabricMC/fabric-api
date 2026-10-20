@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.fabricmc.fabric.test.rendering.client.RenderLayerTest;
 
 @Mixin(AvatarRenderer.class)
-public abstract class AvatarRendererMixin<AvatarlikeEntity extends Avatar & ClientAvatarEntity> {
+abstract class AvatarRendererMixin<AvatarlikeEntity extends Avatar & ClientAvatarEntity> {
 	@Unique
 	private static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
 

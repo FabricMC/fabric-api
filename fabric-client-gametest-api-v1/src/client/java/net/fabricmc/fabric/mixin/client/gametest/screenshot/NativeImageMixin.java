@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.Unique;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.NativeImageHooks;
 
 @Mixin(NativeImage.class)
-public abstract class NativeImageMixin implements NativeImageHooks {
+abstract class NativeImageMixin implements NativeImageHooks {
 	@Shadow
 	private long pixels;
 	@Shadow

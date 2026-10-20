@@ -33,7 +33,7 @@ import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 @Mixin(GiveGiftToHero.class)
-public class GiveGiftToHeroMixin {
+class GiveGiftToHeroMixin {
 	@Shadow
 	@Final
 	@Mutable

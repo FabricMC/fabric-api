@@ -25,7 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 @Mixin(Screen.class)
-public class ScreenMixin {
+class ScreenMixin {
 	@Inject(method = "extractPanorama", at = @At("HEAD"))
 	private void disableRotatingPanoramaForClientGameTests(CallbackInfo ci) {
 		Minecraft.getInstance().gameRenderer.panorama().holdSpin();

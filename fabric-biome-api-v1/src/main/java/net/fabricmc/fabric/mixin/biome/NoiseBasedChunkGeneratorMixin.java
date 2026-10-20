@@ -28,7 +28,7 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 
 @Mixin(NoiseBasedChunkGenerator.class)
-public class NoiseBasedChunkGeneratorMixin {
+class NoiseBasedChunkGeneratorMixin {
 	@ModifyExpressionValue(method = "buildTerrain(Lnet/minecraft/world/level/chunk/ChunkAccess;Lnet/minecraft/world/level/levelgen/blending/Blender;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/server/level/WorldGenRegion;Ljava/util/Set;Lnet/minecraft/world/level/levelgen/NoiseSettings;)Lnet/minecraft/world/level/chunk/ChunkAccess;",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/NoiseRouter;createClimateSampler(Lnet/minecraft/world/level/levelgen/densityfunction/DensitySamplerSet;)Lnet/minecraft/world/level/biome/Climate$Sampler;"))
 	private Climate.Sampler setSeed(Climate.Sampler sampler, @Local(argsOnly = true) RandomState randomState) {

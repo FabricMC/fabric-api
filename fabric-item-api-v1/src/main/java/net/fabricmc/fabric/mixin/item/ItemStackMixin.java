@@ -56,7 +56,7 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 import net.fabricmc.fabric.impl.item.VanillaTooltipProviderOrder;
 
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin implements FabricItemStack {
+abstract class ItemStackMixin implements FabricItemStack {
 	@Shadow
 	public abstract Item getItem();
 

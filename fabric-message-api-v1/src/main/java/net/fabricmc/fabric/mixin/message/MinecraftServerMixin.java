@@ -27,7 +27,7 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin {
+class MinecraftServerMixin {
 	@Inject(method = "getChatDecorator", at = @At("RETURN"), cancellable = true)
 	private void onGetChatDecorator(CallbackInfoReturnable<ChatDecorator> cir) {
 		cir.setReturnValue((sender, message) -> ServerMessageDecoratorEvent.EVENT.invoker().decorate(sender, message));

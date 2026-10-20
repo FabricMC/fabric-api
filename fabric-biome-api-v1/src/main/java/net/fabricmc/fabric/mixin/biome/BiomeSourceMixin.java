@@ -29,7 +29,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 
 @Mixin(BiomeSource.class)
-public class BiomeSourceMixin {
+class BiomeSourceMixin {
 	@Redirect(method = "possibleBiomes", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
 	private Object getBiomes(Supplier<Set<Holder<Biome>>> instance) {
 		return modifyBiomeSet(instance.get());

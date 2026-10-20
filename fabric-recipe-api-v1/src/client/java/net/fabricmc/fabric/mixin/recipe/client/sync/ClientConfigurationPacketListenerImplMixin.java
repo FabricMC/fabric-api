@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
 import net.fabricmc.fabric.impl.recipe.sync.ServerboundSupportedRecipeSerializersPayload;
 
 @Mixin(ClientConfigurationPacketListenerImpl.class)
-public class ClientConfigurationPacketListenerImplMixin {
+class ClientConfigurationPacketListenerImplMixin {
 	@Inject(method = "handleSelectKnownPacks", at = @At("TAIL"))
 	private void sendSupportedRecipeSerializers(ClientboundSelectKnownPacks packet, CallbackInfo ci) {
 		if (!ClientConfigurationNetworking.canSend(ServerboundSupportedRecipeSerializersPayload.TYPE)) {

@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
  * fluid attributes handlers overriding {@link FluidVariantAttributeHandler#getEmptySound}.
  */
 @Mixin(BucketItem.class)
-public class BucketItemMixin {
+class BucketItemMixin {
 	@Shadow
 	@Final
 	private Fluid content;

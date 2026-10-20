@@ -29,7 +29,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 @Mixin(ServerLevel.class)
-public abstract class ServerLevelMixin {
+abstract class ServerLevelMixin {
 	// Make sure "insideBlockTick" is true before we call the start tick, so inject after it is set
 	@Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerLevel;handlingTick:Z", opcode = Opcodes.PUTFIELD, ordinal = 0, shift = At.Shift.AFTER))
 	private void startLevelTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {

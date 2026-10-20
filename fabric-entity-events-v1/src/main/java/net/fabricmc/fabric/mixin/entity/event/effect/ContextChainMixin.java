@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.entity.event.effect.EffectEventContextImpl;
 import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 @Mixin(value = ContextChain.class, remap = false)
-public final class ContextChainMixin {
+final class ContextChainMixin {
 	private ContextChainMixin() {
 	}
 

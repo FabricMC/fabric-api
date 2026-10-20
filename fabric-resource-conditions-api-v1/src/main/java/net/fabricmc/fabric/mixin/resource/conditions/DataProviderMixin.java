@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
  * Make the {@value ResourceConditions#CONDITIONS_KEY} appear first in generated JSON objects.
  */
 @Mixin(DataProvider.class)
-public interface DataProviderMixin {
+interface DataProviderMixin {
 	@Dynamic("lambda method passed to Util.make")
 	@Inject(method = "lambda$static$0", at = @At("HEAD"))
 	private static void fabric_injectResourceConditionsSortOrder(Object2IntOpenHashMap<String> map, CallbackInfo ci) {

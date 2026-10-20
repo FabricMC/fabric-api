@@ -33,7 +33,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 
 @Mixin(DefaultAttributes.class)
-public abstract class DefaultAttributesMixin {
+abstract class DefaultAttributesMixin {
 	@Shadow
 	@Final
 	@Mutable

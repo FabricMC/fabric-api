@@ -30,7 +30,7 @@ import net.minecraft.client.gui.Gui;
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
 
 @Mixin(Minecraft.class)
-public class MinecraftMixin {
+class MinecraftMixin {
 	@Unique
 	private boolean startedClientGametests = false;
 

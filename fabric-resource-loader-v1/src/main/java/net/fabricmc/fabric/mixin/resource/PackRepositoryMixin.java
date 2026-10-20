@@ -48,7 +48,7 @@ import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 @Mixin(PackRepository.class)
-public abstract class PackRepositoryMixin {
+abstract class PackRepositoryMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("PackRepositoryMixin");
 

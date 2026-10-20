@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegist
 import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 
 @Mixin(EntityRenderers.class)
-public abstract class EntityRenderersMixin {
+abstract class EntityRenderersMixin {
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Redirect(method = "createEntityRenderers", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;"))
 	private static ImmutableMap.Builder createEntityRenderer(ImmutableMap.Builder builder, Object type, Object renderer, EntityRendererProvider.Context context) {

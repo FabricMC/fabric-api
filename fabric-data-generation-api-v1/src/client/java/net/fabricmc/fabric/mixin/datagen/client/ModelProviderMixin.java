@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.datagen.client.FabricItemAssetDefinitions;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
 
 @Mixin(ModelProvider.class)
-public class ModelProviderMixin {
+class ModelProviderMixin {
 	@Unique
 	private FabricPackOutput fabricPackOutput;
 

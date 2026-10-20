@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(ChunkHolder.class)
-public class ChunkHolderMixin {
+class ChunkHolderMixin {
 	@Inject(method = "broadcastBlockEntity", at = @At("TAIL"))
 	private void broadcastBlockEntity(List<ServerPlayer> players, Level level, BlockPos blockPos, CallbackInfo ci, @Local(name = "blockEntity") BlockEntity blockEntity) {
 		if (blockEntity != null) {

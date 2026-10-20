@@ -45,7 +45,7 @@ import net.fabricmc.fabric.impl.datagen.TagAliasGenerator;
 import net.fabricmc.fabric.impl.tag.TagFileHooks;
 
 @Mixin(TagsProvider.class)
-public class TagsProviderMixin<T> {
+class TagsProviderMixin<T> {
 	@Shadow
 	@Final
 	protected ResourceKey<? extends Registry<T>> registryKey;

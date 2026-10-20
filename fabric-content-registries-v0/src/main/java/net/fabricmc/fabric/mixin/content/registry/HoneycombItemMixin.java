@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.world.item.HoneycombItem;
 
 @Mixin(HoneycombItem.class)
-public class HoneycombItemMixin {
+class HoneycombItemMixin {
 	@Dynamic("lambda$static$0: Synthetic lambda body for Suppliers.memoize in initialization of WAXABLES")
 	@Inject(method = "lambda$static$0", at = @At("RETURN"), cancellable = true)
 	private static void createWaxables(CallbackInfoReturnable<BiMap> cir) {

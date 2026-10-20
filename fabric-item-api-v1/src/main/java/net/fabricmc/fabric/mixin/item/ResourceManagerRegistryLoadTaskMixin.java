@@ -44,7 +44,7 @@ import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 import net.fabricmc.fabric.impl.item.ResourceUtil;
 
 @Mixin(ResourceManagerRegistryLoadTask.class)
-public class ResourceManagerRegistryLoadTaskMixin {
+class ResourceManagerRegistryLoadTaskMixin {
 	@Unique
 	private volatile RegistryOps.RegistryInfoLookup registryInfoLookup;
 

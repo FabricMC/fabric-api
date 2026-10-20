@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricItemAssetDefinitions;
 
 @Mixin(ModelProvider.ItemInfoCollector.class)
-public class ModelProviderItemInfoCollectorMixin implements FabricItemAssetDefinitions {
+class ModelProviderItemInfoCollectorMixin implements FabricItemAssetDefinitions {
 	@Unique
 	private FabricPackOutput fabricPackOutput;
 	@Unique

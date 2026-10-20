@@ -29,7 +29,7 @@ import net.minecraft.client.multiplayer.ClientRecipeContainer;
 import net.fabricmc.fabric.impl.recipe.sync.client.SynchronizedClientRecipesSetter;
 
 @Mixin(ClientPacketListener.class)
-public class ClientPacketListenerMixin {
+class ClientPacketListenerMixin {
 	@Shadow
 	private ClientRecipeContainer recipes;
 

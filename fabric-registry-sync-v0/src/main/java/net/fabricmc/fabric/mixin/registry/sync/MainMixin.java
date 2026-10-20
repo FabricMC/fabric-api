@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(Main.class)
-public class MainMixin {
+class MainMixin {
 	@Shadow
 	@Final
 	private static Logger LOGGER;

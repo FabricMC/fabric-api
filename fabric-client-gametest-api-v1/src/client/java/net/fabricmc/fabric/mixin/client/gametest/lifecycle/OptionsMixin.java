@@ -26,7 +26,7 @@ import net.minecraft.client.Options;
 import net.fabricmc.fabric.impl.client.gametest.context.ClientGameTestContextImpl;
 
 @Mixin(Options.class)
-public class OptionsMixin {
+class OptionsMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onCreateGameOptions(CallbackInfo ci) {
 		ClientGameTestContextImpl.initGameOptions((Options) (Object) this);

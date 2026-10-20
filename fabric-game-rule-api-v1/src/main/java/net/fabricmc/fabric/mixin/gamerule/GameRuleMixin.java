@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 @Mixin(GameRule.class)
-public abstract class GameRuleMixin<T> implements RuleTypeExtensions {
+abstract class GameRuleMixin<T> implements RuleTypeExtensions {
 	@Shadow
 	public abstract Class<T> valueClass();
 

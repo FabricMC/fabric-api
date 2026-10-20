@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionReg
 import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(FloatGoal.class)
-public class FloatGoalMixin {
+class FloatGoalMixin {
 	@Shadow
 	@Final
 	private Mob mob;

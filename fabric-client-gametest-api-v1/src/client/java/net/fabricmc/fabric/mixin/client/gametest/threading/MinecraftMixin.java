@@ -41,7 +41,7 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 
 @Mixin(Minecraft.class)
-public class MinecraftMixin {
+class MinecraftMixin {
 	@Unique
 	private Runnable deferredTask = null;
 

@@ -31,7 +31,7 @@ import net.minecraft.commands.Commands;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 @Mixin(Commands.class)
-public abstract class CommandsMixin {
+abstract class CommandsMixin {
 	@Shadow
 	@Final
 	private CommandDispatcher<CommandSourceStack> dispatcher;

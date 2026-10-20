@@ -30,7 +30,7 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin {
+class MinecraftServerMixin {
 	@WrapMethod(method = "runServer")
 	private void onRunServer(Operation<Void> original) {
 		if (ThreadingImpl.isServerRunning) {

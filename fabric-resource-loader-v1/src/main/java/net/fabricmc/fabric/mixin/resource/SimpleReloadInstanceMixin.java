@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.resource.FabricMultiPackResourceManager;
 import net.fabricmc.fabric.impl.resource.ResourceLoaderImpl;
 
 @Mixin(SimpleReloadInstance.class)
-public class SimpleReloadInstanceMixin {
+class SimpleReloadInstanceMixin {
 	@ModifyArg(
 			method = "create(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/server/packs/resources/ReloadInstance;",
 			at = @At(

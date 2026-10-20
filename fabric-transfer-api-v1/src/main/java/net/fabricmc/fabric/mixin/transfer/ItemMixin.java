@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
  * Cache the ItemVariant with a null tag inside each Item directly.
  */
 @Mixin(Item.class)
-public class ItemMixin implements ItemVariantCache {
+class ItemMixin implements ItemVariantCache {
 	@Unique
 	@SuppressWarnings("ConstantConditions")
 	private final ItemVariant cachedItemVariant = new ItemVariantImpl((Item) (Object) this, DataComponentPatch.EMPTY);

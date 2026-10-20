@@ -28,7 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
 @Mixin(MultiPlayerGameMode.class)
-public class MultiPlayerGameModeMixin {
+class MultiPlayerGameModeMixin {
 	@Shadow
 	@Final
 	private Minecraft minecraft;

@@ -32,7 +32,7 @@ import net.minecraft.world.level.block.Block;
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootSubProvider;
 
 @Mixin(BlockLootSubProvider.class)
-public class BlockLootSubProviderMixin implements FabricBlockLootSubProvider {
+class BlockLootSubProviderMixin implements FabricBlockLootSubProvider {
 	@ModifyExpressionValue(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;iterator()Ljava/util/Iterator;"))
 	private Iterator<Block> onlyVanillaBlocks(Iterator<Block> blocks) {
 		if ((Object) this instanceof VanillaBlockLoot) {

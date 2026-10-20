@@ -18,6 +18,7 @@
     "EnchantmentBuilderMixin",
     "EnchantmentHelperMixin",
     "EnchantRandomlyFunctionMixin",
+    "FishingHookMixin",
     "ItemMixin",
     "ItemPropertiesMixin",
     "ItemStackMixin",

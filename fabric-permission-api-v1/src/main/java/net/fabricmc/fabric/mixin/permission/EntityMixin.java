@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.permission.v1.PermissionContextOwner;
 import net.fabricmc.fabric.impl.permission.EntityPermissionContext;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements PermissionContextOwner {
+abstract class EntityMixin implements PermissionContextOwner {
 	@Unique
 	private PermissionContext context;
 

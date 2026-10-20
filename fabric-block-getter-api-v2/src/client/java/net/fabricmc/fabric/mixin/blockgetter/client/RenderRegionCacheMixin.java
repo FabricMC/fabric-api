@@ -43,7 +43,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.fabricmc.fabric.impl.blockgetter.client.RenderDataMapConsumer;
 
 @Mixin(RenderRegionCache.class)
-public abstract class RenderRegionCacheMixin {
+abstract class RenderRegionCacheMixin {
 	@Unique
 	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
 	@Unique

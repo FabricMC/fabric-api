@@ -48,7 +48,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddo
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerConfigurationPacketListenerImpl.class, priority = 900)
-public abstract class ServerConfigurationPacketListenerImplMixin extends ServerCommonPacketListenerImpl implements PacketListenerExtensions, FabricServerConfigurationPacketListenerImpl {
+abstract class ServerConfigurationPacketListenerImplMixin extends ServerCommonPacketListenerImpl implements PacketListenerExtensions, FabricServerConfigurationPacketListenerImpl {
 	@Shadow
 	@Nullable
 	private ConfigurationTask currentTask;
@@ -75,7 +75,7 @@ public abstract class ServerConfigurationPacketListenerImplMixin extends ServerC
 	@Unique
 	private boolean earlyTaskExecution;
 
-	public ServerConfigurationPacketListenerImplMixin(MinecraftServer server, Connection connection, CommonListenerCookie arg) {
+	ServerConfigurationPacketListenerImplMixin(MinecraftServer server, Connection connection, CommonListenerCookie arg) {
 		super(server, connection, arg);
 	}
 

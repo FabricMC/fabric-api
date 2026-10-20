@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContextProvider;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerMixin implements PacketContextProvider {
+class ServerPlayerMixin implements PacketContextProvider {
 	@Shadow
 	public ServerGamePacketListenerImpl connection;
 

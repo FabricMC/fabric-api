@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 @Mixin(BuiltInRegistries.class)
-public abstract class BuiltInRegistriesMixin {
+abstract class BuiltInRegistriesMixin {
 	@Inject(method = "bootStrap", at = @At("HEAD"))
 	private static void modifyDefaultItemComponents(CallbackInfo ci) {
 		// TODO 26.1 patch in DataComponentInitializers.BakedEntry

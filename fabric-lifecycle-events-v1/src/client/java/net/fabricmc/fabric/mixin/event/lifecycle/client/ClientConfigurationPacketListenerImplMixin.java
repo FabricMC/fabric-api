@@ -29,7 +29,7 @@ import net.minecraft.network.protocol.configuration.ClientboundFinishConfigurati
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
 @Mixin(ClientConfigurationPacketListenerImpl.class)
-public class ClientConfigurationPacketListenerImplMixin {
+class ClientConfigurationPacketListenerImplMixin {
 	@Inject(method = "handleConfigurationFinished", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
 	private void invokeTagsLoaded(ClientboundFinishConfigurationPacket packet, CallbackInfo ci, @Local(name = "registries") RegistryAccess.Frozen registries) {
 		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registries, true);

@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.world.level.chunk.storage.SerializableChunkData;
 
 @Mixin(SerializableChunkData.class)
-public class SerializableChunkDataMixin {
+class SerializableChunkDataMixin {
 	@Redirect(method = "lambda$unpackStructureReferences$0", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
 	private static void log(Logger logger, String msg, Object identifier, Object chunkPos) {
 		// Drop to debug log level.

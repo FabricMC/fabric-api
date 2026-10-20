@@ -27,7 +27,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.BuiltinRegistryBuilder;
 
 @Mixin(BuiltInRegistries.class)
-public class BuiltInRegistriesMixin {
+class BuiltInRegistriesMixin {
 	@Unique
 	private static boolean hasInitialised;
 

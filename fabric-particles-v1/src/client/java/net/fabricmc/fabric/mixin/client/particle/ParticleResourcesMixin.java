@@ -30,7 +30,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.fabricmc.fabric.impl.client.particle.ParticleProviderRegistryImpl;
 
 @Mixin(ParticleResources.class)
-public abstract class ParticleResourcesMixin {
+abstract class ParticleResourcesMixin {
 	@Inject(method = "buildProviderLookup", at = @At("HEAD"))
 	private static void onBuildProviderLookup(CallbackInfoReturnable<Map<ParticleType<?>, ParticleProvider<?>>> info) {
 		ParticleProviderRegistryImpl.INSTANCE.initialize();

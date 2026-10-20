@@ -36,11 +36,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
 @Mixin(HumanoidArmorLayer.class)
-public abstract class HumanoidArmorLayerMixin<S extends HumanoidRenderState, M extends HumanoidModel<S>, A extends HumanoidModel<S>> extends RenderLayer<S, M> {
+abstract class HumanoidArmorLayerMixin<S extends HumanoidRenderState, M extends HumanoidModel<S>, A extends HumanoidModel<S>> extends RenderLayer<S, M> {
 	@Unique
 	private HumanoidRenderState humanoidRenderState;
 
-	public HumanoidArmorLayerMixin(RenderLayerParent<S, M> renderLayerParent) {
+	HumanoidArmorLayerMixin(RenderLayerParent<S, M> renderLayerParent) {
 		super(renderLayerParent);
 	}
 

@@ -28,7 +28,7 @@ import net.minecraft.world.level.levelgen.synth.PerlinNoise;
 import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 
 @Mixin(Climate.Sampler.class)
-public class ClimateSamplerMixin implements MultiNoiseSamplerHooks {
+class ClimateSamplerMixin implements MultiNoiseSamplerHooks {
 	@Unique
 	private Long seed = null;
 

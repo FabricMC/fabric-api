@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
 
 @Mixin(GameRenderer.class)
-public class GameRendererMixin {
+class GameRendererMixin {
 	@Shadow
 	@Final
 	private GuiRenderer guiRenderer;

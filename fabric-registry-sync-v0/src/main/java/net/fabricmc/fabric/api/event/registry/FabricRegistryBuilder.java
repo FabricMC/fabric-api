@@ -27,6 +27,7 @@ import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 
@@ -59,6 +60,7 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 	 * @param <T> The type stored in the Registry
 	 * @param <R> The registry type
 	 * @return An instance of FabricRegistryBuilder
+	 * @throws IllegalArgumentException if the registry key does not use {@link Registries#ROOT_REGISTRY_NAME} as its root
 	 */
 	public static <T, R extends WritableRegistry<T>> FabricRegistryBuilder<T, R> from(R registry) {
 		return new FabricRegistryBuilder<>(registry);
@@ -70,6 +72,7 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 	 * @param key The registry's {@link ResourceKey}
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
+	 * @throws IllegalArgumentException if the registry key does not use {@link Registries#ROOT_REGISTRY_NAME} as its root
 	 */
 	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> create(ResourceKey<Registry<T>> key) {
 		return from(new MappedRegistry<>(key, Lifecycle.stable(), false));
@@ -82,6 +85,7 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 	 * @param defaultId The default registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
+	 * @throws IllegalArgumentException if the registry key does not use {@link Registries#ROOT_REGISTRY_NAME} as its root
 	 */
 	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(ResourceKey<Registry<T>> key, Identifier defaultId) {
 		return from(new DefaultedMappedRegistry<T>(defaultId.toString(), key, Lifecycle.stable(), false));
@@ -118,6 +122,10 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
 
 	private FabricRegistryBuilder(R registry) {
+		if (!registry.key().registry().equals(Registries.ROOT_REGISTRY_NAME)) {
+			throw new IllegalArgumentException("Registry key must use " + Registries.ROOT_REGISTRY_NAME + " as its root: " + registry.key());
+		}
+
 		this.registry = registry;
 		attribute(RegistryAttribute.MODDED);
 	}

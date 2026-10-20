@@ -34,7 +34,7 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
 
 @Mixin(targets = "net.minecraft.core.component.DataComponentInitializers$1")
-public abstract class DataComponentInitializersPendingComponentsMixin<T> {
+abstract class DataComponentInitializersPendingComponentsMixin<T> {
 	@Unique
 	private HolderLookup.Provider registryLookup;
 

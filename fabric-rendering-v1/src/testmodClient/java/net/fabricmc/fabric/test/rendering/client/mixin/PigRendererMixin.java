@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
  * Tests {@link RenderStateDataKey} and {@link FabricRenderState}. Pigs will render the block they're standing on at their location.
  */
 @Mixin(PigRenderer.class)
-public class PigRendererMixin {
+class PigRendererMixin {
 	@Unique
 	private static final RenderStateDataKey<MovingBlockRenderState> MOVING_BLOCK = RenderStateDataKey.create(() -> "Moving block");
 

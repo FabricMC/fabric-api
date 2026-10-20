@@ -30,7 +30,7 @@ import net.minecraft.server.packs.repository.Pack;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 @Mixin(BuiltInPackSource.class)
-public class BuiltInPackSourceMixin {
+class BuiltInPackSourceMixin {
 	@Inject(method = "loadPacks", at = @At("RETURN"))
 	private void addBuiltinResourcePacks(Consumer<Pack> consumer, CallbackInfo ci) {
 		// Register mod and built-in resource packs after the vanilla built-in resource packs are registered.

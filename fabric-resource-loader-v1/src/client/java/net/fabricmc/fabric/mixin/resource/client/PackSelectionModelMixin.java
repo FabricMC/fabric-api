@@ -34,7 +34,7 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 
 @Mixin(PackSelectionModel.class)
-public class PackSelectionModelMixin {
+class PackSelectionModelMixin {
 	@Shadow
 	@Final
 	private List<Pack> selected;

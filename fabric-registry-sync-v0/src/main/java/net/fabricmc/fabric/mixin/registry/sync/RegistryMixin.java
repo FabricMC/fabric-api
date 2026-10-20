@@ -23,5 +23,5 @@ import net.minecraft.core.Registry;
 import net.fabricmc.fabric.api.event.registry.FabricRegistry;
 
 @Mixin(Registry.class)
-public interface RegistryMixin extends FabricRegistry {
+interface RegistryMixin extends FabricRegistry {
 }

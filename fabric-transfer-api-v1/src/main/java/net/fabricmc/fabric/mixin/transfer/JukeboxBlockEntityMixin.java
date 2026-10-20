@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxBlockEntityMixin implements SpecialLogicContainer {
+abstract class JukeboxBlockEntityMixin implements SpecialLogicContainer {
 	@Shadow
 	private ItemStack item;
 

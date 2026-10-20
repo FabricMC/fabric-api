@@ -24,7 +24,7 @@ import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.fabricmc.fabric.impl.biome.BiomeSourceAccess;
 
 @Mixin(MultiNoiseBiomeSource.class)
-public class MultiNoiseBiomeSourceMixin implements BiomeSourceAccess {
+class MultiNoiseBiomeSourceMixin implements BiomeSourceAccess {
 	@Unique
 	private boolean modifyBiomeEntries = true;
 

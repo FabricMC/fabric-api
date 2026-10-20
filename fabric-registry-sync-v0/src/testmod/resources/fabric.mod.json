@@ -20,7 +20,8 @@
     ],
     "client": [
       "net.fabricmc.fabric.test.registry.sync.client.DynamicRegistryClientTest",
-      "net.fabricmc.fabric.test.registry.sync.client.RegistrySyncClientTest"
+      "net.fabricmc.fabric.test.registry.sync.client.RegistrySyncClientTest",
+      "net.fabricmc.fabric.test.registry.sync.client.ClientRegistryBuilderTest"
     ],
     "fabric-client-gametest": [
       "net.fabricmc.fabric.test.registry.sync.client.RegistryEntryWorldValidationClientTest"

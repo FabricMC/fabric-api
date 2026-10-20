@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockTintsFactory;
 
 @Mixin(ModelBlockRenderer.class)
-public abstract class ModelBlockRendererMixin {
+abstract class ModelBlockRendererMixin {
 	@Shadow
 	@Final
 	private IntList computedTintValues;

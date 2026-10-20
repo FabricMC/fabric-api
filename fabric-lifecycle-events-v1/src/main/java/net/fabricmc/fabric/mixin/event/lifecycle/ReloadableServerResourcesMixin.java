@@ -34,7 +34,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
 @Mixin(ReloadableServerResources.class)
-public class ReloadableServerResourcesMixin {
+class ReloadableServerResourcesMixin {
 	@Unique
 	private RegistryAccess layeredRegistries;
 

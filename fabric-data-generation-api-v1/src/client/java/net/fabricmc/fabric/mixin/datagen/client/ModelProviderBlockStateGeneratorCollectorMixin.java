@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
 
 @Mixin(ModelProvider.BlockStateGeneratorCollector.class)
-public class ModelProviderBlockStateGeneratorCollectorMixin implements FabricModelProviderDefinitions {
+class ModelProviderBlockStateGeneratorCollectorMixin implements FabricModelProviderDefinitions {
 	@Unique
 	private FabricPackOutput fabricPackOutput;
 

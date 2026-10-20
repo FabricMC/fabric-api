@@ -26,7 +26,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.fabricmc.fabric.api.serialization.v1.value.FabricValueOutput;
 
 @Mixin(TagValueOutput.class)
-public class TagValueOutputMixin implements FabricValueOutput {
+class TagValueOutputMixin implements FabricValueOutput {
 	@Shadow
 	@Final
 	private CompoundTag output;

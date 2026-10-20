@@ -45,7 +45,7 @@ import net.minecraft.tags.TagLoader;
 import net.fabricmc.fabric.impl.tag.TagRemovalInternals;
 
 @Mixin(TagLoader.class)
-public class TagLoaderMixin {
+class TagLoaderMixin {
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V"))
 	private void removeTagRemovalReferenceOnReplace(ResourceManager resourceManager, CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir, @Local(name = "id") Identifier id) {
 		TagRemovalInternals.removeTagRemovalReference(id);

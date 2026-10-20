@@ -254,6 +254,18 @@
             <message key="matchxpath.match" value="utility classes in API packages must declare a private constructor, or a public constructor to make clear it's not a utility class"/>
         </module>
 
+        <!-- Accessor interfaces may be public; other mixins must be package-private. -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //*[self::CLASS_DEF or self::INTERFACE_DEF][
+                    ./MODIFIERS/ANNOTATION[.//IDENT[@text='Mixin']]
+                    and ./MODIFIERS/*[self::LITERAL_PUBLIC or self::LITERAL_PROTECTED or self::LITERAL_PRIVATE]
+                    and not(self::INTERFACE_DEF and ./IDENT[ends-with(@text, 'Accessor')])
+                ]
+            "/>
+            <message key="matchxpath.match" value="Mixins must be package-private, except accessor interfaces"/>
+        </module>
+
         <!-- Prevent non-@Unique fields in Mixin classes -->
         <module name="MatchXpath">
             <property name="query" value="

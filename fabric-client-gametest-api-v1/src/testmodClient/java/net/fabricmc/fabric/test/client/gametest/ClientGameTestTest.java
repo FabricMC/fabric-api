@@ -160,6 +160,10 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		try (TestSingleplayerContext singleplayer = spWorldSave.open()) {
 			singleplayer.getConnection().waitForChunksRender();
 			context.takeScreenshot("in_game_overworld_2");
+
+			// Closing during a tick sprint must not deadlock
+			singleplayer.getServer().runCommand("tick sprint 1d");
+			context.waitTick();
 		}
 
 		try (TestDedicatedServerContext server = context.worldBuilder().createServer()) {

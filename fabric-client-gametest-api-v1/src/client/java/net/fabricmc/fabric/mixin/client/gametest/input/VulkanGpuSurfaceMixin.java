@@ -30,7 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
 
 @Mixin(targets = "com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface")
-public class VulkanGpuSurfaceMixin {
+class VulkanGpuSurfaceMixin {
 	@WrapOperation(method = "blitFromTexture", at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkImageBlit$Buffer;dstOffsets(Lorg/lwjgl/vulkan/VkOffset3D$Buffer;)Lorg/lwjgl/vulkan/VkImageBlit$Buffer;"))
 	private VkImageBlit.Buffer blitFrameBuffer(VkImageBlit.Buffer blitRegion, VkOffset3D.Buffer dstOffsets, Operation<VkImageBlit.Buffer> original, @Local(argsOnly = true) GpuTextureView gpuTextureView) {
 		if (gpuTextureView.texture() == Minecraft.getInstance().gameRenderer.mainRenderTarget().getColorTexture()) {

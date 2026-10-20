@@ -44,7 +44,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
 @Mixin(SimpleJsonResourceReloadListener.class)
-public class SimpleJsonResourceReloadListenerMixin {
+class SimpleJsonResourceReloadListenerMixin {
 	@Unique
 	private static final Object SKIP_DATA_MARKER = new Object();
 

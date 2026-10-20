@@ -30,7 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 
 @Mixin(PlayerAdvancements.class)
-public class PlayerAdvancementsMixin {
+class PlayerAdvancementsMixin {
 	@Shadow
 	private ServerPlayer player;
 

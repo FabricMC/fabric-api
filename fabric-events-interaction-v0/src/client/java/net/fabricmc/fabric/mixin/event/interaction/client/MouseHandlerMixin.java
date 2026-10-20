@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.fabricmc.fabric.api.event.client.player.ClientHotbarScrollEvents;
 
 @Mixin(MouseHandler.class)
-public abstract class MouseHandlerMixin {
+abstract class MouseHandlerMixin {
 	@WrapOperation(
 			method = "onScroll",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedSlot(I)V")

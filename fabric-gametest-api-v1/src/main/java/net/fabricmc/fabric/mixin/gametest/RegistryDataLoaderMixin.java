@@ -38,7 +38,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.fabricmc.fabric.impl.gametest.FabricGameTestModInitializer;
 
 @Mixin(RegistryDataLoader.class)
-public class RegistryDataLoaderMixin {
+class RegistryDataLoaderMixin {
 	@Unique
 	private static final AtomicBoolean LOADING_DYNAMIC_REGISTRIES = new AtomicBoolean(false);
 

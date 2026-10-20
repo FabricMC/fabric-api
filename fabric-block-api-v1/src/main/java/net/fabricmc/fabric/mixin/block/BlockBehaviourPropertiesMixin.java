@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.fabricmc.fabric.api.block.v1.FabricBlock;
 
 @Mixin(BlockBehaviour.Properties.class)
-public class BlockBehaviourPropertiesMixin implements FabricBlock.FabricProperties {
+class BlockBehaviourPropertiesMixin implements FabricBlock.FabricProperties {
 	@Shadow
 	private @Nullable ResourceKey<Block> id;
 

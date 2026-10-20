@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.client.rendering.LevelRendererExtensions;
 import net.fabricmc.fabric.impl.client.rendering.level.LevelExtractionContextImpl;
 
 @Mixin(LevelExtractor.class)
-public class LevelExtractorMixin implements LevelRendererExtensions {
+class LevelExtractorMixin implements LevelRendererExtensions {
 	@Shadow
 	@Final
 	private Minecraft minecraft;

@@ -30,7 +30,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionRegistryImpl;
 
 @Mixin(AbstractBoat.class)
-public class AbstractBoatMixin {
+class AbstractBoatMixin {
 	@WrapOperation(method = {"checkInWater", "isUnderwater"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/FluidState;is(Lnet/minecraft/tags/TagKey;)Z"))
 	private boolean customFluidSupport(FluidState instance, TagKey<Fluid> water, Operation<Boolean> original) {
 		for (TagKey<Fluid> tagKey : EntityFluidInteractionRegistryImpl.getTrackedFluids()) {

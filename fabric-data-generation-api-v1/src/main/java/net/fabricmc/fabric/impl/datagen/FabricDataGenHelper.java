@@ -100,60 +100,70 @@ public final class FabricDataGenHelper {
 
 	private static void runInternal() {
 		Path outputDir = Paths.get(Objects.requireNonNull(OUTPUT_DIR, "No output dir provided with the 'fabric-api.datagen.output-dir' property"));
-
 		List<EntrypointContainer<DataGeneratorEntrypoint>> dataGeneratorInitializers = FabricLoader.getInstance()
 				.getEntrypointContainers(ENTRYPOINT_KEY, DataGeneratorEntrypoint.class);
-
 		if (dataGeneratorInitializers.isEmpty()) {
 			LOGGER.warn("No data generator entrypoints are defined. Implement {} and add your class to the '{}' entrypoint key in your fabric.mod.json.",
 					DataGeneratorEntrypoint.class.getName(), ENTRYPOINT_KEY);
 		}
 
 		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
-		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
+		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream()
+				.map(EntrypointContainer::getEntrypoint)
+				.toList();
 		CompletableFuture<HolderLookup.Provider> worldRegistriesFuture = CompletableFuture.supplyAsync(() -> createWorldLookupProvider(entrypoints), Util.backgroundExecutor());
 		CompletableFuture<HolderLookup.Provider> registriesFuture = worldRegistriesFuture.thenApplyAsync(provider -> createReloadableLookupProvider(entrypoints, provider), Util.backgroundExecutor());
 
+		List<EntrypointContainer<DataGeneratorEntrypoint>> filteredDataGeneratorInitializers = getFilteredInitializers(dataGeneratorInitializers);
 		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.FIXED_ORDER_FIELDS;
-		Object2IntOpenHashMap<String> defaultJsonKeySortOrders = new Object2IntOpenHashMap<>(jsonKeySortOrders);
+		FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, STRICT_VALIDATION, worldRegistriesFuture, registriesFuture);
 
-		for (EntrypointContainer<DataGeneratorEntrypoint> entrypointContainer : dataGeneratorInitializers) {
-			final String id = entrypointContainer.getProvider().getMetadata().getId();
+		for (EntrypointContainer<DataGeneratorEntrypoint> initializer : filteredDataGeneratorInitializers) {
+			DataGeneratorEntrypoint entrypoint = initializer.getEntrypoint();
+			ModContainer modContainer = initializer.getProvider();
+			String effectiveModId = entrypoint.getEffectiveModId();
 
-			if (MOD_ID_FILTER != null) {
-				if (!id.equals(MOD_ID_FILTER)) {
-					continue;
-				}
+			if (effectiveModId != null) {
+				modContainer = FabricLoader.getInstance()
+						.getModContainer(effectiveModId)
+						.orElseThrow(() -> new RuntimeException("Failed to find effective mod container for mod id (%s)".formatted(effectiveModId)));
 			}
 
-			LOGGER.info("Running data generator for {}", id);
-
-			try {
-				final DataGeneratorEntrypoint entrypoint = entrypointContainer.getEntrypoint();
-				final String effectiveModId = entrypoint.getEffectiveModId();
-				ModContainer modContainer = entrypointContainer.getProvider();
-
-				HashSet<String> keys = new HashSet<>();
-				entrypoint.addJsonKeySortOrders((key, value) -> {
-					Objects.requireNonNull(key, "Tried to register a priority for a null key");
-					jsonKeySortOrders.put(key, value);
-					keys.add(key);
-				});
-
-				if (effectiveModId != null) {
-					modContainer = FabricLoader.getInstance().getModContainer(effectiveModId).orElseThrow(() -> new RuntimeException("Failed to find effective mod container for mod id (%s)".formatted(effectiveModId)));
-				}
-
-				FabricDataGenerator dataGenerator = new FabricDataGenerator(outputDir, modContainer, STRICT_VALIDATION, worldRegistriesFuture, registriesFuture);
-				entrypoint.onInitializeDataGenerator(dataGenerator);
-				dataGenerator.run();
-
-				jsonKeySortOrders.keySet().removeAll(keys);
-				jsonKeySortOrders.putAll(defaultJsonKeySortOrders);
-			} catch (Throwable t) {
-				throw new RuntimeException("Failed to run data generator from mod (%s)".formatted(id), t);
-			}
+			entrypoint.addJsonKeySortOrders((key, value) -> {
+				Objects.requireNonNull(key, "Tried to register a priority for a null key");
+				jsonKeySortOrders.put(key, value);
+			});
+			dataGenerator.markModContainerAsActive(modContainer);
+			entrypoint.onInitializeDataGenerator(dataGenerator);
 		}
+
+		dataGenerator.markModContainerAsActive(null);
+		LOGGER.info(
+				"Running data generator for {}",
+				filteredDataGeneratorInitializers.stream()
+						.map(entrypoint -> entrypoint.getProvider()
+								.getMetadata()
+								.getId()
+						)
+						.distinct()
+						.toList()
+		);
+
+		try {
+			dataGenerator.run();
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to run data generator", t);
+		}
+	}
+
+	private static List<EntrypointContainer<DataGeneratorEntrypoint>> getFilteredInitializers(List<EntrypointContainer<DataGeneratorEntrypoint>> initializers) {
+		if (MOD_ID_FILTER == null) {
+			return initializers;
+		}
+
+		return initializers.stream()
+				.filter(entrypoint -> entrypoint.getProvider().getMetadata().getId().equals(MOD_ID_FILTER))
+				.toList();
 	}
 
 	private static HolderLookup.Provider createWorldLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {

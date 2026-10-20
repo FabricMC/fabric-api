@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
+import net.minecraft.client.core.registries.ClientRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -88,6 +90,11 @@ public class ClientTagsImpl {
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<? extends Registry<T>> getRegistry(TagKey<T> tagKey) {
 		Objects.requireNonNull(tagKey);
+
+		// Check if the tag represents a client registry
+		if (tagKey.registry().registry().equals(ClientRegistries.ROOT_REGISTRY_NAME)) {
+			return (Optional<? extends Registry<T>>) BuiltInClientRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
+		}
 
 		// Check if the tag represents a dynamic registry
 		if (Minecraft.getInstance() != null) {

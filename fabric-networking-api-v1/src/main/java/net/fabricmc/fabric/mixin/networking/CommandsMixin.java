@@ -33,7 +33,7 @@ import net.minecraft.server.commands.DebugConfigCommand;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(Commands.class)
-public class CommandsMixin {
+class CommandsMixin {
 	@Shadow
 	@Final
 	private CommandDispatcher<CommandSourceStack> dispatcher;

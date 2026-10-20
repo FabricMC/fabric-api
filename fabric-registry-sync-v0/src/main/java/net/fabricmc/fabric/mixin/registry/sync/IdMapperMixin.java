@@ -32,7 +32,7 @@ import net.minecraft.core.IdMapper;
 import net.fabricmc.fabric.impl.registry.sync.RemovableIdMapper;
 
 @Mixin(IdMapper.class)
-public class IdMapperMixin<T> implements RemovableIdMapper<T> {
+class IdMapperMixin<T> implements RemovableIdMapper<T> {
 	@Shadow
 	private int nextId;
 	@Final

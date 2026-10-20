@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.fabricmc.fabric.impl.client.gametest.TestInputImpl;
 
 @Mixin(InputConstants.class)
-public class InputConstantsMixin {
+class InputConstantsMixin {
 	@Inject(method = "isKeyDown", at = @At("HEAD"), cancellable = true)
 	private static void useGameTestInputForKeyDown(int keyCode, CallbackInfoReturnable<Boolean> cir) {
 		cir.setReturnValue(TestInputImpl.isKeyDown(keyCode));

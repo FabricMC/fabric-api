@@ -23,17 +23,37 @@ import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
 
+/// Holds the [RegistryAttribute]s associated with a registry.
 @ApiStatus.NonExtendable
 public interface RegistryAttributeHolder {
+	/// Get the attribute holder for a registry key.
+	///
+	/// @param key the registry's [ResourceKey]
+	/// @return the attribute holder associated with the registry key
 	static RegistryAttributeHolder get(ResourceKey<?> key) {
 		return RegistryAttributeImpl.getHolder(key);
 	}
 
+	/// Get the attribute holder for a registry.
+	///
+	/// @param registry the registry whose attributes to access
+	/// @return the attribute holder associated with the registry's key
 	static RegistryAttributeHolder get(Registry<?> registry) {
 		return get(registry.key());
 	}
 
+	/// Add a [RegistryAttribute] to the registry.
+	///
+	/// Adding an attribute that is already present has no effect.
+	///
+	/// @param attribute the [RegistryAttribute] to add to the registry
+	/// @return this holder
+	/// @throws IllegalArgumentException if an attribute other than [RegistryAttribute#MODDED] is added to a client registry
 	RegistryAttributeHolder addAttribute(RegistryAttribute attribute);
 
+	/// Check whether the registry has a [RegistryAttribute].
+	///
+	/// @param attribute the [RegistryAttribute] to check
+	/// @return `true` if the registry has the attribute, otherwise `false`
 	boolean hasAttribute(RegistryAttribute attribute);
 }

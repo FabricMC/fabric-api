@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
 @Mixin(FluidRenderer.class)
-public class FluidRendererMixin {
+class FluidRendererMixin {
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
 	public void onHeadRender(BlockAndTintGetter view, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
 		if (FluidRenderingImpl.IS_RENDERING_VANILLA_DEFAULT.isBound()) {

@@ -42,7 +42,7 @@ import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.fabricmc.fabric.impl.dimension.FailSoftMapCodec;
 
 @Mixin(WorldDimensions.class)
-public class WorldDimensionsMixin {
+class WorldDimensionsMixin {
 	@Unique
 	private static final ScopedValue<Registry<LevelStem>> REGISTRY = ScopedValue.newInstance();
 

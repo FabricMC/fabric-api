@@ -30,7 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 
 @Mixin(Player.class)
-public class PlayerMixin {
+class PlayerMixin {
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Entity target, CallbackInfo info) {
 		if ((Object) this instanceof ServerPlayer player) {

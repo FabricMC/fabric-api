@@ -30,7 +30,7 @@ import net.minecraft.world.item.Item;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 
 @Mixin(Item.Properties.class)
-public class ItemPropertiesMixin implements FabricItem.Properties {
+class ItemPropertiesMixin implements FabricItem.Properties {
 	@Final
 	@Shadow
 	@Mutable

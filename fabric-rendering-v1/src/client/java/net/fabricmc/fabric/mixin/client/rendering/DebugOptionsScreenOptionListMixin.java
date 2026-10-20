@@ -30,7 +30,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.impl.client.rendering.DebugOptionsComparator;
 
 @Mixin(targets = "net.minecraft.client.gui.screens.debug.DebugOptionsScreen$OptionList")
-public class DebugOptionsScreenOptionListMixin {
+class DebugOptionsScreenOptionListMixin {
 	@Redirect(method = "lambda$static$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/Identifier;compareTo(Lnet/minecraft/resources/Identifier;)I"))
 	private static int sort(Identifier o1, Identifier o2) {
 		return DebugOptionsComparator.INSTANCE.compare(o1, o2);

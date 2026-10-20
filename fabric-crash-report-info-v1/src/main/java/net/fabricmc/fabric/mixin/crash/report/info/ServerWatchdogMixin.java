@@ -27,7 +27,7 @@ import net.minecraft.server.dedicated.ServerWatchdog;
 import net.fabricmc.fabric.impl.crash.report.info.ThreadPrinting;
 
 @Mixin(ServerWatchdog.class)
-public class ServerWatchdogMixin {
+class ServerWatchdogMixin {
 	@ModifyArg(method = "createWatchdogCrashReport(Ljava/lang/String;J)Lnet/minecraft/CrashReport;",
 			at = @At(value = "INVOKE",
 					target = "Ljava/lang/StringBuilder;append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",

@@ -33,7 +33,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.fabricmc.fabric.impl.blockgetter.client.RenderDataMapConsumer;
 
 @Mixin(RenderSectionRegion.class)
-public abstract class RenderSectionRegionMixin implements BlockAndTintGetter, RenderDataMapConsumer {
+abstract class RenderSectionRegionMixin implements BlockAndTintGetter, RenderDataMapConsumer {
 	@Shadow
 	@Final
 	private ClientLevel level;

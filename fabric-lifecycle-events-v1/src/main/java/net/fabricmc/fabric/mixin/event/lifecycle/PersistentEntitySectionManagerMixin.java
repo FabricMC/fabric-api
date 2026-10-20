@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.EntityLoadDataSetter;
 
 @Mixin(PersistentEntitySectionManager.class)
-public class PersistentEntitySectionManagerMixin {
+class PersistentEntitySectionManagerMixin {
 	@Inject(method = "addEntity", at = @At("HEAD"), cancellable = true)
 	private <T extends EntityAccess> void beforeAddEntity(T entityAccess, boolean loaded, CallbackInfoReturnable<Boolean> cir) {
 		Entity entity = (Entity) entityAccess;

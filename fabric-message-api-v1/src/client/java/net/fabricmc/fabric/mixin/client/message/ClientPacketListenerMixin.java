@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
  * Priority set to 800 to inject before {@code fabric-command-api} so that this api will be called first.
  */
 @Mixin(value = ClientPacketListener.class, priority = 800)
-public abstract class ClientPacketListenerMixin {
+abstract class ClientPacketListenerMixin {
 	@Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
 	private void fabric_allowSendChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> content) {
 		if (ClientSendMessageEvents.ALLOW_CHAT.invoker().allowSendChatMessage(content.get())) {

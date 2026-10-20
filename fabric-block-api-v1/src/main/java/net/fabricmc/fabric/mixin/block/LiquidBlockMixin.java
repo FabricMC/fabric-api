@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.block.v1.FluidFlowEvents;
 
 @Mixin(LiquidBlock.class)
-public abstract class LiquidBlockMixin extends Block {
-	public LiquidBlockMixin(BlockBehaviour.Properties properties) {
+abstract class LiquidBlockMixin extends Block {
+	LiquidBlockMixin(BlockBehaviour.Properties properties) {
 		super(properties);
 	}
 

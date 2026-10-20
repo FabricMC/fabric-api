@@ -34,7 +34,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 
 @Mixin(ClientChunkCache.class)
-public abstract class ClientChunkCacheMixin {
+abstract class ClientChunkCacheMixin {
 	@Final
 	@Shadow
 	private ClientLevel level;

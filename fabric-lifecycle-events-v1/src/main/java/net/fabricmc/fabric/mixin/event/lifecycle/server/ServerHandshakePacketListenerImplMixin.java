@@ -33,7 +33,7 @@ import net.minecraft.server.network.ServerHandshakePacketListenerImpl;
 import net.fabricmc.fabric.impl.event.lifecycle.MinecraftServerHooks;
 
 @Mixin(ServerHandshakePacketListenerImpl.class)
-public abstract class ServerHandshakePacketListenerImplMixin {
+abstract class ServerHandshakePacketListenerImplMixin {
 	@Unique
 	private static final Component STARTUP_DISCONNET_REASON = Component.literal("Server is still starting!");
 

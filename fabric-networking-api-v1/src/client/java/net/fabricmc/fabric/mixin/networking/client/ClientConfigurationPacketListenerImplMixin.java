@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.networking.context.PacketContextImpl;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ClientConfigurationPacketListenerImpl.class, priority = 999)
-public abstract class ClientConfigurationPacketListenerImplMixin extends ClientCommonPacketListenerImpl implements PacketListenerExtensions {
+abstract class ClientConfigurationPacketListenerImplMixin extends ClientCommonPacketListenerImpl implements PacketListenerExtensions {
 	@Unique
 	private ClientConfigurationNetworkAddon addon;
 

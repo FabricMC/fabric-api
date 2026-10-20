@@ -21,15 +21,24 @@ import static net.fabricmc.fabric.test.tag.TagTest.MOD_ID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.core.registries.ClientRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.registry.v0.FabricClientRegistryBuilder;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class ClientTagTest implements ClientModInitializer {
+	public static final ResourceKey<Registry<String>> CLIENT_REGISTRY_KEY = ResourceKey.createRegistryKey(
+			ClientRegistries.ROOT_REGISTRY_NAME, Identifier.fromNamespaceAndPath(MOD_ID, "client_registry")
+	);
+	public static final Registry<String> CLIENT_REGISTRY = FabricClientRegistryBuilder.create(CLIENT_REGISTRY_KEY).buildAndRegister();
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagTest.class);
 
 	protected static final Identifier BUILT_IN_PACK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "test");
@@ -37,6 +46,8 @@ public class ClientTagTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		Registry.register(CLIENT_REGISTRY, Identifier.fromNamespaceAndPath(MOD_ID, "example"), "example");
+
 		final ModContainer container = FabricLoader.getInstance().getModContainer(MOD_ID).get();
 
 		if (!ResourceLoader.registerBuiltinPack(BUILT_IN_PACK_ID, container, PackActivationType.ALWAYS_ENABLED)) {

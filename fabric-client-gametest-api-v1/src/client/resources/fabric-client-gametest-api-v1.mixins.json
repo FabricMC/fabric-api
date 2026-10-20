@@ -24,6 +24,7 @@
     "screenshot.NativeImageMixin",
     "screenshot.DeltaTrackerDefaultValueAccessor",
     "threading.MainMixin",
+    "threading.IntegratedServerMixin",
     "threading.MinecraftMixin",
     "threading.MinecraftServerMixin",
     "world.CreateWorldScreenMixin",

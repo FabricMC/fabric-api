@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.VisibleForTesting;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -29,19 +30,31 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class RegistryAttributeImpl implements RegistryAttributeHolder {
+	private static final EnumSet<RegistryAttribute> ALLOWED_CLIENT_ATTRIBUTES = EnumSet.of(RegistryAttribute.MODDED);
+	private static final Identifier CLIENT_REGISTRY_ROOT = Identifier.withDefaultNamespace("client_root");
+
 	private static final Map<ResourceKey<?>, RegistryAttributeHolder> HOLDER_MAP = new ConcurrentHashMap<>();
 
 	public static RegistryAttributeHolder getHolder(ResourceKey<?> resourceKey) {
-		return HOLDER_MAP.computeIfAbsent(resourceKey, key -> new RegistryAttributeImpl());
+		return HOLDER_MAP.computeIfAbsent(resourceKey, key -> {
+			boolean clientRegistry = key.registry().equals(CLIENT_REGISTRY_ROOT) || key.equals(ResourceKey.createRegistryKey(CLIENT_REGISTRY_ROOT));
+			return new RegistryAttributeImpl(clientRegistry);
+		});
 	}
 
+	private final boolean clientRegistry;
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
 
-	private RegistryAttributeImpl() {
+	private RegistryAttributeImpl(boolean clientRegistry) {
+		this.clientRegistry = clientRegistry;
 	}
 
 	@Override
 	public RegistryAttributeHolder addAttribute(RegistryAttribute attribute) {
+		if (clientRegistry && !ALLOWED_CLIENT_ATTRIBUTES.contains(attribute)) {
+			throw new IllegalArgumentException("Attribute " + attribute + " is not supported for client registries");
+		}
+
 		attributes.add(attribute);
 		return this;
 	}

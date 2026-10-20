@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.gametest.framework.GameTestServer;
 
 @Mixin(GameTestServer.class)
-public abstract class GameTestServerMixin {
+abstract class GameTestServerMixin {
 	@Inject(method = "isDedicatedServer", at = @At("HEAD"), cancellable = true)
 	public void isDedicated(CallbackInfoReturnable<Boolean> cir) {
 		// Allow dedicated server commands to be registered.

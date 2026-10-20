@@ -27,7 +27,7 @@ import net.minecraft.world.level.WorldDataConfiguration;
 import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 
 @Mixin(DedicatedServerProperties.class)
-public class DedicatedServerPropertiesMixin {
+class DedicatedServerPropertiesMixin {
 	@Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/WorldDataConfiguration;DEFAULT:Lnet/minecraft/world/level/WorldDataConfiguration;", opcode = Opcodes.GETSTATIC))
 	private WorldDataConfiguration replaceDefaultDataConfiguration() {
 		return ModPackResourcesUtil.createDefaultDataConfiguration();

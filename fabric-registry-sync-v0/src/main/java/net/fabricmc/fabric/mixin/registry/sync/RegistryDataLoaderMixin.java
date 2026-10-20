@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryViewImpl;
 
 @Mixin(RegistryDataLoader.class)
-public class RegistryDataLoaderMixin {
+class RegistryDataLoaderMixin {
 	@Unique
 	private static final ScopedValue<Boolean> IS_SERVER = ScopedValue.newInstance();
 

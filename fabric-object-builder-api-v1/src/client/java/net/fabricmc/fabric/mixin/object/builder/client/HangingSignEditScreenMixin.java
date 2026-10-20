@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.entity.SignTextSlot;
 
 @Mixin(HangingSignEditScreen.class)
-public abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen {
+abstract class HangingSignEditScreenMixin extends AbstractSignEditScreen {
 	private HangingSignEditScreenMixin(SignBlockEntity blockEntity, SignTextSlot slot, boolean filtered) {
 		super(blockEntity, slot, filtered);
 	}

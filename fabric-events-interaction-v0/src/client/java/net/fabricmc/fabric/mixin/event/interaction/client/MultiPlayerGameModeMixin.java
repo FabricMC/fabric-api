@@ -52,7 +52,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
 @Mixin(MultiPlayerGameMode.class)
-public abstract class MultiPlayerGameModeMixin {
+abstract class MultiPlayerGameModeMixin {
 	@Shadow
 	@Final
 	private Minecraft minecraft;

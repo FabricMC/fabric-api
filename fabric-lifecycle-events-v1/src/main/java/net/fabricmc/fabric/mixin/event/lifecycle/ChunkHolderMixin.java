@@ -46,7 +46,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.FullChunkStatusEventTracker;
 
 @Mixin(ChunkHolder.class)
-public abstract class ChunkHolderMixin extends GenerationChunkHolder implements FullChunkStatusEventTracker {
+abstract class ChunkHolderMixin extends GenerationChunkHolder implements FullChunkStatusEventTracker {
 	@Shadow
 	@Final
 	private LevelHeightAccessor levelHeightAccessor;

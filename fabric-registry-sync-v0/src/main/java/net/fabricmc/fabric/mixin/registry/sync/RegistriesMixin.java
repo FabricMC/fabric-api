@@ -29,7 +29,7 @@ import net.minecraft.resources.ResourceKey;
 // Vanilla doesn't mark namespaces in the directories of tags and dynamic registry elements at all,
 // so we prepend the directories with the namespace if it's a modded registry id.
 @Mixin(Registries.class)
-public class RegistriesMixin {
+class RegistriesMixin {
 	@ModifyReturnValue(method = "elementsDirPath", at = @At("RETURN"))
 	private static String prependDirectoryWithNamespace(String original, @Local(argsOnly = true) ResourceKey<? extends Registry<?>> registryRef) {
 		Identifier id = registryRef.identifier();

@@ -33,8 +33,8 @@ import net.minecraft.world.level.material.LavaFluid;
 import net.fabricmc.fabric.api.block.v1.FluidFlowEvents;
 
 @Mixin(FlowingFluid.class)
-public abstract class FlowingFluidMixin extends Fluid {
-	public FlowingFluidMixin() {
+abstract class FlowingFluidMixin extends Fluid {
+	FlowingFluidMixin() {
 		super();
 	}
 

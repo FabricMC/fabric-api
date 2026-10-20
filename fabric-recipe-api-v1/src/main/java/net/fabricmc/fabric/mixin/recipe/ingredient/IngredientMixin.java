@@ -44,7 +44,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientStreamCodec;
 import net.fabricmc.fabric.impl.recipe.ingredient.OptionalCustomIngredientStreamCodec;
 
 @Mixin(Ingredient.class)
-public class IngredientMixin implements FabricIngredient {
+class IngredientMixin implements FabricIngredient {
 	@Mutable
 	@Shadow
 	@Final

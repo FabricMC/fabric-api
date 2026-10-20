@@ -28,7 +28,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
 @Mixin(Level.class)
-public abstract class LevelMixin implements LoadedChunksCache {
+abstract class LevelMixin implements LoadedChunksCache {
 	@Unique
 	private final Set<LevelChunk> loadedChunks = new HashSet<>();
 

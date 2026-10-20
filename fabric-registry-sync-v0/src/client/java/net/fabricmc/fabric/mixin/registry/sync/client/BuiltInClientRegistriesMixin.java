@@ -25,7 +25,7 @@ import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.core.registries.BuiltinRegistryBuilder;
 
 @Mixin(BuiltInClientRegistries.class)
-public class BuiltInClientRegistriesMixin {
+class BuiltInClientRegistriesMixin {
 	@Unique
 	private static boolean hasInitialised;
 

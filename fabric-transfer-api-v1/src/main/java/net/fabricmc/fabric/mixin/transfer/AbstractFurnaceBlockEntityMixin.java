@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
  * Defer cook time updates for furnaces, so that aborted transactions don't reset the cook time.
  */
 @Mixin(AbstractFurnaceBlockEntity.class)
-public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlockEntity implements SpecialLogicContainer {
+abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlockEntity implements SpecialLogicContainer {
 	@Shadow
 	protected NonNullList<ItemStack> items;
 	@Shadow

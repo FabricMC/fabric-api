@@ -26,7 +26,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
 
 @Mixin(LevelReader.class)
-public interface LevelReaderMixin extends BlockAndLightGetter {
+interface LevelReaderMixin extends BlockAndLightGetter {
 	@Shadow
 	Holder<Biome> getBiome(int x, int y, int z);
 

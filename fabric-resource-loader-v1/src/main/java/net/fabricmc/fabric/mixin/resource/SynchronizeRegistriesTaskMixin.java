@@ -39,7 +39,7 @@ import net.minecraft.server.packs.repository.KnownPack;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 @Mixin(SynchronizeRegistriesTask.class)
-public abstract class SynchronizeRegistriesTaskMixin {
+abstract class SynchronizeRegistriesTaskMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("SynchronizeRegistriesTaskMixin");
 	@Shadow

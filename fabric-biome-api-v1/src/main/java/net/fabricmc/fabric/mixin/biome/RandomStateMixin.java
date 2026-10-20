@@ -30,7 +30,7 @@ import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 
 @Mixin(RandomState.class)
-public class RandomStateMixin {
+class RandomStateMixin {
 	@Shadow
 	@Final
 	private long seed;

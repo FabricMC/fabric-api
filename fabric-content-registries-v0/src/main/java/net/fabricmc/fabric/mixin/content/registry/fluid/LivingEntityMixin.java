@@ -41,8 +41,8 @@ import net.fabricmc.fabric.impl.content.registry.fluid.EntityFluidInteractionReg
 import net.fabricmc.fabric.impl.content.registry.fluid.InternalEntityFluidExtension;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
-	public LivingEntityMixin(EntityType<?> type, Level level) {
+abstract class LivingEntityMixin extends Entity {
+	LivingEntityMixin(EntityType<?> type, Level level) {
 		super(type, level);
 	}
 
