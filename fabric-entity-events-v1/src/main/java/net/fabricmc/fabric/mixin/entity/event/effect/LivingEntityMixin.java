@@ -191,8 +191,8 @@ abstract class LivingEntityMixin extends Entity {
 	@Inject(
 			method = "removeAllEffects",
 			at = @At(
-					value = "INVOKE",
-					target = "Lcom/google/common/collect/Maps;newHashMap(Ljava/util/Map;)Ljava/util/HashMap;"
+					value = "NEW",
+					target = "(Ljava/util/Map;)Ljava/util/HashMap;"
 			)
 	)
 	private void beforeRemoveAllEffects(CallbackInfoReturnable<Boolean> cir) {

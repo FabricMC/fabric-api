@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -50,7 +51,7 @@ public class EmptyBucketStorage implements InsertionOnlyStorage<FluidVariant> {
 
 		if (!context.getItemVariant().isOf(Items.BUCKET)) return 0;
 
-		Item fullBucket = resource.getFluid().getBucket();
+		Item fullBucket = BuiltInRegistries.ITEM.getValueOrThrow(resource.getFluid().getBucket());
 
 		// Make sure the resource is a correct fluid mapping: the fluid <-> bucket mapping must be bidirectional.
 		if (fullBucket instanceof BucketItemAccessor accessor && resource.isOf(accessor.fabric_getContent())) {

@@ -40,14 +40,6 @@ public final class VanillaHudElements {
 	 */
 	public static final Identifier CROSSHAIR = Identifier.withDefaultNamespace("crosshair");
 	/**
-	 * The identifier for the vanilla spectator menu.
-	 */
-	public static final Identifier SPECTATOR_MENU = Identifier.withDefaultNamespace("spectator_menu");
-	/**
-	 * The identifier for the vanilla hotbar.
-	 */
-	public static final Identifier HOTBAR = Identifier.withDefaultNamespace("hotbar");
-	/**
 	 * The identifier for the player armor level bar.
 	 */
 	public static final Identifier ARMOR_BAR = Identifier.withDefaultNamespace("armor_bar");
@@ -75,6 +67,14 @@ public final class VanillaHudElements {
 	 * The identifier for experience level tooltip.
 	 */
 	public static final Identifier EXPERIENCE_LEVEL = Identifier.withDefaultNamespace("experience_level");
+	/**
+	 * The identifier for the vanilla spectator menu.
+	 */
+	public static final Identifier SPECTATOR_MENU = Identifier.withDefaultNamespace("spectator_menu");
+	/**
+	 * The identifier for the vanilla hotbar.
+	 */
+	public static final Identifier HOTBAR = Identifier.withDefaultNamespace("hotbar");
 	/**
 	 * The identifier for held item tooltip.
 	 */

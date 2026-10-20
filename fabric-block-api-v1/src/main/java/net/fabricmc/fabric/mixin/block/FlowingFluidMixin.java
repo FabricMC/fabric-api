@@ -34,8 +34,8 @@ import net.fabricmc.fabric.api.block.v1.FluidFlowEvents;
 
 @Mixin(FlowingFluid.class)
 abstract class FlowingFluidMixin extends Fluid {
-	FlowingFluidMixin() {
-		super();
+	FlowingFluidMixin(Properties properties) {
+		super(properties);
 	}
 
 	@Inject(method = "spreadTo", at = @At("HEAD"), cancellable = true)

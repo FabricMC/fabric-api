@@ -35,6 +35,7 @@
     "RenderPipelineBuilderMixin",
     "RenderPipelineMixin",
     "RenderPipelineSnippetMixin",
+    "SpectatorGuiMixin",
     "SpriteSourcesAccessor",
     "StagedVertexBufferDrawAccessor",
     "SubmitNodeCollectionMixin",

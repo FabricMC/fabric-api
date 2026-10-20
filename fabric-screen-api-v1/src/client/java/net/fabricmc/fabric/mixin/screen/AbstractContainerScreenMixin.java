@@ -37,9 +37,9 @@ abstract class AbstractContainerScreenMixin extends Screen {
 	}
 
 	@Inject(method = "extractRenderState", at = @At(value = "INVOKE",
-													target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractContents(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
-		ScreenEvents.afterForeground(this).invoker().afterForeground(this, graphics, mouseX, mouseY, a);
+													target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;extractContents(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", shift = At.Shift.AFTER))
+	public void extractRenderState(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+		ScreenEvents.afterForeground(this).invoker().afterForeground(this, graphics);
 	}
 
 	@Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)

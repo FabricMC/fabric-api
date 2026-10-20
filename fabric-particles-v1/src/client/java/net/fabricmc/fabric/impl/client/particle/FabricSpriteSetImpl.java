@@ -52,4 +52,9 @@ public record FabricSpriteSetImpl(ParticleResources.MutableSpriteSet delegate) i
 	public TextureAtlasSprite first() {
 		return delegate.first();
 	}
+
+	@Override
+	public int size() {
+		return delegate.size();
+	}
 }

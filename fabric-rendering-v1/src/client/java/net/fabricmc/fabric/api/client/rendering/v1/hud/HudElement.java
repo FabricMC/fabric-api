@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
@@ -30,7 +29,6 @@ public interface HudElement {
 	 * Renders the HUD element.
 	 *
 	 * @param graphics the {@link GuiGraphicsExtractor} used for rendering
-	 * @param deltaTracker the {@link DeltaTracker} providing timing information
 	 */
-	void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker);
+	void extractRenderState(GuiGraphicsExtractor graphics);
 }

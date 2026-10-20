@@ -125,7 +125,7 @@ public class OptimizedScrollableLayout implements Layout {
 		}
 
 		@Override
-		protected void extractWidgetRenderState(final GuiGraphicsExtractor graphics, final int mouseX, final int mouseY, final float a) {
+		protected void extractWidgetRenderState(final GuiGraphicsExtractor graphics) {
 			graphics.enableScissor(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height);
 
 			for (AbstractWidget child : this.children) {
@@ -133,11 +133,11 @@ public class OptimizedScrollableLayout implements Layout {
 					continue;
 				}
 
-				child.extractRenderState(graphics, mouseX, mouseY, a);
+				child.extractRenderState(graphics);
 			}
 
 			graphics.disableScissor();
-			this.extractScrollbar(graphics, mouseX, mouseY);
+			this.extractScrollbar(graphics);
 		}
 
 		@Override

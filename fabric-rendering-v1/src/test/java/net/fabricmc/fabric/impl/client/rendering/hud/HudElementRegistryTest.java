@@ -29,7 +29,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
@@ -159,7 +158,7 @@ public class HudElementRegistryTest {
 	}
 
 	private HudElement testElement(String name) {
-		return (graphics, deltaTracker) -> drawnLayers.add(name);
+		return graphics -> drawnLayers.add(name);
 	}
 
 	private Identifier testIdentifier(String name) {
@@ -168,7 +167,6 @@ public class HudElementRegistryTest {
 
 	private void assertOrder(List<String> expectedLayers) {
 		GuiGraphicsExtractor graphics = mock(GuiGraphicsExtractor.class);
-		DeltaTracker deltaTracker = mock(DeltaTracker.class);
 		Matrix3x2fStack matrixStack = mock(Matrix3x2fStack.class);
 
 		when(graphics.pose()).thenReturn(matrixStack);
@@ -178,7 +176,7 @@ public class HudElementRegistryTest {
 		for (Identifier id : HudElementRegistryImpl.VANILLA_ELEMENT_IDS) {
 			HudElementRegistryImpl.ROOT_ELEMENTS.get(id).extractRenderState(
 					graphics,
-					deltaTracker, (_, _) -> { });
+					_ -> { });
 		}
 
 		assertEquals(expectedLayers, drawnLayers);

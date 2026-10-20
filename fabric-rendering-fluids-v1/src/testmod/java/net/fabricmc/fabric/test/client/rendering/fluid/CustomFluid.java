@@ -16,32 +16,22 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
-import java.util.Optional;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.references.ItemIds;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.FluidState;
 
 public class CustomFluid extends FlowingFluid {
 	public CustomFluid() {
-	}
-
-	@Override
-	public Item getBucket() {
-		return Items.WATER_BUCKET;
+		super(Properties.of().bucketItem(ItemIds.WATER_BUCKET).soundEvent(SoundEvents.BUCKET_FILL).explosionResistance(100.0F));
 	}
 
 	@Override
@@ -51,8 +41,6 @@ public class CustomFluid extends FlowingFluid {
 
 	@Override
 	protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
-		BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
-		Block.dropResources(state, level, pos, blockEntity);
 	}
 
 	@Override
@@ -78,15 +66,5 @@ public class CustomFluid extends FlowingFluid {
 	@Override
 	public boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, FluidState fluid, Direction direction) {
 		return direction == Direction.DOWN && !fluid.is(TestFluids.NO_OVERLAY);
-	}
-
-	@Override
-	protected float getExplosionResistance() {
-		return 100.0F;
-	}
-
-	@Override
-	public Optional<SoundEvent> getPickupSound() {
-		return Optional.of(SoundEvents.BUCKET_FILL);
 	}
 }

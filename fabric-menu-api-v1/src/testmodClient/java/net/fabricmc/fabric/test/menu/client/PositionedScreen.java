@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -46,10 +46,10 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
-		extractBackground(guiGraphics, mouseX, mouseY, delta);
-		super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
-		extractTooltip(guiGraphics, mouseX, mouseY);
+	public void extractRenderState(GuiGraphicsExtractor guiGraphics) {
+		extractBackground(guiGraphics);
+		super.extractRenderState(guiGraphics);
+		extractTooltip(guiGraphics);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+	public void extractBackground(GuiGraphicsExtractor guiGraphics) {
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);

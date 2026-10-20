@@ -63,11 +63,11 @@ public final class DoubleRuleEntry extends AbstractGameRulesScreen.GameRuleEntry
 	}
 
 	@Override
-	public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+	public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
 		this.extractLabel(graphics, this.getContentY(), this.getContentX());
 
 		this.input.setX(this.getContentRight() - 44);
 		this.input.setY(this.getContentY());
-		this.input.extractRenderState(graphics, mouseX, mouseY, tickDelta);
+		this.input.extractRenderState(graphics);
 	}
 }

@@ -29,7 +29,7 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.GrindstoneScreen;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -96,28 +96,28 @@ public final class ScreenTests implements ClientModInitializer {
 		} else if (screen instanceof GrindstoneScreen) {
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn BEHIND both the container screen interface and the darkened background, text, items, the carried item, tooltips, etc.
-			ScreenEvents.beforeExtract(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.beforeExtract(screen).register((_, graphics) -> {
 				// Render an armor icon to test
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) - 34, 20, 20);
 			});
 
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn ABOVE both the container screen interface and the darkened background, but still BEHIND text, items, the carried item, tooltips, etc.
-			ScreenEvents.afterBackground(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.afterBackground(screen).register((_, graphics) -> {
 				// Render an armor icon to test
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) - 10, 20, 20);
 			});
 
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn ABOVE both the container screen interface and the darkened background, text, items, but still BEHIND the carried item, tooltips, etc.
-			ScreenEvents.afterForeground(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.afterForeground(screen).register((_, graphics) -> {
 				// Render an armor icon to test
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) + 14, 20, 20);
 			});
 
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn ABOVE everything, including the background, container screen interface, text, items, the carried item, tooltips, etc.
-			ScreenEvents.afterExtract(screen).register((_, graphics, mouseX, mouseY, tickDelta) -> {
+			ScreenEvents.afterExtract(screen).register((_, graphics) -> {
 				// Render an armor icon to test
 				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) + 88 - 15, (screen.height / 2) + 38, 20, 20);
 			});

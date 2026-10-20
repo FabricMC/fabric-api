@@ -61,11 +61,11 @@ public final class EnumRuleEntry<E extends Enum<E>> extends AbstractGameRulesScr
 	}
 
 	@Override
-	public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+	public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
 		this.extractLabel(graphics, this.getContentY(), this.getContentX());
 
 		this.button.setX(this.getContentRight() - 44);
 		this.button.setY(this.getContentY());
-		this.button.extractRenderState(graphics, mouseX, mouseY, a);
+		this.button.extractRenderState(graphics);
 	}
 }

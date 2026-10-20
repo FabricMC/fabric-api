@@ -20,6 +20,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -150,7 +151,7 @@ public final class FluidStorage {
 				Fluid bucketFluid = ((BucketItemAccessor) bucketItem).fabric_getContent();
 
 				// Make sure the mapping is bidirectional.
-				if (bucketFluid != null && bucketFluid.getBucket() == bucketItem) {
+				if (bucketFluid != null && bucketFluid.getBucket().equals(BuiltInRegistries.ITEM.getResourceKey(bucketItem).orElseThrow())) {
 					return new FullItemFluidStorage(context, Items.BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET);
 				}
 			}

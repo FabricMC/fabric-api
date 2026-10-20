@@ -118,15 +118,15 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
-	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
-	public final void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
-		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
+	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", shift = At.Shift.AFTER))
+	public final void extractBackground(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, graphics);
 	}
 
-	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", shift = At.Shift.AFTER))
-	public final void extractForeground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+	@Inject(method = "extractRenderStateWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", shift = At.Shift.AFTER))
+	public final void extractForeground(GuiGraphicsExtractor graphics, CallbackInfo ci) {
 		if (!(((Object) this) instanceof AbstractContainerScreen<?>)) {
-			ScreenEvents.afterForeground(((Screen) (Object) this)).invoker().afterForeground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
+			ScreenEvents.afterForeground(((Screen) (Object) this)).invoker().afterForeground((Screen) (Object) this, graphics);
 		}
 	}
 

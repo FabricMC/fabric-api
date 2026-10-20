@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.AtlasManager;
@@ -54,7 +54,7 @@ public class AtlasTests implements ClientModInitializer {
 
 		HudElementRegistry.addLast(
 				HUD_ID,
-				(graphics, deltaTracker) -> {
+				graphics -> {
 					final AtlasManager atlasManager = Minecraft.getInstance().getAtlasManager();
 					final int y = 18;
 					int x = 0;

@@ -35,33 +35,33 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenEvents.BeforeExtract> createBeforeExtractEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeExtract.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeExtract.class, callbacks -> (screen, graphics) -> {
 			for (ScreenEvents.BeforeExtract callback : callbacks) {
-				callback.beforeExtract(screen, matrices, mouseX, mouseY, tickDelta);
+				callback.beforeExtract(screen, graphics);
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.AfterBackground> createAfterBackgroundEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterBackground.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterBackground.class, callbacks -> (screen, graphics) -> {
 			for (ScreenEvents.AfterBackground callback : callbacks) {
-				callback.afterBackground(screen, matrices, mouseX, mouseY, tickDelta);
+				callback.afterBackground(screen, graphics);
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.AfterForeground> createAfterForegroundEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterForeground.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterForeground.class, callbacks -> (screen, graphics) -> {
 			for (ScreenEvents.AfterForeground callback : callbacks) {
-				callback.afterForeground(screen, matrices, mouseX, mouseY, tickDelta);
+				callback.afterForeground(screen, graphics);
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.AfterExtract> createAfterExtractEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterExtract.class, callbacks -> (screen, matrices, mouseX, mouseY, tickDelta) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterExtract.class, callbacks -> (screen, graphics) -> {
 			for (ScreenEvents.AfterExtract callback : callbacks) {
-				callback.afterExtract(screen, matrices, mouseX, mouseY, tickDelta);
+				callback.afterExtract(screen, graphics);
 			}
 		});
 	}

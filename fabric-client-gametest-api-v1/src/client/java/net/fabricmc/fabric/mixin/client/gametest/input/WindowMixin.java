@@ -27,7 +27,6 @@ import com.mojang.blaze3d.platform.VideoMode;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.WindowEventHandler;
 import com.mojang.renderpearl.api.device.GpuBackend;
-import com.mojang.renderpearl.api.device.GpuDevice;
 import org.lwjgl.sdl.SDLEvents;
 import org.lwjgl.sdl.SDL_Event;
 import org.spongepowered.asm.mixin.Final;
@@ -92,7 +91,7 @@ abstract class WindowMixin implements WindowHooks {
 	private int realFramebufferHeight;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void onInit(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, boolean exclusiveFullscreen, String title, MonitorManager monitorManager, GpuBackend backend, GpuDevice gpuDevice, int maximumSize, CallbackInfo ci) {
+	private void onInit(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, boolean exclusiveFullscreen, String title, MonitorManager monitorManager, GpuBackend backend, int maximumSize, CallbackInfo ci) {
 		this.defaultWidth = displayData.width();
 		this.defaultHeight = displayData.height();
 		this.realWidth = this.width;

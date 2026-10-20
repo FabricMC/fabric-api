@@ -31,12 +31,10 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
-import net.minecraft.network.protocol.login.ClientboundLoginCompressionPacket;
 import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -76,9 +74,6 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	// return true if no longer ticks query
 	public boolean queryTick() {
 		if (this.firstQueryTick) {
-			// Send the compression packet now so clients receive compressed login queries
-			this.sendCompressionPacket();
-
 			ServerLoginConnectionEvents.QUERY_START.invoker().onLoginStart(this.listener, this.server, this, this.waits::add);
 			this.firstQueryTick = false;
 		}
@@ -109,15 +104,6 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		});
 
 		return this.channels.isEmpty() && this.waits.isEmpty();
-	}
-
-	private void sendCompressionPacket() {
-		// Compression is not needed for local transport
-		if (this.server.getCompressionThreshold() >= 0 && !this.connection.isMemoryConnection()) {
-			this.connection.send(new ClientboundLoginCompressionPacket(this.server.getCompressionThreshold()),
-					PacketSendListener.thenRun(() -> connection.setupCompression(server.getCompressionThreshold(), true))
-			);
-		}
 	}
 
 	/**

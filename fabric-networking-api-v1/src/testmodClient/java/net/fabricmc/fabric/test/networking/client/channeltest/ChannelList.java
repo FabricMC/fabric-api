@@ -51,7 +51,7 @@ final class ChannelList extends AbstractSelectionList<ChannelList.Entry> {
 		}
 
 		@Override
-		public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void extractContent(GuiGraphicsExtractor graphics, boolean hovered) {
 			graphics.setTooltipForNextFrame(ChannelList.this.minecraft.font, Component.literal(this.channel.toString()).withStyle(ChatFormatting.WHITE), getContentX(), getContentY());
 		}
 	}

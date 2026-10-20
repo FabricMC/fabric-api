@@ -18,8 +18,9 @@ package net.fabricmc.fabric.test.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.references.ItemIds;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -29,11 +30,14 @@ import net.minecraft.world.level.material.LavaFluid;
 
 public class TestFluid extends LavaFluid {
 	public TestFluid() {
-	}
-
-	@Override
-	public Item getBucket() {
-		return Items.WATER_BUCKET;
+		super(Properties.of()
+				.bucketItem(ItemIds.WATER_BUCKET)
+				.soundEvent(SoundEvents.BUCKET_FILL_LAVA)
+				.explosionResistance(100.0F)
+				.dripParticle(ParticleTypes.DRIPPING_LAVA)
+				.randomTicking()
+				.drag(0.5F)
+		);
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
@@ -39,8 +38,6 @@ public class HudElementRegistryImpl {
 	static final List<Identifier> VANILLA_ELEMENT_IDS = List.of(
 			VanillaHudElements.MISC_OVERLAYS,
 			VanillaHudElements.CROSSHAIR,
-			VanillaHudElements.SPECTATOR_MENU,
-			VanillaHudElements.HOTBAR,
 			VanillaHudElements.ARMOR_BAR,
 			VanillaHudElements.HEALTH_BAR,
 			VanillaHudElements.FOOD_BAR,
@@ -48,6 +45,8 @@ public class HudElementRegistryImpl {
 			VanillaHudElements.MOUNT_HEALTH,
 			VanillaHudElements.INFO_BAR,
 			VanillaHudElements.EXPERIENCE_LEVEL,
+			VanillaHudElements.SPECTATOR_MENU,
+			VanillaHudElements.HOTBAR,
 			VanillaHudElements.HELD_ITEM_TOOLTIP,
 			VanillaHudElements.SPECTATOR_TOOLTIP,
 			VanillaHudElements.MOB_EFFECTS,
@@ -210,10 +209,10 @@ public class HudElementRegistryImpl {
 			layers().add(HudLayer.ofVanilla(id));
 		}
 
-		public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, HudElement vanillaElement) {
+		public void extractRenderState(GuiGraphicsExtractor graphics, HudElement vanillaElement) {
 			for (HudLayer layer : layers) {
 				if (!layer.isRemoved()) {
-					layer.element(vanillaElement).extractRenderState(graphics, deltaTracker);
+					layer.element(vanillaElement).extractRenderState(graphics);
 				}
 			}
 		}

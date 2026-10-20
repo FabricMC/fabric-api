@@ -12,6 +12,6 @@ fabricApiModule {
 	)
 
 	testDependencies(
-		':fabric-content-registries-v0',
+		':fabric-lifecycle-events-v1',
 	)
 }

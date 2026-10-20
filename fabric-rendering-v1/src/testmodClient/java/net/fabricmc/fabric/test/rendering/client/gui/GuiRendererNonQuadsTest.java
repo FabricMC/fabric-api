@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 public class GuiRendererNonQuadsTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("test", "gui_renderer_non_quads_test"), (graphics, deltaTracker) -> {
+		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("test", "gui_renderer_non_quads_test"), graphics -> {
 			graphics.pose().pushMatrix();
 			graphics.pose().rotateAbout(
 					(float) Util.getMillis() / 3000,

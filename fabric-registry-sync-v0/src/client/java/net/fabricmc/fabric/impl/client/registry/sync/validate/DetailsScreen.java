@@ -24,7 +24,7 @@ import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -86,8 +86,8 @@ public class DetailsScreen extends Screen {
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-		super.extractBackground(graphics, mouseX, mouseY, a);
+	public void extractBackground(GuiGraphicsExtractor graphics) {
+		super.extractBackground(graphics);
 
 		graphics.blit(
 				RenderPipelines.GUI_TEXTURED,

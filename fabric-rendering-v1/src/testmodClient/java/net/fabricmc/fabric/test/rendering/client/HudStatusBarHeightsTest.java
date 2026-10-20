@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Hud;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -71,7 +70,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 		// register a custom health bar with a different height for large max health;
 		// ideally tested together with a custom armor bar
 		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR,
-				(HudElement _) -> (GuiGraphicsExtractor graphics, DeltaTracker _) -> {
+				(HudElement _) -> (GuiGraphicsExtractor graphics) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -92,7 +91,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 	private static void testArmorBar() {
 		// register a custom armor bar with slightly altered rendering compared to the vanilla bar
 		HudElementRegistry.replaceElement(VanillaHudElements.ARMOR_BAR,
-				(HudElement _) -> (GuiGraphicsExtractor graphics, DeltaTracker _) -> {
+				(HudElement _) -> (GuiGraphicsExtractor graphics) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -119,7 +118,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "toughness_bar");
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HEALTH_BAR,
 				id,
-				(GuiGraphicsExtractor graphics, DeltaTracker _) -> {
+				(GuiGraphicsExtractor graphics) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -143,7 +142,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "stamina_bar");
 		HudElementRegistry.attachElementAfter(VanillaHudElements.FOOD_BAR,
 				id,
-				(GuiGraphicsExtractor graphics, DeltaTracker _) -> {
+				(GuiGraphicsExtractor graphics) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -277,7 +276,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 		HudStatusBarHeightRegistry.replaceRight(VanillaHudElements.FOOD_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) * 2);
 		HudStatusBarHeightRegistry.replaceRight(VanillaHudElements.FOOD_BAR, heightProvider -> player -> heightProvider.getStatusBarHeight(player) / 2);
 
-		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, id, (_, _) -> {
+		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, id, _ -> {
 		});
 		// Test that registering replacers before the height providers work
 		HudStatusBarHeightRegistry.replaceLeft(id, _ -> _ -> 0);

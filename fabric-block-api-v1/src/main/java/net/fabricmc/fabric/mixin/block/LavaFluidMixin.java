@@ -33,8 +33,8 @@ import net.fabricmc.fabric.api.block.v1.FluidFlowEvents;
 
 @Mixin(LavaFluid.class)
 abstract class LavaFluidMixin extends Fluid {
-	LavaFluidMixin() {
-		super();
+	LavaFluidMixin(Properties properties) {
+		super(properties);
 	}
 
 	@Inject(method = "spreadTo", at = @At("HEAD"), cancellable = true)

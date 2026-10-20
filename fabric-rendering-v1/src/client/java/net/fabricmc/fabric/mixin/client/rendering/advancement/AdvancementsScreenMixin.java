@@ -18,7 +18,6 @@ package net.fabricmc.fabric.mixin.client.rendering.advancement;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,11 +38,11 @@ abstract class AdvancementsScreenMixin {
 	private @Nullable AdvancementTab selectedTab;
 
 	@WrapOperation(method = "extractWindow", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;extractIcon(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V"))
-	private void wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original, @Local(name = "mouseX") int mouseX, @Local(name = "mouseY") int mouseY) {
+	private void wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original) {
 		AdvancementHolder holder = tab.getRootAdvancement();
 
 		if (AdvancementRendererRegistryImpl.getIconRenderer(holder.id()) != null) {
-			boolean hovered = tab.isMouseOver(xo, yo, mouseX, mouseY);
+			boolean hovered = tab.isMouseOver(xo, yo, graphics.mouseX(), graphics.mouseY());
 			boolean selected = selectedTab == tab;
 			AdvancementProgress progress = ((AdvancementWidgetAccessor) ((AdvancementTabAccessor) tab).fabric_getRoot()).fabric_getProgress();
 			ScopedValue.where(

@@ -82,11 +82,6 @@ abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExten
 		}
 	}
 
-	@Redirect(method = "verifyLoginAndFinishConnectionSetup", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getCompressionThreshold()I", ordinal = 0))
-	private int removeLateCompressionPacketSending(MinecraftServer server) {
-		return -1;
-	}
-
 	@Inject(method = "finishLoginAndWaitForClient", at = @At("HEAD"))
 	private void storeGameProfileContext(GameProfile gameProfile, CallbackInfo ci) {
 		this.getPacketContext().set(PacketContextImpl.GAME_PROFILE, gameProfile);

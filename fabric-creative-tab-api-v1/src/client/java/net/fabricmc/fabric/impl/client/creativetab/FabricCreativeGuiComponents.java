@@ -25,7 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -56,7 +56,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
+		protected void extractContents(GuiGraphicsExtractor graphics) {
 			this.active = type.isEnabled.test(screen);
 			this.visible = screen.hasAdditionalPages();
 
@@ -69,7 +69,7 @@ public class FabricCreativeGuiComponents {
 			graphics.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
 
 			if (this.isHovered()) {
-				graphics.setTooltipForNextFrame(Minecraft.getInstance().font, net.minecraft.network.chat.Component.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(Minecraft.getInstance().font, net.minecraft.network.chat.Component.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), graphics.mouseX(), graphics.mouseY());
 			}
 		}
 	}

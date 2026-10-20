@@ -187,7 +187,7 @@ public class ButtonListTests {
 				// Present in renderables: true, present in children: false, present in ButtonList: true
 				this.addRenderableOnly(button());
 				// Present in renderables: true, present in children: false, present in ButtonList: false (not an AbstractWidget)
-				this.addRenderableOnly((graphics, mouseX, mouseY, a) -> {
+				this.addRenderableOnly(graphics -> {
 					// NO-OP
 				});
 				// Present in renderables: false, present in children: true, present in ButtonList: false

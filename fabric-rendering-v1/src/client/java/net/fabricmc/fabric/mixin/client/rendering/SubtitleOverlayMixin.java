@@ -20,7 +20,6 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.SubtitleOverlay;
 
@@ -33,8 +32,7 @@ class SubtitleOverlayMixin {
 	private void wrapExtractRenderState(GuiGraphicsExtractor context, Operation<Void> original) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).extractRenderState(
 				context,
-				Minecraft.getInstance().getDeltaTracker(),
-				(ctx, tc) -> original.call(ctx)
+				ctx -> original.call(ctx)
 		);
 	}
 }

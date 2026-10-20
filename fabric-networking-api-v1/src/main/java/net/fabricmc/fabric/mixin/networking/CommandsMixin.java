@@ -24,11 +24,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.commands.DebugConfigCommand;
+import net.minecraft.util.DevUtil;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -40,7 +40,7 @@ class CommandsMixin {
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/commands/BanIpCommands;register(Lcom/mojang/brigadier/CommandDispatcher;)V"))
 	private void init(Commands.CommandSelection environment, CommandBuildContext context, CallbackInfo ci) {
-		if (SharedConstants.IS_RUNNING_IN_IDE) {
+		if (DevUtil.IS_RUNNING_IN_IDE) {
 			// Command is registered when isDevelopment is set.
 			return;
 		}

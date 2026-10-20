@@ -18,8 +18,9 @@ package net.fabricmc.fabric.test.content.registry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.references.ItemIds;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,11 +29,13 @@ import net.minecraft.world.level.material.WaterFluid;
 
 public class WaterLikeFluid extends WaterFluid {
 	public WaterLikeFluid() {
-	}
-
-	@Override
-	public Item getBucket() {
-		return Items.WATER_BUCKET;
+		super(Properties.of()
+				.bucketItem(ItemIds.WATER_BUCKET)
+				.soundEvent(SoundEvents.BUCKET_FILL)
+				.explosionResistance(100.0F)
+				.dripParticle(ParticleTypes.DRIPPING_WATER)
+				.drag(0.8F)
+		);
 	}
 
 	@Override

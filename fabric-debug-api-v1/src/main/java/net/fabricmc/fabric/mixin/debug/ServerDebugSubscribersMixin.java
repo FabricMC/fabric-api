@@ -31,7 +31,7 @@ import net.fabricmc.loader.api.FabricLoader;
 abstract class ServerDebugSubscribersMixin {
 	@Definition(
 			id = "IS_RUNNING_IN_IDE",
-			field = "Lnet/minecraft/SharedConstants;IS_RUNNING_IN_IDE:Z"
+			field = "Lnet/minecraft/util/DevUtil;IS_RUNNING_IN_IDE:Z"
 	)
 	@Expression("IS_RUNNING_IN_IDE")
 	@WrapOperation(

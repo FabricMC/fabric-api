@@ -22,10 +22,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 public class FluidVariantRenderTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("fabric-transfer-api-v1-testmod", "fluid_variant"), (graphics, tickDelta) -> {
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("fabric-transfer-api-v1-testmod", "fluid_variant"), graphics -> {
 			Player player = Minecraft.getInstance().player;
 			if (player == null) return;
 

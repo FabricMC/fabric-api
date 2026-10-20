@@ -43,7 +43,7 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 	public void onInitializeClient() {
 		// BannerGuiElementRenderer is already registered by PictureInPictureRendererTest
 
-		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip_new"), (graphics, deltaTracker) -> {
+		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip_new"), graphics -> {
 			Minecraft client = Minecraft.getInstance();
 			GuiRenderState newGuiRenderState = new GuiRenderState();
 

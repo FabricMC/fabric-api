@@ -60,7 +60,7 @@ class TransferableSelectionListPackEntryMixin {
 
 	@Inject(method = "extractContent", at = @At("RETURN"))
 	private void onExtractContent(
-			GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float tickDelta, CallbackInfo ci
+			GuiGraphicsExtractor graphics, boolean hovered, CallbackInfo ci
 	) {
 		if (hovered) {
 			Component name = null;
@@ -87,7 +87,7 @@ class TransferableSelectionListPackEntryMixin {
 								Optional.ofNullable(name),
 								includeDescription ? Optional.of(splitDescription) : Optional.empty()
 						)),
-						mouseX, mouseY
+						graphics.mouseX(), graphics.mouseY()
 				);
 			}
 		}

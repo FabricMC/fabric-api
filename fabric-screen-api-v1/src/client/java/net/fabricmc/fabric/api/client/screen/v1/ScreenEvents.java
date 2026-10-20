@@ -29,6 +29,8 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /**
  * Holds events related to {@link Screen}s.
  *
+ * <p>Rendering callbacks provide a {@link GuiGraphicsExtractor} with mouse coordinates and timing information.
+ *
  * <p>Some events require a screen instance in order to obtain an event instance.
  * The events that require a screen instance can be identified by the use of a method passing a screen instance.
  * All events in {@link ScreenKeyboardEvents} and {@link ScreenMouseEvents} require a screen instance.
@@ -57,7 +59,7 @@ public final class ScreenEvents {
 	 * public void onInitializeClient() {
 	 * 	ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 	 * 		if (screen instanceof AbstractContainerScreen) {
-	 * 			ScreenEvents.afterExtract(screen).register((screen1, graphics, mouseX, mouseY, tickProgress) -> {
+	 * 			ScreenEvents.afterExtract(screen).register((screen1, graphics) -> {
 	 * 				...
 	 * 			});
 	 * 		}
@@ -91,7 +93,7 @@ public final class ScreenEvents {
 	 * }</pre>
 	 *
 	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.components.Renderable drawn}.
-	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.components.Renderable#extractRenderState(GuiGraphicsExtractor, int, int, float)} extractRenderState} methods in the corresponding screen events.
+	 * Unless the element is button, you need to call the specific {@link net.minecraft.client.gui.components.Renderable#extractRenderState(GuiGraphicsExtractor)} extractRenderState} methods in the corresponding screen events.
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT
@@ -198,22 +200,22 @@ public final class ScreenEvents {
 
 	@FunctionalInterface
 	public interface BeforeExtract {
-		void beforeExtract(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
+		void beforeExtract(Screen screen, GuiGraphicsExtractor graphics);
 	}
 
 	@FunctionalInterface
 	public interface AfterBackground {
-		void afterBackground(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
+		void afterBackground(Screen screen, GuiGraphicsExtractor graphics);
 	}
 
 	@FunctionalInterface
 	public interface AfterForeground {
-		void afterForeground(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
+		void afterForeground(Screen screen, GuiGraphicsExtractor graphics);
 	}
 
 	@FunctionalInterface
 	public interface AfterExtract {
-		void afterExtract(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress);
+		void afterExtract(Screen screen, GuiGraphicsExtractor graphics);
 	}
 
 	@FunctionalInterface

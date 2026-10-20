@@ -58,10 +58,10 @@ final class ChannelScreen extends Screen {
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
-		this.extractBackground(graphics, mouseX, mouseY, delta);
-		this.channelList.extractRenderState(graphics, mouseX, mouseY, delta);
-		super.extractRenderState(graphics, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor graphics) {
+		this.extractBackground(graphics);
+		this.channelList.extractRenderState(graphics);
+		super.extractRenderState(graphics);
 
 		if (this.s2cButton.active && this.c2sButton.active) {
 			final Component clickMe = Component.literal("Click S2C or C2S to view supported channels").withStyle(ChatFormatting.YELLOW);

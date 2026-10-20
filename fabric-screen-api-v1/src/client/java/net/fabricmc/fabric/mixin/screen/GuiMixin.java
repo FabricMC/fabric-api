@@ -84,11 +84,11 @@ class GuiMixin implements GuiExtensions {
 		this.tickingScreen = null;
 	}
 
-	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V"))
-	private void onExtractGui(Screen currentScreen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
-		ScreenEvents.beforeExtract(currentScreen).invoker().beforeExtract(currentScreen, graphics, mouseX, mouseY, tickDelta);
-		operation.call(currentScreen, graphics, mouseX, mouseY, tickDelta);
-		ScreenEvents.afterExtract(currentScreen).invoker().afterExtract(currentScreen, graphics, mouseX, mouseY, tickDelta);
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+	private void onExtractGui(Screen currentScreen, GuiGraphicsExtractor graphics, Operation<Void> operation) {
+		ScreenEvents.beforeExtract(currentScreen).invoker().beforeExtract(currentScreen, graphics);
+		operation.call(currentScreen, graphics);
+		ScreenEvents.afterExtract(currentScreen).invoker().afterExtract(currentScreen, graphics);
 	}
 
 	@Override

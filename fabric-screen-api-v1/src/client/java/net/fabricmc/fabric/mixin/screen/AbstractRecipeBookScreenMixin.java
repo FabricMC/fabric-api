@@ -38,11 +38,11 @@ abstract class AbstractRecipeBookScreenMixin<T extends RecipeBookMenu> extends A
 
 	@Inject(method = "extractRenderState",
 			at = @At(value = "INVOKE",
-					target = "Lnet/minecraft/client/gui/screens/recipebook/RecipeBookComponent;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V",
+					target = "Lnet/minecraft/client/gui/screens/recipebook/RecipeBookComponent;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
 					shift = At.Shift.AFTER))
-	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+	public void extractRenderState(GuiGraphicsExtractor graphics, CallbackInfo ci) {
 		ScreenEvents.afterForeground((this))
 				.invoker()
-				.afterForeground(this, graphics, mouseX, mouseY, a);
+				.afterForeground(this, graphics);
 	}
 }

@@ -48,7 +48,7 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 	public void onInitializeClient() {
 		PictureInPictureRendererRegistry.register(ctx -> new BannerGuiElementRenderer());
 
-		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip"), (graphics, deltaTracker) -> {
+		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip"), graphics -> {
 			// render it twice to test that PiPs can be added multiple times in the same frame
 			graphics.guiRenderState.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRectangle(20, 0, 40, 20)));
 			graphics.guiRenderState.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRectangle(40, 0, 60, 20)));
@@ -57,10 +57,10 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 		// Test that InventoryScreen.drawEntity works with the same type of entity more than once
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (screen instanceof InventoryScreen) {
-				ScreenEvents.afterExtract(screen).register((screen1, graphics, mouseX, mouseY, tickDelta) -> {
+				ScreenEvents.afterExtract(screen).register((screen1, graphics) -> {
 					// no need to modify anything about this player, since they're in different locations they will be
 					// looking towards the mouse at different angles
-					EntityPortraitWidget.extractEntityInInventoryFollowsMouse(graphics, 26, 8, 75, 78, 30.0F, 0.0625F, mouseX, mouseY, client.player);
+					EntityPortraitWidget.extractEntityInInventoryFollowsMouse(graphics, 26, 8, 75, 78, 30.0F, 0.0625F, client.player);
 				});
 			}
 		});

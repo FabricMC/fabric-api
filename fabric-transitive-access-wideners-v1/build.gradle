@@ -64,7 +64,7 @@ abstract class GenerateTransitiveAccessWidenersClassTweakerTask extends Abstract
 
 	private void generateRenderPipelinesFields(List<String> lines) {
 		lines.add("# private fields of RenderPipelines")
-		def node = readClass("net/minecraft/client/renderer/RenderPipelines")
+		def node = readClass("net/minecraft/client/renderer/pipeline/RenderPipelines")
 
 		for (def field : node.fields) {
 			if ((field.access & Opcodes.ACC_PRIVATE) != 0 && field.desc == "Lcom/mojang/blaze3d/pipeline/RenderPipeline\$Snippet;") {
