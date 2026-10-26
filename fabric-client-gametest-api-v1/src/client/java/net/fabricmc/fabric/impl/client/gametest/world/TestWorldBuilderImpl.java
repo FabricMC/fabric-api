@@ -135,6 +135,7 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 	}
 
 	private static void setConsistentSettings(WorldCreationUiState creator) {
+		// When adding to the list of default world creation options, remember to update the list in module documentation
 		Holder<WorldPreset> flatPreset = creator.getSettings().worldgenLoadContext().lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.FLAT);
 		creator.setWorldType(new WorldCreationUiState.WorldTypeEntry(flatPreset));
 		creator.setSeed("1");
@@ -143,5 +144,6 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		creator.getGameRules().set(GameRules.ADVANCE_WEATHER, false, null);
 		creator.getGameRules().set(GameRules.SPAWN_MOBS, false, null);
 		creator.getGameRules().set(GameRules.RESPAWN_RADIUS, 0, null);
+		// When adding to the list of default world creation options, remember to update the list in module documentation
 	}
 }

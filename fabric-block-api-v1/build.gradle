@@ -4,6 +4,10 @@ loom {
 	accessWidenerPath = file('src/main/resources/fabric-block-api-v1.classtweaker')
 }
 
+moduleDependencies(project, [
+	'fabric-api-base',
+])
+
 testDependencies(project, [
 	':fabric-rendering-v1',
 ])

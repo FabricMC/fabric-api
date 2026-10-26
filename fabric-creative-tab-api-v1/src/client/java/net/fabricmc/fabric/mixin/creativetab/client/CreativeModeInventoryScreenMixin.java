@@ -183,7 +183,8 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 
 	@Override
 	public boolean hasAdditionalPages() {
-		return CreativeModeTabs.tabs().size() > (Objects.requireNonNull(CreativeModeTabs.CACHED_PARAMETERS).hasPermissions() ? 14 : 13);
+		CreativeModeTab.ItemDisplayParameters parameters = CreativeModeTabs.CACHED_PARAMETERS;
+		return parameters != null && CreativeModeTabs.tabs().size() > (parameters.hasPermissions() ? 14 : 13);
 	}
 
 	@Override

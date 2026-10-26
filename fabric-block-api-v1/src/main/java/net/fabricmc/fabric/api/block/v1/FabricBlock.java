@@ -23,7 +23,9 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.BlockAndLightGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -104,6 +106,24 @@ public interface FabricBlock {
 	 */
 	default BlockState getAppearance(BlockState state, BlockAndLightGetter blockAndLightGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
+	}
+
+	/**
+	 * Return a for custom enchantment power level. A value of {@code 1.0f} means that the state is equivalent to one bookshelf.
+	 *
+	 * <p>Important: Your block must be in {@link BlockTags#ENCHANTMENT_POWER_PROVIDER} to affect enchanting.
+	 *
+	 * <p>Returning negative values is allowed and will decrease the enchantment power.
+	 *
+	 * <p>Note: Fractional powers are summed and then rounded to the nearest integer, with 0.5 rounding down.
+	 *
+	 * @param state state of this block, whose power is being queried
+	 * @param level the level this block is in
+	 * @param pos   position of this block, whose power is being queried
+	 * @return the bookshelf equivalent for this state
+	 */
+	default float getProvidedEnchantmentPower(BlockState state, BlockGetter level, BlockPos pos) {
+		return 1.0f;
 	}
 
 	/**

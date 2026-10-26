@@ -72,6 +72,18 @@
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#maxAnisotropyBit() Anisotropic filtering}</td>
+ *         <td>{@code 0} (disabled)</td>
+ *         <td>{@code 2}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#chunkSectionFadeInTime() Chunk fade}</td>
+ *         <td>{@code 0}</td>
+ *         <td>{@code 0.75}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
  *         <td>{@linkplain net.minecraft.client.Options#onboardAccessibility Onboard accessibility}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
@@ -124,21 +136,27 @@
  *         <td>Consistency of tests and creates cleaner tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Do daylight cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Advance time}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Do weather cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Advance weather}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Do mob spawning}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Spawn mobs}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#RESPAWN_RADIUS Respawn radius}</td>
+ *         <td>{@code 0}</td>
+ *         <td>{@code 10}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  * </table>

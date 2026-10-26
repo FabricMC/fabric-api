@@ -50,19 +50,65 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final PackOutput.PathProvider pathProvider;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 	private final Codec<T> codec;
+	private final String extension;
 
-	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec) {
+	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec, String extension) {
 		this.pathProvider = pathProvider;
 		this.registriesFuture = Objects.requireNonNull(registriesFuture);
 		this.codec = codec;
+		this.extension = extension;
 	}
 
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the specified target and directory with the {@code json} file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param target the {@link PackOutput.Target} under which files will be written
+	 * @param directoryName the path under the target in which generated files will be written
+	 * @param codec the codec to use
+	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
-		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec);
+		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec, "json");
 	}
 
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the specified target and directory with the provided file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param target the {@link PackOutput.Target} under which files will be written
+	 * @param directoryName the path under the target in which generated files will be written
+	 * @param codec the codec to use
+	 * @param extension the file extension without a {@code .} to use for generated files, for example {@code "mcmeta"}
+	 */
+	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec, String extension) {
+		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec, extension);
+	}
+
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the path of the specified registry with the {@code json} file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param key the {@link ResourceKey} of the registry to generate for, used for determining where the generated files are written
+	 * @param codec the codec to use
+	 */
 	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
-		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec);
+		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec, "json");
+	}
+
+	/**
+	 * Constructs a {@link FabricCodecDataProvider} for the provided codec, outputting generated files to the path of the specified registry with the provided file extension.
+	 *
+	 * @param packOutput the {@link FabricPackOutput} instance
+	 * @param registriesFuture the registry access
+	 * @param key the {@link ResourceKey} of the registry to generate for, used for determining where the generated files are written
+	 * @param codec the codec to use
+	 * @param extension the file extension without a {@code .} to use for generated files, for example {@code "mcmeta"}
+	 */
+	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec, String extension) {
+		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec, extension);
 	}
 
 	@Override
@@ -101,7 +147,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 
 	private CompletableFuture<?> write(CachedOutput output, Map<Identifier, JsonElement> entries) {
 		return CompletableFuture.allOf(entries.entrySet().stream().map(entry -> {
-			Path path = this.pathProvider.json(entry.getKey());
+			Path path = this.pathProvider.file(entry.getKey(), extension);
 			return DataProvider.saveStable(output, entry.getValue(), path);
 		}).toArray(CompletableFuture[]::new));
 	}
