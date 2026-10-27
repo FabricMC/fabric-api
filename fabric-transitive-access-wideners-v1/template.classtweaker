@@ -39,14 +39,6 @@ transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEnti
 # Registering custom entity renderers
 transitive-accessible	method	net/minecraft/client/renderer/entity/EntityRenderers	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)Lnet/minecraft/client/renderer/entity/EntityRendererProvider;
 
-# Adding custom item model types
-transitive-accessible	field	net/minecraft/client/renderer/item/ItemModels	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/color/item/ItemTintSources	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/item/properties/conditional/ConditionalItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/item/properties/numeric/RangeSelectItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/item/properties/select/SelectItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/special/SpecialModelRenderers	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-
 # Creating custom sensor types
 transitive-accessible	method	net/minecraft/world/entity/ai/sensing/SensorType	<init>	(Ljava/util/function/Supplier;)V
 

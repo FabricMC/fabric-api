@@ -54,13 +54,12 @@ final class ChannelScreen extends Screen {
 				.pos(this.width / 2 - 60, this.height - 25)
 				.size(120, 20)
 				.build());
-		this.channelList = this.addRenderableOnly(new ChannelList(this.minecraft, this.width, this.height - 60, 30, this.font.lineHeight + 2));
+		this.channelList = this.addRenderableWidget(new ChannelList(this.minecraft, this.width, this.height - 60, 30, this.font.lineHeight + 2));
 	}
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor graphics) {
 		this.extractBackground(graphics);
-		this.channelList.extractRenderState(graphics);
 		super.extractRenderState(graphics);
 
 		if (this.s2cButton.active && this.c2sButton.active) {

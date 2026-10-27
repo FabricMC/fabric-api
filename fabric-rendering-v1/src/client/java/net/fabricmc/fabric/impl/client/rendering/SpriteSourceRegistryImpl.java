@@ -20,10 +20,10 @@ import java.util.Objects;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
-
-import net.fabricmc.fabric.mixin.client.rendering.SpriteSourcesAccessor;
 
 public final class SpriteSourceRegistryImpl {
 	private SpriteSourceRegistryImpl() {
@@ -32,6 +32,6 @@ public final class SpriteSourceRegistryImpl {
 	public static void register(Identifier id, MapCodec<? extends SpriteSource> codec) {
 		Objects.requireNonNull(id, "id must not be null!");
 		Objects.requireNonNull(codec, "codec must not be null!");
-		SpriteSourcesAccessor.getSpriteSourceCodecs().put(id, codec);
+		Registry.register(BuiltInClientRegistries.SPRITE_SOURCE_TYPE, id, codec);
 	}
 }

@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Updatable;
 
 /**
  * Represents a mod added {@link net.minecraft.client.gui.Gui} element that can be rendered on the screen.
@@ -24,7 +26,17 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
  *
  * <p>HUD elements should be registered using {@link HudElementRegistry}
  */
-public interface HudElement {
+@FunctionalInterface
+public interface HudElement extends Updatable {
+	/**
+	 * Updates the HUD element once per frame, even when it is hidden.
+	 *
+	 * @param deltaTracker the tracker providing the time elapsed since the previous frame
+	 */
+	@Override
+	default void update(DeltaTracker deltaTracker) {
+	}
+
 	/**
 	 * Renders the HUD element.
 	 *

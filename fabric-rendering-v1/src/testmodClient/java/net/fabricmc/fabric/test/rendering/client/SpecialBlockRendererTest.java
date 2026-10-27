@@ -23,13 +23,14 @@ import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import org.joml.Vector3fc;
 
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.client.model.animal.allay.AllayModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.special.SpecialModelRenderers;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
@@ -44,7 +45,7 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		SpecialModelRenderers.ID_MAPPER.put(RENDERER_ID, Unbaked.MAP_CODEC);
+		Registry.register(BuiltInClientRegistries.SPECIAL_MODEL_RENDERER_TYPE, RENDERER_ID, Unbaked.MAP_CODEC);
 		// TODO 26.1 fix for TNT
 	}
 

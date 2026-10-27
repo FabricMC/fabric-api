@@ -21,6 +21,7 @@ import java.util.List;
 
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Updatable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 
@@ -29,11 +30,13 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	private final List<Renderable> renderables;
 	private final List<NarratableEntry> narratables;
 	private final List<GuiEventListener> children;
+	private final List<Updatable> updatables;
 
-	public ButtonList(List<Renderable> renderables, List<NarratableEntry> narratables, List<GuiEventListener> children) {
+	public ButtonList(List<Renderable> renderables, List<NarratableEntry> narratables, List<GuiEventListener> children, List<Updatable> updatables) {
 		this.renderables = renderables;
 		this.narratables = narratables;
 		this.children = children;
+		this.updatables = updatables;
 	}
 
 	@Override
@@ -56,15 +59,29 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	@Override
 	public AbstractWidget set(int index, AbstractWidget element) {
 		AbstractWidget existing = get(index);
+		renderables.set(renderables.indexOf(existing), element);
 
-		int i = renderables.indexOf(existing);
-		if (i >= 0) renderables.set(i, element);
+		int narrationIndex = narratables.indexOf(existing);
 
-		i = narratables.indexOf(existing);
-		if (i >= 0) narratables.set(i, element);
+		if (narrationIndex >= 0) {
+			narratables.set(narrationIndex, element);
+		}
 
-		i = children.indexOf(existing);
-		if (i >= 0) children.set(i, element);
+		int childIndex = children.indexOf(existing);
+
+		if (childIndex < 0) {
+			return existing;
+		}
+
+		children.set(childIndex, element);
+
+		if (existing instanceof Updatable oldUpdatable) {
+			updatables.remove(oldUpdatable);
+		}
+
+		if (element instanceof Updatable newUpdatable) {
+			updatables.add(newUpdatable);
+		}
 
 		return existing;
 	}
@@ -76,8 +93,6 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 
 		if (duplicateIndex >= 0) {
 			renderables.remove(element);
-			narratables.remove(element);
-			children.remove(element);
 
 			if (duplicateIndex < index) {
 				index--;
@@ -86,7 +101,13 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 
 		if (index > size()) {
 			throw new IndexOutOfBoundsException(String.format("Index: %d, Size: %d", index, size()));
-		} else if (index == size()) {
+		}
+
+		narratables.remove(element);
+		children.remove(element);
+		updatables.remove(element);
+
+		if (index == size()) {
 			renderables.add(element);
 			narratables.add(element);
 			children.add(element);
@@ -102,6 +123,10 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 
 			i = children.indexOf(anchor);
 			children.add(i >= 0 ? i : children.size(), element);
+		}
+
+		if (element instanceof Updatable updatable) {
+			updatables.add(updatable);
 		}
 	}
 
@@ -128,6 +153,7 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 		renderables.remove(removedButton);
 		narratables.remove(removedButton);
 		children.remove(removedButton);
+		updatables.remove(removedButton);
 
 		return removedButton;
 	}

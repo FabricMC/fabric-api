@@ -27,6 +27,7 @@ import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.joml.Matrix3x2f;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.BindGroupLayouts;
@@ -71,7 +72,7 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 			this(matrix, createTriangleBounds(x0, y0, x1, y1, x2, y2, matrix, scissorArea), scissorArea, x0, y0, x1, y1, x2, y2);
 		}
 
-		private static final RenderPipeline PIPELINE = createPipeline();
+		private static final GuiPipeline PIPELINE = GuiPipeline.of(CustomTestState::createPipeline);
 
 		private static RenderPipeline createPipeline() {
 			RenderPipeline.Builder builder = RenderPipeline.builder()
@@ -99,7 +100,7 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 			return TextureSetup.noTexture();
 		}
 
-		public RenderPipeline pipeline() {
+		public GuiPipeline pipeline() {
 			return PIPELINE;
 		}
 

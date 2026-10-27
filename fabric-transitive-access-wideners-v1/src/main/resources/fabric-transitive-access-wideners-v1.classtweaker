@@ -44,14 +44,6 @@ transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEnti
 # Registering custom entity renderers
 transitive-accessible	method	net/minecraft/client/renderer/entity/EntityRenderers	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)Lnet/minecraft/client/renderer/entity/EntityRendererProvider;
 
-# Adding custom item model types
-transitive-accessible	field	net/minecraft/client/renderer/item/ItemModels	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/color/item/ItemTintSources	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/item/properties/conditional/ConditionalItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/item/properties/numeric/RangeSelectItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/item/properties/select/SelectItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-transitive-accessible	field	net/minecraft/client/renderer/special/SpecialModelRenderers	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
-
 # Creating custom sensor types
 transitive-accessible	method	net/minecraft/world/entity/ai/sensing/SensorType	<init>	(Ljava/util/function/Supplier;)V
 
@@ -393,11 +385,9 @@ transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData 
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines MATRICES_FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines OIT_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines IMPROVED_FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines GUI_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines GUI_TEXTURED_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines OUTLINE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiled (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;
-transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiledDynamic (Ljava/util/List;Lcom/mojang/blaze3d/pipeline/RenderPipeline;)V
+transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiled (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout;[Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiledDynamic (Ljava/util/List;Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout;[Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout;)V
 transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiledVariant (Ljava/util/List;Lnet/minecraft/client/renderer/pipeline/variant/RenderPipelineVariant;Ljava/util/function/Function;Z)V
 transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiledOitPipelines (Ljava/util/List;Ljava/util/function/Function;Z)V
 transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines finishDynamicPipeline (Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;Ljava/lang/String;ZLnet/minecraft/client/renderer/oit/OitStage;Ljava/util/function/Consumer;Ljava/util/function/Consumer;Ljava/util/function/Consumer;Ljava/util/function/Consumer;Ljava/lang/String;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;

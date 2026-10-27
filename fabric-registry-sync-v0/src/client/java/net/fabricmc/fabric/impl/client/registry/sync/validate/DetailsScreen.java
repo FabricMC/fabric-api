@@ -19,12 +19,12 @@ package net.fabricmc.fabric.impl.client.registry.sync.validate;
 import java.util.function.Supplier;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -90,7 +90,7 @@ public class DetailsScreen extends Screen {
 		super.extractBackground(graphics);
 
 		graphics.blit(
-				RenderPipelines.GUI_TEXTURED,
+				GuiPipeline.TEXTURED,
 				SCREEN_BACKGROUND,
 				0,
 				this.layout.getHeaderHeight(),
@@ -101,8 +101,8 @@ public class DetailsScreen extends Screen {
 				32
 		);
 
-		graphics.blit(RenderPipelines.GUI_TEXTURED, Screen.HEADER_SEPARATOR, 0, this.layout.getHeaderHeight() - 2, 0.0F, 0.0F, width, 2, 32, 2);
-		graphics.blit(RenderPipelines.GUI_TEXTURED, Screen.FOOTER_SEPARATOR, 0, this.layout.getHeaderHeight() + this.layout.getContentHeight(), 0.0F, 0.0F, width, 2, 32, 2);
+		graphics.blit(GuiPipeline.TEXTURED, Screen.HEADER_SEPARATOR, 0, this.layout.getHeaderHeight() - 2, 0.0F, 0.0F, width, 2, 32, 2);
+		graphics.blit(GuiPipeline.TEXTURED, Screen.FOOTER_SEPARATOR, 0, this.layout.getHeaderHeight() + this.layout.getContentHeight(), 0.0F, 0.0F, width, 2, 32, 2);
 	}
 
 	protected void repositionElements() {

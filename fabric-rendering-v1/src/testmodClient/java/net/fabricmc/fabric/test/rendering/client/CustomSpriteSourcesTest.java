@@ -27,11 +27,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.slf4j.Logger;
 
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.client.resources.metadata.animation.FrameSize;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -40,12 +42,11 @@ import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.SpriteSourceRegistry;
 
 public class CustomSpriteSourcesTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		SpriteSourceRegistry.register(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "double"), DoubleSpriteSource.CODEC);
+		Registry.register(BuiltInClientRegistries.SPRITE_SOURCE_TYPE, Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "double"), DoubleSpriteSource.CODEC);
 	}
 
 	private static class DoubleSpriteSource implements SpriteSource {

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.AtlasManager;
@@ -64,7 +64,7 @@ public class AtlasTests implements ClientModInitializer {
 						final SpriteContents contents = sprite.contents();
 						final int color = sprite.contents().getAdditionalMetadata(COLOR).orElse(-1);
 
-						graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, contents.width(), contents.height(), color);
+						graphics.blitSprite(GuiPipeline.TEXTURED, sprite, x, y, contents.width(), contents.height(), color);
 
 						x += contents.width() + 2;
 					}

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.rendering.hud;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
@@ -155,6 +158,65 @@ public class HudElementRegistryTest {
 		}));
 
 		assertOrder(List.of("layer1", "visited1", "layer2", "visited2", "layer3", "visited3"));
+	}
+
+	@Test
+	void updateActiveLayers() {
+		DeltaTracker deltaTracker = mock(DeltaTracker.class);
+		HudElement activeElement = mock(HudElement.class);
+		HudElement removedElement = mock(HudElement.class);
+		HudElementRegistry.addFirst(testIdentifier("active"), activeElement);
+		HudElementRegistry.addLast(testIdentifier("removed"), removedElement);
+		HudElementRegistry.removeElement(testIdentifier("removed"));
+
+		HudElementRegistryImpl.update(deltaTracker);
+
+		verify(activeElement).update(deltaTracker);
+		verify(removedElement, never()).update(deltaTracker);
+	}
+
+	@Test
+	void updateReplacementBeforeExtraction() {
+		DeltaTracker deltaTracker = mock(DeltaTracker.class);
+		HudElement original = mock(HudElement.class);
+		List<HudElement> replacements = new ArrayList<>();
+		HudElementRegistry.addLast(testIdentifier("replacement"), original);
+		HudElementRegistry.replaceElement(testIdentifier("replacement"), element -> {
+			HudElement replacement = new HudElement() {
+				private boolean updated;
+
+				@Override
+				public void update(DeltaTracker tracker) {
+					Assertions.assertSame(deltaTracker, tracker);
+					updated = true;
+				}
+
+				@Override
+				public void extractRenderState(GuiGraphicsExtractor graphics) {
+					Assertions.assertTrue(updated);
+					drawnLayers.add("updated");
+				}
+			};
+			replacements.add(replacement);
+			return replacement;
+		});
+
+		HudElementRegistryImpl.update(deltaTracker);
+		assertOrder(List.of("updated"));
+		assertEquals(1, replacements.size());
+		verify(original, never()).update(deltaTracker);
+	}
+
+	@Test
+	void cachedVanillaElementUsesCurrentExtraction() {
+		HudLayer layer = HudLayer.ofVanilla(VanillaHudElements.CHAT);
+		HudElement first = layer.element(testElement("first"));
+		first.extractRenderState(null);
+		HudElement second = layer.element(testElement("second"));
+		second.extractRenderState(null);
+
+		Assertions.assertSame(first, second);
+		assertEquals(List.of("first", "second"), drawnLayers);
 	}
 
 	private HudElement testElement(String name) {

@@ -18,8 +18,8 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.Hud;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -184,14 +184,14 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 
 			for (int n = 0; n < 10; ++n) {
 				int o = x + n * 8;
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_CONTAINER_TEXTURE, o, m, 9, 9);
+				graphics.blitSprite(GuiPipeline.TEXTURED, HEART_CONTAINER_TEXTURE, o, m, 9, 9);
 
 				if (n * 2 + 1 < l) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_FULL_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(GuiPipeline.TEXTURED, HEART_FULL_TEXTURE, o, m, 9, 9);
 				}
 
 				if (n * 2 + 1 == l) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_HALF_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(GuiPipeline.TEXTURED, HEART_HALF_TEXTURE, o, m, 9, 9);
 				}
 			}
 		}
@@ -210,11 +210,11 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 				int o = x + n * 8;
 
 				if (n * 2 + 1 < l) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR_FULL_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(GuiPipeline.TEXTURED, ARMOR_FULL_TEXTURE, o, m, 9, 9);
 				}
 
 				if (n * 2 + 1 == l) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR_HALF_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(GuiPipeline.TEXTURED, ARMOR_HALF_TEXTURE, o, m, 9, 9);
 				}
 			}
 		}
@@ -233,15 +233,15 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 				int l = x + k * 8;
 
 				if (k * 2 + 1 < i) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_FULL_SPRITE, l, j, 9, 9);
+					graphics.blitSprite(GuiPipeline.TEXTURED, TOUGHNESS_FULL_SPRITE, l, j, 9, 9);
 				}
 
 				if (k * 2 + 1 == i) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_HALF_SPRITE, l, j, 9, 9);
+					graphics.blitSprite(GuiPipeline.TEXTURED, TOUGHNESS_HALF_SPRITE, l, j, 9, 9);
 				}
 
 				if (k * 2 + 1 > i) {
-					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_EMPTY_SPRITE, l, j, 9, 9);
+					graphics.blitSprite(GuiPipeline.TEXTURED, TOUGHNESS_EMPTY_SPRITE, l, j, 9, 9);
 				}
 			}
 		}
@@ -255,14 +255,14 @@ public class HudStatusBarHeightsTest implements ClientModInitializer, FabricClie
 
 		for (int l = 0; l < 10; l++) {
 			int n = x - l * 8 - 9;
-			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_EMPTY_SPRITE, n, y, 9, 9);
+			graphics.blitSprite(GuiPipeline.TEXTURED, STAMINA_EMPTY_SPRITE, n, y, 9, 9);
 
 			if (l * 2 + 1 < k) {
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_FULL_SPRITE, n, y, 9, 9);
+				graphics.blitSprite(GuiPipeline.TEXTURED, STAMINA_FULL_SPRITE, n, y, 9, 9);
 			}
 
 			if (l * 2 + 1 == k) {
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_HALF_SPRITE, n, y, 9, 9);
+				graphics.blitSprite(GuiPipeline.TEXTURED, STAMINA_HALF_SPRITE, n, y, 9, 9);
 			}
 		}
 	}

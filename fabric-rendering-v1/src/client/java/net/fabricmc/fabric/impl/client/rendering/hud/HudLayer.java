@@ -39,6 +39,9 @@ public interface HudLayer {
 
 	static HudLayer of(Identifier id, Function<HudElement, HudElement> operator, boolean isRemoved) {
 		return new HudLayer() {
+			private HudElement vanillaElement = graphics -> { };
+			private final HudElement element = operator.apply(graphics -> this.vanillaElement.extractRenderState(graphics));
+
 			@Override
 			public Identifier id() {
 				return id;
@@ -46,7 +49,8 @@ public interface HudLayer {
 
 			@Override
 			public HudElement element(HudElement vanillaElement) {
-				return operator.apply(vanillaElement);
+				this.vanillaElement = vanillaElement;
+				return element;
 			}
 
 			@Override

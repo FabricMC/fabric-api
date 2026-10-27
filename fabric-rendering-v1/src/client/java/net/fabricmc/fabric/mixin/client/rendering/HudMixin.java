@@ -20,7 +20,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Hud;
@@ -33,6 +36,11 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
 @Mixin(Hud.class)
 abstract class HudMixin {
+	@Inject(method = "update", at = @At("TAIL"))
+	private void updateHudElements(DeltaTracker deltaTracker, CallbackInfo ci) {
+		HudElementRegistryImpl.update(deltaTracker);
+	}
+
 	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;extractCameraOverlays(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
 	private void wrapMiscOverlays(Hud instance, GuiGraphicsExtractor graphics, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.MISC_OVERLAYS).extractRenderState(

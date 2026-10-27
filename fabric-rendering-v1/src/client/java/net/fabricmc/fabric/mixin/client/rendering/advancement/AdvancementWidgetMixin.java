@@ -23,7 +23,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,6 +37,7 @@ import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -80,14 +80,14 @@ abstract class AdvancementWidgetMixin {
 		}
 	}
 
-	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
-	private void extractAdvancementFrame(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
-		extractAdvancementFrame(graphics, x, y, false, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
+	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/client/gui/GuiPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+	private void extractAdvancementFrame(GuiGraphicsExtractor graphics, GuiPipeline guiPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
+		extractAdvancementFrame(graphics, x, y, false, () -> original.call(graphics, guiPipeline, location, x, y, width, height));
 	}
 
-	@WrapOperation(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 3))
-	private void renderAdvancementFrameHover(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
-		extractAdvancementFrame(graphics, x, y, true, () -> original.call(graphics, renderPipeline, location, x, y, width, height));
+	@WrapOperation(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/client/gui/GuiPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 3))
+	private void renderAdvancementFrameHover(GuiGraphicsExtractor graphics, GuiPipeline guiPipeline, Identifier location, int x, int y, int width, int height, Operation<Void> original) {
+		extractAdvancementFrame(graphics, x, y, true, () -> original.call(graphics, guiPipeline, location, x, y, width, height));
 	}
 
 	@Unique
@@ -119,16 +119,16 @@ abstract class AdvancementWidgetMixin {
 		return renderTooltip.get();
 	}
 
-	@WrapWithCondition(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIIIII)V"))
-	private boolean cancelTooltipTitleBarRendering(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int spriteWidth, int spriteHeight, int textureX, int textureY, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
+	@WrapWithCondition(method = "extractHover", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/client/gui/GuiPipeline;Lnet/minecraft/resources/Identifier;IIIIIIII)V"))
+	private boolean cancelTooltipTitleBarRendering(GuiGraphicsExtractor graphics, GuiPipeline guiPipeline, Identifier location, int spriteWidth, int spriteHeight, int textureX, int textureY, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
 		return renderTooltip.get();
 	}
 
 	@WrapWithCondition(method = "extractHover",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"),
-			slice = @Slice(from = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 2))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/client/gui/GuiPipeline;Lnet/minecraft/resources/Identifier;IIII)V"),
+			slice = @Slice(from = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lnet/minecraft/client/gui/GuiPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 2))
 	)
-	private boolean cancelTooltipTitleBoxRendering(GuiGraphicsExtractor graphics, RenderPipeline renderPipeline, Identifier location, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
+	private boolean cancelTooltipTitleBoxRendering(GuiGraphicsExtractor graphics, GuiPipeline guiPipeline, Identifier location, int x, int y, int width, int height, @Share("renderTooltip") LocalBooleanRef renderTooltip) {
 		return renderTooltip.get();
 	}
 }

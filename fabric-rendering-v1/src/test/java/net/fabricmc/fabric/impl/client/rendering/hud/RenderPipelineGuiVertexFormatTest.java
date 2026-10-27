@@ -19,10 +19,10 @@ package net.fabricmc.fabric.impl.client.rendering.hud;
 import java.util.Optional;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
@@ -46,7 +46,7 @@ public class RenderPipelineGuiVertexFormatTest {
 	void testSnippetTransfersToPipeline() {
 		RenderPipeline.Snippet snippet = FabricRenderPipeline.Snippet.withPipelineDrawModeForGui(createEmptySnippet(), true);
 		RenderPipeline pipeline = RenderPipeline.builder(
-						RenderPipelines.GUI_SNIPPET,
+						createGuiSnippet(),
 						snippet
 				)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_454b"))
@@ -56,7 +56,7 @@ public class RenderPipelineGuiVertexFormatTest {
 		snippet = FabricRenderPipeline.Snippet.withPipelineDrawModeForGui(createEmptySnippet(), false);
 
 		pipeline = RenderPipeline.builder(
-						RenderPipelines.GUI_SNIPPET,
+						createGuiSnippet(),
 						snippet
 				)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_454cc"))
@@ -66,7 +66,7 @@ public class RenderPipelineGuiVertexFormatTest {
 		snippet = FabricRenderPipeline.Snippet.withoutPipelineDrawModeForGui(createEmptySnippet());
 
 		pipeline = RenderPipeline.builder(
-						RenderPipelines.GUI_SNIPPET,
+						createGuiSnippet(),
 						snippet
 				)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_4547q"))
@@ -77,7 +77,7 @@ public class RenderPipelineGuiVertexFormatTest {
 	@Test
 	void testBuilderTransfersToPipeline() {
 		RenderPipeline.Builder builder = RenderPipeline.builder(
-						RenderPipelines.GUI_SNIPPET
+						createGuiSnippet()
 				)
 				.withUsePipelineDrawModeForGui(true)
 				.withLocation(Identifier.fromNamespaceAndPath("test", "pipeline_454gg"));
@@ -105,6 +105,14 @@ public class RenderPipelineGuiVertexFormatTest {
 				.buildSnippet();
 		Assertions.assertNotEquals(snippet, snippet3);
 		Assertions.assertNotEquals(snippet.hashCode(), snippet3.hashCode());
+	}
+
+	private static RenderPipeline.Snippet createGuiSnippet() {
+		return RenderPipeline.builder()
+				.withVertexShader("core/gui")
+				.withFragmentShader("core/gui")
+				.withPrimitiveTopology(PrimitiveTopology.QUADS)
+				.buildSnippet();
 	}
 
 	private static RenderPipeline.Snippet createEmptySnippet() {

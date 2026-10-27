@@ -20,12 +20,12 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidRenderer;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -57,9 +57,9 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 				FluidModel fluidModel = fluidRenderer.fluidModels.get(variant.getFluid().defaultFluidState());
 				int color = FluidVariantRendering.getColor(variant, (BlockAndTintGetter) player.level(), player.blockPosition());
 
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, fluidModel.stillMaterial().sprite(), 0, renderY, 16, 16, color);
+				graphics.blitSprite(GuiPipeline.TEXTURED, fluidModel.stillMaterial().sprite(), 0, renderY, 16, 16, color);
 				renderY += 16;
-				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, fluidModel.flowingMaterial().sprite(), 0, renderY, 16, 16, color);
+				graphics.blitSprite(GuiPipeline.TEXTURED, fluidModel.flowingMaterial().sprite(), 0, renderY, 16, 16, color);
 				renderY += 16;
 
 				List<Component> tooltip = FluidVariantRendering.getTooltip(variant, true);

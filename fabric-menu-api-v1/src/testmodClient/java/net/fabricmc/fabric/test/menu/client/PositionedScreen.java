@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.menu.client;
 import java.util.Optional;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -63,6 +63,6 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	public void extractBackground(GuiGraphicsExtractor guiGraphics) {
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
-		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+		guiGraphics.blit(GuiPipeline.TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 	}
 }

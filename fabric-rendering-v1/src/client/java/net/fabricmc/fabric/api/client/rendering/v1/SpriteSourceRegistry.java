@@ -18,14 +18,20 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.SpriteSourceRegistryImpl;
 
 /**
  * A registry for custom {@link SpriteSource}s. Registered types will be automatically available for use in atlas definition JSON files.
+ *
+ * @deprecated Use {@link Registry#register(Registry, Identifier, Object)} with
+ * {@link BuiltInClientRegistries#SPRITE_SOURCE_TYPE} directly.
  */
+@Deprecated
 public final class SpriteSourceRegistry {
 	private SpriteSourceRegistry() {
 	}
@@ -35,7 +41,10 @@ public final class SpriteSourceRegistry {
 	 *
 	 * @param id the identifier of the sprite source type
 	 * @param codec the codec for the sprite source type
+	 * @deprecated Use {@link Registry#register(Registry, Identifier, Object)} with
+	 * {@link BuiltInClientRegistries#SPRITE_SOURCE_TYPE} directly.
 	 */
+	@Deprecated
 	public static void register(Identifier id, MapCodec<? extends SpriteSource> codec) {
 		SpriteSourceRegistryImpl.register(id, codec);
 	}

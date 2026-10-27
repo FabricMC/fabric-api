@@ -30,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Updatable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
@@ -54,6 +55,10 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Shadow
 	@Final
 	private List<Renderable> renderables;
+
+	@Shadow
+	@Final
+	private List<Updatable> updatables;
 
 	@Unique
 	private List<AbstractWidget> fabricButtons;
@@ -199,7 +204,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	public List<AbstractWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
-			this.fabricButtons = new ButtonList(this.renderables, this.narratables, this.children);
+			this.fabricButtons = new ButtonList(this.renderables, this.narratables, this.children, this.updatables);
 		}
 
 		return this.fabricButtons;

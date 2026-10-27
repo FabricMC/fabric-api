@@ -25,7 +25,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.renderpearl.api.GpuFormat;
 import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
 import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.DepthStencilState;
@@ -74,7 +73,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			method = "buildSnippet",
 			at = @At(
 					value = "NEW",
-					target = "(Ljava/util/Map;Ljava/util/Optional;Ljava/util/Optional;[Lcom/mojang/renderpearl/api/pipeline/ColorTargetState;ILjava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;[Lcom/mojang/blaze3d/vertex/VertexFormat;Ljava/util/Optional;I)Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;"
+					target = "(Ljava/util/Map;Ljava/util/Optional;Ljava/util/Optional;[Lcom/mojang/renderpearl/api/pipeline/ColorTargetState;ILjava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;[Lcom/mojang/blaze3d/vertex/VertexFormat;Ljava/util/Optional;I)Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;"
 			)
 	)
 	private RenderPipeline.Snippet copyUsePipelineDrawModeForGuiToSnippet(
@@ -84,7 +83,6 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			ColorTargetState[] colorTargetStates,
 			int activeColorTargetStateCount,
 			Optional<DepthStencilState> depthStencilState,
-			Optional<GpuFormat> depthStencilFormat,
 			Optional<PolygonMode> polygonMode,
 			Optional<Boolean> cull,
 			VertexFormat[] vertexFormatPerBuffer,
@@ -92,7 +90,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			int pushConstantSize,
 			Operation<RenderPipeline.Snippet> original
 	) {
-		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(shaders, shaderDefines, bindGroupLayouts, colorTargetStates, activeColorTargetStateCount, depthStencilState, depthStencilFormat, polygonMode, cull, vertexFormatPerBuffer, vertexFormatMode, pushConstantSize), usePipelineDrawModeForGui);
+		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(shaders, shaderDefines, bindGroupLayouts, colorTargetStates, activeColorTargetStateCount, depthStencilState, polygonMode, cull, vertexFormatPerBuffer, vertexFormatMode, pushConstantSize), usePipelineDrawModeForGui);
 	}
 
 	@ModifyReturnValue(

@@ -18,10 +18,10 @@ package net.fabricmc.fabric.test.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 class StopSoundButton extends AbstractButton {
@@ -31,7 +31,7 @@ class StopSoundButton extends AbstractButton {
 
 	@Override
 	protected void extractContents(GuiGraphicsExtractor graphics) {
-		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
+		graphics.blitSprite(GuiPipeline.TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
 		if (this.isHovered()) {
 			graphics.setTooltipForNextFrame(Minecraft.getInstance().font, Component.literal("Click to stop all sounds"), this.getX(), this.getY());

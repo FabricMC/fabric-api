@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
@@ -74,6 +75,16 @@ public class HudElementRegistryImpl {
 
 	public static RootLayer getRoot(Identifier id) {
 		return ROOT_ELEMENTS.get(id);
+	}
+
+	public static void update(DeltaTracker deltaTracker) {
+		visitLayers((layer, _) -> {
+			if (!layer.isRemoved()) {
+				layer.element(_ -> { }).update(deltaTracker);
+			}
+
+			return false;
+		});
 	}
 
 	public static void addFirst(Identifier id, HudElement element) {

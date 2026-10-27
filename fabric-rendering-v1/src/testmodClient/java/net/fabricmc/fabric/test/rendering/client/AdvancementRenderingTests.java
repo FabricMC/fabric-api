@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
@@ -59,7 +59,7 @@ public class AdvancementRenderingTests implements ClientModInitializer {
 		@Override
 		public void extractAdvancementBackground(AdvancementRenderContext.Background context) {
 			ScreenRectangle bounds = context.bounds();
-			context.graphics().blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, bounds.left(), bounds.top(), 1 - Mth.floor(context.scrollX()), 3 - Mth.floor(context.scrollY()), bounds.width(), bounds.height(), 64, 64);
+			context.graphics().blit(GuiPipeline.TEXTURED, BACKGROUND, bounds.left(), bounds.top(), 1 - Mth.floor(context.scrollX()), 3 - Mth.floor(context.scrollY()), bounds.width(), bounds.height(), 64, 64);
 		}
 	}
 

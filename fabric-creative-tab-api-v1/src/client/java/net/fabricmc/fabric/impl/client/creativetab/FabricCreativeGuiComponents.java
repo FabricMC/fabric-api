@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.renderer.pipeline.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -66,7 +66,7 @@ public class FabricCreativeGuiComponents {
 
 			int u = active && this.isHovered() ? 20 : 0;
 			int v = active ? 0 : 12;
-			graphics.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
+			graphics.blit(GuiPipeline.TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
 
 			if (this.isHovered()) {
 				graphics.setTooltipForNextFrame(Minecraft.getInstance().font, net.minecraft.network.chat.Component.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), graphics.mouseX(), graphics.mouseY());
