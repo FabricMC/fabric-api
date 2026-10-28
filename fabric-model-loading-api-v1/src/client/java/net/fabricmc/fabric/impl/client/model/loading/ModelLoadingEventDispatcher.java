@@ -32,8 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
+import net.minecraft.client.resources.model.ClientItemInfoLoader;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
@@ -55,6 +57,7 @@ public class ModelLoadingEventDispatcher {
 	private final BlockStateResolverContext blockStateResolverContext = new BlockStateResolverContext();
 	private final OnLoadModifierContext onLoadModifierContext = new OnLoadModifierContext();
 	private final OnLoadBlockModifierContext onLoadBlockModifierContext = new OnLoadBlockModifierContext();
+	private final OnLoadItemModifierContext onLoadItemModifierContext = new OnLoadItemModifierContext();
 
 	public ModelLoadingEventDispatcher(List<ModelLoadingPlugin> plugins) {
 		this.pluginContext = new ModelLoadingPluginContextImpl();
@@ -96,6 +99,19 @@ public class ModelLoadingEventDispatcher {
 
 		putResolvedBlockStates(map);
 		map.replaceAll(this::modifyBlockModelOnLoad);
+
+		return models;
+	}
+
+	public ClientItemInfoLoader.LoadedClientInfos modifyItemModelsOnLoad(ClientItemInfoLoader.LoadedClientInfos models) {
+		Map<Identifier, ClientItem> map = models.contents();
+
+		if (!(map instanceof HashMap)) {
+			map = new HashMap<>(map);
+			models = new ClientItemInfoLoader.LoadedClientInfos(map);
+		}
+
+		map.replaceAll(this::modifyItemModelOnLoad);
 
 		return models;
 	}
@@ -153,6 +169,11 @@ public class ModelLoadingEventDispatcher {
 		BlockStateModel model = bakeOperation.call(unbakedModel, state, baker);
 		modifierContext.prepareAfterBake(unbakedModel);
 		return pluginContext.modifyBlockModelAfterBake().invoker().modifyModelAfterBake(model, modifierContext);
+	}
+
+	private ClientItem modifyItemModelOnLoad(Identifier itemId, ClientItem model) {
+		onLoadItemModifierContext.prepare(itemId);
+		return pluginContext.modifyItemModelOnLoad().invoker().modifyModelOnLoad(model, onLoadItemModifierContext);
 	}
 
 	public ItemModel modifyItemModel(ItemModel.Unbaked unbakedModel, Identifier itemId, ItemModel.BakingContext bakeContext, Matrix4fc transformation, Operation<ItemModel> bakeOperation) {
@@ -245,6 +266,19 @@ public class ModelLoadingEventDispatcher {
 		@Override
 		public BlockStateModel.UnbakedRoot sourceModel() {
 			return sourceModel;
+		}
+	}
+
+	private static class OnLoadItemModifierContext implements ModelModifier.OnLoadItem.Context {
+		private Identifier itemId;
+
+		private void prepare(Identifier itemId) {
+			this.itemId = itemId;
+		}
+
+		@Override
+		public Identifier itemId() {
+			return itemId;
 		}
 	}
 
