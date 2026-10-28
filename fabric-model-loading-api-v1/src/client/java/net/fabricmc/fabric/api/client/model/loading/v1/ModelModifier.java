@@ -20,6 +20,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4fc;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
@@ -189,6 +190,30 @@ public final class ModelModifier {
 			 * model.
 			 */
 			ModelBaker baker();
+		}
+	}
+
+	@FunctionalInterface
+	public interface OnLoadItem {
+		/**
+		 * This handler is invoked to allow modification of the unbaked item model instance right after it is first loaded.
+		 *
+		 * @param model the current unbaked model instance
+		 * @param context context with additional information about the model/loader
+		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
+		 * @see ModelLoadingPlugin.Context#modifyItemModelOnLoad
+		 */
+		ClientItem modifyModelOnLoad(ClientItem model, Context context);
+
+		/**
+		 * The context for an on load item model modification event.
+		 */
+		@ApiStatus.NonExtendable
+		interface Context {
+			/**
+			 * The corresponding item ID of the model being baked.
+			 */
+			Identifier itemId();
 		}
 	}
 

@@ -105,6 +105,11 @@ public interface ModelLoadingPlugin {
 		Event<ModelModifier.AfterBakeBlock> modifyBlockModelAfterBake();
 
 		/**
+		 * Event access to monitor unbaked item model loads and replace the loaded model.
+		 */
+		Event<ModelModifier.OnLoadItem> modifyItemModelOnLoad();
+
+		/**
 		 * Event access to replace the unbaked item model used for baking.
 		 */
 		Event<ModelModifier.BeforeBakeItem> modifyItemModelBeforeBake();
