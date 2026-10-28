@@ -122,7 +122,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			});
 
 			// Make bone meal use a new unreferenced model
-			var boneMeal = ItemIds.BONE_MEAL.identifier();
+			Identifier boneMeal = ItemIds.BONE_MEAL.identifier();
 			pluginContext.modifyItemModelOnLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
 				if (context.itemId().equals(boneMeal)) {
 					return new ClientItem(ItemModelUtils.plainModel(NEW_EMERALD_MODEL_ID), model.properties(), model.registrySwapper());
