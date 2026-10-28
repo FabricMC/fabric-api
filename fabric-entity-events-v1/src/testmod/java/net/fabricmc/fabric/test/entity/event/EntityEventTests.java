@@ -57,6 +57,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.entity.event.v1.tick.PlayerTickEvents;
 import net.fabricmc.fabric.api.util.EventResult;
 
 public final class EntityEventTests implements ModInitializer {
@@ -249,6 +250,9 @@ public final class EntityEventTests implements ModInitializer {
 			assertOnServerThread(player.level().getServer());
 			LOGGER.info("Observed player {} leaving the game", player.getGameProfile().name());
 		});
+
+		PlayerTickEvents.START_TICK.register(player -> LOGGER.info("Player tick start callback has been fired for player {}", player.getGameProfile().name()));
+		PlayerTickEvents.END_TICK.register(player -> LOGGER.info("Player tick end callback has been fired for player {}", player.getGameProfile().name()));
 	}
 
 	private static void addSleepWools(Player player) {
