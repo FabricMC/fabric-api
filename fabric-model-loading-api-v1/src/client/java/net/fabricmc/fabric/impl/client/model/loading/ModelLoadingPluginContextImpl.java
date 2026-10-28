@@ -95,7 +95,7 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 			try {
 				model = modifier.modifyModelOnLoad(model, context);
 			} catch (Exception exception) {
-				LOGGER.error("Failed to modify unbaked block model on load", exception);
+				LOGGER.error("Failed to modify unbaked item model on load", exception);
 			}
 		}
 
