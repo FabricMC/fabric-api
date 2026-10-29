@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.gamerule.sync.GameRuleSynchronizationImpl;
 /**
  * A utility class for syncing {@link GameRule}s.
  *
- * <p>This is mainly for vanilla or other mods' game rules. For custom game rules, {@link GameRuleBuilder#synced() the builder method} should be used instead.
+ * <p>This should only be used to sync vanilla game rules or game rules from other mods. When creating custom game rules, {@link GameRuleBuilder#synced() the builder method} should be used instead.
  */
 public final class GameRuleSynchronization {
 	private GameRuleSynchronization() {
