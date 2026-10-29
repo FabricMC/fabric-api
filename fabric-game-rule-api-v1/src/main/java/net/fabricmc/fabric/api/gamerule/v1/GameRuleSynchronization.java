@@ -25,7 +25,7 @@ import net.minecraft.world.level.gamerules.GameRule;
 import net.fabricmc.fabric.impl.gamerule.sync.GameRuleSynchronizationImpl;
 
 /**
- * A utility class for syncing game rules.
+ * A utility class for syncing {@link GameRule}s.
  *
  * <p>This is mainly for vanilla or other mods' game rules. For custom game rules, {@link GameRuleBuilder#synced() the builder method} should be used instead.
  */
