@@ -85,7 +85,7 @@ public final class ResourceConditions {
 	}
 
 	/**
-	 * A condition that always passes. Has ID {@code fabric:false}.
+	 * A condition that always fails. Has ID {@code fabric:false}.
 	 */
 	public static ResourceCondition alwaysFalse() {
 		return new FalseResourceCondition();
