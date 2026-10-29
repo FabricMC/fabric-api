@@ -105,7 +105,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	private static final ResourceCondition ALWAYS_LOADED = ResourceConditions.alwaysTrue();
-	private static final ResourceCondition NEVER_LOADED = ResourceConditions.not(ALWAYS_LOADED);
+	private static final ResourceCondition NEVER_LOADED = ResourceConditions.alwaysFalse();
 
 	@Override
 	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
