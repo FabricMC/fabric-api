@@ -5,6 +5,7 @@
   "client": [
     "AbstractGameRulesScreenAccessor",
     "AbstractGameRulesScreenRuleListAccessor",
+    "sync.ClientLevelMixin",
     "RuleListEntryTypeVisitorMixin"
   ],
   "injectors": {

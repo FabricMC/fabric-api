@@ -8,7 +8,9 @@ loom {
 
 fabricApiModule {
 	moduleDependencies(
-		'fabric-api-base'
+		'fabric-api-base',
+		':fabric-entity-events-v1',
+		':fabric-networking-api-v1'
 	)
 
 	testDependencies(
