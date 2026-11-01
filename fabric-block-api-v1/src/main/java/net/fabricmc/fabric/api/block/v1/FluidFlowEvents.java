@@ -48,7 +48,7 @@ public final class FluidFlowEvents {
 	 * <pre>{@code
 	 * FluidFlowEvents.ALLOW.register((fluid, level, fluidPosition) -> {
 	 *     // For example, check if this is a specific fluid
-	 *     if (!fluid.is(Tags.MY_FLUID)) return true;
+	 *     if (!fluid.is(MyFluids.MY_FLUID)) return true;
 	 *
 	 *     // For example, check if the block below matches some tag
 	 *     if (!level.getBlockState(fluidPosition.below()).is(Tags.MY_BLOCK)) return true;
