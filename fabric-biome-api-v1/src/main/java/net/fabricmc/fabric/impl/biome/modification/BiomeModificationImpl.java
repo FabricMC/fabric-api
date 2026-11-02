@@ -45,6 +45,8 @@ import net.minecraft.world.level.biome.FeatureSorter;
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import net.fabricmc.fabric.api.biome.v1.data.BiomeModifier;
+import net.fabricmc.fabric.api.biome.v1.data.BiomeModifiers;
 
 public class BiomeModificationImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BiomeModificationImpl.class);
@@ -55,8 +57,6 @@ public class BiomeModificationImpl {
 
 	private final List<ModifierRecord> modifiers = new ArrayList<>();
 
-	private boolean modifiersUnsorted = true;
-
 	private BiomeModificationImpl() {
 	}
 
@@ -65,7 +65,6 @@ public class BiomeModificationImpl {
 		Objects.requireNonNull(modifier);
 
 		modifiers.add(new ModifierRecord(phase, id, selector, modifier));
-		modifiersUnsorted = true;
 	}
 
 	public void addModifier(Identifier id, ModificationPhase phase, Predicate<BiomeSelectionContext> selector, Consumer<BiomeModificationContext> modifier) {
@@ -73,15 +72,12 @@ public class BiomeModificationImpl {
 		Objects.requireNonNull(modifier);
 
 		modifiers.add(new ModifierRecord(phase, id, selector, modifier));
-		modifiersUnsorted = true;
 	}
 
 	/**
 	 * This is currently not publicly exposed but likely useful for modpack support mods.
 	 */
 	void changeOrder(Identifier id, int order) {
-		modifiersUnsorted = true;
-
 		for (ModifierRecord modifierRecord : modifiers) {
 			if (id.equals(modifierRecord.id)) {
 				modifierRecord.setOrder(order);
@@ -92,17 +88,18 @@ public class BiomeModificationImpl {
 	@TestOnly
 	void clearModifiers() {
 		modifiers.clear();
-		modifiersUnsorted = true;
 	}
 
-	private List<ModifierRecord> getSortedModifiers() {
-		if (modifiersUnsorted) {
-			// Resort modifiers
-			modifiers.sort(MODIFIER_ORDER_COMPARATOR);
-			modifiersUnsorted = false;
+	private List<ModifierRecord> getSortedModifiers(RegistryAccess registries) {
+		List<ModifierRecord> combinedModifiers = new ArrayList<>(modifiers);
+
+		for (Map.Entry<ResourceKey<BiomeModifier>, BiomeModifier> entry : registries.lookupOrThrow(BiomeModifiers.REGISTRY_KEY).entrySet()) {
+			BiomeModifier modifier = entry.getValue();
+			combinedModifiers.add(new ModifierRecord(modifier.getPhase(), entry.getKey().identifier(), modifier::matches, modifier::modify));
 		}
 
-		return modifiers;
+		combinedModifiers.sort(MODIFIER_ORDER_COMPARATOR);
+		return combinedModifiers;
 	}
 
 	public void finalizeWorldGen(RegistryAccess impl) {
@@ -123,7 +120,7 @@ public class BiomeModificationImpl {
 				.sorted(Comparator.comparingInt(key -> biomes.getId(biomes.getValueOrThrow(key))))
 				.toList();
 
-		List<ModifierRecord> sortedModifiers = getSortedModifiers();
+		List<ModifierRecord> sortedModifiers = getSortedModifiers(impl);
 
 		int biomesChanged = 0;
 		int biomesProcessed = 0;

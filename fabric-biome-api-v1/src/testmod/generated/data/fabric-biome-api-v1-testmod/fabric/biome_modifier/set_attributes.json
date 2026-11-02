@@ -1,0 +1,7 @@
+{
+  "type": "fabric:set_attributes",
+  "attributes": {
+    "minecraft:visual/sky_color": "#123456"
+  },
+  "biomes": "#fabric-biome-api-v1-testmod:modifier_targets"
+}

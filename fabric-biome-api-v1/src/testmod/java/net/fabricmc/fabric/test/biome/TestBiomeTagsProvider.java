@@ -20,8 +20,6 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
@@ -35,10 +33,13 @@ public class TestBiomeTagsProvider extends FabricTagsProvider<Biome> {
 
 	@Override
 	protected void addTags(HolderLookup.Provider registries) {
-		builder(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(FabricBiomeTest.MOD_ID, "biome_tag_test")))
+		builder(TestBiomeTags.MODIFIER_TARGETS)
+				.add(TestBiomes.EXAMPLE_BIOME)
+				.add(Biomes.ICE_SPIKES);
+		builder(TestBiomeTags.BIOME_TAG_TEST)
 				.add(TestBiomes.CUSTOM_PLAINS)
 				.add(TestBiomes.TEST_END_HIGHLANDS);
-		builder(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(FabricBiomeTest.MOD_ID, "tag_selector_test")))
+		builder(TestBiomeTags.TAG_SELECTOR_TEST)
 				.add(Biomes.BEACH)
 				.add(Biomes.DESERT)
 				.add(Biomes.SAVANNA)

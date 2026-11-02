@@ -1,0 +1,6 @@
+{
+  "type": "fabric:add_features",
+  "biomes": "fabric-biome-api-v1-testmod:example_biome",
+  "features": "fabric-biome-api-v1-testmod:fab_desert_well",
+  "step": "surface_structures"
+}

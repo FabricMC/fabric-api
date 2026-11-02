@@ -1,0 +1,8 @@
+{
+  "type": "fabric:remove_features",
+  "biomes": "fabric-biome-api-v1-testmod:example_biome",
+  "features": "fabric-biome-api-v1-testmod:common_ore",
+  "steps": [
+    "underground_ores"
+  ]
+}
