@@ -30,7 +30,6 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.biome.v1.data.BiomeModifier;
-import net.fabricmc.fabric.api.biome.v1.data.BiomeModifierType;
 
 public record AddCarversBiomeModifier(HolderSet<Biome> biomes, HolderSet<WorldCarver> carvers) implements BiomeModifier {
 	static final MapCodec<AddCarversBiomeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -39,8 +38,8 @@ public record AddCarversBiomeModifier(HolderSet<Biome> biomes, HolderSet<WorldCa
 	).apply(instance, AddCarversBiomeModifier::new));
 
 	@Override
-	public BiomeModifierType<?> getType() {
-		return BiomeModifiersImpl.ADD_CARVERS;
+	public MapCodec<? extends BiomeModifier> codec() {
+		return CODEC;
 	}
 
 	@Override

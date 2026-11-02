@@ -16,53 +16,53 @@
 
 package net.fabricmc.fabric.impl.biome.modification.data;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ExtraCodecs;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.data.BiomeModifier;
-import net.fabricmc.fabric.api.biome.v1.data.BiomeModifierType;
 import net.fabricmc.fabric.api.biome.v1.data.BiomeModifiers;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public final class BiomeModifiersImpl implements ModInitializer {
-	private static final Map<Identifier, BiomeModifierType<?>> TYPES = new HashMap<>();
+	private static final BiMap<Identifier, MapCodec<? extends BiomeModifier>> TYPES = HashBiMap.create();
 
-	public static final Codec<BiomeModifierType<?>> TYPE_CODEC = Identifier.CODEC.comapFlatMap(id -> {
-		BiomeModifierType<?> type = TYPES.get(id);
-		return type == null ? DataResult.error(() -> "Unknown biome modifier type: " + id) : DataResult.success(type);
-	}, BiomeModifierType::id);
+	private static final Codec<MapCodec<? extends BiomeModifier>> TYPE_CODEC = ExtraCodecs.idResolverCodec(
+			Identifier.CODEC, TYPES::get, TYPES.inverse()::get
+	);
 
-	static final BiomeModifierType<AddFeaturesBiomeModifier> ADD_FEATURES = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "add_features"), AddFeaturesBiomeModifier.CODEC);
-	static final BiomeModifierType<RemoveFeaturesBiomeModifier> REMOVE_FEATURES = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "remove_features"), RemoveFeaturesBiomeModifier.CODEC);
-	static final BiomeModifierType<AddSpawnsBiomeModifier> ADD_SPAWNS = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "add_spawns"), AddSpawnsBiomeModifier.CODEC);
-	static final BiomeModifierType<RemoveSpawnsBiomeModifier> REMOVE_SPAWNS = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "remove_spawns"), RemoveSpawnsBiomeModifier.CODEC);
-	static final BiomeModifierType<AddCarversBiomeModifier> ADD_CARVERS = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "add_carvers"), AddCarversBiomeModifier.CODEC);
-	static final BiomeModifierType<RemoveCarversBiomeModifier> REMOVE_CARVERS = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "remove_carvers"), RemoveCarversBiomeModifier.CODEC);
-	static final BiomeModifierType<SetAttributesBiomeModifier> SET_ATTRIBUTES = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "set_attributes"), SetAttributesBiomeModifier.CODEC);
-	static final BiomeModifierType<NoneBiomeModifier> NONE = BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "none"), MapCodec.unit(NoneBiomeModifier.INSTANCE));
+	public static final Codec<BiomeModifier> CODEC = TYPE_CODEC.dispatch(BiomeModifier::codec, Function.identity());
 
-	public static <T extends BiomeModifier> BiomeModifierType<T> registerType(Identifier id, MapCodec<T> codec) {
+	public static <T extends BiomeModifier> MapCodec<T> registerType(Identifier id, MapCodec<T> codec) {
 		Objects.requireNonNull(id, "id");
 		Objects.requireNonNull(codec, "codec");
-		BiomeModifierType<T> type = new BiomeModifierTypeImpl<>(id, codec);
 
-		if (TYPES.putIfAbsent(id, type) != null) {
+		if (TYPES.putIfAbsent(id, codec) != null) {
 			throw new IllegalArgumentException("Biome modifier type already registered: " + id);
 		}
 
-		return type;
+		return codec;
 	}
 
 	@Override
 	public void onInitialize() {
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "add_features"), AddFeaturesBiomeModifier.CODEC);
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "remove_features"), RemoveFeaturesBiomeModifier.CODEC);
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "add_spawns"), AddSpawnsBiomeModifier.CODEC);
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "remove_spawns"), RemoveSpawnsBiomeModifier.CODEC);
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "add_carvers"), AddCarversBiomeModifier.CODEC);
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "remove_carvers"), RemoveCarversBiomeModifier.CODEC);
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "set_attributes"), SetAttributesBiomeModifier.CODEC);
+		BiomeModifiers.registerType(Identifier.fromNamespaceAndPath("fabric", "none"), NoneBiomeModifier.CODEC);
+
 		DynamicRegistries.register(BiomeModifiers.REGISTRY_KEY, BiomeModifier.CODEC);
 	}
 }

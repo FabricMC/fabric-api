@@ -86,13 +86,13 @@ public final class BiomeModifiers {
 	private BiomeModifiers() {
 	}
 
-	/// Registers a modifier type during mod initialization.
+	/// Registers a modifier codec during mod initialization.
 	///
 	/// @param id the identifier used in the JSON `type` field
 	/// @param codec the codec for the modifier's fields
-	/// @return the registered type
-	/// @throws IllegalArgumentException if the identifier is already registered
-	public static <T extends BiomeModifier> BiomeModifierType<T> registerType(Identifier id, MapCodec<T> codec) {
+	/// @return the registered codec
+	/// @throws IllegalArgumentException if the identifier or codec is already registered
+	public static <T extends BiomeModifier> MapCodec<T> registerType(Identifier id, MapCodec<T> codec) {
 		return BiomeModifiersImpl.registerType(id, codec);
 	}
 

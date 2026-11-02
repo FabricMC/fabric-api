@@ -31,7 +31,6 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.biome.v1.data.BiomeModifier;
-import net.fabricmc.fabric.api.biome.v1.data.BiomeModifierType;
 
 public record AddFeaturesBiomeModifier(HolderSet<Biome> biomes, HolderSet<PlacedFeature> features, GenerationStep.Decoration step) implements BiomeModifier {
 	static final MapCodec<AddFeaturesBiomeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -41,8 +40,8 @@ public record AddFeaturesBiomeModifier(HolderSet<Biome> biomes, HolderSet<Placed
 	).apply(instance, AddFeaturesBiomeModifier::new));
 
 	@Override
-	public BiomeModifierType<?> getType() {
-		return BiomeModifiersImpl.ADD_FEATURES;
+	public MapCodec<? extends BiomeModifier> codec() {
+		return CODEC;
 	}
 
 	@Override

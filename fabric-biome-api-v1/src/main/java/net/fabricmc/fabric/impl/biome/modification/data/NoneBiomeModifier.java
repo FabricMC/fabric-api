@@ -16,21 +16,23 @@
 
 package net.fabricmc.fabric.impl.biome.modification.data;
 
+import com.mojang.serialization.MapCodec;
+
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.biome.v1.data.BiomeModifier;
-import net.fabricmc.fabric.api.biome.v1.data.BiomeModifierType;
 
 public final class NoneBiomeModifier implements BiomeModifier {
 	public static final NoneBiomeModifier INSTANCE = new NoneBiomeModifier();
+	static final MapCodec<NoneBiomeModifier> CODEC = MapCodec.unit(INSTANCE);
 
 	private NoneBiomeModifier() {
 	}
 
 	@Override
-	public BiomeModifierType<?> getType() {
-		return BiomeModifiersImpl.NONE;
+	public MapCodec<? extends BiomeModifier> codec() {
+		return CODEC;
 	}
 
 	@Override

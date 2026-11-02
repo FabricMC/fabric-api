@@ -29,7 +29,6 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.biome.v1.data.BiomeModifier;
-import net.fabricmc.fabric.api.biome.v1.data.BiomeModifierType;
 
 public record SetAttributesBiomeModifier(HolderSet<Biome> biomes, EnvironmentAttributeMap attributes) implements BiomeModifier {
 	static final MapCodec<SetAttributesBiomeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -38,8 +37,8 @@ public record SetAttributesBiomeModifier(HolderSet<Biome> biomes, EnvironmentAtt
 	).apply(instance, SetAttributesBiomeModifier::new));
 
 	@Override
-	public BiomeModifierType<?> getType() {
-		return BiomeModifiersImpl.SET_ATTRIBUTES;
+	public MapCodec<? extends BiomeModifier> codec() {
+		return CODEC;
 	}
 
 	@Override

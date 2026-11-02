@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.biome.v1.data;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -30,11 +31,11 @@ import net.fabricmc.fabric.impl.biome.modification.data.BiomeModifiersImpl;
 /// Within a phase, modifiers are ordered by their identifiers. Java registrations run first
 /// when identifiers are equal. Changes take effect when a world is loaded, not on resource reload.
 public interface BiomeModifier {
-	/// Dispatches on the JSON `type` field.
-	Codec<BiomeModifier> CODEC = BiomeModifiersImpl.TYPE_CODEC.dispatch("type", BiomeModifier::getType, BiomeModifierType::codec);
+	/// A codec for encoding and decoding biome modifiers.
+	Codec<BiomeModifier> CODEC = BiomeModifiersImpl.CODEC;
 
-	/// Returns the registered type used to encode this modifier.
-	BiomeModifierType<?> getType();
+	/// Returns the registered codec used to encode this modifier.
+	MapCodec<? extends BiomeModifier> codec();
 
 	/// Returns the phase in which this modifier runs.
 	ModificationPhase getPhase();
