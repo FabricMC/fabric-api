@@ -29,7 +29,6 @@ import net.minecraft.server.Main;
 import net.minecraft.world.item.CreativeModeTabs;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(Main.class)
@@ -45,7 +44,6 @@ class MainMixin {
 			LOGGER.debug("Freezing registries");
 
 			BuiltInRegistries.bootStrap();
-			BlockInitTracker.postFreeze();
 			CreativeModeTabs.validate();
 		}
 	}

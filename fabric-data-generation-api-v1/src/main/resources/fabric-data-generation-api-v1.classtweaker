@@ -69,7 +69,7 @@ transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	oreSmelti
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	oreBlasting	(Ljava/util/List;Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/item/crafting/CookingBookCategory;Lnet/minecraft/world/level/ItemLike;FILjava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	oreCooking	(Lnet/minecraft/world/item/crafting/AbstractCookingRecipe$Factory;Ljava/util/List;Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/item/crafting/CookingBookCategory;Lnet/minecraft/world/level/ItemLike;FILjava/lang/String;Ljava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	netheriteSmithing	(Lnet/minecraft/world/item/Item;Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/item/Item;)V
-transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	trimSmithing	(Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	trimSmithing	(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	twoByTwoPacker	(Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/ItemLike;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	threeByThreePacker	(Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/ItemLike;Ljava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	threeByThreePacker	(Lnet/minecraft/data/recipes/RecipeCategory;Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/ItemLike;)V
@@ -147,6 +147,7 @@ transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	insideOf	
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	bredAnimal	()Lnet/minecraft/advancements/triggers/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	has	(Lnet/minecraft/advancements/predicates/MinMaxBounds$Ints;Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/advancements/triggers/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	has	(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/advancements/triggers/Criterion;
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	has	(Lnet/minecraft/core/Holder;)Lnet/minecraft/advancements/triggers/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	has	(Lnet/minecraft/tags/TagKey;)Lnet/minecraft/advancements/triggers/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	inventoryTrigger	([Lnet/minecraft/advancements/predicates/ItemPredicate$Builder;)Lnet/minecraft/advancements/triggers/Criterion;
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	inventoryTrigger	([Lnet/minecraft/advancements/predicates/ItemPredicate;)Lnet/minecraft/advancements/triggers/Criterion;
@@ -269,6 +270,7 @@ transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerato
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCampfires	([Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createAzalea	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createPottedAzalea	(Lnet/minecraft/world/level/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createDoubleSlab	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createMushroomBlock	(Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createCraftingTableLike	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;Ljava/util/function/BiFunction;)V
 transitive-accessible	method	net/minecraft/client/data/models/BlockModelGenerators	createPumpkinVariant	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/model/TextureMapping;)V

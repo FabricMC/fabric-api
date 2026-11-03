@@ -49,8 +49,8 @@ abstract class ServerLevelMixin extends Level implements AttachmentTargetImpl {
 	@Final
 	private MinecraftServer server;
 
-	protected ServerLevelMixin(WritableLevelData levelData, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimensionTypeRegistration, boolean isClientSide, boolean isDebug, int maxChainedNeighborUpdates) {
-		super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, isDebug, maxChainedNeighborUpdates);
+	protected ServerLevelMixin(WritableLevelData levelData, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimensionTypeRegistration, boolean isClientSide, int maxChainedNeighborUpdates) {
+		super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, maxChainedNeighborUpdates);
 	}
 
 	@Inject(at = @At("TAIL"), method = "<init>")

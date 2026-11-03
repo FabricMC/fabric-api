@@ -122,25 +122,7 @@ public final class WoodTypeBuilder {
 	}
 
 	/**
-	 * Builds and registers a {@link WoodType} from this builder's values.
-	 *
-	 * <p>Alternatively, you can use {@link #build(Identifier, BlockSetType)} to build without registering.
-	 * <br>Then {@link WoodType#register(WoodType)} can be used to register it later.
-	 *
-	 * @param id the id for the built {@link WoodType}
-	 * @param setType the {@link BlockSetType} for the built {@link WoodType}
-	 *
-	 * @return the built and registered {@link WoodType}
-	 */
-	public WoodType register(Identifier id, BlockSetType setType) {
-		return WoodType.register(this.build(id, setType));
-	}
-
-	/**
-	 * Builds a {@link WoodType} from this builder's values without registering it.
-	 *
-	 * <p>Use {@link WoodType#register(WoodType)} to register it later.
-	 * <br>Alternatively, you can use {@link #register(Identifier, BlockSetType)} to build and register it now.
+	 * Builds a {@link WoodType} from this builder's values.
 	 *
 	 * @param id the id for the built {@link WoodType}
 	 * @param setType the {@link BlockSetType} for the built {@link WoodType}

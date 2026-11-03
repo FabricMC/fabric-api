@@ -36,7 +36,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
-import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 
 @Mixin(Minecraft.class)
 class MinecraftMixin {
@@ -59,7 +58,6 @@ class MinecraftMixin {
 		// Freeze the registries on the client
 		LOGGER.debug("Freezing registries");
 		BuiltInRegistries.bootStrap();
-		BlockInitTracker.postFreeze();
 		CreativeModeTabs.validate();
 	}
 

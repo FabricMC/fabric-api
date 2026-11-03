@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.gametest.input;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.MouseHandler;
@@ -24,6 +25,12 @@ import net.minecraft.client.input.MouseButtonInfo;
 
 @Mixin(MouseHandler.class)
 public interface MouseHandlerAccessor {
+	@Accessor
+	double getXpos();
+
+	@Accessor
+	double getYpos();
+
 	@Invoker
 	void invokeOnButton(long window, MouseButtonInfo arg, int action);
 

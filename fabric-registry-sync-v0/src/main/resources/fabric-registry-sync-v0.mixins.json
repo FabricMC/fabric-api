@@ -6,7 +6,6 @@
     "BlocksMixin",
     "BootstrapMixin",
     "BuiltInRegistriesMixin",
-    "DebugLevelSourceAccessor",
     "RegistriesDatapackGeneratorMixin",
     "RegistryPatchGeneratorMixin",
     "ReloadableServerRegistriesMixin",

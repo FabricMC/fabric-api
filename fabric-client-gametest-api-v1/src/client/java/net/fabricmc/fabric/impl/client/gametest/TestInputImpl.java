@@ -189,7 +189,11 @@ public final class TestInputImpl implements TestInput {
 
 	private static void pressOrReleaseKey(Minecraft client, InputConstants.Key key, int action) {
 		switch (key.getType()) {
-			case KEYBOARD -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeKeyPress(client.getWindow().handle(), action, new KeyEvent(key.getValue(), SDLKeyboard.SDL_GetKeyFromScancode(key.getValue(), (short) 0, false), 0));
+			case KEYBOARD -> {
+				int keycode = SDLKeyboard.SDL_GetKeyFromScancode(key.getValue(), (short) 0, false);
+				KeyEvent event = new KeyEvent(key.getValue(), keycode, 0, false);
+				((KeyboardHandlerAccessor) client.keyboardHandler).invokeKeyPress(client.getWindow().handle(), action, event);
+			}
 			case MOUSE -> ((MouseHandlerAccessor) client.mouseHandler).invokeOnButton(client.getWindow().handle(), new MouseButtonInfo(key.getValue(), 0), action);
 		}
 	}
@@ -341,9 +345,10 @@ public final class TestInputImpl implements TestInput {
 	public void setCursorPos(double x, double y) {
 		ThreadingImpl.checkOnGametestThread("setCursorPos");
 
-		context.runOnClient(client -> ((MouseHandlerAccessor) client.mouseHandler).invokeOnMove(
-				client.getWindow().handle(), x, y, x - client.mouseHandler.xpos(), y - client.mouseHandler.ypos()
-		));
+		context.runOnClient(client -> {
+			MouseHandlerAccessor mouseHandler = (MouseHandlerAccessor) client.mouseHandler;
+			mouseHandler.invokeOnMove(client.getWindow().handle(), x, y, x - mouseHandler.getXpos(), y - mouseHandler.getYpos());
+		});
 	}
 
 	@Override
@@ -351,9 +356,10 @@ public final class TestInputImpl implements TestInput {
 		ThreadingImpl.checkOnGametestThread("moveCursor");
 
 		context.runOnClient(client -> {
-			double newX = client.mouseHandler.xpos() + deltaX;
-			double newY = client.mouseHandler.ypos() + deltaY;
-			((MouseHandlerAccessor) client.mouseHandler).invokeOnMove(client.getWindow().handle(), newX, newY, deltaX, deltaY);
+			MouseHandlerAccessor mouseHandler = (MouseHandlerAccessor) client.mouseHandler;
+			double newX = mouseHandler.getXpos() + deltaX;
+			double newY = mouseHandler.getYpos() + deltaY;
+			mouseHandler.invokeOnMove(client.getWindow().handle(), newX, newY, deltaX, deltaY);
 		});
 	}
 

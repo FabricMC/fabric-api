@@ -49,7 +49,6 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	public void extractRenderState(GuiGraphicsExtractor guiGraphics) {
 		extractBackground(guiGraphics);
 		super.extractRenderState(guiGraphics);
-		extractTooltip(guiGraphics);
 	}
 
 	@Override

@@ -38,8 +38,8 @@ abstract class ClientLevelMixin extends Level {
 	@Final
 	private ClientPacketListener connection;
 
-	protected ClientLevelMixin(WritableLevelData levelData, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimensionTypeRegistration, boolean isClientSide, boolean isDebug, int maxChainedNeighborUpdates) {
-		super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, isDebug, maxChainedNeighborUpdates);
+	protected ClientLevelMixin(WritableLevelData levelData, ResourceKey<Level> dimension, RegistryAccess registryAccess, Holder<DimensionType> dimensionTypeRegistration, boolean isClientSide, int maxChainedNeighborUpdates) {
+		super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, maxChainedNeighborUpdates);
 	}
 
 	@Override
