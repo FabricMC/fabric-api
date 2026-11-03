@@ -48,20 +48,20 @@ public class BlockGameTest {
 	}
 
 	@GameTest(maxTicks = 40)
-	public void flowingTestFluidCreatesIceAboveBlueIce(GameTestHelper helper) {
+	public void flowingTestFluidCreatesIceAbovePackedIce(GameTestHelper helper) {
 		BlockPos center = BlockPos.ZERO.above();
-		setupFluidFlowBox(helper, center, BlockTest.TEST_FLUID_BLOCK, Blocks.BLUE_ICE);
+		setupFluidFlowBox(helper, center, BlockTest.TEST_FLUID_BLOCK, Blocks.PACKED_ICE);
 		assertFluidFlowInteraction(helper, 20, center, Blocks.ICE);
 	}
 
 	@GameTest(maxTicks = 60)
-	public void flowingTestFluidCreatesIceAfterFlowAboveBlueIce(GameTestHelper helper) {
+	public void flowingTestFluidCreatesIceAfterFlowAbovePackedIce(GameTestHelper helper) {
 		BlockPos center = BlockPos.ZERO.above();
 		setupFluidFlowBox(helper, center, BlockTest.TEST_FLUID_BLOCK, Blocks.GRASS_BLOCK);
 
 		helper.runAfterDelay(20, () -> {
 			for (Direction d : Direction.Plane.HORIZONTAL) {
-				helper.setBlock(center.relative(d), Blocks.BLUE_ICE);
+				helper.setBlock(center.relative(d), Blocks.PACKED_ICE);
 			}
 		});
 
@@ -137,7 +137,7 @@ public class BlockGameTest {
 	public void flowingTestFluidReplacesWaterWithBlackStone(GameTestHelper helper) {
 		// Specifically checks that inject into LavaFluid#spreadTo works, as TestFluid extends LavaFluid
 		BlockPos center = BlockPos.ZERO.above();
-		setupFluidFlowBox(helper, center, ((LiquidBlock) BlockTest.TEST_FLUID_BLOCK), Blocks.WATER);
+		setupFluidFlowBox(helper, center, BlockTest.TEST_FLUID_BLOCK, Blocks.WATER);
 		assertFluidFlowInteraction(helper, 40, center.below(), Blocks.BLACKSTONE);
 	}
 
@@ -188,5 +188,17 @@ public class BlockGameTest {
 		}
 
 		assertFluidFlowInteraction(helper, 100, center, Blocks.BASALT);
+	}
+
+	@GameTest(maxTicks = 120)
+	public void flowingWaterNextToBlueIceCreatesBrittleIce(GameTestHelper helper) {
+		BlockPos center = BlockPos.ZERO.above();
+		setupFluidFlowBox(helper, center, ((LiquidBlock) Blocks.WATER), Blocks.GRASS_BLOCK);
+
+		for (Direction d : Direction.Plane.HORIZONTAL) {
+			helper.setBlock(center.above().relative(d, 2), Blocks.BLUE_ICE);
+		}
+
+		assertFluidFlowInteraction(helper, 100, center, Blocks.BRITTLE_ICE);
 	}
 }
