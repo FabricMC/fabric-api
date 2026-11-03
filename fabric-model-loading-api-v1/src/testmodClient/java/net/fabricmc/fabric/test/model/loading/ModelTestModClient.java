@@ -20,14 +20,17 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.SingleVariant;
 import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.client.resources.model.cuboid.MissingCuboidModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.RandomSource;
@@ -55,6 +58,7 @@ public class ModelTestModClient implements ClientModInitializer {
 	public static final Identifier WHEAT_STAGE0_MODEL_ID = Identifier.withDefaultNamespace("block/wheat_stage0");
 	public static final Identifier WHEAT_STAGE7_MODEL_ID = Identifier.withDefaultNamespace("block/wheat_stage7");
 	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.withDefaultNamespace("block/brown_glazed_terracotta");
+	public static final Identifier NEW_EMERALD_MODEL_ID = id("item/emerald");
 
 	@Override
 	public void onInitializeClient() {
@@ -112,6 +116,16 @@ public class ModelTestModClient implements ClientModInitializer {
 			pluginContext.modifyBlockModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
 				if (context.state() == goldBlock) {
 					return new DownQuadRemovingModel(model);
+				}
+
+				return model;
+			});
+
+			// Make bone meal use a new unreferenced model
+			Identifier boneMeal = ItemIds.BONE_MEAL.identifier();
+			pluginContext.modifyItemModelOnLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
+				if (context.itemId().equals(boneMeal)) {
+					return new ClientItem(ItemModelUtils.plainModel(NEW_EMERALD_MODEL_ID), model.properties(), model.registrySwapper());
 				}
 
 				return model;
