@@ -123,6 +123,21 @@ public class ConditionalResourcesTest {
 	}
 
 	@GameTest
+	public void registryContainsDuringWorldLoading(GameTestHelper helper) {
+		Registry<BannerPattern> registry = helper.getLevel().registryAccess().lookupOrThrow(Registries.BANNER_PATTERN);
+
+		if (registry.getValue(id("missing_biome")) != null) {
+			throw new AssertionError("Banner pattern requiring a missing optional biome should not have been loaded.");
+		}
+
+		if (registry.getValue(id("existing_biome")) == null) {
+			throw new AssertionError("Banner pattern requiring the plains biome should have been loaded.");
+		}
+
+		helper.succeed();
+	}
+
+	@GameTest
 	public void conditionalOverlays(GameTestHelper helper) {
 		HolderGetter.Provider registries = helper.getLevel().getServer().reloadableRegistries().lookup();
 
