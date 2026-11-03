@@ -33,13 +33,21 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -53,6 +61,8 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Marker;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BellBlockEntity;
@@ -80,6 +90,10 @@ public class CommonAttachmentTests {
 	private static final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
 			Identifier.fromNamespaceAndPath(MOD_ID, "persistent"),
 			Codec.INT
+	);
+	private static final AttachmentType<Holder<Item>> REGISTRY_DEPENDENT = AttachmentRegistry.createPersistent(
+			Identifier.fromNamespaceAndPath(MOD_ID, "registry_dependent"),
+			RegistryCodecs.holder(Registries.ITEM)
 	);
 	private static final AttachmentType<Integer> SYNCED = AttachmentRegistry.create(
 			Identifier.fromNamespaceAndPath(MOD_ID, "synced"),
@@ -283,10 +297,11 @@ public class CommonAttachmentTests {
 	@Test
 	void testLevelSavedData() {
 		// Trying to simulate actual saving and loading for the world is too hard
-		RegistryAccess ra = mockRA();
+		RegistryAccess ra = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 
 		ServerLevel level = mockAndDisableSync(ServerLevel.class);
 		when(level.registryAccess()).thenReturn(ra);
+		when(level.dimension()).thenReturn(Level.OVERWORLD);
 
 		AttachmentSavedData state = new AttachmentSavedData(level);
 		assertFalse(level.hasAttached(PERSISTENT));
@@ -294,21 +309,26 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		level.setAttached(PERSISTENT, expected);
+		level.setAttached(REGISTRY_DEPENDENT, Items.DIAMOND.builtInRegistryHolder());
 		assertTrue(state.isDirty());
 		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(level).encodeStart(RegistryOps.create(NbtOps.INSTANCE, ra), state).getOrThrow();
-		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
+		CompoundTag attachments = fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow();
+		assertEquals(expected, attachments.getInt(PERSISTENT.identifier().toString()).orElseThrow());
+		assertEquals("minecraft:diamond", attachments.getString(REGISTRY_DEPENDENT.identifier().toString()).orElseThrow());
 
 		level = mockAndDisableSync(ServerLevel.class);
 		when(level.registryAccess()).thenReturn(ra);
+		when(level.dimension()).thenReturn(Level.OVERWORLD);
 
 		AttachmentSavedData.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
 		assertTrue(level.hasAttached(PERSISTENT));
 		assertEquals(expected, level.getAttached(PERSISTENT));
+		assertEquals(Items.DIAMOND.builtInRegistryHolder(), level.getAttached(REGISTRY_DEPENDENT));
 	}
 
 	@Test
 	void testGlobalSavedData() {
-		RegistryAccess.Frozen ra = mockFrozenRA();
+		RegistryAccess.Frozen ra = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).freeze();
 
 		MinecraftServer server = mock(MinecraftServer.class);
 		GlobalAttachmentsImpl globalAttachments = new GlobalAttachmentsImpl(server);
@@ -321,9 +341,12 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		globalAttachments.setAttached(PERSISTENT, expected);
+		globalAttachments.setAttached(REGISTRY_DEPENDENT, Items.DIAMOND.builtInRegistryHolder());
 		assertTrue(state.isDirty());
 		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(server).encodeStart(RegistryOps.create(NbtOps.INSTANCE, ra), state).getOrThrow();
-		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
+		CompoundTag attachments = fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow();
+		assertEquals(expected, attachments.getInt(PERSISTENT.identifier().toString()).orElseThrow());
+		assertEquals("minecraft:diamond", attachments.getString(REGISTRY_DEPENDENT.identifier().toString()).orElseThrow());
 
 		server = mock(MinecraftServer.class);
 		globalAttachments = new GlobalAttachmentsImpl(server);
@@ -333,6 +356,51 @@ public class CommonAttachmentTests {
 		AttachmentSavedData.codec(server).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
 		assertTrue(globalAttachments.hasAttached(PERSISTENT));
 		assertEquals(expected, globalAttachments.getAttached(PERSISTENT));
+		assertEquals(Items.DIAMOND.builtInRegistryHolder(), globalAttachments.getAttached(REGISTRY_DEPENDENT));
+	}
+
+	@Test
+	void testSavedDataCodec() {
+		RegistryAccess registries = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+		RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, registries);
+		ServerLevel source = mockAndDisableSync(ServerLevel.class);
+		when(source.registryAccess()).thenReturn(registries);
+		source.setAttached(REGISTRY_DEPENDENT, Items.DIAMOND.builtInRegistryHolder());
+
+		ServerLevel target = mockAndDisableSync(ServerLevel.class);
+		when(target.registryAccess()).thenReturn(registries);
+		Codec<AttachmentSavedData> codec = AttachmentSavedData.codec(target);
+		assertFalse(codec.parse(ops, new JsonObject()).getOrThrow().isDirty());
+		JsonObject prefix = new JsonObject();
+		prefix.addProperty("other_data", 42);
+
+		JsonObject saved = codec.encode(new AttachmentSavedData(source), ops, prefix).getOrThrow().getAsJsonObject();
+		assertEquals(42, saved.get("other_data").getAsInt());
+		JsonObject attachments = saved.getAsJsonObject(AttachmentTarget.NBT_ATTACHMENT_KEY);
+		assertEquals("minecraft:diamond", attachments.get(REGISTRY_DEPENDENT.identifier().toString()).getAsString());
+
+		codec.parse(ops, saved).getOrThrow();
+		assertEquals(Items.DIAMOND.builtInRegistryHolder(), target.getAttached(REGISTRY_DEPENDENT));
+		assertTrue(codec.parse(ops, new JsonPrimitive(1)).error().isPresent());
+	}
+
+	@Test
+	void testSavedDataSkipsInvalidAttachments() {
+		RegistryAccess registries = mockRA();
+		ServerLevel level = mockAndDisableSync(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(registries);
+		CompoundTag attachments = new CompoundTag();
+		attachments.putInt(PERSISTENT.identifier().toString(), 7);
+		attachments.putString(WHEEL.identifier().toString(), "invalid");
+		attachments.putInt("example:unknown_attachment", 123);
+		CompoundTag saved = new CompoundTag();
+		saved.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachments);
+
+		AttachmentSavedData state = AttachmentSavedData.codec(level).parse(NbtOps.INSTANCE, saved).getOrThrow();
+
+		assertTrue(state.isDirty());
+		assertEquals(7, level.getAttached(PERSISTENT));
+		assertFalse(level.hasAttached(WHEEL));
 	}
 
 	@Test
@@ -361,12 +429,6 @@ public class CommonAttachmentTests {
 
 	static RegistryAccess mockRA() {
 		RegistryAccess ra = mock(RegistryAccess.class);
-		when(ra.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, ra));
-		return ra;
-	}
-
-	private static RegistryAccess.Frozen mockFrozenRA() {
-		RegistryAccess.Frozen ra = mock(RegistryAccess.Frozen.class);
 		when(ra.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, ra));
 		return ra;
 	}
