@@ -26,6 +26,14 @@
       "environment": "client"
     }
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.gamerule.sync.GameRuleSyncImpl"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.gamerule.client.sync.GameRuleSyncClientImpl"
+    ]
+  },
   "accessWidener" : "fabric-game-rule-api-v1.classtweaker",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
