@@ -34,6 +34,7 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public final class NetworkingLoginQueryTest implements ModInitializer {
 	private static final boolean useLoginDelayTest = System.getProperty("fabric-networking-api-v1.loginDelayTest") != null;
+	private static final boolean failLoginFutureTest = Boolean.getBoolean("fabric-networking-api-v1.loginFutureTest.fail");
 
 	public static final Identifier GLOBAL_TEST_CHANNEL = NetworkingTestmods.id("global_test_channel");
 	public static final Identifier LOCAL_TEST_CHANNEL = NetworkingTestmods.id("local_test_channel");
@@ -42,6 +43,10 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 	public void onInitialize() {
 		ServerLoginConnectionEvents.QUERY_START.register(this::onLoginStart);
 		ServerLoginConnectionEvents.QUERY_START.register(this::delaySimply);
+
+		if (failLoginFutureTest) {
+			ServerLoginConnectionEvents.QUERY_START.register(this::testFailedLoginFutures);
+		}
 
 		// login delaying example
 		ServerLoginNetworking.registerGlobalReceiver(GLOBAL_TEST_CHANNEL, (server, listener, understood, buf, synchronizer, sender) -> {
@@ -93,6 +98,11 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 				}
 			}));
 		}
+	}
+
+	private void testFailedLoginFutures(ServerLoginPacketListenerImpl listener, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
+		synchronizer.waitFor(CompletableFuture.failedFuture(new IllegalStateException("First login future failure test")));
+		synchronizer.waitFor(CompletableFuture.failedFuture(new IllegalStateException("Second login future failure test")));
 	}
 
 	private void onLoginStart(ServerLoginPacketListenerImpl packetListener, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
