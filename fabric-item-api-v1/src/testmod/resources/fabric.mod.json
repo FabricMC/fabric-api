@@ -28,6 +28,7 @@
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.item.gametest.BrewingStandGameTest",
       "net.fabricmc.fabric.test.item.gametest.CustomBlockTransformsGameTest",
+      "net.fabricmc.fabric.test.item.gametest.CustomDamageGameTest",
       "net.fabricmc.fabric.test.item.gametest.CustomEnchantmentEffectsGameTest",
       "net.fabricmc.fabric.test.item.gametest.DefaultItemComponentGameTest",
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest",

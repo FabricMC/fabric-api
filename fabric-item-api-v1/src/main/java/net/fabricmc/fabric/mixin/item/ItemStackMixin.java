@@ -64,7 +64,7 @@ abstract class ItemStackMixin implements FabricItemStack {
 	public abstract void shrink(int i);
 
 	@WrapOperation(method = "hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V"))
-	private void hookDamage(ItemStack instance, int amount, ServerLevel serverLevel, ServerPlayer serverPlayer, Consumer<Item> consumer, Operation<Void> original, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot) {
+	private void hookDamage(ItemStack instance, int amount, ServerLevel serverLevel, ServerPlayer serverPlayer, Consumer<ItemStack> consumer, Operation<Void> original, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot) {
 		CustomDamageHandler handler = ((ItemExtensions) getItem()).fabric_getCustomDamageHandler();
 
 		/*
@@ -80,8 +80,9 @@ abstract class ItemStackMixin implements FabricItemStack {
 			MutableBoolean mut = new MutableBoolean(false);
 			amount = handler.hurtAndBreak((ItemStack) (Object) this, amount, entity, slot, () -> {
 				mut.setTrue();
+				ItemStack brokenStack = instance.copy();
 				this.shrink(1);
-				consumer.accept(this.getItem());
+				consumer.accept(brokenStack);
 			});
 
 			// If item is broken, there's no reason to call the original.
