@@ -29,10 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
@@ -43,6 +46,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class ResourceConditionsImpl implements ModInitializer {
+	public static final ScopedValue<ResourceManager> CURRENT_RESOURCE_MANAGER = ScopedValue.newInstance();
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
 	public static FeatureFlagSet currentFeatures = null;
 	public static Exception DISABLED_RESOURCE_EXCEPTION = new Exception("Disabled resource");
@@ -162,7 +166,17 @@ public final class ResourceConditionsImpl implements ModInitializer {
 			HolderGetter<Object> lookup = optionalInfo.get();
 
 			for (Identifier id : entries) {
-				if (lookup.get(ResourceKey.create(registryKey, id)).isEmpty()) {
+				boolean contains;
+
+				if (CURRENT_RESOURCE_MANAGER.isBound() && !(lookup instanceof HolderLookup<?>)) {
+					// Loading getters create forward references even for missing entries. Check files instead.
+					Identifier resourceId = FileToIdConverter.registry(registryKey).idToFile(id);
+					contains = CURRENT_RESOURCE_MANAGER.get().getResource(resourceId).isPresent();
+				} else {
+					contains = lookup.get(ResourceKey.create(registryKey, id)).isPresent();
+				}
+
+				if (!contains) {
 					return false;
 				}
 			}
