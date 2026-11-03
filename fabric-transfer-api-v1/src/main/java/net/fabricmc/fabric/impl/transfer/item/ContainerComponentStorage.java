@@ -105,7 +105,7 @@ public class ContainerComponentStorage extends CombinedSlottedStorage<ItemVarian
 			ItemStack currentStack = getStack();
 
 			if ((insertedVariant.matches(currentStack) || currentStack.isEmpty()) && insertedVariant.getItem().canBeNested()) {
-				int insertedAmount = (int) Math.min(maxAmount, getCapacity() - currentStack.getCount());
+				int insertedAmount = (int) Math.min(maxAmount, ItemVariantImpl.getMaxStackSize(insertedVariant) - currentStack.getCount());
 
 				if (insertedAmount > 0) {
 					currentStack = getStack().copy();
