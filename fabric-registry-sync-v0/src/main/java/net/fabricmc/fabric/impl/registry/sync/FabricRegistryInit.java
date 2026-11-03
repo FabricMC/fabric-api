@@ -20,6 +20,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -38,6 +39,10 @@ public class FabricRegistryInit implements ModInitializer {
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
 		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, context) -> {
 			context.packetListener().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
+		});
+
+		ServerLifecycleEvents.AFTER_SAVE.register((server, flush, force) -> {
+			ModListSaver.save(server);
 		});
 
 		// Synced in ClientboundSoundPacket.
