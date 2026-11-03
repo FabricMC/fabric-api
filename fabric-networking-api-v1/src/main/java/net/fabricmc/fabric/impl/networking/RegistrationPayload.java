@@ -62,6 +62,7 @@ public record RegistrationPayload(Type<RegistrationPayload> type, List<Identifie
 
 		List<Identifier> ids = new ArrayList<>();
 		StringBuilder active = new StringBuilder();
+		int channelCount = 0;
 
 		while (buf.isReadable()) {
 			byte b = buf.readByte();
@@ -73,9 +74,19 @@ public record RegistrationPayload(Type<RegistrationPayload> type, List<Identifie
 
 				active.append(AsciiString.b2c(b));
 			} else {
+				channelCount++;
+
+				if (channelCount > AbstractChanneledNetworkAddon.MAX_CHANNELS) {
+					throw new DecoderException("Too many channel identifiers");
+				}
+
 				addId(ids, active.toString());
 				active.setLength(0);
 			}
+		}
+
+		if (!active.isEmpty() && channelCount >= AbstractChanneledNetworkAddon.MAX_CHANNELS) {
+			throw new DecoderException("Too many channel identifiers");
 		}
 
 		addId(ids, active.toString());
@@ -92,10 +103,6 @@ public record RegistrationPayload(Type<RegistrationPayload> type, List<Identifie
 
 		if (id == null) {
 			return;
-		}
-
-		if (ids.size() >= AbstractChanneledNetworkAddon.MAX_CHANNELS) {
-			throw new DecoderException("Too many channel identifiers");
 		}
 
 		if (id.toString().length() > AbstractChanneledNetworkAddon.MAX_CHANNEL_NAME_LENGTH) {

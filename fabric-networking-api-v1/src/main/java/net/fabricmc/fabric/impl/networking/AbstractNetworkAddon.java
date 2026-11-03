@@ -157,8 +157,11 @@ public abstract class AbstractNetworkAddon<H> {
 
 	public final void handleDisconnect() {
 		if (disconnected.compareAndSet(false, true)) {
-			invokeDisconnectEvent();
-			endSession();
+			try {
+				invokeDisconnectEvent();
+			} finally {
+				endSession();
+			}
 		}
 	}
 

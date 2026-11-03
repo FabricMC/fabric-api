@@ -167,6 +167,7 @@ public final class ServerLoginNetworking {
 	public interface LoginSynchronizer {
 		/**
 		 * Allows blocking client log-in until the {@code future} is {@link Future#isDone() done}.
+		 * If the future fails or is cancelled, the client is disconnected.
 		 *
 		 * <p>Since packet reception happens on netty's event loops, this allows handlers to
 		 * perform logic on the Server Thread, etc. For instance, a handler can prepare an
