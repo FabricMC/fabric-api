@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -67,7 +66,7 @@ public class ItemContainerContentsStorageTests extends AbstractTransferApiTest {
 
 	private record DisplayWrapper(@Nullable ItemContainerContents contents) {
 		@Override
-		public @NonNull String toString() {
+		public String toString() {
 			return contents == null ? "null" : contents.itemCopies().toList().toString();
 		}
 	}
