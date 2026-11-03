@@ -16,7 +16,13 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import java.util.Optional;
+
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.renderpearl.api.commands.CommandEncoder;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.BlockModelResolver;
@@ -47,6 +53,8 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 	private static final RenderStateDataKey<Boolean> DIAMOND_BLOCK_OUTLINE = RenderStateDataKey.create(() -> "fabric api test mod block outline diamond block");
 	@Nullable
 	private static BlockModelResolver blockModelResolver = null;
+	private static int mainPassStage = 0;
+	private static int completedMainPasses = 0;
 
 	private static void extractBlockOutline(LevelExtractionContext context, HitResult hitResult) {
 		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.level().getBlockState(blockHitResult.getBlockPos()).is(Blocks.DIAMOND_BLOCK)) {
@@ -94,6 +102,36 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		context.poseStack().popPose();
 	}
 
+	/**
+	 * Opens and closes an empty render pass on the main render target, like a mod that needs its own render pass would.
+	 * It draws nothing, but shows up under its label in a graphics debugger such as RenderDoc.
+	 */
+	private static void openEmptyRenderPass(AbstractLevelRenderContext context, String label) {
+		RenderTarget mainTarget = context.gameRenderer().mainRenderTarget();
+		CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
+
+		try (RenderPass renderPass = encoder.createRenderPass(() -> label, mainTarget.getColorTextureView(), Optional.empty())) {
+			renderPass.pushDebugGroup(() -> label);
+			renderPass.popDebugGroup();
+		}
+	}
+
+	/**
+	 * Checks that the main pass events are called in the order
+	 * {@code BEFORE_RENDER_PASS}, {@code START_MAIN}, {@code AFTER_RENDER_PASS}, {@code END_MAIN}, once each per frame.
+	 */
+	private static void advanceMainPassStage(int expectedStage, String event) {
+		if (mainPassStage != expectedStage) {
+			throw new AssertionError(event + " was called out of order: expected stage " + expectedStage + ", but was at stage " + mainPassStage);
+		}
+
+		mainPassStage = (mainPassStage + 1) % 4;
+
+		if (mainPassStage == 0) {
+			completedMainPasses++;
+		}
+	}
+
 	@Override
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
@@ -102,12 +140,16 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register(LevelRenderEventsTests::beforeBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::renderBeforeTranslucent);
+		// Opens a render pass of its own right before and right after the main render pass.
+		LevelRenderEvents.BEFORE_RENDER_PASS.register(context -> openEmptyRenderPass(context, "Fabric API test: before main render pass"));
+		LevelRenderEvents.AFTER_RENDER_PASS.register(context -> openEmptyRenderPass(context, "Fabric API test: after main render pass"));
 	}
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		LevelExtractionEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
 		LevelExtractionEvents.END_EXTRACTION.register(LevelRenderEventsTests::assertExtractionContext);
+		LevelRenderEvents.BEFORE_RENDER_PASS.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.START_MAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.COLLECT_SUBMITS.register(LevelRenderEventsTests::assertRenderContext);
@@ -117,6 +159,11 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
 		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
 		LevelRenderEvents.END_MAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
+		LevelRenderEvents.AFTER_RENDER_PASS.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
+		LevelRenderEvents.BEFORE_RENDER_PASS.register(renderContext -> advanceMainPassStage(0, "BEFORE_RENDER_PASS"));
+		LevelRenderEvents.START_MAIN.register(renderContext -> advanceMainPassStage(1, "START_MAIN"));
+		LevelRenderEvents.AFTER_RENDER_PASS.register(renderContext -> advanceMainPassStage(2, "AFTER_RENDER_PASS"));
+		LevelRenderEvents.END_MAIN.register(renderContext -> advanceMainPassStage(3, "END_MAIN"));
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
@@ -126,6 +173,10 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 			singleplayer.getConnection().waitForChunksRender();
 			context.waitTicks(10);
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("level_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
+
+			if (context.computeOnClient(_ -> completedMainPasses) == 0) {
+				throw new AssertionError("No frame called BEFORE_RENDER_PASS, START_MAIN, AFTER_RENDER_PASS and END_MAIN");
+			}
 		}
 	}
 
