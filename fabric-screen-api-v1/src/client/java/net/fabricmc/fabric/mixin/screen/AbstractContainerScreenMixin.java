@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.inventory.SlotGroup;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -44,14 +45,14 @@ abstract class AbstractContainerScreenMixin extends Screen {
 
 	@Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
 	private void callSuperMouseReleased(MouseButtonEvent ctx, CallbackInfoReturnable<Boolean> cir) {
-		if (super.mouseReleased(ctx)) {
+		if (!(getFocused() instanceof SlotGroup) && super.mouseReleased(ctx)) {
 			cir.setReturnValue(true);
 		}
 	}
 
 	@Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
-	private void callSuperMouseReleased(MouseButtonEvent ctx, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
-		if (super.mouseDragged(ctx, deltaX, deltaY)) {
+	private void callSuperMouseDragged(MouseButtonEvent ctx, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
+		if (!(getFocused() instanceof SlotGroup) && super.mouseDragged(ctx, deltaX, deltaY)) {
 			cir.setReturnValue(true);
 		}
 	}
