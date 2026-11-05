@@ -17,11 +17,11 @@
     "EntityRenderersMixin",
     "FeatureRenderDispatcherMixin",
     "GameRendererMixin",
-    "HudAccessor",
     "GuiGraphicsExtractorMixin",
-    "HudMixin",
     "GuiRendererDrawAccessor",
     "GuiRendererMixin",
+    "HudAccessor",
+    "HudMixin",
     "HumanoidArmorLayerMixin",
     "HumanoidMobRendererMixin",
     "LayerDefinitionsMixin",
@@ -66,5 +66,12 @@
   },
   "overwrites": {
     "requireAnnotations": true
+  },
+  "mixins": [
+    "RenderPipelineBuilderAccessor",
+    "RenderSystemMixin"
+  ],
+  "mixinextras": {
+    "minVersion": "0.5.4"
   }
 }
