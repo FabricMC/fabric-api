@@ -17,9 +17,15 @@
   ],
   "depends": {
     "fabricloader": ">=0.20.0",
+    "fabric-registry-sync-v0": "*",
     "minecraft": ">=1.16.2"
   },
   "description": "Hooks for adding biomes to the default world generator.",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.biome.modification.data.BiomeModifiersImpl"
+    ]
+  },
   "mixins": [
     "fabric-biome-api-v1.mixins.json"
   ],
