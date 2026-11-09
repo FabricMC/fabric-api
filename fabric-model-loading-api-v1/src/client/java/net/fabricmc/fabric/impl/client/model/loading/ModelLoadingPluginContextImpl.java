@@ -90,6 +90,17 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 
 		return model;
 	}, MODEL_MODIFIER_PHASES);
+	private final Event<ModelModifier.OnLoadItem> onLoadItemModifiers = EventFactory.createWithPhases(ModelModifier.OnLoadItem.class, modifiers -> (model, context) -> {
+		for (ModelModifier.OnLoadItem modifier : modifiers) {
+			try {
+				model = modifier.modifyModelOnLoad(model, context);
+			} catch (Exception exception) {
+				LOGGER.error("Failed to modify unbaked item model on load", exception);
+			}
+		}
+
+		return model;
+	}, MODEL_MODIFIER_PHASES);
 	private final Event<ModelModifier.BeforeBakeItem> beforeBakeItemModifiers = EventFactory.createWithPhases(ModelModifier.BeforeBakeItem.class, modifiers -> (model, context) -> {
 		for (ModelModifier.BeforeBakeItem modifier : modifiers) {
 			try {
@@ -157,6 +168,11 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	@Override
 	public Event<ModelModifier.AfterBakeBlock> modifyBlockModelAfterBake() {
 		return afterBakeBlockModifiers;
+	}
+
+	@Override
+	public Event<ModelModifier.OnLoadItem> modifyItemModelOnLoad() {
+		return onLoadItemModifiers;
 	}
 
 	@Override
