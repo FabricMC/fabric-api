@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,6 +23,7 @@ import com.mojang.renderpearl.api.commands.CommandEncoder;
 import com.mojang.renderpearl.api.commands.RenderPass;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.renderer.RenderPassLayouts;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
@@ -110,7 +109,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		RenderTarget mainTarget = context.gameRenderer().mainRenderTarget();
 		CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
 
-		try (RenderPass renderPass = encoder.createRenderPass(() -> label, mainTarget.getColorTextureView(), Optional.empty())) {
+		try (RenderPass renderPass = encoder.createRenderPass(() -> label, RenderPassLayouts.COLOR_ONLY, mainTarget.getColorTextureView())) {
 			renderPass.pushDebugGroup(() -> label);
 			renderPass.popDebugGroup();
 		}

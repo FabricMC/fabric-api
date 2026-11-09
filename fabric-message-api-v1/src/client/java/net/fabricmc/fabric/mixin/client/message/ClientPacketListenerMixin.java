@@ -65,6 +65,7 @@ abstract class ClientPacketListenerMixin {
 	private void fabric_clearTitles(ClientboundClearTitlesPacket packet, CallbackInfo ci) {
 		ClientReceiveMessageEvents.CLEAR_TITLES.invoker().onClearTitles(packet.shouldResetTimes());
 	}
+
 	@Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
 	private void fabric_allowSendChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> content) {
 		if (ClientSendMessageEvents.ALLOW_CHAT.invoker().allowSendChatMessage(content.get())) {
