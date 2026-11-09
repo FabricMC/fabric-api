@@ -17,14 +17,20 @@
 package net.fabricmc.fabric.test.rendering.client.gui;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.mojang.blaze3d.ProjectionType;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
@@ -43,9 +49,13 @@ import net.fabricmc.fabric.test.rendering.client.mixin.GuiRendererAccessor;
  * This test mod renders two banners and two signs in the top left corner.
  */
 public class PictureInPictureRendererTest implements ClientModInitializer, FabricClientGameTest {
+	private static int rendererCreations;
 	@Override
 	public void onInitializeClient() {
-		PictureInPictureRendererRegistry.register(ctx -> new BannerGuiElementRenderer());
+		PictureInPictureRendererRegistry.register(ctx -> {
+			rendererCreations++;
+			return new BannerGuiElementRenderer();
+		});
 
 		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip"), (graphics, deltaTracker) -> {
 			// render it twice to test that PiPs can be added multiple times in the same frame
@@ -68,6 +78,41 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		context.runOnClient(client -> {
+			// A renderer constructed outside GameRenderer must also receive registered PiP renderers.
+			GuiRenderState state = new GuiRenderState();
+			state.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, null));
+			state.addPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, null));
+			GpuBufferSlice projection = RenderSystem.getProjectionMatrixBuffer();
+			ProjectionType projectionType = RenderSystem.getProjectionType();
+			GpuBufferSlice fog = RenderSystem.getShaderFog();
+
+			try {
+				int creationsBefore = rendererCreations;
+
+				try (GuiRenderer empty = new GuiRenderer(new GuiRenderState(), client.gameRenderer.featureRenderDispatcher(), List.of())) {
+					empty.render();
+				}
+
+				if (rendererCreations != creationsBefore) {
+					throw new AssertionError("Created unused PiP renderers in an empty secondary GuiRenderer");
+				}
+
+				try (GuiRenderer secondary = new GuiRenderer(state, client.gameRenderer.featureRenderDispatcher(), List.of())) {
+					secondary.render();
+
+					if (!((GuiRendererAccessor) secondary).getSpecialElementRenderers().containsKey(BannerGuiElementRenderState.class)) {
+						throw new AssertionError("Missing registered PiP renderer in secondary GuiRenderer");
+					}
+
+					if (rendererCreations != creationsBefore + 2) {
+						throw new AssertionError("Expected separate PiP renderers for two states in secondary GuiRenderer");
+					}
+				}
+			} finally {
+				RenderSystem.setProjectionMatrix(projection, projectionType);
+				RenderSystem.setShaderFog(fog);
+			}
+
 			GuiRenderer guiRenderer = ((GameRendererAccessor) client.gameRenderer).getGuiRenderer();
 			Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> specialElementRenderers = ((GuiRendererAccessor) guiRenderer).getSpecialElementRenderers();
 			Set<Class<? extends PictureInPictureRenderState>> missingRenderFactories = new HashSet<>(specialElementRenderers.keySet());
