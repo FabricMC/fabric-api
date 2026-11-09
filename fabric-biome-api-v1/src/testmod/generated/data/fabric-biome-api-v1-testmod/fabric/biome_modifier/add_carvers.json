@@ -1,0 +1,5 @@
+{
+  "type": "fabric:add_carvers",
+  "biomes": "fabric-biome-api-v1-testmod:example_biome",
+  "carvers": "minecraft:cave"
+}
