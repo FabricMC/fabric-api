@@ -3,8 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.permission",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "CommandBoxMixin",
     "CommandSourceStackMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "ParseContextMixin",
+    "ServerPlayerSuggestionContextMixin"
   ],
   "injectors": {
     "defaultRequire": 1

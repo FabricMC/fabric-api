@@ -22,7 +22,11 @@
   },
   "description": "General-use permission api",
   "mixins": [
-    "fabric-permission-api-v1.mixins.json"
+    "fabric-permission-api-v1.mixins.json",
+    {
+      "config": "fabric-permission-api-v1.client.mixins.json",
+      "environment": "client"
+    }
   ],
   "accessWidener": "fabric-permission-api-v1.classtweaker",
   "custom": {
