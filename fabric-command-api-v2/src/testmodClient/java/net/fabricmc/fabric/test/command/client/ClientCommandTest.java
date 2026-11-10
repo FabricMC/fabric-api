@@ -26,9 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.commands.suggestions.SuggestionContext;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 
@@ -86,7 +86,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 			// Command with argument using CommandBuildContext
 			dispatcher.register(ClientCommands.literal("test_client_command_with_registry_using_arg").then(
-					ClientCommands.argument("item", ItemArgument.item(buildContext)).executes(context -> {
+					ClientCommands.argument("item", ItemArgument.item()).executes(context -> {
 						final ItemInput item = ItemArgument.getItem(context, "item");
 						context.getSource().sendFeedback(item.createItemStack(1).getDisplayName());
 
@@ -164,7 +164,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			}
 
 			Minecraft client = Minecraft.getInstance();
-			ClientSuggestionProvider suggestionsProvider = client.getConnection().getSuggestionsProvider();
+			SuggestionContext suggestionsProvider = client.getConnection().getSuggestionsProvider();
 
 			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommands.getActiveDispatcher().getRoot();
 			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");

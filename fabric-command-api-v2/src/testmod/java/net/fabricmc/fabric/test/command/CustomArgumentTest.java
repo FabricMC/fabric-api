@@ -22,12 +22,12 @@ import static net.minecraft.commands.Commands.literal;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.test.command.argument.SmileyArgument;
 import net.fabricmc.fabric.test.command.argument.SmileyArgumentType;
@@ -37,7 +37,7 @@ public class CustomArgumentTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ArgumentTypeRegistry.registerArgumentType(Identifier.fromNamespaceAndPath("fabric-command-test", "smiley"), SmileyArgumentType.class, SingletonArgumentInfo.contextFree(SmileyArgumentType::smiley));
+		Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, Identifier.fromNamespaceAndPath("fabric-command-test", "smiley"), SmileyArgumentType.TYPE);
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
 			dispatcher.register(

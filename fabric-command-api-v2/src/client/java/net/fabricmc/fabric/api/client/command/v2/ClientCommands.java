@@ -98,7 +98,7 @@ public final class ClientCommands {
 			throw new IllegalStateException("Not connected to a server (dedicated or integrated)!");
 		}
 
-		ClientboundCommandsPacket lastReceivedCommandsPacket = ((ClientCommandInternals.LastReceivedCommandsPacketAccessor) packetListener).fabric_api$getLastReceivedCommandsPacket();
+		ClientboundCommandsPacket lastReceivedCommandsPacket = ((ClientCommandInternals.LastReceivedCommandsPacketAccessor) packetListener.commandSuggestions()).fabric_api$getLastReceivedCommandsPacket();
 
 		if (lastReceivedCommandsPacket == null) {
 			throw new IllegalStateException("Not yet received a 'minecraft:commands' packet!");

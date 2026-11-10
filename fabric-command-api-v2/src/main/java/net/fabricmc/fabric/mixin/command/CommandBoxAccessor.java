@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.command.client;
+package net.fabricmc.fabric.mixin.command;
 
-import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.CommandDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.commands.CommandBox;
+import net.minecraft.commands.ParseContext;
 
-@Mixin(ClientPacketListener.class)
-public interface ClientPacketListenerAccessor {
-	@Invoker
-	static boolean invokeIsValidCommand(final ParseResults<?> parseResults) {
-		throw new AssertionError();
-	}
+@Mixin(CommandBox.class)
+public interface CommandBoxAccessor<C extends ParseContext> {
+	@Accessor("dispatcher")
+	CommandDispatcher<C> fabric_getDispatcher();
 }

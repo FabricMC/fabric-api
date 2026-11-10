@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.suggestions.SuggestionContext;
 import net.minecraft.resources.Identifier;
 
 public class CommandSuggestionOrderTest {
@@ -36,7 +36,7 @@ public class CommandSuggestionOrderTest {
 		);
 		List<String> results = new ArrayList<>();
 
-		SharedSuggestionProvider.filterResources(identifiers, "di", Identifier::parse, results::add);
+		SuggestionContext.filterResources(identifiers, "di", Identifier::parse, results::add);
 
 		// Vanilla returns ["minecraft:dirt"]
 		assertEquals(List.of("minecraft:dirt", "modid:dirt"), results);
@@ -51,7 +51,7 @@ public class CommandSuggestionOrderTest {
 		);
 		List<String> results = new ArrayList<>();
 
-		SharedSuggestionProvider.filterResources(identifiers, "path", Identifier::parse, results::add);
+		SuggestionContext.filterResources(identifiers, "path", Identifier::parse, results::add);
 
 		// Vanilla returns []
 		assertEquals(List.of("modid:path"), results);

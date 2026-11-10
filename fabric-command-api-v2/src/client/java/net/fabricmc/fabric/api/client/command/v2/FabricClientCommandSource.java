@@ -21,16 +21,16 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.suggestions.SuggestionContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Extensions to {@link SharedSuggestionProvider} for client-sided commands.
+ * Extensions to {@link SuggestionContext} for client-sided commands.
  */
-public interface FabricClientCommandSource extends SharedSuggestionProvider {
+public interface FabricClientCommandSource extends SuggestionContext {
 	/**
 	 * Sends a feedback message to the player.
 	 *

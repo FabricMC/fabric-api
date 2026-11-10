@@ -28,17 +28,25 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.SerializableArgument;
+import net.minecraft.commands.suggestions.SuggestionContext;
 import net.minecraft.network.chat.Component;
 
-public class SmileyArgumentType implements ArgumentType<SmileyArgument> {
+public class SmileyArgumentType implements SerializableArgument.ContextFree<SmileyArgument> {
+	public static final SmileyArgumentType INSTANCE = new SmileyArgumentType();
+	public static final SerializableArgument.Type<SmileyArgumentType> TYPE = SerializableArgument.singletonType(INSTANCE);
 	private static final Collection<String> SMILEY_VALUES = Arrays.stream(SmileyArgument.values()).map(s -> s.smiley).toList();
 	public static final DynamicCommandExceptionType INVALID_COLOR_EXCEPTION = new DynamicCommandExceptionType(smiley -> {
 		return Component.literal("Invalid smiley: " + smiley); // use Component.translatable in your mod!
 	});
 
-	public static SmileyArgumentType smiley() {
-		return new SmileyArgumentType();
+	public static ArgumentType<SmileyArgument> smiley() {
+		return INSTANCE.toBrigadier();
+	}
+
+	@Override
+	public SerializableArgument.Type<SmileyArgumentType> type() {
+		return TYPE;
 	}
 
 	@Override
@@ -60,8 +68,8 @@ public class SmileyArgumentType implements ArgumentType<SmileyArgument> {
 	}
 
 	@Override
-	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return SharedSuggestionProvider.suggest(SMILEY_VALUES, builder);
+	public CompletableFuture<Suggestions> listSuggestions(CommandContext<? extends SuggestionContext> context, SuggestionsBuilder builder) {
+		return SuggestionContext.suggest(SMILEY_VALUES, builder);
 	}
 
 	@Override

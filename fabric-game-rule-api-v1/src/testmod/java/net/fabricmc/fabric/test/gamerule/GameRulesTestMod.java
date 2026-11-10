@@ -26,7 +26,7 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.suggestions.SuggestionContext;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.gamerules.GameRule;
@@ -37,6 +37,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
+import net.fabricmc.fabric.mixin.command.CommandBoxAccessor;
 
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameRulesTestMod.class);
@@ -82,16 +83,17 @@ public class GameRulesTestMod implements ModInitializer {
 
 		// Validate the EnumRule has registered its commands
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			RootCommandNode<CommandSourceStack> dispatcher = server.getCommands().getDispatcher().getRoot();
+			CommandBoxAccessor<SuggestionContext> accessor = (CommandBoxAccessor<SuggestionContext>) server.getCommands().suggestionBox();
+			RootCommandNode<SuggestionContext> dispatcher = accessor.fabric_getDispatcher().getRoot();
 			// Find the GameRule node
-			CommandNode<CommandSourceStack> gamerule = dispatcher.getChild("gamerule");
+			CommandNode<SuggestionContext> gamerule = dispatcher.getChild("gamerule");
 
 			if (gamerule == null) {
 				throw new AssertionError("Failed to find GameRule command node on server's command dispatcher");
 			}
 
 			// Find the literal corresponding to our enum rule, using cardinal directions here.
-			CommandNode<CommandSourceStack> cardinalDirection = gamerule.getChild("cardinal_direction");
+			CommandNode<SuggestionContext> cardinalDirection = gamerule.getChild("cardinal_direction");
 
 			if (cardinalDirection == null) {
 				throw new AssertionError("Failed to find \"cardinal_direction\" literal node corresponding a rule.");
@@ -102,7 +104,7 @@ public class GameRulesTestMod implements ModInitializer {
 				throw new AssertionError("Expected to find a query command on \"cardinal_direction\" command node, but it was not present");
 			}
 
-			Collection<CommandNode<CommandSourceStack>> children = cardinalDirection.getChildren();
+			Collection<CommandNode<SuggestionContext>> children = cardinalDirection.getChildren();
 
 			// There should only be 4 child nodes.
 			if (children.size() != 4) {
@@ -115,8 +117,8 @@ public class GameRulesTestMod implements ModInitializer {
 			});
 
 			// Verify we have all the correct nodes
-			for (CommandNode<CommandSourceStack> child : children) {
-				LiteralCommandNode<CommandSourceStack> node = (LiteralCommandNode<CommandSourceStack>) child;
+			for (CommandNode<SuggestionContext> child : children) {
+				LiteralCommandNode<SuggestionContext> node = (LiteralCommandNode<SuggestionContext>) child;
 				String name = node.getName();
 				switch (name) {
 				case "north":

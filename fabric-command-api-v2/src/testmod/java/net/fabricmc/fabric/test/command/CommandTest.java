@@ -22,7 +22,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
-import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +34,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.command.v2.EntitySelectorOptionRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.mixin.command.CommandBoxAccessor;
 
 public final class CommandTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandTest.class);
@@ -62,12 +62,13 @@ public final class CommandTest implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			// Verify the commands actually exist in the command dispatcher.
 			final boolean dedicated = server.isDedicatedServer();
-			final RootCommandNode<CommandSourceStack> rootNode = server.getCommands().getDispatcher().getRoot();
+			final CommandBoxAccessor<?> accessor = (CommandBoxAccessor<?>) server.getCommands().suggestionBox();
+			final CommandNode<?> rootNode = accessor.fabric_getDispatcher().getRoot();
 
 			// Now we climb the tree
-			final CommandNode<CommandSourceStack> fabricCommonTestCommand = rootNode.getChild("fabric_common_test_command");
-			final CommandNode<CommandSourceStack> fabricDedicatedTestCommand = rootNode.getChild("fabric_dedicated_test_command");
-			final CommandNode<CommandSourceStack> fabricIntegratedTestCommand = rootNode.getChild("fabric_integrated_test_command");
+			final CommandNode<?> fabricCommonTestCommand = rootNode.getChild("fabric_common_test_command");
+			final CommandNode<?> fabricDedicatedTestCommand = rootNode.getChild("fabric_dedicated_test_command");
+			final CommandNode<?> fabricIntegratedTestCommand = rootNode.getChild("fabric_integrated_test_command");
 
 			// Verify the common command exists
 			if (fabricCommonTestCommand == null) {
