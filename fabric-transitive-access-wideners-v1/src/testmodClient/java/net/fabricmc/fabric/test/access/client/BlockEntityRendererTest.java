@@ -17,8 +17,10 @@
 package net.fabricmc.fabric.test.access.client;
 
 import net.minecraft.client.core.registries.BuiltInClientRegistries;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
+import net.minecraft.core.WritableRegistry;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.test.access.SignBlockEntityTest;
@@ -26,6 +28,6 @@ import net.fabricmc.fabric.test.access.SignBlockEntityTest;
 public class BlockEntityRendererTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		BlockEntityRenderers.register(BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, SignBlockEntityTest.TEST_SIGN_BLOCK_ENTITY, StandingSignRenderer::new);
+		BlockEntityRenderers.register((WritableRegistry<BlockEntityRendererProvider<?, ?>>) BuiltInClientRegistries.BLOCK_ENTITY_RENDERER, SignBlockEntityTest.TEST_SIGN_BLOCK_ENTITY, StandingSignRenderer::new);
 	}
 }

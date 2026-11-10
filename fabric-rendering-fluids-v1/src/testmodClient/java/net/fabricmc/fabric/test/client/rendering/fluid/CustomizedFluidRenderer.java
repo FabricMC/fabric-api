@@ -16,14 +16,17 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.joml.Vector3f;
 
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -50,31 +53,57 @@ public class CustomizedFluidRenderer implements FluidRenderHandler {
 		float y2 = (pos.getY() & 15) + fluidState.getHeight(level, pos);
 		float z2 = (pos.getZ() & 15) + 0.9f;
 
-		VertexConsumer vertexConsumer = output.getBuilder(ChunkSectionLayer.SOLID);
+		BakedQuad quad0 = new BakedQuad(
+				new Vector3f(x1, y1, z1),
+				new Vector3f(x2, y1, z2),
+				new Vector3f(x2, y2, z2),
+				new Vector3f(x1, y2, z1),
+				UVPair.pack(u1, v1),
+				UVPair.pack(u2, v1),
+				UVPair.pack(u2, v2),
+				UVPair.pack(u1, v2),
+				Direction.UP, null
+		);
+		output.put(ChunkSectionLayer.SOLID, 0, 0, 0, quad0, -1, 255, light);
 
-		vertex(vertexConsumer, x1, y1, z1, 1, 1, 1, u1, v1, light);
-		vertex(vertexConsumer, x2, y1, z2, 1, 1, 1, u2, v1, light);
-		vertex(vertexConsumer, x2, y2, z2, 1, 1, 1, u2, v2, light);
-		vertex(vertexConsumer, x1, y2, z1, 1, 1, 1, u1, v2, light);
+		BakedQuad quad1 = new BakedQuad(
+				new Vector3f(x1, y2, z1),
+				new Vector3f(x2, y2, z2),
+				new Vector3f(x2, y1, z2),
+				new Vector3f(x1, y1, z1),
+				UVPair.pack(u1, v2),
+				UVPair.pack(u2, v2),
+				UVPair.pack(u2, v1),
+				UVPair.pack(u1, v1),
+				Direction.UP, null
+		);
+		output.put(ChunkSectionLayer.SOLID, 0, 0, 0, quad1, -1, 255, light);
 
-		vertex(vertexConsumer, x1, y2, z1, 1, 1, 1, u1, v2, light);
-		vertex(vertexConsumer, x2, y2, z2, 1, 1, 1, u2, v2, light);
-		vertex(vertexConsumer, x2, y1, z2, 1, 1, 1, u2, v1, light);
-		vertex(vertexConsumer, x1, y1, z1, 1, 1, 1, u1, v1, light);
+		BakedQuad quad2 = new BakedQuad(
+				new Vector3f(x1, y2, z2),
+				new Vector3f(x2, y2, z1),
+				new Vector3f(x2, y1, z1),
+				new Vector3f(x1, y1, z2),
+				UVPair.pack(u1, v2),
+				UVPair.pack(u2, v2),
+				UVPair.pack(u2, v1),
+				UVPair.pack(u1, v1),
+				Direction.UP, null
+		);
+		output.put(ChunkSectionLayer.SOLID, 0, 0, 0, quad2, -1, 255, light);
 
-		vertex(vertexConsumer, x1, y2, z2, 1, 1, 1, u1, v2, light);
-		vertex(vertexConsumer, x2, y2, z1, 1, 1, 1, u2, v2, light);
-		vertex(vertexConsumer, x2, y1, z1, 1, 1, 1, u2, v1, light);
-		vertex(vertexConsumer, x1, y1, z2, 1, 1, 1, u1, v1, light);
-
-		vertex(vertexConsumer, x1, y1, z2, 1, 1, 1, u1, v1, light);
-		vertex(vertexConsumer, x2, y1, z1, 1, 1, 1, u2, v1, light);
-		vertex(vertexConsumer, x2, y2, z1, 1, 1, 1, u2, v2, light);
-		vertex(vertexConsumer, x1, y2, z2, 1, 1, 1, u1, v2, light);
-	}
-
-	private void vertex(VertexConsumer vertexConsumer, float x, float y, float z, float red, float green, float blue, float u, float v, int light) {
-		vertexConsumer.addVertex(x, y, z).setColor(red, green, blue, 1.0F).setUv(u, v).setLight(light).setNormal(0.0F, 1.0F, 0.0F);
+		BakedQuad quad3 = new BakedQuad(
+				new Vector3f(x1, y1, z2),
+				new Vector3f(x2, y1, z1),
+				new Vector3f(x2, y2, z1),
+				new Vector3f(x1, y2, z2),
+				UVPair.pack(u1, v1),
+				UVPair.pack(u2, v1),
+				UVPair.pack(u2, v2),
+				UVPair.pack(u1, v2),
+				Direction.UP, null
+		);
+		output.put(ChunkSectionLayer.SOLID, 0, 0, 0, quad3, -1, 255, light);
 	}
 
 	private int getLight(BlockAndTintGetter level, BlockPos pos) {

@@ -22,7 +22,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.resources.RegistryOps;
+import net.minecraft.core.HolderGetter;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -40,7 +40,7 @@ public record OrResourceCondition(List<ResourceCondition> conditions) implements
 	}
 
 	@Override
-	public boolean test(RegistryOps.@Nullable RegistryInfoLookup registryInfo) {
+	public boolean test(HolderGetter.@Nullable Provider registryInfo) {
 		return ResourceConditionsImpl.conditionsMet(this.conditions(), registryInfo, false);
 	}
 }

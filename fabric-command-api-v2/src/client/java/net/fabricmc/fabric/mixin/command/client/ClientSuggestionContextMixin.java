@@ -24,15 +24,15 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.client.multiplayer.ClientSuggestionContext;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.impl.command.client.ClientSuggestionProviderExtensions;
 
-@Mixin(ClientSuggestionProvider.class)
-abstract class ClientSuggestionProviderMixin implements FabricClientCommandSource, ClientSuggestionProviderExtensions {
+@Mixin(ClientSuggestionContext.class)
+abstract class ClientSuggestionContextMixin implements FabricClientCommandSource, ClientSuggestionProviderExtensions {
 	@Shadow
 	@Final
 	private Minecraft minecraft;

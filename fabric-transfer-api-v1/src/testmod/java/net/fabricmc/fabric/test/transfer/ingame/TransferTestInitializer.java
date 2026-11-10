@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
-import com.mojang.brigadier.arguments.LongArgumentType;
-
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.LongArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -78,8 +77,8 @@ public class TransferTestInitializer implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(
 					Commands.literal("fabric_insertintoheldstack")
-							.then(Commands.argument("stack", ItemArgument.item(registryAccess))
-									.then(Commands.argument("count", LongArgumentType.longArg(1))
+							.then(Commands.argument("stack", ItemArgument.item())
+									.then(Commands.argument("count", LongArgument.longArg(1))
 											.executes(context -> {
 												ItemVariant variant = ItemVariant.of(ItemArgument.getItem(context, "stack")
 														.createItemStack(1));
@@ -97,7 +96,7 @@ public class TransferTestInitializer implements ModInitializer {
 												try (Transaction tx = Transaction.openOuter()) {
 													inserted = storage.insert(
 															variant,
-															LongArgumentType.getLong(context, "count"),
+															LongArgument.getLong(context, "count"),
 															tx
 													);
 													tx.commit();
@@ -111,8 +110,8 @@ public class TransferTestInitializer implements ModInitializer {
 
 			dispatcher.register(
 					Commands.literal("fabric_extractfromheldstack")
-							.then(Commands.argument("stack", ItemArgument.item(registryAccess))
-									.then(Commands.argument("count", LongArgumentType.longArg(1))
+							.then(Commands.argument("stack", ItemArgument.item())
+									.then(Commands.argument("count", LongArgument.longArg(1))
 											.executes(context -> {
 												ItemVariant variant = ItemVariant.of(ItemArgument.getItem(context, "stack")
 														.createItemStack(1));
@@ -130,7 +129,7 @@ public class TransferTestInitializer implements ModInitializer {
 												try (Transaction tx = Transaction.openOuter()) {
 													extracted = storage.extract(
 															variant,
-															LongArgumentType.getLong(context, "count"),
+															LongArgument.getLong(context, "count"),
 															tx
 													);
 													tx.commit();

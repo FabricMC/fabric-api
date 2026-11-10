@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.RegistryOps;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -78,7 +78,7 @@ public final class EnchantmentEvents {
 	 * <p>Note: If you wish to modify the exclusive set of the enchantment, consider extending the
 	 * {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
 	 *
-	 * @deprecated Use {@link #MODIFY_WITH_LOOKUP} instead, which provides registry access via {@link RegistryOps.RegistryInfoLookup}
+	 * @deprecated Use {@link #MODIFY_WITH_LOOKUP} instead, which provides registry access via {@link HolderGetter.Provider}
 	 */
 	@Deprecated
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
@@ -102,7 +102,7 @@ public final class EnchantmentEvents {
 	 * <p>Note: If you wish to modify the exclusive set of the enchantment, consider extending the
 	 * {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
 	 *
-	 * <p>This is the preferred replacement for {@link #MODIFY}, providing access to registry information via {@link RegistryOps.RegistryInfoLookup}.
+	 * <p>This is the preferred replacement for {@link #MODIFY}, providing access to registry information via {@link HolderGetter.Provider}.
 	 */
 	public static final Event<ModifyWithLookup> MODIFY_WITH_LOOKUP = EventFactory.createArrayBacked(
 			ModifyWithLookup.class,
@@ -181,7 +181,7 @@ public final class EnchantmentEvents {
 				ResourceKey<Enchantment> key,
 				Enchantment.Builder builder,
 				ResourceSource source,
-				RegistryOps.RegistryInfoLookup registryInfoLookup
+				HolderGetter.Provider registryInfoLookup
 		);
 
 		/**
@@ -199,7 +199,7 @@ public final class EnchantmentEvents {
 				ResourceKey<Enchantment> key,
 				Enchantment.Builder builder,
 				EnchantmentSource source,
-				RegistryOps.RegistryInfoLookup registryInfoLookup
+				HolderGetter.Provider registryInfoLookup
 		) {
 			this.modify(key, builder, source.toResourceSource(), registryInfoLookup);
 		}

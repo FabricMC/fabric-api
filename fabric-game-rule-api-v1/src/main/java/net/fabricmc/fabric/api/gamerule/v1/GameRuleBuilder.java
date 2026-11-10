@@ -19,10 +19,6 @@ package net.fabricmc.fabric.api.gamerule.v1;
 import java.util.Objects;
 import java.util.function.ToIntFunction;
 
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JavaOps;
@@ -31,6 +27,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.Optionull;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.commands.arguments.BooleanArgument;
+import net.minecraft.commands.arguments.DoubleArgument;
+import net.minecraft.commands.arguments.IntegerArgument;
+import net.minecraft.commands.arguments.SerializableArgument;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -66,8 +67,7 @@ public class GameRuleBuilder<T> {
 	@Nullable
 	protected FabricGameRuleType fabricType;
 
-	@Nullable
-	protected ArgumentType<T> argumentType;
+	protected SerializableArgument.@Nullable ContextFree<T> argumentType;
 
 	protected GameRules.VisitorCaller<T> acceptor;
 	protected Codec<T> codec;
@@ -109,7 +109,7 @@ public class GameRuleBuilder<T> {
 	 * @param argumentType the ArgumentType
 	 * @return the builder, for chaining
 	 */
-	public GameRuleBuilder<T> argumentType(ArgumentType<T> argumentType) {
+	public GameRuleBuilder<T> argumentType(SerializableArgument.ContextFree<T> argumentType) {
 		this.argumentType = argumentType;
 		return this;
 	}
@@ -177,7 +177,7 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 			this.type = GameRuleType.BOOL;
 			this.acceptor = GameRuleTypeVisitor::visitBoolean;
-			this.argumentType = BoolArgumentType.bool();
+			this.argumentType = BooleanArgument.INSTANCE;
 			this.codec = Codec.BOOL;
 			this.commandResultSupplier = bool -> bool ? 1 : 0;
 		}
@@ -195,7 +195,7 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public BooleanRuleBuilder argumentType(ArgumentType<Boolean> argumentType) {
+		public BooleanRuleBuilder argumentType(SerializableArgument.ContextFree<Boolean> argumentType) {
 			super.argumentType(argumentType);
 			return this;
 		}
@@ -225,7 +225,7 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 			this.type = GameRuleType.INT;
 			this.acceptor = GameRuleTypeVisitor::visitInteger;
-			this.argumentType = IntegerArgumentType.integer();
+			this.argumentType = new IntegerArgument(MinMaxBounds.Bounds.any());
 			this.codec = Codec.INT;
 			this.commandResultSupplier = integer -> integer;
 		}
@@ -243,7 +243,7 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public IntegerRuleBuilder argumentType(ArgumentType<Integer> argumentType) {
+		public IntegerRuleBuilder argumentType(SerializableArgument.ContextFree<Integer> argumentType) {
 			super.argumentType(argumentType);
 			return this;
 		}
@@ -271,7 +271,7 @@ public class GameRuleBuilder<T> {
 				throw new IllegalArgumentException("Default value is out-of-bounds: " + this.defaultValue);
 			}
 
-			return this.argumentType(IntegerArgumentType.integer(minValue, maxValue)).codec(Codec.intRange(minValue, maxValue));
+			return this.argumentType(new IntegerArgument(MinMaxBounds.Bounds.between(minValue, maxValue))).codec(Codec.intRange(minValue, maxValue));
 		}
 	}
 
@@ -280,7 +280,7 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 			this.fabricType = FabricGameRuleType.DOUBLE;
 			this.acceptor = GameRuleBuilder::visitDouble;
-			this.argumentType = DoubleArgumentType.doubleArg();
+			this.argumentType = new DoubleArgument(MinMaxBounds.Bounds.any());
 			this.codec = Codec.DOUBLE;
 			this.commandResultSupplier = value -> Double.compare(value, 0.0D);
 		}
@@ -298,7 +298,7 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public DoubleRuleBuilder argumentType(ArgumentType<Double> argumentType) {
+		public DoubleRuleBuilder argumentType(SerializableArgument.ContextFree<Double> argumentType) {
 			super.argumentType(argumentType);
 			return this;
 		}
@@ -326,7 +326,7 @@ public class GameRuleBuilder<T> {
 				throw new IllegalArgumentException("Default value is out-of-bounds: " + this.defaultValue);
 			}
 
-			return this.argumentType(DoubleArgumentType.doubleArg(minValue, maxValue)).codec(Codec.doubleRange(minValue, maxValue));
+			return this.argumentType(new DoubleArgument(MinMaxBounds.Bounds.between(minValue, maxValue))).codec(Codec.doubleRange(minValue, maxValue));
 		}
 	}
 
@@ -360,7 +360,7 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public EnumRuleBuilder<E> argumentType(ArgumentType<E> argumentType) {
+		public EnumRuleBuilder<E> argumentType(SerializableArgument.ContextFree<E> argumentType) {
 			super.argumentType(argumentType);
 			return this;
 		}

@@ -20,19 +20,19 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
 // Exact copy of LootTableHolderProvider
 public final class AdvancementHolderProvider implements HolderLookup.Provider {
-	private final RegistryOps.RegistryInfoLookup registryInfoLookup;
+	private final HolderGetter.Provider registryInfoLookup;
 	private final HolderLookup.Provider holderLookup;
 
-	public AdvancementHolderProvider(RegistryOps.RegistryInfoLookup registryInfoLookup, HolderLookup.Provider holderLookup) {
+	public AdvancementHolderProvider(HolderGetter.Provider registryInfoLookup, HolderLookup.Provider holderLookup) {
 		this.registryInfoLookup = registryInfoLookup;
 		this.holderLookup = holderLookup;
 	}

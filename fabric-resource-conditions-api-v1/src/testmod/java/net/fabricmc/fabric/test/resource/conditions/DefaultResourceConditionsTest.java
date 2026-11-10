@@ -23,7 +23,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
@@ -45,7 +44,7 @@ public class DefaultResourceConditionsTest {
 
 	private void expectCondition(GameTestHelper helper, String name, ResourceCondition condition, boolean expected) {
 		HolderLookup.Provider registryLookup = helper.getLevel().registryAccess();
-		boolean actual = condition.test(new RegistryOps.HolderLookupAdapter(registryLookup));
+		boolean actual = condition.test(registryLookup);
 
 		if (actual != expected) {
 			throw new AssertionError("Test \"%s\" for condition %s failed; expected %s, got %s".formatted(name, condition.getType().id(), expected, actual));

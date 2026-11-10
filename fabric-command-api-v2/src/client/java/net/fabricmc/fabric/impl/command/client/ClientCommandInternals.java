@@ -44,6 +44,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -51,8 +52,9 @@ import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.util.profiling.Profiler;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.mixin.command.CommandBoxAccessor;
 import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
-import net.fabricmc.fabric.mixin.command.client.ClientPacketListenerAccessor;
+import net.fabricmc.fabric.mixin.command.client.SuggestionBoxAccessor;
 
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
@@ -121,14 +123,14 @@ public final class ClientCommandInternals {
 	private static boolean requiresConfirmation(String command, FabricClientCommandSource source, FabricClientCommandSource restrictedSource) {
 		ParseResults<FabricClientCommandSource> parseResults = activeDispatcher.parse(command, source);
 
-		if (!ClientPacketListenerAccessor.invokeIsValidCommand(parseResults)) {
+		if (!SuggestionBoxAccessor.invokeIsValidCommand(parseResults)) {
 			// not a valid command, no need to confirm
 			return false;
 		}
 
 		parseResults = activeDispatcher.parse(command, restrictedSource);
 
-		if (!ClientPacketListenerAccessor.invokeIsValidCommand(parseResults)) {
+		if (!SuggestionBoxAccessor.invokeIsValidCommand(parseResults)) {
 			// We failed to parse the command with the restricted permissions, thus it means that the command requires user confirmation before being executed.
 			return true;
 		}
@@ -226,7 +228,11 @@ public final class ClientCommandInternals {
 		return commands.size();
 	}
 
-	public static void addCommands(CommandDispatcher<FabricClientCommandSource> target, FabricClientCommandSource source) {
+	@SuppressWarnings("unchecked")
+	public static void addCommands(ClientPacketListener listener) {
+		CommandBoxAccessor<FabricClientCommandSource> accessor = (CommandBoxAccessor<FabricClientCommandSource>) listener.commandSuggestions();
+		CommandDispatcher<FabricClientCommandSource> target = accessor.fabric_getDispatcher();
+		FabricClientCommandSource source = (FabricClientCommandSource) listener.getSuggestionsProvider();
 		Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> nodes = new HashMap<>();
 		nodes.put(activeDispatcher.getRoot(), target.getRoot());
 		copyChildren(activeDispatcher.getRoot(), target.getRoot(), source, nodes);

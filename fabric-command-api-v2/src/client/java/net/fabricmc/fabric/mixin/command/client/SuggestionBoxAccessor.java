@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.command;
+package net.fabricmc.fabric.mixin.command.client;
 
-import java.util.Map;
-
+import com.mojang.brigadier.ParseResults;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.commands.SuggestionBox;
 
-@Mixin(ArgumentTypeInfos.class)
-public interface ArgumentTypeInfosAccessor {
-	@Accessor("BY_CLASS")
-	static Map<Class<?>, ArgumentTypeInfo<?, ?>> fabric_getClassMap() {
-		throw new AssertionError("");
+@Mixin(SuggestionBox.class)
+public interface SuggestionBoxAccessor {
+	@Invoker
+	static boolean invokeIsValidCommand(final ParseResults<?> parseResults) {
+		throw new AssertionError();
 	}
 }

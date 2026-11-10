@@ -22,8 +22,8 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -38,13 +38,13 @@ public class EnchantmentUtil {
 
 	@Nullable
 	@Deprecated
-	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source, HolderGetter.Provider registryInfoLookup) {
 		return modify(key, originalEnchantment, source.toResourceSource(), registryInfoLookup);
 	}
 
 	@SuppressWarnings({"unchecked", "deprecation"})
 	@Nullable
-	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, ResourceSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, ResourceSource source, HolderGetter.Provider registryInfoLookup) {
 		Enchantment.Builder builder = Enchantment.enchantment(originalEnchantment.definition());
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 		BuilderExtensions builderExtensions = (BuilderExtensions) builder;

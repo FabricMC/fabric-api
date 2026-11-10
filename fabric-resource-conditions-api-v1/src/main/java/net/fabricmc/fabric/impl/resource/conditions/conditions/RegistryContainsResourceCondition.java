@@ -23,9 +23,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -56,7 +56,7 @@ public record RegistryContainsResourceCondition(Identifier registry, List<Identi
 	}
 
 	@Override
-	public boolean test(RegistryOps.@Nullable RegistryInfoLookup registryInfo) {
+	public boolean test(HolderGetter.@Nullable Provider registryInfo) {
 		return ResourceConditionsImpl.registryContains(registryInfo, this.registry(), this.entries());
 	}
 }

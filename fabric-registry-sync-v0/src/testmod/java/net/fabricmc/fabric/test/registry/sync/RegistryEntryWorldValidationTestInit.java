@@ -55,7 +55,7 @@ public class RegistryEntryWorldValidationTestInit implements ModInitializer {
 				}
 
 				try {
-					RegistryCustomContentState state = RegistryCustomContentState.construct(ctx.getSource().registryAccess());
+					RegistryCustomContentState state = RegistryCustomContentState.construct(ctx.getSource().getServer().registryAccess());
 
 					generateFakeEntries(state, Registries.BLOCK.identifier(), 50, 4000);
 					generateFakeEntries(state, Registries.ITEM.identifier(), 55, 3000);

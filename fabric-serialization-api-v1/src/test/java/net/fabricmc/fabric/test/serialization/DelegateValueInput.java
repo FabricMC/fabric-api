@@ -21,7 +21,7 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.world.level.storage.ValueInput;
 
 /**
@@ -129,7 +129,7 @@ public record DelegateValueInput(ValueInput input) implements ValueInput {
 	}
 
 	@Override
-	public HolderLookup.Provider lookup() {
+	public HolderGetter.Provider lookup() {
 		return input.lookup();
 	}
 }

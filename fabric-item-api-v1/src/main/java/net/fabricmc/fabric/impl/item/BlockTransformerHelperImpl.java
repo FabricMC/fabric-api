@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.BlockTransformer;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -47,7 +47,7 @@ public final class BlockTransformerHelperImpl {
 	private static final List<BlockTransformer.BlockTransformData> SHOVEL_TRANSFORMATIONS = new ArrayList<>();
 
 	@Nullable
-	public static BlockTransformer modify(ResourceKey<BlockTransformer> key, BlockTransformer original, ResourceSource source, RegistryOps.RegistryInfoLookup registryInfoLookup) {
+	public static BlockTransformer modify(ResourceKey<BlockTransformer> key, BlockTransformer original, ResourceSource source, HolderGetter.Provider registryInfoLookup) {
 		List<BlockTransformer.BlockTransformData> transforms = new ArrayList<>(original.transforms());
 
 		if (key.equals(BlockTransformers.AXE)) {

@@ -35,9 +35,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 
@@ -56,7 +56,7 @@ class SimpleJsonResourceReloadListenerMixin {
 	private DataResult<?> applyResourceConditions(Codec<?> instance, DynamicOps<JsonElement> dynamicOps, Object object, Operation<DataResult<?>> original,
 													@Local(name = "entry") Map.Entry<Identifier, Resource> entry) {
 		final JsonElement resourceData = (JsonElement) object;
-		RegistryOps.@Nullable RegistryInfoLookup registryInfo = null;
+		HolderGetter.@Nullable Provider registryInfo = null;
 
 		if (dynamicOps instanceof RegistryOpsAccessor registryOps) {
 			registryInfo = registryOps.getRegistryInfoGetter();

@@ -20,20 +20,20 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
 public final class LootTableHolderProvider implements HolderLookup.Provider {
-	// RegistryInfoLookup can access reloadable registries like loot tables, but cannot list elements or tags.
-	private final RegistryOps.RegistryInfoLookup registryInfoLookup;
+	// HolderGetter.Provider can access reloadable registries like loot tables, but cannot list elements or tags.
+	private final HolderGetter.Provider registryInfoLookup;
 	// HolderLookup.Provider can list elements and tags, but does not have access to reloadable registries like loot tables.
 	private final HolderLookup.Provider holderLookup;
 
-	public LootTableHolderProvider(RegistryOps.RegistryInfoLookup registryInfoLookup, HolderLookup.Provider holderLookup) {
+	public LootTableHolderProvider(HolderGetter.Provider registryInfoLookup, HolderLookup.Provider holderLookup) {
 		this.registryInfoLookup = registryInfoLookup;
 		this.holderLookup = holderLookup;
 	}

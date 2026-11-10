@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.mixin.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -32,19 +30,8 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 @Mixin(Commands.class)
 abstract class CommandsMixin {
-	@Shadow
-	@Final
-	private CommandDispatcher<CommandSourceStack> dispatcher;
-
-	/**
-	 * Wait an inject in a constructor?
-	 * This is a new addition to Fabric's fork of mixin.
-	 * If you are not using fabric's fork of mixin this will fail.
-	 *
-	 * @reason Add commands before ambiguities are calculated.
-	 */
-	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V"), method = "<init>")
-	private void fabric_addCommands(Commands.CommandSelection selection, CommandBuildContext buildContext, CallbackInfo ci) {
-		CommandRegistrationCallback.EVENT.invoker().register(this.dispatcher, buildContext, selection);
+	@Inject(method = "registerVanillaCommands", at = @At("RETURN"))
+	private static void fabric_addCommands(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection, CommandBuildContext buildContext, CallbackInfo ci) {
+		CommandRegistrationCallback.EVENT.invoker().register(dispatcher, buildContext, selection);
 	}
 }

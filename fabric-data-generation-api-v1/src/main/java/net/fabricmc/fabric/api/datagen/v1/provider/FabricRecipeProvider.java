@@ -128,7 +128,7 @@ public abstract class FabricRecipeProvider implements DataProvider {
 			RecipeProvider recipeProvider = createRecipeProvider(registries, recipes, advancements);
 			recipeProvider.buildRecipes();
 
-			RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, new RegistryOps.RegistryInfoLookup() {
+			RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, new HolderGetter.Provider() {
 				@Override
 				@SuppressWarnings("unchecked")
 				public <T> Optional<HolderGetter<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
