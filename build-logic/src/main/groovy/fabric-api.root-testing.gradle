@@ -74,6 +74,7 @@ loom {
 			inherit testmodClient
 			name "Client Game Test"
 			vmArg "-Dfabric.client.gametest"
+			vmArg "-Drenderpearl.vulkan.allowcpudevice=true"
 			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
 			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
 			source sourceSets.testmodClient
