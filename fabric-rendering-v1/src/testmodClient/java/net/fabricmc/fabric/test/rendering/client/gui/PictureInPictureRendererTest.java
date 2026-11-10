@@ -39,6 +39,7 @@ import net.minecraft.world.item.DyeColor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -128,5 +129,13 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 						+ "Please add them to PictureInPictureRendererRegistryImpl.registerVanillaFactories");
 			}
 		});
+
+		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
+			singleplayer.getConnection().waitForChunksRender();
+			context.getInput().resizeWindow(1280, 720);
+			context.waitTicks(2);
+			context.getInput().resizeWindow(1600, 900);
+			context.waitTicks(2);
+		}
 	}
 }
