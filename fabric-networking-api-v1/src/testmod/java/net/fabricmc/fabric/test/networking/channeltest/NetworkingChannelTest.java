@@ -34,12 +34,14 @@ import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.selector.EntitySelector;
+import net.minecraft.commands.suggestions.SuggestionContext;
+import net.minecraft.commands.suggestions.SuggestionProviders;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import net.fabricmc.api.ModInitializer;
@@ -80,7 +82,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 			// Unregister
 			{
 				final LiteralCommandNode<CommandSourceStack> unregister = literal("unregister")
-						.then(argument("channel", id()).suggests(NetworkingChannelTest::suggestReceivableChannels)
+						.then(argument("channel", id()).suggests(SuggestionProviders.serverOnly(NetworkingChannelTest::suggestReceivableChannels))
 								.executes(context -> unregisterChannel(context, context.getSource().getPlayer())))
 						.build();
 
@@ -91,10 +93,10 @@ public final class NetworkingChannelTest implements ModInitializer {
 		});
 	}
 
-	private static CompletableFuture<Suggestions> suggestReceivableChannels(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
-		final ServerPlayer player = context.getSource().getPlayer();
+	private static CompletableFuture<Suggestions> suggestReceivableChannels(MinecraftServer server, CommandContext<? extends SuggestionContext> context, SuggestionsBuilder builder) {
+		final ServerPlayer player = (ServerPlayer) context.getSource().entity();
 
-		return SharedSuggestionProvider.suggestResource(ServerPlayNetworking.getReceived(player), builder);
+		return SuggestionContext.suggestResource(ServerPlayNetworking.getReceived(player), builder);
 	}
 
 	private static int registerChannel(CommandContext<CommandSourceStack> context, ServerPlayer executor) throws CommandSyntaxException {

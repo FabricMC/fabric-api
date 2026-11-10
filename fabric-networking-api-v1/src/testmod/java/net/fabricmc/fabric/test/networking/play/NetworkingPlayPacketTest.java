@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.test.networking.play;
 
-import static com.mojang.brigadier.arguments.StringArgumentType.string;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.arguments.StringArgument.string;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,9 +26,9 @@ import java.util.Objects;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.StringArgument;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -71,7 +71,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 
 		dispatcher.register(literal("networktestcommand")
 				.then(argument("stuff", string()).executes(ctx -> {
-					String stuff = StringArgumentType.getString(ctx, "stuff");
+					String stuff = StringArgument.getString(ctx, "stuff");
 					sendToTestChannel(ctx.getSource().getPlayer(), stuff);
 					return Command.SINGLE_SUCCESS;
 				}))
