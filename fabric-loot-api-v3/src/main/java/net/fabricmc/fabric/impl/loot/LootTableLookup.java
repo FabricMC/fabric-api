@@ -32,7 +32,7 @@ import net.minecraft.tags.TagKey;
 
 public final class LootTableLookup<T> implements HolderLookup.RegistryLookup<T> {
 	private final ResourceKey<? extends Registry<? extends T>> key;
-	// Obtained from RegistryInfoLookup, can access reloadable registries like loot tables, but cannot list elements or tags.
+	// Obtained from HolderGetter.Provider, can access reloadable registries like loot tables, but cannot list elements or tags.
 	private final HolderGetter<T> lookup;
 	// Obtained from HolderLookup.Provider, can list elements and tags, but does not have access to reloadable registries like loot tables.
 	private final @Nullable RegistryLookup<T> holderLookup;

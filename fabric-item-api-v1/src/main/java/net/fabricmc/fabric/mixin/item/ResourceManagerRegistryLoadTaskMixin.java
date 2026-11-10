@@ -30,10 +30,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.resources.RegistryLoadTask;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceManagerRegistryLoadTask;
 import net.minecraft.server.packs.resources.Resource;
@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.item.ResourceUtil;
 @Mixin(ResourceManagerRegistryLoadTask.class)
 class ResourceManagerRegistryLoadTaskMixin {
 	@Unique
-	private volatile RegistryOps.RegistryInfoLookup registryInfoLookup;
+	private volatile HolderGetter.Provider registryInfoLookup;
 
 	@SuppressWarnings({"unchecked"})
 	@WrapOperation(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryLoadTask$PendingRegistration"))
@@ -72,7 +72,7 @@ class ResourceManagerRegistryLoadTaskMixin {
 	}
 
 	@Inject(method = "load", at = @At("HEAD"))
-	private void captureRegistries(RegistryOps.RegistryInfoLookup context, Executor executor, CallbackInfoReturnable<CompletableFuture<?>> cir) {
+	private void captureRegistries(HolderGetter.Provider context, Executor executor, CallbackInfoReturnable<CompletableFuture<?>> cir) {
 		this.registryInfoLookup = context;
 	}
 }

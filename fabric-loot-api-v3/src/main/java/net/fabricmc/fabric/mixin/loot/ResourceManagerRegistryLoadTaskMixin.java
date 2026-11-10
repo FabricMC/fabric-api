@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -55,13 +56,13 @@ abstract class ResourceManagerRegistryLoadTaskMixin {
 
 		HolderLookup.Provider provider = LootUtil.getActiveReloadProvider(this.resourceManager);
 
-		RegistryOps.RegistryInfoLookup registryInfoLookup = ops::getter;
+		HolderGetter.Provider registryInfoLookup = ops::getter;
 
 		if (provider == null) {
 			return result;
 		}
 
-		// Merge the HolderLookup.Provider and RegistryOps.RegistryInfoLookup into a HolderLookup.Provider with access to reloadable registries.
+		// Merge the HolderLookup.Provider and HolderGetter.Provider into a HolderLookup.Provider with access to reloadable registries.
 		var fullProvider = new LootTableHolderProvider(registryInfoLookup, provider);
 
 		return result.mapLeft(value -> (T) LootUtil.modifyLootTable(

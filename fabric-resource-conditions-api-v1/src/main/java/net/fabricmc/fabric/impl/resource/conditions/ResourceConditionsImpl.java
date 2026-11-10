@@ -33,7 +33,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
@@ -65,7 +64,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
 	}
 
-	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, RegistryOps.@Nullable RegistryInfoLookup registryInfo) {
+	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, HolderGetter.@Nullable Provider registryInfo) {
 		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
@@ -90,7 +89,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 
 	// Condition implementations
 
-	public static boolean conditionsMet(List<ResourceCondition> conditions, RegistryOps.@Nullable RegistryInfoLookup registryInfo, boolean and) {
+	public static boolean conditionsMet(List<ResourceCondition> conditions, HolderGetter.@Nullable Provider registryInfo, boolean and) {
 		for (ResourceCondition condition : conditions) {
 			if (condition.test(registryInfo) != and) {
 				return !and;
@@ -110,14 +109,14 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return and;
 	}
 
-	public static boolean tagsPopulated(RegistryOps.@Nullable RegistryInfoLookup infoGetter, Identifier registryId, List<Identifier> tags) {
+	public static boolean tagsPopulated(HolderGetter.@Nullable Provider infoGetter, Identifier registryId, List<Identifier> tags) {
 		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing tags_populated resource condition check", registryId);
 			return false;
 		}
 
 		ResourceKey<? extends Registry<Object>> registryKey = ResourceKey.createRegistryKey(registryId);
-		Optional<HolderGetter<Object>> optionalInfo = infoGetter.lookup(registryKey);
+		Optional<? extends HolderGetter<Object>> optionalInfo = infoGetter.lookup(registryKey);
 
 		if (optionalInfo.isPresent()) {
 			HolderGetter<Object> lookup = optionalInfo.get();
@@ -153,14 +152,14 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	public static boolean registryContains(RegistryOps.@Nullable RegistryInfoLookup infoGetter, Identifier registryId, List<Identifier> entries) {
+	public static boolean registryContains(HolderGetter.@Nullable Provider infoGetter, Identifier registryId, List<Identifier> entries) {
 		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
 			return false;
 		}
 
 		ResourceKey<? extends Registry<Object>> registryKey = ResourceKey.createRegistryKey(registryId);
-		Optional<HolderGetter<Object>> optionalInfo = infoGetter.lookup(registryKey);
+		Optional<? extends HolderGetter<Object>> optionalInfo = infoGetter.lookup(registryKey);
 
 		if (optionalInfo.isPresent()) {
 			HolderGetter<Object> lookup = optionalInfo.get();

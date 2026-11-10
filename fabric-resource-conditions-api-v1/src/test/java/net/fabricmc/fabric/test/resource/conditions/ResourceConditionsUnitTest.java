@@ -27,7 +27,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.level.block.Block;
@@ -45,7 +44,7 @@ public class ResourceConditionsUnitTest {
 
 	private static void expectCondition(String name, ResourceCondition condition, boolean expected) {
 		HolderLookup.Provider registryLookup = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-		boolean actual = condition.test(new RegistryOps.HolderLookupAdapter(registryLookup));
+		boolean actual = condition.test(registryLookup);
 
 		if (actual != expected) {
 			throw new AssertionError("Test \"%s\" for condition %s failed; expected %s, got %s".formatted(name, condition.getType().id(), expected, actual));
