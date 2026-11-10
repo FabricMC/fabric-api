@@ -4,7 +4,7 @@ transitive-accessible	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet
 
 # Registering custom screen handler type -> screen mappings
 transitive-accessible	class	net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
-transitive-accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;
+transitive-accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/core/WritableRegistry;Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
 
 # Data contained in loot tables and pools
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	entries	Ljava/util/List;
@@ -34,7 +34,7 @@ transitive-accessible	field	net/minecraft/client/gui/GuiGraphicsExtractor	scisso
 transitive-accessible	class	net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 
 # Registering custom block entity renderers
-transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEntityRenderers	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;
+transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEntityRenderers	register	(Lnet/minecraft/core/WritableRegistry;Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V
 
 # Registering custom entity renderers
 transitive-accessible	method	net/minecraft/client/renderer/entity/EntityRenderers	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)Lnet/minecraft/client/renderer/entity/EntityRendererProvider;
@@ -81,7 +81,7 @@ transitive-accessible	method	net/minecraft/world/level/levelgen/feature/trunkpla
 transitive-accessible	method	net/minecraft/world/level/levelgen/feature/rootplacers/RootPlacerType	<init>	(Lcom/mojang/serialization/MapCodec;)V
 
 # Working with custom damage sources
-transitive-accessible	field	net/minecraft/world/damagesource/DamageSources	damageTypes	Lnet/minecraft/core/Registry;
+transitive-accessible	field	net/minecraft/world/damagesource/DamageSources	damageTypes	Lnet/minecraft/core/HolderGetter;
 transitive-accessible	method	net/minecraft/world/damagesource/DamageSources	source	(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/world/damagesource/DamageSource;
 transitive-accessible	method	net/minecraft/world/damagesource/DamageSources	source	(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/damagesource/DamageSource;
 transitive-accessible	method	net/minecraft/world/damagesource/DamageSources	source	(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/damagesource/DamageSource;

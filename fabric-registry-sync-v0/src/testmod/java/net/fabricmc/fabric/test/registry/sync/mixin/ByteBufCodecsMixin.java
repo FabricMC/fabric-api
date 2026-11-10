@@ -16,26 +16,21 @@
 
 package net.fabricmc.fabric.test.registry.sync.mixin;
 
-import java.util.function.Function;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.core.IdMap;
 import net.minecraft.core.Registry;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.test.registry.sync.RegistrySyncTest;
 
 @Mixin(ByteBufCodecs.class)
 interface ByteBufCodecsMixin {
-	@Inject(method = "registry(Lnet/minecraft/resources/ResourceKey;Ljava/util/function/Function;)Lnet/minecraft/network/codec/StreamCodec;", at = @At("HEAD"))
-	private static <T, R> void checkSynced(ResourceKey<? extends Registry<T>> registry, Function<Registry<T>, IdMap<R>> registryTransformer, CallbackInfoReturnable<StreamCodec<RegistryFriendlyByteBuf, R>> cir) {
+	@Inject(method = {"registry", "holderRegistry"}, at = @At("HEAD"))
+	private static <T> void checkSynced(ResourceKey<? extends Registry<T>> registry, CallbackInfoReturnable<?> cir) {
 		RegistrySyncTest.checkSyncedRegistry(registry);
 	}
 }

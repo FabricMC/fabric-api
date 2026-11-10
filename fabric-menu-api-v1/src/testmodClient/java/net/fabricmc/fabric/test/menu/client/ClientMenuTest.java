@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.menu.client;
 import net.minecraft.client.core.registries.BuiltInClientRegistries;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.DispenserScreen;
+import net.minecraft.core.WritableRegistry;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.test.menu.MenuTest;
@@ -26,8 +27,8 @@ import net.fabricmc.fabric.test.menu.MenuTest;
 public class ClientMenuTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		MenuScreens.register(BuiltInClientRegistries.MENU_SCREEN, MenuTest.BAG_MENU, DispenserScreen::new);
-		MenuScreens.register(BuiltInClientRegistries.MENU_SCREEN, MenuTest.POSITIONED_BAG_MENU, PositionedScreen::new);
-		MenuScreens.register(BuiltInClientRegistries.MENU_SCREEN, MenuTest.BOX_SCREEN_MENU, PositionedScreen::new);
+		MenuScreens.register((WritableRegistry<MenuScreens.ScreenConstructor<?, ?>>) BuiltInClientRegistries.MENU_SCREEN, MenuTest.BAG_MENU, DispenserScreen::new);
+		MenuScreens.register((WritableRegistry<MenuScreens.ScreenConstructor<?, ?>>) BuiltInClientRegistries.MENU_SCREEN, MenuTest.POSITIONED_BAG_MENU, PositionedScreen::new);
+		MenuScreens.register((WritableRegistry<MenuScreens.ScreenConstructor<?, ?>>) BuiltInClientRegistries.MENU_SCREEN, MenuTest.BOX_SCREEN_MENU, PositionedScreen::new);
 	}
 }

@@ -135,6 +135,12 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(BuiltInRegistries.COMMAND_ARGUMENT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
+		RegistryAttributeHolder.get(BuiltInRegistries.COMMAND_SUGGESTION_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		RegistryAttributeHolder.get(BuiltInRegistries.CONTEXT_KEY_SET)
+				.addAttribute(RegistryAttribute.SYNCED);
+
 		// Synced in ClientboundOpenScreenPacket
 		RegistryAttributeHolder.get(BuiltInRegistries.MENU)
 				.addAttribute(RegistryAttribute.SYNCED);
