@@ -29,6 +29,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
@@ -40,6 +42,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -70,6 +73,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 
@@ -324,6 +329,39 @@ public class CommonAttachmentTests {
 		assertTrue(level.hasAttached(PERSISTENT));
 		assertEquals(expected, level.getAttached(PERSISTENT));
 		assertEquals(Items.DIAMOND.builtInRegistryHolder(), level.getAttached(REGISTRY_DEPENDENT));
+	}
+
+	@Test
+	void testSavedDataRemoval(@TempDir Path directory) {
+		RegistryAccess registries = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+		ServerLevel level = mockAndDisableSync(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(registries);
+		when(level.dimension()).thenReturn(Level.OVERWORLD);
+		var type = new SavedDataType<>(AttachmentSavedData.ID, () -> new AttachmentSavedData(level), AttachmentSavedData.codec(level), null);
+		Path dataFile = AttachmentSavedData.ID.withSuffix(".dat").resolveAgainst(directory);
+
+		try (var storage = new SavedDataStorage(directory, null, registries)) {
+			storage.computeIfAbsent(type);
+			storage.saveAndJoin();
+			assertFalse(Files.exists(dataFile));
+
+			level.setAttached(PERSISTENT, 1);
+			storage.saveAndJoin();
+			assertTrue(Files.exists(dataFile));
+
+			level.removeAttached(PERSISTENT);
+			storage.saveAndJoin();
+		}
+
+		ServerLevel reloadedLevel = mockAndDisableSync(ServerLevel.class);
+		when(reloadedLevel.registryAccess()).thenReturn(registries);
+		when(reloadedLevel.dimension()).thenReturn(Level.OVERWORLD);
+		var reloadedType = new SavedDataType<>(AttachmentSavedData.ID, () -> new AttachmentSavedData(reloadedLevel), AttachmentSavedData.codec(reloadedLevel), null);
+
+		try (var storage = new SavedDataStorage(directory, null, registries)) {
+			assertNotNull(storage.get(reloadedType));
+			assertFalse(reloadedLevel.hasAttached(PERSISTENT));
+		}
 	}
 
 	@Test
