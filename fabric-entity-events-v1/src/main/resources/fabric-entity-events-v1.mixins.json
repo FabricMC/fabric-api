@@ -18,7 +18,8 @@
     "effect.ContextChainMixin",
     "effect.LivingEntityMixin",
     "effect.MobEffectMixin",
-    "elytra.LivingEntityMixin"
+    "elytra.LivingEntityMixin",
+    "tick.PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
