@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.client.permission",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "ClientSuggestionContextMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

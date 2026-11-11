@@ -19,7 +19,11 @@ package net.fabricmc.fabric.api.permission.v1;
 import java.util.function.Predicate;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.server.permissions.PermissionSetSupplier;
+
+import net.fabricmc.fabric.impl.permission.FabricPermissionCommandCheck;
 
 /**
  * Utility methods for creating permission predicates, mainly to be used for commands,
@@ -51,7 +55,7 @@ public final class PermissionPredicates {
 	 * @return predicate checking context's permission
 	 */
 	public static <T extends PermissionContextOwner> Predicate<T> require(Identifier permission) {
-		return x -> x.checkPermission(permission, false);
+		return new FabricPermissionCommandCheck<>(x -> x.checkPermission(permission, false), _ -> false);
 	}
 
 	/**
@@ -63,7 +67,7 @@ public final class PermissionPredicates {
 	 * @return predicate checking context's permission
 	 */
 	public static <T extends PermissionContextOwner> Predicate<T> require(Identifier permission, boolean defaultValue) {
-		return x -> x.checkPermission(permission, defaultValue);
+		return new FabricPermissionCommandCheck<>(x -> x.checkPermission(permission, defaultValue), _ -> defaultValue);
 	}
 
 	/**
@@ -75,7 +79,8 @@ public final class PermissionPredicates {
 	 * @return predicate checking context's permission
 	 */
 	public static <T extends PermissionContextOwner> Predicate<T> require(Identifier permission, PermissionLevel permissionLevel) {
-		return x -> x.checkPermission(permission, permissionLevel);
+		var fallbackPermission = new Permission.HasCommandLevel(permissionLevel);
+		return new FabricPermissionCommandCheck<>(x -> x.checkPermission(permission, permissionLevel), x -> x instanceof PermissionSetSupplier supplier && supplier.permissions().hasPermission(fallbackPermission));
 	}
 
 	/**
@@ -86,7 +91,7 @@ public final class PermissionPredicates {
 	 * @return predicate checking context's permission
 	 */
 	public static <T extends PermissionContextOwner> Predicate<T> require(PermissionNode<Boolean> permission) {
-		return x -> x.checkPermission(permission, false);
+		return new FabricPermissionCommandCheck<>(x -> x.checkPermission(permission, false), _ -> false);
 	}
 
 	/**
@@ -98,7 +103,7 @@ public final class PermissionPredicates {
 	 * @return predicate checking context's permission
 	 */
 	public static <T extends PermissionContextOwner> Predicate<T> require(PermissionNode<Boolean> permission, boolean defaultValue) {
-		return x -> x.checkPermission(permission, defaultValue);
+		return new FabricPermissionCommandCheck<>(x -> x.checkPermission(permission, defaultValue), _ -> defaultValue);
 	}
 
 	/**
@@ -110,6 +115,7 @@ public final class PermissionPredicates {
 	 * @return predicate checking context's permission
 	 */
 	public static <T extends PermissionContextOwner> Predicate<T> require(PermissionNode<Boolean> permission, PermissionLevel permissionLevel) {
-		return x -> x.checkPermission(permission, x.getPermissionContext().permissionLevel().isEqualOrHigherThan(permissionLevel));
+		var fallbackPermission = new Permission.HasCommandLevel(permissionLevel);
+		return new FabricPermissionCommandCheck<>(x -> x.checkPermission(permission, x.getPermissionContext().permissionLevel().isEqualOrHigherThan(permissionLevel)), x -> x instanceof PermissionSetSupplier supplier && supplier.permissions().hasPermission(fallbackPermission));
 	}
 }

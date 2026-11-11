@@ -25,10 +25,14 @@ import java.util.UUID;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.permission.v1.MutablePermissionContext;
+import net.fabricmc.fabric.api.permission.v1.PermissionContext;
 
 public record CustomPermissionContext(UUID uuid, Type type, PermissionLevel permissionLevel, Map<Key<?>, Object> overrides) implements MutablePermissionContext {
+	public static final PermissionContext FALLBACK = new CustomPermissionContext(Util.NIL_UUID, Type.OTHER, PermissionLevel.ALL, Map.of());
+
 	public CustomPermissionContext(UUID uuid, Type type, PermissionLevel permissionLevel) {
 		this(uuid, type, permissionLevel, new HashMap<>());
 	}
