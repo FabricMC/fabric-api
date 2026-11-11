@@ -1,0 +1,17 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "fabric-resource-loader-v1-testmod:entity",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid",
+        "fabric:finalize_entities": "false"
+      },
+      "weight": 1
+    }
+  ],
+  "fallback": "minecraft:empty"
+}
