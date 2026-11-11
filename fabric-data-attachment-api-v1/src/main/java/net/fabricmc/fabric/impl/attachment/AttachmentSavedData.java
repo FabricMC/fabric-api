@@ -40,7 +40,7 @@ public class AttachmentSavedData extends SavedData {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentSavedData.class);
 	public static final Identifier ID = Identifier.fromNamespaceAndPath("fabric", "attachments");
 	private final AttachmentTargetImpl target;
-	private final boolean wasSerialized;
+	private boolean wasSerialized;
 
 	public AttachmentSavedData(AttachmentTarget target) {
 		this.target = (AttachmentTargetImpl) target;
@@ -66,6 +66,7 @@ public class AttachmentSavedData extends SavedData {
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
 				TagValueOutput output = TagValueOutput.createWithContext(reporter, state.target.fabric_getRegistryAccess());
 				state.target.fabric_writeAttachmentsToNbt(output);
+				state.wasSerialized = true;
 				return output.buildResult();
 			}
 		});
