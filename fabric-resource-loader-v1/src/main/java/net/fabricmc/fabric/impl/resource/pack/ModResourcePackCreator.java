@@ -128,7 +128,7 @@ public class ModResourcePackCreator implements RepositorySource {
 
 			if (profile != null) {
 				if (!forKnownPacksManager) {
-					((FabricPack) profile).fabric$setParentsPredicate(parents);
+					((PackHooks) profile).fabric$setParentsPredicate(parents);
 				}
 
 				consumer.accept(profile);

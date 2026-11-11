@@ -4,4 +4,5 @@ accessible	field	net/minecraft/server/packs/repository/FolderRepositorySource	pa
 accessible	field	net/minecraft/server/packs/repository/PackRepository	sources	Ljava/util/Set;
 accessible	method	net/minecraft/server/packs/metadata/pack/PackMetadataSection	codecForPackType	(Lnet/minecraft/server/packs/PackType;)Lcom/mojang/serialization/Codec;
 transitive-inject-interface	net/minecraft/server/MinecraftServer	net/fabricmc/fabric/api/resource/v1/DataResourceStore
+transitive-inject-interface	net/minecraft/server/packs/repository/Pack	net/fabricmc/fabric/api/resource/v1/pack/FabricPack
 transitive-inject-interface	net/minecraft/server/packs/resources/Resource	net/fabricmc/fabric/api/resource/v1/FabricResource
