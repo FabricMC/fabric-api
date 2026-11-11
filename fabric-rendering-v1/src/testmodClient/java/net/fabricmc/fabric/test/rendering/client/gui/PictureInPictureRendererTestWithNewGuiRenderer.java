@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.rendering.client.gui;
 import java.util.Collections;
 
 import com.mojang.blaze3d.ProjectionType;
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 
@@ -27,6 +28,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.fog.FogRenderer;
+import net.minecraft.client.renderer.state.WindowRenderState;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
@@ -45,6 +47,13 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 
 		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "pip_new"), (graphics, deltaTracker) -> {
 			Minecraft client = Minecraft.getInstance();
+			WindowRenderState windowState = client.gameRenderer.gameRenderState().windowRenderState;
+			RenderTarget renderTarget = client.gameRenderer.mainRenderTarget();
+
+			if (windowState.width != renderTarget.width || windowState.height != renderTarget.height) {
+				return;
+			}
+
 			GuiRenderState newGuiRenderState = new GuiRenderState();
 
 			int mouseX = (int) client.mouseHandler.getScaledXPos(client.getWindow());
