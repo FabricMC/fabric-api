@@ -16,9 +16,16 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import java.util.Map;
 import java.util.Optional;
 
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
+
+import net.minecraft.client.renderer.ShaderDefines;
+
+import net.fabricmc.fabric.mixin.client.rendering.RenderPipelineBuilderAccessor;
 
 /**
  * General purpose Fabric extensions to the {@link RenderPipeline} class.
@@ -33,6 +40,69 @@ public interface FabricRenderPipeline {
 	 */
 	default boolean usePipelineDrawModeForGui() {
 		throw new AssertionError("Implemented in Mixin");
+	}
+
+	/// Converts this pipeline to a builder to allow for modification.
+	default RenderPipeline.Builder toBuilder() {
+		RenderPipeline pipeline = (RenderPipeline) this;
+		RenderPipeline.Builder builder = RenderPipeline.builder();
+		builder.withLocation(pipeline.getLocation());
+
+		pipeline.getShaders().forEach((key, id) -> {
+			switch (key) {
+				case VERTEX -> builder.withVertexShader(id);
+				case FRAGMENT -> builder.withFragmentShader(id);
+				default -> throw new IllegalStateException("Unexpected ShaderType " + key);
+			}
+		});
+
+		if (!pipeline.getShaderDefines().isEmpty()) {
+			ShaderDefines.Builder defBuilder = ShaderDefines.builder();
+
+			for (Map.Entry<String, String> entry : pipeline.getShaderDefines().values().entrySet()) {
+				defBuilder.define(entry.getKey(), entry.getValue());
+			}
+
+			for (String flag : pipeline.getShaderDefines().flags()) {
+				defBuilder.define(flag);
+			}
+
+			((RenderPipelineBuilderAccessor) builder).fabric$setDefines(Optional.of(defBuilder));
+		}
+
+		if (!pipeline.getBindGroupLayouts().isEmpty()) {
+			pipeline.getBindGroupLayouts().forEach(builder::withBindGroupLayout);
+		}
+
+		if (pipeline.getDepthStencilState() != null) {
+			builder.withDepthStencilState(pipeline.getDepthStencilState());
+		}
+
+		builder.withPolygonMode(pipeline.getPolygonMode());
+		builder.withCull(pipeline.isCull());
+
+		int i = 0;
+
+		for (ColorTargetState state : pipeline.getColorTargetStates()) {
+			if (state == null) {
+				builder.withUnusedColorTargetState(i);
+			} else {
+				builder.withColorTargetState(i, state);
+			}
+
+			i++;
+		}
+
+		i = 0;
+
+		for (VertexFormat format : pipeline.getVertexFormatBindings()) {
+			if (format != null) builder.withVertexBinding(i, format);
+			i++;
+		}
+
+		builder.withPrimitiveTopology(pipeline.getPrimitiveTopology());
+		builder.withPushConstantSize(pipeline.pushConstantSize());
+		return builder;
 	}
 
 	/**
