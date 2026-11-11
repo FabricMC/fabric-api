@@ -16,6 +16,7 @@
     "ServerConfigurationPacketListenerImplMixin",
     "ServerFunctionLibraryMixin",
     "SimpleReloadInstanceMixin",
+    "SinglePoolElementMixin",
     "SynchronizeRegistriesTaskMixin"
   ],
   "server": [
