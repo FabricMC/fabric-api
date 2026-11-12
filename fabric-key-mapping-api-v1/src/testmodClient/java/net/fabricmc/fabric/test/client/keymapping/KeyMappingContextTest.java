@@ -21,6 +21,8 @@ import org.lwjgl.sdl.SDLScancode;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ToggleKeyMapping;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -31,6 +33,7 @@ public class KeyMappingContextTest implements ClientModInitializer {
 	static final MutableContext CUSTOM_CONTEXT = new MutableContext();
 	static KeyMapping inGame;
 	static KeyMapping inScreen;
+	static KeyMapping screenSpecific;
 	static KeyMapping always;
 	static KeyMapping custom;
 	static KeyMapping shared;
@@ -43,6 +46,7 @@ public class KeyMappingContextTest implements ClientModInitializer {
 		KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("fabric-key-mapping-api-v1-testmod", "contexts"));
 		inGame = register("in_game", category, KeyMappingContext.IN_GAME);
 		inScreen = register("in_screen", category, KeyMappingContext.IN_SCREEN);
+		screenSpecific = register("screen_specific", category, KeyMappingContext.forScreen(ContextScreen.class, OtherContextScreen.class));
 		always = register("all", category, KeyMappingContext.ALL);
 		custom = register("custom", category, CUSTOM_CONTEXT);
 		shared = register("shared", category, CUSTOM_CONTEXT);
@@ -55,6 +59,18 @@ public class KeyMappingContextTest implements ClientModInitializer {
 
 	private static KeyMapping register(String name, KeyMapping.Category category, KeyMappingContext context) {
 		return KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod." + name, SDLScancode.SDL_SCANCODE_F20, category), context);
+	}
+
+	static class ContextScreen extends Screen {
+		ContextScreen() {
+			super(Component.literal("Screen-specific key mapping test"));
+		}
+	}
+
+	static class OtherContextScreen extends Screen {
+		OtherContextScreen() {
+			super(Component.literal("Other screen-specific key mapping test"));
+		}
 	}
 
 	static class MutableContext implements KeyMappingContext {

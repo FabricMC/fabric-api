@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.api.client.keymapping.v1;
 
+import java.util.List;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.impl.client.keymapping.KeyMappingContextImpl;
 import net.fabricmc.fabric.impl.client.keymapping.KeyMappingExtensions;
@@ -47,6 +50,22 @@ public interface KeyMappingContext {
 
 	/// Always active and conflicts with every context. Also the conflict context of vanilla bindings handled in screens or globally.
 	KeyMappingContext ALL = KeyMappingContextImpl.ALL;
+
+	/// Creates a context active while a screen of any given class, or a subclass, is open.
+	/// Conflicts with [#IN_SCREEN], [#ALL], and contexts created by this method with overlapping screen classes.
+	/// Classes overlap if either is the same class, a superclass, or a subclass of the other.
+	/// Does not conflict with [#IN_GAME] or unrelated screen classes. With no classes, the context is never active.
+	///
+	/// ```java
+	/// KeyMappingHelper.registerKeyMapping(keyMapping, KeyMappingContext.forScreen(MyScreen.class, MyOtherScreen.class));
+	/// ```
+	///
+	/// @param screenClasses the screen classes in which mappings are active
+	/// @return the screen context
+	@SafeVarargs
+	static KeyMappingContext forScreen(Class<? extends Screen>... screenClasses) {
+		return new KeyMappingContextImpl.ScreenContext(List.of(screenClasses));
+	}
 
 	/// Returns the mapping's explicit context, or its default context for conflict checks.
 	static KeyMappingContext of(KeyMapping mapping) {

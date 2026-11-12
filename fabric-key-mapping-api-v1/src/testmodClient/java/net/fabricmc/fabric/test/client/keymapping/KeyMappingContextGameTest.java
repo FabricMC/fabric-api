@@ -22,6 +22,7 @@ import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.c
 import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.inGame;
 import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.inScreen;
 import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.legacy;
+import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.screenSpecific;
 import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.screenTransitionToggle;
 import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.shared;
 import static net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.toggle;
@@ -37,15 +38,21 @@ import net.minecraft.network.chat.Component;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingContext;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
+import net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.ContextScreen;
+import net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest.OtherContextScreen;
 
 public class KeyMappingContextGameTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		try {
 			testContextConflicts(context);
+			testScreenConflicts(context);
+			testScreenContext(context);
+			testScreenSubclass(context);
 			testSharedKey(context);
 			testInactiveContext(context);
 			testInactiveRelease(context);
@@ -65,6 +72,7 @@ public class KeyMappingContextGameTest implements FabricClientGameTest {
 
 			try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 				singleplayer.getConnection().waitForChunksDownload();
+				testScreenContextInGame(context);
 				testScreenClosing(context);
 				testKeyboardTransition(context);
 				testMouseTransition(context);
@@ -97,6 +105,80 @@ public class KeyMappingContextGameTest implements FabricClientGameTest {
 				throw new AssertionError("Overlapping contexts must conflict in both directions");
 			}
 		});
+	}
+
+	private static void testScreenConflicts(ClientGameTestContext context) {
+		context.runOnClient(client -> {
+			KeyMappingContext screenContext = KeyMappingContext.of(screenSpecific);
+			KeyMappingContext sameScreen = KeyMappingContext.forScreen(ContextScreen.class);
+			KeyMappingContext parentScreen = KeyMappingContext.forScreen(Screen.class);
+			KeyMappingContext overlappingScreens = KeyMappingContext.forScreen(TitleScreen.class, OtherContextScreen.class);
+			KeyMappingContext unrelatedScreen = KeyMappingContext.forScreen(TitleScreen.class);
+
+			if (!screenSpecific.same(inScreen) || !inScreen.same(screenSpecific) || !screenSpecific.same(always)) {
+				throw new AssertionError("Screen-specific mappings must conflict with screen and global mappings");
+			}
+
+			if (!KeyMappingContext.conflicts(screenContext, sameScreen)
+					|| !KeyMappingContext.conflicts(screenContext, parentScreen)
+					|| !KeyMappingContext.conflicts(parentScreen, screenContext)
+					|| !KeyMappingContext.conflicts(screenContext, overlappingScreens)
+					|| !KeyMappingContext.conflicts(overlappingScreens, screenContext)) {
+				throw new AssertionError("Screen contexts must conflict with the same class and overlapping subclasses");
+			}
+
+			if (screenSpecific.same(inGame) || inGame.same(screenSpecific)
+					|| KeyMappingContext.conflicts(screenContext, unrelatedScreen)
+					|| KeyMappingContext.conflicts(unrelatedScreen, screenContext)) {
+				throw new AssertionError("Screen contexts must not conflict with gameplay or unrelated screens");
+			}
+		});
+	}
+
+	private static void testScreenContext(ClientGameTestContext context) {
+		context.setScreen(ContextScreen::new);
+		context.getInput().holdKey(screenSpecific);
+		context.runOnClient(client -> {
+			if (!screenSpecific.isDown() || !screenSpecific.consumeClick()) {
+				throw new AssertionError("Screen-specific mappings must receive input in their screen");
+			}
+		});
+		context.getInput().releaseKey(screenSpecific);
+		context.setScreen(OtherContextScreen::new);
+		context.getInput().pressKey(screenSpecific);
+		context.runOnClient(client -> {
+			if (!screenSpecific.consumeClick()) {
+				throw new AssertionError("Screen-specific mappings must receive input in any of their screens");
+			}
+		});
+		context.setScreen(TitleScreen::new);
+		context.getInput().pressKey(screenSpecific);
+		context.runOnClient(client -> {
+			if (screenSpecific.isDown() || screenSpecific.consumeClick()) {
+				throw new AssertionError("Screen-specific mappings must remain inactive in unrelated screens");
+			}
+		});
+	}
+
+	private static void testScreenSubclass(ClientGameTestContext context) {
+		context.setScreen(() -> new ContextScreen() { });
+		context.getInput().pressKey(screenSpecific);
+		context.runOnClient(client -> {
+			if (!screenSpecific.consumeClick()) {
+				throw new AssertionError("Screen-specific mappings must also receive input in subclasses");
+			}
+		});
+	}
+
+	private static void testScreenContextInGame(ClientGameTestContext context) {
+		context.setScreen(() -> null);
+		context.getInput().holdKey(screenSpecific);
+		context.runOnClient(client -> {
+			if (screenSpecific.isDown() || screenSpecific.consumeClick()) {
+				throw new AssertionError("Screen-specific mappings must remain inactive without a screen");
+			}
+		});
+		context.getInput().releaseKey(screenSpecific);
 	}
 
 	private static void testSharedKey(ClientGameTestContext context) {

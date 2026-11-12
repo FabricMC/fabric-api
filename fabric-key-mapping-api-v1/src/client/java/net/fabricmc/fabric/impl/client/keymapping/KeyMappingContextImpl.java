@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.impl.client.keymapping;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingContext;
 
@@ -56,4 +59,38 @@ public class KeyMappingContextImpl {
 			return true;
 		}
 	};
+
+	public record ScreenContext(List<Class<? extends Screen>> screenClasses) implements KeyMappingContext {
+		@Override
+		public boolean isActive(Minecraft client) {
+			Screen screen = client.gui.screen();
+
+			for (Class<? extends Screen> screenClass : screenClasses) {
+				if (screenClass.isInstance(screen)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		@Override
+		public boolean conflicts(KeyMappingContext other) {
+			if (other == IN_SCREEN) {
+				return true;
+			}
+
+			if (other instanceof ScreenContext(List<Class<? extends Screen>> classes)) {
+				for (Class<? extends Screen> screenClass : screenClasses) {
+					for (Class<? extends Screen> otherClass : classes) {
+						if (screenClass.isAssignableFrom(otherClass) || otherClass.isAssignableFrom(screenClass)) {
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+	}
 }
