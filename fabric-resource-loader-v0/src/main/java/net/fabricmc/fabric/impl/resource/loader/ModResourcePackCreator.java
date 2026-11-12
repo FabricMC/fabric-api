@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +34,7 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
+import net.fabricmc.loader.api.FabricLoader;
 
 /**
  * Represents a resource pack provider for mods and built-in mods resource packs.
@@ -134,8 +134,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	}
 
 	private void registerModPack(Consumer<ResourcePackProfile> consumer, @Nullable String subPath, Predicate<Set<String>> parents) {
-		List<ModResourcePack> packs = new ArrayList<>();
-		ModResourcePackUtil.appendModResourcePacks(packs, this.type, subPath);
+		List<ModResourcePack> packs = ModResourcePackUtil.getModResourcePacks(FabricLoader.getInstance(), this.type, subPath);
 
 		for (ModResourcePack pack : packs) {
 			ResourcePackProfile profile = ResourcePackProfile.create(

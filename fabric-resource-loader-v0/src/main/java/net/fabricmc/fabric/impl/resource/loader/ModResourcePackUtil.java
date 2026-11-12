@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -56,6 +57,7 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
 /**
@@ -64,29 +66,77 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 public final class ModResourcePackUtil {
 	public static final Gson GSON = new Gson();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModResourcePackUtil.class);
+	private static final String LOAD_ORDER_KEY = "fabric:resource_load_order";
 
 	private ModResourcePackUtil() {
 	}
 
 	/**
-	 * Appends mod resource packs to the given list.
+	 * Returns a list of mod resource packs.
 	 *
-	 * @param packs   the resource pack list to append
 	 * @param type    the type of resource
 	 * @param subPath the resource pack sub path directory in mods, may be {@code null}
 	 */
-	public static void appendModResourcePacks(List<ModResourcePack> packs, ResourceType type, @Nullable String subPath) {
-		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-			if (container.getMetadata().getType().equals("builtin")) {
+	public static List<ModResourcePack> getModResourcePacks(FabricLoader fabricLoader, ResourceType type, @Nullable String subPath) {
+		ModResourcePackSorter sorter = new ModResourcePackSorter();
+
+		Collection<ModContainer> containers = fabricLoader.getAllMods();
+		List<String> allIds = containers.stream().map(ModContainer::getMetadata).map(ModMetadata::getId).toList();
+
+		for (ModContainer container : containers) {
+			ModMetadata metadata = container.getMetadata();
+			String id = metadata.getId();
+
+			if (metadata.getType().equals("builtin")) {
 				continue;
 			}
 
-			ModResourcePack pack = ModNioResourcePack.create(container.getMetadata().getId(), container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED, true);
+			ModResourcePack pack = ModNioResourcePack.create(id, container, subPath, type, ResourcePackActivationType.ALWAYS_ENABLED, true);
 
-			if (pack != null) {
-				packs.add(pack);
+			if (pack == null) {
+				continue;
+			}
+
+			sorter.addPack(pack);
+
+			CustomValue loadOrder = metadata.getCustomValue(LOAD_ORDER_KEY);
+			if (loadOrder == null) continue;
+
+			if (loadOrder.getType() == CustomValue.CvType.OBJECT) {
+				CustomValue.CvObject object = loadOrder.getAsObject();
+
+				addLoadOrdering(object, allIds, sorter, Order.BEFORE, id);
+				addLoadOrdering(object, allIds, sorter, Order.AFTER, id);
+			} else {
+				LOGGER.error("[Fabric] Resource load order should be an object");
 			}
 		}
+
+		return sorter.getPacks();
+	}
+
+	public static void addLoadOrdering(CustomValue.CvObject object, List<String> allIds, ModResourcePackSorter sorter, Order order, String currentId) {
+		List<String> modIds = new ArrayList<>();
+
+		CustomValue array = object.get(order.jsonKey);
+		if (array == null) return;
+
+		switch (array.getType()) {
+		case STRING -> modIds.add(array.getAsString());
+		case ARRAY -> {
+			for (CustomValue id : array.getAsArray()) {
+				if (id.getType() == CustomValue.CvType.STRING) {
+					modIds.add(id.getAsString());
+				}
+			}
+		}
+		default -> {
+			LOGGER.error("[Fabric] {} should be a string or an array", order.jsonKey);
+			return;
+		}
+		}
+
+		modIds.stream().filter(allIds::contains).forEach(modId -> sorter.addLoadOrdering(modId, currentId, order));
 	}
 
 	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {
@@ -243,5 +293,16 @@ public final class ModResourcePackUtil {
 	 */
 	public static ResourcePackManager createClientManager() {
 		return new ResourcePackManager(new VanillaDataPackProvider(new SymlinkFinder((path) -> true)), new ModResourcePackCreator(ResourceType.SERVER_DATA, true));
+	}
+
+	public enum Order {
+		BEFORE("before"),
+		AFTER("after");
+
+		private final String jsonKey;
+
+		Order(String jsonKey) {
+			this.jsonKey = jsonKey;
+		}
 	}
 }

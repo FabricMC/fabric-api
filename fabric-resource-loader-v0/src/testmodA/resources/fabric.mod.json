@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-resource-loader-v0-testmod-a",
+  "name": "Fabric Resource Loader (v0) Test Mod A",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-resource-loader-v0": "*"
+  },
+  "custom": {
+    "fabric:resource_load_order": {
+      "before": [
+        "fabric-resource-loader-v0-testmod-b",
+        "mod-that-does-not-exist"
+      ],
+      "after": [
+        "mod-that-also-does-not-exist"
+      ]
+    }
+  }
+}

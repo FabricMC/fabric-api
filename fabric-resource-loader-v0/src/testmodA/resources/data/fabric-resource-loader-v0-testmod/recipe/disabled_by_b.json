@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:acacia_slab"
+    }
+  ],
+  "result": {
+    "id": "minecraft:acacia_boat",
+    "count": 1
+  }
+}

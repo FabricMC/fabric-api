@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+     "item": "minecraft:birch_slab"
+    }
+  ],
+  "result": {
+    "id": "minecraft:birch_boat",
+    "count": 1
+  }
+}
