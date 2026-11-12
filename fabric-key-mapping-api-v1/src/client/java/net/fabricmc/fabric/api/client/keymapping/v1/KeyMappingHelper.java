@@ -23,7 +23,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 
 import net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl;
-import net.fabricmc.fabric.mixin.client.keymapping.KeyMappingAccessor;
 
 /**
  * Helper for registering {@link KeyMapping}s.
@@ -43,13 +42,30 @@ public final class KeyMappingHelper {
 	/**
 	 * Registers the keymapping and add the keymapping category if required.
 	 *
+	 * <p>Preserves vanilla input handling. Use {@link #registerKeyMapping(KeyMapping, KeyMappingContext)}
+	 * to opt into context activation.
+	 *
 	 * @param keyMapping the keymapping
 	 * @return the keymapping itself
 	 * @throws IllegalArgumentException when a key mapping with the same ID is already registered
 	 */
 	public static KeyMapping registerKeyMapping(KeyMapping keyMapping) {
 		Objects.requireNonNull(keyMapping, "key mapping cannot be null");
-		return KeyMappingRegistryImpl.registerKeyMapping(keyMapping);
+
+		return KeyMappingRegistryImpl.registerKeyMapping(keyMapping, null);
+	}
+
+	/// Registers a key mapping with the given context.
+	///
+	/// @param keyMapping the key mapping
+	/// @param context the context controlling activation and conflicts
+	/// @return the key mapping itself
+	/// @throws IllegalArgumentException when a key mapping with the same ID is already registered
+	public static KeyMapping registerKeyMapping(KeyMapping keyMapping, KeyMappingContext context) {
+		Objects.requireNonNull(keyMapping, "key mapping cannot be null");
+		Objects.requireNonNull(context, "context cannot be null");
+
+		return KeyMappingRegistryImpl.registerKeyMapping(keyMapping, context);
 	}
 
 	/**
@@ -59,6 +75,6 @@ public final class KeyMappingHelper {
 	 * @return configured KeyCode
 	 */
 	public static InputConstants.Key getBoundKeyOf(KeyMapping keyMapping) {
-		return ((KeyMappingAccessor) keyMapping).fabric_getBoundKey();
+		return keyMapping.key;
 	}
 }

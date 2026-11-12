@@ -12,7 +12,11 @@
   },
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.test.client.keymapping.KeyMappingsTest"
+      "net.fabricmc.fabric.test.client.keymapping.KeyMappingsTest",
+      "net.fabricmc.fabric.test.client.keymapping.KeyMappingContextTest"
+    ],
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.client.keymapping.KeyMappingContextGameTest"
     ]
   }
 }

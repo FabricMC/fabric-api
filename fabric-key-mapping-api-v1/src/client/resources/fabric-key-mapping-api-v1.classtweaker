@@ -1,0 +1,5 @@
+classTweaker	v1	official
+accessible	field	net/minecraft/client/KeyMapping	key	Lcom/mojang/blaze3d/platform/InputConstants$Key;
+accessible	field	net/minecraft/client/KeyMapping	isDown	Z
+accessible	field	net/minecraft/client/KeyMapping	clickCount	I
+accessible	method	net/minecraft/client/KeyMapping	forAllKeyMappings	(Lcom/mojang/blaze3d/platform/InputConstants$Key;Ljava/util/function/Consumer;)V
