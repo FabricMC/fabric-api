@@ -29,6 +29,7 @@ import net.fabricmc.fabric.impl.client.keymapping.KeyMappingExtensions;
 /// Activation restrictions apply only to mappings registered with an explicit context through
 /// [KeyMappingHelper#registerKeyMapping(KeyMapping, KeyMappingContext)]. Other mappings retain vanilla input handling
 /// and use their default context only for conflict checks.
+/// Presses captured by the controls screen for rebinding do not activate contextual mappings.
 /// A press that starts in a screen is not delivered again to contextual mappings if a listener closes that screen.
 /// Opening or replacing a screen uses vanilla's input reset. Closing to gameplay does not add an extra reset;
 /// mappings retain their stored state, subject to their context and vanilla toggle behavior.

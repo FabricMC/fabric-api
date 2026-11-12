@@ -54,6 +54,8 @@ public class KeyMappingContextGameTest implements FabricClientGameTest {
 			openScreen(context);
 			testDebugShortcut(context);
 			testDebugKeyCapture(context);
+			testKeyboardCapture(context);
+			testMouseCapture(context);
 			testScreenKeyboard(context);
 			testScreenMouse(context);
 			testScreenReplacement(context);
@@ -389,6 +391,87 @@ public class KeyMappingContextGameTest implements FabricClientGameTest {
 				client.options.keyJump.setKey(jumpKey);
 				KeyMapping.resetMapping();
 			}
+		});
+	}
+
+	private static void testKeyboardCapture(ClientGameTestContext context) {
+		InputConstants.Key previousKey = context.computeOnClient(client -> KeyMappingHelper.getBoundKeyOf(legacy));
+
+		try {
+			openKeyCapture(context);
+			context.getInput().holdKey(inScreen);
+			context.runOnClient(client -> {
+				KeyBindsScreen screen = (KeyBindsScreen) client.gui.screen();
+
+				if (screen.selectedKey != null || !legacy.matches(KeyMappingHelper.getBoundKeyOf(inScreen))) {
+					throw new AssertionError("The controls screen must capture the keyboard binding");
+				}
+
+				if (inScreen.isDown() || always.isDown() || inScreen.consumeClick() || always.consumeClick()) {
+					throw new AssertionError("Capturing a keyboard binding must not activate contextual shortcuts");
+				}
+			});
+			context.getInput().releaseKey(inScreen);
+			context.getInput().pressKey(inScreen);
+			context.runOnClient(client -> {
+				if (!inScreen.consumeClick() || !always.consumeClick()) {
+					throw new AssertionError("Keyboard shortcuts must resume after binding capture");
+				}
+			});
+		} finally {
+			context.getInput().releaseKey(inScreen);
+			context.runOnClient(client -> {
+				legacy.setKey(previousKey);
+				KeyMapping.resetMapping();
+			});
+		}
+	}
+
+	private static void testMouseCapture(ClientGameTestContext context) {
+		InputConstants.Key previousKey = context.computeOnClient(client -> KeyMappingHelper.getBoundKeyOf(legacy));
+
+		try {
+			openKeyCapture(context);
+			context.runOnClient(client -> {
+				inScreen.setKey(InputConstants.Type.MOUSE.getOrCreate(4));
+				always.setKey(KeyMappingHelper.getBoundKeyOf(inScreen));
+				KeyMapping.resetMapping();
+			});
+			context.getInput().holdMouse(4);
+			context.runOnClient(client -> {
+				KeyBindsScreen screen = (KeyBindsScreen) client.gui.screen();
+
+				if (screen.selectedKey != null || !legacy.matches(KeyMappingHelper.getBoundKeyOf(inScreen))) {
+					throw new AssertionError("The controls screen must capture the mouse binding");
+				}
+
+				if (inScreen.isDown() || always.isDown() || inScreen.consumeClick() || always.consumeClick()) {
+					throw new AssertionError("Capturing a mouse binding must not activate contextual shortcuts");
+				}
+			});
+			context.getInput().releaseMouse(4);
+			context.getInput().pressMouse(4);
+			context.runOnClient(client -> {
+				if (!inScreen.consumeClick() || !always.consumeClick()) {
+					throw new AssertionError("Mouse shortcuts must resume after binding capture");
+				}
+			});
+		} finally {
+			context.getInput().releaseMouse(4);
+			context.runOnClient(client -> {
+				legacy.setKey(previousKey);
+				inScreen.setKey(inScreen.getDefaultKey());
+				always.setKey(always.getDefaultKey());
+				KeyMapping.resetMapping();
+			});
+		}
+	}
+
+	private static void openKeyCapture(ClientGameTestContext context) {
+		context.runOnClient(client -> {
+			KeyBindsScreen screen = new KeyBindsScreen(client.gui.screen(), client.options);
+			client.gui.setScreen(screen);
+			screen.selectedKey = legacy;
 		});
 	}
 

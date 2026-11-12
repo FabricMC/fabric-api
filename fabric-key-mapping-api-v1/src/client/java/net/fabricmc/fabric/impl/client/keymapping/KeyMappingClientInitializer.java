@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.keymapping;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -33,8 +35,16 @@ public class KeyMappingClientInitializer implements ClientModInitializer {
 		// Update mappings before mod listeners query them from screen input events.
 		ScreenEvents.BEFORE_INIT.addPhaseOrdering(phase, Event.DEFAULT_PHASE);
 		ScreenEvents.BEFORE_INIT.register(phase, (client, screen, width, height) -> {
-			ScreenKeyboardEvents.beforeKeyPress(screen).register((currentScreen, event) -> KeyMappingRegistryImpl.onScreenKey(InputConstants.getKey(event), true));
-			ScreenMouseEvents.beforeMouseClick(screen).register((currentScreen, event) -> KeyMappingRegistryImpl.onScreenKey(InputConstants.Type.MOUSE.getOrCreate(event.button()), true));
+			ScreenKeyboardEvents.beforeKeyPress(screen).register((currentScreen, event) -> onScreenKey(currentScreen, InputConstants.getKey(event)));
+			ScreenMouseEvents.beforeMouseClick(screen).register((currentScreen, event) -> onScreenKey(currentScreen, InputConstants.Type.MOUSE.getOrCreate(event.button())));
 		});
+	}
+
+	private static void onScreenKey(Screen screen, InputConstants.Key key) {
+		if (screen instanceof KeyBindsScreen keyBindsScreen && keyBindsScreen.selectedKey != null) {
+			return;
+		}
+
+		KeyMappingRegistryImpl.onScreenKey(key, true);
 	}
 }
