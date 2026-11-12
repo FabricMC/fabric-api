@@ -35,24 +35,18 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.impl.client.screen.GuiExtensions;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(Gui.class)
-public class GuiMixin implements GuiExtensions {
+public class GuiMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-api-v1");
 	@Unique
 	private static final boolean DEBUG_SCREEN = FabricLoader.getInstance().isDevelopmentEnvironment() || Boolean.getBoolean("fabric.debugScreen");
 
 	@Shadow
-	private @Nullable Screen screen;
-	@Shadow
 	@Final
 	private Minecraft minecraft;
-
-	@Unique
-	private Screen tickingScreen;
 
 	@Inject(method = "setScreen", at = @At("HEAD"))
 	private void checkThreadOnDev(@Nullable Screen screen, CallbackInfo ci) {
@@ -63,25 +57,20 @@ public class GuiMixin implements GuiExtensions {
 		}
 	}
 
-	@Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;removed()V", shift = At.Shift.AFTER))
-	private void onScreenRemove(@Nullable Screen screen, CallbackInfo ci) {
-		ScreenEvents.remove(this.screen).invoker().onRemove(this.screen);
+	@WrapOperation(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;removed()V"))
+	private void onScreenRemove(Screen screen, Operation<Void> original) {
+		original.call(screen);
+		ScreenEvents.remove(screen).invoker().onRemove(screen);
 	}
 
-	// These two injections should be caught by the try-catch block if anything fails in an event and then rethrown in the crash report
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V"))
-	private void beforeScreenTick(CallbackInfo ci) {
-		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
+	// This injection should be caught by the try-catch block if anything fails in an event and then rethrown in the crash report
+	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V"))
+	private void beforeScreenTick(Screen screen, Operation<Void> original) {
+		// Use the local variable screen in case someone tries to change the screen during this before tick event.
 		// If someone changes the screen, the after tick event will likely have class cast exceptions or an NPE.
-		this.tickingScreen = this.screen;
-		ScreenEvents.beforeTick(this.tickingScreen).invoker().beforeTick(this.tickingScreen);
-	}
-
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V", shift = At.Shift.AFTER))
-	private void afterScreenTick(CallbackInfo ci) {
-		ScreenEvents.afterTick(this.tickingScreen).invoker().afterTick(this.tickingScreen);
-		// Finally set the currently ticking screen to null
-		this.tickingScreen = null;
+		ScreenEvents.beforeTick(screen).invoker().beforeTick(screen);
+		original.call(screen);
+		ScreenEvents.afterTick(screen).invoker().afterTick(screen);
 	}
 
 	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V"))
@@ -89,15 +78,5 @@ public class GuiMixin implements GuiExtensions {
 		ScreenEvents.beforeExtract(currentScreen).invoker().beforeExtract(currentScreen, graphics, mouseX, mouseY, tickDelta);
 		operation.call(currentScreen, graphics, mouseX, mouseY, tickDelta);
 		ScreenEvents.afterExtract(currentScreen).invoker().afterExtract(currentScreen, graphics, mouseX, mouseY, tickDelta);
-	}
-
-	@Override
-	public @Nullable Screen getTickingScreen() {
-		return tickingScreen;
-	}
-
-	@Override
-	public void setTickingScreen(@Nullable Screen screen) {
-		this.tickingScreen = screen;
 	}
 }
