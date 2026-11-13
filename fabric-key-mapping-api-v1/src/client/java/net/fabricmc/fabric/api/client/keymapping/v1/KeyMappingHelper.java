@@ -21,7 +21,11 @@ import java.util.Objects;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 
+import net.fabricmc.fabric.impl.client.keymapping.KeyMappingExtensions;
 import net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl;
 
 /**
@@ -66,6 +70,31 @@ public final class KeyMappingHelper {
 		Objects.requireNonNull(context, "context cannot be null");
 
 		return KeyMappingRegistryImpl.registerKeyMapping(keyMapping, context);
+	}
+
+	/// Returns whether the keyboard event matches the mapping and its explicit context is active.
+	/// Mappings without a context are treated as active.
+	///
+	/// @param keyMapping the key mapping
+	/// @param event the keyboard event
+	/// @return whether the mapping is active and matches the event
+	public static boolean isActiveAndMatches(KeyMapping keyMapping, KeyEvent event) {
+		return keyMapping.matches(event) && isActive(keyMapping);
+	}
+
+	/// Returns whether the mouse event matches the mapping and its explicit context is active.
+	/// Mappings without a context are treated as active.
+	///
+	/// @param keyMapping the key mapping
+	/// @param event the mouse event
+	/// @return whether the mapping is active and matches the event
+	public static boolean isActiveAndMatches(KeyMapping keyMapping, MouseButtonEvent event) {
+		return keyMapping.matchesMouse(event) && isActive(keyMapping);
+	}
+
+	private static boolean isActive(KeyMapping keyMapping) {
+		KeyMappingContext context = ((KeyMappingExtensions) keyMapping).fabric_getContext();
+		return context == null || context.isActive(Minecraft.getInstance());
 	}
 
 	/**

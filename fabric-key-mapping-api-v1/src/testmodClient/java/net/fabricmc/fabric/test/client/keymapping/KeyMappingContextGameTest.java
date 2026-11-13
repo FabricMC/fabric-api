@@ -33,6 +33,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -50,6 +53,8 @@ public class KeyMappingContextGameTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext context) {
 		try {
 			testContextConflicts(context);
+			testKeyboardMatching(context);
+			testMouseMatching(context);
 			testScreenConflicts(context);
 			testScreenContext(context);
 			testScreenSubclass(context);
@@ -103,6 +108,53 @@ public class KeyMappingContextGameTest implements FabricClientGameTest {
 
 			if (!inScreen.same(always) || !always.same(inScreen) || !custom.same(shared)) {
 				throw new AssertionError("Overlapping contexts must conflict in both directions");
+			}
+		});
+	}
+
+	private static void testKeyboardMatching(ClientGameTestContext context) {
+		openScreen(context);
+		context.runOnClient(client -> {
+			KeyEvent event = new KeyEvent(KeyMappingHelper.getBoundKeyOf(inScreen).getValue(), 0, 0);
+			KeyEvent legacyEvent = new KeyEvent(KeyMappingHelper.getBoundKeyOf(legacy).getValue(), 0, 0);
+			KeyEvent otherEvent = new KeyEvent(InputConstants.KEY_F1, 0, 0);
+
+			if (!KeyMappingHelper.isActiveAndMatches(inScreen, event) || !KeyMappingHelper.isActiveAndMatches(legacy, legacyEvent)) {
+				throw new AssertionError("Keyboard matching must accept active mappings and mappings without an explicit context");
+			}
+
+			if (KeyMappingHelper.isActiveAndMatches(inGame, event) || KeyMappingHelper.isActiveAndMatches(inScreen, otherEvent)) {
+				throw new AssertionError("Keyboard matching must reject inactive contexts and unrelated keys");
+			}
+		});
+	}
+
+	private static void testMouseMatching(ClientGameTestContext context) {
+		openScreen(context);
+		context.runOnClient(client -> {
+			InputConstants.Key screenKey = KeyMappingHelper.getBoundKeyOf(inScreen);
+			InputConstants.Key gameKey = KeyMappingHelper.getBoundKeyOf(inGame);
+			InputConstants.Key legacyKey = KeyMappingHelper.getBoundKeyOf(legacy);
+			InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(InputConstants.MOUSE_BUTTON_4);
+			MouseButtonEvent event = new MouseButtonEvent(0, 0, new MouseButtonInfo(InputConstants.MOUSE_BUTTON_4, 0));
+			MouseButtonEvent otherEvent = new MouseButtonEvent(0, 0, new MouseButtonInfo(InputConstants.MOUSE_BUTTON_5, 0));
+
+			try {
+				inScreen.setKey(mouseKey);
+				inGame.setKey(mouseKey);
+				legacy.setKey(mouseKey);
+
+				if (!KeyMappingHelper.isActiveAndMatches(inScreen, event) || !KeyMappingHelper.isActiveAndMatches(legacy, event)) {
+					throw new AssertionError("Mouse matching must accept active mappings and mappings without an explicit context");
+				}
+
+				if (KeyMappingHelper.isActiveAndMatches(inGame, event) || KeyMappingHelper.isActiveAndMatches(inScreen, otherEvent)) {
+					throw new AssertionError("Mouse matching must reject inactive contexts and unrelated buttons");
+				}
+			} finally {
+				inScreen.setKey(screenKey);
+				inGame.setKey(gameKey);
+				legacy.setKey(legacyKey);
 			}
 		});
 	}
