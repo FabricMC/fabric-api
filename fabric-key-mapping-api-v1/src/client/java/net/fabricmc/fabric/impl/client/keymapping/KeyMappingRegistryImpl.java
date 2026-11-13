@@ -19,10 +19,14 @@ package net.fabricmc.fabric.impl.client.keymapping;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingContext;
 
 public final class KeyMappingRegistryImpl {
 	private static final List<KeyMapping> MODDED_KEY_BINDINGS = new ReferenceArrayList<>(); // ArrayList with identity based comparisons for contains/remove/indexOf etc., required for correctly handling duplicate keybinds
@@ -30,7 +34,7 @@ public final class KeyMappingRegistryImpl {
 	private KeyMappingRegistryImpl() {
 	}
 
-	public static KeyMapping registerKeyMapping(KeyMapping binding) {
+	public static KeyMapping registerKeyMapping(KeyMapping binding, @Nullable KeyMappingContext context) {
 		if (Minecraft.getInstance().options != null) {
 			throw new IllegalStateException("GameOptions has already been initialised");
 		}
@@ -43,8 +47,33 @@ public final class KeyMappingRegistryImpl {
 			}
 		}
 
+		if (context != null) {
+			((KeyMappingExtensions) binding).fabric_setContext(context);
+		}
+
 		MODDED_KEY_BINDINGS.add(binding);
 		return binding;
+	}
+
+	/// Vanilla only updates [KeyMapping] presses when no screen is open, so screen input events deliver presses to mappings with an active context.
+	public static void onScreenKey(InputConstants.Key key, boolean down) {
+		for (KeyMapping binding : MODDED_KEY_BINDINGS) {
+			KeyMappingContext context = ((KeyMappingExtensions) binding).fabric_getContext();
+
+			if (context == null || !binding.matches(key)) {
+				continue;
+			}
+
+			if (down && !context.isActive(Minecraft.getInstance())) {
+				continue;
+			}
+
+			binding.setDown(down);
+
+			if (down) {
+				binding.clickCount++;
+			}
+		}
 	}
 
 	/**
