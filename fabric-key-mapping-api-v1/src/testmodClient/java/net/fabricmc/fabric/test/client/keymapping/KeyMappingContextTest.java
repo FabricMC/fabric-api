@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.client.keymapping;
 
-import org.lwjgl.sdl.SDLScancode;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -50,15 +50,15 @@ public class KeyMappingContextTest implements ClientModInitializer {
 		always = register("all", category, KeyMappingContext.ALL);
 		custom = register("custom", category, CUSTOM_CONTEXT);
 		shared = register("shared", category, CUSTOM_CONTEXT);
-		legacy = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.legacy", SDLScancode.SDL_SCANCODE_F16, category));
-		toggle = new ToggleKeyMapping("key.fabric-key-mapping-api-v1-testmod.context_toggle", SDLScancode.SDL_SCANCODE_F18, category, () -> true, true);
+		legacy = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod.legacy", InputConstants.KEY_F16, category));
+		toggle = new ToggleKeyMapping("key.fabric-key-mapping-api-v1-testmod.context_toggle", InputConstants.KEY_F18, category, () -> true, true);
 		KeyMappingHelper.registerKeyMapping(toggle, CUSTOM_CONTEXT);
-		screenTransitionToggle = new ToggleKeyMapping("key.fabric-key-mapping-api-v1-testmod.screen_transition_toggle", SDLScancode.SDL_SCANCODE_F17, category, () -> true, true);
+		screenTransitionToggle = new ToggleKeyMapping("key.fabric-key-mapping-api-v1-testmod.screen_transition_toggle", InputConstants.KEY_F17, category, () -> true, true);
 		KeyMappingHelper.registerKeyMapping(screenTransitionToggle, KeyMappingContext.ALL);
 	}
 
 	private static KeyMapping register(String name, KeyMapping.Category category, KeyMappingContext context) {
-		return KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod." + name, SDLScancode.SDL_SCANCODE_F20, category), context);
+		return KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-key-mapping-api-v1-testmod." + name, InputConstants.KEY_F20, category), context);
 	}
 
 	static class ContextScreen extends Screen {
