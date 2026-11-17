@@ -21,10 +21,10 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.oit.OitStage;
 
-/// The render context for transparent render events inside a render pass.
+/// The render context for translucent render events inside a render pass.
 @ApiStatus.NonExtendable
 public interface LevelTranslucentRenderContext extends LevelRenderPassRenderContext {
-	/// @return the current OIT stage, `null` if improved transparency is not enabled.
+	/// @return the current OIT stage, `null` if improved transparency is disabled.
 	@Nullable
 	OitStage oitStage();
 }

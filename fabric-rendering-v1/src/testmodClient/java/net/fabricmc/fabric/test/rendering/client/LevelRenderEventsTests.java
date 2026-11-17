@@ -118,7 +118,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 	/**
 	 * Checks that the main pass events are called in the order
-	 * {@code BEFORE_RENDER_PASS}, {@code START_MAIN}, {@code AFTER_RENDER_PASS}, {@code END_MAIN}, once each per frame.
+	 * {@code BEFORE_RENDER_PASS}, {@code START_MAIN}, {@code END_MAIN}, {@code AFTER_RENDER_PASS}, once each per frame.
 	 */
 	private static void advanceMainPassStage(int expectedStage, String event) {
 		if (mainPassStage != expectedStage) {
@@ -161,13 +161,13 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(LevelRenderEventsTests::assertRenderContext);
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
 		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.AFTER_RENDER_PASS.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.END_MAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
+		LevelRenderEvents.AFTER_RENDER_PASS.register(LevelRenderEventsTests::assertTerrainRenderContext);
 
 		LevelRenderEvents.BEFORE_RENDER_PASS.register(renderContext -> advanceMainPassStage(0, "BEFORE_RENDER_PASS"));
 		LevelRenderEvents.START_MAIN.register(renderContext -> advanceMainPassStage(1, "START_MAIN"));
-		LevelRenderEvents.AFTER_RENDER_PASS.register(renderContext -> advanceMainPassStage(2, "AFTER_RENDER_PASS"));
-		LevelRenderEvents.END_MAIN.register(renderContext -> advanceMainPassStage(3, "END_MAIN"));
+		LevelRenderEvents.END_MAIN.register(renderContext -> advanceMainPassStage(2, "END_MAIN"));
+		LevelRenderEvents.AFTER_RENDER_PASS.register(renderContext -> advanceMainPassStage(3, "AFTER_RENDER_PASS"));
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world

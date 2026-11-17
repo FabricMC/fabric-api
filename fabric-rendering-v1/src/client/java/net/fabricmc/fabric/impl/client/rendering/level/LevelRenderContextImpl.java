@@ -63,6 +63,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 		sectionsToRender = null;
 		poseStack = null;
 		renderPass = null;
+		oitStage = null;
 	}
 
 	public void setSectionsToRender(ChunkSectionsToRender sectionsToRender) {
