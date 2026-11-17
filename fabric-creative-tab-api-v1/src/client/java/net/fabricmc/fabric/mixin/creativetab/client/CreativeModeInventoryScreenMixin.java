@@ -21,14 +21,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ItemTabButton;
-import net.minecraft.client.gui.components.TabButton;
 
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.tabs.TabManager;
@@ -52,7 +49,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
@@ -143,9 +139,11 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	}
 
 	void apply(group group) {
+		tabManager.getCurrentTab().visitChildren(a -> a.active = false);
 		this.tabBarTop = group.top;
 		this.tabBarBottom = group.bottom;
 		this.tabManager = group.manager;
+		tabManager.getCurrentTab().visitChildren(a -> a.active = true);
 	}
 	List<group> groups = List.of();
 	record group(TabNavigationBar top, TabNavigationBar bottom, TabManager manager) {}
@@ -165,7 +163,8 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 			int limit = 0;
 			TabManager tabManager1 = tabManager;
 			for(CreativeModeTab tab : CreativeModeTabs.tabs()) {
-				boolean isTop = tab.row() == CreativeModeTab.Row.TOP;
+				if (tab.getType() != CreativeModeTab.Type.CATEGORY) continue;
+				boolean isTop = limit < 5;// tab.row() == CreativeModeTab.Row.TOP;
 				int index = Math.clamp((long)tab.column(), 0, 6) + 1;
 				String row = isTop ? "top" : "bottom";
 				WidgetSprites tabSprite = new WidgetSprites(Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_unselected_" + index), Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_selected_" + index));
@@ -175,7 +174,19 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 				TabNavigationBar.Align align = tab.isAlignedRight() ? TabNavigationBar.Align.RIGHT_OR_BOTTOM : TabNavigationBar.Align.LEFT_OR_TOP;
 				tabBarBuilder.addTabToGroup(align, tabButton, tabAdapter);
 				limit++;
-				if (limit >= FabricCreativeModeTabImpl.TABS_PER_PAGE + 3) {
+				if (limit >= FabricCreativeModeTabImpl.TABS_PER_PAGE) {
+					for(CreativeModeTab tab2 : CreativeModeTabs.tabs()) {
+						if (tab2.getType() == CreativeModeTab.Type.CATEGORY) continue;
+						isTop = tab2.row() == CreativeModeTab.Row.TOP;
+						index = Math.clamp((long) tab2.column(), 0, 6) + 1;
+						row = isTop ? "top" : "bottom";
+						tabSprite = new WidgetSprites(Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_unselected_" + index), Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_selected_" + index));
+						tabAdapter = CreativeModeInventoryScree2nMixin.CreativeModeTabAdapter(tab2);
+						tabButton = ItemTabButton.builder(this.tabManager, tabAdapter, tabSprite).size(26, 32).icon(tab2.getIconItem()).iconYOffset(isTop ? 1 : -1).message(tab2.getDisplayName()).build();
+						tabBarBuilder = isTop ? tabBarTopBuilder : tabBarBottomBuilder;
+						align = tab2.isAlignedRight() ? TabNavigationBar.Align.RIGHT_OR_BOTTOM : TabNavigationBar.Align.LEFT_OR_TOP;
+						tabBarBuilder.addTabToGroup(align, tabButton, tabAdapter);
+					}
 					limit = 0;
 					groups.add(new group((TabNavigationBar)this.addWidget(tabBarTopBuilder.build()), (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build()), tabManager));
 //					this.tabBarBottom = ;
@@ -183,6 +194,9 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 					tabBarBottomBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos + this.imageHeight - 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(BOTTOM_TAB_BAR_NAME);
 					this.tabManager = newTabManager();
 				}
+			}
+			if (limit > 0) {
+				groups.add(new group((TabNavigationBar)this.addWidget(tabBarTopBuilder.build()), (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build()), tabManager));
 			}
 			tabManager = tabManager1;
 			this.groups = groups;
