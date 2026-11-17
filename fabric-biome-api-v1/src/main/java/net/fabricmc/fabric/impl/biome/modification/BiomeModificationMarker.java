@@ -22,4 +22,9 @@ package net.fabricmc.fabric.impl.biome.modification;
  */
 public interface BiomeModificationMarker {
 	void fabric_markModified();
+
+	/**
+	 * Whether biome modifications have been applied to this registry access.
+	 */
+	boolean fabric_isModified();
 }

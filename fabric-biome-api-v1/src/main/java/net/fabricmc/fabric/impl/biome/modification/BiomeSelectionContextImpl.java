@@ -102,7 +102,9 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return dimension.generator().getBiomeSource().possibleBiomes().stream().anyMatch(entry -> entry.value() == biome);
+		// Compare with the registered biome rather than the one being modified, which may be a copy of it
+		Biome registered = getBiomeHolder().value();
+		return dimension.generator().getBiomeSource().possibleBiomes().stream().anyMatch(entry -> entry.value() == registered);
 	}
 
 	@Override

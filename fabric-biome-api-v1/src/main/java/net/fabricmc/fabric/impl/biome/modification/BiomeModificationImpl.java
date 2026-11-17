@@ -26,9 +26,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Suppliers;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.TestOnly;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +42,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FeatureSorter;
@@ -131,29 +136,13 @@ public class BiomeModificationImpl {
 
 			biomesProcessed++;
 
-			// Make a copy of the biome to allow selection contexts to see it unmodified,
-			// But do so only once it's known anything wants to modify the biome at all
-			BiomeSelectionContext context = new BiomeSelectionContextImpl(impl, key, biome);
-			BiomeModificationContextImpl modificationContext = null;
+			Applied applied = applyModifiers(impl, key, biome, sortedModifiers);
+			modifiersApplied += applied.count();
+			BiomeModificationContextImpl modificationContext = applied.context();
 
-			for (ModifierRecord modifier : sortedModifiers) {
-				if (modifier.selector.test(context)) {
-					LOGGER.trace("Applying modifier {} to {}", modifier, key.identifier());
-
-					// Create the copy only if at least one modifier applies, since it's pretty costly
-					if (modificationContext == null) {
-						biomesChanged++;
-						modificationContext = new BiomeModificationContextImpl(impl, biome);
-					}
-
-					modifier.apply(context, modificationContext);
-					modifiersApplied++;
-				}
-			}
-
-			// Re-freeze and apply certain cleanup actions
+			// Apply certain cleanup actions
 			if (modificationContext != null) {
-				modificationContext.freeze();
+				biomesChanged++;
 
 				if (modificationContext.shouldRebuildFeatures()) {
 					impl.lookupOrThrow(Registries.LEVEL_STEM).stream().forEach(levelStem -> {
@@ -179,6 +168,60 @@ public class BiomeModificationImpl {
 			LOGGER.info("Applied {} biome modifications to {} of {} new biomes in {}", modifiersApplied, biomesChanged,
 					biomesProcessed, sw);
 		}
+	}
+
+	/**
+	 * Applies the modifiers that select the biome to it, in order, and re-freezes it.
+	 *
+	 * @return the modification context, or null if no modifier selected the biome, and how many modifiers were applied
+	 */
+	private static Applied applyModifiers(RegistryAccess registries, ResourceKey<Biome> key, Biome biome, List<ModifierRecord> modifiers) {
+		// Make a copy of the biome to allow selection contexts to see it unmodified,
+		// But do so only once it's known anything wants to modify the biome at all
+		BiomeSelectionContext context = new BiomeSelectionContextImpl(registries, key, biome);
+		BiomeModificationContextImpl modificationContext = null;
+		int count = 0;
+
+		for (ModifierRecord modifier : modifiers) {
+			if (modifier.selector.test(context)) {
+				LOGGER.trace("Applying modifier {} to {}", modifier, key.identifier());
+
+				// Create the copy only if at least one modifier applies, since it's pretty costly
+				if (modificationContext == null) {
+					modificationContext = new BiomeModificationContextImpl(registries, biome);
+				}
+
+				modifier.apply(context, modificationContext);
+				count++;
+			}
+		}
+
+		if (modificationContext != null) {
+			modificationContext.freeze();
+		}
+
+		return new Applied(modificationContext, count);
+	}
+
+	private record Applied(@Nullable BiomeModificationContextImpl context, int count) {
+	}
+
+	/**
+	 * Copies a biome from registries that a server hasn't modified yet, and applies every biome modification to the
+	 * copy as {@link #finalizeWorldGen} would. The biome in the registries is left as it is.
+	 */
+	public Biome createModifiedCopy(RegistryAccess registries, ResourceKey<Biome> key) {
+		Preconditions.checkState(!((BiomeModificationMarker) registries).fabric_isModified(),
+				"Biome modifications have already been applied to these registries");
+		Preconditions.checkArgument(registries.lookup(Registries.LEVEL_STEM).isPresent(),
+				"The registries have no dimensions, so modifications selecting biomes by dimension can't be applied");
+		Biome original = registries.lookupOrThrow(Registries.BIOME).getValueOrThrow(key);
+		RegistryOps<JsonElement> ops = registries.createSerializationContext(JsonOps.INSTANCE);
+		Biome copy = Biome.DIRECT_CODEC.encodeStart(ops, original)
+				.flatMap(json -> Biome.DIRECT_CODEC.parse(ops, json))
+				.getOrThrow(error -> new IllegalStateException("Could not copy biome " + key.identifier() + ": " + error));
+		applyModifiers(registries, key, copy, getSortedModifiers(registries));
+		return copy;
 	}
 
 	private static class ModifierRecord {

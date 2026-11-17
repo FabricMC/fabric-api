@@ -14,6 +14,9 @@
     ],
     "fabric-datagen": [
       "net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint"
+    ],
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.biome.client.ModifiedCopyClientTest"
     ]
   }
 }

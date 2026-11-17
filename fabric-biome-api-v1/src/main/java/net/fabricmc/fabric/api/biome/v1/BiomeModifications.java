@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -28,10 +29,13 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+
+import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 /**
  * Provides an API to modify Biomes after they have been loaded and before they are used in the Level.
@@ -85,6 +89,35 @@ public final class BiomeModifications {
 			IntProvider count = minGroupSize == maxGroupSize ? ConstantInt.of(minGroupSize) : UniformInt.of(minGroupSize, maxGroupSize);
 			context.getMobSpawnSettings().addSpawn(category, new MobSpawnSettings.SpawnerData(entityType, count), weight);
 		});
+	}
+
+	/**
+	 * Creates a copy of a biome with every biome modification applied to it, in the order a server applies them,
+	 * leaving the biome in the registries as it is.
+	 *
+	 * <p>Biome modifications are applied as a server starts. Before then, such as on the world creation screen,
+	 * this shows what a biome will be like in the world, for example which features it will place.
+	 *
+	 * <p>The registries must include the world's dimensions, since modifications can select biomes by the dimensions
+	 * they generate in, such as {@link BiomeSelectors#foundInOverworld()}. On the world creation screen, the
+	 * dimensions are kept apart from the registries, so add the ones the player has chosen:
+	 *
+	 * <pre>{@code
+	 * RegistryAccess registries = context.worldgenRegistries()
+	 *         .replaceFrom(RegistryLayer.DIMENSIONS, context.selectedDimensions().bake(context.datapackDimensions()).dimensionsRegistryAccess())
+	 *         .compositeAccess();
+	 * }</pre>
+	 *
+	 * <p>Copying a biome is costly, so don't call this while the game is running.
+	 *
+	 * @param registries registries a server hasn't modified yet, including the world's dimensions
+	 * @param biome      the key of the biome to copy
+	 * @return a copy of the biome, modified
+	 * @throws IllegalStateException    if the registries are a server's, whose biomes are already modified
+	 * @throws IllegalArgumentException if the registries don't include dimensions
+	 */
+	public static Biome createModifiedCopy(RegistryAccess registries, ResourceKey<Biome> biome) {
+		return BiomeModificationImpl.INSTANCE.createModifiedCopy(registries, biome);
 	}
 
 	/**
