@@ -39,6 +39,7 @@ import net.minecraft.resources.Identifier;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -108,6 +109,11 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 		}
 	}
 
+	/**
+	 * @author go away mcdev
+	 * @reason
+	 */
+	@Overwrite
 	protected void init() {
 		if (!this.minecraft.player.hasInfiniteMaterials()) {
 			this.minecraft.gui.setScreen(new InventoryScreen(this.minecraft.player));
