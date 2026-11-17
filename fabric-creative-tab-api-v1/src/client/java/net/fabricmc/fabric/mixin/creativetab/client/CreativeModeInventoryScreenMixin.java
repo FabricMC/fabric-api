@@ -27,6 +27,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ItemTabButton;
 
+import net.minecraft.client.gui.components.TabButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
@@ -83,7 +84,7 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	@Mutable
 	@Shadow
 	@Final
-	private TabManager tabManager;
+	private @Nullable TabManager tabManager;
 
 	@Shadow
 	protected abstract void refreshSearchResults();
@@ -139,11 +140,21 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	}
 
 	void apply(group group) {
-		tabManager.getCurrentTab().visitChildren(a -> a.active = false);
+		if (tabBarTop != null) tabBarTop.children().forEach(a -> {
+			if (a instanceof TabButton tabButton) tabButton.setVisible(false);
+		});
+		if (tabBarBottom != null) tabBarBottom.children().forEach(a -> {
+			if (a instanceof TabButton tabButton) tabButton.setVisible(false);
+		});
 		this.tabBarTop = group.top;
+		tabBarTop.children().forEach(a -> {
+			if (a instanceof TabButton tabButton) tabButton.setVisible(true);
+		});
 		this.tabBarBottom = group.bottom;
+		tabBarBottom.children().forEach(a -> {
+			if (a instanceof TabButton tabButton) tabButton.setVisible(true);
+		});
 		this.tabManager = group.manager;
-		tabManager.getCurrentTab().visitChildren(a -> a.active = true);
 	}
 	List<group> groups = List.of();
 	record group(TabNavigationBar top, TabNavigationBar bottom, TabManager manager) {}
