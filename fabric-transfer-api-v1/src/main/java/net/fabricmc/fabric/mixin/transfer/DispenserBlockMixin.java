@@ -25,7 +25,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.DropperBlock;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -37,14 +36,14 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
- * Allows droppers to insert into ItemVariant storages.
+ * Allows dispensers to insert into ItemVariant storages.
  */
-@Mixin(DropperBlock.class)
-class DropperBlockMixin {
+@Mixin(DispenserBlock.class)
+class DispenserBlockMixin {
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/core/dispenser/DispenseItemBehavior;dispense(Lnet/minecraft/core/dispenser/BlockSource;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"
+					target = "Lnet/minecraft/core/dispenser/DispenseBehavior;dispense(Ljava/lang/Iterable;Lnet/minecraft/core/dispenser/BlockSource;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"
 			),
 			method = "dispenseFrom",
 			cancellable = true,
@@ -64,7 +63,7 @@ class DropperBlockMixin {
 			int slot = dispenser.getRandomSlot(level.getRandom());
 
 			if (slot == -1) {
-				TransferApiImpl.LOGGER.warn("Skipping dropper transfer because the empty slot is unexpectedly -1.");
+				TransferApiImpl.LOGGER.warn("Skipping dispenser transfer because the empty slot is unexpectedly -1.");
 				return;
 			}
 

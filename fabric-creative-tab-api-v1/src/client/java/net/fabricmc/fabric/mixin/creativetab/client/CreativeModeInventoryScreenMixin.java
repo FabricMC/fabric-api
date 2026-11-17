@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
@@ -84,27 +83,6 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 
 	@Inject(method = "selectTab", at = @At("HEAD"), cancellable = true)
 	private void setSelectedTab(CreativeModeTab creativeModeTab, CallbackInfo info) {
-		if (!isTabVisible(creativeModeTab)) {
-			info.cancel();
-		}
-	}
-
-	@Inject(method = "checkTabHovering", at = @At("HEAD"), cancellable = true)
-	private void renderTabTooltipIfHovered(GuiGraphicsExtractor graphics, CreativeModeTab creativeModeTab, int mx, int my, CallbackInfoReturnable<Boolean> info) {
-		if (!isTabVisible(creativeModeTab)) {
-			info.setReturnValue(false);
-		}
-	}
-
-	@Inject(method = "checkTabClicked", at = @At("HEAD"), cancellable = true)
-	private void isClickInTab(CreativeModeTab creativeModeTab, double mx, double my, CallbackInfoReturnable<Boolean> info) {
-		if (!isTabVisible(creativeModeTab)) {
-			info.setReturnValue(false);
-		}
-	}
-
-	@Inject(method = "extractTabButton", at = @At("HEAD"), cancellable = true)
-	private void extractTabButton(GuiGraphicsExtractor guiGraphics, CreativeModeTab creativeModeTab, CallbackInfo info) {
 		if (!isTabVisible(creativeModeTab)) {
 			info.cancel();
 		}
