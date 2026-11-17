@@ -207,6 +207,18 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 				}
 			}
 			if (limit > 0) {
+				for(CreativeModeTab tab2 : CreativeModeTabs.tabs()) {
+					if (tab2.getType() == CreativeModeTab.Type.CATEGORY) continue;
+					var isTop = tab2.row() == CreativeModeTab.Row.TOP;
+					var index = Math.clamp((long) tab2.column(), 0, 6) + 1;
+					var row = isTop ? "top" : "bottom";
+					var tabSprite = new WidgetSprites(Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_unselected_" + index), Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_selected_" + index));
+					var tabAdapter = CreativeModeInventoryScree2nMixin.CreativeModeTabAdapter(tab2);
+					var tabButton = ItemTabButton.builder(this.tabManager, tabAdapter, tabSprite).size(26, 32).icon(tab2.getIconItem()).iconYOffset(isTop ? 1 : -1).message(tab2.getDisplayName()).build();
+					var tabBarBuilder = isTop ? tabBarTopBuilder : tabBarBottomBuilder;
+					var align = tab2.isAlignedRight() ? TabNavigationBar.Align.RIGHT_OR_BOTTOM : TabNavigationBar.Align.LEFT_OR_TOP;
+					tabBarBuilder.addTabToGroup(align, tabButton, tabAdapter);
+				}
 				groups.add(new group((TabNavigationBar)this.addWidget(tabBarTopBuilder.build()), (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build()), tabManager));
 			}
 			tabManager = tabManager1;
