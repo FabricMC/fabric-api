@@ -42,6 +42,59 @@ public final class LevelRenderEvents {
 	private LevelRenderEvents() { }
 
 	/**
+	 * Called after block outline render checks are made
+	 * and before the default block outline is drawn to the appropriate framebuffers.
+	 * This will NOT be called if the default outline render state
+	 * was set to null in {@link LevelExtractionEvents#AFTER_BLOCK_OUTLINE_EXTRACTION}.
+	 *
+	 * <p>Use this to replace the default block outline rendering for specific blocks that
+	 * need special outline rendering or to add information that doesn't replace the block outline.
+	 * Subscribers cannot affect each other or detect if another subscriber is also
+	 * handling a specific block.  If two subscribers render for the same block, both
+	 * renders will appear.
+	 *
+	 * <p>Returning false from any event subscriber will cancel the default block
+	 * outline render.  This has no effect on other subscribers to this event -
+	 * all subscribers will always be called.  Canceling is appropriate when the
+	 * subscriber replacing the default block outline render for a specific block.
+	 */
+	public static final Event<BeforeBlockOutline> BEFORE_BLOCK_OUTLINE = EventFactory.createArrayBacked(BeforeBlockOutline.class, callbacks -> (context, outlineRenderState) -> {
+		boolean shouldRender = true;
+
+		for (final BeforeBlockOutline callback : callbacks) {
+			if (!callback.beforeBlockOutline(context, outlineRenderState)) {
+				shouldRender = false;
+			}
+		}
+
+		return shouldRender;
+	});
+
+	/**
+	 * Called after all geometry of submits collected from entities, block entities, and particles (except translucent
+	 * particle geometry), the block breaking overlay, and the block outline for solid blocks are drawn to the
+	 * appropriate framebuffers, and before gizmos are collected.
+	 */
+	public static final Event<BeforeGizmos> BEFORE_GIZMOS = EventFactory.createArrayBacked(BeforeGizmos.class, callbacks -> context -> {
+		for (final BeforeGizmos callback : callbacks) {
+			callback.beforeGizmos(context);
+		}
+	});
+
+	/**
+	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the appropriate framebuffers
+	 * and all submit nodes from entities, block entities, and particles are added to the submit node storage, and
+	 * before any submit geometry is drawn to the appropriate framebuffers.
+	 *
+	 * <p>Use this event to add additional submits to {@link LevelSubmitContext#submitNodeCollector()}.
+	 */
+	public static final Event<CollectSubmits> COLLECT_SUBMITS = EventFactory.createArrayBacked(CollectSubmits.class, callbacks -> context -> {
+		for (final CollectSubmits callback : callbacks) {
+			callback.collectSubmits(context);
+		}
+	});
+
+	/**
 	 * Called before the main {@link RenderPass} is opened, after the sky is drawn to the appropriate framebuffers and all
 	 * chunks to be rendered are uploaded to GPU, and before {@link #START_MAIN}.
 	 *
@@ -83,19 +136,6 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the appropriate framebuffers
-	 * and all submit nodes from entities, block entities, and particles are added to the submit node storage, and
-	 * before any submit geometry is drawn to the appropriate framebuffers.
-	 *
-	 * <p>Use this event to add additional submits to {@link LevelRenderContext#submitNodeCollector()}.
-	 */
-	public static final Event<CollectSubmits> COLLECT_SUBMITS = EventFactory.createArrayBacked(CollectSubmits.class, callbacks -> context -> {
-		for (final CollectSubmits callback : callbacks) {
-			callback.collectSubmits(context);
-		}
-	});
-
-	/**
 	 * Called after the solid geometry of submits collected from entities, block entities, and particles are drawn to
 	 * the appropriate framebuffers.
 	 */
@@ -112,46 +152,6 @@ public final class LevelRenderEvents {
 	public static final Event<AfterTranslucentFeatures> AFTER_TRANSLUCENT_FEATURES = EventFactory.createArrayBacked(AfterTranslucentFeatures.class, callbacks -> context -> {
 		for (final AfterTranslucentFeatures callback : callbacks) {
 			callback.afterTranslucentFeatures(context);
-		}
-	});
-
-	/**
-	 * Called after block outline render checks are made
-	 * and before the default block outline is drawn to the appropriate framebuffers.
-	 * This will NOT be called if the default outline render state
-	 * was set to null in {@link LevelExtractionEvents#AFTER_BLOCK_OUTLINE_EXTRACTION}.
-	 *
-	 * <p>Use this to replace the default block outline rendering for specific blocks that
-	 * need special outline rendering or to add information that doesn't replace the block outline.
-	 * Subscribers cannot affect each other or detect if another subscriber is also
-	 * handling a specific block.  If two subscribers render for the same block, both
-	 * renders will appear.
-	 *
-	 * <p>Returning false from any event subscriber will cancel the default block
-	 * outline render.  This has no effect on other subscribers to this event -
-	 * all subscribers will always be called.  Canceling is appropriate when the
-	 * subscriber replacing the default block outline render for a specific block.
-	 */
-	public static final Event<BeforeBlockOutline> BEFORE_BLOCK_OUTLINE = EventFactory.createArrayBacked(BeforeBlockOutline.class, callbacks -> (context, outlineRenderState) -> {
-		boolean shouldRender = true;
-
-		for (final BeforeBlockOutline callback : callbacks) {
-			if (!callback.beforeBlockOutline(context, outlineRenderState)) {
-				shouldRender = false;
-			}
-		}
-
-		return shouldRender;
-	});
-
-	/**
-	 * Called after all geometry of submits collected from entities, block entities, and particles (except translucent
-	 * particle geometry), the block breaking overlay, and the block outline for solid blocks are drawn to the
-	 * appropriate framebuffers, and before gizmos are collected.
-	 */
-	public static final Event<BeforeGizmos> BEFORE_GIZMOS = EventFactory.createArrayBacked(BeforeGizmos.class, callbacks -> context -> {
-		for (final BeforeGizmos callback : callbacks) {
-			callback.beforeGizmos(context);
 		}
 	});
 
@@ -220,62 +220,63 @@ public final class LevelRenderEvents {
 	public static final Event<LevelExtractionEvents.EndExtraction> END_EXTRACTION = LevelExtractionEvents.END_EXTRACTION;
 
 	@FunctionalInterface
+	public interface BeforeBlockOutline {
+		boolean beforeBlockOutline(LevelSubmitContext context, BlockOutlineRenderState outlineRenderState);
+	}
+
+	@FunctionalInterface
+	public interface BeforeGizmos {
+		void beforeGizmos(LevelSubmitContext context);
+	}
+
+	@FunctionalInterface
+	public interface CollectSubmits {
+		void collectSubmits(LevelSubmitContext context);
+	}
+
+	@FunctionalInterface
 	public interface BeforeRenderPass {
 		void beforeRenderPass(LevelTerrainRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface StartMain {
-		void startMain(LevelTerrainRenderContext context);
+		void startMain(LevelRenderPassRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterOpaqueTerrain {
-		void afterOpaqueTerrain(LevelTerrainRenderContext context);
-	}
-
-	@FunctionalInterface
-	public interface CollectSubmits {
-		void collectSubmits(LevelRenderContext context);
+		void afterOpaqueTerrain(LevelRenderPassRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterSolidFeatures {
-		void afterSolidFeatures(LevelRenderContext context);
+		void afterSolidFeatures(LevelRenderPassRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterTranslucentFeatures {
-		void afterTranslucentFeatures(LevelRenderContext context);
-	}
-
-	@FunctionalInterface
-	public interface BeforeBlockOutline {
-		boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState);
-	}
-
-	@FunctionalInterface
-	public interface BeforeGizmos {
-		void beforeGizmos(LevelRenderContext context);
+		void afterTranslucentFeatures(LevelRenderPassRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface BeforeTranslucentTerrain {
-		void beforeTranslucentTerrain(LevelRenderContext context);
+		void beforeTranslucentTerrain(LevelRenderPassRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterTranslucentTerrain {
-		void afterTranslucentTerrain(LevelRenderContext context);
+		void afterTranslucentTerrain(LevelRenderPassRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterRenderPass {
-		void afterRenderPass(LevelRenderContext context);
+		void afterRenderPass(LevelTerrainRenderContext context);
 	}
 
+	// TODO: Is this meant to be in the main render pass?
 	@FunctionalInterface
 	public interface EndMain {
-		void endMain(LevelRenderContext context);
+		void endMain(LevelTerrainRenderContext context);
 	}
 }
