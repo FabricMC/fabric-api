@@ -11,7 +11,7 @@
     "ChiseledBookShelfBlockEntityMixin",
     "CompoundContainerAccessor",
     "CrafterBlockMixin",
-    "DropperBlockMixin",
+    "DispenserBlockMixin",
     "FluidMixin",
     "HopperBlockEntityMixin",
     "ItemContainerContentsAccessor",
