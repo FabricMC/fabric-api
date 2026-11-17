@@ -83,7 +83,7 @@ abstract class LevelRendererMixin {
 	}
 
 	@WrapOperation(method = "executeSolid", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/renderpearl/api/commands/RenderPass;Lcom/mojang/renderpearl/api/textures/GpuSampler;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender$ImprovedFogTextures;ZZ)V"))
-	private void wrapRenderOpaqueTerrain(ChunkSectionsToRender instance, ChunkSectionLayerGroup group, RenderPass renderPass, GpuSampler sampler, GpuTextureView atlas, ImprovedFogTextures improvedFogTextures, boolean wireframe, boolean hasWaterMask, Operation<Void> original) {
+	private void wrapRenderOpaqueTerrain(ChunkSectionsToRender instance, ChunkSectionLayerGroup group, RenderPass renderPass, GpuSampler sampler, GpuTextureView atlas, @Nullable ImprovedFogTextures improvedFogTextures, boolean wireframe, boolean hasWaterMask, Operation<Void> original) {
 		LevelRenderEvents.START_MAIN.invoker().startMain(renderContext);
 		original.call(instance, group, renderPass, sampler, atlas, improvedFogTextures, wireframe, hasWaterMask);
 		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.invoker().afterOpaqueTerrain(renderContext);
@@ -128,7 +128,7 @@ abstract class LevelRendererMixin {
 	}
 
 	@WrapOperation(method = "executeClassicTransparency", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/renderpearl/api/commands/RenderPass;Lcom/mojang/renderpearl/api/textures/GpuSampler;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender$ImprovedFogTextures;ZZ)V"))
-	private void wrapRenderTranslucentTerrain(ChunkSectionsToRender instance, ChunkSectionLayerGroup group, RenderPass renderPass, GpuSampler sampler, GpuTextureView atlas, ImprovedFogTextures improvedFogTextures, boolean wireframe, boolean hasWaterMask, Operation<Void> original) {
+	private void wrapRenderTranslucentTerrain(ChunkSectionsToRender instance, ChunkSectionLayerGroup group, RenderPass renderPass, GpuSampler sampler, GpuTextureView atlas, @Nullable ImprovedFogTextures improvedFogTextures, boolean wireframe, boolean hasWaterMask, Operation<Void> original) {
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.invoker().beforeTranslucentTerrain(renderContext);
 		original.call(instance, group, renderPass, sampler, atlas, improvedFogTextures, wireframe, hasWaterMask);
 		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.invoker().afterTranslucentTerrain(renderContext);

@@ -385,6 +385,7 @@ transitive-accessible method net/minecraft/world/level/levelgen/NoiseRouterData 
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines MATRICES_FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines OIT_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines IMPROVED_FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines CLOUDS_IN_FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/renderer/pipeline/RenderPipelines OUTLINE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiled (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout;[Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;
 transitive-accessible method net/minecraft/client/renderer/pipeline/RenderPipelines precompiled (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout$Subpass;[Lcom/mojang/renderpearl/api/pipeline/RenderPassLayout$Subpass;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;

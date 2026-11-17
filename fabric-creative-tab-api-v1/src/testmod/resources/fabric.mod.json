@@ -9,6 +9,9 @@
     "fabric-creative-tab-api-v1": "*"
   },
   "entrypoints": {
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.creativemodetab.client.CreativeModeTabClientTest"
+    ],
     "main": [
       "net.fabricmc.fabric.test.creativemodetab.CreativeModeTabTest"
     ]

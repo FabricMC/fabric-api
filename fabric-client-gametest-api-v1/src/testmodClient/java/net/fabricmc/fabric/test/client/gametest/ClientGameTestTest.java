@@ -202,6 +202,10 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 	private static void testScreenSize(ClientGameTestContext context, int expectedWidth, int expectedHeight) {
 		context.runOnClient(client -> {
+			if (client.getWindow().getWidth() != expectedWidth || client.getWindow().getHeight() != expectedHeight) {
+				throw new AssertionError("Expected framebuffer size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getWidth(), client.getWindow().getHeight()));
+			}
+
 			if (client.getWindow().getScreenWidth() != expectedWidth || client.getWindow().getScreenHeight() != expectedHeight) {
 				throw new AssertionError("Expected window size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getScreenWidth(), client.getWindow().getScreenHeight()));
 			}

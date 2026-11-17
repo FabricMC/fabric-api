@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.platform.InputConstants;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -58,6 +59,19 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	@Unique
 	private static int currentPage = 0;
 
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void synchronizeInitialPage(CallbackInfo info) {
+		if (!selectedTab.shouldDisplay()) {
+			selectedTab = CreativeModeTabs.getDefaultTab();
+		}
+
+		currentPage = getPage(selectedTab);
+
+		if (currentPage >= getPageCount()) {
+			currentPage = 0;
+		}
+	}
+
 	@Unique
 	private void updateSelection() {
 		if (!isTabVisible(selectedTab)) {
@@ -71,14 +85,17 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 
 	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/EditBox;setTextColor(I)V", shift = At.Shift.AFTER))
 	private void init(CallbackInfo info) {
-		currentPage = getPage(selectedTab);
-
 		int xpos = leftPos + 171;
 		int ypos = topPos + 4;
 
 		CreativeModeInventoryScreen self = (CreativeModeInventoryScreen) (Object) this;
 		addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, self));
 		addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, self));
+	}
+
+	@ModifyExpressionValue(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTabs;tabs()Ljava/util/List;"))
+	private List<CreativeModeTab> getVisibleTabs(List<CreativeModeTab> tabs) {
+		return getTabsOnPage(currentPage);
 	}
 
 	@Inject(method = "selectTab", at = @At("HEAD"), cancellable = true)
@@ -134,6 +151,7 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 		}
 
 		currentPage = page;
+		rebuildWidgets();
 		updateSelection();
 		return true;
 	}
