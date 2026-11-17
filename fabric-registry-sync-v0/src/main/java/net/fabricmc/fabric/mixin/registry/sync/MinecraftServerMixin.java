@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.registry.sync.validate.RegistryCustomContentStat
 @Mixin(MinecraftServer.class)
 class MinecraftServerMixin {
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/SavedDataStorage;set(Lnet/minecraft/world/level/saveddata/SavedDataType;Lnet/minecraft/world/level/saveddata/SavedData;)V", ordinal = 0))
-	private void saveRegistryEntryInfo(Thread serverThread, LevelStorageSource.LevelStorageAccess storageSource, PackRepository packRepository, WorldStem worldStem, Optional gameRules, Proxy proxy, DataFixer fixerUpper, Services services, LevelLoadListener levelLoadListener, boolean propagatesCrashes, NotificationManager notificationManager, CallbackInfo ci) {
+	private void saveRegistryEntryInfo(Thread serverThread, LevelStorageSource.LevelStorageAccess storageSource, PackRepository packRepository, WorldStem worldStem, Optional gameRules, Proxy proxy, DataFixer fixerUpper, Services services, LevelLoadListener levelLoadListener, boolean propagatesCrashes, NotificationManager notificationManager, long minRekeyTimeMs, CallbackInfo ci) {
 		RegistryCustomContentState.writeIfNeeded(storageSource, worldStem.registries().compositeAccess());
 	}
 }

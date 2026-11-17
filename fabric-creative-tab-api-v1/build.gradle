@@ -7,6 +7,8 @@ fabricApiModule {
 		'fabric-api-base',
 		'fabric-resource-loader-v1'
 	)
+
+	testDependencies(':fabric-client-gametest-api-v1')
 }
 
 loom {
