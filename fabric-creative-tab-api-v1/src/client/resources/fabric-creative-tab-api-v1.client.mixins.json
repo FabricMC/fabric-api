@@ -10,5 +10,8 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+    "CreativeModeInventoryScree2nMixin"
+  ]
 }

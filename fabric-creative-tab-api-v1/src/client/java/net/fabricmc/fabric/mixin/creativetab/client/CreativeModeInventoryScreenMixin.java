@@ -20,7 +20,24 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ItemTabButton;
+import net.minecraft.client.gui.components.TabButton;
+
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.tabs.TabManager;
+import net.minecraft.client.gui.components.tabs.TabNavigationBar;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.inventory.CreativeInventoryListener;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.resources.Identifier;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,6 +46,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
@@ -54,6 +72,27 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	@Shadow
 	private static CreativeModeTab selectedTab;
 
+	@Shadow
+	private EditBox searchBox;
+	@Shadow
+	private TabNavigationBar tabBarTop;
+	@Shadow
+	private TabNavigationBar tabBarBottom;
+	@Shadow
+	@Final
+	private TabManager tabManager;
+
+	@Shadow
+	protected abstract void refreshSearchResults();
+
+	@Shadow
+	private CreativeInventoryListener listener;
+	@Shadow
+	@Final
+	private static Component TOP_TAB_BAR_NAME;
+	@Shadow
+	@Final
+	private static Component BOTTOM_TAB_BAR_NAME;
 	// "static" matches selectedTab
 	@Unique
 	private static int currentPage = 0;
@@ -66,6 +105,65 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 					.filter(this::isTabVisible)
 					.min((a, b) -> Boolean.compare(a.isAlignedRight(), b.isAlignedRight()))
 					.ifPresent(this::selectTab);
+		}
+	}
+
+	protected void init() {
+		if (!this.minecraft.player.hasInfiniteMaterials()) {
+			this.minecraft.gui.setScreen(new InventoryScreen(this.minecraft.player));
+		} else {
+			super.init();
+			TabNavigationBar.Builder tabBarTopBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos - 32 + 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(TOP_TAB_BAR_NAME);
+			TabNavigationBar.Builder tabBarBottomBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos + this.imageHeight - 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(BOTTOM_TAB_BAR_NAME);
+
+			int limit = 0;
+			for(CreativeModeTab tab : CreativeModeTabs.tabs()) {
+				boolean isTop = tab.row() == CreativeModeTab.Row.TOP;
+				int index = Math.clamp((long)tab.column(), 0, 6) + 1;
+				String row = isTop ? "top" : "bottom";
+				WidgetSprites tabSprite = new WidgetSprites(Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_unselected_" + index), Identifier.withDefaultNamespace("container/creative_inventory/tab_" + row + "_selected_" + index));
+				CreativeModeInventoryScreen.CreativeModeTabAdapter tabAdapter = CreativeModeInventoryScree2nMixin.CreativeModeTabAdapter(tab);
+				ItemTabButton tabButton = ItemTabButton.builder(this.tabManager, tabAdapter, tabSprite).size(26, 32).icon(tab.getIconItem()).iconYOffset(isTop ? 1 : -1).message(tab.getDisplayName()).build();
+				TabNavigationBar.Builder tabBarBuilder = isTop ? tabBarTopBuilder : tabBarBottomBuilder;
+				TabNavigationBar.Align align = tab.isAlignedRight() ? TabNavigationBar.Align.RIGHT_OR_BOTTOM : TabNavigationBar.Align.LEFT_OR_TOP;
+				tabBarBuilder.addTabToGroup(align, tabButton, tabAdapter);
+				limit++;
+				if (limit >= FabricCreativeModeTabImpl.TABS_PER_PAGE) {
+					limit = 0;
+					this.tabBarTop = (TabNavigationBar)this.addWidget(tabBarTopBuilder.build());
+					this.tabBarBottom = (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build());
+					tabBarTopBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos - 32 + 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(TOP_TAB_BAR_NAME);
+					tabBarBottomBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos + this.imageHeight - 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(BOTTOM_TAB_BAR_NAME);
+				}
+			}
+
+			this.tabBarTop = (TabNavigationBar)this.addWidget(tabBarTopBuilder.build());
+			this.tabBarBottom = (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build());
+			Font var10003 = this.font;
+			int var10004 = this.leftPos + 82;
+			int var10005 = this.topPos + 6;
+			Objects.requireNonNull(this.font);
+			this.searchBox = new EditBox(var10003, var10004, var10005, 80, 9, Component.translatable("itemGroup.search"));
+			this.searchBox.setMaxLength(50);
+			this.searchBox.setBordered(false);
+			this.searchBox.setVisible(false);
+			this.searchBox.setTextColor(-1);
+			this.searchBox.setInvertHighlightedTextColor(false);
+			this.searchBox.setResponder((value) -> {
+				if (selectedTab.getType() == CreativeModeTab.Type.SEARCH) {
+					this.refreshSearchResults();
+				}
+
+			});
+			this.addRenderableWidget(this.searchBox);
+			this.minecraft.player.inventoryMenu.removeSlotListener(this.listener);
+			this.listener = new CreativeInventoryListener(this.minecraft);
+			this.minecraft.player.inventoryMenu.addSlotListener(this.listener);
+			if (!selectedTab.shouldDisplay()) {
+				selectedTab = CreativeModeTabs.getDefaultTab();
+			}
+
+			this.selectTab(selectedTab);
 		}
 	}
 
@@ -85,6 +183,29 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	private void setSelectedTab(CreativeModeTab creativeModeTab, CallbackInfo info) {
 		if (!isTabVisible(creativeModeTab)) {
 			info.cancel();
+		}
+	}
+
+//	@Inject(method = "checkTabHovering", at = @At("HEAD"), cancellable = true)
+//	private void renderTabTooltipIfHovered(GuiGraphicsExtractor graphics, CreativeModeTab creativeModeTab, int mx, int my, CallbackInfoReturnable<Boolean> info) {
+//		if (!isTabVisible(creativeModeTab)) {
+//			info.setReturnValue(false);
+//		}
+//	}
+//
+//	@Inject(method = "checkTabClicked", at = @At("HEAD"), cancellable = true)
+//	private void isClickInTab(CreativeModeTab creativeModeTab, double mx, double my, CallbackInfoReturnable<Boolean> info) {
+//		if (!isTabVisible(creativeModeTab)) {
+//			info.setReturnValue(false);
+//		}
+//	}
+
+	@WrapOperation(method = "extractUnselectedTabButtons", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/TabButton;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+	private void extractTabButton(TabButton button, GuiGraphicsExtractor guiGraphicsExtractor, Operation<Void> original) {
+		if (button.tab() instanceof CreativeModeInventoryScreen.CreativeModeTabAdapter tabAdapter) {
+			if (isTabVisible(tabAdapter.tab())) {
+				original.call(button, guiGraphicsExtractor);
+			}
 		}
 	}
 
