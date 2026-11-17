@@ -148,6 +148,17 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 			this.searchBox.setBordered(false);
 			this.searchBox.setVisible(false);
 			this.searchBox.setTextColor(-1);
+
+			currentPage = getPage(selectedTab);
+
+			int xpos = leftPos + 171;
+			int ypos = topPos + 4;
+
+			CreativeModeInventoryScreen self = (CreativeModeInventoryScreen) (Object) this;
+			addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, self));
+			addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, self));
+
+
 			this.searchBox.setInvertHighlightedTextColor(false);
 			this.searchBox.setResponder((value) -> {
 				if (selectedTab.getType() == CreativeModeTab.Type.SEARCH) {
@@ -166,18 +177,11 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 			this.selectTab(selectedTab);
 		}
 	}
-
-	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/EditBox;setTextColor(I)V", shift = At.Shift.AFTER))
-	private void init(CallbackInfo info) {
-		currentPage = getPage(selectedTab);
-
-		int xpos = leftPos + 171;
-		int ypos = topPos + 4;
-
-		CreativeModeInventoryScreen self = (CreativeModeInventoryScreen) (Object) this;
-		addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, self));
-		addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, self));
-	}
+//
+//	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/EditBox;setTextColor(I)V", shift = At.Shift.AFTER))
+//	private void init(CallbackInfo info) {
+//
+//	}
 
 	@Inject(method = "selectTab", at = @At("HEAD"), cancellable = true)
 	private void setSelectedTab(CreativeModeTab creativeModeTab, CallbackInfo info) {
