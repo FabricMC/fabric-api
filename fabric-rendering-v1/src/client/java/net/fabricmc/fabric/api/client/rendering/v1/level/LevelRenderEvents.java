@@ -179,7 +179,19 @@ public final class LevelRenderEvents {
 	});
 
 	/**
-	 * Called after the main {@link RenderPass} is closed, and before {@link #END_MAIN}.
+	 * Called at the end of the main render pass, after terrain, entities, block entities, and particles are drawn to
+	 * the appropriate framebuffers, and clouds, weather, and late debug are drawn to the appropriate
+	 * framebuffers, before translucency is draw when using improved transparency (oit),
+	 * and before fabulous translucent framebuffers are combined.
+	 */
+	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
+		for (final EndMain callback : callbacks) {
+			callback.endMain(context);
+		}
+	});
+
+	/**
+	 * Called after {@link #END_MAIN} and after the main {@link RenderPass} is closed.
 	 *
 	 * <p>When improved transparency is disabled, the main render pass has drawn terrain, solid and translucent features,
 	 * clouds, weather and the world border at this point. When it is enabled, only opaque terrain and solid features have
@@ -193,17 +205,6 @@ public final class LevelRenderEvents {
 	public static final Event<AfterRenderPass> AFTER_RENDER_PASS = EventFactory.createArrayBacked(AfterRenderPass.class, callbacks -> context -> {
 		for (final AfterRenderPass callback : callbacks) {
 			callback.afterRenderPass(context);
-		}
-	});
-
-	/**
-	 * Called at the end of the main render pass, after terrain, entities, block entities, and particles are drawn to
-	 * the appropriate framebuffers, and before clouds, weather, and late debug are drawn to the appropriate
-	 * framebuffers and before fabulous translucent framebuffers are combined.
-	 */
-	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
-		for (final EndMain callback : callbacks) {
-			callback.endMain(context);
 		}
 	});
 
@@ -256,27 +257,26 @@ public final class LevelRenderEvents {
 
 	@FunctionalInterface
 	public interface AfterTranslucentFeatures {
-		void afterTranslucentFeatures(LevelRenderPassRenderContext context);
+		void afterTranslucentFeatures(LevelTranslucentRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface BeforeTranslucentTerrain {
-		void beforeTranslucentTerrain(LevelRenderPassRenderContext context);
+		void beforeTranslucentTerrain(LevelTranslucentRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterTranslucentTerrain {
-		void afterTranslucentTerrain(LevelRenderPassRenderContext context);
+		void afterTranslucentTerrain(LevelTranslucentRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface EndMain {
+		void endMain(LevelRenderPassRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterRenderPass {
 		void afterRenderPass(LevelTerrainRenderContext context);
-	}
-
-	// TODO: Is this meant to be in the main render pass?
-	@FunctionalInterface
-	public interface EndMain {
-		void endMain(LevelTerrainRenderContext context);
 	}
 }

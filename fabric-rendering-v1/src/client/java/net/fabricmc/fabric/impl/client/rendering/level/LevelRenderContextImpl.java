@@ -24,14 +24,16 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
+import net.minecraft.client.renderer.oit.OitStage;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.AbstractLevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderPassRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelSubmitContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTranslucentRenderContext;
 
-public final class LevelRenderContextImpl implements AbstractLevelRenderContext, LevelTerrainRenderContext, LevelSubmitContext, LevelRenderPassRenderContext {
+public final class LevelRenderContextImpl implements AbstractLevelRenderContext, LevelSubmitContext, LevelTerrainRenderContext, LevelRenderPassRenderContext, LevelTranslucentRenderContext {
 	private GameRenderer gameRenderer;
 	private LevelRenderer levelRenderer;
 	private LevelRenderState levelRenderState;
@@ -43,6 +45,8 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	private PoseStack poseStack;
 	@Nullable
 	private RenderPass renderPass;
+	@Nullable
+	private OitStage oitStage;
 
 	public void prepare(
 			GameRenderer gameRenderer,
@@ -71,6 +75,10 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 
 	public void setRenderPass(RenderPass renderPass) {
 		this.renderPass = renderPass;
+	}
+
+	public void setOitStage(@Nullable OitStage oitStage) {
+		this.oitStage = oitStage;
 	}
 
 	@Override
@@ -107,5 +115,11 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	@Override
 	public RenderPass renderPass() {
 		return renderPass;
+	}
+
+	@Override
+	@Nullable
+	public OitStage oitStage() {
+		return oitStage;
 	}
 }

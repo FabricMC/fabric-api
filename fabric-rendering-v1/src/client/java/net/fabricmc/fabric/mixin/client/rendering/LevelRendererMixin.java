@@ -19,7 +19,9 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.renderpearl.api.textures.GpuSampler;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
@@ -38,9 +40,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender.ImprovedFogTextures;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.oit.OitStage;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
@@ -54,6 +60,9 @@ abstract class LevelRendererMixin {
 	@Shadow
 	@Final
 	private SubmitNodeStorage submitNodeStorage;
+
+	@Shadow
+	public abstract void render(GraphicsResourceAllocator resourceAllocator, boolean renderOutline, CameraRenderState cameraState, GpuBufferSlice fogBuffer, boolean consistentDepthRequired);
 
 	@Unique
 	private final LevelRenderContextImpl renderContext = new LevelRenderContextImpl();
@@ -113,21 +122,16 @@ abstract class LevelRendererMixin {
 		LevelRenderEvents.AFTER_SOLID_FEATURES.invoker().afterSolidFeatures(renderContext);
 	}
 
+	// region classic transparency
 	@Inject(method = "executeClassicTransparency", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher$PreparedFrame;executeTranslucent(Lcom/mojang/renderpearl/api/commands/RenderPass;)V", shift = At.Shift.AFTER))
 	private void afterRenderClassicTranslucentFeatures(CallbackInfo ci) {
+		renderContext.setOitStage(null);
 		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.invoker().afterTranslucentFeatures(renderContext);
 	}
 
-	@WrapOperation(method = "executeOit", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/RenderPass;close()V"))
-	private void afterRenderOitTranslucentFeatures(RenderPass instance, Operation<Void> original) {
-		renderContext.setRenderPass(instance);
-		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.invoker().afterTranslucentFeatures(renderContext);
-		original.call(instance);
-	}
-
-	// TODO call this in oit?
 	@WrapOperation(method = "executeClassicTransparency", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/renderpearl/api/commands/RenderPass;Lcom/mojang/renderpearl/api/textures/GpuSampler;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender$ImprovedFogTextures;ZZ)V"))
 	private void wrapRenderTranslucentTerrain(ChunkSectionsToRender instance, ChunkSectionLayerGroup group, RenderPass renderPass, GpuSampler sampler, GpuTextureView atlas, @Nullable ImprovedFogTextures improvedFogTextures, boolean wireframe, boolean hasWaterMask, Operation<Void> original) {
+		renderContext.setOitStage(null);
 		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.invoker().beforeTranslucentTerrain(renderContext);
 		original.call(instance, group, renderPass, sampler, atlas, improvedFogTextures, wireframe, hasWaterMask);
 		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.invoker().afterTranslucentTerrain(renderContext);
@@ -135,13 +139,31 @@ abstract class LevelRendererMixin {
 
 	// endregion
 
-	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/RenderPass;close()V", ordinal = 0, shift = At.Shift.AFTER))
-	private void afterMainRenderPass(CallbackInfo ci) {
-		LevelRenderEvents.AFTER_RENDER_PASS.invoker().afterRenderPass(renderContext);
+	// region order independent transparency
+	@WrapOperation(method = "executeOit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderLayers([Lnet/minecraft/client/renderer/chunk/ChunkSectionLayer;Lcom/mojang/renderpearl/api/textures/GpuSampler;Lcom/mojang/renderpearl/api/commands/RenderPass;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender$ImprovedFogTextures;ZLnet/minecraft/client/renderer/oit/OitStage;Z)V"))
+	private void wrapRenderOitTranslucentTerrain(ChunkSectionsToRender instance, ChunkSectionLayer[] layers, GpuSampler sampler, RenderPass renderPass, GpuTextureView atlas, GpuTextureView lightmap, ImprovedFogTextures improvedFogTextures, boolean wireframe, OitStage oitStage, boolean hasWaterMask, Operation<Void> original) {
+		renderContext.setRenderPass(renderPass);
+		renderContext.setOitStage(oitStage);
+		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.invoker().beforeTranslucentTerrain(renderContext);
+		original.call(instance, layers, sampler, renderPass, atlas, lightmap, improvedFogTextures, wireframe, oitStage, hasWaterMask);
+		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.invoker().afterTranslucentTerrain(renderContext);
 	}
 
-	@Inject(method = "lambda$addMainPass$0", at = @At("RETURN"))
-	private void endMainRender(CallbackInfo ci) {
+	@WrapOperation(method = "executeOit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher$PreparedFrame;executeOit(Lnet/minecraft/client/renderer/oit/OitStage;Lcom/mojang/renderpearl/api/commands/RenderPass;)V"))
+	private void afterRenderOitTranslucentFeatures(FeatureRenderDispatcher.PreparedFrame instance, OitStage stage, RenderPass renderPass, Operation<Void> original) {
+		renderContext.setRenderPass(renderPass);
+		renderContext.setOitStage(stage);
+		original.call(instance, stage, renderPass);
+		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.invoker().afterTranslucentFeatures(renderContext);
+	}
+
+	// endregion
+	// endregion
+
+	@WrapOperation(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/RenderPass;close()V", ordinal = 0))
+	private void endMainRender(RenderPass instance, Operation<Void> original) {
 		LevelRenderEvents.END_MAIN.invoker().endMain(renderContext);
+		original.call(instance);
+		LevelRenderEvents.AFTER_RENDER_PASS.invoker().afterRenderPass(renderContext);
 	}
 }
