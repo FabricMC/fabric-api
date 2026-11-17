@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.creativetab.client;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -37,8 +38,12 @@ import net.minecraft.client.gui.screens.inventory.CreativeInventoryListener;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.resources.Identifier;
 
+import net.minecraft.world.inventory.Slot;
+
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -79,6 +84,7 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	private TabNavigationBar tabBarTop;
 	@Shadow
 	private TabNavigationBar tabBarBottom;
+	@Mutable
 	@Shadow
 	@Final
 	private TabManager tabManager;
@@ -94,12 +100,39 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	@Shadow
 	@Final
 	private static Component BOTTOM_TAB_BAR_NAME;
+
+	@Shadow
+	protected abstract void showTab(CreativeModeTab tab);
+
+	@Shadow
+	private @Nullable List<Slot> originalSlots;
 	// "static" matches selectedTab
 	@Unique
 	private static int currentPage = 0;
 
+	TabManager newTabManager() {
+		return new TabManager((var0) -> {
+		}, (var0) -> {
+		}, (tab) -> {
+			if (tab instanceof CreativeModeInventoryScreen.CreativeModeTabAdapter tabAdapter) {
+				this.showTab(tabAdapter.tab());
+			}
+
+		}, (tab) -> {
+			if (tab instanceof CreativeModeInventoryScreen.CreativeModeTabAdapter tabAdapter) {
+				if (tabAdapter.tab().getType() == CreativeModeTab.Type.INVENTORY) {
+					((ItemPickerMenu)this.menu).slots.clear();
+					((ItemPickerMenu)this.menu).slots.addAll(this.originalSlots);
+					this.originalSlots = null;
+				}
+			}
+
+		});
+	}
+
 	@Unique
 	private void updateSelection() {
+		apply(groups.get(getCurrentPage()));
 		if (!isTabVisible(selectedTab)) {
 			CreativeModeTabs.allTabs()
 					.stream()
@@ -109,6 +142,13 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 		}
 	}
 
+	void apply(group group) {
+		this.tabBarTop = group.top;
+		this.tabBarBottom = group.bottom;
+		this.tabManager = group.manager;
+	}
+	List<group> groups = List.of();
+	record group(TabNavigationBar top, TabNavigationBar bottom, TabManager manager) {}
 	/**
 	 * @author go away mcdev
 	 * @reason
@@ -121,8 +161,9 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 			super.init();
 			TabNavigationBar.Builder tabBarTopBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos - 32 + 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(TOP_TAB_BAR_NAME);
 			TabNavigationBar.Builder tabBarBottomBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos + this.imageHeight - 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(BOTTOM_TAB_BAR_NAME);
-
+			List<group> groups = new ArrayList<>();
 			int limit = 0;
+			TabManager tabManager1 = tabManager;
 			for(CreativeModeTab tab : CreativeModeTabs.tabs()) {
 				boolean isTop = tab.row() == CreativeModeTab.Row.TOP;
 				int index = Math.clamp((long)tab.column(), 0, 6) + 1;
@@ -134,17 +175,20 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 				TabNavigationBar.Align align = tab.isAlignedRight() ? TabNavigationBar.Align.RIGHT_OR_BOTTOM : TabNavigationBar.Align.LEFT_OR_TOP;
 				tabBarBuilder.addTabToGroup(align, tabButton, tabAdapter);
 				limit++;
-				if (limit >= FabricCreativeModeTabImpl.TABS_PER_PAGE) {
+				if (limit >= FabricCreativeModeTabImpl.TABS_PER_PAGE + 3) {
 					limit = 0;
-					this.tabBarTop = (TabNavigationBar)this.addWidget(tabBarTopBuilder.build());
-					this.tabBarBottom = (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build());
+					groups.add(new group((TabNavigationBar)this.addWidget(tabBarTopBuilder.build()), (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build()), tabManager));
+//					this.tabBarBottom = ;
 					tabBarTopBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos - 32 + 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(TOP_TAB_BAR_NAME);
 					tabBarBottomBuilder = TabNavigationBar.builder(this.tabManager, this.leftPos, this.topPos + this.imageHeight - 4, this.imageWidth, 32, LinearLayout.Orientation.HORIZONTAL).spacing(1).name(BOTTOM_TAB_BAR_NAME);
+					this.tabManager = newTabManager();
 				}
 			}
-
-			this.tabBarTop = (TabNavigationBar)this.addWidget(tabBarTopBuilder.build());
-			this.tabBarBottom = (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build());
+			tabManager = tabManager1;
+			this.groups = groups;
+			apply(groups.getFirst());
+//			this.tabBarTop = (TabNavigationBar)this.addWidget(tabBarTopBuilder.build());
+//			this.tabBarBottom = (TabNavigationBar)this.addWidget(tabBarBottomBuilder.build());
 			Font var10003 = this.font;
 			int var10004 = this.leftPos + 82;
 			int var10005 = this.topPos + 6;
@@ -210,14 +254,14 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 //		}
 //	}
 
-	@WrapOperation(method = "extractUnselectedTabButtons", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/TabButton;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
-	private void extractTabButton(TabButton button, GuiGraphicsExtractor guiGraphicsExtractor, Operation<Void> original) {
-		if (button.tab() instanceof CreativeModeInventoryScreen.CreativeModeTabAdapter tabAdapter) {
-			if (isTabVisible(tabAdapter.tab())) {
-				original.call(button, guiGraphicsExtractor);
-			}
-		}
-	}
+//	@WrapOperation(method = "extractUnselectedTabButtons", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/TabButton;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V"))
+//	private void extractTabButton(TabButton button, GuiGraphicsExtractor guiGraphicsExtractor, Operation<Void> original) {
+//		if (button.tab() instanceof CreativeModeInventoryScreen.CreativeModeTabAdapter tabAdapter) {
+//			if (isTabVisible(tabAdapter.tab())) {
+//				original.call(button, guiGraphicsExtractor);
+//			}
+//		}
+//	}
 
 	@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
 	private void keyPressed(KeyEvent context, CallbackInfoReturnable<Boolean> cir) {
