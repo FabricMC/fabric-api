@@ -32,6 +32,11 @@ public final class EventFactoryImpl {
 	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS
 			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
+	/**
+	 * The most listeners for which the invoker of a {@link Combine} event is unrolled. Meant for tests.
+	 */
+	public static final int MAX_UNROLLED_LISTENERS = CombinedInvokerFactory.MAX_UNROLLED;
+
 	private EventFactoryImpl() { }
 
 	public static void invalidate() {
@@ -45,7 +50,20 @@ public final class EventFactoryImpl {
 	}
 
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Combine combine) {
-		return createArrayBacked(type, CombinedInvokerFactory.<T>create(type, combine));
+		CombinedInvokerFactory<T> factory = CombinedInvokerFactory.create(type, combine);
+		StableInvoker<T> stable = factory.createStable();
+		ArrayBackedEvent<T> event = stable != null ? StableEvents.create(type, factory, stable) : new ArrayBackedEvent<>(type, factory);
+		ARRAY_BACKED_EVENTS.add(event);
+		return event;
+	}
+
+	/**
+	 * The invoker that is currently installed in an event of Fabric API, which is not the one that {@code invoker()} returns
+	 * if the event has a stable invoker. Meant for tests.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T underlyingInvoker(Event<T> event) {
+		return ((ArrayBackedEvent<T>) event).currentInvoker();
 	}
 
 	/**

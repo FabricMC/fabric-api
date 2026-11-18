@@ -77,13 +77,37 @@ public class EventDelegatingTest {
 		e.register(tag("a"));
 		e.register(tag("b"));
 		EventFactoryImpl.awaitInvokerGeneration();
-		Callback generated = e.invoker();
+		Callback generated = EventFactoryImpl.underlyingInvoker(e);
 
 		e.register(tag("c"));
 		assertEquals(3, fire(e).size());
 		EventFactoryImpl.awaitInvokerGeneration();
-		assertNotEquals(generated.getClass(), e.invoker().getClass());
+		assertNotEquals(generated.getClass(), EventFactoryImpl.underlyingInvoker(e).getClass());
 		assertEquals(3, fire(e).size());
+	}
+
+	@Test
+	void invokerNeverChangesAndFollowsTheListeners() {
+		Event<Callback> e = create();
+		Callback invoker = e.invoker();
+		assertEquals(List.of(), fire(e));
+
+		for (int n = 1; n <= 20; n++) {
+			e.register(tag("l" + n + ":"));
+			assertSame(invoker, e.invoker(), "invoker() changed after registering " + n + " listeners");
+			assertEquals(n, fire(e).size());
+
+			if (n == 3) {
+				// Also after the background thread swapped in the unrolled invoker.
+				EventFactoryImpl.awaitInvokerGeneration();
+				assertSame(invoker, e.invoker());
+				assertEquals(3, fire(e).size());
+			}
+		}
+
+		EventFactoryImpl.awaitInvokerGeneration();
+		assertSame(invoker, e.invoker());
+		assertEquals(20, fire(e).size());
 	}
 
 	@Test
@@ -105,7 +129,7 @@ public class EventDelegatingTest {
 		Event<Callback> e = create();
 		Callback only = tag("only");
 		e.register(only);
-		assertSame(only, e.invoker());
+		assertSame(only, EventFactoryImpl.underlyingInvoker(e));
 	}
 
 	@Test

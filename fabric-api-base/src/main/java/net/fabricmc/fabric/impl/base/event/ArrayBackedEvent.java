@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -61,17 +63,42 @@ class ArrayBackedEvent<T> extends Event<T> {
 	 */
 	private final List<EventPhaseData<T>> sortedPhases = new ArrayList<>();
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * The invoker that never changes, if the event has one. It forwards to {@link #invoker}.
+	 */
+	private final @Nullable StableInvoker<T> stable;
+
 	ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory) {
+		this(type, invokerFactory, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory, @Nullable StableInvoker<T> stable) {
 		this.invokerFactory = invokerFactory;
 		this.componentType = type;
+		this.stable = stable;
 		this.handlers = (T[]) Array.newInstance(type, 0);
 		update();
 	}
 
+	/**
+	 * The current invoker, even if {@link #invoker()} returns a stable one that forwards to it.
+	 */
+	T currentInvoker() {
+		return invoker;
+	}
+
+	private void setInvoker(T newInvoker) {
+		this.invoker = newInvoker;
+
+		if (stable != null) {
+			stable.retarget(newInvoker);
+		}
+	}
+
 	void update() {
 		T[] current = handlers;
-		this.invoker = invokerFactory.apply(current);
+		setInvoker(invokerFactory.apply(current));
 
 		if (invokerFactory instanceof CombinedInvokerFactory<T> unrolled && current.length > 1) {
 			scheduleUpgrade(unrolled, current);
@@ -89,7 +116,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 
 			synchronized (lock) {
 				if (handlers == snapshot) {
-					this.invoker = generated;
+					setInvoker(generated);
 				}
 			}
 		});

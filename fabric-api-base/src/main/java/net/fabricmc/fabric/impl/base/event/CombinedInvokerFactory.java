@@ -23,11 +23,14 @@ import java.lang.classfile.Label;
 import java.lang.classfile.TypeKind;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.ConstantDescs;
+import java.lang.constant.DirectMethodHandleDesc;
+import java.lang.constant.DynamicCallSiteDesc;
 import java.lang.constant.DynamicConstantDesc;
 import java.lang.constant.MethodTypeDesc;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.MutableCallSite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -71,7 +74,11 @@ import net.fabricmc.fabric.api.event.Combine;
  * {@link ArrayBackedEvent} asks for it separately via {@link #generateUnrolled}, off-thread.
  */
 final class CombinedInvokerFactory<T> implements Function<T[], T> {
-	static final int MAX_UNROLLED = 16;
+	/**
+	 * The most listeners that get an unrolled invoker. The JIT does not compile methods above 8000 bytecodes,
+	 * and every listener takes at most about 50 of them. Throughput of both falls steeply past about 32 listeners anyway.
+	 */
+	static final int MAX_UNROLLED = 128;
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
 	private static final @Nullable Path DUMP_DIR = System.getProperty("fabric.event.dumpInvokers") != null
 			? Path.of(System.getProperty("fabric.event.dumpInvokers")) : null;
@@ -96,7 +103,6 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	private final @Nullable Object passValue;
 	private final int threadedParam;
 	private final MethodHandles.Lookup lookup;
-	private final byte[][] unrolledBytes = new byte[MAX_UNROLLED + 1][];
 	private boolean unrolledBroken;
 
 	private CombinedInvokerFactory(Class<? super T> type, Method method, Combine combine, MethodHandles.Lookup lookup) {
@@ -214,14 +220,10 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		if (n < 2 || n > MAX_UNROLLED || unrolledBroken || lookup == null || forceProxy) return null;
 
 		try {
-			byte[] bytes = unrolledBytes[n];
+			byte[] bytes = generateUnrolledBytes(n);
 
-			if (bytes == null) {
-				bytes = unrolledBytes[n] = generateUnrolledBytes(n);
-
-				if (DUMP_DIR != null) {
-					dump(bytes, "Unrolled" + n);
-				}
+			if (DUMP_DIR != null) {
+				dump(bytes, "Unrolled" + n);
 			}
 
 			// The listeners (and the pass value) are the class data of the hidden class, and the generated code loads them
@@ -237,6 +239,62 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		} catch (Throwable t) {
 			LOGGER.warn("Could not generate an unrolled invoker for {}, keeping the loop", type.getName(), t);
 			unrolledBroken = true;
+			return null;
+		}
+	}
+
+	/**
+	 * Creates the invoker that never changes, see {@link StableInvoker}. The class is generated for each event,
+	 * because every class has its own {@code invokedynamic} call site, whose target is the class data.
+	 *
+	 * @return the stable invoker, or {@code null} if generating classes is not possible.
+	 */
+	@SuppressWarnings("unchecked")
+	@Nullable
+	StableInvoker<T> createStable() {
+		if (lookup == null || forceProxy) return null;
+
+		try {
+			MethodType methodType = MethodType.methodType(method.getReturnType(), method.getParameterTypes());
+			MutableCallSite site = new MutableCallSite(methodType);
+			MethodHandle virtual = lookup.findVirtual(type, method.getName(), methodType);
+			ClassDesc self = ClassDesc.of(type.getPackageName(), "FabricEvent$Stable");
+			ClassDesc listener = listenerDesc();
+			MethodTypeDesc desc = methodDesc();
+			Class<?> returnClass = method.getReturnType();
+			DirectMethodHandleDesc bootstrap = ConstantDescs.ofCallsiteBootstrap(ClassDesc.of(StableInvokerSupport.class.getName()), "bootstrap", ConstantDescs.CD_CallSite);
+
+			byte[] bytes = ClassFile.of().build(self, cb -> {
+				cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
+				cb.withInterfaceSymbols(listener);
+
+				cb.withMethodBody(ConstantDescs.INIT_NAME, ConstantDescs.MTD_void, ClassFile.ACC_PUBLIC, code -> {
+					code.aload(0);
+					code.invokespecial(ConstantDescs.CD_Object, ConstantDescs.INIT_NAME, ConstantDescs.MTD_void);
+					code.return_();
+				});
+
+				cb.withMethodBody(method.getName(), desc, ClassFile.ACC_PUBLIC, code -> {
+					loadParams(code);
+					code.invokedynamic(DynamicCallSiteDesc.of(bootstrap, method.getName(), desc));
+
+					if (returnClass == void.class) {
+						code.return_();
+					} else {
+						code.return_(TypeKind.from(returnClass));
+					}
+				});
+			});
+
+			if (DUMP_DIR != null) {
+				dump(bytes, "Stable");
+			}
+
+			MethodHandles.Lookup hidden = lookup.defineHiddenClassWithClassData(bytes, site, true);
+			T object = (T) hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class)).invoke();
+			return new StableInvoker<>(object, site, virtual);
+		} catch (Throwable t) {
+			LOGGER.warn("Could not generate a stable invoker for {}, its invoker will change when listeners are registered", type.getName(), t);
 			return null;
 		}
 	}

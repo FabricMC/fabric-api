@@ -39,7 +39,7 @@ public class ConvertedEventsTest {
 		ServerTickEvents.END_SERVER_TICK.register(server -> calls.add(3));
 		EventFactoryImpl.awaitInvokerGeneration();
 
-		assertTrue(ServerTickEvents.END_SERVER_TICK.invoker().getClass().getName().contains("FabricEvent$Unrolled3"));
+		assertTrue(EventFactoryImpl.underlyingInvoker(ServerTickEvents.END_SERVER_TICK).getClass().getName().contains("FabricEvent$Unrolled3"));
 		ServerTickEvents.END_SERVER_TICK.invoker().onEndTick(null);
 		assertEquals(List.of(1, 2, 3), calls);
 	}

@@ -42,6 +42,11 @@ import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 public class EventUnrolledModesTest {
 	private static final Random RNG = new Random(0xFAB1C);
 
+	/**
+	 * Every count up to 20, and the ones around the limit of unrolled invokers.
+	 */
+	private static final int[] COUNTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 32, 64, 127, 128, 129, 140};
+
 	public record Res(int id) { }
 
 	private static final Res PASS = new Res(-1);
@@ -85,8 +90,8 @@ public class EventUnrolledModesTest {
 	@SuppressWarnings("unchecked")
 	private static <T> void fuzz(Class<T> type, Combine combine, Function<T[], T> reference,
 			BiFunction<Integer, Random, T> make, BiFunction<T, List<String>, Object> fire, boolean reflective) {
-		for (int n = 0; n <= 20; n++) {
-			for (int rep = 0; rep < 25; rep++) {
+		for (int n : COUNTS) {
+			for (int rep = 0; rep < (n <= 20 ? 25 : 3); rep++) {
 				T[] listeners = (T[]) Array.newInstance(type, n);
 				Event<T> event = EventFactory.createArrayBacked(type, combine);
 
@@ -104,15 +109,15 @@ public class EventUnrolledModesTest {
 				EventFactoryImpl.awaitInvokerGeneration();
 				compare(expectedInvoker, event.invoker(), fire, context);
 
-				String name = event.invoker().getClass().getName();
+				String name = EventFactoryImpl.underlyingInvoker(event).getClass().getName();
 
 				if (n == 1) {
-					assertSame(listeners[0], event.invoker(), context + " single listener");
+					assertSame(listeners[0], EventFactoryImpl.underlyingInvoker(event), context + " single listener");
 				} else if (reflective) {
 					assertTrue(name.contains("Proxy"), context + " " + name);
 				} else if (n == 0) {
 					assertTrue(name.contains("FabricEvent$Empty"), context + " " + name);
-				} else if (n >= 2 && n <= 16) {
+				} else if (n >= 2 && n <= EventFactoryImpl.MAX_UNROLLED_LISTENERS) {
 					assertTrue(name.contains("FabricEvent$Unrolled" + n), context + " " + name);
 				} else {
 					assertTrue(name.contains("FabricEvent$Loop"), context + " " + name);
