@@ -98,6 +98,14 @@ class ArrayBackedEvent<T> extends Event<T> {
 
 	void update() {
 		T[] current = handlers;
+
+		if (stable != null && current.length == 0) {
+			// No listeners: the stable invoker calls a constant method handle, no invoker object is needed.
+			this.invoker = stable.object;
+			stable.retargetEmpty();
+			return;
+		}
+
 		setInvoker(invokerFactory.apply(current));
 
 		if (invokerFactory instanceof CombinedInvokerFactory<T> unrolled && current.length > 1) {

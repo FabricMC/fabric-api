@@ -116,7 +116,7 @@ public class EventUnrolledModesTest {
 				} else if (reflective) {
 					assertTrue(name.contains("Proxy"), context + " " + name);
 				} else if (n == 0) {
-					assertTrue(name.contains("FabricEvent$Empty"), context + " " + name);
+					assertTrue(name.contains("FabricEvent$Stable"), context + " " + name);
 				} else if (n >= 2 && n <= EventFactoryImpl.MAX_UNROLLED_LISTENERS) {
 					assertTrue(name.contains("FabricEvent$Unrolled" + n), context + " " + name);
 				} else {

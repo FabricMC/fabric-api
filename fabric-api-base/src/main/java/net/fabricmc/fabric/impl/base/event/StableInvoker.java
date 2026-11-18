@@ -40,11 +40,24 @@ final class StableInvoker<T> {
 	 * The listener method, with the receiver as an additional first parameter.
 	 */
 	private final MethodHandle virtual;
+	/**
+	 * What the event does without listeners, as a constant method handle: no class is needed for it.
+	 */
+	private final MethodHandle empty;
 
-	StableInvoker(T object, MutableCallSite site, MethodHandle virtual) {
+	StableInvoker(T object, MutableCallSite site, MethodHandle virtual, MethodHandle empty) {
 		this.object = object;
 		this.site = site;
 		this.virtual = virtual;
+		this.empty = empty;
+	}
+
+	/**
+	 * Makes the stable invoker do what the event does without listeners.
+	 */
+	void retargetEmpty() {
+		site.setTarget(empty);
+		MutableCallSite.syncAll(new MutableCallSite[] {site});
 	}
 
 	/**

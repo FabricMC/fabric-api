@@ -188,14 +188,11 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 		if (lookup != null && !forceProxy) {
 			try {
-				// No listeners: straight-line code, nothing to loop over. Otherwise the loop invoker.
-				boolean empty = listeners.length == 0;
-				String key = loopKey() + (empty ? "/empty" : "");
-				MethodHandle ctor = LOOP_CONSTRUCTORS.get(type).get(key);
+				MethodHandle ctor = LOOP_CONSTRUCTORS.get(type).get(loopKey());
 
 				if (ctor == null) {
-					ctor = empty ? generateEmptyConstructor() : generateLoopConstructor();
-					LOOP_CONSTRUCTORS.get(type).put(key, ctor);
+					ctor = generateLoopConstructor();
+					LOOP_CONSTRUCTORS.get(type).put(loopKey(), ctor);
 				}
 
 				return (T) (Object) ctor.invokeExact((Object[]) listeners, passValue);
@@ -292,7 +289,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 			MethodHandles.Lookup hidden = lookup.defineHiddenClassWithClassData(bytes, site, true);
 			T object = (T) hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class)).invoke();
-			return new StableInvoker<>(object, site, virtual);
+			return new StableInvoker<>(object, site, virtual, emptyTarget(methodType));
 		} catch (Throwable t) {
 			LOGGER.warn("Could not generate a stable invoker for {}, its invoker will change when listeners are registered", type.getName(), t);
 			return null;
@@ -324,59 +321,17 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	private static final MethodTypeDesc CONSTRUCTOR_DESC = MethodTypeDesc.of(ConstantDescs.CD_void, ConstantDescs.CD_Object.arrayType(), ConstantDescs.CD_Object);
 
 	/**
-	 * The invoker of an event without listeners: it only returns what the combination returns for no listeners.
-	 * There is no array, no loop and no branch.
+	 * What the combination does without listeners, as a constant method handle for the call site of a stable invoker.
 	 */
-	private MethodHandle generateEmptyConstructor() throws ReflectiveOperationException {
-		ClassDesc self = ClassDesc.of(type.getPackageName(), "FabricEvent$Empty");
-		ClassDesc listener = listenerDesc();
-		ClassDesc returnDesc = method.getReturnType().describeConstable().orElseThrow();
-		boolean storePass = storesPass();
-		Class<?> returnClass = method.getReturnType();
+	private MethodHandle emptyTarget(MethodType methodType) {
+		Class<?> returnClass = methodType.returnType();
 
-		byte[] bytes = ClassFile.of().build(self, cb -> {
-			cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
-			cb.withInterfaceSymbols(listener);
-
-			if (storePass) {
-				cb.withField("pass", returnDesc, ClassFile.ACC_PRIVATE | ClassFile.ACC_FINAL);
-			}
-
-			cb.withMethodBody(ConstantDescs.INIT_NAME, CONSTRUCTOR_DESC, ClassFile.ACC_PUBLIC, code -> {
-				code.aload(0);
-				code.invokespecial(ConstantDescs.CD_Object, ConstantDescs.INIT_NAME, ConstantDescs.MTD_void);
-
-				if (storePass) {
-					code.aload(0);
-					code.aload(2);
-					code.checkcast(returnDesc);
-					code.putfield(self, "pass", returnDesc);
-				}
-
-				code.return_();
-			});
-
-			cb.withMethodBody(method.getName(), methodDesc(), ClassFile.ACC_PUBLIC, code -> {
-				switch (mode) {
-				case VOID -> code.return_();
-				case ALL_MATCH -> {
-					code.loadConstant(1);
-					code.ireturn();
-				}
-				case CHAIN -> {
-					TypeKind kind = TypeKind.from(returnClass);
-					code.loadLocal(kind, slotOf(threadedParam));
-					code.return_(kind);
-				}
-				case SHORT_CIRCUIT -> {
-					pushPass(code, self, returnDesc, -1);
-					code.return_(TypeKind.from(returnClass));
-				}
-				}
-			});
-		});
-
-		return define(bytes, "Empty");
+		return switch (mode) {
+		case VOID -> MethodHandles.empty(methodType);
+		case ALL_MATCH -> MethodHandles.dropArguments(MethodHandles.constant(boolean.class, true), 0, methodType.parameterList());
+		case SHORT_CIRCUIT -> MethodHandles.dropArguments(MethodHandles.constant(returnClass, passValue), 0, methodType.parameterList());
+		case CHAIN -> MethodHandles.permuteArguments(MethodHandles.identity(returnClass), methodType, threadedParam);
+		};
 	}
 
 	private MethodHandle generateLoopConstructor() throws ReflectiveOperationException {
