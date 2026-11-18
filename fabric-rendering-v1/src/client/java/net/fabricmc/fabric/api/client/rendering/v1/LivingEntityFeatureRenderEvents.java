@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -30,15 +31,7 @@ public final class LivingEntityFeatureRenderEvents {
 	/**
 	 * An event that can prevent capes from rendering.
 	 */
-	public static final Event<AllowCapeRender> ALLOW_CAPE_RENDER = EventFactory.createArrayBacked(AllowCapeRender.class, listeners -> state -> {
-		for (AllowCapeRender listener : listeners) {
-			if (!listener.allowCapeRender(state)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
+	public static final Event<AllowCapeRender> ALLOW_CAPE_RENDER = EventFactory.createArrayBacked(AllowCapeRender.class, Combine.STOP_AT_FALSE);
 
 	@FunctionalInterface
 	public interface AllowCapeRender {

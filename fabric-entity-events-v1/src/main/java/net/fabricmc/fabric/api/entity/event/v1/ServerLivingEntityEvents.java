@@ -21,6 +21,7 @@ import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -33,15 +34,7 @@ public final class ServerLivingEntityEvents {
 	 * This is fired from {@link LivingEntity#hurtServer}, before armor or any other mitigation are applied.
 	 * Mods can cancel this to prevent the damage entirely.
 	 */
-	public static final Event<AllowDamage> ALLOW_DAMAGE = EventFactory.createArrayBacked(AllowDamage.class, callbacks -> (entity, source, amount) -> {
-		for (AllowDamage callback : callbacks) {
-			if (!callback.allowDamage(entity, source, amount)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
+	public static final Event<AllowDamage> ALLOW_DAMAGE = EventFactory.createArrayBacked(AllowDamage.class, Combine.STOP_AT_FALSE);
 
 	/**
 	 * An event that is called after an entity is damaged. This is fired from {@link LivingEntity#hurtServer} after damage
@@ -53,11 +46,7 @@ public final class ServerLivingEntityEvents {
 	 *
 	 * <p>This event is not fired if the entity was killed by the damage.
 	 */
-	public static final Event<AfterDamage> AFTER_DAMAGE = EventFactory.createArrayBacked(AfterDamage.class, callbacks -> (entity, source, baseDamageTaken, damageTaken, blocked) -> {
-		for (AfterDamage callback : callbacks) {
-			callback.afterDamage(entity, source, baseDamageTaken, damageTaken, blocked);
-		}
-	});
+	public static final Event<AfterDamage> AFTER_DAMAGE = EventFactory.createArrayBacked(AfterDamage.class, Combine.CALL_ALL);
 
 	/**
 	 * An event that is called when an entity takes fatal damage.
@@ -72,24 +61,12 @@ public final class ServerLivingEntityEvents {
 	 *     <li>a mod that changes death mechanics switching the player over to the mod's play-mode, where death doesn't apply</li>
 	 * </ul>
 	 */
-	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (entity, damageSource, damageAmount) -> {
-		for (AllowDeath callback : callbacks) {
-			if (!callback.allowDeath(entity, damageSource, damageAmount)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
+	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, Combine.STOP_AT_FALSE);
 
 	/**
 	 * An event that is called when a living entity dies.
 	 */
-	public static final Event<AfterDeath> AFTER_DEATH = EventFactory.createArrayBacked(AfterDeath.class, callbacks -> (entity, damageSource) -> {
-		for (AfterDeath callback : callbacks) {
-			callback.afterDeath(entity, damageSource);
-		}
-	});
+	public static final Event<AfterDeath> AFTER_DEATH = EventFactory.createArrayBacked(AfterDeath.class, Combine.CALL_ALL);
 
 	/**
 	 * An event that is called when a mob has been converted to another type.
@@ -100,11 +77,7 @@ public final class ServerLivingEntityEvents {
 	 * <p>This event only handles cases where the entity type changes, requiring a new instance. Notably it does not
 	 * cover mooshrooms changing color from lightning, creepers getting charged, or wolves being tamed.</p>
 	 */
-	public static final Event<MobConversion> MOB_CONVERSION = EventFactory.createArrayBacked(MobConversion.class, callbacks -> (previous, converted, keepEquipment) -> {
-		for (MobConversion callback : callbacks) {
-			callback.onConversion(previous, converted, keepEquipment);
-		}
-	});
+	public static final Event<MobConversion> MOB_CONVERSION = EventFactory.createArrayBacked(MobConversion.class, Combine.CALL_ALL);
 
 	@FunctionalInterface
 	public interface AllowDamage {

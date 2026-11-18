@@ -23,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -30,11 +31,7 @@ public interface ItemTooltipCallback {
 	/**
 	 * Fired after the game has appended all base tooltip lines to the list.
 	 */
-	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, callbacks -> (stack, context, type, lines) -> {
-		for (ItemTooltipCallback callback : callbacks) {
-			callback.getTooltip(stack, context, type, lines);
-		}
-	});
+	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, Combine.CALL_ALL);
 
 	/**
 	 * Called when an item stack's tooltip is rendered. Text added to {@code lines} will be

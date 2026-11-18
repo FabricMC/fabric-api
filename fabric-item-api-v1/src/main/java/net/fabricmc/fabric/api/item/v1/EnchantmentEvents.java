@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.TriState;
@@ -53,17 +54,7 @@ public final class EnchantmentEvents {
 	 */
 	public static final Event<AllowEnchanting> ALLOW_ENCHANTING = EventFactory.createArrayBacked(
 			AllowEnchanting.class,
-			callbacks -> (enchantment, target, context) -> {
-				for (AllowEnchanting callback : callbacks) {
-					TriState result = callback.allowEnchanting(enchantment, target, context);
-
-					if (result != TriState.DEFAULT) {
-						return result;
-					}
-				}
-
-				return TriState.DEFAULT;
-			}
+			Combine.firstOtherThan(TriState.DEFAULT)
 	);
 
 	/**
@@ -83,11 +74,7 @@ public final class EnchantmentEvents {
 	@Deprecated
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
 			Modify.class,
-			callbacks -> (key, builder, source) -> {
-				for (Modify callback : callbacks) {
-					callback.modify(key, builder, source);
-				}
-			}
+			Combine.CALL_ALL
 	);
 
 	/**
@@ -106,11 +93,7 @@ public final class EnchantmentEvents {
 	 */
 	public static final Event<ModifyWithLookup> MODIFY_WITH_LOOKUP = EventFactory.createArrayBacked(
 			ModifyWithLookup.class,
-			callbacks -> (key, builder, source, registries) -> {
-				for (ModifyWithLookup callback : callbacks) {
-					callback.modify(key, builder, source, registries);
-				}
-			}
+			Combine.CALL_ALL
 	);
 
 	@FunctionalInterface

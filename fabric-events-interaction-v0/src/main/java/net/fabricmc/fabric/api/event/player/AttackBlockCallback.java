@@ -23,6 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -46,17 +47,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface AttackBlockCallback {
 	Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
-			(listeners) -> (player, level, hand, pos, direction) -> {
-				for (AttackBlockCallback event : listeners) {
-					InteractionResult result = event.interact(player, level, hand, pos, direction);
-
-					if (result != InteractionResult.PASS) {
-						return result;
-					}
-				}
-
-				return InteractionResult.PASS;
-			}
+			Combine.firstOtherThan(InteractionResult.PASS)
 	);
 
 	InteractionResult interact(Player player, Level level, InteractionHand hand, BlockPos pos, Direction direction);

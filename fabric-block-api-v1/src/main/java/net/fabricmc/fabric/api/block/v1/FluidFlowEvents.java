@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.FluidState;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -27,15 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Holds events related to flowing fluids.
  */
 public final class FluidFlowEvents {
-	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, fluidFlowInteractionEvents -> (fluid, level, fluidPosition) -> {
-		for (Allow event : fluidFlowInteractionEvents) {
-			if (!event.allowFlow(fluid, level, fluidPosition)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
+	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, Combine.STOP_AT_FALSE);
 
 	/**
 	 * Callback for when any fluid tries to flow or has a neighbor update.

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.core.RegistryAccess;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -28,11 +29,7 @@ public final class CommonLifecycleEvents {
 	/**
 	 * Called when tags are loaded or updated.
 	 */
-	public static final Event<TagsLoaded> TAGS_LOADED = EventFactory.createArrayBacked(TagsLoaded.class, callbacks -> (registries, client) -> {
-		for (TagsLoaded callback : callbacks) {
-			callback.onTagsLoaded(registries, client);
-		}
-	});
+	public static final Event<TagsLoaded> TAGS_LOADED = EventFactory.createArrayBacked(TagsLoaded.class, Combine.CALL_ALL);
 
 	public interface TagsLoaded {
 		/**

@@ -16,21 +16,16 @@
 
 package net.fabricmc.fabric.impl.base.event;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import com.google.common.collect.MapMaker;
 
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 
 public final class EventFactoryImpl {
@@ -47,6 +42,41 @@ public final class EventFactoryImpl {
 		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, invokerFactory);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
+	}
+
+	public static <T> Event<T> createArrayBacked(Class<? super T> type, Combine combine) {
+		return createArrayBacked(type, CombinedInvokerFactory.<T>create(type, combine));
+	}
+
+	/**
+	 * For tests: use the slow reflective invokers instead of generating classes.
+	 */
+	public static void setForceReflectiveInvokers(boolean force) {
+		CombinedInvokerFactory.forceProxy = force;
+	}
+
+	/**
+	 * Waits until all pending generated invokers have been installed. Meant for tests and benchmarks.
+	 */
+	public static void awaitInvokerGeneration() {
+		try {
+			ArrayBackedEvent.UPGRADES.submit(() -> { }).get();
+		} catch (InterruptedException | ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Registers the ordering of the default phases of a freshly created event, with a single sort.
+	 */
+	public static <T> void addDefaultPhases(Event<T> event, Identifier[] defaultPhases) {
+		if (event instanceof ArrayBackedEvent<T> arrayBacked) {
+			arrayBacked.addPhaseOrderings(defaultPhases);
+		} else {
+			for (int i = 1; i < defaultPhases.length; ++i) {
+				event.addPhaseOrdering(defaultPhases[i - 1], defaultPhases[i]);
+			}
+		}
 	}
 
 	public static void ensureContainsDefault(Identifier[] defaultPhases) {
@@ -67,59 +97,5 @@ public final class EventFactoryImpl {
 				}
 			}
 		}
-	}
-
-	// Code originally by sfPlayer1.
-	// Unfortunately, it's slightly slower than just passing an empty array in the first place.
-	private static <T> T buildEmptyInvoker(Class<T> handlerClass, Function<T[], T> invokerSetup) {
-		// find the functional interface method
-		Method funcIfMethod = null;
-
-		for (Method m : handlerClass.getMethods()) {
-			if ((m.getModifiers() & (Modifier.STRICT | Modifier.PRIVATE)) == 0) {
-				if (funcIfMethod != null) {
-					throw new IllegalStateException("Multiple virtual methods in " + handlerClass + "; cannot build empty invoker!");
-				}
-
-				funcIfMethod = m;
-			}
-		}
-
-		if (funcIfMethod == null) {
-			throw new IllegalStateException("No virtual methods in " + handlerClass + "; cannot build empty invoker!");
-		}
-
-		Object defValue = null;
-
-		try {
-			// concert to mh, determine its type without the "this" reference
-			MethodHandle target = MethodHandles.lookup().unreflect(funcIfMethod);
-			MethodType type = target.type().dropParameterTypes(0, 1);
-
-			if (type.returnType() != void.class) {
-				// determine default return value by invoking invokerSetup.apply(T[0]) with all-jvm-default args (null for refs, false for boolean, etc.)
-				// explicitCastArguments is being used to cast Object=null to the jvm default value for the correct type
-
-				// construct method desc (TLjava/lang/Object;Ljava/lang/Object;...)R where T = invoker ref ("this"), R = invoker ret type and args 1+ are Object for each non-"this" invoker arg
-				MethodType objTargetType = MethodType.genericMethodType(type.parameterCount()).changeReturnType(type.returnType()).insertParameterTypes(0, target.type().parameterType(0));
-				// explicit cast to translate to the invoker args from Object to their real type, inferring jvm default values
-				MethodHandle objTarget = MethodHandles.explicitCastArguments(target, objTargetType);
-
-				// build invocation args with 0 = "this", 1+ = null
-				Object[] args = new Object[target.type().parameterCount()];
-				//noinspection unchecked
-				args[0] = invokerSetup.apply((T[]) Array.newInstance(handlerClass, 0));
-
-				// retrieve default by invoking invokerSetup.apply(T[0]).targetName(def,def,...)
-				defValue = objTarget.invokeWithArguments(args);
-			}
-		} catch (Throwable t) {
-			throw new RuntimeException(t);
-		}
-
-		final Object returnValue = defValue;
-		//noinspection unchecked
-		return (T) Proxy.newProxyInstance(EventFactoryImpl.class.getClassLoader(), new Class[]{handlerClass},
-			(proxy, method, args) -> returnValue);
 	}
 }

@@ -16,30 +16,43 @@
 
 package net.fabricmc.fabric.impl.base.event;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 
 /**
  * Data of an {@link ArrayBackedEvent} phase.
+ *
+ * <p>The listeners themselves live in the event's single handler array,
+ * a phase only remembers how many of them it owns.
  */
 class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
 	final Identifier id;
-	T[] listeners;
+	/**
+	 * Number of listeners registered in this phase.
+	 */
+	int size;
+	/**
+	 * Scratch value: start index of this phase in the handler array, only valid during a reorder.
+	 */
+	int start;
 
-	@SuppressWarnings("unchecked")
-	EventPhaseData(Identifier id, Class<?> listenerClass) {
+	EventPhaseData(Identifier id) {
 		this.id = id;
-		this.listeners = (T[]) Array.newInstance(listenerClass, 0);
 	}
 
-	void addListener(T listener) {
-		int oldLength = listeners.length;
-		listeners = Arrays.copyOf(listeners, oldLength + 1);
-		listeners[oldLength] = listener;
+	/**
+	 * Adds an ordering constraint, ignoring it if it already exists.
+	 *
+	 * @return {@code true} if a new edge was added.
+	 */
+	boolean linkTo(EventPhaseData<T> second) {
+		if (subsequentNodes.contains(second)) {
+			return false;
+		}
+
+		link(this, second);
+		return true;
 	}
 
 	@Override

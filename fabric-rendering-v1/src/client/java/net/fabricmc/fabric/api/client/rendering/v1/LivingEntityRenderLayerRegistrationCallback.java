@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -50,11 +51,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @FunctionalInterface
 public interface LivingEntityRenderLayerRegistrationCallback {
 	Event<LivingEntityRenderLayerRegistrationCallback> EVENT = EventFactory.createArrayBacked(
-			LivingEntityRenderLayerRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
-				for (LivingEntityRenderLayerRegistrationCallback callback : callbacks) {
-					callback.registerLayers(entityType, entityRenderer, registrationHelper, context);
-				}
-			});
+			LivingEntityRenderLayerRegistrationCallback.class, Combine.CALL_ALL);
 
 	/**
 	 * Called when render layers may be registered.

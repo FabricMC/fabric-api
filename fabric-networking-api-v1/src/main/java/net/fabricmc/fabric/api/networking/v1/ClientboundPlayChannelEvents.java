@@ -22,6 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -33,21 +34,13 @@ public final class ClientboundPlayChannelEvents {
 	 * An event for the server game packet listener receiving an update indicating the connected client's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
-	public static final Event<Register> REGISTER = EventFactory.createArrayBacked(Register.class, callbacks -> (listener, sender, server, channels) -> {
-		for (Register callback : callbacks) {
-			callback.onChannelRegister(listener, sender, server, channels);
-		}
-	});
+	public static final Event<Register> REGISTER = EventFactory.createArrayBacked(Register.class, Combine.CALL_ALL);
 
 	/**
 	 * An event for the server game packet listener receiving an update indicating the connected client's lack of ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
-	public static final Event<Unregister> UNREGISTER = EventFactory.createArrayBacked(Unregister.class, callbacks -> (listener, sender, server, channels) -> {
-		for (Unregister callback : callbacks) {
-			callback.onChannelUnregister(listener, sender, server, channels);
-		}
-	});
+	public static final Event<Unregister> UNREGISTER = EventFactory.createArrayBacked(Unregister.class, Combine.CALL_ALL);
 
 	private ClientboundPlayChannelEvents() {
 	}

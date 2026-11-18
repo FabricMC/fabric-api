@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -54,21 +55,13 @@ public final class LevelRenderEvents {
 	 *
 	 * <p>To draw as part of the main render pass, use {@link #START_MAIN} or one of the later events instead.
 	 */
-	public static final Event<BeforeRenderPass> BEFORE_RENDER_PASS = EventFactory.createArrayBacked(BeforeRenderPass.class, callbacks -> context -> {
-		for (final BeforeRenderPass callback : callbacks) {
-			callback.beforeRenderPass(context);
-		}
-	});
+	public static final Event<BeforeRenderPass> BEFORE_RENDER_PASS = EventFactory.createArrayBacked(BeforeRenderPass.class, Combine.CALL_ALL);
 
 	/**
 	 * Called at the start of the main pass, after the sky is drawn to the appropriate framebuffers and all chunks to be
 	 * rendered are uploaded to GPU, and before any chunks are drawn to the appropriate framebuffers.
 	 */
-	public static final Event<StartMain> START_MAIN = EventFactory.createArrayBacked(StartMain.class, callbacks -> context -> {
-		for (final StartMain callback : callbacks) {
-			callback.startMain(context);
-		}
-	});
+	public static final Event<StartMain> START_MAIN = EventFactory.createArrayBacked(StartMain.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the appropriate framebuffers,
@@ -76,11 +69,7 @@ public final class LevelRenderEvents {
 	 *
 	 * <p>Use this event to render additional opaque terrain-like geometry.
 	 */
-	public static final Event<AfterOpaqueTerrain> AFTER_OPAQUE_TERRAIN = EventFactory.createArrayBacked(AfterOpaqueTerrain.class, callbacks -> context -> {
-		for (final AfterOpaqueTerrain callback : callbacks) {
-			callback.afterOpaqueTerrain(context);
-		}
-	});
+	public static final Event<AfterOpaqueTerrain> AFTER_OPAQUE_TERRAIN = EventFactory.createArrayBacked(AfterOpaqueTerrain.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after {@linkplain ChunkSectionLayerGroup#OPAQUE opaque} terrain is drawn to the appropriate framebuffers
@@ -89,31 +78,19 @@ public final class LevelRenderEvents {
 	 *
 	 * <p>Use this event to add additional submits to {@link LevelRenderContext#submitNodeCollector()}.
 	 */
-	public static final Event<CollectSubmits> COLLECT_SUBMITS = EventFactory.createArrayBacked(CollectSubmits.class, callbacks -> context -> {
-		for (final CollectSubmits callback : callbacks) {
-			callback.collectSubmits(context);
-		}
-	});
+	public static final Event<CollectSubmits> COLLECT_SUBMITS = EventFactory.createArrayBacked(CollectSubmits.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after the solid geometry of submits collected from entities, block entities, and particles are drawn to
 	 * the appropriate framebuffers.
 	 */
-	public static final Event<AfterSolidFeatures> AFTER_SOLID_FEATURES = EventFactory.createArrayBacked(AfterSolidFeatures.class, callbacks -> context -> {
-		for (final AfterSolidFeatures callback : callbacks) {
-			callback.afterSolidFeatures(context);
-		}
-	});
+	public static final Event<AfterSolidFeatures> AFTER_SOLID_FEATURES = EventFactory.createArrayBacked(AfterSolidFeatures.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after the translucent geometry of submits collected from entities and block entities are drawn to the
 	 * appropriate framebuffers. Note that this excludes translucent particle geometry, which is rendered much later.
 	 */
-	public static final Event<AfterTranslucentFeatures> AFTER_TRANSLUCENT_FEATURES = EventFactory.createArrayBacked(AfterTranslucentFeatures.class, callbacks -> context -> {
-		for (final AfterTranslucentFeatures callback : callbacks) {
-			callback.afterTranslucentFeatures(context);
-		}
-	});
+	public static final Event<AfterTranslucentFeatures> AFTER_TRANSLUCENT_FEATURES = EventFactory.createArrayBacked(AfterTranslucentFeatures.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after block outline render checks are made
@@ -149,22 +126,14 @@ public final class LevelRenderEvents {
 	 * particle geometry), the block breaking overlay, and the block outline for solid blocks are drawn to the
 	 * appropriate framebuffers, and before gizmos are collected.
 	 */
-	public static final Event<BeforeGizmos> BEFORE_GIZMOS = EventFactory.createArrayBacked(BeforeGizmos.class, callbacks -> context -> {
-		for (final BeforeGizmos callback : callbacks) {
-			callback.beforeGizmos(context);
-		}
-	});
+	public static final Event<BeforeGizmos> BEFORE_GIZMOS = EventFactory.createArrayBacked(BeforeGizmos.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after opaque terrain, entities, block entities, solid particles, overlays, and gizmos are drawn to the
 	 * appropriate framebuffers, and before {@linkplain ChunkSectionLayerGroup#TRANSLUCENT translucent} terrain and
 	 * translucent particles are drawn to the appropriate framebuffers.
 	 */
-	public static final Event<BeforeTranslucentTerrain> BEFORE_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(BeforeTranslucentTerrain.class, callbacks -> context -> {
-		for (final BeforeTranslucentTerrain callback : callbacks) {
-			callback.beforeTranslucentTerrain(context);
-		}
-	});
+	public static final Event<BeforeTranslucentTerrain> BEFORE_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(BeforeTranslucentTerrain.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after terrain, entities, block entities, solid particles, overlays, and gizmos are drawn to the
@@ -172,11 +141,7 @@ public final class LevelRenderEvents {
 	 *
 	 * <p>Use this event to render additional translucent terrain-like geometry.
 	 */
-	public static final Event<AfterTranslucentTerrain> AFTER_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(AfterTranslucentTerrain.class, callbacks -> context -> {
-		for (final AfterTranslucentTerrain callback : callbacks) {
-			callback.afterTranslucentTerrain(context);
-		}
-	});
+	public static final Event<AfterTranslucentTerrain> AFTER_TRANSLUCENT_TERRAIN = EventFactory.createArrayBacked(AfterTranslucentTerrain.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after the main {@link RenderPass} is closed, and before {@link #END_MAIN}.
@@ -190,22 +155,14 @@ public final class LevelRenderEvents {
 	 * read from or post-process what it drew. Any render pass opened in this event must be closed before the callback
 	 * returns.
 	 */
-	public static final Event<AfterRenderPass> AFTER_RENDER_PASS = EventFactory.createArrayBacked(AfterRenderPass.class, callbacks -> context -> {
-		for (final AfterRenderPass callback : callbacks) {
-			callback.afterRenderPass(context);
-		}
-	});
+	public static final Event<AfterRenderPass> AFTER_RENDER_PASS = EventFactory.createArrayBacked(AfterRenderPass.class, Combine.CALL_ALL);
 
 	/**
 	 * Called at the end of the main render pass, after terrain, entities, block entities, and particles are drawn to
 	 * the appropriate framebuffers, and before clouds, weather, and late debug are drawn to the appropriate
 	 * framebuffers and before fabulous translucent framebuffers are combined.
 	 */
-	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
-		for (final EndMain callback : callbacks) {
-			callback.endMain(context);
-		}
-	});
+	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, Combine.CALL_ALL);
 
 	/**
 	 * @see LevelExtractionEvents#AFTER_BLOCK_OUTLINE_EXTRACTION

@@ -20,6 +20,7 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.commands.CommandBuildContext;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -31,11 +32,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>See {@link ClientCommands} for more details and an example.
  */
 public interface ClientCommandRegistrationCallback {
-	Event<ClientCommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext) -> {
-		for (ClientCommandRegistrationCallback callback : callbacks) {
-			callback.register(dispatcher, buildContext);
-		}
-	});
+	Event<ClientCommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandRegistrationCallback.class, Combine.CALL_ALL);
 
 	/**
 	 * Called when registering client commands.

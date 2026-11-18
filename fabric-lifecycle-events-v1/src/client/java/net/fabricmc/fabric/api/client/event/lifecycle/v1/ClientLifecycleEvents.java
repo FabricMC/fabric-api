@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
 import net.minecraft.client.Minecraft;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -30,11 +31,7 @@ public final class ClientLifecycleEvents {
 	 *
 	 * <p>This occurs while the splash screen is displayed.
 	 */
-	public static final Event<ClientStarted> CLIENT_STARTED = EventFactory.createArrayBacked(ClientStarted.class, callbacks -> client -> {
-		for (ClientStarted callback : callbacks) {
-			callback.onClientStarted(client);
-		}
-	});
+	public static final Event<ClientStarted> CLIENT_STARTED = EventFactory.createArrayBacked(ClientStarted.class, Combine.CALL_ALL);
 
 	/**
 	 * Called when Minecraft's client begins to stop.
@@ -42,11 +39,7 @@ public final class ClientLifecycleEvents {
 	 *
 	 * <p>This will be called before the integrated server is stopped if it is running.
 	 */
-	public static final Event<ClientStopping> CLIENT_STOPPING = EventFactory.createArrayBacked(ClientStopping.class, callbacks -> client -> {
-		for (ClientStopping callback : callbacks) {
-			callback.onClientStopping(client);
-		}
-	});
+	public static final Event<ClientStopping> CLIENT_STOPPING = EventFactory.createArrayBacked(ClientStopping.class, Combine.CALL_ALL);
 
 	@FunctionalInterface
 	public interface ClientStarted {

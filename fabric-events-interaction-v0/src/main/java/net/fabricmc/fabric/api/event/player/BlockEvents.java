@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -38,34 +39,14 @@ public interface BlockEvents {
 	 * Callback that runs when {@link BlockState#useItemOn(ItemStack, Level, Player, InteractionHand, BlockHitResult)} is called.
 	 */
 	Event<UseItemOnCallback> USE_ITEM_ON = EventFactory.createArrayBacked(UseItemOnCallback.class,
-			(listeners) -> (itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult) -> {
-				for (UseItemOnCallback event : listeners) {
-					InteractionResult result = event.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
-
-					if (result != null) {
-						return result;
-					}
-				}
-
-				return null;
-			}
+			Combine.FIRST_NON_NULL
 	);
 
 	/**
 	 * Callback that runs when {@link BlockState#useWithoutItem(Level, Player, BlockHitResult)} is called.
 	 */
 	Event<UseWithoutItemCallback> USE_WITHOUT_ITEM = EventFactory.createArrayBacked(UseWithoutItemCallback.class,
-			(listeners) -> (blockState, level, blockPos, player, blockHitResult) -> {
-				for (UseWithoutItemCallback event : listeners) {
-					InteractionResult result = event.useWithoutItem(blockState, level, blockPos, player, blockHitResult);
-
-					if (result != null) {
-						return result;
-					}
-				}
-
-				return null;
-			}
+			Combine.FIRST_NON_NULL
 	);
 
 	@FunctionalInterface

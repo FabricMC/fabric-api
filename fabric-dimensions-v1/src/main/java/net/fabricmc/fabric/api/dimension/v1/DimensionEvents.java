@@ -21,6 +21,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.level.dimension.DimensionType;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -32,11 +33,7 @@ public class DimensionEvents {
 	 * This event can be used to modify the environment attributes of a dimension.
 	 * The main use case is to add modded attributes to vanilla or modded dimensions
 	 */
-	public static final Event<ModifyAttributes> MODIFY_ATTRIBUTES = EventFactory.createArrayBacked(ModifyAttributes.class, listeners -> (dimension, attributes, registries) -> {
-		for (ModifyAttributes listener : listeners) {
-			listener.modifyDimensionAttributes(dimension, attributes, registries);
-		}
-	});
+	public static final Event<ModifyAttributes> MODIFY_ATTRIBUTES = EventFactory.createArrayBacked(ModifyAttributes.class, Combine.CALL_ALL);
 
 	@FunctionalInterface
 	public interface ModifyAttributes {

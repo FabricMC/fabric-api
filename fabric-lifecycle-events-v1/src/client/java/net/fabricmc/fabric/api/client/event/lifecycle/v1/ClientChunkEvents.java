@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -31,22 +32,14 @@ public final class ClientChunkEvents {
 	 *
 	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, callbacks -> (clientLevel, chunk) -> {
-		for (Load callback : callbacks) {
-			callback.onChunkLoad(clientLevel, chunk);
-		}
-	});
+	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, Combine.CALL_ALL);
 
 	/**
 	 * Called when a chunk is about to be unloaded from a ClientLevel.
 	 *
 	 * <p>When this event is called, the chunk is still present in the level.
 	 */
-	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, callbacks -> (clientLevel, chunk) -> {
-		for (Unload callback : callbacks) {
-			callback.onChunkUnload(clientLevel, chunk);
-		}
-	});
+	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, Combine.CALL_ALL);
 
 	@FunctionalInterface
 	public interface Load {

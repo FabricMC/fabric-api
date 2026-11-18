@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.creativetab.CreativeModeTabEventsImpl;
@@ -38,11 +39,7 @@ public final class CreativeModeTabEvents {
 	 *
 	 * <p>This event is invoked after those two more specific events.
 	 */
-	public static final Event<ModifyOutputAll> MODIFY_OUTPUT_ALL = EventFactory.createArrayBacked(ModifyOutputAll.class, callbacks -> (tab, output) -> {
-		for (ModifyOutputAll callback : callbacks) {
-			callback.modifyOutput(tab, output);
-		}
-	});
+	public static final Event<ModifyOutputAll> MODIFY_OUTPUT_ALL = EventFactory.createArrayBacked(ModifyOutputAll.class, Combine.CALL_ALL);
 
 	/**
 	 * Returns the modify output event for a specific creative mode tab. This uses the tab's ID and

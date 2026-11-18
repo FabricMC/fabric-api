@@ -21,6 +21,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.renderer.extract.LevelExtractor;
 import net.minecraft.world.phys.HitResult;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -54,11 +55,7 @@ public class LevelExtractionEvents {
 	 * renders.  Mods that replace the default block outline for specific blocks
 	 * should instead subscribe to {@link LevelRenderEvents#BEFORE_BLOCK_OUTLINE}.
 	 */
-	public static final Event<AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = EventFactory.createArrayBacked(AfterBlockOutlineExtraction.class, callbacks -> (context, hit) -> {
-		for (final AfterBlockOutlineExtraction callback : callbacks) {
-			callback.afterBlockOutlineExtraction(context, hit);
-		}
-	});
+	public static final Event<AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = EventFactory.createArrayBacked(AfterBlockOutlineExtraction.class, Combine.CALL_ALL);
 
 	/**
 	 * Called after all render states are extracted, before any are drawn.
@@ -67,11 +64,7 @@ public class LevelExtractionEvents {
 	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
 	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.multiplayer.ClientLevel}.
 	 */
-	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> context -> {
-		for (final EndExtraction callback : callbacks) {
-			callback.endExtraction(context);
-		}
-	});
+	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, Combine.CALL_ALL);
 
 	@FunctionalInterface
 	public interface AfterBlockOutlineExtraction {

@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
@@ -69,11 +70,7 @@ public final class ScreenEvents {
 	 * This event can also indicate that the previous screen has been changed.
 	 * @see ScreenEvents#AFTER_INIT
 	 */
-	public static final Event<BeforeInit> BEFORE_INIT = EventFactory.createArrayBacked(BeforeInit.class, callbacks -> (client, screen, scaledWidth, scaledHeight) -> {
-		for (BeforeInit callback : callbacks) {
-			callback.beforeInit(client, screen, scaledWidth, scaledHeight);
-		}
-	});
+	public static final Event<BeforeInit> BEFORE_INIT = EventFactory.createArrayBacked(BeforeInit.class, Combine.CALL_ALL);
 
 	/**
 	 * An event that is called after {@link Screen#init(int, int) a screen is initialized} to its default state.
@@ -96,11 +93,7 @@ public final class ScreenEvents {
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT
 	 */
-	public static final Event<AfterInit> AFTER_INIT = EventFactory.createArrayBacked(AfterInit.class, callbacks -> (client, screen, scaledWidth, scaledHeight) -> {
-		for (AfterInit callback : callbacks) {
-			callback.afterInit(client, screen, scaledWidth, scaledHeight);
-		}
-	});
+	public static final Event<AfterInit> AFTER_INIT = EventFactory.createArrayBacked(AfterInit.class, Combine.CALL_ALL);
 
 	/**
 	 * An event that is called after {@link Screen#removed()} is called.

@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.AbstractBedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.EventResult;
@@ -65,35 +66,17 @@ public final class EntitySleepEvents {
 	 * is used in addition to vanilla checks. The more detailed event {@link #ALLOW_NEARBY_MONSTERS}
 	 * is also checked before this event.
 	 */
-	public static final Event<AllowSleeping> ALLOW_SLEEPING = EventFactory.createArrayBacked(AllowSleeping.class, callbacks -> (player, sleepingPos) -> {
-		for (AllowSleeping callback : callbacks) {
-			Player.BedSleepingProblem reason = callback.allowSleep(player, sleepingPos);
-
-			if (reason != null) {
-				return reason;
-			}
-		}
-
-		return null;
-	});
+	public static final Event<AllowSleeping> ALLOW_SLEEPING = EventFactory.createArrayBacked(AllowSleeping.class, Combine.FIRST_NON_NULL);
 
 	/**
 	 * An event that is called when an entity starts to sleep.
 	 */
-	public static final Event<StartSleeping> START_SLEEPING = EventFactory.createArrayBacked(StartSleeping.class, callbacks -> (entity, sleepingPos) -> {
-		for (StartSleeping callback : callbacks) {
-			callback.onStartSleeping(entity, sleepingPos);
-		}
-	});
+	public static final Event<StartSleeping> START_SLEEPING = EventFactory.createArrayBacked(StartSleeping.class, Combine.CALL_ALL);
 
 	/**
 	 * An event that is called when an entity stops sleeping and wakes up.
 	 */
-	public static final Event<StopSleeping> STOP_SLEEPING = EventFactory.createArrayBacked(StopSleeping.class, callbacks -> (entity, sleepingPos) -> {
-		for (StopSleeping callback : callbacks) {
-			callback.onStopSleeping(entity, sleepingPos);
-		}
-	});
+	public static final Event<StopSleeping> STOP_SLEEPING = EventFactory.createArrayBacked(StopSleeping.class, Combine.CALL_ALL);
 
 	/**
 	 * An event that is called to check whether a block is valid for sleeping.
@@ -107,34 +90,14 @@ public final class EntitySleepEvents {
 	 *
 	 * @see LivingEntity#checkBedExists()
 	 */
-	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, callbacks -> (entity, sleepingPos, state, vanillaResult) -> {
-		for (AllowBed callback : callbacks) {
-			EventResult result = callback.allowBed(entity, sleepingPos, state, vanillaResult);
-
-			if (result != EventResult.PASS) {
-				return result;
-			}
-		}
-
-		return EventResult.PASS;
-	});
+	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, Combine.firstOtherThan(EventResult.PASS));
 
 	/**
 	 * An event that checks whether players can sleep when monsters are nearby.
 	 *
 	 * <p>This event can also be used to force a failing result, meaning it can do custom monster checks.
 	 */
-	public static final Event<AllowNearbyMonsters> ALLOW_NEARBY_MONSTERS = EventFactory.createArrayBacked(AllowNearbyMonsters.class, callbacks -> (player, sleepingPos, vanillaResult) -> {
-		for (AllowNearbyMonsters callback : callbacks) {
-			EventResult result = callback.allowNearbyMonsters(player, sleepingPos, vanillaResult);
-
-			if (result != EventResult.PASS) {
-				return result;
-			}
-		}
-
-		return EventResult.PASS;
-	});
+	public static final Event<AllowNearbyMonsters> ALLOW_NEARBY_MONSTERS = EventFactory.createArrayBacked(AllowNearbyMonsters.class, Combine.firstOtherThan(EventResult.PASS));
 
 	/**
 	 * An event that checks whether a sleeping player counts into skipping the current day and resetting the time to 0.
@@ -142,15 +105,7 @@ public final class EntitySleepEvents {
 	 * <p>When this event is called, all vanilla time resetting checks have already succeeded, i.e. this event
 	 * is used in addition to vanilla checks.
 	 */
-	public static final Event<AllowResettingTime> ALLOW_RESETTING_TIME = EventFactory.createArrayBacked(AllowResettingTime.class, callbacks -> player -> {
-		for (AllowResettingTime callback : callbacks) {
-			if (!callback.allowResettingTime(player)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
+	public static final Event<AllowResettingTime> ALLOW_RESETTING_TIME = EventFactory.createArrayBacked(AllowResettingTime.class, Combine.STOP_AT_FALSE);
 
 	/**
 	 * An event that can be used to provide the entity's sleep direction if missing.
@@ -159,28 +114,14 @@ public final class EntitySleepEvents {
 	 * If the block is not a {@link net.minecraft.world.level.block.BedBlock}, you need to provide the sleeping direction manually
 	 * with this event.
 	 */
-	public static final Event<ModifySleepingDirection> MODIFY_SLEEPING_DIRECTION = EventFactory.createArrayBacked(ModifySleepingDirection.class, callbacks -> (entity, sleepingPos, sleepingDirection) -> {
-		for (ModifySleepingDirection callback : callbacks) {
-			sleepingDirection = callback.modifySleepDirection(entity, sleepingPos, sleepingDirection);
-		}
-
-		return sleepingDirection;
-	});
+	public static final Event<ModifySleepingDirection> MODIFY_SLEEPING_DIRECTION = EventFactory.createArrayBacked(ModifySleepingDirection.class, Combine.chain(2));
 
 	/**
 	 * An event that checks whether a player's spawn can be set when sleeping.
 	 *
 	 * <p>Vanilla always allows this operation.
 	 */
-	public static final Event<AllowSettingSpawn> ALLOW_SETTING_SPAWN = EventFactory.createArrayBacked(AllowSettingSpawn.class, callbacks -> (player, sleepingPos) -> {
-		for (AllowSettingSpawn callback : callbacks) {
-			if (!callback.allowSettingSpawn(player, sleepingPos)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
+	public static final Event<AllowSettingSpawn> ALLOW_SETTING_SPAWN = EventFactory.createArrayBacked(AllowSettingSpawn.class, Combine.STOP_AT_FALSE);
 
 	/**
 	 * An event that sets the occupation state of a bed.
@@ -188,15 +129,7 @@ public final class EntitySleepEvents {
 	 * <p>Note that this is <b>not</b> needed for blocks using {@link net.minecraft.world.level.block.BedBlock},
 	 * which are handled automatically.
 	 */
-	public static final Event<SetBedOccupationState> SET_BED_OCCUPATION_STATE = EventFactory.createArrayBacked(SetBedOccupationState.class, callbacks -> (entity, sleepingPos, bedState, occupied) -> {
-		for (SetBedOccupationState callback : callbacks) {
-			if (callback.setBedOccupationState(entity, sleepingPos, bedState, occupied)) {
-				return true;
-			}
-		}
-
-		return false;
-	});
+	public static final Event<SetBedOccupationState> SET_BED_OCCUPATION_STATE = EventFactory.createArrayBacked(SetBedOccupationState.class, Combine.STOP_AT_TRUE);
 
 	/**
 	 * An event that can be used to provide the entity's wake-up position if missing.
@@ -205,13 +138,7 @@ public final class EntitySleepEvents {
 	 * If the block is not a {@link net.minecraft.world.level.block.BedBlock}, you need to provide the wake-up position manually
 	 * with this event.
 	 */
-	public static final Event<ModifyWakeUpPosition> MODIFY_WAKE_UP_POSITION = EventFactory.createArrayBacked(ModifyWakeUpPosition.class, callbacks -> (entity, sleepingPos, bedState, wakeUpPos) -> {
-		for (ModifyWakeUpPosition callback : callbacks) {
-			wakeUpPos = callback.modifyWakeUpPosition(entity, sleepingPos, bedState, wakeUpPos);
-		}
-
-		return wakeUpPos;
-	});
+	public static final Event<ModifyWakeUpPosition> MODIFY_WAKE_UP_POSITION = EventFactory.createArrayBacked(ModifyWakeUpPosition.class, Combine.chain(3));
 
 	@FunctionalInterface
 	public interface AllowSleeping {

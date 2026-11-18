@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -41,10 +42,6 @@ public class CreativeModeTabEventsImpl {
 	}
 
 	private static Event<CreativeModeTabEvents.ModifyOutput> createModifyEvent() {
-		return EventFactory.createArrayBacked(CreativeModeTabEvents.ModifyOutput.class, callbacks -> (entries) -> {
-			for (CreativeModeTabEvents.ModifyOutput callback : callbacks) {
-				callback.modifyOutput(entries);
-			}
-		});
+		return EventFactory.createArrayBacked(CreativeModeTabEvents.ModifyOutput.class, Combine.CALL_ALL);
 	}
 }

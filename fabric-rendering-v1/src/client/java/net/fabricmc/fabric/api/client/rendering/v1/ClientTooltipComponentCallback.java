@@ -22,6 +22,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,17 +36,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface ClientTooltipComponentCallback {
 	Event<ClientTooltipComponentCallback> EVENT = EventFactory.createArrayBacked(
-			ClientTooltipComponentCallback.class, listeners -> data -> {
-				for (ClientTooltipComponentCallback listener : listeners) {
-					ClientTooltipComponent component = listener.getClientComponent(data);
-
-					if (component != null) {
-						return component;
-					}
-				}
-
-				return null;
-			});
+			ClientTooltipComponentCallback.class, Combine.FIRST_NON_NULL);
 
 	/**
 	 * Return the client tooltip component for the passed tooltip component, or null if none is available.

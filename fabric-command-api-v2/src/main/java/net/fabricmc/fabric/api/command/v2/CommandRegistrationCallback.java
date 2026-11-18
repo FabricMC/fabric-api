@@ -22,6 +22,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -38,11 +39,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * }</pre>
  */
 public interface CommandRegistrationCallback {
-	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext, selection) -> {
-		for (CommandRegistrationCallback callback : callbacks) {
-			callback.register(dispatcher, buildContext, selection);
-		}
-	});
+	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, Combine.CALL_ALL);
 
 	/**
 	 * Called when the server is registering commands.

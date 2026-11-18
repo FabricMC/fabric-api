@@ -26,6 +26,7 @@ import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -44,15 +45,7 @@ public final class ClientReceiveMessageEvents {
 	 * the remaining listeners will be called (if any), and
 	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 	 */
-	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
-		boolean allow = true;
-
-		for (AllowChat listener : listeners) {
-			allow &= listener.allowReceiveChatMessage(message, playerChatMessage, sender, boundChatType, timeStamp);
-		}
-
-		return allow;
-	});
+	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, Combine.ALL_TRUE);
 
 	/**
 	 * An event triggered when the client receives a game message,
@@ -68,15 +61,7 @@ public final class ClientReceiveMessageEvents {
 	 * {@link net.minecraft.client.player.LocalPlayer#sendSystemMessage(Component) LocalPlayer.sendSystemMessage(message)} or
 	 * {@link net.minecraft.client.player.LocalPlayer#sendOverlayMessage(Component) LocalPlayer.sendOverlayMessage(message)}.
 	 */
-	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
-		boolean allow = true;
-
-		for (AllowGame listener : listeners) {
-			allow &= listener.allowReceiveGameMessage(message, overlay);
-		}
-
-		return allow;
-	});
+	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, Combine.ALL_TRUE);
 
 	/**
 	 * An event triggered when the client receives a game message,
@@ -88,13 +73,7 @@ public final class ClientReceiveMessageEvents {
 	 * <p>Overlay is whether the message will be displayed in the action bar.
 	 * Use {@link #ALLOW_GAME to toggle overlay}.
 	 */
-	public static final Event<ModifyGame> MODIFY_GAME = EventFactory.createArrayBacked(ModifyGame.class, listeners -> (message, overlay) -> {
-		for (ModifyGame listener : listeners) {
-			message = listener.modifyReceivedGameMessage(message, overlay);
-		}
-
-		return message;
-	});
+	public static final Event<ModifyGame> MODIFY_GAME = EventFactory.createArrayBacked(ModifyGame.class, Combine.chain(0));
 
 	/**
 	 * An event triggered when the client receives a chat message,
@@ -105,11 +84,7 @@ public final class ClientReceiveMessageEvents {
 	 * <p>If mods want to modify the message, they should use {@link #ALLOW_CHAT}
 	 * and manually add the new message to the chat hud using {@link ChatComponent#addPlayerMessage(Component, net.minecraft.network.chat.MessageSignature, net.minecraft.client.gui.components.GuiMessageTag)}
 	 */
-	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
-		for (Chat listener : listeners) {
-			listener.onReceiveChatMessage(message, playerChatMessage, sender, boundChatType, timeStamp);
-		}
-	});
+	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when the client receives a game message,
@@ -120,31 +95,19 @@ public final class ClientReceiveMessageEvents {
 	 * <p>Overlay is whether the message will be displayed in the action bar.
 	 * Use {@link #ALLOW_GAME to toggle overlay}.
 	 */
-	public static final Event<Game> GAME = EventFactory.createArrayBacked(Game.class, listeners -> (message, overlay) -> {
-		for (Game listener : listeners) {
-			listener.onReceiveGameMessage(message, overlay);
-		}
-	});
+	public static final Event<Game> GAME = EventFactory.createArrayBacked(Game.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when receiving a chat message is canceled with {@link #ALLOW_CHAT}.
 	 */
-	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
-		for (ChatCanceled listener : listeners) {
-			listener.onReceiveChatMessageCanceled(message, playerChatMessage, sender, boundChatType, timeStamp);
-		}
-	});
+	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when receiving a game message is canceled with {@link #ALLOW_GAME}.
 	 *
 	 * <p>Overlay is whether the message would have been displayed in the action bar.
 	 */
-	public static final Event<GameCanceled> GAME_CANCELED = EventFactory.createArrayBacked(GameCanceled.class, listeners -> (message, overlay) -> {
-		for (GameCanceled listener : listeners) {
-			listener.onReceiveGameMessageCanceled(message, overlay);
-		}
-	});
+	public static final Event<GameCanceled> GAME_CANCELED = EventFactory.createArrayBacked(GameCanceled.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when the client receives a title from the server, before the HUD is updated.
@@ -153,15 +116,7 @@ public final class ClientReceiveMessageEvents {
 	 * <p>All listeners are called. If any listener returns {@code false},
 	 * {@link #TITLE_CANCELED} is triggered instead of {@link #MODIFY_TITLE} and {@link #TITLE}.
 	 */
-	public static final Event<AllowTitle> ALLOW_TITLE = EventFactory.createArrayBacked(AllowTitle.class, listeners -> title -> {
-		boolean allow = true;
-
-		for (AllowTitle listener : listeners) {
-			allow &= listener.allowReceiveTitle(title);
-		}
-
-		return allow;
-	});
+	public static final Event<AllowTitle> ALLOW_TITLE = EventFactory.createArrayBacked(AllowTitle.class, Combine.ALL_TRUE);
 
 	/**
 	 * An event triggered to modify a title received from the server, before the HUD is updated.
@@ -169,13 +124,7 @@ public final class ClientReceiveMessageEvents {
 	 * Each listener receives the title returned by the previous listener.
 	 * Use {@link #TITLE} if not modifying the title.
 	 */
-	public static final Event<ModifyTitle> MODIFY_TITLE = EventFactory.createArrayBacked(ModifyTitle.class, listeners -> title -> {
-		for (ModifyTitle listener : listeners) {
-			title = listener.modifyReceivedTitle(title);
-		}
-
-		return title;
-	});
+	public static final Event<ModifyTitle> MODIFY_TITLE = EventFactory.createArrayBacked(ModifyTitle.class, Combine.chain(0));
 
 	/**
 	 * An event triggered when the client receives a title from the server, before the HUD is updated.
@@ -183,21 +132,13 @@ public final class ClientReceiveMessageEvents {
 	 * {@linkplain #ALLOW_TITLE the title is blocked}.
 	 * Mods can use this to listen to the title.
 	 */
-	public static final Event<Title> TITLE = EventFactory.createArrayBacked(Title.class, listeners -> title -> {
-		for (Title listener : listeners) {
-			listener.onReceiveTitle(title);
-		}
-	});
+	public static final Event<Title> TITLE = EventFactory.createArrayBacked(Title.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when receiving a title is canceled with {@link #ALLOW_TITLE}.
 	 * Receives the original title from the server.
 	 */
-	public static final Event<TitleCanceled> TITLE_CANCELED = EventFactory.createArrayBacked(TitleCanceled.class, listeners -> title -> {
-		for (TitleCanceled listener : listeners) {
-			listener.onReceiveTitleCanceled(title);
-		}
-	});
+	public static final Event<TitleCanceled> TITLE_CANCELED = EventFactory.createArrayBacked(TitleCanceled.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when the client receives a subtitle from the server, before the HUD is updated.
@@ -206,15 +147,7 @@ public final class ClientReceiveMessageEvents {
 	 * <p>All listeners are called. If any listener returns {@code false},
 	 * {@link #SUBTITLE_CANCELED} is triggered instead of {@link #MODIFY_SUBTITLE} and {@link #SUBTITLE}.
 	 */
-	public static final Event<AllowSubtitle> ALLOW_SUBTITLE = EventFactory.createArrayBacked(AllowSubtitle.class, listeners -> subtitle -> {
-		boolean allow = true;
-
-		for (AllowSubtitle listener : listeners) {
-			allow &= listener.allowReceiveSubtitle(subtitle);
-		}
-
-		return allow;
-	});
+	public static final Event<AllowSubtitle> ALLOW_SUBTITLE = EventFactory.createArrayBacked(AllowSubtitle.class, Combine.ALL_TRUE);
 
 	/**
 	 * An event triggered to modify a subtitle received from the server, before the HUD is updated.
@@ -222,13 +155,7 @@ public final class ClientReceiveMessageEvents {
 	 * Each listener receives the subtitle returned by the previous listener.
 	 * Use {@link #SUBTITLE} if not modifying the subtitle.
 	 */
-	public static final Event<ModifySubtitle> MODIFY_SUBTITLE = EventFactory.createArrayBacked(ModifySubtitle.class, listeners -> subtitle -> {
-		for (ModifySubtitle listener : listeners) {
-			subtitle = listener.modifyReceivedSubtitle(subtitle);
-		}
-
-		return subtitle;
-	});
+	public static final Event<ModifySubtitle> MODIFY_SUBTITLE = EventFactory.createArrayBacked(ModifySubtitle.class, Combine.chain(0));
 
 	/**
 	 * An event triggered when the client receives a subtitle from the server, before the HUD is updated.
@@ -236,31 +163,19 @@ public final class ClientReceiveMessageEvents {
 	 * {@linkplain #ALLOW_SUBTITLE the subtitle is blocked}.
 	 * Mods can use this to listen to the subtitle.
 	 */
-	public static final Event<Subtitle> SUBTITLE = EventFactory.createArrayBacked(Subtitle.class, listeners -> subtitle -> {
-		for (Subtitle listener : listeners) {
-			listener.onReceiveSubtitle(subtitle);
-		}
-	});
+	public static final Event<Subtitle> SUBTITLE = EventFactory.createArrayBacked(Subtitle.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when receiving a subtitle is canceled with {@link #ALLOW_SUBTITLE}.
 	 * Receives the original subtitle from the server.
 	 */
-	public static final Event<SubtitleCanceled> SUBTITLE_CANCELED = EventFactory.createArrayBacked(SubtitleCanceled.class, listeners -> subtitle -> {
-		for (SubtitleCanceled listener : listeners) {
-			listener.onReceiveSubtitleCanceled(subtitle);
-		}
-	});
+	public static final Event<SubtitleCanceled> SUBTITLE_CANCELED = EventFactory.createArrayBacked(SubtitleCanceled.class, Combine.CALL_ALL);
 
 	/**
 	 * An event triggered when the server requests that titles and subtitles be cleared,
 	 * before the HUD is updated. This is not triggered when a title expires or is cleared locally.
 	 */
-	public static final Event<ClearTitles> CLEAR_TITLES = EventFactory.createArrayBacked(ClearTitles.class, listeners -> resetTimes -> {
-		for (ClearTitles listener : listeners) {
-			listener.onClearTitles(resetTimes);
-		}
-	});
+	public static final Event<ClearTitles> CLEAR_TITLES = EventFactory.createArrayBacked(ClearTitles.class, Combine.CALL_ALL);
 
 	@FunctionalInterface
 	public interface AllowChat {

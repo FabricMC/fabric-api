@@ -45,6 +45,24 @@ public final class EventFactory {
 	}
 
 	/**
+	 * Create an "array-backed" Event instance for a listener interface with a single method,
+	 * whose results are combined as described by a {@link Combine}.
+	 *
+	 * <p>Fabric API generates the invoker, and transparently replaces it with a faster one
+	 * that calls each listener from its own call site, which the JIT can inline.
+	 * This is several times faster when there are three or more listeners.
+	 *
+	 * @param type    The listener interface.
+	 * @param combine How the results of the listeners are combined.
+	 * @param <T>     The listener type.
+	 * @return The Event instance.
+	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}.
+	 */
+	public static <T> Event<T> createArrayBacked(Class<? super T> type, Combine combine) {
+		return EventFactoryImpl.createArrayBacked(type, combine);
+	}
+
+	/**
 	 * Create an "array-backed" Event instance with a custom empty invoker,
 	 * for an event whose {@code invokerFactory} only delegates to the listeners.
 	 * <ul>
@@ -102,10 +120,26 @@ public final class EventFactory {
 
 		Event<T> event = createArrayBacked(type, invokerFactory);
 
-		for (int i = 1; i < defaultPhases.length; ++i) {
-			event.addPhaseOrdering(defaultPhases[i-1], defaultPhases[i]);
-		}
+		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
+		return event;
+	}
 
+	/**
+	 * Like {@link #createWithPhases(Class, Function, Identifier...)}, with a {@link Combine} instead of an invoker factory.
+	 *
+	 * @param type          The listener interface.
+	 * @param combine       How the results of the listeners are combined.
+	 * @param defaultPhases The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
+	 * @param <T>           The listener type.
+	 * @return The Event instance.
+	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}.
+	 */
+	public static <T> Event<T> createWithPhases(Class<? super T> type, Combine combine, Identifier... defaultPhases) {
+		EventFactoryImpl.ensureContainsDefault(defaultPhases);
+		EventFactoryImpl.ensureNoDuplicates(defaultPhases);
+
+		Event<T> event = createArrayBacked(type, combine);
+		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
 		return event;
 	}
 

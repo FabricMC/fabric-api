@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.entity.event.v1;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -30,15 +31,7 @@ public final class EntityElytraEvents {
 	 * An event to check if elytra flight (both through normal and custom elytras) is allowed.
 	 * All listeners need to return true to allow the entity to fly, otherwise elytra flight will be blocked/stopped.
 	 */
-	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, listeners -> entity -> {
-		for (Allow listener : listeners) {
-			if (!listener.allowElytraFlight(entity)) {
-				return false;
-			}
-		}
-
-		return true;
-	});
+	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, Combine.STOP_AT_FALSE);
 
 	/**
 	 * An event to grant elytra flight to living entities when some condition is met.
@@ -46,15 +39,7 @@ public final class EntityElytraEvents {
 	 *
 	 * <p>Items that wish to enable custom elytra flight when worn in the chest equipment slot can add the {@link DataComponents#GLIDER} component to an item.
 	 */
-	public static final Event<Custom> CUSTOM = EventFactory.createArrayBacked(Custom.class, listeners -> (entity, tickElytra) -> {
-		for (Custom listener : listeners) {
-			if (listener.useCustomElytra(entity, tickElytra)) {
-				return true;
-			}
-		}
-
-		return false;
-	});
+	public static final Event<Custom> CUSTOM = EventFactory.createArrayBacked(Custom.class, Combine.STOP_AT_TRUE);
 
 	@FunctionalInterface
 	public interface Allow {

@@ -22,6 +22,7 @@ import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -51,11 +52,7 @@ public final class BlockTransformerEvents {
 	 */
 	public static final Event<BlockTransformerEvents.Modify> MODIFY = EventFactory.createArrayBacked(
 			BlockTransformerEvents.Modify.class,
-			callbacks -> (key, transforms, source, registries) -> {
-				for (BlockTransformerEvents.Modify callback : callbacks) {
-					callback.modify(key, transforms, source, registries);
-				}
-			}
+			Combine.CALL_ALL
 	);
 
 	@FunctionalInterface

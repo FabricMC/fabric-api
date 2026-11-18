@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -39,33 +40,21 @@ public final class ServerTickEvents {
 	 *
 	 * <p>When the dedicated server is "paused", this event is not invoked.
 	 */
-	public static final Event<StartTick> START_SERVER_TICK = EventFactory.createArrayBacked(StartTick.class, callbacks -> server -> {
-		for (StartTick event : callbacks) {
-			event.onStartTick(server);
-		}
-	});
+	public static final Event<StartTick> START_SERVER_TICK = EventFactory.createArrayBacked(StartTick.class, Combine.CALL_ALL);
 
 	/**
 	 * Called at the end of the server tick.
 	 *
 	 * <p>When the dedicated server is "paused", this event is not invoked.
 	 */
-	public static final Event<EndTick> END_SERVER_TICK = EventFactory.createArrayBacked(EndTick.class, callbacks -> server -> {
-		for (EndTick event : callbacks) {
-			event.onEndTick(server);
-		}
-	});
+	public static final Event<EndTick> END_SERVER_TICK = EventFactory.createArrayBacked(EndTick.class, Combine.CALL_ALL);
 
 	/**
 	 * Called at the start of a ServerLevel's tick.
 	 *
 	 * <p>When the dedicated server is "paused", this event is not invoked.
 	 */
-	public static final Event<StartLevelTick> START_LEVEL_TICK = EventFactory.createArrayBacked(StartLevelTick.class, callbacks -> level -> {
-		for (StartLevelTick callback : callbacks) {
-			callback.onStartTick(level);
-		}
-	});
+	public static final Event<StartLevelTick> START_LEVEL_TICK = EventFactory.createArrayBacked(StartLevelTick.class, Combine.CALL_ALL);
 
 	/**
 	 * Called at the end of a ServerLevel's tick.
@@ -74,11 +63,7 @@ public final class ServerTickEvents {
 	 *
 	 * <p>When the dedicated server is "paused", this event is not invoked.
 	 */
-	public static final Event<EndLevelTick> END_LEVEL_TICK = EventFactory.createArrayBacked(EndLevelTick.class, callbacks -> level -> {
-		for (EndLevelTick callback : callbacks) {
-			callback.onEndTick(level);
-		}
-	});
+	public static final Event<EndLevelTick> END_LEVEL_TICK = EventFactory.createArrayBacked(EndLevelTick.class, Combine.CALL_ALL);
 
 	@FunctionalInterface
 	public interface StartTick {

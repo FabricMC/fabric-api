@@ -25,6 +25,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.item.Item;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,11 +36,7 @@ public final class DefaultItemComponentEvents {
 	/**
 	 * Event used to add or remove data components to known items.
 	 */
-	public static final Event<ModifyCallback> MODIFY = EventFactory.createArrayBacked(ModifyCallback.class, listeners -> context -> {
-		for (ModifyCallback listener : listeners) {
-			listener.modify(context);
-		}
-	});
+	public static final Event<ModifyCallback> MODIFY = EventFactory.createArrayBacked(ModifyCallback.class, Combine.CALL_ALL);
 
 	private DefaultItemComponentEvents() {
 	}

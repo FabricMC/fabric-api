@@ -21,6 +21,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -40,11 +41,7 @@ public final class ClientPlayerBlockBreakEvents {
 	 * <p>Only called client side. For server side see {@link net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents#AFTER}
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
-			(listeners) -> (level, player, pos, state) -> {
-				for (After event : listeners) {
-					event.afterBlockBreak(level, player, pos, state);
-				}
-			}
+			Combine.CALL_ALL
 	);
 
 	@FunctionalInterface
