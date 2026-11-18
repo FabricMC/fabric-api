@@ -34,6 +34,7 @@ import net.minecraft.util.Prediction;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -147,6 +148,17 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, keepEquipment) -> {
 			LOGGER.info("{} is being converted to {} [{}]", previous.getName().getString(), converted.getName().getString(), keepEquipment);
+		});
+
+		ServerLivingEntityEvents.HORSE_FED.register((horse, stack, player, food) -> {
+			if (stack.is(Items.STICK)) {
+				food.health(1000);
+				food.ageUp(-AgeableMob.BABY_START_AGE);
+				food.temper(100);
+				food.inLove(true);
+			} else if (stack.is(Items.GOLDEN_CARROT)) {
+				food.inLove(false);
+			}
 		});
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {

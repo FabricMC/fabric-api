@@ -20,6 +20,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -106,6 +109,19 @@ public final class ServerLivingEntityEvents {
 		}
 	});
 
+	/**
+	 * An event that is run when a horse is fed by the player.
+	 *
+	 * <p>This event allows for both adding custom values for horse food, along with modifying the values for food from either vanilla or a previous listener</p>
+	 *
+	 * @see HorseFed.HorseFood HorseFood
+	 */
+	public static final Event<HorseFed> HORSE_FED = EventFactory.createArrayBacked(HorseFed.class, callbacks -> (horse, stack, player, food) -> {
+		for (HorseFed callback : callbacks) {
+			callback.onFed(horse, stack, player, food);
+		}
+	});
+
 	@FunctionalInterface
 	public interface AllowDamage {
 		/**
@@ -170,6 +186,73 @@ public final class ServerLivingEntityEvents {
 		 * @param conversionContext the context used for the conversion
 		 */
 		void onConversion(Mob previous, Mob converted, ConversionParams conversionContext);
+	}
+
+	@FunctionalInterface
+	public interface HorseFed {
+		/**
+		 * <table>
+		 *     <caption>The different properties of horse food.</caption>
+		 *     <thead><tr><th>Property</th><th>Getter</th><th>Setter</th></tr></thead>
+		 *     <tbody>
+		 *         <tr><td>Health</td><td>{@link #health() health}</td><td>{@link #health(float) health}</td></tr>
+		 *         <tr><td>Age Up</td><td>{@link #ageUp() ageUp}</td><td>{@link #ageUp(int) ageUp}</td></tr>
+		 *         <tr><td>Temper</td><td>{@link #temper() temper}</td><td>{@link #temper(int) temper}</td></tr>
+		 *         <tr><td>In Love</td><td>{@link #inLove() inLove}</td><td>{@link #inLove(boolean) inLove}</td></tr>
+		 *     </tbody>
+		 * </table>
+		 */
+		interface HorseFood {
+			/**
+			 * @return The health points restored by the food.
+			 */
+			float health();
+
+			/**
+			 * @param health the health points to be restored by the food
+			 */
+			void health(float health);
+
+			/**
+			 * @return The number of seconds the food ages the horse up by.
+			 */
+			int ageUp();
+
+			/**
+			 * @param ageUp the number of seconds to age the horse up by
+			 */
+			void ageUp(int ageUp);
+
+			/**
+			 * @return The number of temper points added by the food.
+			 */
+			int temper();
+
+			/**
+			 * @param temper the number of temper points to be added by the food.
+			 */
+			void temper(int temper);
+
+			/**
+			 * @return {@code true} if the food sets the horse in love, {@code false} otherwise.
+			 */
+			boolean inLove();
+
+			/**
+			 * @param inLove {@code true} to set the horse to be in love, {@code false} otherwise.
+			 */
+			void inLove(boolean inLove);
+		}
+
+		/**
+		 * Called when a horse is fed.
+		 *
+		 * @param horse the horse entity
+		 * @param stack the food stack
+		 * @param player the feeding player
+		 * @param food the food properties. See {@link HorseFood HorseFood}
+		 */
+		void onFed(AbstractHorse horse, ItemStack stack, Player player, HorseFood food);
 	}
 
 	private ServerLivingEntityEvents() {

@@ -6,6 +6,7 @@
     "minVersion": "0.5.0"
   },
   "mixins": [
+    "AbstractHorseMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "MobMixin",
