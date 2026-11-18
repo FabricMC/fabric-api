@@ -110,6 +110,8 @@ public class EventUnrolledModesTest {
 					assertSame(listeners[0], event.invoker(), context + " single listener");
 				} else if (reflective) {
 					assertTrue(name.contains("Proxy"), context + " " + name);
+				} else if (n == 0) {
+					assertTrue(name.contains("FabricEvent$Empty"), context + " " + name);
 				} else if (n >= 2 && n <= 16) {
 					assertTrue(name.contains("FabricEvent$Unrolled" + n), context + " " + name);
 				} else {

@@ -182,11 +182,14 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 		if (lookup != null && !forceProxy) {
 			try {
-				MethodHandle ctor = LOOP_CONSTRUCTORS.get(type).get(loopKey());
+				// No listeners: straight-line code, nothing to loop over. Otherwise the loop invoker.
+				boolean empty = listeners.length == 0;
+				String key = loopKey() + (empty ? "/empty" : "");
+				MethodHandle ctor = LOOP_CONSTRUCTORS.get(type).get(key);
 
 				if (ctor == null) {
-					ctor = generateLoopConstructor();
-					LOOP_CONSTRUCTORS.get(type).put(loopKey(), ctor);
+					ctor = empty ? generateEmptyConstructor() : generateLoopConstructor();
+					LOOP_CONSTRUCTORS.get(type).put(key, ctor);
 				}
 
 				return (T) (Object) ctor.invokeExact((Object[]) listeners, passValue);
@@ -261,6 +264,62 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	}
 
 	private static final MethodTypeDesc CONSTRUCTOR_DESC = MethodTypeDesc.of(ConstantDescs.CD_void, ConstantDescs.CD_Object.arrayType(), ConstantDescs.CD_Object);
+
+	/**
+	 * The invoker of an event without listeners: it only returns what the combination returns for no listeners.
+	 * There is no array, no loop and no branch.
+	 */
+	private MethodHandle generateEmptyConstructor() throws ReflectiveOperationException {
+		ClassDesc self = ClassDesc.of(type.getPackageName(), "FabricEvent$Empty");
+		ClassDesc listener = listenerDesc();
+		ClassDesc returnDesc = method.getReturnType().describeConstable().orElseThrow();
+		boolean storePass = storesPass();
+		Class<?> returnClass = method.getReturnType();
+
+		byte[] bytes = ClassFile.of().build(self, cb -> {
+			cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
+			cb.withInterfaceSymbols(listener);
+
+			if (storePass) {
+				cb.withField("pass", returnDesc, ClassFile.ACC_PRIVATE | ClassFile.ACC_FINAL);
+			}
+
+			cb.withMethodBody(ConstantDescs.INIT_NAME, CONSTRUCTOR_DESC, ClassFile.ACC_PUBLIC, code -> {
+				code.aload(0);
+				code.invokespecial(ConstantDescs.CD_Object, ConstantDescs.INIT_NAME, ConstantDescs.MTD_void);
+
+				if (storePass) {
+					code.aload(0);
+					code.aload(2);
+					code.checkcast(returnDesc);
+					code.putfield(self, "pass", returnDesc);
+				}
+
+				code.return_();
+			});
+
+			cb.withMethodBody(method.getName(), methodDesc(), ClassFile.ACC_PUBLIC, code -> {
+				switch (mode) {
+				case VOID -> code.return_();
+				case ALL_MATCH -> {
+					code.loadConstant(1);
+					code.ireturn();
+				}
+				case CHAIN -> {
+					TypeKind kind = TypeKind.from(returnClass);
+					code.loadLocal(kind, slotOf(threadedParam));
+					code.return_(kind);
+				}
+				case SHORT_CIRCUIT -> {
+					pushPass(code, self, returnDesc, -1);
+					code.return_(TypeKind.from(returnClass));
+				}
+				}
+			});
+		});
+
+		return define(bytes, "Empty");
+	}
 
 	private MethodHandle generateLoopConstructor() throws ReflectiveOperationException {
 		ClassDesc self = ClassDesc.of(type.getPackageName(), "FabricEvent$Loop");
