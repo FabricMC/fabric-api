@@ -23,19 +23,13 @@ import java.lang.classfile.Label;
 import java.lang.classfile.TypeKind;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.ConstantDescs;
-import java.lang.constant.DirectMethodHandleDesc;
-import java.lang.constant.DynamicCallSiteDesc;
 import java.lang.constant.DynamicConstantDesc;
 import java.lang.constant.MethodTypeDesc;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.invoke.MutableCallSite;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -57,7 +51,7 @@ import net.fabricmc.fabric.api.event.Combine;
  * The {@link Combine} is the only definition of how the listener results are combined,
  * every kind of invoker below is generated from it.
  *
- * <p>There are three kinds of invokers, all with identical behavior:
+ * <p>There are two kinds of invokers, with identical behavior:
  * <ul>
  *     <li>The <b>loop</b> invoker is used right after registration. A class is generated once for each listener
  *     interface and combination, and shared by all events using them. It iterates over the array of listeners.</li>
@@ -65,7 +59,6 @@ import net.fabricmc.fabric.api.event.Combine;
  *     A class is generated for each event and listener count, that calls every listener from its own call site:
  *     {@code l0.run(args); l1.run(args); ...}. Every call site only ever sees one listener class,
  *     so the JIT can inline it instead of going through a megamorphic interface dispatch.</li>
- *     <li>The <b>proxy</b> invoker is a slow reflective implementation, only used if generating classes fails.</li>
  * </ul>
  *
  * <p>With a single listener, all combinations are equivalent to calling it directly, so it is used as the invoker.
@@ -92,17 +85,12 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			return new ConcurrentHashMap<>();
 		}
 	};
-	/**
-	 * For tests: do not generate any class, use the reflective fallback.
-	 */
-	static volatile boolean forceProxy = false;
-
 	private final Class<? super T> type;
-	private final Method method;
+	final Method method;
 	private final Combine.Mode mode;
 	private final @Nullable Object passValue;
 	private final int threadedParam;
-	private final MethodHandles.Lookup lookup;
+	final MethodHandles.Lookup lookup;
 	private boolean unrolledBroken;
 
 	private CombinedInvokerFactory(Class<? super T> type, Method method, Combine combine, MethodHandles.Lookup lookup) {
@@ -134,15 +122,11 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		if (found == null) throw new IllegalArgumentException(type.getName() + " has no abstract method");
 		validate(type, found, combine);
 
-		MethodHandles.Lookup lookup;
-
 		try {
-			lookup = MethodHandles.privateLookupIn(type, MethodHandles.lookup());
+			return new CombinedInvokerFactory<>(type, found, combine, MethodHandles.privateLookupIn(type, MethodHandles.lookup()));
 		} catch (IllegalAccessException | RuntimeException e) {
-			lookup = null; // The proxy invoker will be used.
+			throw new IllegalArgumentException(type.getName() + " is not accessible to Fabric API, for example because its module does not open its package", e);
 		}
-
-		return new CombinedInvokerFactory<>(type, found, combine, lookup);
 	}
 
 	private static void validate(Class<?> type, Method method, Combine combine) {
@@ -186,22 +170,18 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	public T apply(T[] listeners) {
 		if (listeners.length == 1) return listeners[0];
 
-		if (lookup != null && !forceProxy) {
-			try {
-				MethodHandle ctor = LOOP_CONSTRUCTORS.get(type).get(loopKey());
+		try {
+			MethodHandle ctor = LOOP_CONSTRUCTORS.get(type).get(loopKey());
 
-				if (ctor == null) {
-					ctor = generateLoopConstructor();
-					LOOP_CONSTRUCTORS.get(type).put(loopKey(), ctor);
-				}
-
-				return (T) (Object) ctor.invokeExact((Object[]) listeners, passValue);
-			} catch (Throwable t) {
-				LOGGER.warn("Could not generate an invoker for {}, using a slow reflective one instead", type.getName(), t);
+			if (ctor == null) {
+				ctor = generateLoopConstructor();
+				LOOP_CONSTRUCTORS.get(type).put(loopKey(), ctor);
 			}
-		}
 
-		return proxy(listeners);
+			return (T) (Object) ctor.invokeExact((Object[]) listeners, passValue);
+		} catch (Throwable t) {
+			throw new IllegalStateException("Could not generate the invoker of an event for " + type.getName(), t);
+		}
 	}
 
 	/**
@@ -214,7 +194,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	@Nullable
 	T generateUnrolled(T[] listeners) {
 		int n = listeners.length;
-		if (n < 2 || n > MAX_UNROLLED || unrolledBroken || lookup == null || forceProxy) return null;
+		if (n < 2 || n > MAX_UNROLLED || unrolledBroken) return null;
 
 		try {
 			byte[] bytes = generateUnrolledBytes(n);
@@ -236,62 +216,6 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		} catch (Throwable t) {
 			LOGGER.warn("Could not generate an unrolled invoker for {}, keeping the loop", type.getName(), t);
 			unrolledBroken = true;
-			return null;
-		}
-	}
-
-	/**
-	 * Creates the invoker that never changes, see {@link StableInvoker}. The class is generated for each event,
-	 * because every class has its own {@code invokedynamic} call site, whose target is the class data.
-	 *
-	 * @return the stable invoker, or {@code null} if generating classes is not possible.
-	 */
-	@SuppressWarnings("unchecked")
-	@Nullable
-	StableInvoker<T> createStable() {
-		if (lookup == null || forceProxy) return null;
-
-		try {
-			MethodType methodType = MethodType.methodType(method.getReturnType(), method.getParameterTypes());
-			MutableCallSite site = new MutableCallSite(methodType);
-			MethodHandle virtual = lookup.findVirtual(type, method.getName(), methodType);
-			ClassDesc self = ClassDesc.of(type.getPackageName(), "FabricEvent$Stable");
-			ClassDesc listener = listenerDesc();
-			MethodTypeDesc desc = methodDesc();
-			Class<?> returnClass = method.getReturnType();
-			DirectMethodHandleDesc bootstrap = ConstantDescs.ofCallsiteBootstrap(ClassDesc.of(StableInvokerSupport.class.getName()), "bootstrap", ConstantDescs.CD_CallSite);
-
-			byte[] bytes = ClassFile.of().build(self, cb -> {
-				cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
-				cb.withInterfaceSymbols(listener);
-
-				cb.withMethodBody(ConstantDescs.INIT_NAME, ConstantDescs.MTD_void, ClassFile.ACC_PUBLIC, code -> {
-					code.aload(0);
-					code.invokespecial(ConstantDescs.CD_Object, ConstantDescs.INIT_NAME, ConstantDescs.MTD_void);
-					code.return_();
-				});
-
-				cb.withMethodBody(method.getName(), desc, ClassFile.ACC_PUBLIC, code -> {
-					loadParams(code);
-					code.invokedynamic(DynamicCallSiteDesc.of(bootstrap, method.getName(), desc));
-
-					if (returnClass == void.class) {
-						code.return_();
-					} else {
-						code.return_(TypeKind.from(returnClass));
-					}
-				});
-			});
-
-			if (DUMP_DIR != null) {
-				dump(bytes, "Stable");
-			}
-
-			MethodHandles.Lookup hidden = lookup.defineHiddenClassWithClassData(bytes, site, true);
-			T object = (T) hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class)).invoke();
-			return new StableInvoker<>(object, site, virtual, emptyTarget(methodType));
-		} catch (Throwable t) {
-			LOGGER.warn("Could not generate a stable invoker for {}, its invoker will change when listeners are registered", type.getName(), t);
 			return null;
 		}
 	}
@@ -323,7 +247,8 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	/**
 	 * What the combination does without listeners, as a constant method handle for the call site of a stable invoker.
 	 */
-	private MethodHandle emptyTarget(MethodType methodType) {
+	MethodHandle emptyTarget() {
+		MethodType methodType = MethodType.methodType(method.getReturnType(), method.getParameterTypes());
 		Class<?> returnClass = methodType.returnType();
 
 		return switch (mode) {
@@ -583,9 +508,16 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	}
 
 	private void loadParams(CodeBuilder code) {
+		loadParams(code, method.getParameterTypes());
+	}
+
+	/**
+	 * Loads the parameters of an instance method with the given parameter types onto the stack.
+	 */
+	static void loadParams(CodeBuilder code, Class<?>[] params) {
 		int slot = 1;
 
-		for (Class<?> param : method.getParameterTypes()) {
+		for (Class<?> param : params) {
 			TypeKind kind = TypeKind.from(param);
 			code.loadLocal(kind, slot);
 			slot += kind.slotSize();
@@ -620,55 +552,4 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		}
 	}
 
-	// ---- Reflective fallback ----
-
-	@SuppressWarnings("unchecked")
-	private T proxy(T[] listeners) {
-		InvocationHandler handler = (proxy, called, args) -> {
-			if (called.getDeclaringClass() == Object.class) {
-				return switch (called.getName()) {
-				case "equals" -> proxy == args[0];
-				case "hashCode" -> System.identityHashCode(proxy);
-				default -> type.getName() + " invoker for " + listeners.length + " listeners";
-				};
-			}
-
-			if (!Modifier.isAbstract(called.getModifiers())) {
-				return InvocationHandler.invokeDefault(proxy, called, args);
-			}
-
-			return combineReflectively(listeners, args == null ? new Object[0] : args);
-		};
-		return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] {type}, handler);
-	}
-
-	private @Nullable Object combineReflectively(Object[] listeners, Object[] args) throws Throwable {
-		boolean all = true;
-
-		try {
-			for (Object listener : listeners) {
-				Object result = method.invoke(listener, args);
-
-				switch (mode) {
-				case VOID -> { }
-				case ALL_MATCH -> all &= (Boolean) result;
-				case CHAIN -> args[threadedParam] = result;
-				case SHORT_CIRCUIT -> {
-					if (result != passValue && !(result instanceof Boolean && result.equals(passValue))) {
-						return result;
-					}
-				}
-				}
-			}
-		} catch (InvocationTargetException e) {
-			throw e.getCause();
-		}
-
-		return switch (mode) {
-		case VOID -> null;
-		case ALL_MATCH -> all;
-		case CHAIN -> args[threadedParam];
-		case SHORT_CIRCUIT -> passValue;
-		};
-	}
 }

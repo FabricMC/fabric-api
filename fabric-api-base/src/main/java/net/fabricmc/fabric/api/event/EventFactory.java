@@ -56,7 +56,7 @@ public final class EventFactory {
 	 * @param combine How the results of the listeners are combined.
 	 * @param <T>     The listener type.
 	 * @return The Event instance.
-	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}.
+	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}, or is not accessible to Fabric API.
 	 */
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Combine combine) {
 		return EventFactoryImpl.createArrayBacked(type, combine);
@@ -132,7 +132,7 @@ public final class EventFactory {
 	 * @param defaultPhases The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
 	 * @param <T>           The listener type.
 	 * @return The Event instance.
-	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}.
+	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}, or is not accessible to Fabric API.
 	 */
 	public static <T> Event<T> createWithPhases(Class<? super T> type, Combine combine, Identifier... defaultPhases) {
 		EventFactoryImpl.ensureContainsDefault(defaultPhases);

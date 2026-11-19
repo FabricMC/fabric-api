@@ -50,9 +50,7 @@ public final class EventFactoryImpl {
 	}
 
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Combine combine) {
-		CombinedInvokerFactory<T> factory = CombinedInvokerFactory.create(type, combine);
-		StableInvoker<T> stable = factory.createStable();
-		ArrayBackedEvent<T> event = stable != null ? StableEvents.create(type, factory, stable) : new ArrayBackedEvent<>(type, factory);
+		ArrayBackedEvent<T> event = StableInvoker.createEvent(type, CombinedInvokerFactory.<T>create(type, combine));
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
 	}
@@ -64,13 +62,6 @@ public final class EventFactoryImpl {
 	@SuppressWarnings("unchecked")
 	public static <T> T underlyingInvoker(Event<T> event) {
 		return ((ArrayBackedEvent<T>) event).currentInvoker();
-	}
-
-	/**
-	 * For tests: use the slow reflective invokers instead of generating classes.
-	 */
-	public static void setForceReflectiveInvokers(boolean force) {
-		CombinedInvokerFactory.forceProxy = force;
 	}
 
 	/**

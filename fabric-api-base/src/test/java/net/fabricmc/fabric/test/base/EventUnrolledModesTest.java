@@ -74,22 +74,9 @@ public class EventUnrolledModesTest {
 	/**
 	 * Runs the event with every kind of invoker against the reference loop, which is the specification of the {@link Combine}.
 	 */
-	private static <T> void fuzz(Class<T> type, Combine combine, Function<T[], T> reference,
-			BiFunction<Integer, Random, T> make, BiFunction<T, List<String>, Object> fire) {
-		for (boolean reflective : new boolean[] {false, true}) {
-			EventFactoryImpl.setForceReflectiveInvokers(reflective);
-
-			try {
-				fuzz(type, combine, reference, make, fire, reflective);
-			} finally {
-				EventFactoryImpl.setForceReflectiveInvokers(false);
-			}
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	private static <T> void fuzz(Class<T> type, Combine combine, Function<T[], T> reference,
-			BiFunction<Integer, Random, T> make, BiFunction<T, List<String>, Object> fire, boolean reflective) {
+			BiFunction<Integer, Random, T> make, BiFunction<T, List<String>, Object> fire) {
 		for (int n : COUNTS) {
 			for (int rep = 0; rep < (n <= 20 ? 25 : 3); rep++) {
 				T[] listeners = (T[]) Array.newInstance(type, n);
@@ -100,7 +87,7 @@ public class EventUnrolledModesTest {
 					event.register(listeners[i]);
 				}
 
-				String context = type.getSimpleName() + " n=" + n + " rep=" + rep + (reflective ? " reflective" : "");
+				String context = type.getSimpleName() + " n=" + n + " rep=" + rep;
 				T expectedInvoker = reference.apply(listeners);
 
 				// Right after registration, the invoker may be the loop or the unrolled one, depending on the background thread.
@@ -113,10 +100,8 @@ public class EventUnrolledModesTest {
 
 				if (n == 1) {
 					assertSame(listeners[0], EventFactoryImpl.underlyingInvoker(event), context + " single listener");
-				} else if (reflective) {
-					assertTrue(name.contains("Proxy"), context + " " + name);
 				} else if (n == 0) {
-					assertTrue(name.contains("FabricEvent$Stable"), context + " " + name);
+					assertTrue(name.contains("FabricEvent$Invoker"), context + " " + name);
 				} else if (n >= 2 && n <= EventFactoryImpl.MAX_UNROLLED_LISTENERS) {
 					assertTrue(name.contains("FabricEvent$Unrolled" + n), context + " " + name);
 				} else {
@@ -309,5 +294,7 @@ public class EventUnrolledModesTest {
 		// Not a single-method interface.
 		assertThrows(IllegalArgumentException.class, () -> EventFactory.createArrayBacked(Runnable.class, Combine.FIRST_NON_NULL));
 		assertThrows(IllegalArgumentException.class, () -> EventFactory.createArrayBacked(Object.class, Combine.CALL_ALL));
+		// Not accessible: java.base does not open java.lang.
+		assertThrows(IllegalArgumentException.class, () -> EventFactory.createArrayBacked(Runnable.class, Combine.CALL_ALL));
 	}
 }
