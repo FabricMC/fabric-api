@@ -148,7 +148,7 @@ public final class StableInvoker<T> {
 		byte[] bytes = ClassFile.of().build(STABLE_EVENT, cb -> {
 			cb.withSuperclass(EVENT);
 			cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
-			cb.withField("stable", ConstantDescs.CD_Object, ClassFile.ACC_PRIVATE | ClassFile.ACC_FINAL);
+			cb.withField("invokerObject", ConstantDescs.CD_Object, ClassFile.ACC_PRIVATE | ClassFile.ACC_FINAL);
 
 			cb.withMethodBody(ConstantDescs.INIT_NAME, MethodTypeDesc.of(ConstantDescs.CD_void, ConstantDescs.CD_Class, function, SELF, ConstantDescs.CD_Object), ClassFile.ACC_PUBLIC, code -> {
 				code.aload(0);
@@ -158,13 +158,13 @@ public final class StableInvoker<T> {
 				code.invokespecial(EVENT, ConstantDescs.INIT_NAME, MethodTypeDesc.of(ConstantDescs.CD_void, ConstantDescs.CD_Class, function, SELF));
 				code.aload(0);
 				code.aload(4);
-				code.putfield(STABLE_EVENT, "stable", ConstantDescs.CD_Object);
+				code.putfield(STABLE_EVENT, "invokerObject", ConstantDescs.CD_Object);
 				code.return_();
 			});
 
 			cb.withMethodBody("invoker", MethodTypeDesc.of(ConstantDescs.CD_Object), ClassFile.ACC_PUBLIC, code -> {
 				code.aload(0);
-				code.getfield(STABLE_EVENT, "stable", ConstantDescs.CD_Object);
+				code.getfield(STABLE_EVENT, "invokerObject", ConstantDescs.CD_Object);
 				code.areturn();
 			});
 		});
