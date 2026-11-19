@@ -26,14 +26,14 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.invoke.MutableCallSite;
+import java.lang.invoke.VolatileCallSite;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
 /**
  * The invoker of an event created with a {@link net.fabricmc.fabric.api.event.Combine}, which never changes.
  *
- * <p>{@link #object} is a generated class, whose method is a single {@code invokedynamic} onto a {@link MutableCallSite}.
+ * <p>{@link #object} is a generated class, whose method is a single {@code invokedynamic} onto a {@link VolatileCallSite}.
  * When the listeners of the event change, only the target of the call site does. The JIT treats the target of
  * a call site as a constant, and inlines it into the code that fires the event, with a dependency that
  * recompiles that code if the target ever changes.
@@ -57,7 +57,12 @@ public final class StableInvoker<T> {
 	 * The generated invoker, implementing the listener interface.
 	 */
 	final T object;
-	private final MutableCallSite site;
+	/**
+	 * Volatile, so that a listener registered on one thread is seen by all others, like with the volatile invoker field of
+	 * {@link net.fabricmc.fabric.api.event.Event}. A {@link java.lang.invoke.MutableCallSite} gives no such guarantee:
+	 * its {@code syncAll} is not implemented beyond a store fence.
+	 */
+	private final VolatileCallSite site;
 	/**
 	 * The listener method, with the receiver as an additional first parameter.
 	 */
@@ -67,7 +72,7 @@ public final class StableInvoker<T> {
 	 */
 	private final MethodHandle empty;
 
-	private StableInvoker(T object, MutableCallSite site, MethodHandle virtual, MethodHandle empty) {
+	private StableInvoker(T object, VolatileCallSite site, MethodHandle virtual, MethodHandle empty) {
 		this.object = object;
 		this.site = site;
 		this.virtual = virtual;
@@ -101,7 +106,7 @@ public final class StableInvoker<T> {
 		});
 
 		try {
-			MutableCallSite site = new MutableCallSite(methodType);
+			VolatileCallSite site = new VolatileCallSite(methodType);
 			MethodHandles.Lookup hidden = factory.lookup.defineHiddenClassWithClassData(bytes, site, true);
 			T object = (T) hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class)).invoke();
 			MethodHandle virtual = factory.lookup.findVirtual(type, method.getName(), methodType);
@@ -117,7 +122,6 @@ public final class StableInvoker<T> {
 	 */
 	void retargetEmpty() {
 		site.setTarget(empty);
-		MutableCallSite.syncAll(new MutableCallSite[] {site});
 	}
 
 	/**
@@ -125,7 +129,6 @@ public final class StableInvoker<T> {
 	 */
 	void retarget(T invoker) {
 		site.setTarget(virtual.bindTo(invoker));
-		MutableCallSite.syncAll(new MutableCallSite[] {site});
 	}
 
 	/**
