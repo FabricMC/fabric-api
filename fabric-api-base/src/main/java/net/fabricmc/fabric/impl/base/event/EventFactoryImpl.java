@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.base.event;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
@@ -62,6 +63,31 @@ public final class EventFactoryImpl {
 	@SuppressWarnings("unchecked")
 	public static <T> T underlyingInvoker(Event<T> event) {
 		return ((ArrayBackedEvent<T>) event).currentInvoker();
+	}
+
+	/**
+	 * How many times the call site of an event with a stable invoker got a new target. Meant for tests.
+	 */
+	public static int retargetCount(Event<?> event) {
+		StableInvoker<?> stable = ((ArrayBackedEvent<?>) event).stable();
+		return stable == null ? 0 : stable.retargets;
+	}
+
+	/**
+	 * Holds back the generation of unrolled invokers until the returned action is run. Meant for tests.
+	 */
+	public static Runnable blockInvokerGeneration() {
+		CountDownLatch latch = new CountDownLatch(1);
+
+		ArrayBackedEvent.UPGRADES.execute(() -> {
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		});
+
+		return latch::countDown;
 	}
 
 	/**

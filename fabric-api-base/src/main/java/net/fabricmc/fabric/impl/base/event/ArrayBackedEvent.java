@@ -85,28 +85,25 @@ class ArrayBackedEvent<T> extends Event<T> {
 	 * The current invoker, even if {@link #invoker()} returns a stable one that forwards to it.
 	 */
 	T currentInvoker() {
-		return invoker;
+		return stable != null ? stable.current() : invoker;
 	}
 
-	private void setInvoker(T newInvoker) {
-		this.invoker = newInvoker;
-
-		if (stable != null) {
-			stable.retarget(newInvoker);
-		}
+	/**
+	 * The stable invoker of the event, if it has one. For tests.
+	 */
+	@Nullable StableInvoker<T> stable() {
+		return stable;
 	}
 
 	void update() {
 		T[] current = handlers;
 
-		if (stable != null && current.length == 0) {
-			// No listeners: the stable invoker calls a constant method handle, no invoker object is needed.
+		if (stable != null && invokerFactory instanceof CombinedInvokerFactory<T> combined) {
+			stable.update(current, combined);
 			this.invoker = stable.object;
-			stable.retargetEmpty();
-			return;
+		} else {
+			this.invoker = invokerFactory.apply(current);
 		}
-
-		setInvoker(invokerFactory.apply(current));
 
 		if (invokerFactory instanceof CombinedInvokerFactory<T> unrolled && current.length > 1) {
 			scheduleUpgrade(unrolled, current);
@@ -124,7 +121,11 @@ class ArrayBackedEvent<T> extends Event<T> {
 
 			synchronized (lock) {
 				if (handlers == snapshot) {
-					setInvoker(generated);
+					if (stable != null) {
+						stable.install(generated);
+					} else {
+						this.invoker = generated;
+					}
 				}
 			}
 		});

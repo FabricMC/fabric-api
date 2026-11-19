@@ -30,6 +30,8 @@ import java.lang.invoke.VolatileCallSite;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * The invoker of an event created with a {@link net.fabricmc.fabric.api.event.Combine}, which never changes.
  *
@@ -71,6 +73,19 @@ public final class StableInvoker<T> {
 	 * What the event does without listeners, as a constant method handle: no class is needed for it.
 	 */
 	private final MethodHandle empty;
+
+	/**
+	 * The invoker the call site currently targets, {@code null} for the constant one of an event without listeners.
+	 */
+	private @Nullable T current;
+	/**
+	 * The loop invoker of this event, kept while listeners are registered, so the call site does not need a new target.
+	 */
+	private @Nullable T loop;
+	/**
+	 * How many times the call site got a new target, which recompiles the code that fires the event. For tests.
+	 */
+	int retargets;
 
 	private StableInvoker(T object, VolatileCallSite site, MethodHandle virtual, MethodHandle empty) {
 		this.object = object;
@@ -118,17 +133,57 @@ public final class StableInvoker<T> {
 	}
 
 	/**
-	 * Makes the stable invoker do what the event does without listeners.
+	 * Points the call site at the invoker for the given listeners.
+	 *
+	 * <p>Every new target makes the JIT throw away the code that inlined the old one. Registering listeners one by one
+	 * would do that each time, so with two listeners or more, the call site targets the loop invoker of this event,
+	 * and registering only replaces its listener array. The call site gets a new target again when the unrolled
+	 * invoker is {@linkplain #install installed}, once registrations have settled.
 	 */
-	void retargetEmpty() {
-		site.setTarget(empty);
+	void update(T[] listeners, CombinedInvokerFactory<T> factory) {
+		switch (listeners.length) {
+		case 0 -> {
+			if (current != null || retargets == 0) {
+				target(empty, null);
+			}
+		}
+		case 1 -> target(listeners[0]);
+		default -> {
+			if (loop == null) {
+				loop = factory.newLoop(listeners);
+			} else {
+				factory.setLoopListeners(loop, listeners);
+			}
+
+			target(loop);
+		}
+		}
 	}
 
 	/**
-	 * Makes the stable invoker call the given invoker from now on.
+	 * Points the call site at the unrolled invoker.
 	 */
-	void retarget(T invoker) {
-		site.setTarget(virtual.bindTo(invoker));
+	void install(T unrolled) {
+		target(unrolled);
+	}
+
+	/**
+	 * The invoker the call site currently targets, or the stable invoker itself for an event without listeners.
+	 */
+	T current() {
+		return current != null ? current : object;
+	}
+
+	private void target(T invoker) {
+		if (invoker != current) {
+			target(virtual.bindTo(invoker), invoker);
+		}
+	}
+
+	private void target(MethodHandle target, @Nullable T invoker) {
+		site.setTarget(target);
+		current = invoker;
+		retargets++;
 	}
 
 	/**

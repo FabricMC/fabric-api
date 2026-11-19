@@ -54,7 +54,8 @@ import net.fabricmc.fabric.api.event.Combine;
  * <p>There are two kinds of invokers, with identical behavior:
  * <ul>
  *     <li>The <b>loop</b> invoker is used right after registration. A class is generated once for each listener
- *     interface and combination, and shared by all events using them. It iterates over the array of listeners.</li>
+ *     interface and combination, and shared by all events using them. It iterates over the array of listeners, which
+ *     can be replaced: an event keeps its loop invoker while listeners are registered, see {@link StableInvoker}.</li>
  *     <li>The <b>unrolled</b> invoker replaces it in the background when there are 2 to {@link #MAX_UNROLLED} listeners.
  *     A class is generated for each event and listener count, that calls every listener from its own call site:
  *     {@code l0.run(args); l1.run(args); ...}. Every call site only ever sees one listener class,
@@ -77,14 +78,20 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			? Path.of(System.getProperty("fabric.event.dumpInvokers")) : null;
 	private static final AtomicInteger DUMP_COUNTER = new AtomicInteger();
 	/**
-	 * Loop invoker constructors by listener interface, then by combination. Weak on the listener class, through {@link ClassValue}.
+	 * Loop invoker classes by listener interface, then by combination. Weak on the listener class, through {@link ClassValue}.
 	 */
-	private static final ClassValue<Map<String, MethodHandle>> LOOP_CONSTRUCTORS = new ClassValue<>() {
+	private static final ClassValue<Map<String, LoopClass>> LOOP_CLASSES = new ClassValue<>() {
 		@Override
-		protected Map<String, MethodHandle> computeValue(Class<?> type) {
+		protected Map<String, LoopClass> computeValue(Class<?> type) {
 			return new ConcurrentHashMap<>();
 		}
 	};
+
+	/**
+	 * A loop invoker class: its constructor {@code (Object[] listeners, Object pass)},
+	 * and the setter of its volatile listener array {@code (Object loop, Object[] listeners)}.
+	 */
+	private record LoopClass(MethodHandle constructor, MethodHandle setter) { }
 	private final Class<? super T> type;
 	final Method method;
 	private final Combine.Mode mode;
@@ -170,18 +177,42 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	public T apply(T[] listeners) {
 		if (listeners.length == 1) return listeners[0];
 
+		return newLoop(listeners);
+	}
+
+	/**
+	 * A new loop invoker for the given listeners.
+	 */
+	@SuppressWarnings("unchecked")
+	T newLoop(T[] listeners) {
 		try {
-			MethodHandle ctor = LOOP_CONSTRUCTORS.get(type).get(loopKey());
-
-			if (ctor == null) {
-				ctor = generateLoopConstructor();
-				LOOP_CONSTRUCTORS.get(type).put(loopKey(), ctor);
-			}
-
-			return (T) (Object) ctor.invokeExact((Object[]) listeners, passValue);
+			return (T) (Object) loopClass().constructor().invokeExact((Object[]) listeners, passValue);
 		} catch (Throwable t) {
-			throw new IllegalStateException("Could not generate the invoker of an event for " + type.getName(), t);
+			throw new IllegalStateException("Could not create the invoker of an event for " + type.getName(), t);
 		}
+	}
+
+	/**
+	 * Replaces the listeners of a loop invoker. Its class does not change, so neither does the code that calls it.
+	 */
+	void setLoopListeners(T loop, T[] listeners) {
+		try {
+			loopClass().setter().invokeExact((Object) loop, (Object[]) listeners);
+		} catch (Throwable t) {
+			throw new IllegalStateException("Could not update the invoker of an event for " + type.getName(), t);
+		}
+	}
+
+	private LoopClass loopClass() throws ReflectiveOperationException {
+		Map<String, LoopClass> classes = LOOP_CLASSES.get(type);
+		LoopClass loopClass = classes.get(loopKey());
+
+		if (loopClass == null) {
+			loopClass = generateLoopClass();
+			classes.put(loopKey(), loopClass);
+		}
+
+		return loopClass;
 	}
 
 	/**
@@ -259,7 +290,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		};
 	}
 
-	private MethodHandle generateLoopConstructor() throws ReflectiveOperationException {
+	private LoopClass generateLoopClass() throws ReflectiveOperationException {
 		ClassDesc self = ClassDesc.of(type.getPackageName(), "FabricEvent$Loop");
 		ClassDesc listener = listenerDesc();
 		ClassDesc array = listener.arrayType();
@@ -276,7 +307,8 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		byte[] bytes = ClassFile.of().build(self, cb -> {
 			cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
 			cb.withInterfaceSymbols(listener);
-			cb.withField("l", array, ClassFile.ACC_PRIVATE | ClassFile.ACC_FINAL);
+			// Volatile and not final: registering listeners replaces the array, without changing the invoker.
+			cb.withField("l", array, ClassFile.ACC_PRIVATE | ClassFile.ACC_VOLATILE);
 
 			if (storePass) {
 				cb.withField("pass", returnDesc, ClassFile.ACC_PRIVATE | ClassFile.ACC_FINAL);
@@ -367,7 +399,16 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			});
 		});
 
-		return define(bytes, "Loop");
+		if (DUMP_DIR != null) {
+			dump(bytes, "Loop");
+		}
+
+		MethodHandles.Lookup hidden = lookup.defineHiddenClass(bytes, true);
+		MethodHandle constructor = hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class, Object[].class, Object.class))
+				.asType(MethodType.methodType(Object.class, Object[].class, Object.class));
+		MethodHandle setter = hidden.findSetter(hidden.lookupClass(), "l", type.arrayType())
+				.asType(MethodType.methodType(void.class, Object.class, Object[].class));
+		return new LoopClass(constructor, setter);
 	}
 
 	/**
@@ -439,16 +480,6 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				}
 			});
 		});
-	}
-
-	private MethodHandle define(byte[] bytes, String kind) throws ReflectiveOperationException {
-		if (DUMP_DIR != null) {
-			dump(bytes, kind);
-		}
-
-		MethodHandles.Lookup hidden = lookup.defineHiddenClass(bytes, true);
-		return hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class, Object[].class, Object.class))
-				.asType(MethodType.methodType(Object.class, Object[].class, Object.class));
 	}
 
 	/**

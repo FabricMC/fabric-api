@@ -111,6 +111,36 @@ public class EventDelegatingTest {
 	}
 
 	@Test
+	void registeringOnTheLoopKeepsTheTarget() {
+		Event<Callback> e = create();
+		int onLoop;
+		Runnable unblock = EventFactoryImpl.blockInvokerGeneration();
+
+		try {
+			int initial = EventFactoryImpl.retargetCount(e);
+			e.register(tag("a")); // the listener itself
+			e.register(tag("b")); // the loop invoker of the event
+			onLoop = EventFactoryImpl.retargetCount(e);
+			assertEquals(initial + 2, onLoop);
+
+			for (int i = 0; i < 10; i++) {
+				e.register(tag("c" + i));
+				assertEquals(i + 3, fire(e).size());
+			}
+
+			// Only the listener array of the loop invoker changed: no new target, nothing to recompile.
+			assertEquals(onLoop, EventFactoryImpl.retargetCount(e));
+		} finally {
+			unblock.run();
+		}
+
+		// Once registrations settled: a single new target, the unrolled invoker.
+		EventFactoryImpl.awaitInvokerGeneration();
+		assertEquals(onLoop + 1, EventFactoryImpl.retargetCount(e));
+		assertEquals(12, fire(e).size());
+	}
+
+	@Test
 	void exceptionStopsLaterListeners() {
 		Event<Callback> e = create();
 		List<String> out = new ArrayList<>();
