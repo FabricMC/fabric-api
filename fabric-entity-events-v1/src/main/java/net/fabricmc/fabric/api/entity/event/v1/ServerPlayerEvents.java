@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.entity.event.v1;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -32,14 +31,22 @@ public final class ServerPlayerEvents {
 	 *
 	 * @see ServerPlayerEvents#AFTER_RESPAWN
 	 */
-	public static final Event<ServerPlayerEvents.CopyFrom> COPY_FROM = EventFactory.createArrayBacked(ServerPlayerEvents.CopyFrom.class, Combine.CALL_ALL);
+	public static final Event<ServerPlayerEvents.CopyFrom> COPY_FROM = EventFactory.createArrayBacked(ServerPlayerEvents.CopyFrom.class, callbacks -> (oldPlayer, newPlayer, alive) -> {
+		for (CopyFrom callback : callbacks) {
+			callback.copyFromPlayer(oldPlayer, newPlayer, alive);
+		}
+	});
 
 	/**
 	 * An event that is called after a player has been respawned.
 	 *
 	 * <p>Mods may use this event for reference clean up on the old player.
 	 */
-	public static final Event<ServerPlayerEvents.AfterRespawn> AFTER_RESPAWN = EventFactory.createArrayBacked(ServerPlayerEvents.AfterRespawn.class, Combine.CALL_ALL);
+	public static final Event<ServerPlayerEvents.AfterRespawn> AFTER_RESPAWN = EventFactory.createArrayBacked(ServerPlayerEvents.AfterRespawn.class, callbacks -> (oldPlayer, newPlayer, alive) -> {
+		for (AfterRespawn callback : callbacks) {
+			callback.afterRespawn(oldPlayer, newPlayer, alive);
+		}
+	});
 
 	/**
 	 * An event that is called when a player has joined the game.
@@ -47,7 +54,11 @@ public final class ServerPlayerEvents {
 	 *
 	 * <p>This event is called on the server thread after the player has fully been loaded into the world.
 	 */
-	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, Combine.CALL_ALL);
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> player -> {
+		for (Join callback : callbacks) {
+			callback.onJoin(player);
+		}
+	});
 
 	/**
 	 * An event that is called when a player is leaving the game.
@@ -55,7 +66,11 @@ public final class ServerPlayerEvents {
 	 *
 	 * <p>This event is called on the server thread before the player has been saved and removed from the world.
 	 */
-	public static final Event<Leave> LEAVE = EventFactory.createArrayBacked(Leave.class, Combine.CALL_ALL);
+	public static final Event<Leave> LEAVE = EventFactory.createArrayBacked(Leave.class, callbacks -> player -> {
+		for (Leave callback : callbacks) {
+			callback.onLeave(player);
+		}
+	});
 
 	/**
 	 * An event that is called when a player takes fatal damage.
@@ -63,7 +78,15 @@ public final class ServerPlayerEvents {
 	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayer}.
 	 */
 	@Deprecated
-	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
+		for (AllowDeath callback : callbacks) {
+			if (!callback.allowDeath(player, damageSource, damageAmount)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	@FunctionalInterface
 	public interface CopyFrom {

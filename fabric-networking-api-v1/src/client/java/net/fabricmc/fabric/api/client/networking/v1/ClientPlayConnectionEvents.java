@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -34,7 +33,11 @@ public final class ClientPlayConnectionEvents {
 	 *
 	 * @see ClientPlayNetworking#registerReceiver(CustomPacketPayload.Type, ClientPlayNetworking.PlayPayloadHandler)
 	 */
-	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, Combine.CALL_ALL);
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, client) -> {
+		for (Init callback : callbacks) {
+			callback.onPlayInit(listener, client);
+		}
+	});
 
 	/**
 	 * An event for notification when the client play packet listener is ready to send packets to the server.
@@ -42,14 +45,22 @@ public final class ClientPlayConnectionEvents {
 	 * <p>At this stage, the packet listener is ready to send packets to the server.
 	 * Since the client's local state has been set up.
 	 */
-	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, Combine.CALL_ALL);
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (listener, sender, client) -> {
+		for (Join callback : callbacks) {
+			callback.onPlayReady(listener, sender, client);
+		}
+	});
 
 	/**
 	 * An event for the disconnection of the client play packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, Combine.CALL_ALL);
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, client) -> {
+		for (Disconnect callback : callbacks) {
+			callback.onPlayDisconnect(listener, client);
+		}
+	});
 
 	private ClientPlayConnectionEvents() {
 	}

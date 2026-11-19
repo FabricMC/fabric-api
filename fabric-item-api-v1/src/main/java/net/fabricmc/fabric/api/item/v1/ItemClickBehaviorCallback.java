@@ -22,7 +22,6 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.EventResult;
@@ -45,7 +44,21 @@ public interface ItemClickBehaviorCallback {
 	/// ClickAction, Slot, ItemStack, ItemStack)].
 	Event<ItemClickBehaviorCallback> EVENT = EventFactory.createArrayBacked(
 			ItemClickBehaviorCallback.class,
-			Combine.firstOtherThan(EventResult.PASS));
+			callbacks -> (ItemStack hoveredItem, Slot hoveredSlot, ItemStack itemHeldByCursor, SlotAccess slotHeldByCursor, ClickAction clickAction, Player player) -> {
+				for (ItemClickBehaviorCallback callback : callbacks) {
+					EventResult result = callback.onItemClickBehavior(hoveredItem,
+							hoveredSlot,
+							itemHeldByCursor,
+							slotHeldByCursor,
+							clickAction,
+							player);
+					if (result != EventResult.PASS) {
+						return result;
+					}
+				}
+
+				return EventResult.PASS;
+			});
 
 	/// Handles menu interactions when clicking items on top of each other in a container menu.
 	///

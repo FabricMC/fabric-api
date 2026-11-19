@@ -23,7 +23,6 @@ import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -44,7 +43,13 @@ public final class ServerMessageEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, boundChatType) -> {
+		for (AllowChatMessage handler : handlers) {
+			if (!handler.allowChatMessage(message, sender, boundChatType)) return false;
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event triggered when the server broadcasts a game message to all players. Game
@@ -55,7 +60,13 @@ public final class ServerMessageEvents {
 	 * the remaining listeners will not be called (if any), and {@link #GAME_MESSAGE}
 	 * event will not be triggered.
 	 */
-	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, handlers -> (server, message, overlay) -> {
+		for (AllowGameMessage handler : handlers) {
+			if (!handler.allowGameMessage(server, message, overlay)) return false;
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event triggered when the server broadcasts a command message to all players, such as one
@@ -70,7 +81,13 @@ public final class ServerMessageEvents {
 	 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 	 * triggered after triggering {@link #COMMAND_MESSAGE}.
 	 */
-	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, boundChatType) -> {
+		for (AllowCommandMessage handler : handlers) {
+			if (!handler.allowCommandMessage(message, source, boundChatType)) return false;
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event triggered when the server broadcasts a chat message sent by a player, typically
@@ -81,14 +98,22 @@ public final class ServerMessageEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, Combine.CALL_ALL);
+	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, boundChatType) -> {
+		for (ChatMessage handler : handlers) {
+			handler.onChatMessage(message, sender, boundChatType);
+		}
+	});
 
 	/**
 	 * An event triggered when the server broadcasts a game message to all players. Game messages
 	 * include death messages, join/leave messages, and advancement messages. Is not called
 	 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
 	 */
-	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, Combine.CALL_ALL);
+	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (server, message, overlay) -> {
+		for (GameMessage handler : handlers) {
+			handler.onGameMessage(server, message, overlay);
+		}
+	});
 
 	/**
 	 * An event triggered when the server broadcasts a command message to all players, such as one
@@ -99,7 +124,11 @@ public final class ServerMessageEvents {
 	 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
 	 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 	 */
-	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, Combine.CALL_ALL);
+	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, boundChatType) -> {
+		for (CommandMessage handler : handlers) {
+			handler.onCommandMessage(message, source, boundChatType);
+		}
+	});
 
 	private ServerMessageEvents() {
 	}

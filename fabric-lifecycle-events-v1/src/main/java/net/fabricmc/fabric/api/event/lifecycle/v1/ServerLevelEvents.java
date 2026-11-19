@@ -20,7 +20,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -30,7 +29,11 @@ public final class ServerLevelEvents {
 	 *
 	 * <p>This can be used to load level specific metadata or initialize a {@link SavedData} on a server level.
 	 */
-	public static final Event<Load> LOAD = EventFactory.createArrayBacked(Load.class, Combine.CALL_ALL);
+	public static final Event<Load> LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (server, level) -> {
+		for (Load callback : callbacks) {
+			callback.onLevelLoad(server, level);
+		}
+	});
 
 	/**
 	 * Called before a level is unloaded by a Minecraft server.
@@ -38,7 +41,11 @@ public final class ServerLevelEvents {
 	 * <p>This typically occurs after a server has {@link ServerLifecycleEvents#SERVER_STOPPING started shutting down}.
 	 * Mods which allow dynamic level (un)registration should call this event so mods can let go of level handles when a level is removed.
 	 */
-	public static final Event<Unload> UNLOAD = EventFactory.createArrayBacked(Unload.class, Combine.CALL_ALL);
+	public static final Event<Unload> UNLOAD = EventFactory.createArrayBacked(Unload.class, callbacks -> (server, level) -> {
+		for (Unload callback : callbacks) {
+			callback.onLevelUnload(server, level);
+		}
+	});
 
 	@FunctionalInterface
 	public interface Load {

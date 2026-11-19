@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -31,7 +30,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface InvalidateRenderStateCallback {
 	Event<InvalidateRenderStateCallback> EVENT = EventFactory.createArrayBacked(InvalidateRenderStateCallback.class,
-			Combine.CALL_ALL
+			(listeners) -> () -> {
+				for (InvalidateRenderStateCallback event : listeners) {
+					event.onInvalidate();
+				}
+			}
 	);
 
 	void onInvalidate();

@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -37,7 +36,17 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface UseBlockCallback {
 	Event<UseBlockCallback> EVENT = EventFactory.createArrayBacked(UseBlockCallback.class,
-			Combine.firstOtherThan(InteractionResult.PASS)
+			(listeners) -> (player, level, hand, hitResult) -> {
+				for (UseBlockCallback event : listeners) {
+					InteractionResult result = event.interact(player, level, hand, hitResult);
+
+					if (result != InteractionResult.PASS) {
+						return result;
+					}
+				}
+
+				return InteractionResult.PASS;
+			}
 	);
 
 	InteractionResult interact(Player player, Level level, InteractionHand hand, BlockHitResult hitResult);

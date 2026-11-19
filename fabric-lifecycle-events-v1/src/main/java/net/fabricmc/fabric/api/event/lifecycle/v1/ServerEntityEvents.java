@@ -25,7 +25,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -41,19 +40,35 @@ public final class ServerEntityEvents {
 	 * @see Entity#spawnReason()
 	 * @see Entity#isLoadedFromDisk()
 	 */
-	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, Combine.CALL_ALL);
+	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, callbacks -> (entity, level) -> {
+		for (Load callback : callbacks) {
+			callback.onLoad(entity, level);
+		}
+	});
 
 	/**
 	 * Called right before an {@link Entity} is loaded into a {@link ServerLevel}. Mods can cancel this to prevent the entity from loading in.
 	 */
-	public static final Event<AllowLoad> ALLOW_LOAD = EventFactory.createArrayBacked(AllowLoad.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowLoad> ALLOW_LOAD = EventFactory.createArrayBacked(AllowLoad.class, callbacks -> (entity, level, spawnReason, isLoadedFromDisk) -> {
+		for (AllowLoad callback : callbacks) {
+			if (!callback.onAllowLoad(entity, level, spawnReason, isLoadedFromDisk)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	/**
 	 * Called when an Entity is unloaded from a ServerLevel.
 	 *
 	 * <p>This event is called before the entity is removed from the level.
 	 */
-	public static final Event<ServerEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityEvents.Unload.class, Combine.CALL_ALL);
+	public static final Event<ServerEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityEvents.Unload.class, callbacks -> (entity, level) -> {
+		for (Unload callback : callbacks) {
+			callback.onUnload(entity, level);
+		}
+	});
 
 	/**
 	 * Called during {@link LivingEntity#tick()} if the Entity's equipment has been changed or mutated.
@@ -61,7 +76,11 @@ public final class ServerEntityEvents {
 	 * <p>This event is also called when the entity joins the level.
 	 * A change in equipment is determined by {@link ItemStack#matches(ItemStack, ItemStack)}.
 	 */
-	public static final Event<EquipmentChange> EQUIPMENT_CHANGE = EventFactory.createArrayBacked(ServerEntityEvents.EquipmentChange.class, Combine.CALL_ALL);
+	public static final Event<EquipmentChange> EQUIPMENT_CHANGE = EventFactory.createArrayBacked(ServerEntityEvents.EquipmentChange.class, callbacks -> (livingEntity, equipmentSlot, previous, next) -> {
+		for (EquipmentChange callback : callbacks) {
+			callback.onChange(livingEntity, equipmentSlot, previous, next);
+		}
+	});
 
 	@FunctionalInterface
 	public interface Load {

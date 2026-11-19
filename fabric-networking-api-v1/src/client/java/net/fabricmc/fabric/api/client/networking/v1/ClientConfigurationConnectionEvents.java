@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,28 +34,44 @@ public final class ClientConfigurationConnectionEvents {
 	 *
 	 * @see ClientConfigurationNetworking#registerReceiver(CustomPacketPayload.Type, ClientConfigurationNetworking.ConfigurationPayloadHandler)
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, Combine.CALL_ALL);
+	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (listener, client) -> {
+		for (ClientConfigurationConnectionEvents.Init callback : callbacks) {
+			callback.onConfigurationInit(listener, client);
+		}
+	});
 
 	/**
 	 * An event called after the connection has been initialized and is ready to start sending and receiving configuration packets.
 	 *
 	 * <p>Packets may be sent during this event.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, Combine.CALL_ALL);
+	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, callbacks -> (listener, client) -> {
+		for (ClientConfigurationConnectionEvents.Start callback : callbacks) {
+			callback.onConfigurationStart(listener, client);
+		}
+	});
 
 	/**
 	 * An event called after the ClientboundFinishConfigurationPacket has been received, just before switching to the PLAY state.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Complete> COMPLETE = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Complete.class, Combine.CALL_ALL);
+	public static final Event<ClientConfigurationConnectionEvents.Complete> COMPLETE = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Complete.class, callbacks -> (listener, client) -> {
+		for (ClientConfigurationConnectionEvents.Complete callback : callbacks) {
+			callback.onConfigurationComplete(listener, client);
+		}
+	});
 
 	/**
 	 * An event for the disconnection of the client configuration packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Disconnect.class, Combine.CALL_ALL);
+	public static final Event<ClientConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Disconnect.class, callbacks -> (listener, client) -> {
+		for (ClientConfigurationConnectionEvents.Disconnect callback : callbacks) {
+			callback.onConfigurationDisconnect(listener, client);
+		}
+	});
 
 	private ClientConfigurationConnectionEvents() {
 	}
@@ -87,7 +102,11 @@ public final class ClientConfigurationConnectionEvents {
 	 * @deprecated replaced by {@link #COMPLETE}
 	 */
 	@Deprecated
-	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, Combine.CALL_ALL);
+	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (listener, client) -> {
+		for (ClientConfigurationConnectionEvents.Ready callback : callbacks) {
+			callback.onConfigurationReady(listener, client);
+		}
+	});
 
 	/**
 	 * @deprecated replaced by {@link ClientConfigurationConnectionEvents.Complete}

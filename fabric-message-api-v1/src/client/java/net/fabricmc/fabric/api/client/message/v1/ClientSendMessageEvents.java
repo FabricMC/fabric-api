@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.message.v1;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,7 +34,15 @@ public final class ClientSendMessageEvents {
 	 * the remaining listeners will not be called (if any), and
 	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #MODIFY_CHAT}.
 	 */
-	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message) -> {
+		for (AllowChat listener : listeners) {
+			if (!listener.allowSendChatMessage(message)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event triggered when the client is about to send a command,
@@ -48,7 +55,15 @@ public final class ClientSendMessageEvents {
 	 * the remaining listeners will not be called (if any), and
 	 * {@link #COMMAND_CANCELED} will be triggered instead of {@link #MODIFY_COMMAND}.
 	 */
-	public static final Event<AllowCommand> ALLOW_COMMAND = EventFactory.createArrayBacked(AllowCommand.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowCommand> ALLOW_COMMAND = EventFactory.createArrayBacked(AllowCommand.class, listeners -> (command) -> {
+		for (AllowCommand listener : listeners) {
+			if (!listener.allowSendCommandMessage(command)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event triggered when the client sends a chat message,
@@ -57,7 +72,13 @@ public final class ClientSendMessageEvents {
 	 * Mods can use this to modify the message.
 	 * Use {@link #CHAT} if not modifying the message.
 	 */
-	public static final Event<ModifyChat> MODIFY_CHAT = EventFactory.createArrayBacked(ModifyChat.class, Combine.chain(0));
+	public static final Event<ModifyChat> MODIFY_CHAT = EventFactory.createArrayBacked(ModifyChat.class, listeners -> (message) -> {
+		for (ModifyChat listener : listeners) {
+			message = listener.modifySendChatMessage(message);
+		}
+
+		return message;
+	});
 
 	/**
 	 * An event triggered when the client sends a command,
@@ -68,7 +89,13 @@ public final class ClientSendMessageEvents {
 	 * Mods can use this to modify the command.
 	 * Use {@link #COMMAND} if not modifying the command.
 	 */
-	public static final Event<ModifyCommand> MODIFY_COMMAND = EventFactory.createArrayBacked(ModifyCommand.class, Combine.chain(0));
+	public static final Event<ModifyCommand> MODIFY_COMMAND = EventFactory.createArrayBacked(ModifyCommand.class, listeners -> (command) -> {
+		for (ModifyCommand listener : listeners) {
+			command = listener.modifySendCommandMessage(command);
+		}
+
+		return command;
+	});
 
 	/**
 	 * An event triggered when the client sends a chat message,
@@ -76,7 +103,11 @@ public final class ClientSendMessageEvents {
 	 * #ALLOW_CHAT chat messages are blocked}.
 	 * Mods can use this to listen to the message.
 	 */
-	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, Combine.CALL_ALL);
+	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message) -> {
+		for (Chat listener : listeners) {
+			listener.onSendChatMessage(message);
+		}
+	});
 
 	/**
 	 * An event triggered when the client sends a command,
@@ -86,18 +117,30 @@ public final class ClientSendMessageEvents {
 	 * The command string does not include a slash at the beginning.
 	 * Mods can use this to listen to the command.
 	 */
-	public static final Event<Command> COMMAND = EventFactory.createArrayBacked(Command.class, Combine.CALL_ALL);
+	public static final Event<Command> COMMAND = EventFactory.createArrayBacked(Command.class, listeners -> (command) -> {
+		for (Command listener : listeners) {
+			listener.onSendCommandMessage(command);
+		}
+	});
 
 	/**
 	 * An event triggered when sending a chat message is canceled with {@link #ALLOW_CHAT}.
 	 */
-	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, Combine.CALL_ALL);
+	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, listeners -> (message) -> {
+		for (ChatCanceled listener : listeners) {
+			listener.onSendChatMessageCanceled(message);
+		}
+	});
 
 	/**
 	 * An event triggered when sending a command is canceled with {@link #ALLOW_COMMAND}.
 	 * The command string does not include a slash at the beginning.
 	 */
-	public static final Event<CommandCanceled> COMMAND_CANCELED = EventFactory.createArrayBacked(CommandCanceled.class, Combine.CALL_ALL);
+	public static final Event<CommandCanceled> COMMAND_CANCELED = EventFactory.createArrayBacked(CommandCanceled.class, listeners -> (command) -> {
+		for (CommandCanceled listener : listeners) {
+			listener.onSendCommandMessageCanceled(command);
+		}
+	});
 
 	@FunctionalInterface
 	public interface AllowChat {

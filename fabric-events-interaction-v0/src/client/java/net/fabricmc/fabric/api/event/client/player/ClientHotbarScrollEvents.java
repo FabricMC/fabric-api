@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.event.client.player;
 
 import net.minecraft.world.entity.player.Inventory;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -32,21 +31,39 @@ public final class ClientHotbarScrollEvents {
 	 * <p>Returning {@code false} cancels the hotbar selection change without running anymore
 	 * registered callbacks.
 	 */
-	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, Combine.STOP_AT_FALSE);
+	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, listeners -> (inventory, currentSlot, newSlot, xOffset, yOffset) -> {
+		for (Allow listener : listeners) {
+			boolean allow = listener.allowScroll(inventory, currentSlot, newSlot, xOffset, yOffset);
+
+			if (!allow) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event that is invoked before player scrolling changes the selected hotbar slot.
 	 *
 	 * <p>This event is only fired if the result of {@link #ALLOW} is {@code true}.
 	 */
-	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class, Combine.CALL_ALL);
+	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class, listeners -> (inventory, currentSlot, newSlot, xOffset, yOffset) -> {
+		for (Before listener : listeners) {
+			listener.beforeScroll(inventory, currentSlot, newSlot, xOffset, yOffset);
+		}
+	});
 
 	/**
 	 * An event that is invoked after player scrolling changes the selected hotbar slot.
 	 *
 	 * <p>This event is only fired if the result of {@link #ALLOW} is {@code true}.
 	 */
-	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class, Combine.CALL_ALL);
+	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class, listeners -> (inventory, currentSlot, newSlot, xOffset, yOffset) -> {
+		for (After listener : listeners) {
+			listener.afterScroll(inventory, currentSlot, newSlot, xOffset, yOffset);
+		}
+	});
 
 	@FunctionalInterface
 	public interface Allow {

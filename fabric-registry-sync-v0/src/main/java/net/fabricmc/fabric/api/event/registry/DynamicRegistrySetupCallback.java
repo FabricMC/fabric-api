@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -44,6 +43,10 @@ public interface DynamicRegistrySetupCallback {
 
 	Event<DynamicRegistrySetupCallback> EVENT = EventFactory.createArrayBacked(
 			DynamicRegistrySetupCallback.class,
-			Combine.CALL_ALL
+			callbacks -> registryView -> {
+				for (DynamicRegistrySetupCallback callback : callbacks) {
+					callback.onRegistrySetup(registryView);
+				}
+			}
 	);
 }

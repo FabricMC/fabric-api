@@ -24,7 +24,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -43,7 +42,17 @@ public final class AdvancementEvents {
 	 *
 	 * <p>If an advancement is replaced, its source will be marked as {@link AdvancementSource#REPLACED}.
 	 */
-	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, Combine.FIRST_NON_NULL);
+	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (id, original, source, registries) -> {
+		for (Replace listener : listeners) {
+			@Nullable Advancement replaced = listener.replaceAdvancement(id, original, source, registries);
+
+			if (replaced != null) {
+				return replaced;
+			}
+		}
+
+		return null;
+	});
 
 	/**
 	 * This event can be used to modify advancements.
@@ -72,12 +81,20 @@ public final class AdvancementEvents {
 	 * });
 	 * }
 	 */
-	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, Combine.CALL_ALL);
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (id, builder, source, registries) -> {
+		for (Modify listener : listeners) {
+			listener.modifyAdvancement(id, builder, source, registries);
+		}
+	});
 
 	/**
 	 * This event can be used for post-processing after all advancements have been loaded, replaced, and modified.
 	 */
-	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, Combine.CALL_ALL);
+	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, advancementRegistry, registries) -> {
+		for (Loaded listener : listeners) {
+			listener.onAdvancementsLoaded(resourceManager, advancementRegistry, registries);
+		}
+	});
 
 	@FunctionalInterface
 	public interface Replace {

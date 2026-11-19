@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,7 +34,11 @@ public final class ClientLoginConnectionEvents {
 	 *
 	 * @see ClientLoginNetworking#registerReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
 	 */
-	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, Combine.CALL_ALL);
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, client) -> {
+		for (Init callback : callbacks) {
+			callback.onLoginStart(listener, client);
+		}
+	});
 
 	/**
 	 * An event for when the client has started receiving login queries.
@@ -51,14 +54,22 @@ public final class ClientLoginConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, Combine.CALL_ALL);
+	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (listener, client) -> {
+		for (QueryStart callback : callbacks) {
+			callback.onLoginQueryStart(listener, client);
+		}
+	});
 
 	/**
 	 * An event for when the client's login process has ended due to disconnection.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, Combine.CALL_ALL);
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, client) -> {
+		for (Disconnect callback : callbacks) {
+			callback.onLoginDisconnect(listener, client);
+		}
+	});
 
 	private ClientLoginConnectionEvents() {
 	}

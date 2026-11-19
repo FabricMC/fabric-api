@@ -20,7 +20,6 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.BuiltInBlockModels;
 import net.minecraft.client.renderer.block.model.BlockModel;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -34,7 +33,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public interface BuiltInBlockModelsCallback {
 	Event<BuiltInBlockModelsCallback> EVENT = EventFactory.createArrayBacked(
 			BuiltInBlockModelsCallback.class,
-			Combine.CALL_ALL);
+			listeners -> builder -> {
+				for (BuiltInBlockModelsCallback listener : listeners) {
+					listener.createBlockModels(builder);
+				}
+			});
 
 	/**
 	 * @param builder the block models builder instance

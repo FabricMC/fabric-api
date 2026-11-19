@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.event.client.player;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -42,7 +41,15 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public interface ClientPreAttackCallback {
 	Event<ClientPreAttackCallback> EVENT = EventFactory.createArrayBacked(
 			ClientPreAttackCallback.class,
-			Combine.STOP_AT_TRUE
+			(listeners) -> (client, player, clickCount) -> {
+				for (ClientPreAttackCallback event : listeners) {
+					if (event.onClientPlayerPreAttack(client, player, clickCount)) {
+						return true;
+					}
+				}
+
+				return false;
+			}
 	);
 
 	/**

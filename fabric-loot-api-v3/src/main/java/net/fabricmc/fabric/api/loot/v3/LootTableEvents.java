@@ -29,7 +29,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -44,7 +43,17 @@ public final class LootTableEvents {
 	 * This event can be used to replace loot tables.
 	 * If a loot table is replaced, the iteration will stop for that loot table.
 	 */
-	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, Combine.FIRST_NON_NULL);
+	public static final Event<Replace> REPLACE = EventFactory.createArrayBacked(Replace.class, listeners -> (key, original, source, holder) -> {
+		for (Replace listener : listeners) {
+			@Nullable LootTable replaced = listener.replaceLootTable(key, original, source, holder);
+
+			if (replaced != null) {
+				return replaced;
+			}
+		}
+
+		return null;
+	});
 
 	/**
 	 * This event can be used to modify loot tables.
@@ -78,19 +87,31 @@ public final class LootTableEvents {
 	 * });
 	 * }
 	 */
-	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, Combine.CALL_ALL);
+	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source, holder) -> {
+		for (Modify listener : listeners) {
+			listener.modifyLootTable(key, tableBuilder, source, holder);
+		}
+	});
 
 	/**
 	 * This event can be used for post-processing after all loot tables have been loaded and modified by Fabric.
 	 */
-	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, Combine.CALL_ALL);
+	public static final Event<Loaded> ALL_LOADED = EventFactory.createArrayBacked(Loaded.class, listeners -> (resourceManager, lootManager) -> {
+		for (Loaded listener : listeners) {
+			listener.onLootTablesLoaded(resourceManager, lootManager);
+		}
+	});
 
 	/**
 	 * This event can be used for cases where the {@link #MODIFY} and {@link #REPLACE} events are inconvenient, such as when you are modifying the result of many loot tables that are unknown,
 	 * and don't wish to add a custom loot function to every table.
 	 * <br/>Note: if the table was requested to separate drops into stacks of a given size, the resulting drops from this event will be separated.
 	 */
-	public static final Event<ModifyDrops> MODIFY_DROPS = EventFactory.createArrayBacked(ModifyDrops.class, Combine.CALL_ALL);
+	public static final Event<ModifyDrops> MODIFY_DROPS = EventFactory.createArrayBacked(ModifyDrops.class, listeners -> (holder, context, drops) -> {
+		for (ModifyDrops listener : listeners) {
+			listener.modifyLootTableDrops(holder, context, drops);
+		}
+	});
 
 	@FunctionalInterface
 	public interface Replace {

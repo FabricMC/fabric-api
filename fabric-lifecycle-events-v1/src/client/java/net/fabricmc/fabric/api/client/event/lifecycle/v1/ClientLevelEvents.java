@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -30,7 +29,11 @@ public final class ClientLevelEvents {
 	/**
 	 * An event which is called after the client level has been changed.
 	 */
-	public static final Event<AfterClientLevelChange> AFTER_CLIENT_LEVEL_CHANGE = EventFactory.createArrayBacked(AfterClientLevelChange.class, Combine.CALL_ALL);
+	public static final Event<AfterClientLevelChange> AFTER_CLIENT_LEVEL_CHANGE = EventFactory.createArrayBacked(AfterClientLevelChange.class, callbacks -> (client, level) -> {
+		for (AfterClientLevelChange callback : callbacks) {
+			callback.afterLevelChange(client, level);
+		}
+	});
 
 	@FunctionalInterface
 	public interface AfterClientLevelChange {

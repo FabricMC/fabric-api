@@ -57,7 +57,6 @@ import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.registry.FabricRegistry;
@@ -143,7 +142,11 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 	@Inject(method = "<init>(Lnet/minecraft/resources/ResourceKey;Lcom/mojang/serialization/Lifecycle;Z)V", at = @At("RETURN"))
 	private void init(ResourceKey<?> key, Lifecycle lifecycle, boolean intrusive, CallbackInfo ci) {
 		fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
-			Combine.CALL_ALL
+			(callbacks) -> (rawId, id, object) -> {
+				for (RegistryEntryAddedCallback<T> callback : callbacks) {
+					callback.onEntryAdded(rawId, id, object);
+				}
+			}
 		);
 		// aliasing: check that no new entries use the id of an alias
 		fabric_addObjectEvent.register((rawId, id, object) -> {
@@ -158,7 +161,11 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 			}
 		});
 		fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
-			Combine.CALL_ALL
+			(callbacks) -> (a) -> {
+				for (RegistryIdRemapCallback<T> callback : callbacks) {
+					callback.onRemap(a);
+				}
+			}
 		);
 	}
 

@@ -24,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -43,7 +42,17 @@ public final class PlayerBlockBreakEvents {
 	 * {@link #AFTER} event is fired.</p>
 	 */
 	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
-			Combine.STOP_AT_FALSE
+			(listeners) -> (level, player, pos, state, entity) -> {
+				for (Before event : listeners) {
+					boolean result = event.beforeBlockBreak(level, player, pos, state, entity);
+
+					if (!result) {
+						return false;
+					}
+				}
+
+				return true;
+			}
 	);
 
 	/**
@@ -53,7 +62,11 @@ public final class PlayerBlockBreakEvents {
 	 */
 	@SuppressWarnings("JavadocReference")
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
-			Combine.CALL_ALL
+			(listeners) -> (level, player, pos, state, entity) -> {
+				for (After event : listeners) {
+					event.afterBlockBreak(level, player, pos, state, entity);
+				}
+			}
 	);
 
 	/**
@@ -62,7 +75,11 @@ public final class PlayerBlockBreakEvents {
 	 * <p>Only called on a logical server. May be used to send packets to revert client-side block changes.
 	 */
 	public static final Event<Canceled> CANCELED = EventFactory.createArrayBacked(Canceled.class,
-			Combine.CALL_ALL
+			(listeners) -> (level, player, pos, state, entity) -> {
+				for (Canceled event : listeners) {
+					event.onBlockBreakCanceled(level, player, pos, state, entity);
+				}
+			}
 	);
 
 	@FunctionalInterface

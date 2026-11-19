@@ -20,7 +20,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -52,7 +51,15 @@ public final class ServerMobEffectEvents {
 	 * {@linkplain net.fabricmc.fabric.api.attachment.v1.AttachmentType data attachment},
 	 * or another status effect.
 	 */
-	public static final Event<AllowAdd> ALLOW_ADD = EventFactory.createArrayBacked(AllowAdd.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowAdd> ALLOW_ADD = EventFactory.createArrayBacked(AllowAdd.class, callbacks -> (effectInstance, entity, ctx) -> {
+		for (AllowAdd callback : callbacks) {
+			if (!callback.allowAdd(effectInstance, entity, ctx)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event that is called before an effect is added.
@@ -63,7 +70,11 @@ public final class ServerMobEffectEvents {
 	 *
 	 * @see MobEffect#onEffectAdded(MobEffectInstance, LivingEntity)
 	 */
-	public static final Event<BeforeAdd> BEFORE_ADD = EventFactory.createArrayBacked(BeforeAdd.class, Combine.CALL_ALL);
+	public static final Event<BeforeAdd> BEFORE_ADD = EventFactory.createArrayBacked(BeforeAdd.class, callbacks -> (effectInstance, entity, ctx) -> {
+		for (BeforeAdd callback : callbacks) {
+			callback.beforeAdd(effectInstance, entity, ctx);
+		}
+	});
 
 	/**
 	 * An event that is called after an effect is added.
@@ -72,7 +83,11 @@ public final class ServerMobEffectEvents {
 	 * only after an effect is applied, such as a method that
 	 * checks if an effect is present on an entity.
 	 */
-	public static final Event<AfterAdd> AFTER_ADD = EventFactory.createArrayBacked(AfterAdd.class, Combine.CALL_ALL);
+	public static final Event<AfterAdd> AFTER_ADD = EventFactory.createArrayBacked(AfterAdd.class, callbacks -> (effectInstance, entity, ctx) -> {
+		for (AfterAdd callback : callbacks) {
+			callback.afterAdd(effectInstance, entity, ctx);
+		}
+	});
 
 	/**
 	 * An event that checks whether an effect may be removed.
@@ -93,7 +108,15 @@ public final class ServerMobEffectEvents {
 	 * {@linkplain net.fabricmc.fabric.api.attachment.v1.AttachmentType data attachment},
 	 * or another status effect.
 	 */
-	public static final Event<AllowEarlyRemove> ALLOW_EARLY_REMOVE = EventFactory.createArrayBacked(AllowEarlyRemove.class, Combine.STOP_AT_FALSE);
+	public static final Event<AllowEarlyRemove> ALLOW_EARLY_REMOVE = EventFactory.createArrayBacked(AllowEarlyRemove.class, callbacks -> (effectInstance, entity, ctx) -> {
+		for (AllowEarlyRemove callback : callbacks) {
+			if (!callback.allowEarlyRemove(effectInstance, entity, ctx)) {
+				return false;
+			}
+		}
+
+		return true;
+	});
 
 	/**
 	 * An event that is called before an effect is removed.
@@ -104,7 +127,11 @@ public final class ServerMobEffectEvents {
 	 *
 	 * @see MobEffect#onEffectRemoved(MobEffectInstance, LivingEntity)
 	 */
-	public static final Event<BeforeRemove> BEFORE_REMOVE = EventFactory.createArrayBacked(BeforeRemove.class, Combine.CALL_ALL);
+	public static final Event<BeforeRemove> BEFORE_REMOVE = EventFactory.createArrayBacked(BeforeRemove.class, callbacks -> (effectInstance, entity, ctx) -> {
+		for (BeforeRemove callback : callbacks) {
+			callback.beforeRemove(effectInstance, entity, ctx);
+		}
+	});
 
 	/**
 	 * An event that is called after an effect is removed.
@@ -113,7 +140,11 @@ public final class ServerMobEffectEvents {
 	 * only after an effect is removed, such as a method that
 	 * checks if an effect is present on an entity.
 	 */
-	public static final Event<AfterRemove> AFTER_REMOVE = EventFactory.createArrayBacked(AfterRemove.class, Combine.CALL_ALL);
+	public static final Event<AfterRemove> AFTER_REMOVE = EventFactory.createArrayBacked(AfterRemove.class, callbacks -> (effectInstance, entity, ctx) -> {
+		for (AfterRemove callback : callbacks) {
+			callback.afterRemove(effectInstance, entity, ctx);
+		}
+	});
 
 	static {
 		BEFORE_ADD.register((effectInstance, entity, ctx) -> {

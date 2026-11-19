@@ -20,7 +20,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -39,7 +38,15 @@ public final class ParticleRenderEvents {
 	 * further iteration will be canceled and the event invoker will return {@code false}.
 	 */
 	public static final Event<AllowTerrainParticleTint> ALLOW_TERRAIN_PARTICLE_TINT = EventFactory.createArrayBacked(
-			AllowTerrainParticleTint.class, Combine.STOP_AT_FALSE);
+			AllowTerrainParticleTint.class, callbacks -> (state, level, pos) -> {
+				for (AllowTerrainParticleTint callback : callbacks) {
+					if (!callback.allowTerrainParticleTint(state, level, pos)) {
+						return false;
+					}
+				}
+
+				return true;
+			});
 
 	@FunctionalInterface
 	public interface AllowTerrainParticleTint {

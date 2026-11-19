@@ -24,7 +24,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -37,12 +36,32 @@ public final class PlayerPickItemEvents {
 	/**
 	 * Called when a player requests to pick the item for a block at a given position.
 	 */
-	public static final Event<PlayerPickItemEvents.PickItemFromBlock> BLOCK = EventFactory.createArrayBacked(PlayerPickItemEvents.PickItemFromBlock.class, Combine.FIRST_NON_NULL);
+	public static final Event<PlayerPickItemEvents.PickItemFromBlock> BLOCK = EventFactory.createArrayBacked(PlayerPickItemEvents.PickItemFromBlock.class, callbacks -> (player, pos, state, includeData) -> {
+		for (PickItemFromBlock callback : callbacks) {
+			ItemStack stack = callback.onPickItemFromBlock(player, pos, state, includeData);
+
+			if (stack != null) {
+				return stack;
+			}
+		}
+
+		return null;
+	});
 
 	/**
 	 * Called when a player requests to pick the item for a given entity.
 	 */
-	public static final Event<PlayerPickItemEvents.PickItemFromEntity> ENTITY = EventFactory.createArrayBacked(PlayerPickItemEvents.PickItemFromEntity.class, Combine.FIRST_NON_NULL);
+	public static final Event<PlayerPickItemEvents.PickItemFromEntity> ENTITY = EventFactory.createArrayBacked(PlayerPickItemEvents.PickItemFromEntity.class, callbacks -> (player, entity, includeData) -> {
+		for (PickItemFromEntity callback : callbacks) {
+			ItemStack stack = callback.onPickItemFromEntity(player, entity, includeData);
+
+			if (stack != null) {
+				return stack;
+			}
+		}
+
+		return null;
+	});
 
 	@FunctionalInterface
 	public interface PickItemFromBlock {

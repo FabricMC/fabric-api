@@ -20,7 +20,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -34,7 +33,11 @@ public interface ExtractItemDecorationsCallback {
 	 */
 	Event<ExtractItemDecorationsCallback> EVENT = EventFactory.createArrayBacked(
 			ExtractItemDecorationsCallback.class,
-			Combine.CALL_ALL);
+			callbacks -> (graphics, font, stack, x, y) -> {
+				for (ExtractItemDecorationsCallback callback : callbacks) {
+					callback.onExtractItemDecorations(graphics, font, stack, x, y);
+				}
+			});
 
 	/**
 	 * @param graphics     the {@link GuiGraphicsExtractor} instance

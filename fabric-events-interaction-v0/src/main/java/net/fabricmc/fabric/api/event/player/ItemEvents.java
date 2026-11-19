@@ -26,7 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -38,14 +37,34 @@ public interface ItemEvents {
 	 * Callback that runs when {@link Item#useOn(UseOnContext)} is called within {@link ItemStack#useOn(UseOnContext)}.
 	 */
 	Event<UseOnCallback> USE_ON = EventFactory.createArrayBacked(UseOnCallback.class,
-			Combine.FIRST_NON_NULL
+			(listeners) -> (useOnContext) -> {
+				for (UseOnCallback event : listeners) {
+					InteractionResult result = event.useOn(useOnContext);
+
+					if (result != null) {
+						return result;
+					}
+				}
+
+				return null;
+			}
 	);
 
 	/**
 	 * Callback that runs when {@link Item#use(Level, Player, InteractionHand)} is called within {@link ItemStack#use(Level, Player, InteractionHand)}.
 	 */
 	Event<UseCallback> USE = EventFactory.createArrayBacked(UseCallback.class,
-			Combine.FIRST_NON_NULL
+			(listeners) -> (level, player, interactionHand) -> {
+				for (UseCallback event : listeners) {
+					InteractionResult result = event.use(level, player, interactionHand);
+
+					if (result != null) {
+						return result;
+					}
+				}
+
+				return null;
+			}
 	);
 
 	@FunctionalInterface

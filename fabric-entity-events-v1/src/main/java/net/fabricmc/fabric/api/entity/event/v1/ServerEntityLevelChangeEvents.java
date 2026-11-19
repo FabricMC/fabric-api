@@ -20,7 +20,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -40,7 +39,11 @@ public final class ServerEntityLevelChangeEvents {
 	 *
 	 * @see ServerEntityLevelChangeEvents#AFTER_PLAYER_CHANGE_LEVEL
 	 */
-	public static final Event<AfterEntityChange> AFTER_ENTITY_CHANGE_LEVEL = EventFactory.createArrayBacked(AfterEntityChange.class, Combine.CALL_ALL);
+	public static final Event<AfterEntityChange> AFTER_ENTITY_CHANGE_LEVEL = EventFactory.createArrayBacked(AfterEntityChange.class, callbacks -> (originalEntity, newEntity, origin, destination) -> {
+		for (AfterEntityChange callback : callbacks) {
+			callback.afterChangeLevel(originalEntity, newEntity, origin, destination);
+		}
+	});
 
 	/**
 	 * An event which is called after a player has been moved to a different level.
@@ -53,7 +56,11 @@ public final class ServerEntityLevelChangeEvents {
 	 *
 	 * @see ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL
 	 */
-	public static final Event<AfterPlayerChange> AFTER_PLAYER_CHANGE_LEVEL = EventFactory.createArrayBacked(AfterPlayerChange.class, Combine.CALL_ALL);
+	public static final Event<AfterPlayerChange> AFTER_PLAYER_CHANGE_LEVEL = EventFactory.createArrayBacked(AfterPlayerChange.class, callbacks -> (player, origin, destination) -> {
+		for (AfterPlayerChange callback : callbacks) {
+			callback.afterChangeLevel(player, origin, destination);
+		}
+	});
 
 	@FunctionalInterface
 	public interface AfterEntityChange {

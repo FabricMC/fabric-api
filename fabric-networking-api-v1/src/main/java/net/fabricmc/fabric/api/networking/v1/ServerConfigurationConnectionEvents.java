@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.networking.v1;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -34,7 +33,11 @@ public final class ServerConfigurationConnectionEvents {
 	 *
 	 * <p>Task queued during this event will complete before vanilla configuration starts.
 	 */
-	public static final Event<Configure> BEFORE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, Combine.CALL_ALL);
+	public static final Event<Configure> BEFORE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (listener, server) -> {
+		for (Configure callback : callbacks) {
+			callback.onSendConfiguration(listener, server);
+		}
+	});
 
 	/**
 	 * Event fired during vanilla configuration.
@@ -53,14 +56,22 @@ public final class ServerConfigurationConnectionEvents {
 	 * });
 	 * }</pre>
 	 */
-	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, Combine.CALL_ALL);
+	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (listener, server) -> {
+		for (Configure callback : callbacks) {
+			callback.onSendConfiguration(listener, server);
+		}
+	});
 
 	/**
 	 * An event for the disconnection of the server configuration packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ServerConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ServerConfigurationConnectionEvents.Disconnect.class, Combine.CALL_ALL);
+	public static final Event<ServerConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ServerConfigurationConnectionEvents.Disconnect.class, callbacks -> (handler, server) -> {
+		for (ServerConfigurationConnectionEvents.Disconnect callback : callbacks) {
+			callback.onConfigureDisconnect(handler, server);
+		}
+	});
 
 	private ServerConfigurationConnectionEvents() {
 	}

@@ -21,7 +21,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.CloseableResourceManager;
 import net.minecraft.server.players.PlayerList;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -34,14 +33,22 @@ public final class ServerLifecycleEvents {
 	 *
 	 * <p>This occurs before the {@link PlayerList player list} and any levels are loaded.
 	 */
-	public static final Event<ServerStarting> SERVER_STARTING = EventFactory.createArrayBacked(ServerStarting.class, Combine.CALL_ALL);
+	public static final Event<ServerStarting> SERVER_STARTING = EventFactory.createArrayBacked(ServerStarting.class, callbacks -> server -> {
+		for (ServerStarting callback : callbacks) {
+			callback.onServerStarting(server);
+		}
+	});
 
 	/**
 	 * Called when a Minecraft server has started and is about to tick for the first time.
 	 *
 	 * <p>At this stage, all levels are live.
 	 */
-	public static final Event<ServerStarted> SERVER_STARTED = EventFactory.createArrayBacked(ServerStarted.class, Combine.CALL_ALL);
+	public static final Event<ServerStarted> SERVER_STARTED = EventFactory.createArrayBacked(ServerStarted.class, (callbacks) -> (server) -> {
+		for (ServerStarted callback : callbacks) {
+			callback.onServerStarted(server);
+		}
+	});
 
 	/**
 	 * Called when a Minecraft server has started shutting down.
@@ -51,7 +58,11 @@ public final class ServerLifecycleEvents {
 	 *
 	 * <p>All levels are still present and can be modified.
 	 */
-	public static final Event<ServerStopping> SERVER_STOPPING = EventFactory.createArrayBacked(ServerStopping.class, Combine.CALL_ALL);
+	public static final Event<ServerStopping> SERVER_STOPPING = EventFactory.createArrayBacked(ServerStopping.class, (callbacks) -> (server) -> {
+		for (ServerStopping callback : callbacks) {
+			callback.onServerStopping(server);
+		}
+	});
 
 	/**
 	 * Called when a Minecraft server has stopped.
@@ -60,35 +71,59 @@ public final class ServerLifecycleEvents {
 	 * <p>For example, an {@link net.fabricmc.api.EnvType#CLIENT integrated server} will begin stopping, but its client may continue to run.
 	 * Meanwhile, for a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
 	 */
-	public static final Event<ServerStopped> SERVER_STOPPED = EventFactory.createArrayBacked(ServerStopped.class, Combine.CALL_ALL);
+	public static final Event<ServerStopped> SERVER_STOPPED = EventFactory.createArrayBacked(ServerStopped.class, callbacks -> server -> {
+		for (ServerStopped callback : callbacks) {
+			callback.onServerStopped(server);
+		}
+	});
 
 	/**
 	 * Called when a Minecraft server is about to send tag and recipe data to a player.
 	 * @see SyncDataPackContents
 	 */
-	public static final Event<SyncDataPackContents> SYNC_DATA_PACK_CONTENTS = EventFactory.createArrayBacked(SyncDataPackContents.class, Combine.CALL_ALL);
+	public static final Event<SyncDataPackContents> SYNC_DATA_PACK_CONTENTS = EventFactory.createArrayBacked(SyncDataPackContents.class, callbacks -> (player, joined) -> {
+		for (SyncDataPackContents callback : callbacks) {
+			callback.onSyncDataPackContents(player, joined);
+		}
+	});
 
 	/**
 	 * Called before a Minecraft server reloads data packs.
 	 */
-	public static final Event<StartDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(StartDataPackReload.class, Combine.CALL_ALL);
+	public static final Event<StartDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(StartDataPackReload.class, callbacks -> (server, resourceManager) -> {
+		for (StartDataPackReload callback : callbacks) {
+			callback.startDataPackReload(server, resourceManager);
+		}
+	});
 
 	/**
 	 * Called after a Minecraft server has reloaded data packs.
 	 *
 	 * <p>If reloading data packs was unsuccessful, the current data packs will be kept.
 	 */
-	public static final Event<EndDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(EndDataPackReload.class, Combine.CALL_ALL);
+	public static final Event<EndDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(EndDataPackReload.class, callbacks -> (server, resourceManager, success) -> {
+		for (EndDataPackReload callback : callbacks) {
+			callback.endDataPackReload(server, resourceManager, success);
+		}
+	});
 
 	/**
 	 * Called before a Minecraft server begins saving data.
 	 */
-	public static final Event<BeforeSave> BEFORE_SAVE = EventFactory.createArrayBacked(BeforeSave.class, Combine.CALL_ALL);
+	public static final Event<BeforeSave> BEFORE_SAVE = EventFactory.createArrayBacked(BeforeSave.class, callbacks -> (server, flush, force) -> {
+		for (BeforeSave callback : callbacks) {
+			callback.onBeforeSave(server, flush, force);
+		}
+	});
 
 	/**
 	 * Called after a Minecraft server finishes saving data.
 	 */
-	public static final Event<AfterSave> AFTER_SAVE = EventFactory.createArrayBacked(AfterSave.class, Combine.CALL_ALL);
+	public static final Event<AfterSave> AFTER_SAVE = EventFactory.createArrayBacked(AfterSave.class, callbacks -> (server, flush, force) -> {
+		for (AfterSave callback : callbacks) {
+			callback.onAfterSave(server, flush, force);
+		}
+	});
 
 	@FunctionalInterface
 	public interface ServerStarting {

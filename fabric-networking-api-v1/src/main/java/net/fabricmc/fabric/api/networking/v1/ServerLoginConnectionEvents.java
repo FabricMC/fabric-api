@@ -20,7 +20,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -33,7 +32,11 @@ public final class ServerLoginConnectionEvents {
 	 *
 	 * @see ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
 	 */
-	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, Combine.CALL_ALL);
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, server) -> {
+		for (Init callback : callbacks) {
+			callback.onLoginInit(listener, server);
+		}
+	});
 
 	/**
 	 * An event for the start of login queries of the server login packet listener.
@@ -43,14 +46,22 @@ public final class ServerLoginConnectionEvents {
 	 *
 	 * <p>You may send login queries to the connected client using the provided {@link LoginPacketSender}.
 	 */
-	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, Combine.CALL_ALL);
+	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (listener, server, sender, synchronizer) -> {
+		for (QueryStart callback : callbacks) {
+			callback.onLoginStart(listener, server, sender, synchronizer);
+		}
+	});
 
 	/**
 	 * An event for the disconnection of the server login packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, Combine.CALL_ALL);
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, server) -> {
+		for (Disconnect callback : callbacks) {
+			callback.onLoginDisconnect(listener, server);
+		}
+	});
 
 	private ServerLoginConnectionEvents() {
 	}

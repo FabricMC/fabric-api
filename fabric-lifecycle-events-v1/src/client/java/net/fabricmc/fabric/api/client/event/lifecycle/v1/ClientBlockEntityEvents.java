@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -33,14 +32,22 @@ public final class ClientBlockEntityEvents {
 	 * <p>When this event is called, the block entity is already in the level.
 	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
-	public static final Event<ClientBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Load.class, Combine.CALL_ALL);
+	public static final Event<ClientBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Load.class, callbacks -> (blockEntity, level) -> {
+		for (Load callback : callbacks) {
+			callback.onLoad(blockEntity, level);
+		}
+	});
 
 	/**
 	 * Called when a BlockEntity is about to be unloaded from a ClientLevel.
 	 *
 	 * <p>When this event is called, the block entity is still present on the level.
 	 */
-	public static final Event<ClientBlockEntityEvents.Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Unload.class, Combine.CALL_ALL);
+	public static final Event<ClientBlockEntityEvents.Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Unload.class, callbacks -> (blockEntity, level) -> {
+		for (Unload callback : callbacks) {
+			callback.onUnload(blockEntity, level);
+		}
+	});
 
 	@FunctionalInterface
 	public interface Load {

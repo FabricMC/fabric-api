@@ -21,7 +21,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -34,7 +33,11 @@ public final class ServerEntityCombatEvents {
 	 *
 	 * @see Entity#killedEntity(ServerLevel, LivingEntity, DamageSource)
 	 */
-	public static final Event<AfterKilledOtherEntity> AFTER_KILLED_OTHER_ENTITY = EventFactory.createArrayBacked(AfterKilledOtherEntity.class, Combine.CALL_ALL);
+	public static final Event<AfterKilledOtherEntity> AFTER_KILLED_OTHER_ENTITY = EventFactory.createArrayBacked(AfterKilledOtherEntity.class, callbacks -> (level, entity, killedEntity, damageSource) -> {
+		for (AfterKilledOtherEntity callback : callbacks) {
+			callback.afterKilledOtherEntity(level, entity, killedEntity, damageSource);
+		}
+	});
 
 	@FunctionalInterface
 	public interface AfterKilledOtherEntity {
