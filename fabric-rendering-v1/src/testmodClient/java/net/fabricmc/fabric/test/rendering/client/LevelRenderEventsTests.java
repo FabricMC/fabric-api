@@ -44,8 +44,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.level.AbstractLevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderPassRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelSubmitContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
 
 public class LevelRenderEventsTests implements ClientModInitializer, FabricClientGameTest {
@@ -61,7 +62,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		}
 	}
 
-	private static boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState) {
+	private static boolean beforeBlockOutline(LevelSubmitContext context, BlockOutlineRenderState outlineRenderState) {
 		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
 			PoseStack poseStack = context.poseStack();
 			poseStack.pushPose();
@@ -86,7 +87,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 	/**
 	 * Renders a translucent filled box at (0, 100, 0).
 	 */
-	private static void renderBeforeTranslucent(LevelRenderContext context) {
+	private static void renderBeforeTranslucent(LevelSubmitContext context) {
 		Vec3 camera = context.levelState().cameraRenderState.pos;
 
 		context.poseStack().pushPose();
@@ -117,7 +118,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 	/**
 	 * Checks that the main pass events are called in the order
-	 * {@code BEFORE_RENDER_PASS}, {@code START_MAIN}, {@code AFTER_RENDER_PASS}, {@code END_MAIN}, once each per frame.
+	 * {@code BEFORE_RENDER_PASS}, {@code START_MAIN}, {@code END_MAIN}, {@code AFTER_RENDER_PASS}, once each per frame.
 	 */
 	private static void advanceMainPassStage(int expectedStage, String event) {
 		if (mainPassStage != expectedStage) {
@@ -138,7 +139,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 				LevelRenderEventsTests::extractBlockOutline);
 		LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register(LevelRenderEventsTests::beforeBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
-		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::renderBeforeTranslucent);
+		LevelRenderEvents.COLLECT_SUBMITS.register(LevelRenderEventsTests::renderBeforeTranslucent);
 		// Opens a render pass of its own right before and right after the main render pass.
 		LevelRenderEvents.BEFORE_RENDER_PASS.register(context -> openEmptyRenderPass(context, "Fabric API test: before main render pass"));
 		LevelRenderEvents.AFTER_RENDER_PASS.register(context -> openEmptyRenderPass(context, "Fabric API test: after main render pass"));
@@ -148,21 +149,25 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 	public void runTest(ClientGameTestContext context) {
 		LevelExtractionEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
 		LevelExtractionEvents.END_EXTRACTION.register(LevelRenderEventsTests::assertExtractionContext);
+
+		// LevelRenderEvents.BEFORE_BLOCK_OUTLINE is tested in beforeBlockOutline
+		LevelRenderEvents.BEFORE_GIZMOS.register(LevelRenderEventsTests::assertSubmitContext);
+		LevelRenderEvents.COLLECT_SUBMITS.register(LevelRenderEventsTests::assertSubmitContext);
+
 		LevelRenderEvents.BEFORE_RENDER_PASS.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.START_MAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
 		LevelRenderEvents.AFTER_OPAQUE_TERRAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
-		LevelRenderEvents.COLLECT_SUBMITS.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.AFTER_SOLID_FEATURES.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
-		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
-		LevelRenderEvents.BEFORE_GIZMOS.register(LevelRenderEventsTests::assertRenderContext);
-		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
-		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
-		LevelRenderEvents.END_MAIN.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
-		LevelRenderEvents.AFTER_RENDER_PASS.register(LevelRenderEventsTests::assertRenderContextWithTerrain);
+		LevelRenderEvents.AFTER_SOLID_FEATURES.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(LevelRenderEventsTests::assertRenderContext);
+		LevelRenderEvents.END_MAIN.register(LevelRenderEventsTests::assertTerrainRenderContext);
+		LevelRenderEvents.AFTER_RENDER_PASS.register(LevelRenderEventsTests::assertTerrainRenderContext);
+
 		LevelRenderEvents.BEFORE_RENDER_PASS.register(renderContext -> advanceMainPassStage(0, "BEFORE_RENDER_PASS"));
 		LevelRenderEvents.START_MAIN.register(renderContext -> advanceMainPassStage(1, "START_MAIN"));
-		LevelRenderEvents.AFTER_RENDER_PASS.register(renderContext -> advanceMainPassStage(2, "AFTER_RENDER_PASS"));
-		LevelRenderEvents.END_MAIN.register(renderContext -> advanceMainPassStage(3, "END_MAIN"));
+		LevelRenderEvents.END_MAIN.register(renderContext -> advanceMainPassStage(2, "END_MAIN"));
+		LevelRenderEvents.AFTER_RENDER_PASS.register(renderContext -> advanceMainPassStage(3, "AFTER_RENDER_PASS"));
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
@@ -186,17 +191,19 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		assertNotNull(context.deltaTracker(), "deltaTracker is null");
 	}
 
-	private static void assertRenderContext(LevelRenderContext context) {
+	private static void assertSubmitContext(LevelSubmitContext context) {
+		assertAbstractRenderContext(context);
 		assertNotNull(context.submitNodeCollector(), "submitNodeCollector is null");
 		assertNotNull(context.poseStack(), "poseStack is null");
 	}
 
-	private static void assertRenderContextWithTerrain(LevelRenderContext context) {
-		assertRenderContext(context);
+	private static void assertRenderContext(LevelRenderPassRenderContext context) {
 		assertTerrainRenderContext(context);
+		assertNotNull(context.renderPass(), "renderPass is null");
 	}
 
 	private static void assertTerrainRenderContext(LevelTerrainRenderContext context) {
+		assertAbstractRenderContext(context);
 		assertNotNull(context.sectionsToRender(), "sectionsToRender is null");
 	}
 

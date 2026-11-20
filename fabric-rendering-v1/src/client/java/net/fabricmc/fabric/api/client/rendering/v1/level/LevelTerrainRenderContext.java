@@ -29,8 +29,6 @@ public interface LevelTerrainRenderContext extends AbstractLevelRenderContext {
 	 * <p>Render states contain information about the current frame used for rendering,
 	 * and should be used instead of accessing the level or other objects directly from rendering events.
 	 *
-	 * <p>Note: This may be null for events that fire before terrain preparation (e.g., COLLECT_SUBMITS, BEFORE_GIZMOS).
-	 *
 	 * @return the chunk sections to render, or null if not yet prepared
 	 */
 	@Nullable
