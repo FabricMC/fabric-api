@@ -244,6 +244,28 @@ public class EventUnrolledModesTest {
 	}
 
 	@Test
+	void anyMatch() {
+		Function<BoolCb[], BoolCb> reference = listeners -> (log, b, c) -> {
+			boolean result = false;
+
+			for (BoolCb l : listeners) {
+				result |= l.run(log, b, c);
+			}
+
+			return result;
+		};
+		fuzz(BoolCb.class, Combine.anyTrue(BoolCb.class), reference,
+				(i, rng) -> {
+					boolean result = rng.nextInt(10) < 2;
+					return (log, b, c) -> {
+						log.add(i + ":" + b + c);
+						return result;
+					};
+				},
+				(inv, log) -> inv.run(log, 5L, 1.5));
+	}
+
+	@Test
 	void chainReference() {
 		Function<ChainStr[], ChainStr> reference = listeners -> (log, a, s, d) -> {
 			for (ChainStr l : listeners) {
@@ -284,6 +306,7 @@ public class EventUnrolledModesTest {
 		// Wrong combination for the return type: rejected when the Combine is created.
 		assertThrows(IllegalArgumentException.class, () -> Combine.firstNonNull(VoidCb.class));
 		assertThrows(IllegalArgumentException.class, () -> Combine.allTrue(RefCb.class));
+		assertThrows(IllegalArgumentException.class, () -> Combine.anyTrue(VoidCb.class));
 		assertThrows(IllegalArgumentException.class, () -> Combine.callAll(BoolCb.class));
 		assertThrows(IllegalArgumentException.class, () -> Combine.firstNonNull(BoolCb.class));
 		// Pass value of the wrong type.

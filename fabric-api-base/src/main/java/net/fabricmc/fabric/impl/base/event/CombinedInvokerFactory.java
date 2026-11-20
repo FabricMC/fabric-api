@@ -148,6 +148,9 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			case ALL_MATCH -> {
 				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.allTrue needs boolean");
 			}
+			case ANY_MATCH -> {
+				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.anyTrue needs boolean");
+			}
 			case CHAIN -> {
 				int p = combine.threadedParam();
 
@@ -285,6 +288,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		return switch (mode) {
 			case VOID -> MethodHandles.empty(methodType);
 			case ALL_MATCH -> MethodHandles.dropArguments(MethodHandles.constant(boolean.class, true), 0, methodType.parameterList());
+			case ANY_MATCH -> MethodHandles.dropArguments(MethodHandles.constant(boolean.class, false), 0, methodType.parameterList());
 			case SHORT_CIRCUIT -> MethodHandles.dropArguments(MethodHandles.constant(returnClass, passValue), 0, methodType.parameterList());
 			case CHAIN -> MethodHandles.permuteArguments(MethodHandles.identity(returnClass), methodType, threadedParam);
 		};
@@ -339,9 +343,9 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.loadConstant(0);
 				code.istore(indexSlot);
 
-				if (mode == Combine.Mode.ALL_MATCH) {
+				if (mode == Combine.Mode.ALL_MATCH || mode == Combine.Mode.ANY_MATCH) {
 					// The result so far stays on the operand stack for the whole loop.
-					code.loadConstant(1);
+					code.loadConstant(mode == Combine.Mode.ALL_MATCH ? 1 : 0);
 				}
 
 				code.labelBinding(top);
@@ -359,6 +363,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				switch (mode) {
 					case VOID -> { }
 					case ALL_MATCH -> code.iand();
+					case ANY_MATCH -> code.ior();
 					case CHAIN -> code.storeLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
 					case SHORT_CIRCUIT -> {
 						code.dup();
@@ -374,7 +379,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 				switch (mode) {
 					case VOID -> code.return_();
-					case ALL_MATCH -> code.ireturn();
+					case ALL_MATCH, ANY_MATCH -> code.ireturn();
 					case CHAIN -> {
 						code.loadLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
 						code.return_(TypeKind.from(returnClass));
@@ -429,12 +434,18 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 						code.return_();
 					}
-					case ALL_MATCH -> {
-						code.loadConstant(1);
+					case ALL_MATCH, ANY_MATCH -> {
+						boolean all = mode == Combine.Mode.ALL_MATCH;
+						code.loadConstant(all ? 1 : 0);
 
 						for (int i = 0; i < n; i++) {
 							invokeUnrolled(code, listener, i);
-							code.iand();
+
+							if (all) {
+								code.iand();
+							} else {
+								code.ior();
+							}
 						}
 
 						code.ireturn();

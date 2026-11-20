@@ -136,6 +136,25 @@ public final class Combine<T> implements Function<T[], T> {
 	}
 
 	/**
+	 * Call <b>every</b> listener, and return whether any of them returned {@code true}
+	 * ({@code false} if there are none). Unlike {@link #stopAtTrue}, listeners are still called after one returned {@code true}.
+	 * For listener methods returning {@code boolean}.
+	 *
+	 * <pre>{@code
+	 * boolean result = false;
+	 * for (Listener listener : listeners) result |= listener.call(args);
+	 * return result;
+	 * }</pre>
+	 *
+	 * @param type The listener interface.
+	 * @param <T>  The listener type.
+	 * @return the invoker factory
+	 */
+	public static <T> Combine<T> anyTrue(Class<? super T> type) {
+		return new Combine<>(type, Mode.ANY_MATCH, null, -1);
+	}
+
+	/**
 	 * Call the listeners in order until one returns something other than {@code null}, which is returned.
 	 * Returns {@code null} if all listeners returned {@code null}, or if there are none.
 	 * For listener methods returning a reference type.
@@ -215,6 +234,7 @@ public final class Combine<T> implements Function<T[], T> {
 		VOID,
 		SHORT_CIRCUIT,
 		ALL_MATCH,
+		ANY_MATCH,
 		CHAIN
 	}
 
