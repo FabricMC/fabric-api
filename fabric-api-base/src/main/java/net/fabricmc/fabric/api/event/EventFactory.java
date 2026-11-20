@@ -32,7 +32,7 @@ public final class EventFactory {
 	 * Create an "array-backed" Event instance.
 	 *
 	 * <p>If your factory only combines the listeners in a common way, like calling all of them or stopping at the first
-	 * {@code false}, use one of the {@link Combine} factories as the invoker factory: Fabric API then generates
+	 * {@code false}, use one of the {@link EventInvokers} as the invoker factory: Fabric API then generates
 	 * an invoker that is several times faster when there are several listeners.
 	 *
 	 * @param type           The listener class type.

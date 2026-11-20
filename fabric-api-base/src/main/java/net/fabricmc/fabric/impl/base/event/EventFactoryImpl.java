@@ -26,7 +26,6 @@ import com.google.common.collect.MapMaker;
 
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 
 public final class EventFactoryImpl {
@@ -34,7 +33,7 @@ public final class EventFactoryImpl {
 			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
 	/**
-	 * The most listeners for which the invoker of a {@link Combine} event is unrolled. Meant for tests.
+	 * The most listeners for which the invoker of an event made with {@link net.fabricmc.fabric.api.event.EventInvokers} is unrolled. Meant for tests.
 	 */
 	public static final int MAX_UNROLLED_LISTENERS = CombinedInvokerFactory.MAX_UNROLLED;
 
@@ -47,27 +46,18 @@ public final class EventFactoryImpl {
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
 		ArrayBackedEvent<T> event;
 
-		if (invokerFactory instanceof Combine<T> combine) {
-			if (combine.type() != type) {
-				throw new IllegalArgumentException("The Combine was created for " + combine.type().getName() + ", but the event is for " + type.getName());
+		if (invokerFactory instanceof CombinedInvokerFactory<T> combined) {
+			if (combined.type != type) {
+				throw new IllegalArgumentException("The invoker factory was created for " + combined.type.getName() + ", but the event is for " + type.getName());
 			}
 
-			event = StableInvoker.createEvent(type, (CombinedInvokerFactory<T>) combine.implementation());
+			event = StableInvoker.createEvent(type, combined);
 		} else {
 			event = new ArrayBackedEvent<>(type, invokerFactory);
 		}
 
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
-	}
-
-	/**
-	 * The implementation of a {@link Combine}: validates the listener interface and generates the invokers.
-	 *
-	 * @throws IllegalArgumentException if the listener interface does not fit, or is not accessible to Fabric API.
-	 */
-	public static <T> Function<T[], T> combinedInvokerFactory(Combine<T> combine) {
-		return CombinedInvokerFactory.create(combine.type(), combine);
 	}
 
 	/**

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -44,11 +45,9 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.event.Combine;
-
 /**
- * Builds the invokers of events created with a {@link Combine}, for listener interfaces with a single method.
- * The {@link Combine} is the only definition of how the listener results are combined,
+ * The invoker factories of {@link net.fabricmc.fabric.api.event.EventInvokers}, for listener interfaces with a single method.
+ * The {@link Mode} is the only definition of how the listener results are combined,
  * every kind of invoker below is generated from it.
  *
  * <p>There are two kinds of invokers, with identical behavior:
@@ -67,7 +66,18 @@ import net.fabricmc.fabric.api.event.Combine;
  * <p>Generating an unrolled class is far too slow for registration, so {@link #apply} never returns one.
  * {@link ArrayBackedEvent} asks for it separately via {@link #generateUnrolled}, off-thread.
  */
-final class CombinedInvokerFactory<T> implements Function<T[], T> {
+public final class CombinedInvokerFactory<T> implements Function<T[], T> {
+	/**
+	 * How the results of the listeners are combined, see {@link net.fabricmc.fabric.api.event.EventInvokers}.
+	 */
+	public enum Mode {
+		VOID,
+		SHORT_CIRCUIT,
+		ALL_MATCH,
+		ANY_MATCH,
+		CHAIN
+	}
+
 	/**
 	 * The most listeners that get an unrolled invoker. The JIT does not compile methods above 8000 bytecodes,
 	 * and every listener takes at most about 50 of them. Throughput of both falls steeply past about 32 listeners anyway.
@@ -92,20 +102,20 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 * and the setter of its volatile listener array {@code (Object loop, Object[] listeners)}.
 	 */
 	private record LoopClass(MethodHandle constructor, MethodHandle setter) { }
-	private final Class<? super T> type;
+	final Class<? super T> type;
 	final Method method;
-	private final Combine.Mode mode;
+	private final Mode mode;
 	private final @Nullable Object passValue;
 	private final int threadedParam;
 	final MethodHandles.Lookup lookup;
 	private boolean unrolledBroken;
 
-	private CombinedInvokerFactory(Class<? super T> type, Method method, Combine<T> combine, MethodHandles.Lookup lookup) {
+	private CombinedInvokerFactory(Class<? super T> type, Method method, Mode mode, @Nullable Object passValue, int threadedParam, MethodHandles.Lookup lookup) {
 		this.type = type;
 		this.method = method;
-		this.mode = combine.mode();
-		this.passValue = combine.passValue();
-		this.threadedParam = combine.threadedParam();
+		this.mode = mode;
+		this.passValue = passValue;
+		this.threadedParam = threadedParam;
 		this.lookup = lookup;
 	}
 
@@ -114,57 +124,56 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 *
 	 * @throws IllegalArgumentException if the listener interface or the combination are invalid.
 	 */
-	static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Combine<T> combine) {
+	public static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Mode mode, @Nullable Object passValue, int threadedParam) {
+		Objects.requireNonNull(type, "Tried to create an invoker factory for a null listener type!");
 		if (!type.isInterface()) throw new IllegalArgumentException(type.getName() + " is not an interface");
 
 		Method found = null;
 
 		for (Method m : type.getMethods()) {
 			if (Modifier.isAbstract(m.getModifiers())) {
-				if (found != null) throw new IllegalArgumentException(type.getName() + " has more than one abstract method, use an invoker factory instead of a Combine");
+				if (found != null) throw new IllegalArgumentException(type.getName() + " has more than one abstract method, write the invoker factory by hand");
 				found = m;
 			}
 		}
 
 		if (found == null) throw new IllegalArgumentException(type.getName() + " has no abstract method");
-		validate(type, found, combine);
+		validate(type, found, mode, passValue, threadedParam);
 
 		try {
-			return new CombinedInvokerFactory<>(type, found, combine, MethodHandles.privateLookupIn(type, MethodHandles.lookup()));
+			return new CombinedInvokerFactory<>(type, found, mode, passValue, threadedParam, MethodHandles.privateLookupIn(type, MethodHandles.lookup()));
 		} catch (IllegalAccessException | RuntimeException e) {
 			throw new IllegalArgumentException(type.getName() + " is not accessible to Fabric API, for example because its module does not open its package", e);
 		}
 	}
 
-	private static void validate(Class<?> type, Method method, Combine<?> combine) {
+	private static void validate(Class<?> type, Method method, Mode mode, @Nullable Object pass, int threadedParam) {
 		Class<?> ret = method.getReturnType();
 		Class<?>[] params = method.getParameterTypes();
 		String where = type.getName() + "." + method.getName();
 
-		switch (combine.mode()) {
+		switch (mode) {
 			case VOID -> {
-				if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.callAll needs void");
+				if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but EventInvokers.callAll needs void");
 			}
 			case ALL_MATCH -> {
-				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.allTrue needs boolean");
+				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but EventInvokers.allTrue needs boolean");
 			}
 			case ANY_MATCH -> {
-				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.anyTrue needs boolean");
+				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but EventInvokers.anyTrue needs boolean");
 			}
 			case CHAIN -> {
-				int p = combine.threadedParam();
+				int p = threadedParam;
 
-				if (ret == void.class || p >= params.length || params[p] != ret) {
-					throw new IllegalArgumentException(where + " needs a parameter " + p + " of its return type " + ret.getName() + " for Combine.chain");
+				if (ret == void.class || p < 0 || p >= params.length || params[p] != ret) {
+					throw new IllegalArgumentException(where + " needs a parameter " + p + " of its return type " + ret.getName() + " for EventInvokers.chain");
 				}
 			}
 			case SHORT_CIRCUIT -> {
-				Object pass = combine.passValue();
-
 				if (ret == boolean.class) {
-					if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use Combine.stopAtFalse or Combine.stopAtTrue");
+					if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use EventInvokers.stopAtFalse or EventInvokers.stopAtTrue");
 				} else if (ret.isPrimitive()) {
-					throw new IllegalArgumentException(where + " returns " + ret.getName() + ", which is not supported by this Combine");
+					throw new IllegalArgumentException(where + " returns " + ret.getName() + ", which is not supported by this invoker factory");
 				} else if (pass != null && !ret.isInstance(pass)) {
 					throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but the pass value is a " + pass.getClass().getName());
 				}
@@ -257,14 +266,14 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	// ---- Class generation ----
 
 	private boolean storesPass() {
-		return mode == Combine.Mode.SHORT_CIRCUIT && passValue != null && method.getReturnType() != boolean.class;
+		return mode == Mode.SHORT_CIRCUIT && passValue != null && method.getReturnType() != boolean.class;
 	}
 
 	/**
 	 * Everything the bytecode of the loop invoker depends on. The pass value itself is stored in a field.
 	 */
 	private String loopKey() {
-		String pass = !(mode == Combine.Mode.SHORT_CIRCUIT) ? "" : passValue == null ? "null" : passValue instanceof Boolean b ? b.toString() : "ref";
+		String pass = !(mode == Mode.SHORT_CIRCUIT) ? "" : passValue == null ? "null" : passValue instanceof Boolean b ? b.toString() : "ref";
 		return mode + "/" + threadedParam + "/" + pass;
 	}
 
@@ -343,9 +352,9 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.loadConstant(0);
 				code.istore(indexSlot);
 
-				if (mode == Combine.Mode.ALL_MATCH || mode == Combine.Mode.ANY_MATCH) {
+				if (mode == Mode.ALL_MATCH || mode == Mode.ANY_MATCH) {
 					// The result so far stays on the operand stack for the whole loop.
-					code.loadConstant(mode == Combine.Mode.ALL_MATCH ? 1 : 0);
+					code.loadConstant(mode == Mode.ALL_MATCH ? 1 : 0);
 				}
 
 				code.labelBinding(top);
@@ -435,7 +444,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 						code.return_();
 					}
 					case ALL_MATCH, ANY_MATCH -> {
-						boolean all = mode == Combine.Mode.ALL_MATCH;
+						boolean all = mode == Mode.ALL_MATCH;
 						code.loadConstant(all ? 1 : 0);
 
 						for (int i = 0; i < n; i++) {

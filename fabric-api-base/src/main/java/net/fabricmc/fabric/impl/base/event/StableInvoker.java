@@ -35,7 +35,7 @@ import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The invoker of an event created with a {@link net.fabricmc.fabric.api.event.Combine}, which never changes.
+ * The invoker of an event created with a {@link net.fabricmc.fabric.api.event.EventInvokers}, which never changes.
  *
  * <p>{@link #object} is a generated class, whose method is a single {@code invokedynamic} onto a {@link VolatileCallSite}.
  * When the listeners of the event change, only the target of the call site does. The JIT treats the target of

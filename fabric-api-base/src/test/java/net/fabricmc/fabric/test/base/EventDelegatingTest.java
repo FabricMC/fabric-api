@@ -23,14 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.EventInvokers;
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
 public class EventDelegatingTest {
@@ -43,7 +44,7 @@ public class EventDelegatingTest {
 	}
 
 	private static Event<Callback> create() {
-		return EventFactory.createArrayBacked(Callback.class, Combine.callAll(Callback.class));
+		return EventFactory.createArrayBacked(Callback.class, EventInvokers.callAll(Callback.class));
 	}
 
 	private static Callback tag(String s) {
@@ -144,20 +145,20 @@ public class EventDelegatingTest {
 	}
 
 	@Test
-	void combineIsAlsoAPlainInvokerFactory() {
-		Combine<Returning> combine = Combine.stopAtFalse(Returning.class);
+	void eventInvokersAreAlsoPlainInvokerFactories() {
+		Function<Returning[], Returning> invokers = EventInvokers.stopAtFalse(Returning.class);
 		List<String> out = new ArrayList<>();
 		Returning allow = o -> o.add("allow");
 		Returning deny = o -> !o.add("deny");
 
-		assertEquals(true, combine.apply(new Returning[0]).run(out));
-		assertSame(allow, combine.apply(new Returning[] {allow}));
-		assertEquals(false, combine.apply(new Returning[] {allow, deny, allow}).run(out));
+		assertEquals(true, invokers.apply(new Returning[0]).run(out));
+		assertSame(allow, invokers.apply(new Returning[] {allow}));
+		assertEquals(false, invokers.apply(new Returning[] {allow, deny, allow}).run(out));
 		assertEquals(List.of("allow", "deny"), out);
 
-		// One Combine can be shared by several events.
-		Event<Returning> first = EventFactory.createArrayBacked(Returning.class, combine);
-		Event<Returning> second = EventFactory.createWithPhases(Returning.class, combine, Event.DEFAULT_PHASE);
+		// One invoker factory can be shared by several events.
+		Event<Returning> first = EventFactory.createArrayBacked(Returning.class, invokers);
+		Event<Returning> second = EventFactory.createWithPhases(Returning.class, invokers, Event.DEFAULT_PHASE);
 		first.register(deny);
 		second.register(allow);
 		assertEquals(false, first.invoker().run(new ArrayList<>()));
@@ -188,7 +189,7 @@ public class EventDelegatingTest {
 
 	@Test
 	void booleanShortCircuitStopsAtFirstFalse() {
-		Event<Returning> e = EventFactory.createArrayBacked(Returning.class, Combine.stopAtFalse(Returning.class));
+		Event<Returning> e = EventFactory.createArrayBacked(Returning.class, EventInvokers.stopAtFalse(Returning.class));
 		List<String> out = new ArrayList<>();
 		e.register(o -> {
 			o.add("a");

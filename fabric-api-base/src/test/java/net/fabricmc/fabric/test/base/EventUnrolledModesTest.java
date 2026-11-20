@@ -30,9 +30,9 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
-import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.EventInvokers;
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
 /**
@@ -72,15 +72,15 @@ public class EventUnrolledModesTest {
 	}
 
 	/**
-	 * Runs the event with every kind of invoker against the reference loop, which is the specification of the {@link Combine}.
+	 * Runs the event with every kind of invoker against the reference loop, which is the specification of the invoker factory.
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T> void fuzz(Class<T> type, Combine<T> combine, Function<T[], T> reference,
+	private static <T> void fuzz(Class<T> type, Function<T[], T> invokers, Function<T[], T> reference,
 			BiFunction<Integer, Random, T> make, BiFunction<T, List<String>, Object> fire) {
 		for (int n : COUNTS) {
 			for (int rep = 0; rep < (n <= 20 ? 25 : 3); rep++) {
 				T[] listeners = (T[]) Array.newInstance(type, n);
-				Event<T> event = EventFactory.createArrayBacked(type, combine);
+				Event<T> event = EventFactory.createArrayBacked(type, invokers);
 
 				for (int i = 0; i < n; i++) {
 					listeners[i] = make.apply(i, RNG);
@@ -125,7 +125,7 @@ public class EventUnrolledModesTest {
 		Function<VoidCb[], VoidCb> reference = listeners -> (log, a, b, c, d) -> {
 			for (VoidCb l : listeners) l.run(log, a, b, c, d);
 		};
-		fuzz(VoidCb.class, Combine.callAll(VoidCb.class), reference,
+		fuzz(VoidCb.class, EventInvokers.callAll(VoidCb.class), reference,
 				(i, rng) -> (log, a, b, c, d) -> log.add(i + ":" + a + b + c + d),
 				(inv, log) -> {
 					inv.run(log, 7, 8L, 9.5, "x");
@@ -149,7 +149,7 @@ public class EventUnrolledModesTest {
 
 			return PASS;
 		};
-		fuzz(RefCb.class, Combine.firstOtherThan(RefCb.class, PASS), reference,
+		fuzz(RefCb.class, EventInvokers.firstOtherThan(RefCb.class, PASS), reference,
 				(i, rng) -> {
 					Res result = randomRes(i, rng, PASS);
 					return (log, b, c) -> {
@@ -170,7 +170,7 @@ public class EventUnrolledModesTest {
 
 			return null;
 		};
-		fuzz(RefCb.class, Combine.firstNonNull(RefCb.class), reference,
+		fuzz(RefCb.class, EventInvokers.firstNonNull(RefCb.class), reference,
 				(i, rng) -> {
 					Res result = rng.nextInt(10) < 7 ? null : new Res(i);
 					return (log, b, c) -> {
@@ -190,7 +190,7 @@ public class EventUnrolledModesTest {
 
 			return true;
 		};
-		fuzz(BoolCb.class, Combine.stopAtFalse(BoolCb.class), reference,
+		fuzz(BoolCb.class, EventInvokers.stopAtFalse(BoolCb.class), reference,
 				(i, rng) -> {
 					boolean result = rng.nextInt(10) < 8;
 					return (log, b, c) -> {
@@ -210,7 +210,7 @@ public class EventUnrolledModesTest {
 
 			return false;
 		};
-		fuzz(BoolCb.class, Combine.stopAtTrue(BoolCb.class), reference,
+		fuzz(BoolCb.class, EventInvokers.stopAtTrue(BoolCb.class), reference,
 				(i, rng) -> {
 					boolean result = rng.nextInt(10) < 2;
 					return (log, b, c) -> {
@@ -232,7 +232,7 @@ public class EventUnrolledModesTest {
 
 			return allow;
 		};
-		fuzz(BoolCb.class, Combine.allTrue(BoolCb.class), reference,
+		fuzz(BoolCb.class, EventInvokers.allTrue(BoolCb.class), reference,
 				(i, rng) -> {
 					boolean result = rng.nextInt(10) < 8;
 					return (log, b, c) -> {
@@ -254,7 +254,7 @@ public class EventUnrolledModesTest {
 
 			return result;
 		};
-		fuzz(BoolCb.class, Combine.anyTrue(BoolCb.class), reference,
+		fuzz(BoolCb.class, EventInvokers.anyTrue(BoolCb.class), reference,
 				(i, rng) -> {
 					boolean result = rng.nextInt(10) < 2;
 					return (log, b, c) -> {
@@ -274,7 +274,7 @@ public class EventUnrolledModesTest {
 
 			return s;
 		};
-		fuzz(ChainStr.class, Combine.chain(ChainStr.class, 2), reference,
+		fuzz(ChainStr.class, EventInvokers.chain(ChainStr.class, 2), reference,
 				(i, rng) -> (log, a, s, d) -> {
 					log.add(i + ":" + a + s + d);
 					return s + "|" + i;
@@ -292,7 +292,7 @@ public class EventUnrolledModesTest {
 
 			return v;
 		};
-		fuzz(ChainLong.class, Combine.chain(ChainLong.class, 3), reference,
+		fuzz(ChainLong.class, EventInvokers.chain(ChainLong.class, 3), reference,
 				(i, rng) -> (log, a, b, v) -> {
 					log.add(i + ":" + a + b + v);
 					return v * 31 + i;
@@ -303,23 +303,23 @@ public class EventUnrolledModesTest {
 	@Test
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	void invalidCombinationsAreRejected() {
-		// Wrong combination for the return type: rejected when the Combine is created.
-		assertThrows(IllegalArgumentException.class, () -> Combine.firstNonNull(VoidCb.class));
-		assertThrows(IllegalArgumentException.class, () -> Combine.allTrue(RefCb.class));
-		assertThrows(IllegalArgumentException.class, () -> Combine.anyTrue(VoidCb.class));
-		assertThrows(IllegalArgumentException.class, () -> Combine.callAll(BoolCb.class));
-		assertThrows(IllegalArgumentException.class, () -> Combine.firstNonNull(BoolCb.class));
+		// Wrong combination for the return type: rejected when the invoker factory is created.
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.firstNonNull(VoidCb.class));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.allTrue(RefCb.class));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.anyTrue(VoidCb.class));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.callAll(BoolCb.class));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.firstNonNull(BoolCb.class));
 		// Pass value of the wrong type.
-		assertThrows(IllegalArgumentException.class, () -> Combine.firstOtherThan(RefCb.class, "not a Res"));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.firstOtherThan(RefCb.class, "not a Res"));
 		// Threaded parameter must exist and have the type of the result.
-		assertThrows(IllegalArgumentException.class, () -> Combine.chain(ChainStr.class, 1));
-		assertThrows(IllegalArgumentException.class, () -> Combine.chain(ChainStr.class, 9));
-		assertThrows(IllegalArgumentException.class, () -> Combine.chain(ChainStr.class, -1));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.chain(ChainStr.class, 1));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.chain(ChainStr.class, 9));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.chain(ChainStr.class, -1));
 		// Not a single-method interface.
-		assertThrows(IllegalArgumentException.class, () -> Combine.callAll(Object.class));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.callAll(Object.class));
 		// Not accessible: java.base does not open java.lang.
-		assertThrows(IllegalArgumentException.class, () -> Combine.callAll(Runnable.class));
-		// A Combine for another listener type than the event.
-		assertThrows(IllegalArgumentException.class, () -> EventFactory.createArrayBacked((Class) BoolCb.class, (Function) Combine.callAll(VoidCb.class)));
+		assertThrows(IllegalArgumentException.class, () -> EventInvokers.callAll(Runnable.class));
+		// An invoker factory for another listener type than the event.
+		assertThrows(IllegalArgumentException.class, () -> EventFactory.createArrayBacked((Class) BoolCb.class, (Function) EventInvokers.callAll(VoidCb.class)));
 	}
 }
