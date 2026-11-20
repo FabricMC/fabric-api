@@ -329,7 +329,6 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			cb.withMethodBody(method.getName(), methodDesc(), ClassFile.ACC_PUBLIC, code -> {
 				int arraySlot = code.allocateLocal(TypeKind.REFERENCE);
 				int indexSlot = code.allocateLocal(TypeKind.INT);
-				int accSlot = mode == Combine.Mode.ALL_MATCH ? code.allocateLocal(TypeKind.INT) : -1;
 				Label top = code.newLabel();
 				Label end = code.newLabel();
 				Label early = code.newLabel();
@@ -341,8 +340,8 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.istore(indexSlot);
 
 				if (mode == Combine.Mode.ALL_MATCH) {
+					// The result so far stays on the operand stack for the whole loop.
 					code.loadConstant(1);
-					code.istore(accSlot);
 				}
 
 				code.labelBinding(top);
@@ -359,11 +358,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 				switch (mode) {
 					case VOID -> { }
-					case ALL_MATCH -> {
-						code.iload(accSlot);
-						code.iand();
-						code.istore(accSlot);
-					}
+					case ALL_MATCH -> code.iand();
 					case CHAIN -> code.storeLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
 					case SHORT_CIRCUIT -> {
 						code.dup();
@@ -379,10 +374,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 				switch (mode) {
 					case VOID -> code.return_();
-					case ALL_MATCH -> {
-						code.iload(accSlot);
-						code.ireturn();
-					}
+					case ALL_MATCH -> code.ireturn();
 					case CHAIN -> {
 						code.loadLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
 						code.return_(TypeKind.from(returnClass));
