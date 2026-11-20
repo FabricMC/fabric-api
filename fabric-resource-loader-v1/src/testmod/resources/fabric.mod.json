@@ -21,7 +21,8 @@
       "net.fabricmc.fabric.test.resource.loader.LanguageTestMod"
     ],
     "fabric-gametest": [
-      "net.fabricmc.fabric.test.resource.loader.BuiltinPackSortingTest"
+      "net.fabricmc.fabric.test.resource.loader.BuiltinPackSortingTest",
+      "net.fabricmc.fabric.test.resource.loader.FinalizeEntitiesTest"
     ]
   },
   "mixins": [
