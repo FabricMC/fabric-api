@@ -52,6 +52,10 @@ import org.jspecify.annotations.Nullable;
  */
 public final class StableInvoker<T> {
 	private static final ClassDesc SELF = ClassDesc.of(StableInvoker.class.getName());
+	/**
+	 * The class file of {@link StableArrayBackedEvent}, next to this one.
+	 */
+	private static final String STABLE_EVENT_CLASS_FILE = "StableArrayBackedEvent.class";
 	private static final MethodHandle STABLE_EVENT_CONSTRUCTOR = defineStableEventClass();
 
 	/**
@@ -197,8 +201,9 @@ public final class StableInvoker<T> {
 	 * Defines {@link StableArrayBackedEvent} again as a hidden class, from its own class file, so its final field is trusted.
 	 */
 	private static MethodHandle defineStableEventClass() {
-		try (InputStream in = StableInvoker.class.getResourceAsStream(StableArrayBackedEvent.class.getSimpleName() + ".class")) {
-			if (in == null) throw new IllegalStateException("Could not find the class file of " + StableArrayBackedEvent.class.getName());
+		// The class is named as a string: a class literal would load the template as a regular class too.
+		try (InputStream in = StableInvoker.class.getResourceAsStream(STABLE_EVENT_CLASS_FILE)) {
+			if (in == null) throw new IllegalStateException("Could not find " + STABLE_EVENT_CLASS_FILE);
 
 			MethodHandles.Lookup hidden = MethodHandles.lookup().defineHiddenClass(in.readAllBytes(), true);
 			return hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class, Class.class, Function.class, StableInvoker.class, Object.class));
