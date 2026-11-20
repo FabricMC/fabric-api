@@ -31,9 +31,9 @@ public final class EventFactory {
 	/**
 	 * Create an "array-backed" Event instance.
 	 *
-	 * <p>If your factory simply delegates to the listeners without adding custom behavior,
-	 * consider using {@linkplain #createArrayBacked(Class, Object, Function) the other overload}
-	 * if performance of this event is critical.
+	 * <p>If your factory only combines the listeners in a common way, like calling all of them or stopping at the first
+	 * {@code false}, use one of the {@link Combine} factories as the invoker factory: Fabric API then generates
+	 * an invoker that is several times faster when there are several listeners.
 	 *
 	 * @param type           The listener class type.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
@@ -42,24 +42,6 @@ public final class EventFactory {
 	 */
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
 		return EventFactoryImpl.createArrayBacked(type, invokerFactory);
-	}
-
-	/**
-	 * Create an "array-backed" Event instance for a listener interface with a single method,
-	 * whose results are combined as described by a {@link Combine}.
-	 *
-	 * <p>Fabric API generates the invoker, and transparently replaces it with a faster one
-	 * that calls each listener from its own call site, which the JIT can inline.
-	 * This is several times faster when there are three or more listeners.
-	 *
-	 * @param type    The listener interface.
-	 * @param combine How the results of the listeners are combined.
-	 * @param <T>     The listener type.
-	 * @return The Event instance.
-	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}, or is not accessible to Fabric API.
-	 */
-	public static <T> Event<T> createArrayBacked(Class<? super T> type, Combine combine) {
-		return EventFactoryImpl.createArrayBacked(type, combine);
 	}
 
 	/**
@@ -120,25 +102,6 @@ public final class EventFactory {
 
 		Event<T> event = createArrayBacked(type, invokerFactory);
 
-		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
-		return event;
-	}
-
-	/**
-	 * Like {@link #createWithPhases(Class, Function, Identifier...)}, with a {@link Combine} instead of an invoker factory.
-	 *
-	 * @param type          The listener interface.
-	 * @param combine       How the results of the listeners are combined.
-	 * @param defaultPhases The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
-	 * @param <T>           The listener type.
-	 * @return The Event instance.
-	 * @throws IllegalArgumentException if the listener interface does not fit the {@code combine}, or is not accessible to Fabric API.
-	 */
-	public static <T> Event<T> createWithPhases(Class<? super T> type, Combine combine, Identifier... defaultPhases) {
-		EventFactoryImpl.ensureContainsDefault(defaultPhases);
-		EventFactoryImpl.ensureNoDuplicates(defaultPhases);
-
-		Event<T> event = createArrayBacked(type, combine);
 		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
 		return event;
 	}

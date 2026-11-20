@@ -16,30 +16,65 @@
 
 package net.fabricmc.fabric.api.event;
 
+import java.util.Objects;
+import java.util.function.Function;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
+import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
+
 /**
- * Describes how the listeners of an event are combined into one invoker, for listener interfaces with a single method.
- * Pass it to {@link EventFactory#createArrayBacked(Class, Combine)} or
- * {@link EventFactory#createWithPhases(Class, Combine, net.minecraft.resources.Identifier...)}.
+ * An invoker factory that combines the listeners of an event in one of a few common ways,
+ * for listener interfaces with a single method. Use it instead of writing the invoker factory by hand:
  *
- * <p>Fabric API generates the invoker for you, and replaces it with a faster, unrolled version
- * (one call site per listener, which the JIT can inline) once the listeners are registered.
- * The behavior is always the one documented on the constants and factory methods below.
+ * <pre>{@code
+ * Event<AllowDamage> ALLOW_DAMAGE = EventFactory.createArrayBacked(AllowDamage.class, Combine.stopAtFalse(AllowDamage.class));
+ * }</pre>
+ *
+ * <p>Passed to {@link EventFactory#createArrayBacked(Class, Function)} or {@link EventFactory#createWithPhases},
+ * Fabric API generates the invoker, and transparently replaces it with a faster one that calls each listener
+ * from its own call site, which the JIT can inline. The behavior is always the one documented on the factory method.
+ * Anywhere else, it is a regular invoker factory.
+ *
+ * <p>The listener interface is checked when the {@code Combine} is created, which throws
+ * {@link IllegalArgumentException} if it does not fit, or is not accessible to Fabric API.
+ * A {@code Combine} can be shared by several events of the same listener interface.
  *
  * <p>For anything that does not fit, for example listeners that must be wrapped in a {@code try}/{@code catch},
- * keep using {@link EventFactory#createArrayBacked(Class, java.util.function.Function)} with your own invoker factory.
+ * keep writing your own invoker factory.
+ *
+ * @param <T> The listener type.
  */
-public final class Combine {
+public final class Combine<T> implements Function<T[], T> {
+	private final Class<? super T> type;
+	private final Mode mode;
+	private final @Nullable Object passValue;
+	private final int threadedParam;
+	private final Function<T[], T> implementation;
+
+	private Combine(Class<? super T> type, Mode mode, @Nullable Object passValue, int threadedParam) {
+		this.type = Objects.requireNonNull(type, "Tried to create a Combine for a null listener type!");
+		this.mode = mode;
+		this.passValue = passValue;
+		this.threadedParam = threadedParam;
+		this.implementation = EventFactoryImpl.combinedInvokerFactory(this);
+	}
+
 	/**
 	 * Call every listener in registration (and phase) order. For listener methods returning {@code void}.
 	 *
 	 * <pre>{@code
 	 * for (Listener listener : listeners) listener.call(args);
 	 * }</pre>
+	 *
+	 * @param type The listener interface.
+	 * @param <T>  The listener type.
+	 * @return the invoker factory
 	 */
-	public static final Combine CALL_ALL = new Combine(Mode.VOID, null, -1);
+	public static <T> Combine<T> callAll(Class<? super T> type) {
+		return new Combine<>(type, Mode.VOID, null, -1);
+	}
 
 	/**
 	 * Call the listeners in order until one returns {@code false}, which is returned.
@@ -52,8 +87,14 @@ public final class Combine {
 	 * }
 	 * return true;
 	 * }</pre>
+	 *
+	 * @param type The listener interface.
+	 * @param <T>  The listener type.
+	 * @return the invoker factory
 	 */
-	public static final Combine STOP_AT_FALSE = new Combine(Mode.SHORT_CIRCUIT, Boolean.TRUE, -1);
+	public static <T> Combine<T> stopAtFalse(Class<? super T> type) {
+		return new Combine<>(type, Mode.SHORT_CIRCUIT, Boolean.TRUE, -1);
+	}
 
 	/**
 	 * Call the listeners in order until one returns {@code true}, which is returned.
@@ -66,12 +107,18 @@ public final class Combine {
 	 * }
 	 * return false;
 	 * }</pre>
+	 *
+	 * @param type The listener interface.
+	 * @param <T>  The listener type.
+	 * @return the invoker factory
 	 */
-	public static final Combine STOP_AT_TRUE = new Combine(Mode.SHORT_CIRCUIT, Boolean.FALSE, -1);
+	public static <T> Combine<T> stopAtTrue(Class<? super T> type) {
+		return new Combine<>(type, Mode.SHORT_CIRCUIT, Boolean.FALSE, -1);
+	}
 
 	/**
 	 * Call <b>every</b> listener, and return whether all of them returned {@code true}
-	 * ({@code true} if there are none). Unlike {@link #STOP_AT_FALSE}, listeners are still called after one returned {@code false}.
+	 * ({@code true} if there are none). Unlike {@link #stopAtFalse}, listeners are still called after one returned {@code false}.
 	 * For listener methods returning {@code boolean}.
 	 *
 	 * <pre>{@code
@@ -79,8 +126,14 @@ public final class Combine {
 	 * for (Listener listener : listeners) result &= listener.call(args);
 	 * return result;
 	 * }</pre>
+	 *
+	 * @param type The listener interface.
+	 * @param <T>  The listener type.
+	 * @return the invoker factory
 	 */
-	public static final Combine ALL_TRUE = new Combine(Mode.ALL_MATCH, null, -1);
+	public static <T> Combine<T> allTrue(Class<? super T> type) {
+		return new Combine<>(type, Mode.ALL_MATCH, null, -1);
+	}
 
 	/**
 	 * Call the listeners in order until one returns something other than {@code null}, which is returned.
@@ -94,17 +147,13 @@ public final class Combine {
 	 * }
 	 * return null;
 	 * }</pre>
+	 *
+	 * @param type The listener interface.
+	 * @param <T>  The listener type.
+	 * @return the invoker factory
 	 */
-	public static final Combine FIRST_NON_NULL = new Combine(Mode.SHORT_CIRCUIT, null, -1);
-
-	private final Mode mode;
-	private final @Nullable Object passValue;
-	private final int threadedParam;
-
-	private Combine(Mode mode, @Nullable Object passValue, int threadedParam) {
-		this.mode = mode;
-		this.passValue = passValue;
-		this.threadedParam = threadedParam;
+	public static <T> Combine<T> firstNonNull(Class<? super T> type) {
+		return new Combine<>(type, Mode.SHORT_CIRCUIT, null, -1);
 	}
 
 	/**
@@ -121,11 +170,13 @@ public final class Combine {
 	 * return passValue;
 	 * }</pre>
 	 *
+	 * @param type      The listener interface.
 	 * @param passValue The result that lets the next listener run.
-	 * @return the combination
+	 * @param <T>       The listener type.
+	 * @return the invoker factory
 	 */
-	public static Combine firstOtherThan(@Nullable Object passValue) {
-		return passValue == null ? FIRST_NON_NULL : new Combine(Mode.SHORT_CIRCUIT, passValue, -1);
+	public static <T> Combine<T> firstOtherThan(Class<? super T> type, @Nullable Object passValue) {
+		return new Combine<>(type, Mode.SHORT_CIRCUIT, passValue, -1);
 	}
 
 	/**
@@ -138,12 +189,22 @@ public final class Combine {
 	 * return value;
 	 * }</pre>
 	 *
+	 * @param type          The listener interface.
 	 * @param threadedParam The index of the parameter that receives the previous result, starting at 0.
-	 * @return the combination
+	 * @param <T>           The listener type.
+	 * @return the invoker factory
 	 */
-	public static Combine chain(int threadedParam) {
+	public static <T> Combine<T> chain(Class<? super T> type, int threadedParam) {
 		if (threadedParam < 0) throw new IllegalArgumentException("Negative parameter index: " + threadedParam);
-		return new Combine(Mode.CHAIN, null, threadedParam);
+		return new Combine<>(type, Mode.CHAIN, null, threadedParam);
+	}
+
+	/**
+	 * Combines the given listeners into one invoker: the single listener itself, or a generated invoker that calls all of them.
+	 */
+	@Override
+	public T apply(T[] listeners) {
+		return implementation.apply(listeners);
 	}
 
 	/**
@@ -155,6 +216,11 @@ public final class Combine {
 		SHORT_CIRCUIT,
 		ALL_MATCH,
 		CHAIN
+	}
+
+	@ApiStatus.Internal
+	public Class<? super T> type() {
+		return type;
 	}
 
 	@ApiStatus.Internal
@@ -170,5 +236,10 @@ public final class Combine {
 	@ApiStatus.Internal
 	public int threadedParam() {
 		return threadedParam;
+	}
+
+	@ApiStatus.Internal
+	public Function<T[], T> implementation() {
+		return implementation;
 	}
 }

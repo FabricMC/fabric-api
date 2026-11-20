@@ -43,7 +43,7 @@ public class EventDelegatingTest {
 	}
 
 	private static Event<Callback> create() {
-		return EventFactory.createArrayBacked(Callback.class, Combine.CALL_ALL);
+		return EventFactory.createArrayBacked(Callback.class, Combine.callAll(Callback.class));
 	}
 
 	private static Callback tag(String s) {
@@ -144,6 +144,27 @@ public class EventDelegatingTest {
 	}
 
 	@Test
+	void combineIsAlsoAPlainInvokerFactory() {
+		Combine<Returning> combine = Combine.stopAtFalse(Returning.class);
+		List<String> out = new ArrayList<>();
+		Returning allow = o -> o.add("allow");
+		Returning deny = o -> !o.add("deny");
+
+		assertEquals(true, combine.apply(new Returning[0]).run(out));
+		assertSame(allow, combine.apply(new Returning[] {allow}));
+		assertEquals(false, combine.apply(new Returning[] {allow, deny, allow}).run(out));
+		assertEquals(List.of("allow", "deny"), out);
+
+		// One Combine can be shared by several events.
+		Event<Returning> first = EventFactory.createArrayBacked(Returning.class, combine);
+		Event<Returning> second = EventFactory.createWithPhases(Returning.class, combine, Event.DEFAULT_PHASE);
+		first.register(deny);
+		second.register(allow);
+		assertEquals(false, first.invoker().run(new ArrayList<>()));
+		assertEquals(true, second.invoker().run(new ArrayList<>()));
+	}
+
+	@Test
 	void exceptionStopsLaterListeners() {
 		Event<Callback> e = create();
 		List<String> out = new ArrayList<>();
@@ -167,7 +188,7 @@ public class EventDelegatingTest {
 
 	@Test
 	void booleanShortCircuitStopsAtFirstFalse() {
-		Event<Returning> e = EventFactory.createArrayBacked(Returning.class, Combine.STOP_AT_FALSE);
+		Event<Returning> e = EventFactory.createArrayBacked(Returning.class, Combine.stopAtFalse(Returning.class));
 		List<String> out = new ArrayList<>();
 		e.register(o -> {
 			o.add("a");

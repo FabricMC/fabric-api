@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.base.event;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.classfile.ClassFile;
 import java.lang.classfile.TypeKind;
 import java.lang.constant.ClassDesc;
@@ -40,19 +42,16 @@ import org.jspecify.annotations.Nullable;
  * a call site as a constant, and inlines it into the code that fires the event, with a dependency that
  * recompiles that code if the target ever changes.
  *
- * <p>The event itself is an instance of a hidden subclass of {@link ArrayBackedEvent}, which holds {@link #object}
- * in a final field and returns it from {@code invoker()}. The JIT trusts final fields of hidden classes, so when
- * the event is stored in a {@code static final} field, {@code invoker()} is folded to the constant stable invoker.
- * That class is defined once, and shared by all events.
+ * <p>The event itself is an instance of {@link StableArrayBackedEvent}, defined again as a hidden class, which holds
+ * {@link #object} in a final field and returns it from {@code invoker()}. The JIT trusts final fields of hidden classes,
+ * so when the event is stored in a {@code static final} field, {@code invoker()} is folded to the constant stable invoker.
+ * That hidden class is defined once, and shared by all events.
  *
  * <p>Public only because the generated classes, which live in the package of the listener interface,
  * call {@link #bootstrap}.
  */
 public final class StableInvoker<T> {
-	private static final String PACKAGE = StableInvoker.class.getPackageName();
 	private static final ClassDesc SELF = ClassDesc.of(StableInvoker.class.getName());
-	private static final ClassDesc EVENT = ClassDesc.of(PACKAGE, "ArrayBackedEvent");
-	private static final ClassDesc STABLE_EVENT = ClassDesc.of(PACKAGE, "FabricEvent$Stable");
 	private static final MethodHandle STABLE_EVENT_CONSTRUCTOR = defineStableEventClass();
 
 	/**
@@ -195,39 +194,15 @@ public final class StableInvoker<T> {
 	}
 
 	/**
-	 * Defines the hidden subclass of {@link ArrayBackedEvent} that returns its stable invoker from {@code invoker()}.
+	 * Defines {@link StableArrayBackedEvent} again as a hidden class, from its own class file, so its final field is trusted.
 	 */
 	private static MethodHandle defineStableEventClass() {
-		ClassDesc function = ClassDesc.of(Function.class.getName());
+		try (InputStream in = StableInvoker.class.getResourceAsStream(StableArrayBackedEvent.class.getSimpleName() + ".class")) {
+			if (in == null) throw new IllegalStateException("Could not find the class file of " + StableArrayBackedEvent.class.getName());
 
-		byte[] bytes = ClassFile.of().build(STABLE_EVENT, cb -> {
-			cb.withSuperclass(EVENT);
-			cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
-			cb.withField("invokerObject", ConstantDescs.CD_Object, ClassFile.ACC_PRIVATE | ClassFile.ACC_FINAL);
-
-			cb.withMethodBody(ConstantDescs.INIT_NAME, MethodTypeDesc.of(ConstantDescs.CD_void, ConstantDescs.CD_Class, function, SELF, ConstantDescs.CD_Object), ClassFile.ACC_PUBLIC, code -> {
-				code.aload(0);
-				code.aload(1);
-				code.aload(2);
-				code.aload(3);
-				code.invokespecial(EVENT, ConstantDescs.INIT_NAME, MethodTypeDesc.of(ConstantDescs.CD_void, ConstantDescs.CD_Class, function, SELF));
-				code.aload(0);
-				code.aload(4);
-				code.putfield(STABLE_EVENT, "invokerObject", ConstantDescs.CD_Object);
-				code.return_();
-			});
-
-			cb.withMethodBody("invoker", MethodTypeDesc.of(ConstantDescs.CD_Object), ClassFile.ACC_PUBLIC, code -> {
-				code.aload(0);
-				code.getfield(STABLE_EVENT, "invokerObject", ConstantDescs.CD_Object);
-				code.areturn();
-			});
-		});
-
-		try {
-			MethodHandles.Lookup hidden = MethodHandles.lookup().defineHiddenClass(bytes, true);
+			MethodHandles.Lookup hidden = MethodHandles.lookup().defineHiddenClass(in.readAllBytes(), true);
 			return hidden.findConstructor(hidden.lookupClass(), MethodType.methodType(void.class, Class.class, Function.class, StableInvoker.class, Object.class));
-		} catch (ReflectiveOperationException e) {
+		} catch (IOException | ReflectiveOperationException e) {
 			throw new IllegalStateException("Could not define the class of events with a stable invoker", e);
 		}
 	}

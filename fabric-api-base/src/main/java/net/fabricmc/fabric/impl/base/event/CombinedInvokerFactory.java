@@ -100,7 +100,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	final MethodHandles.Lookup lookup;
 	private boolean unrolledBroken;
 
-	private CombinedInvokerFactory(Class<? super T> type, Method method, Combine combine, MethodHandles.Lookup lookup) {
+	private CombinedInvokerFactory(Class<? super T> type, Method method, Combine<T> combine, MethodHandles.Lookup lookup) {
 		this.type = type;
 		this.method = method;
 		this.mode = combine.mode();
@@ -114,7 +114,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 *
 	 * @throws IllegalArgumentException if the listener interface or the combination are invalid.
 	 */
-	static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Combine combine) {
+	static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Combine<T> combine) {
 		if (!type.isInterface()) throw new IllegalArgumentException(type.getName() + " is not an interface");
 
 		Method found = null;
@@ -136,17 +136,17 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		}
 	}
 
-	private static void validate(Class<?> type, Method method, Combine combine) {
+	private static void validate(Class<?> type, Method method, Combine<?> combine) {
 		Class<?> ret = method.getReturnType();
 		Class<?>[] params = method.getParameterTypes();
 		String where = type.getName() + "." + method.getName();
 
 		switch (combine.mode()) {
 			case VOID -> {
-				if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.CALL_ALL needs void");
+				if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.callAll needs void");
 			}
 			case ALL_MATCH -> {
-				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.ALL_TRUE needs boolean");
+				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.allTrue needs boolean");
 			}
 			case CHAIN -> {
 				int p = combine.threadedParam();
@@ -159,7 +159,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				Object pass = combine.passValue();
 
 				if (ret == boolean.class) {
-					if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use Combine.STOP_AT_FALSE or Combine.STOP_AT_TRUE");
+					if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use Combine.stopAtFalse or Combine.stopAtTrue");
 				} else if (ret.isPrimitive()) {
 					throw new IllegalArgumentException(where + " returns " + ret.getName() + ", which is not supported by this Combine");
 				} else if (pass != null && !ret.isInstance(pass)) {
