@@ -185,7 +185,6 @@ public class PermissionTestMod implements ModInitializer, PermissionEvents.OnReq
 		return 1;
 	}
 
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public @Nullable <T> T handlePermissionRequest(PermissionContext context, PermissionNode<T> permission) {
