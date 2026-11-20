@@ -104,7 +104,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 			this.invoker = invokerFactory.apply(current);
 		}
 
-		if (invokerFactory instanceof CombinedInvokerFactory<T> unrolled && current.length > 1) {
+		if (invokerFactory instanceof CombinedInvokerFactory<T> unrolled && current.length >= unrolled.minUnrolled()) {
 			scheduleUpgrade(unrolled, current);
 		}
 	}

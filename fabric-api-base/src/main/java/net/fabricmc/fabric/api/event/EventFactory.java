@@ -71,6 +71,31 @@ public final class EventFactory {
 	}
 
 	/**
+	 * What an event created with {@link #create(Class, Behavior, ExceptionHandling)} does when a listener throws.
+	 * Only {@link Exception}s are handled, including checked ones thrown by non-Java code; {@link Error}s always propagate.
+	 * A listener that threw is skipped: the remaining listeners are called and combined as if it had not been registered.
+	 */
+	public enum ExceptionHandling {
+		/**
+		 * The exception propagates to the caller of the invoker, and the remaining listeners are not called. The default.
+		 */
+		PROPAGATE,
+		/**
+		 * The exception is ignored.
+		 */
+		SUPPRESS,
+		/**
+		 * The exception is logged as an error.
+		 */
+		SUPPRESS_AND_LOG,
+		/**
+		 * Once the invoker is done, the first exception is rethrown, with the later ones
+		 * {@linkplain Throwable#addSuppressed(Throwable) added as suppressed}.
+		 */
+		ADD_SUPPRESSED
+	}
+
+	/**
 	 * Create an Event instance that calls every listener in order. For listener interfaces with a single {@code void} method.
 	 *
 	 * <p>Same as {@link #create(Class, Behavior) create(type, Behavior.INVOKE_ALL)}.
@@ -99,7 +124,21 @@ public final class EventFactory {
 	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
 	 */
 	public static <T> Event<T> create(Class<? super T> type, Behavior behavior) {
-		return EventFactoryImpl.create(type, behavior);
+		return create(type, behavior, ExceptionHandling.PROPAGATE);
+	}
+
+	/**
+	 * Like {@link #create(Class, Behavior)}, with a choice of what happens when a listener throws an exception.
+	 *
+	 * @param type       The listener interface.
+	 * @param behavior   How the listeners are called, and their results combined.
+	 * @param exceptions What happens when a listener throws an exception.
+	 * @param <T>        The listener type.
+	 * @return The Event instance.
+	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
+	 */
+	public static <T> Event<T> create(Class<? super T> type, Behavior behavior, ExceptionHandling exceptions) {
+		return EventFactoryImpl.create(type, behavior, exceptions);
 	}
 
 	/**

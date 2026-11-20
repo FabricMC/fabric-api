@@ -46,16 +46,16 @@ public final class EventFactoryImpl {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
 	}
 
-	public static <T> Event<T> create(Class<? super T> type, EventFactory.Behavior behavior) {
+	public static <T> Event<T> create(Class<? super T> type, EventFactory.Behavior behavior, EventFactory.ExceptionHandling exceptions) {
 		Objects.requireNonNull(behavior, "Tried to create an event with a null behavior!");
 
 		CombinedInvokerFactory<T> invokerFactory = switch (behavior) {
-			case INVOKE_ALL -> CombinedInvokerFactory.create(type, Mode.VOID, null, -1);
-			case FIRST_NON_NULL -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, null, -1);
-			case STOP_ON_FALSE -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, Boolean.TRUE, -1);
-			case STOP_ON_TRUE -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, Boolean.FALSE, -1);
-			case ALL_TRUE -> CombinedInvokerFactory.create(type, Mode.ALL_MATCH, null, -1);
-			case ANY_TRUE -> CombinedInvokerFactory.create(type, Mode.ANY_MATCH, null, -1);
+			case INVOKE_ALL -> CombinedInvokerFactory.create(type, Mode.VOID, null, -1, exceptions);
+			case FIRST_NON_NULL -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, null, -1, exceptions);
+			case STOP_ON_FALSE -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, Boolean.TRUE, -1, exceptions);
+			case STOP_ON_TRUE -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, Boolean.FALSE, -1, exceptions);
+			case ALL_TRUE -> CombinedInvokerFactory.create(type, Mode.ALL_MATCH, null, -1, exceptions);
+			case ANY_TRUE -> CombinedInvokerFactory.create(type, Mode.ANY_MATCH, null, -1, exceptions);
 		};
 
 		return createArrayBacked(type, invokerFactory);

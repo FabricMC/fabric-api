@@ -17,10 +17,13 @@
 package net.fabricmc.fabric.impl.base.event;
 
 import java.io.IOException;
+import java.lang.classfile.Attributes;
 import java.lang.classfile.ClassFile;
 import java.lang.classfile.CodeBuilder;
 import java.lang.classfile.Label;
+import java.lang.classfile.MethodModel;
 import java.lang.classfile.TypeKind;
+import java.lang.classfile.attribute.CodeAttribute;
 import java.lang.constant.ClassDesc;
 import java.lang.constant.ConstantDescs;
 import java.lang.constant.DynamicConstantDesc;
@@ -39,11 +42,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.event.EventFactory.ExceptionHandling;
 
 /**
  * The invoker factories of {@link net.fabricmc.fabric.api.event.EventFactory#create}, for listener interfaces with a single method.
@@ -61,7 +67,12 @@ import org.slf4j.LoggerFactory;
  *     so the JIT can inline it instead of going through a megamorphic interface dispatch.</li>
  * </ul>
  *
- * <p>With a single listener, all combinations are equivalent to calling it directly, so it is used as the invoker.
+ * <p>With a single listener, all combinations are equivalent to calling it directly, so it is used as the invoker,
+ * unless its exceptions are handled.
+ *
+ * <p>Unless exceptions {@linkplain ExceptionHandling#PROPAGATE propagate}, every listener call is wrapped in its own
+ * {@code try}/{@code catch (Exception)}, and a listener that throws is skipped as if it had returned the pass value.
+ * The handler costs nothing while no listener throws, it is only an entry in the exception table of the method.
  *
  * <p>Generating an unrolled class is far too slow for registration, so {@link #apply} never returns one.
  * {@link ArrayBackedEvent} asks for it separately via {@link #generateUnrolled}, off-thread.
@@ -79,10 +90,14 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	}
 
 	/**
-	 * The most listeners that get an unrolled invoker. The JIT does not compile methods above 8000 bytecodes,
-	 * and every listener takes at most about 50 of them. Throughput of both falls steeply past about 32 listeners anyway.
+	 * The most listeners that get an unrolled invoker. Throughput of both kinds of invokers falls steeply past about 32 listeners anyway.
 	 */
 	static final int MAX_UNROLLED = 128;
+	/**
+	 * The JIT does not compile methods with more bytecode than this ({@code -XX:-DontCompileHugeMethods}).
+	 * An unrolled invoker that would be larger, because of many listeners with many parameters or exception handlers, is not used.
+	 */
+	private static final int HUGE_METHOD_LIMIT = 8000;
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
 	private static final @Nullable Path DUMP_DIR = System.getProperty("fabric.event.dumpInvokers") != null
 			? Path.of(System.getProperty("fabric.event.dumpInvokers")) : null;
@@ -107,15 +122,17 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	private final Mode mode;
 	private final @Nullable Object passValue;
 	private final int threadedParam;
+	private final ExceptionHandling exceptions;
 	final MethodHandles.Lookup lookup;
 	private boolean unrolledBroken;
 
-	private CombinedInvokerFactory(Class<? super T> type, Method method, Mode mode, @Nullable Object passValue, int threadedParam, MethodHandles.Lookup lookup) {
+	private CombinedInvokerFactory(Class<? super T> type, Method method, Mode mode, @Nullable Object passValue, int threadedParam, ExceptionHandling exceptions, MethodHandles.Lookup lookup) {
 		this.type = type;
 		this.method = method;
 		this.mode = mode;
 		this.passValue = passValue;
 		this.threadedParam = threadedParam;
+		this.exceptions = exceptions;
 		this.lookup = lookup;
 	}
 
@@ -125,7 +142,18 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 * @throws IllegalArgumentException if the listener interface or the combination are invalid.
 	 */
 	public static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Mode mode, @Nullable Object passValue, int threadedParam) {
+		return create(type, mode, passValue, threadedParam, ExceptionHandling.PROPAGATE);
+	}
+
+	/**
+	 * Create the invoker factory of an event.
+	 *
+	 * @param exceptions what happens when a listener throws an exception.
+	 * @throws IllegalArgumentException if the listener interface or the combination are invalid.
+	 */
+	public static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Mode mode, @Nullable Object passValue, int threadedParam, ExceptionHandling exceptions) {
 		Objects.requireNonNull(type, "Tried to create an invoker factory for a null listener type!");
+		Objects.requireNonNull(exceptions, "Tried to create an invoker factory with a null exception handling!");
 		if (!type.isInterface()) throw new IllegalArgumentException(type.getName() + " is not an interface");
 
 		Method found = null;
@@ -141,7 +169,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		validate(type, found, mode, passValue, threadedParam);
 
 		try {
-			return new CombinedInvokerFactory<>(type, found, mode, passValue, threadedParam, MethodHandles.privateLookupIn(type, MethodHandles.lookup()));
+			return new CombinedInvokerFactory<>(type, found, mode, passValue, threadedParam, exceptions, MethodHandles.privateLookupIn(type, MethodHandles.lookup()));
 		} catch (IllegalAccessException | RuntimeException e) {
 			throw new IllegalArgumentException(type.getName() + " is not accessible to Fabric API, for example because its module does not open its package", e);
 		}
@@ -187,9 +215,32 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public T apply(T[] listeners) {
-		if (listeners.length == 1) return listeners[0];
+		if (listeners.length == 1 && passesSingleListener()) return listeners[0];
 
 		return newLoop(listeners);
+	}
+
+	/**
+	 * Whether a single listener can be its own invoker. Not when its exceptions are handled.
+	 */
+	boolean passesSingleListener() {
+		return exceptions == ExceptionHandling.PROPAGATE;
+	}
+
+	/**
+	 * The fewest listeners that get an unrolled invoker.
+	 */
+	int minUnrolled() {
+		return passesSingleListener() ? 2 : 1;
+	}
+
+	/**
+	 * Called by the generated invokers of events that catch exceptions, when a listener threw one.
+	 * Only called from generated bytecode (see {@code callListener}), so it looks unused to the IDE.
+	 */
+	@SuppressWarnings("unused")
+	public static void listenerFailed(Throwable t, Object listener, String event) {
+		LOGGER.error("A listener of {} threw an exception, skipping it: {}", event, listener, t);
 	}
 
 	/**
@@ -237,10 +288,14 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	@Nullable
 	T generateUnrolled(T[] listeners) {
 		int n = listeners.length;
-		if (n < 2 || n > MAX_UNROLLED || unrolledBroken) return null;
+		if (n < minUnrolled() || n > MAX_UNROLLED || unrolledBroken) return null;
 
 		try {
 			byte[] bytes = generateUnrolledBytes(n);
+
+			if (listenerMethodSize(bytes) > HUGE_METHOD_LIMIT) {
+				return null; // would never be compiled, the loop is faster
+			}
 
 			if (DUMP_DIR != null) {
 				dump(bytes, "Unrolled" + n);
@@ -263,6 +318,19 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		}
 	}
 
+	/**
+	 * The bytecode size of the listener method of a generated class.
+	 */
+	private int listenerMethodSize(byte[] bytes) {
+		for (MethodModel m : ClassFile.of().parse(bytes).methods()) {
+			if (m.methodName().equalsString(method.getName())) {
+				return m.findAttribute(Attributes.code()).map(CodeAttribute::codeLength).orElse(0);
+			}
+		}
+
+		return 0;
+	}
+
 	// ---- Class generation ----
 
 	private boolean storesPass() {
@@ -274,7 +342,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 */
 	private String loopKey() {
 		String pass = !(mode == Mode.SHORT_CIRCUIT) ? "" : passValue == null ? "null" : passValue instanceof Boolean b ? b.toString() : "ref";
-		return mode + "/" + threadedParam + "/" + pass;
+		return mode + "/" + threadedParam + "/" + pass + "/" + exceptions;
 	}
 
 	private ClassDesc listenerDesc() {
@@ -286,6 +354,11 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	}
 
 	private static final MethodTypeDesc CONSTRUCTOR_DESC = MethodTypeDesc.of(ConstantDescs.CD_void, ConstantDescs.CD_Object.arrayType(), ConstantDescs.CD_Object);
+	private static final ClassDesc CD_EXCEPTION = ClassDesc.of("java.lang.Exception");
+	private static final ClassDesc CD_THROWABLE = ClassDesc.of("java.lang.Throwable");
+	private static final ClassDesc CD_SELF = ClassDesc.of(CombinedInvokerFactory.class.getName());
+	private static final MethodTypeDesc LISTENER_FAILED_DESC = MethodTypeDesc.of(ConstantDescs.CD_void, CD_THROWABLE, ConstantDescs.CD_Object, ConstantDescs.CD_String);
+	private static final MethodTypeDesc ADD_SUPPRESSED_DESC = MethodTypeDesc.of(ConstantDescs.CD_void, CD_THROWABLE);
 
 	/**
 	 * What the combination does without listeners, as a constant method handle for the call site of a stable invoker.
@@ -342,6 +415,9 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			cb.withMethodBody(method.getName(), methodDesc(), ClassFile.ACC_PUBLIC, code -> {
 				int arraySlot = code.allocateLocal(TypeKind.REFERENCE);
 				int indexSlot = code.allocateLocal(TypeKind.INT);
+				int accSlot = accumulatorSlot(code);
+				int pendingSlot = pendingSlot(code);
+				List<Consumer<CodeBuilder>> handlers = new ArrayList<>();
 				Label top = code.newLabel();
 				Label end = code.newLabel();
 				Label early = code.newLabel();
@@ -351,11 +427,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.astore(arraySlot);
 				code.loadConstant(0);
 				code.istore(indexSlot);
-
-				if (mode == Mode.ALL_MATCH || mode == Mode.ANY_MATCH) {
-					// The result so far stays on the operand stack for the whole loop.
-					code.loadConstant(mode == Mode.ALL_MATCH ? 1 : 0);
-				}
+				startAccumulator(code, accSlot);
 
 				code.labelBinding(top);
 				code.iload(indexSlot);
@@ -363,23 +435,11 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.arraylength();
 				code.if_icmpge(end);
 
-				code.aload(arraySlot);
-				code.iload(indexSlot);
-				code.aaload();
-				loadParams(code);
-				code.invokeinterface(listener, method.getName(), methodDesc());
-
-				switch (mode) {
-					case VOID -> { }
-					case ALL_MATCH -> code.iand();
-					case ANY_MATCH -> code.ior();
-					case CHAIN -> code.storeLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
-					case SHORT_CIRCUIT -> {
-						code.dup();
-						branchIfNotPass(code, self, returnDesc, early, -1);
-						code.pop();
-					}
-				}
+				callListener(code, c -> {
+					c.aload(arraySlot);
+					c.iload(indexSlot);
+					c.aaload();
+				}, c -> combineResult(c, self, returnDesc, early, -1, accSlot), pendingSlot, handlers);
 
 				code.iinc(indexSlot, 1);
 				code.goto_(top);
@@ -387,18 +447,29 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.labelBinding(end);
 
 				switch (mode) {
-					case VOID -> code.return_();
-					case ALL_MATCH, ANY_MATCH -> code.ireturn();
+					case VOID -> {
+						rethrowPending(code, pendingSlot);
+						code.return_();
+					}
+					case ALL_MATCH, ANY_MATCH -> {
+						if (accSlot >= 0) code.iload(accSlot);
+						rethrowPending(code, pendingSlot);
+						code.ireturn();
+					}
 					case CHAIN -> {
 						code.loadLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
+						rethrowPending(code, pendingSlot);
 						code.return_(TypeKind.from(returnClass));
 					}
 					case SHORT_CIRCUIT -> {
 						pushPass(code, self, returnDesc, -1);
 						code.labelBinding(early);
+						rethrowPending(code, pendingSlot);
 						code.return_(TypeKind.from(returnClass));
 					}
 				}
+
+				emitHandlers(code, handlers);
 			});
 		});
 
@@ -435,60 +506,195 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			});
 
 			cb.withMethodBody(method.getName(), methodDesc(), ClassFile.ACC_PUBLIC, code -> {
+				int accSlot = accumulatorSlot(code);
+				int pendingSlot = pendingSlot(code);
+				List<Consumer<CodeBuilder>> handlers = new ArrayList<>();
+				Label done = code.newLabel();
+				startAccumulator(code, accSlot);
+
+				for (int i = 0; i < n; i++) {
+					int index = i;
+					callListener(code, c -> c.ldc(classDataConstant(listener, index)), c -> combineResult(c, self, returnDesc, done, n, accSlot), pendingSlot, handlers);
+				}
+
 				switch (mode) {
 					case VOID -> {
-						for (int i = 0; i < n; i++) {
-							invokeUnrolled(code, listener, i);
-						}
-
+						rethrowPending(code, pendingSlot);
 						code.return_();
 					}
 					case ALL_MATCH, ANY_MATCH -> {
-						boolean all = mode == Mode.ALL_MATCH;
-						code.loadConstant(all ? 1 : 0);
-
-						for (int i = 0; i < n; i++) {
-							invokeUnrolled(code, listener, i);
-
-							if (all) {
-								code.iand();
-							} else {
-								code.ior();
-							}
-						}
-
+						if (accSlot >= 0) code.iload(accSlot);
+						rethrowPending(code, pendingSlot);
 						code.ireturn();
 					}
 					case CHAIN -> {
 						TypeKind kind = TypeKind.from(returnClass);
-						int threadedSlot = code.parameterSlot(threadedParam);
-
-						for (int i = 0; i < n; i++) {
-							invokeUnrolled(code, listener, i);
-							code.storeLocal(kind, threadedSlot);
-						}
-
-						code.loadLocal(kind, threadedSlot);
+						code.loadLocal(kind, code.parameterSlot(threadedParam));
+						rethrowPending(code, pendingSlot);
 						code.return_(kind);
 					}
 					case SHORT_CIRCUIT -> {
-						Label done = code.newLabel();
-
-						for (int i = 0; i < n; i++) {
-							invokeUnrolled(code, listener, i);
-							code.dup();
-							branchIfNotPass(code, self, returnDesc, done, n);
-							code.pop();
-						}
-
 						// Every listener returned the pass value.
 						pushPass(code, self, returnDesc, n);
 						code.labelBinding(done);
+						rethrowPending(code, pendingSlot);
 						code.return_(TypeKind.from(returnClass));
 					}
 				}
+
+				emitHandlers(code, handlers);
 			});
 		});
+	}
+
+	/**
+	 * The local of the result so far of {@link Mode#ALL_MATCH} and {@link Mode#ANY_MATCH}, or -1 if it stays on the operand stack.
+	 * A thrown exception clears the operand stack, so it needs a local when exceptions are caught.
+	 */
+	private int accumulatorSlot(CodeBuilder code) {
+		return exceptions != ExceptionHandling.PROPAGATE && (mode == Mode.ALL_MATCH || mode == Mode.ANY_MATCH) ? code.allocateLocal(TypeKind.INT) : -1;
+	}
+
+	/**
+	 * The local of the exception to rethrow, initialized to {@code null}, or -1 unless exceptions are {@link ExceptionHandling#ADD_SUPPRESSED}.
+	 */
+	private int pendingSlot(CodeBuilder code) {
+		if (exceptions != ExceptionHandling.ADD_SUPPRESSED) return -1;
+
+		int slot = code.allocateLocal(TypeKind.REFERENCE);
+		code.aconst_null();
+		code.astore(slot);
+		return slot;
+	}
+
+	/**
+	 * Before a return: throws the pending exception, if any. The result to return stays on the stack.
+	 */
+	private static void rethrowPending(CodeBuilder code, int pendingSlot) {
+		if (pendingSlot < 0) return;
+
+		Label none = code.newLabel();
+		code.aload(pendingSlot);
+		code.ifnull(none);
+		code.aload(pendingSlot);
+		code.athrow();
+		code.labelBinding(none);
+	}
+
+	private void startAccumulator(CodeBuilder code, int accSlot) {
+		if (mode == Mode.ALL_MATCH || mode == Mode.ANY_MATCH) {
+			code.loadConstant(mode == Mode.ALL_MATCH ? 1 : 0);
+			if (accSlot >= 0) code.istore(accSlot);
+		}
+	}
+
+	/**
+	 * Calls a listener: pushes it with {@code loadListener}, then all arguments, invokes it,
+	 * and combines its result with {@code onResult}, which must leave the operand stack as it was before the call.
+	 *
+	 * <p>Unless exceptions propagate, the exception of a listener that throws is handled, and execution continues after {@code onResult}.
+	 * The handler is added to {@code handlers}, to be emitted after the end of the method by {@link #emitHandlers}:
+	 * the code of the listeners stays in one straight line, without jumps over the handlers.
+	 */
+	private void callListener(CodeBuilder code, Consumer<CodeBuilder> loadListener, Consumer<CodeBuilder> onResult, int pendingSlot, List<Consumer<CodeBuilder>> handlers) {
+		if (exceptions == ExceptionHandling.PROPAGATE) {
+			loadListener.accept(code);
+			loadParams(code);
+			code.invokeinterface(listenerDesc(), method.getName(), methodDesc());
+			onResult.accept(code);
+			return;
+		}
+
+		Label start = code.newLabel();
+		Label end = code.newLabel();
+		Label handler = code.newLabel();
+		Label next = code.newLabel();
+
+		code.labelBinding(start);
+		loadListener.accept(code);
+		loadParams(code);
+		code.invokeinterface(listenerDesc(), method.getName(), methodDesc());
+		code.labelBinding(end);
+		onResult.accept(code);
+		code.labelBinding(next);
+		code.exceptionCatch(start, end, handler, CD_EXCEPTION);
+
+		handlers.add(c -> {
+			// The exception is on the stack.
+			c.labelBinding(handler);
+
+			switch (exceptions) {
+				case PROPAGATE -> throw new AssertionError();
+				case SUPPRESS -> c.pop();
+				case SUPPRESS_AND_LOG -> {
+					loadListener.accept(c);
+					c.loadConstant(type.getName());
+					c.invokestatic(CD_SELF, "listenerFailed", LISTENER_FAILED_DESC);
+				}
+				case ADD_SUPPRESSED -> {
+					// if (pending == null) pending = e; else if (pending != e) pending.addSuppressed(e);
+					// The same instance can be thrown twice, for example the preallocated exceptions of the JIT,
+					// and suppressing an exception in itself is an IllegalArgumentException.
+					Label notFirst = c.newLabel();
+					Label same = c.newLabel();
+					c.aload(pendingSlot);
+					c.ifnonnull(notFirst);
+					c.astore(pendingSlot);
+					c.goto_(next);
+					c.labelBinding(notFirst);
+					c.dup();
+					c.aload(pendingSlot);
+					c.if_acmpeq(same);
+					c.aload(pendingSlot);
+					c.swap();
+					c.invokevirtual(CD_THROWABLE, "addSuppressed", ADD_SUPPRESSED_DESC);
+					c.goto_(next);
+					c.labelBinding(same);
+					c.pop();
+				}
+			}
+
+			c.goto_(next);
+		});
+	}
+
+	/**
+	 * Emits the exception handlers collected by {@link #callListener}. Only reached through the exception table.
+	 */
+	private static void emitHandlers(CodeBuilder code, List<Consumer<CodeBuilder>> handlers) {
+		for (Consumer<CodeBuilder> handler : handlers) {
+			handler.accept(code);
+		}
+	}
+
+	/**
+	 * Combines the result of a listener, on the stack, with the result so far.
+	 *
+	 * @param early     where a short-circuiting invoker jumps with the result to return.
+	 * @param passIndex the class data index of the pass value in an unrolled invoker, or -1 in a loop invoker.
+	 * @param accSlot   the local of the result so far of {@link Mode#ALL_MATCH} and {@link Mode#ANY_MATCH}, or -1 if it is on the stack.
+	 */
+	private void combineResult(CodeBuilder code, ClassDesc self, ClassDesc returnDesc, Label early, int passIndex, int accSlot) {
+		switch (mode) {
+			case VOID -> { }
+			case ALL_MATCH, ANY_MATCH -> {
+				if (accSlot >= 0) code.iload(accSlot);
+
+				if (mode == Mode.ALL_MATCH) {
+					code.iand();
+				} else {
+					code.ior();
+				}
+
+				if (accSlot >= 0) code.istore(accSlot);
+			}
+			case CHAIN -> code.storeLocal(TypeKind.from(method.getReturnType()), code.parameterSlot(threadedParam));
+			case SHORT_CIRCUIT -> {
+				code.dup();
+				branchIfNotPass(code, self, returnDesc, early, passIndex);
+				code.pop();
+			}
+		}
 	}
 
 	/**
@@ -536,15 +742,6 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 */
 	private static DynamicConstantDesc<?> classDataConstant(ClassDesc type, int index) {
 		return DynamicConstantDesc.ofNamed(ConstantDescs.BSM_CLASS_DATA_AT, ConstantDescs.DEFAULT_NAME, type, index);
-	}
-
-	/**
-	 * Pushes listener {@code i} of an unrolled invoker, all arguments, then calls the listener.
-	 */
-	private void invokeUnrolled(CodeBuilder code, ClassDesc listener, int i) {
-		code.ldc(classDataConstant(listener, i));
-		loadParams(code);
-		code.invokeinterface(listener, method.getName(), methodDesc());
 	}
 
 	private void loadParams(CodeBuilder code) {

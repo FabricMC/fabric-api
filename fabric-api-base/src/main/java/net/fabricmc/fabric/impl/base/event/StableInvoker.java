@@ -150,17 +150,25 @@ public final class StableInvoker<T> {
 					target(empty, null);
 				}
 			}
-			case 1 -> target(listeners[0]);
-			default -> {
-				if (loop == null) {
-					loop = factory.newLoop(listeners);
+			case 1 -> {
+				if (factory.passesSingleListener()) {
+					target(listeners[0]);
 				} else {
-					factory.setLoopListeners(loop, listeners);
+					targetLoop(listeners, factory);
 				}
-
-				target(loop);
 			}
+			default -> targetLoop(listeners, factory);
 		}
+	}
+
+	private void targetLoop(T[] listeners, CombinedInvokerFactory<T> factory) {
+		if (loop == null) {
+			loop = factory.newLoop(listeners);
+		} else {
+			factory.setLoopListeners(loop, listeners);
+		}
+
+		target(loop);
 	}
 
 	/**
