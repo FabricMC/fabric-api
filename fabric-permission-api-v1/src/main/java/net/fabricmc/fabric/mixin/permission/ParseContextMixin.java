@@ -24,9 +24,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.ParseContext;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.PermissionLevel;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.permission.v1.PermissionContext;
 import net.fabricmc.fabric.api.permission.v1.PermissionContextOwner;
+import net.fabricmc.fabric.impl.permission.CommandPermissionContext;
 import net.fabricmc.fabric.impl.permission.CustomPermissionContext;
 import net.fabricmc.fabric.impl.permission.ExtendedParseContext;
 
@@ -34,7 +37,8 @@ import net.fabricmc.fabric.impl.permission.ExtendedParseContext;
 interface ParseContextMixin extends PermissionContextOwner {
 	@Override
 	default PermissionContext getPermissionContext() {
-		return CustomPermissionContext.FALLBACK;
+		PermissionLevel level = CommandPermissionContext.extractPermissionLevel(((ParseContext) this).permissions());
+		return new CustomPermissionContext(Util.NIL_UUID, PermissionContext.Type.OTHER, level);
 	}
 
 	@ModifyReturnValue(method = "of(Lnet/minecraft/server/level/ServerPlayer;)Lnet/minecraft/commands/ParseContext;", at = @At("RETURN"))

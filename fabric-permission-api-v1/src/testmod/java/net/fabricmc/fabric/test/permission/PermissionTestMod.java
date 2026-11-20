@@ -143,6 +143,9 @@ public class PermissionTestMod implements ModInitializer, PermissionEvents.OnReq
 						literal("on_stone_command").requires(PermissionPredicates.require(ON_STONE, false)).executes(this::onStoneCommand)
 				)
 		);
+		dispatcher.register(literal("gamemaster_command")
+				.requires(PermissionPredicates.require(Identifier.fromNamespaceAndPath("fabric-permission-api-v1-testmod", "gamemaster_command"), PermissionLevel.GAMEMASTERS))
+				.executes(this::onGameMasterCommand));
 	}
 
 	private int setPermissionValue(CommandContext<CommandSourceStack> context) {
@@ -174,6 +177,11 @@ public class PermissionTestMod implements ModInitializer, PermissionEvents.OnReq
 
 	private int onStoneCommand(CommandContext<CommandSourceStack> context) {
 		context.getSource().sendSystemMessage(Component.literal("You got the stone permission"));
+		return 1;
+	}
+
+	private int onGameMasterCommand(CommandContext<CommandSourceStack> context) {
+		context.getSource().sendSystemMessage(Component.literal("gamemaster_command ran"));
 		return 1;
 	}
 
