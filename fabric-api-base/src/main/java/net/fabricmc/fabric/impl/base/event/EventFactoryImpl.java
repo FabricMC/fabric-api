@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.base.event;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -27,13 +28,15 @@ import com.google.common.collect.MapMaker;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.base.event.CombinedInvokerFactory.Mode;
 
 public final class EventFactoryImpl {
 	private static final Set<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS
 			= Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
 
 	/**
-	 * The most listeners for which the invoker of an event made with {@link net.fabricmc.fabric.api.event.EventInvokers} is unrolled. Meant for tests.
+	 * The most listeners for which the invoker of an event made with {@link EventFactory#create} is unrolled. Meant for tests.
 	 */
 	public static final int MAX_UNROLLED_LISTENERS = CombinedInvokerFactory.MAX_UNROLLED;
 
@@ -41,6 +44,21 @@ public final class EventFactoryImpl {
 
 	public static void invalidate() {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
+	}
+
+	public static <T> Event<T> create(Class<? super T> type, EventFactory.Behavior behavior) {
+		Objects.requireNonNull(behavior, "Tried to create an event with a null behavior!");
+
+		CombinedInvokerFactory<T> invokerFactory = switch (behavior) {
+			case INVOKE_ALL -> CombinedInvokerFactory.create(type, Mode.VOID, null, -1);
+			case FIRST_NON_NULL -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, null, -1);
+			case STOP_ON_FALSE -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, Boolean.TRUE, -1);
+			case STOP_ON_TRUE -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, Boolean.FALSE, -1);
+			case ALL_TRUE -> CombinedInvokerFactory.create(type, Mode.ALL_MATCH, null, -1);
+			case ANY_TRUE -> CombinedInvokerFactory.create(type, Mode.ANY_MATCH, null, -1);
+		};
+
+		return createArrayBacked(type, invokerFactory);
 	}
 
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {

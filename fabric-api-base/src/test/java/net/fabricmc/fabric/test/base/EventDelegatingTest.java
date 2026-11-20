@@ -31,7 +31,8 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.EventInvokers;
+import net.fabricmc.fabric.impl.base.event.CombinedInvokerFactory;
+import net.fabricmc.fabric.impl.base.event.CombinedInvokerFactory.Mode;
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
 public class EventDelegatingTest {
@@ -44,7 +45,7 @@ public class EventDelegatingTest {
 	}
 
 	private static Event<Callback> create() {
-		return EventFactory.createArrayBacked(Callback.class, EventInvokers.callAll(Callback.class));
+		return EventFactory.create(Callback.class);
 	}
 
 	private static Callback tag(String s) {
@@ -145,8 +146,19 @@ public class EventDelegatingTest {
 	}
 
 	@Test
-	void eventInvokersAreAlsoPlainInvokerFactories() {
-		Function<Returning[], Returning> invokers = EventInvokers.stopAtFalse(Returning.class);
+	void createWithBehaviorAndPhases() {
+		Identifier early = Identifier.fromNamespaceAndPath("test", "early");
+		Event<Returning> e = EventFactory.createWithPhases(Returning.class, EventFactory.Behavior.STOP_ON_FALSE, early, Event.DEFAULT_PHASE);
+		List<String> out = new ArrayList<>();
+		e.register(o -> !o.add("default"));
+		e.register(early, o -> o.add("early"));
+		assertEquals(false, e.invoker().run(out));
+		assertEquals(List.of("early", "default"), out);
+	}
+
+	@Test
+	void generatedInvokerFactoryWorksOnItsOwn() {
+		Function<Returning[], Returning> invokers = CombinedInvokerFactory.create(Returning.class, Mode.SHORT_CIRCUIT, Boolean.TRUE, -1);
 		List<String> out = new ArrayList<>();
 		Returning allow = o -> o.add("allow");
 		Returning deny = o -> !o.add("deny");
@@ -189,7 +201,7 @@ public class EventDelegatingTest {
 
 	@Test
 	void booleanShortCircuitStopsAtFirstFalse() {
-		Event<Returning> e = EventFactory.createArrayBacked(Returning.class, EventInvokers.stopAtFalse(Returning.class));
+		Event<Returning> e = EventFactory.create(Returning.class, EventFactory.Behavior.STOP_ON_FALSE);
 		List<String> out = new ArrayList<>();
 		e.register(o -> {
 			o.add("a");

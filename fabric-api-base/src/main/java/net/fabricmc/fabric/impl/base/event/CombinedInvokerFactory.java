@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The invoker factories of {@link net.fabricmc.fabric.api.event.EventInvokers}, for listener interfaces with a single method.
+ * The invoker factories of {@link net.fabricmc.fabric.api.event.EventFactory#create}, for listener interfaces with a single method.
  * The {@link Mode} is the only definition of how the listener results are combined,
  * every kind of invoker below is generated from it.
  *
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	/**
-	 * How the results of the listeners are combined, see {@link net.fabricmc.fabric.api.event.EventInvokers}.
+	 * How the results of the listeners are combined, see {@link net.fabricmc.fabric.api.event.EventFactory.Behavior}.
 	 */
 	public enum Mode {
 		VOID,
@@ -154,24 +154,24 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 		switch (mode) {
 			case VOID -> {
-				if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but EventInvokers.callAll needs void");
+				if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but INVOKE_ALL needs void");
 			}
 			case ALL_MATCH -> {
-				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but EventInvokers.allTrue needs boolean");
+				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but ALL_TRUE needs boolean");
 			}
 			case ANY_MATCH -> {
-				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but EventInvokers.anyTrue needs boolean");
+				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but ANY_TRUE needs boolean");
 			}
 			case CHAIN -> {
 				int p = threadedParam;
 
 				if (ret == void.class || p < 0 || p >= params.length || params[p] != ret) {
-					throw new IllegalArgumentException(where + " needs a parameter " + p + " of its return type " + ret.getName() + " for EventInvokers.chain");
+					throw new IllegalArgumentException(where + " needs a parameter " + p + " of its return type " + ret.getName() + " to chain the listeners");
 				}
 			}
 			case SHORT_CIRCUIT -> {
 				if (ret == boolean.class) {
-					if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use EventInvokers.stopAtFalse or EventInvokers.stopAtTrue");
+					if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use STOP_ON_FALSE or STOP_ON_TRUE");
 				} else if (ret.isPrimitive()) {
 					throw new IllegalArgumentException(where + " returns " + ret.getName() + ", which is not supported by this invoker factory");
 				} else if (pass != null && !ret.isInstance(pass)) {

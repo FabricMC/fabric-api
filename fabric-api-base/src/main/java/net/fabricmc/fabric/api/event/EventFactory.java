@@ -29,11 +29,85 @@ public final class EventFactory {
 	private EventFactory() { }
 
 	/**
+	 * How the listeners of an event created with {@link #create(Class, Behavior)} are called, and their results combined.
+	 * Fabric API generates the invoker from the behavior and the method of the listener interface,
+	 * which must be the only abstract one.
+	 */
+	public enum Behavior {
+		/**
+		 * Call every listener in order. For listener methods returning {@code void}.
+		 */
+		INVOKE_ALL,
+		/**
+		 * Call the listeners in order until one returns something other than {@code null}, which is returned.
+		 * Returns {@code null} if all listeners returned {@code null}, or if there are none.
+		 * For listener methods returning a reference type.
+		 */
+		FIRST_NON_NULL,
+		/**
+		 * Call the listeners in order until one returns {@code false}, which is returned.
+		 * Returns {@code true} if all listeners returned {@code true}, or if there are none.
+		 * For listener methods returning {@code boolean}, typically "allow" events.
+		 */
+		STOP_ON_FALSE,
+		/**
+		 * Call the listeners in order until one returns {@code true}, which is returned.
+		 * Returns {@code false} if all listeners returned {@code false}, or if there are none.
+		 * For listener methods returning {@code boolean}, typically "cancel" or "handled" events.
+		 */
+		STOP_ON_TRUE,
+		/**
+		 * Call <b>every</b> listener, and return whether all of them returned {@code true} ({@code true} if there are none).
+		 * Unlike {@link #STOP_ON_FALSE}, listeners are still called after one returned {@code false}.
+		 * For listener methods returning {@code boolean}.
+		 */
+		ALL_TRUE,
+		/**
+		 * Call <b>every</b> listener, and return whether any of them returned {@code true} ({@code false} if there are none).
+		 * Unlike {@link #STOP_ON_TRUE}, listeners are still called after one returned {@code true}.
+		 * For listener methods returning {@code boolean}.
+		 */
+		ANY_TRUE
+	}
+
+	/**
+	 * Create an Event instance that calls every listener in order. For listener interfaces with a single {@code void} method.
+	 *
+	 * <p>Same as {@link #create(Class, Behavior) create(type, Behavior.INVOKE_ALL)}.
+	 *
+	 * @param type The listener interface.
+	 * @param <T>  The listener type.
+	 * @return The Event instance.
+	 * @throws IllegalArgumentException if the listener interface does not have a single abstract {@code void} method, or is not accessible to Fabric API.
+	 */
+	public static <T> Event<T> create(Class<? super T> type) {
+		return create(type, Behavior.INVOKE_ALL);
+	}
+
+	/**
+	 * Create an Event instance whose listeners are called and combined as described by the {@code behavior}.
+	 * For listener interfaces with a single abstract method.
+	 *
+	 * <p>Fabric API generates the invoker, and replaces it with one that calls each listener from its own call site,
+	 * which the JIT can inline, once listeners are registered. Use {@link #createArrayBacked(Class, Function)}
+	 * for anything that does not fit one of the behaviors.
+	 *
+	 * @param type     The listener interface.
+	 * @param behavior How the listeners are called, and their results combined.
+	 * @param <T>      The listener type.
+	 * @return The Event instance.
+	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
+	 */
+	public static <T> Event<T> create(Class<? super T> type, Behavior behavior) {
+		return EventFactoryImpl.create(type, behavior);
+	}
+
+	/**
 	 * Create an "array-backed" Event instance.
 	 *
-	 * <p>If your factory only combines the listeners in a common way, like calling all of them or stopping at the first
-	 * {@code false}, use one of the {@link EventInvokers} as the invoker factory: Fabric API then generates
-	 * an invoker that is several times faster when there are several listeners.
+	 * <p>If the listeners are only combined in a common way, like calling all of them or stopping at the first
+	 * {@code false}, use {@link #create(Class, Behavior)} instead: Fabric API then generates an invoker
+	 * that is several times faster when there are several listeners.
 	 *
 	 * @param type           The listener class type.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
@@ -102,6 +176,25 @@ public final class EventFactory {
 
 		Event<T> event = createArrayBacked(type, invokerFactory);
 
+		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
+		return event;
+	}
+
+	/**
+	 * Like {@link #createWithPhases(Class, Function, Identifier...)}, for an event created like {@link #create(Class, Behavior)}.
+	 *
+	 * @param type          The listener interface.
+	 * @param behavior      How the listeners are called, and their results combined.
+	 * @param defaultPhases The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
+	 * @param <T>           The listener type.
+	 * @return The Event instance.
+	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
+	 */
+	public static <T> Event<T> createWithPhases(Class<? super T> type, Behavior behavior, Identifier... defaultPhases) {
+		EventFactoryImpl.ensureContainsDefault(defaultPhases);
+		EventFactoryImpl.ensureNoDuplicates(defaultPhases);
+
+		Event<T> event = create(type, behavior);
 		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
 		return event;
 	}
