@@ -296,13 +296,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		ClassDesc array = listener.arrayType();
 		ClassDesc returnDesc = method.getReturnType().describeConstable().orElseThrow();
 		boolean storePass = storesPass();
-		Class<?>[] params = method.getParameterTypes();
 		Class<?> returnClass = method.getReturnType();
-
-		int firstFree = slotOf(params.length);
-		int arraySlot = firstFree;
-		int indexSlot = firstFree + 1;
-		int accSlot = firstFree + 2;
 
 		byte[] bytes = ClassFile.of().build(self, cb -> {
 			cb.withFlags(ClassFile.ACC_FINAL | ClassFile.ACC_SYNTHETIC);
@@ -333,6 +327,9 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			});
 
 			cb.withMethodBody(method.getName(), methodDesc(), ClassFile.ACC_PUBLIC, code -> {
+				int arraySlot = code.allocateLocal(TypeKind.REFERENCE);
+				int indexSlot = code.allocateLocal(TypeKind.INT);
+				int accSlot = mode == Combine.Mode.ALL_MATCH ? code.allocateLocal(TypeKind.INT) : -1;
 				Label top = code.newLabel();
 				Label end = code.newLabel();
 				Label early = code.newLabel();
@@ -367,7 +364,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 					code.iand();
 					code.istore(accSlot);
 				}
-				case CHAIN -> code.storeLocal(TypeKind.from(returnClass), slotOf(threadedParam));
+				case CHAIN -> code.storeLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
 				case SHORT_CIRCUIT -> {
 					code.dup();
 					branchIfNotPass(code, self, returnDesc, early, -1);
@@ -387,7 +384,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 					code.ireturn();
 				}
 				case CHAIN -> {
-					code.loadLocal(TypeKind.from(returnClass), slotOf(threadedParam));
+					code.loadLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
 					code.return_(TypeKind.from(returnClass));
 				}
 				case SHORT_CIRCUIT -> {
@@ -452,7 +449,7 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				}
 				case CHAIN -> {
 					TypeKind kind = TypeKind.from(returnClass);
-					int threadedSlot = slotOf(threadedParam);
+					int threadedSlot = code.parameterSlot(threadedParam);
 
 					for (int i = 0; i < n; i++) {
 						invokeUnrolled(code, listener, i);
@@ -546,27 +543,9 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 * Loads the parameters of an instance method with the given parameter types onto the stack.
 	 */
 	static void loadParams(CodeBuilder code, Class<?>[] params) {
-		int slot = 1;
-
-		for (Class<?> param : params) {
-			TypeKind kind = TypeKind.from(param);
-			code.loadLocal(kind, slot);
-			slot += kind.slotSize();
+		for (int i = 0; i < params.length; i++) {
+			code.loadLocal(TypeKind.from(params[i]), code.parameterSlot(i));
 		}
-	}
-
-	/**
-	 * Local variable slot of a method parameter, or the first free slot after the last parameter.
-	 */
-	private int slotOf(int paramIndex) {
-		int slot = 1;
-		Class<?>[] params = method.getParameterTypes();
-
-		for (int i = 0; i < paramIndex; i++) {
-			slot += TypeKind.from(params[i]).slotSize();
-		}
-
-		return slot;
 	}
 
 	/**
