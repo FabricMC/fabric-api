@@ -1,0 +1,1 @@
+gamemaster_command
