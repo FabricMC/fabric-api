@@ -142,21 +142,21 @@ public final class StableInvoker<T> {
 	 */
 	void update(T[] listeners, CombinedInvokerFactory<T> factory) {
 		switch (listeners.length) {
-		case 0 -> {
-			if (current != null || retargets == 0) {
-				target(empty, null);
+			case 0 -> {
+				if (current != null || retargets == 0) {
+					target(empty, null);
+				}
 			}
-		}
-		case 1 -> target(listeners[0]);
-		default -> {
-			if (loop == null) {
-				loop = factory.newLoop(listeners);
-			} else {
-				factory.setLoopListeners(loop, listeners);
-			}
+			case 1 -> target(listeners[0]);
+			default -> {
+				if (loop == null) {
+					loop = factory.newLoop(listeners);
+				} else {
+					factory.setLoopListeners(loop, listeners);
+				}
 
-			target(loop);
-		}
+				target(loop);
+			}
 		}
 	}
 

@@ -142,30 +142,30 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		String where = type.getName() + "." + method.getName();
 
 		switch (combine.mode()) {
-		case VOID -> {
-			if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.CALL_ALL needs void");
-		}
-		case ALL_MATCH -> {
-			if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.ALL_TRUE needs boolean");
-		}
-		case CHAIN -> {
-			int p = combine.threadedParam();
-
-			if (ret == void.class || p >= params.length || params[p] != ret) {
-				throw new IllegalArgumentException(where + " needs a parameter " + p + " of its return type " + ret.getName() + " for Combine.chain");
+			case VOID -> {
+				if (ret != void.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.CALL_ALL needs void");
 			}
-		}
-		case SHORT_CIRCUIT -> {
-			Object pass = combine.passValue();
-
-			if (ret == boolean.class) {
-				if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use Combine.STOP_AT_FALSE or Combine.STOP_AT_TRUE");
-			} else if (ret.isPrimitive()) {
-				throw new IllegalArgumentException(where + " returns " + ret.getName() + ", which is not supported by this Combine");
-			} else if (pass != null && !ret.isInstance(pass)) {
-				throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but the pass value is a " + pass.getClass().getName());
+			case ALL_MATCH -> {
+				if (ret != boolean.class) throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but Combine.ALL_TRUE needs boolean");
 			}
-		}
+			case CHAIN -> {
+				int p = combine.threadedParam();
+
+				if (ret == void.class || p >= params.length || params[p] != ret) {
+					throw new IllegalArgumentException(where + " needs a parameter " + p + " of its return type " + ret.getName() + " for Combine.chain");
+				}
+			}
+			case SHORT_CIRCUIT -> {
+				Object pass = combine.passValue();
+
+				if (ret == boolean.class) {
+					if (!(pass instanceof Boolean)) throw new IllegalArgumentException(where + " returns boolean, use Combine.STOP_AT_FALSE or Combine.STOP_AT_TRUE");
+				} else if (ret.isPrimitive()) {
+					throw new IllegalArgumentException(where + " returns " + ret.getName() + ", which is not supported by this Combine");
+				} else if (pass != null && !ret.isInstance(pass)) {
+					throw new IllegalArgumentException(where + " returns " + ret.getName() + ", but the pass value is a " + pass.getClass().getName());
+				}
+			}
 		}
 	}
 
@@ -283,10 +283,10 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		Class<?> returnClass = methodType.returnType();
 
 		return switch (mode) {
-		case VOID -> MethodHandles.empty(methodType);
-		case ALL_MATCH -> MethodHandles.dropArguments(MethodHandles.constant(boolean.class, true), 0, methodType.parameterList());
-		case SHORT_CIRCUIT -> MethodHandles.dropArguments(MethodHandles.constant(returnClass, passValue), 0, methodType.parameterList());
-		case CHAIN -> MethodHandles.permuteArguments(MethodHandles.identity(returnClass), methodType, threadedParam);
+			case VOID -> MethodHandles.empty(methodType);
+			case ALL_MATCH -> MethodHandles.dropArguments(MethodHandles.constant(boolean.class, true), 0, methodType.parameterList());
+			case SHORT_CIRCUIT -> MethodHandles.dropArguments(MethodHandles.constant(returnClass, passValue), 0, methodType.parameterList());
+			case CHAIN -> MethodHandles.permuteArguments(MethodHandles.identity(returnClass), methodType, threadedParam);
 		};
 	}
 
@@ -358,18 +358,18 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.invokeinterface(listener, method.getName(), methodDesc());
 
 				switch (mode) {
-				case VOID -> { }
-				case ALL_MATCH -> {
-					code.iload(accSlot);
-					code.iand();
-					code.istore(accSlot);
-				}
-				case CHAIN -> code.storeLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
-				case SHORT_CIRCUIT -> {
-					code.dup();
-					branchIfNotPass(code, self, returnDesc, early, -1);
-					code.pop();
-				}
+					case VOID -> { }
+					case ALL_MATCH -> {
+						code.iload(accSlot);
+						code.iand();
+						code.istore(accSlot);
+					}
+					case CHAIN -> code.storeLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
+					case SHORT_CIRCUIT -> {
+						code.dup();
+						branchIfNotPass(code, self, returnDesc, early, -1);
+						code.pop();
+					}
 				}
 
 				code.iinc(indexSlot, 1);
@@ -378,20 +378,20 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 				code.labelBinding(end);
 
 				switch (mode) {
-				case VOID -> code.return_();
-				case ALL_MATCH -> {
-					code.iload(accSlot);
-					code.ireturn();
-				}
-				case CHAIN -> {
-					code.loadLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
-					code.return_(TypeKind.from(returnClass));
-				}
-				case SHORT_CIRCUIT -> {
-					pushPass(code, self, returnDesc, -1);
-					code.labelBinding(early);
-					code.return_(TypeKind.from(returnClass));
-				}
+					case VOID -> code.return_();
+					case ALL_MATCH -> {
+						code.iload(accSlot);
+						code.ireturn();
+					}
+					case CHAIN -> {
+						code.loadLocal(TypeKind.from(returnClass), code.parameterSlot(threadedParam));
+						code.return_(TypeKind.from(returnClass));
+					}
+					case SHORT_CIRCUIT -> {
+						pushPass(code, self, returnDesc, -1);
+						code.labelBinding(early);
+						code.return_(TypeKind.from(returnClass));
+					}
 				}
 			});
 		});
@@ -430,50 +430,50 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 			cb.withMethodBody(method.getName(), methodDesc(), ClassFile.ACC_PUBLIC, code -> {
 				switch (mode) {
-				case VOID -> {
-					for (int i = 0; i < n; i++) {
-						invokeUnrolled(code, listener, i);
+					case VOID -> {
+						for (int i = 0; i < n; i++) {
+							invokeUnrolled(code, listener, i);
+						}
+
+						code.return_();
 					}
+					case ALL_MATCH -> {
+						code.loadConstant(1);
 
-					code.return_();
-				}
-				case ALL_MATCH -> {
-					code.loadConstant(1);
+						for (int i = 0; i < n; i++) {
+							invokeUnrolled(code, listener, i);
+							code.iand();
+						}
 
-					for (int i = 0; i < n; i++) {
-						invokeUnrolled(code, listener, i);
-						code.iand();
+						code.ireturn();
 					}
+					case CHAIN -> {
+						TypeKind kind = TypeKind.from(returnClass);
+						int threadedSlot = code.parameterSlot(threadedParam);
 
-					code.ireturn();
-				}
-				case CHAIN -> {
-					TypeKind kind = TypeKind.from(returnClass);
-					int threadedSlot = code.parameterSlot(threadedParam);
+						for (int i = 0; i < n; i++) {
+							invokeUnrolled(code, listener, i);
+							code.storeLocal(kind, threadedSlot);
+						}
 
-					for (int i = 0; i < n; i++) {
-						invokeUnrolled(code, listener, i);
-						code.storeLocal(kind, threadedSlot);
+						code.loadLocal(kind, threadedSlot);
+						code.return_(kind);
 					}
+					case SHORT_CIRCUIT -> {
+						Label done = code.newLabel();
 
-					code.loadLocal(kind, threadedSlot);
-					code.return_(kind);
-				}
-				case SHORT_CIRCUIT -> {
-					Label done = code.newLabel();
+						for (int i = 0; i < n; i++) {
+							invokeUnrolled(code, listener, i);
+							code.dup();
+							branchIfNotPass(code, self, returnDesc, done, n);
+							code.pop();
+						}
 
-					for (int i = 0; i < n; i++) {
-						invokeUnrolled(code, listener, i);
-						code.dup();
-						branchIfNotPass(code, self, returnDesc, done, n);
-						code.pop();
+						// Every listener returned the pass value.
+						pushPass(code, self, returnDesc, n);
+						code.labelBinding(done);
+						code.return_(TypeKind.from(returnClass));
 					}
-
-					// Every listener returned the pass value.
-					pushPass(code, self, returnDesc, n);
-					code.labelBinding(done);
-					code.return_(TypeKind.from(returnClass));
-				}
 				}
 			});
 		});
@@ -561,5 +561,4 @@ final class CombinedInvokerFactory<T> implements Function<T[], T> {
 			LOGGER.warn("Could not dump generated event invoker for {}", type.getName(), e);
 		}
 	}
-
 }
