@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.test.base;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +32,6 @@ import net.fabricmc.fabric.api.event.Combine;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EventDelegatingTest {
 	public interface Callback {
@@ -166,8 +169,14 @@ public class EventDelegatingTest {
 	void booleanShortCircuitStopsAtFirstFalse() {
 		Event<Returning> e = EventFactory.createArrayBacked(Returning.class, Combine.STOP_AT_FALSE);
 		List<String> out = new ArrayList<>();
-		e.register(o -> o.add("a") || true);
-		e.register(o -> o.add("b") && false);
+		e.register(o -> {
+			o.add("a");
+			return true;
+		});
+		e.register(o -> {
+			o.add("b");
+			return false;
+		});
 		e.register(o -> o.add("c"));
 		EventFactoryImpl.awaitInvokerGeneration();
 		assertEquals(false, e.invoker().run(out));

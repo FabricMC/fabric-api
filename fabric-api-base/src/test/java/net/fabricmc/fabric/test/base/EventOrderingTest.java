@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.base;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +28,6 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class EventOrderingTest {
 	private static final Identifier FIRST = Identifier.fromNamespaceAndPath("test", "first");
