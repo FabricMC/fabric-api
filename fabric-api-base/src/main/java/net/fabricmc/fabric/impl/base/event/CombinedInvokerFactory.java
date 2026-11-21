@@ -105,9 +105,9 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	/**
 	 * Loop invoker classes by listener interface, then by combination. Weak on the listener class, through {@link ClassValue}.
 	 */
-	private static final ClassValue<Map<String, LoopClass>> LOOP_CLASSES = new ClassValue<>() {
+	private static final ClassValue<Map<LoopKey, LoopClass>> LOOP_CLASSES = new ClassValue<>() {
 		@Override
-		protected Map<String, LoopClass> computeValue(Class<?> type) {
+		protected Map<LoopKey, LoopClass> computeValue(Class<?> type) {
 			return new ConcurrentHashMap<>();
 		}
 	};
@@ -117,12 +117,37 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 * and the setter of its volatile listener array {@code (Object loop, Object[] listeners)}.
 	 */
 	private record LoopClass(MethodHandle constructor, MethodHandle setter) { }
+
+	/**
+	 * Everything the bytecode of a loop invoker depends on, apart from the listener interface.
+	 * Invokers with the same key share their class.
+	 */
+	private record LoopKey(Mode mode, int threadedParam, PassKind pass, ExceptionHandling exceptions) { }
+
+	/**
+	 * How a short-circuiting invoker compares the results of the listeners with the pass value.
+	 */
+	private enum PassKind {
+		/**
+		 * Not short-circuiting.
+		 */
+		NONE,
+		NULL,
+		TRUE,
+		FALSE,
+		/**
+		 * By identity with a reference, which a loop invoker stores in a field.
+		 */
+		STORED
+	}
+
 	final Class<? super T> type;
 	final Method method;
 	private final Mode mode;
 	private final @Nullable Object passValue;
 	private final int threadedParam;
 	private final ExceptionHandling exceptions;
+	private final LoopKey loopKey;
 	final MethodHandles.Lookup lookup;
 	private boolean unrolledBroken;
 
@@ -133,7 +158,15 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		this.passValue = passValue;
 		this.threadedParam = threadedParam;
 		this.exceptions = exceptions;
+		this.loopKey = new LoopKey(mode, threadedParam, passKind(mode, passValue), exceptions);
 		this.lookup = lookup;
+	}
+
+	private static PassKind passKind(Mode mode, @Nullable Object passValue) {
+		if (mode != Mode.SHORT_CIRCUIT) return PassKind.NONE;
+		if (passValue == null) return PassKind.NULL;
+		if (passValue instanceof Boolean b) return b ? PassKind.TRUE : PassKind.FALSE;
+		return PassKind.STORED;
 	}
 
 	/**
@@ -271,7 +304,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 * the same class, as a loop is later updated through the setter of the cached class.
 	 */
 	private LoopClass loopClass() {
-		return LOOP_CLASSES.get(type).computeIfAbsent(loopKey(), key -> {
+		return LOOP_CLASSES.get(type).computeIfAbsent(loopKey, key -> {
 			try {
 				return generateLoopClass();
 			} catch (ReflectiveOperationException e) {
@@ -337,14 +370,6 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 
 	private boolean storesPass() {
 		return mode == Mode.SHORT_CIRCUIT && passValue != null && method.getReturnType() != boolean.class;
-	}
-
-	/**
-	 * Everything the bytecode of the loop invoker depends on. The pass value itself is stored in a field.
-	 */
-	private String loopKey() {
-		String pass = !(mode == Mode.SHORT_CIRCUIT) ? "" : passValue == null ? "null" : passValue instanceof Boolean b ? b.toString() : "ref";
-		return mode + "/" + threadedParam + "/" + pass + "/" + exceptions;
 	}
 
 	private ClassDesc listenerDesc() {
