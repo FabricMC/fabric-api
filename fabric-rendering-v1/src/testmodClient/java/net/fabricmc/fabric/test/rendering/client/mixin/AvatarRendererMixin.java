@@ -49,13 +49,11 @@ public abstract class AvatarRendererMixin<AvatarlikeEntity extends Avatar & Clie
 
 	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/Avatar;Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;F)V", at = @At("RETURN"))
 	private void extractRenderState(AvatarlikeEntity entity, AvatarRenderState state, float partialTicks, CallbackInfo ci) {
-		BlockModelRenderState blockRenderState = state.getData(RenderLayerTest.DIAMOND_BLOCK);
-
-		if (blockRenderState == null) {
-			blockRenderState = new BlockModelRenderState();
+		if (!state.hasData(RenderLayerTest.DIAMOND_BLOCK)) {
+			BlockModelRenderState blockRenderState = new BlockModelRenderState();
 			state.setData(RenderLayerTest.DIAMOND_BLOCK, blockRenderState);
 		}
 
-		this.blockModelResolver.update(blockRenderState, Blocks.DIAMOND_BLOCK.defaultBlockState(), BLOCK_DISPLAY_CONTEXT);
+		this.blockModelResolver.update(state.getData(RenderLayerTest.DIAMOND_BLOCK), Blocks.DIAMOND_BLOCK.defaultBlockState(), BLOCK_DISPLAY_CONTEXT);
 	}
 }

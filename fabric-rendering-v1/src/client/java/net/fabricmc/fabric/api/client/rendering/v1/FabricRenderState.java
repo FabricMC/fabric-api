@@ -106,6 +106,16 @@ import net.minecraft.client.renderer.state.level.WorldBorderRenderState;
 @ApiStatus.NonExtendable
 public interface FabricRenderState {
 	/**
+	 * Check for extra render data from the render state.
+	 * @param key the key of the data
+	 * @return true if data is present and non-null, or false if none is found, or what's found is {@code null}.
+	 */
+	@Nullable
+	default boolean hasData(RenderStateDataKey<?> key) {
+		return getData(key) != null;
+	}
+
+	/**
 	 * Get extra render data from the render state.
 	 * @param key the key of the data
 	 * @param <T> the type of the data

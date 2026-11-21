@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 /**
  * A unique key representing extra data to attach to a render state.
  * @param <T> The type of the render state data.
+ * @see FabricRenderState#hasData(RenderStateDataKey)
  * @see FabricRenderState#getData(RenderStateDataKey)
  * @see FabricRenderState#setData(RenderStateDataKey, Object)
  */
