@@ -266,16 +266,18 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		}
 	}
 
-	private LoopClass loopClass() throws ReflectiveOperationException {
-		Map<String, LoopClass> classes = LOOP_CLASSES.get(type);
-		LoopClass loopClass = classes.get(loopKey());
-
-		if (loopClass == null) {
-			loopClass = generateLoopClass();
-			classes.put(loopKey(), loopClass);
-		}
-
-		return loopClass;
+	/**
+	 * The loop class of this listener interface and combination. Generated once: events created concurrently must get
+	 * the same class, as a loop is later updated through the setter of the cached class.
+	 */
+	private LoopClass loopClass() {
+		return LOOP_CLASSES.get(type).computeIfAbsent(loopKey(), key -> {
+			try {
+				return generateLoopClass();
+			} catch (ReflectiveOperationException e) {
+				throw new IllegalStateException("Could not generate the loop invoker class for " + type.getName(), e);
+			}
+		});
 	}
 
 	/**
