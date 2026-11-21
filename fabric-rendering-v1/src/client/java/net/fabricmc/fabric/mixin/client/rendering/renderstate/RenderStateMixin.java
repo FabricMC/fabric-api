@@ -87,6 +87,11 @@ abstract class RenderStateMixin implements FabricRenderState {
 	private Map<RenderStateDataKey<?>, Object> renderStateData;
 
 	@Override
+	public boolean hasData(RenderStateDataKey<?> key) {
+		return renderStateData == null ? false : renderStateData.containsKey(key);
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> @Nullable T getData(RenderStateDataKey<T> key) {
 		return renderStateData == null ? null : (T) renderStateData.get(key);
@@ -105,6 +110,12 @@ abstract class RenderStateMixin implements FabricRenderState {
 		}
 
 		renderStateData.put(key, value);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> @Nullable T removeData(RenderStateDataKey<T> key) {
+		return renderStateData == null ? null : (T) renderStateData.remove(key);
 	}
 
 	@Override

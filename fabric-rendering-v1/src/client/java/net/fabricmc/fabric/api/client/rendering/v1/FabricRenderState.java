@@ -108,11 +108,10 @@ public interface FabricRenderState {
 	/**
 	 * Check for extra render data from the render state.
 	 * @param key the key of the data
-	 * @return true if data is present and non-null, or false if none is found, or what's found is {@code null}.
+	 * @return true if data is present, or false if none is found.
 	 */
-	@Nullable
 	default boolean hasData(RenderStateDataKey<?> key) {
-		return getData(key) != null;
+		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
@@ -144,6 +143,17 @@ public interface FabricRenderState {
 	 * @param <T> the type of the data
 	 */
 	default <T> void setData(RenderStateDataKey<T> key, @Nullable T value) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
+	 * Remove extra render data from the render state.
+	 * @param key the key of the data
+	 * @param <T> the type of the data
+	 * @return the data, or {@code null} if it wasn't present.
+	 */
+	@Nullable
+	default <T> T removeData(RenderStateDataKey<T> key) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
