@@ -18,7 +18,8 @@
       "net.fabricmc.fabric.test.entity.event.client.EntityEventTestsClient"
     ],
     "fabric-gametest": [
-      "net.fabricmc.fabric.test.entity.event.gametest.ServerMobEffectsGameTest"
+      "net.fabricmc.fabric.test.entity.event.gametest.ServerMobEffectsGameTest",
+      "net.fabricmc.fabric.test.entity.event.gametest.ServerLivingEntityEventsGameTest"
     ]
   }
 }

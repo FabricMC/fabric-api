@@ -34,6 +34,7 @@ import net.minecraft.util.Prediction;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -52,6 +53,7 @@ import net.minecraft.world.phys.Vec3;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntityFedEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
@@ -147,6 +149,17 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, keepEquipment) -> {
 			LOGGER.info("{} is being converted to {} [{}]", previous.getName().getString(), converted.getName().getString(), keepEquipment);
+		});
+
+		EntityFedEvents.HORSE_FED.register((horse, stack, player, food) -> {
+			if (stack.is(Items.STICK)) {
+				food.setHealAmount(1000);
+				food.setAgeUpSeconds(-AgeableMob.BABY_START_AGE);
+				food.setTemperIncrease(100);
+				food.setAllowsBreeding(true);
+			} else if (stack.is(Items.GOLDEN_CARROT)) {
+				food.setAllowsBreeding(false);
+			}
 		});
 
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
