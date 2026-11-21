@@ -42,9 +42,13 @@ public abstract class Event<T> {
 	 * listeners of type T under one instance of type T, executing
 	 * them and leaving early as necessary.
 	 *
+	 * <p>This method is not final so that Fabric API's own events can return an invoker that never changes,
+	 * which the JIT can optimize more aggressively. For all other events, the invoker may change
+	 * when listeners are registered.
+	 *
 	 * @return The invoker instance.
 	 */
-	public final T invoker() {
+	public T invoker() {
 		return invoker;
 	}
 
