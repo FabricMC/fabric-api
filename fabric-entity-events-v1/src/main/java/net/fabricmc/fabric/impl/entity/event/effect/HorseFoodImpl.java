@@ -16,58 +16,58 @@
 
 package net.fabricmc.fabric.impl.entity.event.effect;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntityFedEvents;
 
-public class HorseFoodImpl implements ServerLivingEntityEvents.HorseFed.HorseFood {
-	float health;
-	int ageUp;
-	int temper;
-	boolean inLove;
+public class HorseFoodImpl implements EntityFedEvents.HorseFed.HorseFood {
+	float heal;
+	int ageUpSeconds;
+	int temperIncrease;
+	boolean allowsBreeding;
 
-	public HorseFoodImpl(float health, int ageUp, int temper, boolean inLove) {
-		this.health = health;
-		this.ageUp = ageUp;
-		this.temper = temper;
-		this.inLove = inLove;
+	public HorseFoodImpl(float heal, int ageUpSeconds, int temper, boolean inLove) {
+		this.heal = heal;
+		this.ageUpSeconds = ageUpSeconds;
+		this.temperIncrease = temper;
+		this.allowsBreeding = inLove;
 	}
 
 	@Override
-	public float health() {
-		return health;
+	public float getHealAmount() {
+		return heal;
 	}
 
 	@Override
-	public int ageUp() {
-		return ageUp;
+	public int getAgeUpSeconds() {
+		return ageUpSeconds;
 	}
 
 	@Override
-	public int temper() {
-		return temper;
+	public int getTemperIncrease() {
+		return temperIncrease;
 	}
 
 	@Override
-	public boolean inLove() {
-		return inLove;
+	public boolean getAllowsBreeding() {
+		return allowsBreeding;
 	}
 
 	@Override
-	public void health(float health) {
-		this.health = health;
+	public void setHealAmount(float heal) {
+		this.heal = heal;
 	}
 
 	@Override
-	public void ageUp(int ageUp) {
-		this.ageUp = ageUp;
+	public void setAgeUpSeconds(int ageUpSeconds) {
+		this.ageUpSeconds = ageUpSeconds;
 	}
 
 	@Override
-	public void temper(int temper) {
-		this.temper = temper;
+	public void setTemperIncrease(int temperIncrease) {
+		this.temperIncrease = temperIncrease;
 	}
 
 	@Override
-	public void inLove(boolean inLove) {
-		this.inLove = inLove;
+	public void setAllowsBreeding(boolean allowsBreeding) {
+		this.allowsBreeding = allowsBreeding;
 	}
 }

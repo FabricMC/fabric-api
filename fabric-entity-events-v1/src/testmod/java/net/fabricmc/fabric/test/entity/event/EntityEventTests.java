@@ -53,6 +53,7 @@ import net.minecraft.world.phys.Vec3;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntityFedEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
@@ -150,14 +151,14 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("{} is being converted to {} [{}]", previous.getName().getString(), converted.getName().getString(), keepEquipment);
 		});
 
-		ServerLivingEntityEvents.HORSE_FED.register((horse, stack, player, food) -> {
+		EntityFedEvents.HORSE_FED.register((horse, stack, player, food) -> {
 			if (stack.is(Items.STICK)) {
-				food.health(1000);
-				food.ageUp(-AgeableMob.BABY_START_AGE);
-				food.temper(100);
-				food.inLove(true);
+				food.setHealAmount(1000);
+				food.setAgeUpSeconds(-AgeableMob.BABY_START_AGE);
+				food.setTemperIncrease(100);
+				food.setAllowsBreeding(true);
 			} else if (stack.is(Items.GOLDEN_CARROT)) {
-				food.inLove(false);
+				food.setAllowsBreeding(false);
 			}
 		});
 

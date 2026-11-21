@@ -37,7 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntityFedEvents;
 import net.fabricmc.fabric.impl.entity.event.effect.HorseFoodImpl;
 
 @Mixin(AbstractHorse.class)
@@ -50,28 +50,29 @@ abstract class AbstractHorseMixin extends Animal {
 	}
 
 	@Inject(method = "handleEating", at = @At("HEAD"))
-	void createFoodInstance(Player player, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir, @Share("food") LocalRef<ServerLivingEntityEvents.HorseFed.HorseFood> food) {
-		food.set(new HorseFoodImpl(0, 0, 0, false));
+	void createFoodInstance(Player player, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir, @Share("horseFood") LocalRef<EntityFedEvents.HorseFed.HorseFood> horseFood) {
+		horseFood.set(new HorseFoodImpl(0, 0, 0, false));
 	}
 
-	@WrapOperation(method = "handleEating", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/equine/AbstractHorse;setInLove(Lnet/minecraft/world/entity/player/Player;)V"))
-	void defferInLove(AbstractHorse instance, Player player, Operation<Void> original, @Share("food") LocalRef<ServerLivingEntityEvents.HorseFed.HorseFood> food) {
-		food.get().inLove(true);
+	@WrapOperation(method = "handleEating", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/equine/AbstractHorse;setInLove(Lnet/minecraft/world/entity/player/Player;)V"), order = 999)
+	void defferInLove(AbstractHorse instance, Player player, Operation<Void> original, @Share("horseFood") LocalRef<EntityFedEvents.HorseFed.HorseFood> horseFood) {
+		horseFood.get().setAllowsBreeding(true);
 	}
 
-	@Inject(method = "handleEating", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/equine/AbstractHorse;canHealNaturally()Z", shift = At.Shift.BY, by = -1))
-	void modifyFoodResults(Player player, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir, @Local(name = "itemUsed") LocalBooleanRef itemUsed, @Local(name = "heal") LocalFloatRef heal, @Local(name = "ageUp") LocalIntRef ageUp, @Local(name = "temper") LocalIntRef temper, @Share("food") LocalRef<ServerLivingEntityEvents.HorseFed.HorseFood> food) {
-		food.get().health(heal.get());
-		food.get().ageUp(ageUp.get());
-		food.get().temper(temper.get());
+	@Inject(method = "handleEating", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/equine/AbstractHorse;canHealNaturally()Z"), allow = 1)
+	void modifyFoodResults(Player player, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir, @Local(name = "itemUsed") LocalBooleanRef itemUsed, @Local(name = "heal") LocalFloatRef heal, @Local(name = "ageUp") LocalIntRef ageUp, @Local(name = "temper") LocalIntRef temper, @Share("horseFood") LocalRef<EntityFedEvents.HorseFed.HorseFood> horseFood) {
+		EntityFedEvents.HorseFed.HorseFood food = horseFood.get();
+		food.setHealAmount(heal.get());
+		food.setAgeUpSeconds(ageUp.get());
+		food.setTemperIncrease(temper.get());
 
-		ServerLivingEntityEvents.HORSE_FED.invoker().onFed((AbstractHorse) (Object) this, itemStack, player, food.get());
+		EntityFedEvents.HORSE_FED.invoker().onFed((AbstractHorse) (Object) this, itemStack, player, food);
 
-		heal.set(food.get().health());
-		ageUp.set(food.get().ageUp());
-		temper.set(food.get().temper());
+		heal.set(food.getHealAmount());
+		ageUp.set(food.getAgeUpSeconds());
+		temper.set(food.getTemperIncrease());
 
-		if (food.get().inLove() && !this.level().isClientSide() && this.isTamed() && this.getAge() == 0 && !this.isInLove()) {
+		if (food.getAllowsBreeding() && !this.level().isClientSide() && this.isTamed() && this.getAge() == 0 && !this.isInLove()) {
 			itemUsed.set(true);
 			this.setInLove(player);
 		}
