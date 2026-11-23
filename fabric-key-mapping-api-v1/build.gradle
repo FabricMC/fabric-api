@@ -4,16 +4,11 @@ loom {
 	accessWidenerPath = file('src/client/resources/fabric-key-mapping-api-v1.classtweaker')
 }
 
-fabricApiModule {
-	moduleDependencies(
-		'fabric-api-base',
-		'fabric-screen-api-v1'
-	)
+moduleDependencies(project, ['fabric-api-base', 'fabric-screen-api-v1'])
 
-	testDependencies(
-		':fabric-api-base',
-		':fabric-client-gametest-api-v1',
-		':fabric-lifecycle-events-v1',
-		':fabric-resource-loader-v1'
-	)
-}
+testDependencies(project, [
+	':fabric-api-base',
+	':fabric-client-gametest-api-v1',
+	':fabric-lifecycle-events-v1',
+	':fabric-resource-loader-v1'
+])
