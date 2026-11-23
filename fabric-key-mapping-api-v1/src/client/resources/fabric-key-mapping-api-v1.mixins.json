@@ -4,8 +4,11 @@
   "compatibilityLevel": "JAVA_25",
   "client": [
     "OptionsMixin",
-    "KeyMappingAccessor",
-    "KeyMappingCategoryMixin"
+    "KeyMappingCategoryMixin",
+    "KeyMappingMixin",
+    "KeyboardHandlerMixin",
+    "MouseHandlerMixin",
+    "ToggleKeyMappingMixin"
   ],
   "injectors": {
     "defaultRequire": 1
