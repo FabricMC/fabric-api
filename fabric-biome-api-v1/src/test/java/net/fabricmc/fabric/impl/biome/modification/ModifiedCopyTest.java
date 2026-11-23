@@ -74,6 +74,8 @@ class ModifiedCopyTest {
 	private static final ResourceKey<PlacedFeature> IN_END = placed("chorus_plant");
 	private static final ResourceKey<PlacedFeature> BY_TAG = placed("basalt_pillar");
 	private static final ResourceKey<PlacedFeature> AFTER_BY_KEY = placed("ore_gold_nether");
+	private static final ResourceKey<PlacedFeature> AFTER_BY_HOLDER = placed("ore_magma");
+	private static final float WARMED = 1.25F;
 
 	private RegistryAccess registries;
 	private RegistryAccess withoutDimensions;
@@ -97,7 +99,12 @@ class ModifiedCopyTest {
 		// A later phase selects by what an earlier one added, so the selection must see the copy being modified.
 		BiomeModifications.create(Identifier.fromNamespaceAndPath("fabric", "modified_copy_test"))
 				.add(ModificationPhase.POST_PROCESSING, context -> context.hasPlacedFeature(BY_KEY),
-						context -> context.getGenerationSettings().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, AFTER_BY_KEY));
+						context -> context.getGenerationSettings().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, AFTER_BY_KEY))
+				// The same through the biome's holder, which on a server holds the biome being modified.
+				.add(ModificationPhase.ADDITIONS, BiomeSelectors.includeByKey(Biomes.SNOWY_PLAINS),
+						context -> context.getWeather().setTemperature(WARMED))
+				.add(ModificationPhase.POST_PROCESSING, context -> context.getBiomeHolder().value().getBaseTemperature() == WARMED,
+						context -> context.getGenerationSettings().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, AFTER_BY_HOLDER));
 
 		// A game start freezes the built-in registries before binding their tags; a unit test leaves them open.
 		for (Registry<?> registry : BuiltInRegistries.REGISTRY) {
@@ -196,6 +203,12 @@ class ModifiedCopyTest {
 	void laterPhasesSeeWhatEarlierOnesAdded() {
 		assertTrue(places(copy(Biomes.PLAINS), AFTER_BY_KEY));
 		assertFalse(places(copy(Biomes.DESERT), AFTER_BY_KEY));
+	}
+
+	@Test
+	void laterPhasesSeeEarlierOnesThroughTheHolder() {
+		assertTrue(places(copy(Biomes.SNOWY_PLAINS), AFTER_BY_HOLDER));
+		assertFalse(places(copy(Biomes.PLAINS), AFTER_BY_HOLDER));
 	}
 
 	@Test

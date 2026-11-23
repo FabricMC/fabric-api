@@ -17,10 +17,13 @@
 package net.fabricmc.fabric.impl.biome.modification;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -36,13 +39,17 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	private final RegistryAccess registries;
 	private final ResourceKey<Biome> key;
 	private final Biome biome;
+	private final Holder.Reference<Biome> registered;
 	private final Holder<Biome> entry;
 
 	public BiomeSelectionContextImpl(RegistryAccess registries, ResourceKey<Biome> key, Biome biome) {
 		this.registries = registries;
 		this.key = key;
 		this.biome = biome;
-		this.entry = registries.lookupOrThrow(Registries.BIOME).getOrThrow(this.key);
+		Registry<Biome> biomes = registries.lookupOrThrow(Registries.BIOME);
+		this.registered = biomes.getOrThrow(this.key);
+		// On a server the biome being modified is the registered one; a copy gets a holder of its own
+		this.entry = registered.value() == biome ? registered : new CopyHolder(biomes, registered, biome);
 	}
 
 	@Override
@@ -85,7 +92,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return instance.biomes().contains(getBiomeHolder());
+		return instance.biomes().contains(registered);
 	}
 
 	@Override
@@ -103,13 +110,45 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 		}
 
 		// Compare with the registered biome rather than the one being modified, which may be a copy of it
-		Biome registered = getBiomeHolder().value();
-		return dimension.generator().getBiomeSource().possibleBiomes().stream().anyMatch(entry -> entry.value() == registered);
+		return dimension.generator().getBiomeSource().possibleBiomes().stream().anyMatch(entry -> entry.value() == registered.value());
 	}
 
 	@Override
 	public boolean hasTag(TagKey<Biome> tag) {
 		Registry<Biome> biomeRegistry = registries.lookupOrThrow(Registries.BIOME);
 		return biomeRegistry.getOrThrow(getBiomeKey()).is(tag);
+	}
+
+	/**
+	 * The registered biome's holder with a copy of the biome as its value, so that selectors reading the holder see the
+	 * copy being modified, as on a server they see the registered biome being modified.
+	 */
+	private static final class CopyHolder extends Holder.Reference<Biome> {
+		private final Holder.Reference<Biome> registered;
+
+		private CopyHolder(HolderOwner<Biome> owner, Holder.Reference<Biome> registered, Biome copy) {
+			super(Holder.Reference.Type.STAND_ALONE, owner, registered.key(), copy);
+			this.registered = registered;
+		}
+
+		@Override
+		public boolean is(TagKey<Biome> tag) {
+			return registered.is(tag);
+		}
+
+		@Override
+		public Stream<TagKey<Biome>> tags() {
+			return registered.tags();
+		}
+
+		@Override
+		public boolean areComponentsBound() {
+			return registered.areComponentsBound();
+		}
+
+		@Override
+		public DataComponentMap components() {
+			return registered.components();
+		}
 	}
 }
