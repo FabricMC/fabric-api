@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
@@ -39,6 +40,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
@@ -63,6 +65,8 @@ public abstract class LevelRendererMixin {
 
 	@Unique
 	private final LevelRenderContextImpl renderContext = new LevelRenderContextImpl();
+	@Unique
+	private boolean fabric$hasAlwaysOnTopSubmits;
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void beforeRender(GraphicsResourceAllocator resourceAllocator, boolean renderOutline, CameraRenderState cameraState, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, boolean consistentDepthRequired, CallbackInfo ci) {
@@ -100,6 +104,22 @@ public abstract class LevelRendererMixin {
 	@Inject(method = "submitFeatures", at = @At("RETURN"))
 	private void afterCollectSubmits(CallbackInfo ci) {
 		LevelRenderEvents.COLLECT_SUBMITS.invoker().collectSubmits(renderContext);
+
+		// Vanilla only renders the always-on-top phase when there are always-on-top gizmos.
+		// Capture all submits here (before the phases are drained) so custom submits are included too.
+		fabric$hasAlwaysOnTopSubmits = false;
+
+		for (SubmitNodeCollection collection : submitNodeStorage.getSubmitsPerOrder().values()) {
+			if (!collection.alwaysOnTopGizmos.isEmpty()) {
+				fabric$hasAlwaysOnTopSubmits = true;
+				break;
+			}
+		}
+	}
+
+	@ModifyReturnValue(method = "frameHasAlwaysOnTopGizmos", at = @At("RETURN"))
+	private boolean frameHasAlwaysOnTopSubmits(boolean original) {
+		return original || fabric$hasAlwaysOnTopSubmits;
 	}
 
 	@Inject(method = "executeSolid", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher$PreparedFrame;executeSolid(Lcom/mojang/renderpearl/api/commands/RenderPass;)V", shift = At.Shift.AFTER))
