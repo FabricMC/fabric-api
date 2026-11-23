@@ -16,14 +16,11 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.level;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
-
+/// The render context for render events inside a render pass.
 @ApiStatus.NonExtendable
-public interface LevelRenderContext extends LevelTerrainRenderContext {
-	SubmitNodeCollector submitNodeCollector();
-
-	PoseStack poseStack();
+public interface LevelRenderPassRenderContext extends LevelTerrainRenderContext {
+	RenderPass renderPass();
 }

@@ -17,19 +17,23 @@
 package net.fabricmc.fabric.impl.client.rendering.level;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
+import net.minecraft.client.renderer.oit.OitStage;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.AbstractLevelRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderPassRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelSubmitContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTerrainRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelTranslucentRenderContext;
 
-public final class LevelRenderContextImpl implements AbstractLevelRenderContext, LevelTerrainRenderContext, LevelRenderContext {
+public final class LevelRenderContextImpl implements AbstractLevelRenderContext, LevelSubmitContext, LevelTerrainRenderContext, LevelRenderPassRenderContext, LevelTranslucentRenderContext {
 	private GameRenderer gameRenderer;
 	private LevelRenderer levelRenderer;
 	private LevelRenderState levelRenderState;
@@ -39,6 +43,10 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	private ChunkSectionsToRender sectionsToRender;
 	@Nullable
 	private PoseStack poseStack;
+	@Nullable
+	private RenderPass renderPass;
+	@Nullable
+	private OitStage oitStage;
 
 	public void prepare(
 			GameRenderer gameRenderer,
@@ -54,6 +62,8 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 
 		sectionsToRender = null;
 		poseStack = null;
+		renderPass = null;
+		oitStage = null;
 	}
 
 	public void setSectionsToRender(ChunkSectionsToRender sectionsToRender) {
@@ -62,6 +72,14 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 
 	public void setPoseStack(@Nullable PoseStack poseStack) {
 		this.poseStack = poseStack;
+	}
+
+	public void setRenderPass(RenderPass renderPass) {
+		this.renderPass = renderPass;
+	}
+
+	public void setOitStage(@Nullable OitStage oitStage) {
+		this.oitStage = oitStage;
 	}
 
 	@Override
@@ -93,5 +111,16 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	@Nullable
 	public PoseStack poseStack() {
 		return poseStack;
+	}
+
+	@Override
+	public RenderPass renderPass() {
+		return renderPass;
+	}
+
+	@Override
+	@Nullable
+	public OitStage oitStage() {
+		return oitStage;
 	}
 }
