@@ -20,17 +20,12 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Fabric addition to Pack.
- * @see ModResourcePackCreator
+ * Internal hooks for {@link net.minecraft.server.packs.repository.Pack}.
+ *
+ * <p>An internal pack is a pack whose activation is tied to a set of parent packs and which is always
+ * hidden from the user. This machinery is not part of the public API.
  */
-public interface FabricPack {
-	/**
-	 * Returns whether the pack is internal and hidden from end users.
-	 */
-	default boolean fabric$isHidden() {
-		return false;
-	}
-
+public interface PackHooks {
 	/**
 	 * Returns whether every parent is enabled. If this is not empty, the pack's status
 	 * is synced to that of the parent pack(s), where the pack gets enabled if and only
@@ -42,6 +37,26 @@ public interface FabricPack {
 		return true;
 	}
 
+	/**
+	 * Sets the predicate deciding whether the pack is enabled, based on the set of enabled pack ids.
+	 * Setting a predicate marks the pack as an internal pack, which also makes it hidden.
+	 */
 	default void fabric$setParentsPredicate(Predicate<Set<String>> predicate) {
+	}
+
+	/**
+	 * Returns whether this pack is hidden because it is an internal, parent-gated pack, i.e. whether
+	 * a parent predicate has been set.
+	 *
+	 * <p>This is the old {@code FabricPack#fabric$isHidden()} behavior. It must be used by the
+	 * auto-enable gating instead of the public
+	 * {@link net.fabricmc.fabric.api.resource.v1.pack.FabricPack#isHidden()}, which also considers
+	 * the explicit hidden flag. Using the public method there would cause explicitly hidden packs to
+	 * be treated as parent-gated and silently auto-enabled.
+	 *
+	 * @see ModPackResourcesUtil#refreshAutoEnabledPacks(java.util.List, java.util.Map)
+	 */
+	default boolean fabric$isHiddenByParents() {
+		return false;
 	}
 }

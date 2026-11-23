@@ -39,8 +39,6 @@ import net.minecraft.server.commands.DataPackCommand;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackRepository;
 
-import net.fabricmc.fabric.impl.resource.pack.FabricPack;
-
 /**
  * Disables enabling/disabling internal data packs.
  * Listing them is still allowed, but they do not appear in suggestions.
@@ -53,16 +51,16 @@ public class DataPackCommandMixin {
 
 	@Redirect(method = "lambda$static$10", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;getSelectedIds()Ljava/util/Collection;"))
 	private static Collection<String> filterEnabledPackSuggestions(PackRepository dataPackManager) {
-		return dataPackManager.getSelectedPacks().stream().filter(profile -> !((FabricPack) profile).fabric$isHidden()).map(Pack::getId).toList();
+		return dataPackManager.getSelectedPacks().stream().filter(profile -> !profile.isHidden()).map(Pack::getId).toList();
 	}
 
 	@WrapOperation(method = "lambda$static$11", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private static Stream<Pack> filterDisabledPackSuggestions(Stream<Pack> instance, Predicate<? super Pack> predicate, Operation<Stream<Pack>> original) {
-		return original.call(instance, predicate).filter(profile -> !((FabricPack) profile).fabric$isHidden());
+		return original.call(instance, predicate).filter(profile -> !profile.isHidden());
 	}
 
 	@Inject(method = "getPack", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z"))
 	private static void errorOnInternalPack(CommandContext<CommandSourceStack> context, String name, boolean enable, CallbackInfoReturnable<Pack> cir, @Local(name = "pack") Pack pack) throws CommandSyntaxException {
-		if (((FabricPack) pack).fabric$isHidden()) throw INTERNAL_PACK_EXCEPTION.create(pack.getId());
+		if (pack.isHidden()) throw INTERNAL_PACK_EXCEPTION.create(pack.getId());
 	}
 }

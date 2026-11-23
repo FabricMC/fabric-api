@@ -29,8 +29,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackRepository;
 
-import net.fabricmc.fabric.impl.resource.pack.FabricPack;
-
 /**
  * Mixins to the anonymous class in #write method.
  */
@@ -45,7 +43,7 @@ public class GameOptionsWriteVisitorMixin {
 			Pack profile = manager.getPack(pack);
 
 			// Nonexistent pack profiles should be handled in the same way as vanilla
-			if (profile == null || !((FabricPack) profile).fabric$isHidden()) copy.add(pack);
+			if (profile == null || !profile.isHidden()) copy.add(pack);
 		}
 
 		return copy;
