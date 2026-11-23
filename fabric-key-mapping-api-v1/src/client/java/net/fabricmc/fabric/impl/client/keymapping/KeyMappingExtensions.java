@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.keymapping;
+package net.fabricmc.fabric.impl.client.keymapping;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.KeyMapping;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingContext;
 
-@Mixin(KeyMapping.class)
-public interface KeyMappingAccessor {
-	@Accessor("key")
-	InputConstants.Key fabric_getBoundKey();
+public interface KeyMappingExtensions {
+	@Nullable KeyMappingContext fabric_getContext();
+
+	KeyMappingContext fabric_getConflictContext();
+
+	void fabric_setContext(KeyMappingContext context);
+
+	void fabric_setConflictContext(KeyMappingContext context);
 }
