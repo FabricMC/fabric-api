@@ -88,6 +88,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalBlockTags.CONCRETES, "Concretes");
 		translationBuilder.add(ConventionalBlockTags.BUDDING_BLOCKS, "Budding Blocks");
+		translationBuilder.add(ConventionalBlockTags.ICE, "Ice");
 		translationBuilder.add(ConventionalBlockTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalBlockTags.CLUSTERS, "Clusters");
 		translationBuilder.add(ConventionalBlockTags.VILLAGER_JOB_SITES, "Villager Job Sites");
@@ -308,6 +309,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.GLAZED_TERRACOTTAS, "Glazed Terracottas");
 		translationBuilder.add(ConventionalItemTags.CONCRETES, "Concretes");
 		translationBuilder.add(ConventionalItemTags.CONCRETE_POWDERS, "Concrete Powders");
+		translationBuilder.add(ConventionalItemTags.ICE, "Ice");
 		translationBuilder.add(ConventionalItemTags.BUDDING_BLOCKS, "Budding Blocks");
 		translationBuilder.add(ConventionalItemTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalItemTags.CLUSTERS, "Clusters");

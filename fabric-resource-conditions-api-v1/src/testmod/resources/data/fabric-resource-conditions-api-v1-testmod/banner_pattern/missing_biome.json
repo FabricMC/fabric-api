@@ -1,0 +1,13 @@
+{
+  "asset_id": "minecraft:base",
+  "translation_key": "block.minecraft.banner.missing_biome",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:registry_contains",
+      "registry": "minecraft:worldgen/biome",
+      "values": [
+        "optional_mod:missing_biome"
+      ]
+    }
+  ]
+}

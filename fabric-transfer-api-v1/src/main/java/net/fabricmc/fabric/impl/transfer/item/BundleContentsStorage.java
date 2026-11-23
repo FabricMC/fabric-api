@@ -144,18 +144,20 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
 			StoragePreconditions.notNegative(maxAmount);
 
+			if (maxAmount == 0) return 0;
 			if (!BundleContentsStorage.this.isStillValid()) return 0;
 			if (bundleContents().size() <= index) return 0;
 			if (!resource.matches(getStack())) return 0;
 
 			var stacksCopy = new ArrayList<>(bundleContents().items());
-			ItemStackTemplate toSrink = stacksCopy.get(index);
-			int extracted = (int) Math.min(toSrink.count(), maxAmount);
+			ItemStackTemplate stack = stacksCopy.get(index);
+			int extracted = (int) Math.min(stack.count(), maxAmount);
+			int remaining = stack.count() - extracted;
 
-			if (toSrink.count() - extracted <= 1) {
+			if (remaining == 0) {
 				stacksCopy.remove(index);
 			} else {
-				stacksCopy.set(index, new ItemStackTemplate(toSrink.item(), toSrink.count() - extracted, toSrink.components()));
+				stacksCopy.set(index, new ItemStackTemplate(stack.item(), remaining, stack.components()));
 			}
 
 			DataComponentPatch changes = DataComponentPatch.builder()

@@ -9,15 +9,23 @@
       "required": false
     },
     {
-      "id": "#minecraft:enchantable/sharp_weapon",
-      "required": false
-    },
-    {
       "id": "#minecraft:enchantable/weapon",
       "required": false
     },
     {
+      "id": "#minecraft:enchantable/melee_weapon",
+      "required": false
+    },
+    {
+      "id": "#minecraft:enchantable/sharp_weapon",
+      "required": false
+    },
+    {
       "id": "#minecraft:enchantable/sweeping",
+      "required": false
+    },
+    {
+      "id": "#minecraft:enchantable/lunge",
       "required": false
     },
     {
@@ -58,14 +66,6 @@
     },
     {
       "id": "#minecraft:enchantable/vanishing",
-      "required": false
-    },
-    {
-      "id": "#minecraft:enchantable/lunge",
-      "required": false
-    },
-    {
-      "id": "#minecraft:enchantable/melee_weapon",
       "required": false
     }
   ]

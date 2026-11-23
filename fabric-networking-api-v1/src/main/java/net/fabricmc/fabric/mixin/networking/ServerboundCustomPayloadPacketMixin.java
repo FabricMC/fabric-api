@@ -57,13 +57,13 @@ public class ServerboundCustomPayloadPacketMixin implements SplittablePacket, Ge
 	private static StreamCodec<FriendlyByteBuf, CustomPacketPayload> wrapCodec(CustomPacketPayload.FallbackProvider<FriendlyByteBuf> unknownCodecFactory, List<CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ?>> types, Operation<StreamCodec<FriendlyByteBuf, CustomPacketPayload>> original) {
 		StreamCodec<FriendlyByteBuf, CustomPacketPayload> codec = original.call(unknownCodecFactory, types);
 		FabricCustomPayloadStreamCodec<FriendlyByteBuf> fabricCodec = (FabricCustomPayloadStreamCodec<FriendlyByteBuf>) codec;
-		fabricCodec.fabric_setCustomPayloadTypeProvider((friendlyByteBuf, identifier) -> {
+		fabricCodec.fabric_setCustomPayloadTypeProvider((friendlyByteBuf, identifier, isDecoding) -> {
 			// ServerboundCustomPayloadPacket does not have a separate codec for play/configuration. We know if the friendlyByteBuf is a FriendlyByteBuf we are in the play phase.
 			if (friendlyByteBuf instanceof RegistryFriendlyByteBuf) {
-				return (CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ? extends CustomPacketPayload>) (Object) PayloadTypeRegistryImpl.SERVERBOUND_PLAY.get(identifier);
+				return (CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ? extends CustomPacketPayload>) (Object) PayloadTypeRegistryImpl.SERVERBOUND_PLAY.get(identifier, isDecoding);
 			}
 
-			return PayloadTypeRegistryImpl.SERVERBOUND_CONFIGURATION.get(identifier);
+			return PayloadTypeRegistryImpl.SERVERBOUND_CONFIGURATION.get(identifier, isDecoding);
 		});
 		return codec;
 	}

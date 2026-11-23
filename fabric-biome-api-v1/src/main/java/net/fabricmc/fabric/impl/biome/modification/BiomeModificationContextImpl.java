@@ -226,8 +226,6 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class EffectsContextImpl implements EffectsContext {
-		private final BiomeSpecialEffects effects = biome.getSpecialEffects();
-
 		@Override
 		public void setFogColor(int color) {
 			attributes.set(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(color));
@@ -235,7 +233,14 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public void setWaterColor(int color) {
-			effects.waterColor = color;
+			BiomeSpecialEffects effects = biome.getSpecialEffects();
+			biome.specialEffects = new BiomeSpecialEffects(
+					color,
+					effects.foliageColorOverride(),
+					effects.dryFoliageColorOverride(),
+					effects.grassColorOverride(),
+					effects.grassColorModifier()
+			);
 		}
 
 		@Override
@@ -250,22 +255,50 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public void setFoliageColorOverride(Optional<Integer> color) {
-			effects.foliageColorOverride = Objects.requireNonNull(color);
+			BiomeSpecialEffects effects = biome.getSpecialEffects();
+			biome.specialEffects = new BiomeSpecialEffects(
+					effects.waterColor(),
+					Objects.requireNonNull(color),
+					effects.dryFoliageColorOverride(),
+					effects.grassColorOverride(),
+					effects.grassColorModifier()
+			);
 		}
 
 		@Override
 		public void setDryFoliageColorOverride(Optional<Integer> color) {
-			effects.dryFoliageColorOverride = Objects.requireNonNull(color);
+			BiomeSpecialEffects effects = biome.getSpecialEffects();
+			biome.specialEffects = new BiomeSpecialEffects(
+					effects.waterColor(),
+					effects.foliageColorOverride(),
+					Objects.requireNonNull(color),
+					effects.grassColorOverride(),
+					effects.grassColorModifier()
+			);
 		}
 
 		@Override
 		public void setGrassColorOverride(Optional<Integer> color) {
-			effects.grassColorOverride = Objects.requireNonNull(color);
+			BiomeSpecialEffects effects = biome.getSpecialEffects();
+			biome.specialEffects = new BiomeSpecialEffects(
+					effects.waterColor(),
+					effects.foliageColorOverride(),
+					effects.dryFoliageColorOverride(),
+					Objects.requireNonNull(color),
+					effects.grassColorModifier()
+			);
 		}
 
 		@Override
 		public void setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier colorModifier) {
-			effects.grassColorModifier = Objects.requireNonNull(colorModifier);
+			BiomeSpecialEffects effects = biome.getSpecialEffects();
+			biome.specialEffects = new BiomeSpecialEffects(
+					effects.waterColor(),
+					effects.foliageColorOverride(),
+					effects.dryFoliageColorOverride(),
+					effects.grassColorOverride(),
+					Objects.requireNonNull(colorModifier)
+			);
 		}
 
 		@Override
@@ -275,27 +308,27 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public int getWaterColor() {
-			return this.effects.waterColor();
+			return biome.getSpecialEffects().waterColor();
 		}
 
 		@Override
 		public Optional<Integer> getFoliageColorOverride() {
-			return this.effects.foliageColorOverride();
+			return biome.getSpecialEffects().foliageColorOverride();
 		}
 
 		@Override
 		public Optional<Integer> getDryFoliageColorOverride() {
-			return this.effects.dryFoliageColorOverride();
+			return biome.getSpecialEffects().dryFoliageColorOverride();
 		}
 
 		@Override
 		public Optional<Integer> getGrassColorOverride() {
-			return this.effects.grassColorOverride();
+			return biome.getSpecialEffects().grassColorOverride();
 		}
 
 		@Override
 		public BiomeSpecialEffects.GrassColorModifier getGrassColorModifier() {
-			return this.effects.grassColorModifier();
+			return biome.getSpecialEffects().grassColorModifier();
 		}
 	}
 

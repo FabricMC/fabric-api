@@ -16,17 +16,11 @@
 
 package net.fabricmc.fabric.impl.attachment;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -46,7 +40,7 @@ public class AttachmentSavedData extends SavedData {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentSavedData.class);
 	public static final Identifier ID = Identifier.fromNamespaceAndPath("fabric", "attachments");
 	private final AttachmentTargetImpl target;
-	private final boolean wasSerialized;
+	private boolean wasSerialized;
 
 	public AttachmentSavedData(AttachmentTarget target) {
 		this.target = (AttachmentTargetImpl) target;
@@ -61,25 +55,19 @@ public class AttachmentSavedData extends SavedData {
 		return codec((AttachmentTargetImpl) level, () -> "AttachmentSavedData @ " + level.dimension().identifier());
 	}
 
-	// TODO 1.21.5 look at making this more idiomatic
 	private static Codec<AttachmentSavedData> codec(AttachmentTargetImpl target, ProblemReporter.PathElement reporterContext) {
-		return Codec.of(new Encoder<>() {
-			@Override
-			public <T> DataResult<T> encode(AttachmentSavedData input, DynamicOps<T> ops, T prefix) {
-				try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
-					TagValueOutput output = TagValueOutput.createWithoutContext(reporter);
-					target.fabric_writeAttachmentsToNbt(output);
-					return DataResult.success(NbtOps.INSTANCE.convertTo(ops, output.buildResult()));
-				}
+		return CompoundTag.CODEC.xmap(tag -> {
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
+				ValueInput input = TagValueInput.create(reporter, target.fabric_getRegistryAccess(), tag);
+				target.fabric_readAttachmentsFromNbt(input);
+				return new AttachmentSavedData(target);
 			}
-		}, new Decoder<>() {
-			@Override
-			public <T> DataResult<Pair<AttachmentSavedData, T>> decode(DynamicOps<T> ops, T input) {
-				try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
-					ValueInput valueInput = TagValueInput.create(reporter, target.fabric_getRegistryAccess(), (CompoundTag) ops.convertTo(NbtOps.INSTANCE, input));
-					target.fabric_readAttachmentsFromNbt(valueInput);
-					return DataResult.success(Pair.of(new AttachmentSavedData(target), ops.empty()));
-				}
+		}, state -> {
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
+				TagValueOutput output = TagValueOutput.createWithContext(reporter, state.target.fabric_getRegistryAccess());
+				state.target.fabric_writeAttachmentsToNbt(output);
+				state.wasSerialized = true;
+				return output.buildResult();
 			}
 		});
 	}

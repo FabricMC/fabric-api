@@ -366,6 +366,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 	public static final TagKey<Item> GLAZED_TERRACOTTAS = ConventionalBlockItemTags.GLAZED_TERRACOTTAS.item();
 	public static final TagKey<Item> CONCRETES = ConventionalBlockItemTags.CONCRETES.item();
+	public static final TagKey<Item> ICE = ConventionalBlockItemTags.ICE.item();
 	/**
 	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDERS}.
 	 */

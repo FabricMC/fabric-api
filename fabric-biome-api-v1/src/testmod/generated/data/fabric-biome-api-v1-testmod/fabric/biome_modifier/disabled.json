@@ -1,0 +1,16 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:false"
+    }
+  ],
+  "type": "fabric:add_spawns",
+  "biomes": "fabric-biome-api-v1-testmod:example_biome",
+  "spawners": [
+    {
+      "type": "minecraft:pig",
+      "count": 1,
+      "weight": 10
+    }
+  ]
+}

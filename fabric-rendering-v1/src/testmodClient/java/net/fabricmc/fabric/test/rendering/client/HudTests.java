@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import java.util.UUID;
+
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.DeltaTracker;
@@ -26,6 +28,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.waypoints.TrackedWaypoint;
+import net.minecraft.world.waypoints.Waypoint;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -49,7 +53,7 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 	public void onInitializeClient() {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_MISC_OVERLAY), HudTests::extractBeforeMiscOverlay);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_MISC_OVERLAY), HudTests::extractAfterMiscOverlay);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::extractAfterExperienceLevel);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR_FOREGROUND, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::extractAfterInfoBarForeground);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_DEMO_TIMER), HudTests::extractBeforeDemoTimer);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, BEFORE_CHAT), HudTests::extractBeforeChat);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.SUBTITLES, Identifier.fromNamespaceAndPath(MOD_ID, AFTER_SUBTITLES), HudTests::extractAfterSubtitles);
@@ -80,7 +84,7 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 		graphics.centeredText(Minecraft.getInstance().font, "2. Red square underneath crosshair", graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 10, CommonColors.WHITE);
 	}
 
-	private static void extractAfterExperienceLevel(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+	private static void extractAfterInfoBarForeground(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		if (!shouldRender) return;
 		// Render a green rectangle at the bottom of the screen, and it should block the hotbar and status bars
 		graphics.fill(graphics.guiWidth() / 2 - 50, graphics.guiHeight() - 50, graphics.guiWidth() / 2 + 50, graphics.guiHeight() - 10, CommonColors.GREEN);
@@ -124,7 +128,7 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
-			singleplayer.getServer().runCommand("/tp @a 0 -60 0");
+			singleplayer.getServer().runCommand("/tp @a 0 -60 0 0 0");
 			singleplayer.getServer().runCommand("/scoreboard objectives add hud_layer_test dummy");
 			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay list hud_layer_test"); // Hack to show player list
 			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay sidebar hud_layer_test"); // Hack to show sidebar
@@ -132,6 +136,8 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 
 			// Wait for stuff to load
 			singleplayer.getConnection().waitForChunksRender();
+			context.runOnClient(client -> client.player.connection.getWaypointManager().trackWaypoint(
+					TrackedWaypoint.setPosition(UUID.randomUUID(), new Waypoint.Icon(), new BlockPos(0, -59, 10))));
 			singleplayer.getServer().runOnServer(server -> server.getPlayerList().broadcastSystemMessage(Component.nullToEmpty("hud_layer_" + BEFORE_CHAT), false)); // Chat messages disappear in 200 ticks so we send one 150 ticks in advance to test the before chat layer
 			context.waitTicks(150); // The powder snow frosty vignette takes 140 ticks to fully appear, so we additionally wait for a total of 150 ticks
 

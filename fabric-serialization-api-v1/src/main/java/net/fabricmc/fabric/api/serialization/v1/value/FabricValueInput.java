@@ -47,7 +47,7 @@ public interface FabricValueInput {
 	 * @return true, when this {@link ValueInput} contains data under provided key, otherwise false
 	 */
 	default boolean contains(String key) {
-		return ((ValueInput) this).read(SpecialCodecs.contains(key)).orElseThrow();
+		return ((ValueInput) this).read(SpecialCodecs.contains(key)).orElse(false);
 	}
 
 	/**

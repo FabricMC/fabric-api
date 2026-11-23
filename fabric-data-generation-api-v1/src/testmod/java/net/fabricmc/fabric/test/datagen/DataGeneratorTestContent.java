@@ -101,6 +101,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 	);
 
 	public static Holder<Potion> HASTE_POTION;
+	public static Holder<Potion> EXAMPLE_POTION;
 
 	public static final TagKey<SoundEvent> EQUIP_SOUNDS = TagKey.create(Registries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_equip_sounds"));
 
@@ -129,6 +130,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		DynamicRegistries.registerReloadable(TEST_DATAGEN_RELOADABLE_REGISTRY_KEY, TestDatagenObject.CODEC);
 
 		HASTE_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath(MOD_ID, "haste"), new Potion("haste", new MobEffectInstance(MobEffects.HASTE, 900)));
+		EXAMPLE_POTION = Registry.registerForHolder(BuiltInRegistries.POTION, Identifier.fromNamespaceAndPath("other_mod", "example"), new Potion("example", new MobEffectInstance(MobEffects.HASTE, 900)));
 	}
 
 	private static BlockItemId createBlockItemId(String name) {

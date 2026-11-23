@@ -16,7 +16,11 @@
 
 package net.fabricmc.fabric.test.networking.client.splitter;
 
+import com.mojang.brigadier.Command;
+
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.test.networking.splitter.NetworkingSplitterTest;
 
@@ -27,5 +31,12 @@ public class NetworkingSplitterClientTest implements ClientModInitializer {
 			NetworkingSplitterTest.validateLargePacketData(payload.index(), payload.data(), "client");
 			context.responseSender().sendPacket(payload);
 		});
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
+				ClientCommands.literal("clientnetworktestcommand")
+						.then(ClientCommands.literal("large_creative_only").executes(context -> {
+							ClientPlayNetworking.send(new NetworkingSplitterTest.LargeCreativeOnlyPayload(1, NetworkingSplitterTest.RANDOM_DATA[1]));
+							return Command.SINGLE_SUCCESS;
+						}))));
 	}
 }

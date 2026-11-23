@@ -47,6 +47,14 @@ public abstract class SimpleFabricLootTableSubProvider implements FabricLootTabl
 		return FabricLootTableProviderImpl.run(cache, this, contextParamSet, output, registryLookupFuture);
 	}
 
+	/**
+	 * @throws UnsupportedOperationException always; use {@link #run(CachedOutput)} instead
+	 */
+	@Override
+	public void run() {
+		throw new UnsupportedOperationException("Use run(CachedOutput) instead");
+	}
+
 	@Override
 	public String getName() {
 		return Objects.requireNonNull(BuiltInRegistries.CONTEXT_KEY_SET.getKey(contextParamSet), "Could not get id for loot context param set") + " Loot Table";

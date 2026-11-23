@@ -137,6 +137,10 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 				}
 			};
 		}
+
+		protected BlockItemTagAppender<Block> builder(BlockItemTagId tag) {
+			return builder(tag.block());
+		}
 	}
 
 	/**
@@ -205,6 +209,10 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 					return element.item();
 				}
 			};
+		}
+
+		protected BlockItemTagAppender<Item> builder(BlockItemTagId tag) {
+			return builder(tag.item());
 		}
 	}
 

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.level;
 
+import com.mojang.renderpearl.api.commands.RenderPass;
+
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
@@ -38,6 +40,25 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public final class LevelRenderEvents {
 	private LevelRenderEvents() { }
+
+	/**
+	 * Called before the main {@link RenderPass} is opened, after the sky is drawn to the appropriate framebuffers and all
+	 * chunks to be rendered are uploaded to GPU, and before {@link #START_MAIN}.
+	 *
+	 * <p>The main render pass draws opaque terrain and solid features, and also translucent terrain and features when
+	 * improved transparency is disabled. {@link #START_MAIN}, {@link #AFTER_OPAQUE_TERRAIN} and
+	 * {@link #AFTER_SOLID_FEATURES} are always called while it is open, so they are not a place to open a render pass
+	 * of your own. Use this event instead when you need your own {@link RenderPass} that runs before the main one, for
+	 * example to draw into a texture that is sampled during the main pass. Any render pass opened in this event must be
+	 * closed before the callback returns.
+	 *
+	 * <p>To draw as part of the main render pass, use {@link #START_MAIN} or one of the later events instead.
+	 */
+	public static final Event<BeforeRenderPass> BEFORE_RENDER_PASS = EventFactory.createArrayBacked(BeforeRenderPass.class, callbacks -> context -> {
+		for (final BeforeRenderPass callback : callbacks) {
+			callback.beforeRenderPass(context);
+		}
+	});
 
 	/**
 	 * Called at the start of the main pass, after the sky is drawn to the appropriate framebuffers and all chunks to be
@@ -158,6 +179,24 @@ public final class LevelRenderEvents {
 	});
 
 	/**
+	 * Called after the main {@link RenderPass} is closed, and before {@link #END_MAIN}.
+	 *
+	 * <p>When improved transparency is disabled, the main render pass has drawn terrain, solid and translucent features,
+	 * clouds, weather and the world border at this point. When it is enabled, only opaque terrain and solid features have
+	 * been drawn, and translucent geometry is drawn afterwards in separate render passes. In both cases, entity outlines,
+	 * see-through features and always-on-top gizmos are drawn after this event.
+	 *
+	 * <p>Use this event when you need your own {@link RenderPass} that runs right after the main one, for example to
+	 * read from or post-process what it drew. Any render pass opened in this event must be closed before the callback
+	 * returns.
+	 */
+	public static final Event<AfterRenderPass> AFTER_RENDER_PASS = EventFactory.createArrayBacked(AfterRenderPass.class, callbacks -> context -> {
+		for (final AfterRenderPass callback : callbacks) {
+			callback.afterRenderPass(context);
+		}
+	});
+
+	/**
 	 * Called at the end of the main render pass, after terrain, entities, block entities, and particles are drawn to
 	 * the appropriate framebuffers, and before clouds, weather, and late debug are drawn to the appropriate
 	 * framebuffers and before fabulous translucent framebuffers are combined.
@@ -179,6 +218,11 @@ public final class LevelRenderEvents {
 	 */
 	@Deprecated
 	public static final Event<LevelExtractionEvents.EndExtraction> END_EXTRACTION = LevelExtractionEvents.END_EXTRACTION;
+
+	@FunctionalInterface
+	public interface BeforeRenderPass {
+		void beforeRenderPass(LevelTerrainRenderContext context);
+	}
 
 	@FunctionalInterface
 	public interface StartMain {
@@ -223,6 +267,11 @@ public final class LevelRenderEvents {
 	@FunctionalInterface
 	public interface AfterTranslucentTerrain {
 		void afterTranslucentTerrain(LevelRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface AfterRenderPass {
+		void afterRenderPass(LevelRenderContext context);
 	}
 
 	@FunctionalInterface

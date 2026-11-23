@@ -22,11 +22,12 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 public record CommonVersionPayload(int[] versions) implements CustomPacketPayload {
+	private static final int MAX_VERSIONS = 128;
 	public static final StreamCodec<FriendlyByteBuf, CommonVersionPayload> CODEC = CustomPacketPayload.codec(CommonVersionPayload::write, CommonVersionPayload::new);
 	public static final CustomPacketPayload.Type<CommonVersionPayload> TYPE = new Type<>(Identifier.parse("c:version"));
 
 	private CommonVersionPayload(FriendlyByteBuf buf) {
-		this(buf.readVarIntArray());
+		this(buf.readVarIntArray(MAX_VERSIONS));
 	}
 
 	public void write(FriendlyByteBuf buf) {

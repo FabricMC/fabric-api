@@ -115,6 +115,10 @@ public final class ConventionalBlockItemTags {
 	public static final BlockItemTagId GLASS_PANES_COLORLESS = register("glass_panes/colorless");
 	public static final BlockItemTagId GLAZED_TERRACOTTAS = register("glazed_terracottas");
 	public static final BlockItemTagId CONCRETES = register("concretes");
+	/**
+	 * Solid/full blocks of Ice.
+	 */
+	public static final BlockItemTagId ICE = register("ice");
 
 	// Related to budding mechanics
 	/**

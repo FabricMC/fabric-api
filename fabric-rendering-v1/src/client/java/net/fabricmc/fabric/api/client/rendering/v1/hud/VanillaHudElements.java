@@ -68,13 +68,20 @@ public final class VanillaHudElements {
 	 */
 	public static final Identifier MOUNT_HEALTH = Identifier.withDefaultNamespace("mount_health");
 	/**
-	 * The identifier for the info bar, either empty, experience bar, locator, or jump bar.
+	 * The identifier for the info bar background, including experience or jump progress.
+	 *
+	 * <p>The info bar can be empty, an experience bar, a locator bar, or a jump bar.
+	 * Locator bar waypoints are controlled by {@link #INFO_BAR_FOREGROUND}, and experience level text by {@link #EXPERIENCE_LEVEL}.
 	 */
 	public static final Identifier INFO_BAR = Identifier.withDefaultNamespace("info_bar");
 	/**
 	 * The identifier for experience level tooltip.
 	 */
 	public static final Identifier EXPERIENCE_LEVEL = Identifier.withDefaultNamespace("experience_level");
+	/**
+	 * The identifier for the info bar foreground, which renders locator bar waypoint icons and arrows.
+	 */
+	public static final Identifier INFO_BAR_FOREGROUND = Identifier.withDefaultNamespace("info_bar_foreground");
 	/**
 	 * The identifier for held item tooltip.
 	 */

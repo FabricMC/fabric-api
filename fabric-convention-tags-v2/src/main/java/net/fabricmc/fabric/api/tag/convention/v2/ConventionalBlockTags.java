@@ -112,6 +112,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> GLASS_PANES_COLORLESS = ConventionalBlockItemTags.GLASS_PANES_COLORLESS.block();
 	public static final TagKey<Block> GLAZED_TERRACOTTAS = ConventionalBlockItemTags.GLAZED_TERRACOTTAS.block();
 	public static final TagKey<Block> CONCRETES = ConventionalBlockItemTags.CONCRETES.block();
+	public static final TagKey<Block> ICE = ConventionalBlockItemTags.ICE.block();
 
 	// Related to budding mechanics
 	/**

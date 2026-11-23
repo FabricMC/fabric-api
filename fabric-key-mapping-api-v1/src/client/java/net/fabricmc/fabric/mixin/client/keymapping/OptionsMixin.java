@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,6 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingContext;
+import net.fabricmc.fabric.impl.client.keymapping.KeyMappingExtensions;
 import net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl;
 
 @Mixin(Options.class)
@@ -38,6 +41,32 @@ public class OptionsMixin {
 
 	@Inject(at = @At("HEAD"), method = "load()V")
 	public void loadHook(CallbackInfo info) {
+		Options options = (Options) (Object) this;
+
+		// These bindings are also handled by screens or global input handlers.
+		setGlobalConflictContext(
+				options.keyInventory,
+				options.keyDrop,
+				options.keyPickItem,
+				options.keySwapOffhand,
+				options.keyChat,
+				options.keyFriends,
+				options.keySocialInteractions,
+				options.keyScreenshot,
+				options.keyFullscreen,
+				options.keyAdvancements,
+				options.keyDebugOverlay,
+				options.keyDebugModifier
+		);
+		setGlobalConflictContext(options.keyHotbarSlots);
+		setGlobalConflictContext(options.debugKeys);
 		keyMappings = KeyMappingRegistryImpl.process(keyMappings);
+	}
+
+	@Unique
+	private static void setGlobalConflictContext(KeyMapping... mappings) {
+		for (KeyMapping mapping : mappings) {
+			((KeyMappingExtensions) mapping).fabric_setConflictContext(KeyMappingContext.ALL);
+		}
 	}
 }

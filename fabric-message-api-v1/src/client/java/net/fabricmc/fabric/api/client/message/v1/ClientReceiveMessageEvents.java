@@ -146,6 +146,122 @@ public final class ClientReceiveMessageEvents {
 		}
 	});
 
+	/**
+	 * An event triggered when the client receives a title from the server, before the HUD is updated.
+	 * Mods can use this to block the title.
+	 *
+	 * <p>All listeners are called. If any listener returns {@code false},
+	 * {@link #TITLE_CANCELED} is triggered instead of {@link #MODIFY_TITLE} and {@link #TITLE}.
+	 */
+	public static final Event<AllowTitle> ALLOW_TITLE = EventFactory.createArrayBacked(AllowTitle.class, listeners -> title -> {
+		boolean allow = true;
+
+		for (AllowTitle listener : listeners) {
+			allow &= listener.allowReceiveTitle(title);
+		}
+
+		return allow;
+	});
+
+	/**
+	 * An event triggered to modify a title received from the server, before the HUD is updated.
+	 * Is not called when {@linkplain #ALLOW_TITLE the title is blocked}.
+	 * Each listener receives the title returned by the previous listener.
+	 * Use {@link #TITLE} if not modifying the title.
+	 */
+	public static final Event<ModifyTitle> MODIFY_TITLE = EventFactory.createArrayBacked(ModifyTitle.class, listeners -> title -> {
+		for (ModifyTitle listener : listeners) {
+			title = listener.modifyReceivedTitle(title);
+		}
+
+		return title;
+	});
+
+	/**
+	 * An event triggered when the client receives a title from the server, before the HUD is updated.
+	 * Receives the result of {@link #MODIFY_TITLE} and is not called when
+	 * {@linkplain #ALLOW_TITLE the title is blocked}.
+	 * Mods can use this to listen to the title.
+	 */
+	public static final Event<Title> TITLE = EventFactory.createArrayBacked(Title.class, listeners -> title -> {
+		for (Title listener : listeners) {
+			listener.onReceiveTitle(title);
+		}
+	});
+
+	/**
+	 * An event triggered when receiving a title is canceled with {@link #ALLOW_TITLE}.
+	 * Receives the original title from the server.
+	 */
+	public static final Event<TitleCanceled> TITLE_CANCELED = EventFactory.createArrayBacked(TitleCanceled.class, listeners -> title -> {
+		for (TitleCanceled listener : listeners) {
+			listener.onReceiveTitleCanceled(title);
+		}
+	});
+
+	/**
+	 * An event triggered when the client receives a subtitle from the server, before the HUD is updated.
+	 * Mods can use this to block the subtitle.
+	 *
+	 * <p>All listeners are called. If any listener returns {@code false},
+	 * {@link #SUBTITLE_CANCELED} is triggered instead of {@link #MODIFY_SUBTITLE} and {@link #SUBTITLE}.
+	 */
+	public static final Event<AllowSubtitle> ALLOW_SUBTITLE = EventFactory.createArrayBacked(AllowSubtitle.class, listeners -> subtitle -> {
+		boolean allow = true;
+
+		for (AllowSubtitle listener : listeners) {
+			allow &= listener.allowReceiveSubtitle(subtitle);
+		}
+
+		return allow;
+	});
+
+	/**
+	 * An event triggered to modify a subtitle received from the server, before the HUD is updated.
+	 * Is not called when {@linkplain #ALLOW_SUBTITLE the subtitle is blocked}.
+	 * Each listener receives the subtitle returned by the previous listener.
+	 * Use {@link #SUBTITLE} if not modifying the subtitle.
+	 */
+	public static final Event<ModifySubtitle> MODIFY_SUBTITLE = EventFactory.createArrayBacked(ModifySubtitle.class, listeners -> subtitle -> {
+		for (ModifySubtitle listener : listeners) {
+			subtitle = listener.modifyReceivedSubtitle(subtitle);
+		}
+
+		return subtitle;
+	});
+
+	/**
+	 * An event triggered when the client receives a subtitle from the server, before the HUD is updated.
+	 * Receives the result of {@link #MODIFY_SUBTITLE} and is not called when
+	 * {@linkplain #ALLOW_SUBTITLE the subtitle is blocked}.
+	 * Mods can use this to listen to the subtitle.
+	 */
+	public static final Event<Subtitle> SUBTITLE = EventFactory.createArrayBacked(Subtitle.class, listeners -> subtitle -> {
+		for (Subtitle listener : listeners) {
+			listener.onReceiveSubtitle(subtitle);
+		}
+	});
+
+	/**
+	 * An event triggered when receiving a subtitle is canceled with {@link #ALLOW_SUBTITLE}.
+	 * Receives the original subtitle from the server.
+	 */
+	public static final Event<SubtitleCanceled> SUBTITLE_CANCELED = EventFactory.createArrayBacked(SubtitleCanceled.class, listeners -> subtitle -> {
+		for (SubtitleCanceled listener : listeners) {
+			listener.onReceiveSubtitleCanceled(subtitle);
+		}
+	});
+
+	/**
+	 * An event triggered when the server requests that titles and subtitles be cleared,
+	 * before the HUD is updated. This is not triggered when a title expires or is cleared locally.
+	 */
+	public static final Event<ClearTitles> CLEAR_TITLES = EventFactory.createArrayBacked(ClearTitles.class, listeners -> resetTimes -> {
+		for (ClearTitles listener : listeners) {
+			listener.onClearTitles(resetTimes);
+		}
+	});
+
 	@FunctionalInterface
 	public interface AllowChat {
 		/**
@@ -257,5 +373,105 @@ public final class ClientReceiveMessageEvents {
 		 * @param overlay whether the message would have been displayed in the action bar
 		 */
 		void onReceiveGameMessageCanceled(Component message, boolean overlay);
+	}
+
+	@FunctionalInterface
+	public interface AllowTitle {
+		/**
+		 * Called when the client receives a title from the server, before the HUD is updated.
+		 * Returning {@code false} prevents the title from being set and triggers {@link #TITLE_CANCELED}.
+		 * The previously displayed title is left unchanged.
+		 *
+		 * @param title the title received from the server
+		 * @return {@code true} if the title should be set, otherwise {@code false}
+		 */
+		boolean allowReceiveTitle(Component title);
+	}
+
+	@FunctionalInterface
+	public interface ModifyTitle {
+		/**
+		 * Called to modify a title received from the server, unless {@link #ALLOW_TITLE} blocks it.
+		 *
+		 * @param title the title, as modified by previous listeners
+		 * @return the modified title, or the original {@code title} if not modified
+		 */
+		Component modifyReceivedTitle(Component title);
+	}
+
+	@FunctionalInterface
+	public interface Title {
+		/**
+		 * Called before a title received from the server is set in the HUD,
+		 * unless {@link #ALLOW_TITLE} blocks it.
+		 *
+		 * @param title the title, as modified by {@link #MODIFY_TITLE}
+		 */
+		void onReceiveTitle(Component title);
+	}
+
+	@FunctionalInterface
+	public interface TitleCanceled {
+		/**
+		 * Called when receiving a title is canceled with {@link #ALLOW_TITLE}.
+		 *
+		 * @param title the original title received from the server
+		 */
+		void onReceiveTitleCanceled(Component title);
+	}
+
+	@FunctionalInterface
+	public interface AllowSubtitle {
+		/**
+		 * Called when the client receives a subtitle from the server, before the HUD is updated.
+		 * Returning {@code false} prevents the subtitle from being set and triggers {@link #SUBTITLE_CANCELED}.
+		 * The previously displayed subtitle is left unchanged.
+		 *
+		 * @param subtitle the subtitle received from the server
+		 * @return {@code true} if the subtitle should be set, otherwise {@code false}
+		 */
+		boolean allowReceiveSubtitle(Component subtitle);
+	}
+
+	@FunctionalInterface
+	public interface ModifySubtitle {
+		/**
+		 * Called to modify a subtitle received from the server, unless {@link #ALLOW_SUBTITLE} blocks it.
+		 *
+		 * @param subtitle the subtitle, as modified by previous listeners
+		 * @return the modified subtitle, or the original {@code subtitle} if not modified
+		 */
+		Component modifyReceivedSubtitle(Component subtitle);
+	}
+
+	@FunctionalInterface
+	public interface Subtitle {
+		/**
+		 * Called before a subtitle received from the server is set in the HUD,
+		 * unless {@link #ALLOW_SUBTITLE} blocks it.
+		 *
+		 * @param subtitle the subtitle, as modified by {@link #MODIFY_SUBTITLE}
+		 */
+		void onReceiveSubtitle(Component subtitle);
+	}
+
+	@FunctionalInterface
+	public interface SubtitleCanceled {
+		/**
+		 * Called when receiving a subtitle is canceled with {@link #ALLOW_SUBTITLE}.
+		 *
+		 * @param subtitle the original subtitle received from the server
+		 */
+		void onReceiveSubtitleCanceled(Component subtitle);
+	}
+
+	@FunctionalInterface
+	public interface ClearTitles {
+		/**
+		 * Called before a server request clears the HUD's title and subtitle.
+		 *
+		 * @param resetTimes whether the title fade-in, stay and fade-out times will also be reset to their defaults
+		 */
+		void onClearTitles(boolean resetTimes);
 	}
 }

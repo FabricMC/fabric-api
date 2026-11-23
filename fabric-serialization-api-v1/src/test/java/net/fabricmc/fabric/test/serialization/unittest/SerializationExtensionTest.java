@@ -70,6 +70,24 @@ public class SerializationExtensionTest {
 		readExampleData(directWrite.buildResult(), defaultedRead, "Defaulted read");
 	}
 
+	@Test
+	void testContainsInMissingChild() {
+		ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, HolderLookup.Provider.create(Stream.empty()), new CompoundTag());
+
+		assertFalse(input.childOrEmpty("mod_data").contains("version"));
+		assertFalse(new DelegateValueInput(input).childOrEmpty("mod_data").contains("version"));
+	}
+
+	@Test
+	void testContainsInEmptyChild() {
+		CompoundTag tag = new CompoundTag();
+		tag.put("mod_data", new CompoundTag());
+		ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, HolderLookup.Provider.create(Stream.empty()), tag);
+
+		assertFalse(input.childOrEmpty("mod_data").contains("version"));
+		assertFalse(new DelegateValueInput(input).childOrEmpty("mod_data").contains("version"));
+	}
+
 	private void writeExampleData(ValueOutput output) {
 		output.putByteArray(BYTES_KEY, BYTES_DATA);
 		output.putLongArray(LONG_KEY, LONG_DATA);

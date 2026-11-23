@@ -1,0 +1,23 @@
+name: Set up Maven Central mirror
+description: Use Google's Maven Central mirror for Gradle dependency resolution
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        mkdir -p ~/.m2
+        cat > ~/.m2/settings.xml <<'EOF'
+        <settings>
+          <mirrors>
+            <mirror>
+              <id>google-maven-central</id>
+              <mirrorOf>central</mirrorOf>
+              <url>https://maven-central-eu.storage-download.googleapis.com/maven2/</url>
+            </mirror>
+          </mirrors>
+        </settings>
+        EOF
+
+        gradle_user_home="${GRADLE_USER_HOME:-$HOME/.gradle}"
+        mkdir -p "$gradle_user_home"
+        printf '\norg.gradle.mirror.maven.settings=true\n' >> "$gradle_user_home/gradle.properties"

@@ -13,16 +13,8 @@ accessible	field	net/minecraft/world/level/biome/Biome	generationSettings	Lnet/m
 accessible	method	net/minecraft/world/level/biome/Biome$ClimateSettings	<init>	(ZFLnet/minecraft/world/level/biome/Biome$TemperatureModifier;F)V
 
 # Biome Effects
-accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	waterColor	I
-mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	waterColor	I
-accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	foliageColorOverride	Ljava/util/Optional;
-mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	foliageColorOverride	Ljava/util/Optional;
-accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	dryFoliageColorOverride	Ljava/util/Optional;
-mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	dryFoliageColorOverride	Ljava/util/Optional;
-accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	grassColorOverride	Ljava/util/Optional;
-mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	grassColorOverride	Ljava/util/Optional;
-accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	grassColorModifier	Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier;
-mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	grassColorModifier	Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier;
+accessible	field	net/minecraft/world/level/biome/Biome	specialEffects	Lnet/minecraft/world/level/biome/BiomeSpecialEffects;
+mutable	field	net/minecraft/world/level/biome/Biome	specialEffects	Lnet/minecraft/world/level/biome/BiomeSpecialEffects;
 
 # Generation Settings
 accessible	field	net/minecraft/world/level/biome/BiomeGenerationSettings	carvers	Lnet/minecraft/core/HolderSet;

@@ -7,10 +7,14 @@ loom {
 }
 
 fabricApiModule {
+	moduleDependencies(
+		'fabric-registry-sync-v0'
+	)
+
 	testDependencies(
 		':fabric-api-base',
 		':fabric-resource-loader-v1',
-		':fabric-registry-sync-v0',
+		':fabric-resource-conditions-api-v1',
 		':fabric-data-generation-api-v1'
 	)
 }

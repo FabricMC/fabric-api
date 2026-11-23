@@ -68,6 +68,13 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 		this.hasFabricInitialized = true;
 	}
 
+	@Inject(method = "preparePictureInPictureState", at = @At("HEAD"))
+	private void initializePictureInPictureRenderers(CallbackInfo ci) {
+		if (!hasFabricInitialized) {
+			fabric_onReady();
+		}
+	}
+
 	@Inject(method = "preparePictureInPicture", at = @At("HEAD"))
 	private void prePrepareSpecialElements(CallbackInfo ci) {
 		pipRendererPools.values().forEach(PictureInPictureRendererPool::newFrame);

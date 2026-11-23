@@ -61,9 +61,16 @@ public class CustomDamageTest implements ModInitializer {
 	public static final ResourceKey<Item> WEIRD_PICK_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "weird_pickaxe"));
 	public static final Item WEIRD_PICK = new WeirdPick(WEIRD_PICK_KEY);
 
+	public static final ResourceKey<Item> BREAKING_ITEM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "breaking_item"));
+	public static final Item BREAKING_ITEM = new Item(new Item.Properties().durability(10).customDamage((stack, amount, entity, slot, breakCallback) -> {
+		breakCallback.run();
+		return stack.getMaxDamage();
+	}).setId(BREAKING_ITEM_KEY));
+
 	@Override
 	public void onInitialize() {
 		Registry.register(BuiltInRegistries.ITEM, WEIRD_PICK_KEY, WEIRD_PICK);
+		Registry.register(BuiltInRegistries.ITEM, BREAKING_ITEM_KEY, BREAKING_ITEM);
 		EnchantmentEvents.ALLOW_ENCHANTING.register(((enchantment, target, enchantingContext) -> {
 			if (target.is(Items.DIAMOND_PICKAXE) && enchantment.is(Enchantments.SHARPNESS) && EnchantmentHelper.hasTag(target, EnchantmentTags.MINING_EXCLUSIVE)) {
 				return TriState.TRUE;

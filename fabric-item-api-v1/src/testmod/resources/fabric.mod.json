@@ -17,6 +17,7 @@
       "net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest",
       "net.fabricmc.fabric.test.item.CustomModelIdTest",
       "net.fabricmc.fabric.test.item.DefaultItemComponentTest",
+      "net.fabricmc.fabric.test.item.CustomItemTests",
       "net.fabricmc.fabric.test.item.ItemClickBehaviorTest",
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
       "net.fabricmc.fabric.test.item.ModifyComponentsInPropertiesTestSetup"
@@ -27,6 +28,7 @@
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.item.gametest.BrewingStandGameTest",
       "net.fabricmc.fabric.test.item.gametest.CustomBlockTransformsGameTest",
+      "net.fabricmc.fabric.test.item.gametest.CustomDamageGameTest",
       "net.fabricmc.fabric.test.item.gametest.CustomEnchantmentEffectsGameTest",
       "net.fabricmc.fabric.test.item.gametest.DefaultItemComponentGameTest",
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest",

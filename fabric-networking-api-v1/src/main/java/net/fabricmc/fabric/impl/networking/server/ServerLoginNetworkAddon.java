@@ -83,7 +83,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 			this.firstQueryTick = false;
 		}
 
-		AtomicReference<Throwable> error = new AtomicReference<>();
+		AtomicReference<@Nullable Throwable> error = new AtomicReference<>();
 		this.waits.removeIf(future -> {
 			if (!future.isDone()) {
 				return false;
@@ -91,22 +91,32 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 			try {
 				future.get();
-			} catch (ExecutionException ex) {
-				Throwable caught = ex.getCause();
+			} catch (ExecutionException | InterruptedException | CancellationException ex) {
+				Throwable cause = ex instanceof ExecutionException ? ex.getCause() : null;
+				Throwable caught = cause == null ? ex : cause;
 				error.getAndUpdate(oldEx -> {
 					if (oldEx == null) {
 						return caught;
 					}
 
-					oldEx.addSuppressed(caught);
+					if (oldEx != caught) {
+						oldEx.addSuppressed(caught);
+					}
+
 					return oldEx;
 				});
-			} catch (InterruptedException | CancellationException ignored) {
-				// ignore
 			}
 
 			return true;
 		});
+
+		Throwable failure = error.get();
+
+		if (failure != null) {
+			this.logger.error("Login synchronization failed", failure);
+			this.listener.disconnect(Component.literal("Login synchronization failed"));
+			return false;
+		}
 
 		return this.channels.isEmpty() && this.waits.isEmpty();
 	}

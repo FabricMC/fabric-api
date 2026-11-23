@@ -1,0 +1,5 @@
+{
+  "type": "fabric:remove_carvers",
+  "biomes": "fabric-biome-api-v1-testmod:example_biome",
+  "carvers": "minecraft:canyon"
+}

@@ -110,5 +110,55 @@ public class ChatTestClient implements ClientModInitializer {
 		});
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString()));
 		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> LOGGER.info("Cancelled receiving game message with overlay {}: {}", overlay, message.getString()));
+
+		// /title @s title "test title"
+		// /title @s title "block receive"
+		// /title @s title "modify receive"
+		ClientReceiveMessageEvents.ALLOW_TITLE.register(title -> {
+			if (title.getString().contains("block receive")) {
+				LOGGER.info("Blocked receiving title: {}", title.getString());
+				return false;
+			}
+
+			return true;
+		});
+		ClientReceiveMessageEvents.MODIFY_TITLE.register(title -> {
+			if (title.getString().contains("modify receive")) {
+				LOGGER.info("Modifying received title: {}", title.getString());
+				return Component.literal("modified received title");
+			}
+
+			return title;
+		});
+		ClientReceiveMessageEvents.TITLE.register(title -> LOGGER.info("Received title: {}", title.getString()));
+		ClientReceiveMessageEvents.TITLE_CANCELED.register(title -> LOGGER.info("Cancelled receiving title: {}", title.getString()));
+
+		// Set a subtitle, then send a title to display it:
+		// /title @s subtitle "test subtitle"
+		// /title @s subtitle "block receive"
+		// /title @s subtitle "modify receive"
+		// /title @s title "test title"
+		ClientReceiveMessageEvents.ALLOW_SUBTITLE.register(subtitle -> {
+			if (subtitle.getString().contains("block receive")) {
+				LOGGER.info("Blocked receiving subtitle: {}", subtitle.getString());
+				return false;
+			}
+
+			return true;
+		});
+		ClientReceiveMessageEvents.MODIFY_SUBTITLE.register(subtitle -> {
+			if (subtitle.getString().contains("modify receive")) {
+				LOGGER.info("Modifying received subtitle: {}", subtitle.getString());
+				return Component.literal("modified received subtitle");
+			}
+
+			return subtitle;
+		});
+		ClientReceiveMessageEvents.SUBTITLE.register(subtitle -> LOGGER.info("Received subtitle: {}", subtitle.getString()));
+		ClientReceiveMessageEvents.SUBTITLE_CANCELED.register(subtitle -> LOGGER.info("Cancelled receiving subtitle: {}", subtitle.getString()));
+
+		// /title @s clear
+		// /title @s reset
+		ClientReceiveMessageEvents.CLEAR_TITLES.register(resetTimes -> LOGGER.info("Cleared titles with reset times: {}", resetTimes));
 	}
 }

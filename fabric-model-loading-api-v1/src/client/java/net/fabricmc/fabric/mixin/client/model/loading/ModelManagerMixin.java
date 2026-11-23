@@ -91,6 +91,11 @@ abstract class ModelManagerMixin implements FabricModelManager {
 		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyBlockModelsOnLoad(models));
 	}
 
+	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ClientItemInfoLoader;scheduleLoad(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	private CompletableFuture<ClientItemInfoLoader.LoadedClientInfos> hookItemModels(CompletableFuture<ClientItemInfoLoader.LoadedClientInfos> modelsFuture) {
+		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyItemModelsOnLoad(models));
+	}
+
 	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 0)
 	private Function<Void, ?> hookModelCollect(Function<Void, CompletableFuture<?>> function) {
 		return withModelDispatcher(function);

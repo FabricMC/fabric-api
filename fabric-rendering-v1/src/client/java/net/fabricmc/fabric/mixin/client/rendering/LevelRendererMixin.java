@@ -74,6 +74,16 @@ public abstract class LevelRendererMixin {
 		renderContext.setSectionsToRender(cir.getReturnValue());
 	}
 
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/CommandEncoder;createRenderPass(Ljava/util/function/Supplier;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Ljava/util/Optional;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Ljava/util/OptionalDouble;)Lcom/mojang/renderpearl/api/commands/RenderPass;"))
+	private void beforeMainRenderPass(CallbackInfo ci) {
+		LevelRenderEvents.BEFORE_RENDER_PASS.invoker().beforeRenderPass(renderContext);
+	}
+
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/RenderPass;close()V", ordinal = 0, shift = At.Shift.AFTER))
+	private void afterMainRenderPass(CallbackInfo ci) {
+		LevelRenderEvents.AFTER_RENDER_PASS.invoker().afterRenderPass(renderContext);
+	}
+
 	@WrapOperation(method = "executeSolid", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/renderpearl/api/commands/RenderPass;Lcom/mojang/renderpearl/api/textures/GpuSampler;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Z)V"))
 	private void wrapRenderOpaqueTerrain(ChunkSectionsToRender chunkSectionsToRender, ChunkSectionLayerGroup group, RenderPass renderPass, GpuSampler sampler, GpuTextureView atlas, boolean renderWireframeTerrain, Operation<Void> original) {
 		LevelRenderEvents.START_MAIN.invoker().startMain(renderContext);

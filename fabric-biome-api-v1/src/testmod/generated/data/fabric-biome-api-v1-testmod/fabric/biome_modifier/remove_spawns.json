@@ -1,0 +1,5 @@
+{
+  "type": "fabric:remove_spawns",
+  "biomes": "fabric-biome-api-v1-testmod:example_biome",
+  "entity_types": "minecraft:zombie"
+}
