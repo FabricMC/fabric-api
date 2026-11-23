@@ -1,8 +1,8 @@
 [versions]
-asm = "9.11"
+asm = "9.10.1"
 fabric-loader = "0.20.0"
 fabric-installer = "1.1.2"
-fabric-loom = "1.19.1"
+fabric-loom = "1.19.4"
 spotless = "8.6.0"
 remote-sign = "0.5.0"
 mod-publish = "2.0.1"
