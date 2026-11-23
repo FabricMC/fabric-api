@@ -63,10 +63,8 @@ public class PigRendererMixin {
 
 	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/PigRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/MobRenderer;submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V"))
 	private void renderUsingRenderStateData(PigRenderState state, PoseStack poseStack, SubmitNodeCollector queue, CameraRenderState cameraRenderState, CallbackInfo ci) {
-		MovingBlockRenderState movingBlockRenderState = state.getData(MOVING_BLOCK);
-
-		if (movingBlockRenderState != null) {
-			queue.submitMovingBlock(poseStack, movingBlockRenderState, 0x0);
+		if (state.hasData(MOVING_BLOCK)) {
+			queue.submitMovingBlock(poseStack, state.getData(MOVING_BLOCK), 0x0);
 		}
 	}
 }
