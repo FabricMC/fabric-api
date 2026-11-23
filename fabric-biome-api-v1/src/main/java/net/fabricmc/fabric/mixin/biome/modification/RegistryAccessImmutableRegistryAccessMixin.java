@@ -40,4 +40,9 @@ public class RegistryAccessImmutableRegistryAccessMixin implements BiomeModifica
 
 		modified = true;
 	}
+
+	@Override
+	public boolean fabric_isModified() {
+		return modified;
+	}
 }
