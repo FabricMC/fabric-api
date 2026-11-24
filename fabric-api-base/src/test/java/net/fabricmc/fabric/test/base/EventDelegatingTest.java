@@ -31,8 +31,6 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.base.event.CombinedInvokerFactory;
-import net.fabricmc.fabric.impl.base.event.CombinedInvokerFactory.Mode;
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
 public class EventDelegatingTest {
@@ -148,7 +146,8 @@ public class EventDelegatingTest {
 	@Test
 	void createWithBehaviorAndPhases() {
 		Identifier early = Identifier.fromNamespaceAndPath("test", "early");
-		Event<Returning> e = EventFactory.createWithPhases(Returning.class, EventFactory.Behavior.STOP_ON_FALSE, early, Event.DEFAULT_PHASE);
+		Function<Returning[], Returning> invoker = EventFactory.invoker(Returning.class, EventFactory.Behavior.STOP_ON_FALSE, EventFactory.ExceptionHandling.PROPAGATE);
+		Event<Returning> e = EventFactory.createWithPhases(Returning.class, invoker, early, Event.DEFAULT_PHASE);
 		List<String> out = new ArrayList<>();
 		e.register(o -> !o.add("default"));
 		e.register(early, o -> o.add("early"));
@@ -157,8 +156,8 @@ public class EventDelegatingTest {
 	}
 
 	@Test
-	void generatedInvokerFactoryWorksOnItsOwn() {
-		Function<Returning[], Returning> invokers = CombinedInvokerFactory.create(Returning.class, Mode.SHORT_CIRCUIT, Boolean.TRUE, -1);
+	void generatedInvokerFactoryIsAlsoAPlainInvokerFactory() {
+		Function<Returning[], Returning> invokers = EventFactory.invoker(Returning.class, EventFactory.Behavior.STOP_ON_FALSE, EventFactory.ExceptionHandling.PROPAGATE);
 		List<String> out = new ArrayList<>();
 		Returning allow = o -> o.add("allow");
 		Returning deny = o -> !o.add("deny");

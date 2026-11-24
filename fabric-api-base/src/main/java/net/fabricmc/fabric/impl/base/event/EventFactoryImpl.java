@@ -46,10 +46,10 @@ public final class EventFactoryImpl {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
 	}
 
-	public static <T> Event<T> create(Class<? super T> type, EventFactory.Behavior behavior, EventFactory.ExceptionHandling exceptions) {
-		Objects.requireNonNull(behavior, "Tried to create an event with a null behavior!");
+	public static <T> Function<T[], T> invoker(Class<? super T> type, EventFactory.Behavior behavior, EventFactory.ExceptionHandling exceptions) {
+		Objects.requireNonNull(behavior, "Tried to create an invoker factory with a null behavior!");
 
-		CombinedInvokerFactory<T> invokerFactory = switch (behavior) {
+		return switch (behavior) {
 			case INVOKE_ALL -> CombinedInvokerFactory.create(type, Mode.VOID, null, -1, exceptions);
 			case FIRST_NON_NULL -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, null, -1, exceptions);
 			case STOP_ON_FALSE -> CombinedInvokerFactory.create(type, Mode.SHORT_CIRCUIT, Boolean.TRUE, -1, exceptions);
@@ -57,8 +57,6 @@ public final class EventFactoryImpl {
 			case ALL_TRUE -> CombinedInvokerFactory.create(type, Mode.ALL_MATCH, null, -1, exceptions);
 			case ANY_TRUE -> CombinedInvokerFactory.create(type, Mode.ANY_MATCH, null, -1, exceptions);
 		};
-
-		return createArrayBacked(type, invokerFactory);
 	}
 
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {

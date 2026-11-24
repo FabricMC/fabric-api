@@ -138,7 +138,24 @@ public final class EventFactory {
 	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
 	 */
 	public static <T> Event<T> create(Class<? super T> type, Behavior behavior, ExceptionHandling exceptions) {
-		return EventFactoryImpl.create(type, behavior, exceptions);
+		return createArrayBacked(type, invoker(type, behavior, exceptions));
+	}
+
+	/**
+	 * The invoker factory that Fabric API generates for a listener interface, a {@code behavior} and {@code exceptions},
+	 * to pass to the other factory methods, like {@link #createWithPhases(Class, Function, Identifier...)}.
+	 * The event then gets the same generated invoker as with {@link #create(Class, Behavior, ExceptionHandling)}.
+	 * Anywhere else, it is a regular invoker factory. It can be shared by several events of the same listener interface.
+	 *
+	 * @param type       The listener interface.
+	 * @param behavior   How the listeners are called, and their results combined.
+	 * @param exceptions What happens when a listener throws an exception.
+	 * @param <T>        The listener type.
+	 * @return The invoker factory.
+	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
+	 */
+	public static <T> Function<T[], T> invoker(Class<? super T> type, Behavior behavior, ExceptionHandling exceptions) {
+		return EventFactoryImpl.invoker(type, behavior, exceptions);
 	}
 
 	/**
@@ -203,6 +220,8 @@ public final class EventFactory {
 	 *
 	 * <p>Refer to {@link Event#addPhaseOrdering} for an explanation of event phases.
 	 *
+	 * <p>For the generated invoker of {@link #create(Class, Behavior, ExceptionHandling)}, pass the {@link #invoker} as the invoker factory.
+	 *
 	 * @param type           The listener class type.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param defaultPhases  The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
@@ -215,25 +234,6 @@ public final class EventFactory {
 
 		Event<T> event = createArrayBacked(type, invokerFactory);
 
-		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
-		return event;
-	}
-
-	/**
-	 * Like {@link #createWithPhases(Class, Function, Identifier...)}, for an event created like {@link #create(Class, Behavior)}.
-	 *
-	 * @param type          The listener interface.
-	 * @param behavior      How the listeners are called, and their results combined.
-	 * @param defaultPhases The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
-	 * @param <T>           The listener type.
-	 * @return The Event instance.
-	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
-	 */
-	public static <T> Event<T> createWithPhases(Class<? super T> type, Behavior behavior, Identifier... defaultPhases) {
-		EventFactoryImpl.ensureContainsDefault(defaultPhases);
-		EventFactoryImpl.ensureNoDuplicates(defaultPhases);
-
-		Event<T> event = create(type, behavior);
 		EventFactoryImpl.addDefaultPhases(event, defaultPhases);
 		return event;
 	}
