@@ -33,7 +33,9 @@ class SoundButton extends Button.Plain {
 
 	SoundButton(int x, int y, int width, int height) {
 		super(x, y, width, height, Component.nullToEmpty("Sound Button"), _ -> {
-			final SoundEvent event = BuiltInRegistries.SOUND_EVENT.getRandom(RANDOM).map(Holder::value).orElse(SoundEvents.GENERIC_EXPLODE.value());
+			Holder<SoundEvent> event = BuiltInRegistries.SOUND_EVENT.getRandom(RANDOM)
+					.<Holder<SoundEvent>>map(reference -> reference)
+					.orElse(SoundEvents.GENERIC_EXPLODE);
 			Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 1.0F));
 		}, Supplier::get);
 	}
