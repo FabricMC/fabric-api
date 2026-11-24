@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
@@ -41,6 +42,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 
 import net.fabricmc.fabric.api.client.creativetab.v1.FabricCreativeModeInventoryScreen;
 import net.fabricmc.fabric.impl.client.creativetab.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.client.creativetab.FabricCreativeGuiComponents.CreativeModeTabButton;
 import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabImpl;
 
 @Mixin(CreativeModeInventoryScreen.class)
@@ -58,6 +60,12 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 	// "static" matches selectedTab
 	@Unique
 	private static int currentPage = 0;
+
+	@Unique
+	private final CreativeModeTabButton nextPageButton = new CreativeModeTabButton(0, 0, FabricCreativeGuiComponents.Type.NEXT, (CreativeModeInventoryScreen) (Object) this);
+
+	@Unique
+	private final CreativeModeTabButton previousPageButton = new CreativeModeTabButton(0, 0, FabricCreativeGuiComponents.Type.PREVIOUS, (CreativeModeInventoryScreen) (Object) this);
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void synchronizeInitialPage(CallbackInfo info) {
@@ -88,9 +96,10 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 		int xpos = leftPos + 171;
 		int ypos = topPos + 4;
 
-		CreativeModeInventoryScreen self = (CreativeModeInventoryScreen) (Object) this;
-		addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, self));
-		addRenderableWidget(new FabricCreativeGuiComponents.CreativeModeTabButton(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, self));
+		nextPageButton.setPosition(xpos + 10, ypos);
+		previousPageButton.setPosition(xpos, ypos);
+		addRenderableWidget(nextPageButton);
+		addRenderableWidget(previousPageButton);
 	}
 
 	@ModifyExpressionValue(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CreativeModeTabs;tabs()Ljava/util/List;"))
@@ -150,9 +159,15 @@ abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<
 			return false;
 		}
 
+		GuiEventListener focused = getFocused();
 		currentPage = page;
 		rebuildWidgets();
 		updateSelection();
+
+		if (minecraft.getLastInputType().isKeyboard() && focused instanceof CreativeModeTabButton && children().contains(focused)) {
+			setFocused(focused);
+		}
+
 		return true;
 	}
 

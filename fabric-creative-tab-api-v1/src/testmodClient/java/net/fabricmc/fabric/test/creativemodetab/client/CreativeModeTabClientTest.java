@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.creativemodetab.client;
 
 import java.util.List;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.components.TabButton;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
@@ -28,6 +30,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.impl.client.creativetab.FabricCreativeGuiComponents.CreativeModeTabButton;
 
 public class CreativeModeTabClientTest implements FabricClientGameTest {
 	@Override
@@ -41,6 +44,8 @@ public class CreativeModeTabClientTest implements FabricClientGameTest {
 			if (lastPage < 1) {
 				throw new AssertionError("Expected the test mod to add multiple creative tab pages");
 			}
+
+			checkKeyboardPaging(context);
 
 			for (int page : List.of(0, 1, lastPage)) {
 				context.runOnClient(client -> {
@@ -76,6 +81,35 @@ public class CreativeModeTabClientTest implements FabricClientGameTest {
 			}
 
 			context.runOnClient(client -> ((CreativeModeInventoryScreen) client.gui.screen()).setSelectedTab(CreativeModeTabs.getDefaultTab()));
+		}
+	}
+
+	private static void checkKeyboardPaging(ClientGameTestContext context) {
+		CreativeModeTabButton nextPageButton = context.computeOnClient(client -> {
+			CreativeModeInventoryScreen screen = (CreativeModeInventoryScreen) client.gui.screen();
+			screen.switchToPage(0);
+			CreativeModeTabButton button = screen.children().stream()
+					.filter(CreativeModeTabButton.class::isInstance)
+					.map(CreativeModeTabButton.class::cast)
+					.filter(widget -> widget.getMessage().getString().equals(">"))
+					.findFirst().orElseThrow();
+			screen.setFocused(button);
+			return button;
+		});
+
+		for (int page : List.of(1, 2)) {
+			context.getInput().pressKey(InputConstants.KEY_RETURN);
+			context.runOnClient(client -> {
+				CreativeModeInventoryScreen screen = (CreativeModeInventoryScreen) client.gui.screen();
+
+				if (screen.getCurrentPage() != page) {
+					throw new AssertionError("Keyboard activation did not switch to creative tab page " + page);
+				}
+
+				if (screen.getFocused() != nextPageButton || !screen.children().contains(nextPageButton)) {
+					throw new AssertionError("Next page button lost focus on creative tab page " + page);
+				}
+			});
 		}
 	}
 }
