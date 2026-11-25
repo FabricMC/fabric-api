@@ -100,12 +100,13 @@ public final class EventFactory {
 	 *
 	 * <p>Same as {@link #create(Class, Behavior) create(type, Behavior.INVOKE_ALL)}.
 	 *
-	 * @param type The listener interface.
+	 * @param type The listener interface. For a generic listener interface, cast the class literal:
+	 *             {@code (Class<MyCallback<Integer>>) (Class<?>) MyCallback.class}.
 	 * @param <T>  The listener type.
 	 * @return The Event instance.
 	 * @throws IllegalArgumentException if the listener interface does not have a single abstract {@code void} method, or is not accessible to Fabric API.
 	 */
-	public static <T> Event<T> create(Class<? super T> type) {
+	public static <T> Event<T> create(Class<T> type) {
 		return create(type, Behavior.INVOKE_ALL);
 	}
 
@@ -123,7 +124,7 @@ public final class EventFactory {
 	 * @return The Event instance.
 	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
 	 */
-	public static <T> Event<T> create(Class<? super T> type, Behavior behavior) {
+	public static <T> Event<T> create(Class<T> type, Behavior behavior) {
 		return create(type, behavior, ExceptionHandling.PROPAGATE);
 	}
 
@@ -137,7 +138,7 @@ public final class EventFactory {
 	 * @return The Event instance.
 	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
 	 */
-	public static <T> Event<T> create(Class<? super T> type, Behavior behavior, ExceptionHandling exceptions) {
+	public static <T> Event<T> create(Class<T> type, Behavior behavior, ExceptionHandling exceptions) {
 		return createArrayBacked(type, invoker(type, behavior, exceptions));
 	}
 
@@ -154,7 +155,7 @@ public final class EventFactory {
 	 * @return The invoker factory.
 	 * @throws IllegalArgumentException if the method of the listener interface does not fit the {@code behavior}, or is not accessible to Fabric API.
 	 */
-	public static <T> Function<T[], T> invoker(Class<? super T> type, Behavior behavior, ExceptionHandling exceptions) {
+	public static <T> Function<T[], T> invoker(Class<T> type, Behavior behavior, ExceptionHandling exceptions) {
 		return EventFactoryImpl.invoker(type, behavior, exceptions);
 	}
 

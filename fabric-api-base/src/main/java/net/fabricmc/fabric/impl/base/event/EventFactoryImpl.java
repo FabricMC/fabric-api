@@ -46,7 +46,7 @@ public final class EventFactoryImpl {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
 	}
 
-	public static <T> Function<T[], T> invoker(Class<? super T> type, EventFactory.Behavior behavior, EventFactory.ExceptionHandling exceptions) {
+	public static <T> Function<T[], T> invoker(Class<T> type, EventFactory.Behavior behavior, EventFactory.ExceptionHandling exceptions) {
 		Objects.requireNonNull(behavior, "Tried to create an invoker factory with a null behavior!");
 
 		return switch (behavior) {

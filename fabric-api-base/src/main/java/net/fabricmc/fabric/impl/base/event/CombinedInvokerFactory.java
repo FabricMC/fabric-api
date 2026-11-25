@@ -141,7 +141,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 		STORED
 	}
 
-	final Class<? super T> type;
+	final Class<T> type;
 	final Method method;
 	private final Mode mode;
 	private final @Nullable Object passValue;
@@ -151,7 +151,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	final MethodHandles.Lookup lookup;
 	private boolean unrolledBroken;
 
-	private CombinedInvokerFactory(Class<? super T> type, Method method, Mode mode, @Nullable Object passValue, int threadedParam, ExceptionHandling exceptions, MethodHandles.Lookup lookup) {
+	private CombinedInvokerFactory(Class<T> type, Method method, Mode mode, @Nullable Object passValue, int threadedParam, ExceptionHandling exceptions, MethodHandles.Lookup lookup) {
 		this.type = type;
 		this.method = method;
 		this.mode = mode;
@@ -174,7 +174,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 *
 	 * @throws IllegalArgumentException if the listener interface or the combination are invalid.
 	 */
-	public static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Mode mode, @Nullable Object passValue, int threadedParam) {
+	public static <T> CombinedInvokerFactory<T> create(Class<T> type, Mode mode, @Nullable Object passValue, int threadedParam) {
 		return create(type, mode, passValue, threadedParam, ExceptionHandling.PROPAGATE);
 	}
 
@@ -184,7 +184,7 @@ public final class CombinedInvokerFactory<T> implements Function<T[], T> {
 	 * @param exceptions what happens when a listener throws an exception.
 	 * @throws IllegalArgumentException if the listener interface or the combination are invalid.
 	 */
-	public static <T> CombinedInvokerFactory<T> create(Class<? super T> type, Mode mode, @Nullable Object passValue, int threadedParam, ExceptionHandling exceptions) {
+	public static <T> CombinedInvokerFactory<T> create(Class<T> type, Mode mode, @Nullable Object passValue, int threadedParam, ExceptionHandling exceptions) {
 		Objects.requireNonNull(type, "Tried to create an invoker factory for a null listener type!");
 		Objects.requireNonNull(exceptions, "Tried to create an invoker factory with a null exception handling!");
 		if (!type.isInterface()) throw new IllegalArgumentException(type.getName() + " is not an interface");
