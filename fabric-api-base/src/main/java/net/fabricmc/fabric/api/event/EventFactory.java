@@ -166,7 +166,8 @@ public final class EventFactory {
 	 * {@code false}, use {@link #create(Class, Behavior)} instead: Fabric API then generates an invoker
 	 * that is several times faster when there are several listeners.
 	 *
-	 * @param type           The listener class type.
+	 * @param type           The listener class type. This is a {@code Class<? super T>} only for backwards compatibility,
+	 *                       always pass a {@code Class<T>}. The invoker factory is given an array of this type.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
@@ -223,7 +224,8 @@ public final class EventFactory {
 	 *
 	 * <p>For the generated invoker of {@link #create(Class, Behavior, ExceptionHandling)}, pass the {@link #invoker} as the invoker factory.
 	 *
-	 * @param type           The listener class type.
+	 * @param type           The listener class type. This is a {@code Class<? super T>} only for backwards compatibility,
+	 *                       always pass a {@code Class<T>}.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param defaultPhases  The default phases of this event, in the correct order. Must contain {@link Event#DEFAULT_PHASE}.
 	 * @param <T>            The listener type.
