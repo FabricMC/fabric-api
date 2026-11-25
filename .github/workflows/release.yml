@@ -21,6 +21,15 @@ jobs:
           context: changelog
           workflow_id: release.yml
       - uses: gradle/actions/wrapper-validation@v4
+      - uses: ./.github/actions/setup-maven-central-mirror
+      - name: Install Maven SFTP host key
+        env:
+          MAVEN_SFTP_HOST_KEY: ${{ secrets.MAVEN_SFTP_HOST_KEY }}
+        run: |
+          : "${MAVEN_SFTP_HOST_KEY:?Set the MAVEN_SFTP_HOST_KEY Actions secret}"
+          install -d -m 700 "$HOME/.ssh"
+          umask 077
+          printf '%s\n' "$MAVEN_SFTP_HOST_KEY" >> "$HOME/.ssh/known_hosts"
       - run: ./gradlew checkVersion build publish publishMods -x check --stacktrace --no-configuration-cache
         env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
