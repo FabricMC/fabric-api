@@ -1,0 +1,21 @@
+{
+  "text.fabric-mod-protocol-v1.and_x_more": "...und %s mehr...",
+  "text.fabric-mod-protocol-v1.entry": "%s (Lokal: %s, Remote: %s)",
+  "text.fabric-mod-protocol-v1.fabric_api": "Fabric API",
+  "text.fabric-mod-protocol-v1.loader_and_fabric_api": "Fabric Loader und Fabric API",
+  "text.fabric-mod-protocol-v1.local": "Lokal",
+  "text.fabric-mod-protocol-v1.mismatched.contact": "Kontaktiere den Server Administrator für weitere Informationen!",
+  "text.fabric-mod-protocol-v1.mismatched.desc": "Dies bedeutet üblicherweise, dass die Mods in deinem Client nicht mit denen auf dem Server übereinstimmen!",
+  "text.fabric-mod-protocol-v1.mismatched.entries.title": "== Nicht übereinstimmende Einträge ==",
+  "text.fabric-mod-protocol-v1.mismatched.title": "Die erforderlichen Mod-Versionen stimmen nicht überein!",
+  "text.fabric-mod-protocol-v1.mismatched.vanilla_client.desc": "Das bedeutet, dass dir alle für diesen Server erforderlichen Mods fehlen!",
+  "text.fabric-mod-protocol-v1.mismatched.vanilla_client.title": "Dieser Server setzt voraus, dass %s in deinem Client installiert ist!",
+  "text.fabric-mod-protocol-v1.mismatched.vanilla_server.desc": "Einige Mods in deinem Client sind als sowohl auf dem Server als auch auf dem Client zu installierende Mods gekennzeichnet!",
+  "text.fabric-mod-protocol-v1.mismatched.vanilla_server.title": "Dieser Server unterstützt dein aktuelles Mod-Set nicht!",
+  "text.fabric-mod-protocol-v1.mismatched_versions.button": "Nicht übereinstimmende Mod-Versionen...",
+  "text.fabric-mod-protocol-v1.mismatched_versions.title": "Nicht übereinstimmende Mod-Versionen",
+  "text.fabric-mod-protocol-v1.missing": "Fehlend!",
+  "text.fabric-mod-protocol-v1.mod_name": "Name des Mods",
+  "text.fabric-mod-protocol-v1.remote": "Remote",
+  "text.fabric-mod-protocol-v1.status.incompatible_mods": "Inkompatible Mods!"
+}
